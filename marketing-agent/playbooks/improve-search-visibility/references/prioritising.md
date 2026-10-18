@@ -1,6 +1,6 @@
 # Picking the five
 
-Load at step 10. Candidates come from the top of the page map (`page-map.md`) plus site-wide blockers and profile fixes.
+Load at step 4. Candidates come from the top of the page map (`page-map.md`) plus site-wide blockers and profile fixes.
 
 ## Score
 (Impact × Confidence) ÷ Effort, each 1–5.

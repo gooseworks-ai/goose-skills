@@ -1,6 +1,6 @@
 # Entity footprint and local
 
-Load at step 8 (atom entity-footprint).
+Load at step 1 (free pass, atom entity-footprint).
 
 ## The canonical facts (set once, from the brain; the human confirms)
 Name and legal name · one-line description (the canonical sentence) · primary category · founding year and founders · HQ city · canonical domain · logo · pricing model · for local: name, address, phone (NAP) and hours per location. The most common cause of a wrong brand description in AI answers is an old positioning left on one profile: fix those first.

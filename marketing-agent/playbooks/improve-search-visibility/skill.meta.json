@@ -27,6 +27,7 @@
     "is there an app — Apple's public search lookup and the Google Play store page, via the host's fetch (public web)"
   ],
   "writes": [
+    "the report — local file gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-search-visibility.md (or an artifact in hosted chat) through the shared write-report atom, plus a saved copy with a link (read by the marketer)",
     "search/questions.md — the versioned question set (read by the next run)",
     "search/page-map.md + brand document 'Search page map — <Brand> — <date> v<N>' (supersede) — the cluster→page roadmap (read by the next run and the human; feeds the five fixes and the briefs)",
     "search/visibility/<YYYY-MM-DD>.md + brand document 'Search visibility — <Brand> — <date>' (keep-history) — visibility report (read by the human, analyze-performance's channel table, research-competitors)",
@@ -70,6 +71,7 @@
     "claims-gate",
     "save-learning",
     "save-to-brain",
-    "spend-gate"
+    "spend-gate",
+    "write-report"
   ]
 }

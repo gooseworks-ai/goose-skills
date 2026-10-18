@@ -5,6 +5,7 @@
   "pillar": "1 — Strategy and planning (also 10 — launches, 18 — promo calendar read)",
   "intents": [
     "I have this budget and a launch date — what do I run, where?",
+    "plan a campaign",
     "plan my launch / drop / Black Friday push",
     "where should I advertise?",
     "should we even run ads?",
@@ -25,6 +26,8 @@
     "creator roster creators/roster.csv (wave results) — work-with-creators, when a creator leg is Run/Test"
   ],
   "writes": [
+    "readable campaign plan gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md (local file, via write-report) — the marketer",
+    "brand copy plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md + document 'Campaign plan — <Brand> — <date> v<N>' (save-to-brain, supersede) — the marketer, any host",
     "campaign record (campaign_upsert): brief_md with fixed headings — economics box, goal chain, channel decisions, budget split, paid structure, test plan, angles, calendar, asset list, measurement plan, hand-offs, replan triggers; read by run-paid-campaigns, analyze-performance, make-static-ads, make-video-ads, make-product-photos, make-content, email-lifecycle, run-organic-social, work-with-creators",
     "campaign concepts (add_campaign_concept / update_campaign_concept) — read by make-static-ads and make-video-ads",
     "optional monthly replan schedule (automation_upsert) — only on the human's explicit yes",
@@ -46,7 +49,13 @@
       "gooseworks:automation_upsert",
       "gooseworks:file_write",
       "gooseworks:tools_load",
-      "gooseworks:account_whoami"
+      "gooseworks:account_whoami",
+      "gooseworks:meta_read",
+      "gooseworks:social_account_list",
+      "gooseworks:file_url",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get"
     ]
   },
   "atoms": [
@@ -57,6 +66,8 @@
   ],
   "shared_atoms": [
     "claims-gate",
+    "write-report",
+    "save-to-brain",
     "spend-gate"
   ]
 }

@@ -1,6 +1,6 @@
 # From gap to fix
 
-Load at step 6 (pattern) and step 10 (fixes).
+Load at step 4 (pattern and fixes).
 
 ## Find the pattern (countable statements only)
 1. Take the cited URLs from lost and partial rows; classify each by source type.
@@ -14,6 +14,7 @@ Load at step 6 (pattern) and step 10 (fixes).
 | Our page exists but can't be lifted | rewrite: title, meta, H1, answer-first opening, fact block, Q&A block, internal links | yes |
 | Near-winner on Google (positions ~4–15, or impressions high and clicks low) | title/meta rewrite, refresh, internal links from strong pages | yes |
 | No page for the intent | page brief to make-content (comparison, alternatives, use-case, location page) | no — listed under the five |
+| Name collision (engines answer about a namesake: "is <brand> legit" returns another company) | a visible one-line "who we are — not <namesake>" on About and the homepage, the brand's full name in every page title, consistent profiles, `alternateName` / `sameAs` in the existing Organization markup | yes — usually fix #1 |
 | Wrong or old brand description in answers | entity fix: exact field values on the profile the engine cites, plus our About page and Organization markup | yes |
 | Absent from cited listicles / review roundups | inclusion request: one drafted email to the page's editor naming the page, the gap and the facts (the human sends it) | yes, if the cited page is maintained and plausibly updated |
 | Review platforms thin (count, recency) | review-request flow brief to email-lifecycle (replying to reviews is not covered yet) | yes (the brief) |

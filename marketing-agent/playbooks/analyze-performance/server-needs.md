@@ -14,7 +14,7 @@ Checked against GooseWorks staging, 2026-10-16.
 | 8 | **App measurement** (MMP, SKAN, RevenueCat, App Store Connect). | Step 5 | Named "not measured" row + export ask. |
 | 9 | **B2B pipeline by source** (CRM). | Steps 2, 5 | Human export / connector. |
 | 10 | **Google Business Profile / call tracking / POS** for local. | Step 5 | Human export. |
-| 11 | **Brand-search volume, share of voice, citations** for the monthly read. | Monthly read | Carried in from listen-social / improve-search-visibility when they exist; not measured here. |
+| 11 | **Brand-search volume, share of voice, citations** for the monthly read. | Monthly read | Carried in from research-market's "What people are saying" (share of voice only if present) / improve-search-visibility when they exist; not measured here. |
 | 12 | **Watch-and-alert layer** (thresholds that fire on their own). | Daily pulse | Exception-only pulse on request or on an explicitly approved schedule (`automation_upsert`, credits stated first). |
 | 13 | **Staging test data** — no staging brand has Meta connected or any performance data; the report could only be exercised in claims-only / not-connected mode. | Testing | Recorded in tests/test-by-hand.md. |
 | 14 | **Organic analytics beyond TikTok/Instagram** — `social_account_list` platform enum is tiktok/instagram; founder LinkedIn/X has no source. | Step 4 | Rostered channel; numbers from the human (screenshot/export). |

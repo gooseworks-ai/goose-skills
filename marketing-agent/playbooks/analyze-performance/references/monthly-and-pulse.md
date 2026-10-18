@@ -9,7 +9,7 @@ Feeds plan-campaign's monthly replan. Saved as `reports/performance/monthly/<YYY
 - **Cohort repeat** (DTC): of last month's and the month before's new customers, the share that bought again within 30/60/90 days, from the store export — judge customers by what they do over time, not day one.
 - **Channel scorecard**: each channel vs its target from the brief, over the month, on blended/store-joined numbers; channels missing target two months running are named for plan-campaign.
 - **Tests ended this month** and their calls; **learnings due for review** (REVIEW BY passed) — proposed in the decisions block to re-confirm, downgrade or retire (they need the human's words).
-- **Brand signals**, only if a sibling has written them: listen-social's share-of-voice/sentiment, improve-search-visibility's last check and citation movement. This playbook does not measure them.
+- **Brand signals**, only if a sibling has written them: research-market's sentiment counts from "What people are saying" (share of voice only if the section has it), improve-search-visibility's last check and citation movement. This playbook does not measure them.
 
 ## Daily pulse (interim, exception-only)
 

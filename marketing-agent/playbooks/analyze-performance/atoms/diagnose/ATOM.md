@@ -4,7 +4,7 @@
 
 **Load:** `../../references/diagnosis.md`.
 
-**Inputs:** the clean dataset; the overclaim ratio and its trend; the change log (`decisions.md`); push failures/disapprovals reported by run-paid-campaigns or the human; the competitor watch digest; listen-social's weekly report; the promo calendar and stock notes from the brief; destination URLs of top ads.
+**Inputs:** the clean dataset; the overclaim ratio and its trend; the change log (`decisions.md`); push failures/disapprovals reported by run-paid-campaigns or the human; the competitor watch digest; research-market's "What people are saying" section (newest `research/market/<D>-read.md`; check its window); the promo calendar and stock notes from the brief; destination URLs of top ads.
 
 **Do:**
 1. Plumbing: test each break signature (ratio jump/collapse, zero-conversion days with spend, ROAS spike with flat orders, LPV/click drop, UTM traffic missing). For each break: symptom, likely location, what to check, the fix when identifiable, what it blocks. Mark affected numbers suspect.

@@ -1,26 +1,33 @@
 # Citation check protocol
 
-Load at steps 4–5 (atom citation-check).
+Load at step 1 (free pass) and step 3 (paid top-up), through the atom citation-check.
 
 ## Surfaces and how each is observed
 | Surface | Default observation route today | Runs |
 |---|---|---|
-| Google organic top 10 | `gooseworks:data_call_provider` provider `scrapecreators`, path `/v1/google/search`, query + `region` (paid; organic results only, page one — no AI Overview, no People-also-ask, no local pack) | 1 |
-| Google AI Overview | the host's own browser (incognito), or the human pastes | 2 (1 pasted) |
-| Google AI Mode (`google.com/search?udm=50`) | host browser or human | 2 (1 pasted) |
-| ChatGPT with search | host browser (private window, not signed in) or human | 3, 5 for must-wins (2 pasted) |
+| ChatGPT with search | free: host browser (private window, not signed in); else the human's paste set | 1 per question, 3 for the 3–5 must-wins (2 pasted) |
+| Google AI Overview | free: host browser, when Google lets it in; else paste set | 1 (1 pasted) |
+| Google AI Mode (`google.com/search?udm=50`) | free: host browser, when Google lets it in; else paste set | 1 (1 pasted) |
+| Who ranks for each question | free: the host's web search, labelled "web search" | 1 |
+| Google's exact page one | paid top-up only: `gooseworks:data_call_provider` provider `scrapecreators`, path `/v1/google/search`, query + `region` (organic results only — no AI Overview, no People-also-ask, no local pack) | 1 |
 | Perplexity / Gemini / Copilot | only when the buyer uses them; host browser or human | 3 |
 
 Every report row says how it was observed: **looked up through GooseWorks** (organic), **agent browser**, **run by you**. Never present an organic read as an AI-answer read. Never call an AI model's API with a local key to stand in for the consumer apps (no vendor keys, ever).
 
+**Wait for the answer to finish.** ChatGPT streams: re-read the page until the text stops changing and the sources show (up to about 60 seconds); an answer that never finishes is retried once, then marked "didn't finish" — never scored as "not named". If ChatGPT asks to log in for one question, retry it once in a fresh private window, then mark it.
+
+**Where the browser really is.** Record the browser's real location (an answer showing local prices or a local-language result gives it away). If it isn't the target market, label those rows ("read from India, region set to US") — Google rows then count as a first look, and the paid top-up (which sets the region) is the way to the exact read; ChatGPT's location can't be set, so say so.
+
+**Speed.** Open the question straight in the address bar (`https://chatgpt.com/?q=<question>&hints=search`) and run several tabs side by side; the free pass is about 20–40 page reads.
+
 **Agent browser rules:** a private window for Google; chatgpt.com in a private window, not signed in — a Temporary Chat only if ChatGPT forces sign-in and never in the founder's account; record which was used. On any CAPTCHA or bot challenge, stop and hand that surface to the human; never solve it.
 
-**Minimum paste set (when the human runs them):** 5 questions — up to 4 must-wins plus at least one brand question ("what is [brand] [category]" or "is [brand] legit"; pre-launch: the name-collision question); ChatGPT twice, AI Overview and AI Mode once each — 20 pastes. For the "AI says something false" entry, the paste set is the brand questions (3–6) instead of the must-wins. Give it as plain steps, no jargon:
+**Minimum paste set (offered in the first message only when the host has no browser or Google blocked it; the human runs them):** 5 questions — up to 4 must-wins plus at least one brand question ("what is [brand] [category]" or "is [brand] legit"; pre-launch: the name-collision question); ChatGPT twice, AI Overview and AI Mode once each — 20 pastes. For the "AI says something false" entry, the paste set is the brand questions (3–6) instead of the must-wins. Give it as plain steps, no jargon:
 ```
 For each question below:
-1. Open chatgpt.com in a private window without signing in (use a Temporary Chat only if it insists on sign-in). Paste the question, wait for the answer, click "Sources" if shown (else write "no sources"), then copy everything back here under a line like:  Q3 · ChatGPT · try 2
-2. In the same private window, search Google for the short version. If an "AI Overview" box shows, click "Show more" and copy it with its links under:  Q3 · AI Overview  (if none shows, write "none").
-3. Open google.com/search?udm=50, paste the full question, copy the answer and its links under:  Q3 · AI Mode
+1. Open chatgpt.com in a private window without signing in (use a Temporary Chat only if it insists on sign-in). Paste the question, wait for the answer, click "Sources" if shown (else write "no sources"), then copy everything back here under a line like:  Question 3 · ChatGPT · try 2
+2. In the same private window, search Google for the short version. If an "AI Overview" box shows, click "Show more" and copy it with its links under:  Question 3 · AI Overview  (if none shows, write "none").
+3. Open google.com/search?udm=50, paste the full question, copy the answer and its links under:  Question 3 · AI Mode
 ```
 Source titles and domains are enough. Pasted rows are scored "k of 2, run by you" and labelled with "settings as you reported".
 
@@ -54,7 +61,7 @@ Not set up? No problem — I'll note it, and setting it up is one of the easy fi
 ```
 
 ## Credits
-Paid lookups follow the proxy branch of `../../../atoms/spend-gate/ATOM.md` (one probe with a yes, then a yes to a ceiling "up to N credits" labelled an estimate, stop at it, log every charge in `research/credits-log/<YYYY-MM>.md`). Never show your own sum as a price. What counts toward the ceiling: question lookups (questions × organic runs) + index checks (`site:` once site-wide + once per page checked). Page imports (`knowledge_import` import mode, only when the host cannot fetch pages) count too. The probe: the site-wide `site:` lookup ("May I run one paid Google lookup — it also tells us whether Google has your site indexed?"); before launch, the name-collision lookup.
+The paid top-up follows the proxy branch of `../../../atoms/spend-gate/ATOM.md`: **one yes** to a ceiling "up to N credits", labelled an estimate, asked in the first message after the free result — never before it, never twice. N comes from the credits log; with no history, say what the top-up adds ("Google's exact page one for your 14 questions, plus whether Google has your site indexed — about 15 lookups") and let the human name the ceiling; the first lookup (the site-wide `site:` check) is the probe inside that same yes. Stop at the ceiling; log every charge in `research/credits-log/<YYYY-MM>.md`; report credits charged in the gate's words. Never call the price-check tool for these lookups (it prices only media generation, not search lookups). Never show your own sum as a price. Page imports (`knowledge_import` import mode, only when the host cannot fetch pages) fit inside the same ceiling.
 
 ## Re-runs
 Diff only rows observed the same way both times (route and run count); a route change is reported as "method changed", not as movement.

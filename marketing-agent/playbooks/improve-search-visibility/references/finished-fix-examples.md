@@ -1,6 +1,6 @@
 # Finished fixes — the quality bar
 
-Load at step 10 (atom fix-writer). Brands are fictional; in a live run every factual value is a "Claims you may use" fact, a product record field, a plain product fact from the live page (name, price, size, listed ingredients, how to use), or comes through the claims gate's scoped sign-off — nothing else. Every fix carries: the gap it closes (question ids and the observed result), the exact text or code, where it goes, who ships it and minutes to apply, the claims check, time to show, risk and undo, and how to verify once live.
+Load at step 4 (atom fix-writer); the finished versions go in the report's last section. Brands are fictional; in a live run every factual value is a "Claims you may use" fact, a product record field, a plain product fact from the live page (name, price, size, listed ingredients, how to use), or comes through the claims gate's scoped sign-off — nothing else. Every fix carries: the gap it closes (question ids and the observed result), the exact text or code, where it goes, who ships it and minutes to apply, the claims check, time to show, risk and undo, and how to verify once live.
 
 ## (a) Category page rewrite — Halden `/collections/moisturizers`
 Gap: Q1, Q3 lost on every surface; title "Shop Moisturizers – Halden", H1 "Hydration Heroes"; no text above the product grid.

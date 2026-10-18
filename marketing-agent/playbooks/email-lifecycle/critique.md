@@ -220,3 +220,7 @@ Open: analyze-performance's email rows are "light", so the per-flow read-back le
 2026-10-16 final contract check: the fixes-file section is read as "For your email program — review requests" (renamed by its writer so the human-read file names no playbook) (SKILL.md, skill.meta.json).
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; shared atoms moved to `shared_atoms`.
 2026-10-16 orchestrator ruling: email-lifecycle never writes or retires `Policy:` facts (learn-my-brand's opening); confirmed policies and other rules are `[lifecycle YYYY-MM-DD]` learnings through save-learning, `Standing offer:` stays the one shared opening; reads still include `Policy:` (SKILL.md steps 3 and 9, output table, skill.meta.json, atoms/send-check, references/intake.md, references/loadable-flow-format.md). Review-request flows stay here.
+
+## Round 9 — shared bug from the 18 Oct search hand test (minimal change)
+
+The search hand test showed documents left only in the workspace, with workspace paths offered as if they were links. email-lifecycle's step 8 did the same ("each other flow in one line with its file"). Fixed: the full pack (deliverability report, build order, flows, broadcasts, decisions) is one document through the shared `write-report` atom — a local file with a clickable link, an artifact in hosted chat, plus a saved-copy link; `lifecycle/` files are working copies only. `shared_atoms` and `writes` in the meta updated. Nothing else in this playbook changed.

@@ -13,7 +13,7 @@ Every durable artifact goes through this atom. Never keep the only copy in chat 
 | Input | Rule |
 |---|---|
 | `brand_id`, `brand_slug`, `coworker_agent_id` | From the `gooseworks:brand_read` list answer. |
-| `path` | The playbook's own folder under the AGENTS §8 layout (`research/market/…`, `social/listening/…`). Dates `YYYY-MM-DD`. |
+| `path` | The playbook's own folder under the AGENTS §8 layout (`research/market/…`, `research/competitors/…`). Dates `YYYY-MM-DD`. |
 | `artifact` | The artifact name, used in the title and tags (for example `Voice-of-customer bank`, `voc-bank`). |
 | `title` | `<Artifact> — <Brand> — <YYYY-MM-DD>`; records with numbered versions add ` v<N>`. |
 | `tags` | `[<playbook>, <artifact-slug>]`, plus any extra key the caller needs to tell copies apart (for example `rival:<slug>`). All lower-case. **The first tag is the document's creator**: normally the calling playbook; a shared atom that writes on behalf of another owner puts that owner first (voice-card, claims-gate). |

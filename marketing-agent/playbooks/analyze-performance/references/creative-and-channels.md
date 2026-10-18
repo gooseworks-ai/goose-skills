@@ -37,7 +37,7 @@ From the human's email-tool export; if none, the row reads **"not measured this 
 From `gooseworks:social_analytics_get` (`view: "posts"` and `"accounts"`) for the brand's own accounts (`gooseworks:social_account_list`); `not_available` → row says so.
 - The week's reach and engagement vs the account's own trailing median.
 - **Overperformers:** posts at ≥ ~2× the account's median engagement or reach, with the hook and angle named — flagged as **paid candidates** and for run-organic-social's next mix.
-- No organic revenue attribution. listen-social reads what others say; this reads how our posts did.
+- No organic revenue attribution. research-market reads what others say; this reads how our posts did.
 
 ## B2B pipeline (when the type is B2B / services)
 

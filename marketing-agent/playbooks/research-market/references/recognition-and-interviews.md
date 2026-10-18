@@ -1,6 +1,6 @@
 # Recognition test and the interview kit
 
-## Recognition check (in the closing message, step 9)
+## Recognition check (in the closing message, step 7)
 
 The report is already delivered; these questions sit in the closing message with the other decisions. Ask them without leading (do not hint at the answer you hope for), and record the answers verbatim in the read when the founder replies:
 
@@ -16,13 +16,13 @@ How to handle answers:
 - A correction about facts only they know (who pays, the gift share, the B2B buyer's title): quote it verbatim in the read and in the audience proposal's rationale, and update the segment. If they want it kept as a rule, offer it as one of the ≤ 3 learnings through `../../../atoms/save-learning/ATOM.md` — never write it to the brand directly from here.
 - Pass = "yes" or "partly, with fixes applied" plus at least one thing they did not know (or, for tiny customer bases, a lost-deal or prospect pattern they recognise).
 
-## The evidence floor (SKILL.md step 4)
+## The evidence floor (SKILL.md step 5)
 
 Count first-hand items about the brand's own customers and prospects: reviews, community threads and comments, the brand's own social comments, private material. Not counted: curated testimonials and case studies, editorial coverage, quotes reproduced on someone else's page. A rival's customers count as prospects only when they are actively moving to us (a rival's shutdown with our offer) — tag them `about: prospect (moving from <rival>)`. Under ~30 after the full free pass = cold start.
 
 ## When to stop and hand over the kit
 
-Put it in the report at the evidence floor (SKILL.md step 4) — after the full free pass, never instead of it — or when the founder rejects the read and has no evidence to mine. Say it plainly: "Public evidence is too thin to describe your buyer with confidence. The fastest way to close it is 5–8 conversations with recent buyers. Here is a kit you can run." The agent never sends, books or posts anything.
+Put it in the report at the evidence floor (above) — after the full free pass, never instead of it — or when the founder rejects the read and has no evidence to mine. Say it plainly: "Public evidence is too thin to describe your buyer with confidence. The fastest way to close it is 5–8 conversations with recent buyers. Here is a kit you can run." The agent never sends, books or posts anything.
 
 ## Short surveys (5 questions, the human sends them)
 

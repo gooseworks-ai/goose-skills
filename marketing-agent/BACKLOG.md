@@ -34,6 +34,7 @@
 | 15 | **PR drafts** — launch press release, gift-guide pitches, press kit (research plus drafts; the human pitches) | Mode in make-content | DTC gifting season, launches | 3 customer asks |
 | 16 | **B2B content roadmap** — a topic and keyword roadmap, not just single pieces | Mode in improve-search-visibility | B2B SaaS doing content-led growth | 3 B2B customers using make-content for search pieces |
 | 17 | **whatsapp-flows** — broadcasts, catalogue and click-to-WhatsApp flows | New playbook | Brands in WhatsApp-first markets (India, Brazil, Indonesia) | The first customer in a WhatsApp-first market, and an approved sending route |
+| 18 | **Reply drafts** — finished replies to comments, mentions and DMs, each with a recommendation (reply / take private / stay silent), disclosure on third-party communities, and holding statements in a crisis; the human sends. Was part of listen-social (removed 18 Oct; its listening now lives in research-market, which still flags risks). The old reply-drafting craft is in git history under `playbooks/listen-social/references/reply-drafting.md` | Mode in research-market (listening) or run-organic-social | DTC and consumer brands with active comment sections; any brand in a crisis | 3 customers ask for reply drafts after a research-market run flags threads, or the first crisis where a drafted holding statement is needed |
 
 ## Still skipped on purpose
 

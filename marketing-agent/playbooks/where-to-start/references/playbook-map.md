@@ -16,13 +16,13 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Not:** positioning from scratch, market research, any creative.
 
 ## research-market — "Who actually buys this, and what do they say in their own words?"
-- **Say it as:** "finding out who actually buys and the words they use" (never the name above, to the founder).
-- **Fits:** the founder has customers, users, a waitlist or beta testers but doesn't know who buys and why; messaging feels generic; before positioning, campaigns or ads; a new segment appears. Pre-launch only when there is a waitlist, beta users or customer notes to mine.
-- **Produces:** a voice-of-customer bank (sourced quotes), a grounded persona, a named competitor list, a labelled demand read (direction, seasonality, how buyers phrase it). With fewer than about 30 items from the brand's own customers or prospects (pre-launch, no list) it runs as a cold start: category language labelled "not your buyers", no persona, and an interview and survey kit for the founder to run.
+- **Say it as:** "finding out who actually buys, the words they use, and what people are saying about you" (never the name above, to the founder).
+- **Fits:** the founder has customers, users, a waitlist or beta testers but doesn't know who buys and why; messaging feels generic; before positioning, campaigns or ads; a new segment appears. Pre-launch only when there is a waitlist, beta users or customer notes to mine. Also "what are people saying about us?": brands with a social footprint or a community, a complaint brewing, consumer categories driven by trends (a narrow ask covers just that area).
+- **Produces:** a voice-of-customer bank (sourced quotes), a grounded persona, a named competitor list, a labelled demand read (direction, seasonality, how buyers phrase it), and a "what people are saying" section (mentions, sentiment, themes, trends with post-by dates, risk flags; a serious risk is told in chat at once; standout posts saved as inspiration). With fewer than about 30 items from the brand's own customers or prospects (pre-launch, no list) it runs as a cold start: category language labelled "not your buyers", no persona, and an interview and survey kit for the founder to run.
 - **Must bring:** who they believe buys today; where customers talk or review; any existing evidence (reviews, support tickets, call notes).
 - **Reads:** the brand brain.
-- **Not:** competitor ad teardowns, positioning, contacting customers, channel planning.
-- **Costs:** May spend credits on public-data pulls (reviews, forums, search), within a credit ceiling the founder approves first.
+- **Not:** competitor ad teardowns, positioning, contacting customers, channel planning, posting or replying (reply drafts are not covered yet).
+- **Costs:** May spend credits on public-data pulls (reviews, forums, search, social platforms), within a credit ceiling the founder approves first.
 
 ## research-competitors — "What are my competitors running right now, and what works for them?"
 - **Say it as:** "looking at what your competitors are running and what works for them" (never the name above, to the founder).
@@ -32,15 +32,6 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Reads:** the competitor list from research-market or the brand brain.
 - **Not:** making ads, budget calls, review mining, social listening.
 - **Costs:** Free from the brain; paid pulls (other ad libraries, social mentions, search) only within a credit ceiling the founder approves first.
-
-## listen-social — "What are people saying about me and my category this week?"
-- **Say it as:** "listening to what people say about you and your category this week" (never the name above, to the founder).
-- **Fits:** brands with a social footprint or a community; a complaint brewing; consumer categories driven by trends.
-- **Produces:** a weekly listening report (mentions, themes, outliers, trends, risk flags) and reply drafts the human posts.
-- **Must bring:** which platforms, which terms, who gets told when something looks like a crisis.
-- **Reads:** the brand brain (handles, voice).
-- **Not:** posting or replying, calendars, persona work.
-- **Costs:** Spends credits on each listening pull (platform searches), within a credit ceiling the founder approves first.
 
 ## research-audience — "Find me 50 right-fit people with verified emails."
 - **Say it as:** "building a list of right-fit businesses or people to contact" (never the name above, to the founder).
@@ -101,7 +92,7 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Fits:** anything is live and producing numbers: ads, email, organic, creators. Also the fix when numbers disagree or tracking may be broken.
 - **Produces:** a weekly performance read (winners, why, what to make next, real revenue beside platform claims, tracking breaks with a fix) and a daily pulse.
 - **Must bring:** which revenue number is the truth (store or CRM), metric definitions (agreed once), exports from tools GooseWorks cannot read.
-- **Reads:** campaign brief, change log, ad angle notes, competitor digest, listening report.
+- **Reads:** campaign brief, change log, ad angle notes, competitor digest, research-market's "what people are saying" section.
 - **Not:** applying changes, making creative, the replan itself.
 - **Costs:** Free (a scheduled weekly report uses some credits).
 
@@ -128,7 +119,7 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Fits:** categories creators move (beauty, fashion, food, fitness, consumer apps, games); a budget for gifting or paid posts.
 - **Produces:** a vetted creator shortlist with benchmarked prices and gift-vs-paid calls, and one-page briefs. The human contacts and closes every deal.
 - **Must bring:** the goal (awareness, content, tracked sales), budget, platforms, creators already in talks.
-- **Reads:** listen-social's outliers, research-market's persona, campaign brief.
+- **Reads:** research-market's saved outliers and persona, campaign brief.
 - **Not:** outreach, gifting, codes, contracts, affiliates.
 - **Costs:** Spends credits on creator discovery and vetting lookups, within a ceiling the founder sets.
 
@@ -146,7 +137,7 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Fits:** accounts that go quiet when the week gets busy; founder-led brands where the founder's own account is the channel; a new account (handle, bio, pinned post, first nine posts); a launch run-up.
 - **Produces:** a two-week calendar and ready-to-paste post drafts. The human posts by hand.
 - **Must bring:** which accounts (brand vs founder) and each one's job, the cadence they can really keep, anything off-limits.
-- **Reads:** make-content's drafts, listen-social's report, the voice.
+- **Reads:** make-content's drafts, research-market's report (trends with post-by dates), the voice.
 - **Not:** posting, scheduling, replies, listening, making media.
 - **Costs:** Free by default.
 
@@ -163,6 +154,7 @@ Name these out loud using the "What to say" line only; backlog card names are in
 | Landing page, store, checkout or onboarding fixes (CRO) | audit-my-pages (backlog) | "Page fixes aren't covered yet; you or your developer make them." | analyze-performance (a light check that top ads match their landing pages) |
 | Marketplace listings (Amazon, Etsy, Walmart…) | optimize-listings (backlog) | "Listing optimization isn't covered yet." | make-product-photos for clean product shots (not the listing image set) |
 | Sending outreach, sequences, follow-ups | do-outreach (backlog) | "We build the list; you send from your own tool." | research-audience |
+| Replying to comments and DMs, comment moderation | Reply drafts (backlog) | "Drafting replies isn't covered yet; you reply yourself. I can show you what people are saying." | research-market |
 | Always-on alerts (spikes, disapprovals, stock-outs) | watch-and-alert (backlog) | "Standing alerts aren't built; the weekly read and daily pulse cover it for now." | analyze-performance |
 | Setting up tracking, analytics, the pixel, the ad account | human or developer | "Setting up tracking is yours (or your developer's); once it exists, the weekly read checks it." | analyze-performance (tracking-health check) |
 | Recruiting individual supply or freelancers (gig workers, walkers, tutors without a business presence): job boards, referral rewards from current supply | human | "Recruiting individuals isn't covered; here is the first step you take." | none (research-audience only for supply that is a business) |
@@ -182,7 +174,7 @@ A lens, not a route: it shows which playbooks touch each type's heaviest work (p
 | Consumer app | improve-search-visibility (app-store listing), make-video-ads, email-lifecycle (push and in-app), run-organic-social, analyze-performance (cohorts) | onboarding and growth loops (product work) |
 | Marketplace seller (Amazon, Etsy, Walmart) | make-product-photos (clean shots), improve-search-visibility (search and AI answers off the marketplace), analyze-performance (from exports the seller pastes) | listing copy and images, marketplace ads (Sponsored Products), reviews and deals; the marketplace's own rules on claims |
 | Marketplace (two-sided) | research-audience (supply that is a business), improve-search-visibility (demand side), plan-campaign | recruiting individual supply (gig workers), liquidity incentives, community |
-| Local / multi-location | improve-search-visibility (local search, listings, review-request brief), listen-social (Instagram and local forums; reviews only by paste), make-content | offline and field, referrals, WhatsApp, review replies |
+| Local / multi-location | improve-search-visibility (local search, listings, review-request brief), research-market (what locals say on Instagram and local forums), make-content | offline and field, referrals, WhatsApp, review replies |
 | Services, agency, consultant | make-content (thought leadership), research-audience, run-organic-social (founder account), improve-search-visibility | positioning, referrals, speaking, PR |
 | Creator / media | run-organic-social, make-content, email-lifecycle (newsletter welcome) | sponsorship sales, memberships |
 | Non-profit | email-lifecycle (donors), make-content | grants, events, PR |

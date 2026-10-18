@@ -3,19 +3,21 @@
 ## Setup
 Connect GooseWorks **staging**. Link the playbook into your agent's skills folder. Pick a brand you know first-hand whose market and competitor research is done and whose claims are approved (this playbook only reads that work).
 
-## Test 1 — launch with a withheld number (the spec's test)
-Say: "We're launching the new flavour on March 1st with $5,000 — what should we run, and where?" Hold back the goal number.
+## Test 1 — Akhil's ask (GooseWorks, 18 Oct)
+Say only: "I want to plan a campaign." When asked, answer as Akhil did: GooseWorks; Thanksgiving; start 1 Nov, end Thanksgiving; at least 20 paying accounts; $1,000 total; you don't know funnel numbers; GooseWorks makes the ads; you'd post on LinkedIn, X and Meta; more than 1,000 free users, most did a trial and never came back.
 
 Pass if:
-1. It reads the brand, claims, research and existing campaigns before asking anything, then asks **one** message for only what is missing — including the goal number — and does not plan until you give it.
-2. It flags early that the goal looks out of reach, and when you give a goal that needs a miracle (e.g. 1,000 new customers on $5k at a $30 historical CAC), it shows the renegotiation case first (gap, what each lever buys, a recommendation) and lets you choose.
-3. The brief opens with a one-page decision (do this first, because…). Every mandatory channel (Meta, Google Search, Shopping/PMax, LinkedIn, TikTok, CTV, retail media, AI-assistant ads, organic social, email/SMS, content/SEO, creators) is decided: plausible ones as rows with verdict, binding reason citing a brand fact and a flip condition; clearly irrelevant ones in one "Not relevant:" line, each with its reason. No playbook or tool names anywhere you read.
-4. The split includes production, creators, offer cost and a reserve; each paid leg says whether it clears its learning minimum.
-5. Each test has one variable, $/cell, a readable threshold, an end date and a rule for Unclear.
-6. The asset list is complete: you would hand it to a designer and they could start today.
-7. It stops for approval and spends nothing. A new campaign may be saved as a draft for you to read; an approved live campaign's brief is not changed until your yes (the draft goes to the workspace).
+1. **Looks first.** Before the first question it has read the brand, products and prices, onboarding, what's connected (Meta, social accounts), existing campaigns, research files and the site's pricing page — and says what it found in two or three lines.
+2. **Asks like a person.** One short message, at most ~4 questions, no form: product/plan and offer first, then goal + dates + budget in one sentence, then at most one or two gaps that change the plan (e.g. how many past users it could email). No funnel-rate, churn, margin, tracking or "who makes the ads" questions.
+3. **Says what the plan covers** up front: every channel that could work (ads, email, organic, creators), kept only if it fits, "say if you want ads only".
+4. The plan opens with **In short** ("Do this first:"), says which channels it covers and why, where we run and where we don't, and reads like a good marketer wrote it: no ids, codes, paths, tool or playbook names; every outside fact with a dated source.
+5. Delivered so it opens: a clickable local file, a copy saved to the brand with a link, and — because an approved Thanksgiving plan already exists — the live brief is not overwritten before the yes.
+6. Spends nothing, makes no ads, fills no concept proof with unsigned text. Asked for an ad quote, it says making the ads is the next step (starting with a claims check) and stops.
 
-Telltale failures: a channel without a why; the withheld goal invented; Meta assumed; platform ROAS as the target; a calendar built forwards with assets due after their slot.
+Telltale failures: a seven-part question form; asking what it could have looked up; a technical question; going into email without having said the plan covers it; a plan full of codes; a report left only on the server.
+
+## Test 1b — launch with a withheld number
+Say: "We're launching the new flavour on March 1st with $5,000 — what should we run, and where?" Hold back the goal number. Pass if it offers 2–3 concrete goal options from the brand's numbers instead of inventing one, shows the case for changing the goal when it needs a miracle, and stops for approval.
 
 ## Test 2 — zero-paid is allowed
 "We have $600 and a new candle drop in three weeks." Pass if the paid rows are Later/No with the numbers (e.g. cannot exit learning) and the plan is organic + email + creators, with run-paid-campaigns told there is nothing to run.
@@ -45,3 +47,12 @@ Ask simulated: "We're launching a new serum on March 1st with $8,000 — what sh
 | Cleanup | `campaign_archive` | archived | — |
 
 Stopped before: nothing paid exists in this playbook. Generation (`request_campaign_generation`) is deliberately out of scope.
+
+## Re-run — 18 Oct 2026, Sonnet, Akhil's exact ask (GooseWorks, staging, 0 credits)
+
+- **Before the first question (17 calls):** get_started, brand list + full read, campaign_read (found the approved Thanksgiving v2), meta_read pages (not connected), social_account_list (none), approvals view (none), knowledge_search ×3 (no claims, evidence or learnings), workspace file_list/file_read (market read, customer-words bank), competitor_read, WebFetch gooseworks.ai + /pricing (live plans Lite $29 / Starter $59 / Pro $149, no offer), WebSearch ×3 benchmarks.
+- **First message:** what it found, then: paid plans + offer? · goal, dates, budget? · "I'll look at every channel that could work — ads, email to people who've signed up, LinkedIn and X posts, creators — say if you want ads only" · how many past users could you email (default stated) · research first or plan now. One message, no form, no technical question. (Found paragraph ran ~7 lines — guidance tightened to 2–3.)
+- **Plan:** `gooseworks-reports/gooseworks/2026-10-18-campaign-plan.md` + brand copy `plans/thanksgiving-win-back/2026-10-18-plan-v3.md` (document imported, searchable). Opens with In short / Do this first; expected case ~15 of 20 with the case for changing the goal; email to 1,000+ lapsed users as the core leg, Meta retargeting + a capped Meta test, organic LinkedIn/X; LinkedIn ads, X ads, creators, Google dropped with reasons; 23-row asset list; every outside number dated and sourced.
+- **Campaign record not written:** the approved v2 is live; the draft stayed in the file and brand copy, as the playbook says.
+- **Grade vs write-report §3:** pass on top lines, plain story, no ids/tool names, local link; fixed afterwards: link-tag strings in asset rows, a jargon heading, one-hour brand link noted.
+- Results file: `/Users/akhil/projects/marketing-agent-test/results/2026-10-18-plan-campaign-sonnet-rerun.md`.

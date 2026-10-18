@@ -1,6 +1,6 @@
 # Battlegrounds by business type
 
-Load at step 1. Guidance for the model, not rules: the brand's footprint decides. Name the surfaces that matter and the modules that do not apply, in one line, before drafting questions.
+Load at step 1 (free pass). Guidance for the model, not rules: the brand's footprint decides. Name the surfaces that matter and the modules that do not apply, in one line, before drafting questions.
 
 | Type | Top battlegrounds | Typical first-week fixes | Usually skip |
 |---|---|---|---|

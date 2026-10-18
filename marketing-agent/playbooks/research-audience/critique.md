@@ -253,3 +253,33 @@ Round-7 fixes confirmed consistent across all files; all three runs (DTC to bout
 Result: 9 real people at 5 agencies (5 published, 1 pattern-guess, 3 other route), stated honestly as a shortfall with the top-up to reach 50.
 
 **Fixed from the re-run:** "drop recruiters" contradicted a recruiting-firm ICP (now: third-party recruiters only; a recruiting firm's own recruiters are the buyers) · "email 80%" vs honest no-email rows (now "reach out to 80% by the route given") · undated team pages (a title on the company's current page counts as seen when read) · pattern from one example (labelled `pattern-guess (one example)`) · fetch tools miss protected emails (record "address on page, protected", never guess) · breadth before depth for names and titles. **Accepted, not changed:** a no-history top-up can't be priced — spend-gate's rule (the human names the ceiling, the first read shows the price) is the shared answer.
+
+## Rescope to audience research (2026-10-18, after Akhil's hand test on GooseWorks)
+
+**Akhil's verdict:** the worst of the six — "It told me who should I reach to, only one two names, nothing else. It should have given a broader view." The ask was "i want to do the audience research for gooseworks".
+
+**Bugs found in the transcript (beyond his note):**
+1. The ask was audience research; the playbook ran a cold prospect list — the job itself was wrong.
+2. It stopped after ~12 web calls and 3 people at 2 agencies, then asked "which buyer should I go deeper on?" — the free-pass rule broken in spirit; the brand's main audience (consumer-brand marketers, per the brain's own audience text) was never researched.
+3. Nothing was saved to the brand — the report lived only as a local file.
+4. It used the no-coworker `brands/<slug>/` path prefix although the brand had a coworker, so the workspace read found nothing.
+5. The report was a "Prospect report" with codes and agent notes, not something a founder could act on.
+6. (Host, not playbook) one call went to production GooseWorks before switching to staging.
+
+**What changed (rewrite).** research-audience is now audience research: who the audience is (2–5 named segments, the primary one named), what they want, their problems and how we solve them, their language, where they hang out (named communities, publications, podcasts, events with activity evidence) and how to find and reach them — with For you and How rivals talk to them. New `references/audience-research.md` (craft + report shape) and `atoms/segment-pass` (one worker per segment, every dimension, never stops to ask). Every report goes through `atoms/write-report` (local file with a clickable link or an artifact, saved to the brand with a link, §3 check). The prospect list is now **list mode**, only when asked (`references/list-mode.md` wraps the earlier fit, sourcing, people, signals, scoring and ledger atoms); its report section is written for a founder with no codes. Boundary: market size, trends and how people buy stay with research-market; this playbook reuses research-market's segments and voice-of-customer bank and never redoes them. The workspace line now says the `brands/` prefix applies only with no coworker.
+
+**Open for the orchestrator:** research-market's description still claims "research my audience", "who should we target", "build me a persona", and it proposes the brand's `audience` field. After the split, those triggers and that proposal arguably belong here. Not changed (not my folder); this playbook does not write `audience` until the orchestrator rules.
+
+**Sonnet re-run on Akhil's exact ask** (WebSearch + WebFetch only; ~78 calls):
+| Check | Result |
+|---|---|
+| Asked first / stopped to ask "which segment" | **Pass** — no question before delivery; segment order and the top-up left as closing decisions |
+| Web research | **Pass on volume, thin on quality** — Reddit, LinkedIn, X, G2, Capterra blocked for a fetch-only host; quotes came from Hacker News, Product Hunt, Shopify forums, Anthropic's case study, job posts — each labelled |
+| Audience research, not a list | **Pass** — 4 named segments (agent-native operators primary, as "a best bet"; in-house growth leads; agencies; solo founders), each with wants, problems with how we solve them, 7–8 quotes, 4–9 named places, reach moves |
+| Readable report document | **Pass** — `gooseworks-reports/gooseworks/2026-10-18-audience.md`, closing message three lines |
+
+**Graded against write-report §3:** top five lines say what to do first and why (post a shown-work build in r/ClaudeAI, because the site pitches agent users, no rival does, and Meta just opened its connector) — **pass**; a non-marketer can follow it — **pass**; no ids, paths, tool or playbook names — **pass** (agent tools named only as the audience's own words); link opens — **pass** locally (brand link was a simulation placeholder). Weaknesses: ~4,200 words; "In short" bullets ran to paragraphs; a methods paragraph near the top. It also surfaced a real finding: the site sells a skill layer for agents while the saved brand text sells a coworker for consumer brands.
+
+**Fixed from the re-run:** quotes — say who is speaking, prefer the last 12 months, employers' job posts aren't audience voice, and thin sources are stated, never padded · reach moves — three for the top one or two segments, one honest line for the rest · conflicting brand facts — rank on evidence and make the story choice the first decision · report length ~1,500–2,500 words, one-sentence "In short" bullets, no methods section at the top (limits go in "What we couldn't check").
+
+**Schedules (AGENTS §8, updated 18 Oct):** the run now judges whether a repeat helps — a quarterly audience refresh only when the audience is moving, with the reason; never after a list-mode run.

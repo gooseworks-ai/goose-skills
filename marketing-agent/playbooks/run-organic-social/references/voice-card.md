@@ -7,7 +7,7 @@ The telltale failure is "posts that sound like anyone's brand but yours", so a c
 ## Where the posts come from
 
 1. **Free:** `gooseworks:brand_read` `sections: ["organic"]` → `own_posts`. It returns about a week of own TikTok/IG posts, with captions, `posted_at` and numbers.
-2. **More history, or LinkedIn and Threads:** read through the proxy (`foundation/data-access`) under the shared spend gate (`../../../atoms/spend-gate/ATOM.md`, proxy branch: a probe with the marketer's yes in the intake message, then a ceiling, every charge logged). Use only the verified endpoints in `../../../atoms/spend-gate/proxy-endpoints.md`: Instagram and TikTok own posts, LinkedIn company posts, and LinkedIn and Threads keyword searches. Searches return anyone's posts, so keep only posts whose author matches the account. X has no verified own-feed read today, so X posts are pasted.
+2. **More history, or LinkedIn and Threads:** read through the proxy (`../../../foundation/data-access/SKILL.md`) under the shared spend gate (`../../../atoms/spend-gate/ATOM.md`, proxy branch: one yes to a ceiling in the draft-report message, every charge logged). Use only the verified endpoints in `../../../atoms/spend-gate/proxy-endpoints.md`: Instagram and TikTok own posts, LinkedIn company posts, and LinkedIn and Threads keyword searches. Searches return anyone's posts, so keep only posts whose author matches the account. X has no verified own-feed read: use the X keyword search on the handle and keep only the author's own posts (say it's unverified), else the host browser on the public profile, else pasted posts.
 3. **Pasted** posts, only if the marketer declines the read or it comes back thin. For founders, a few of their replies too: unpolished replies are the truest voice.
 
 Kit voice example lines are evidence of **style only**. Any claim in them is not proof. Press quotes are not buyer words.
@@ -48,7 +48,7 @@ Kit voice example lines are evidence of **style only**. Any claim in them is not
 This applies to founders, celebrity founders and ambassadors quoted on the brand account ("Lili's everyday go-to…"), employees and customers.
 
 Never invent a first-person experience, habit, product use or opinion for them. Material comes only from their own words:
-- the raw-material prompts in the intake message, one per planned slot;
+- the raw-material prompts in the draft-report message, one per planned slot;
 - their stance ledger;
 - interview answers saved in `content/pov/`.
 

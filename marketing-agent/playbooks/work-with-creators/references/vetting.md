@@ -62,7 +62,7 @@ Green flags: real questions about the product category, people describing themse
 
 ## 7. Cadence and consistency
 
-Posted within ~14 days. Roughly ≥2 a week on TikTok, ≥1 a week on IG, ≥2 a month on YouTube, ≥1 a week on LinkedIn. Gaps over 30 days are a flag. A creator found through one viral outlier (listen-social's Inspiration leans this way) must show a consistent median, not one hit.
+Posted within ~14 days. Roughly ≥2 a week on TikTok, ≥1 a week on IG, ≥2 a month on YouTube, ≥1 a week on LinkedIn. Gaps over 30 days are a flag. A creator found through one viral outlier (research-market's saved outliers in the Inspiration library lean this way) must show a consistent median, not one hit.
 
 ## 8. Audience fit (state as a confidence level with evidence)
 

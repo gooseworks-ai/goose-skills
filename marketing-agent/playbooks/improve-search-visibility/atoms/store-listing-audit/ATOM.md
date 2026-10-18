@@ -10,7 +10,7 @@ description: Internal step of improve-search-visibility, apps only. Audits the A
 **Does:**
 0. Before release: write the launch-day listing (name, subtitle, keywords, short description, first three captions, with counts) and skip the comparison of ratings.
 1. Read the public listings (host fetch; blocked or no fetch → ask for screenshots) for the brand and three competitors: name/title, subtitle/short description, description opening, first three screenshots and captions, rating and count, recent review themes.
-2. Write the rewrite table: field · now · proposed · count · why — following the indexing rules; every product statement kept only if the claims gate allows it (SKILL step 10) — captions like "works offline" or "never jolts" are claims.
+2. Write the rewrite table: field · now · proposed · count · why — following the indexing rules; every product statement kept only if the claims gate allows it (SKILL step 4) — captions like "works offline" or "never jolts" are claims.
 3. Rating below ~4.3: an engineering ticket for the native rating prompt after a positive moment.
 4. Note that iOS name, subtitle and keywords ship with the next app version.
 

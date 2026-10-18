@@ -53,7 +53,7 @@ For TikTok and Instagram accounts the product already manages (`gooseworks:socia
 |---|---|
 | Founder LinkedIn | 3–4 |
 | Company page | 2 |
-| X | 5–10, only if the founder already lives there |
+| X | New or small accounts the marketer chose: 1–2 posts a day plus the daily reply routine. Established accounts: what they kept, +20% |
 | Instagram | 3 feed or Reels, plus Stories on 3–5 days |
 | TikTok | 3–4 |
 | Shorts | Re-cuts of TikTok |
@@ -67,7 +67,7 @@ For TikTok and Instagram accounts the product already manages (`gooseworks:socia
 
 ## Evergreen vs trend
 
-Plan 75–85% evergreen. Leave 1–2 **flex slots** a week marked "trend: swap within 48h if one lands". A two-week plan cannot predict trends. Trend posts that are already known (from listen-social's latest report or the inspiration library) can be drafted now, each with an expiry (references/post-checks.md).
+Plan 75–85% evergreen. Leave 1–2 **flex slots** a week marked "trend: swap within 48h if one lands". A two-week plan cannot predict trends. Trend posts that are already known (from this run's platform research, research-market's latest report or the inspiration library) can be drafted now, each with an expiry (references/post-checks.md).
 
 ## Format tests (how the calendar learns)
 
@@ -120,8 +120,8 @@ For the two-week window, list the dated moments for the brand's region and audie
 |---|---|---|
 | Fill two weeks | First run, or the calendar ran out | The full plan |
 | Weekly refill | A calendar exists | Reconcile what went out, read the format tests and reweight, keep what's queued, add the next week with new tests |
-| Mid-cycle insert | listen-social flags a trend or news moment | One flex slot filled (or the lowest-priority post bumped), with expiry and tone risk |
+| Mid-cycle insert | A trend or news moment (research-market's report, the platform research, or the marketer) | One flex slot filled (or the lowest-priority post bumped), with expiry and tone risk |
 | Launch | A plan-campaign brief with an organic leg | The launch window overrides the mix |
-| Crisis pause | listen-social flags a crisis, or the human says so | A hold list: which queued drafts read badly now and should be pulled. Holding lines and replies stay with listen-social |
+| Crisis pause | A crisis surfaces (research-market posts a serious risk in chat with a hold list naming scheduled posts, or its report's risks, or the human says so) | A hold list: which queued drafts read badly now and should be pulled. Holding lines and replies are the marketer's (reply drafting is in the backlog) |
 | Seasonal pass | Always part of the plan | Dated moments and silent days for the window |
 | New account | The brand has no account on a platform it should be on | Check the handle is free on each platform (with the host's fetch or browser, or ask the marketer). Then the handle, bio, pinned post and first 9 posts (a coherent first grid: who it's for, a series opener, a proof post only if signed-off proof exists (otherwise a second product-in-use post), a product-in-use post) lead the calendar, then the normal mix |

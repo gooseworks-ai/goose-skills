@@ -166,3 +166,34 @@ Open for the orchestrator: (1) the paste set vs the server's "no other app" inst
 2026-10-16 final contract check: save-learning call: retire only the earlier `[search …]` facts the new rule replaces or contradicts (was "the previous search fact"), per the atom (SKILL.md, skill.meta.json).
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; shared atoms moved to `shared_atoms`.
 2026-10-16 orchestrator ruling: review replies are not covered (BACKLOG #8 manage-reviews): removed reply drafting from the local module (references/entity-and-local.md, references/gap-to-fix.md, atoms/entity-footprint); out of scope now says replies and review monitoring are backlog, this playbook only reports count, recency and reply rate.
+
+## Round 6 — hand test 18 Oct (Akhil, GooseWorks brand) → research pattern + write-report, proved by a Sonnet re-run
+
+**Akhil's findings:** links didn't open (docs only in the workspace, paths shown as links; he had to ask for local copies); docs hard to read ("like the skill isn't being used — default Claude format").
+
+**More bugs found in the transcript:** 5 intake questions + a question-list approval before any check (4–5 stops before "am I in ChatGPT?" was answered); probe yes then ceiling yes (two credit yeses, contradicting spend-gate); `data_price_provider` called twice for lookups it can't price; Google refused the browser so AI Overview/AI Mode went unchecked without a fallback in the free path; 3 ChatGPT answers scored before they finished loading; six separate documents (report, fixes, page map, questions, runs, briefs) with question ids, "Runs·route", "0/1", robots/schema jargon in the top section.
+
+| Change | Where |
+|---|---|
+| Free pass first, ask nothing: brain, site, draft question set, ChatGPT signed out in the host browser, Google AI answers when allowed, web search for who ranks and for news, profiles, app lookup, foundation | SKILL steps 1, new `references/free-pass.md`, atoms question-set / citation-check / page-and-foundation-check |
+| One message with the draft answer and all decisions left; question set shown for edits, not approved first | SKILL step 2, question-list, question-set atom |
+| One credit yes (spend-gate B): ceiling from the log, or the human names it with the first lookup as the probe inside it; never call the price-check tool for lookups; paid Google page one is a top-up, never the start | SKILL step 2–3, citation-protocol Credits |
+| Wait-until-finished rule; retry once; never score an unfinished answer | citation-protocol, citation-check atom |
+| One report through `atoms/write-report` (local file + link, artifact in hosted chat, saved copy + link); report template rewritten to write-report's shape with a "for whoever edits your site" closing section; ban list (ids, "0/1", "surface", tool names, paths) | SKILL step 5, report-template, fix-writer (two versions of every fix) |
+| Roadmap, briefs and fixes carry no ids | page-map, fix-writer |
+| Shared bug in email-lifecycle: workspace paths offered as files | email step 8 now delivers the pack through write-report (minimal change) |
+
+**Rule-10 note:** spec 14's "agree the question list first" gate became "show the list for edits after the free answer" — the AGENTS §8 research pattern (decided 17 Oct) overrides it; the question set is drafted from the brain and site and is cheap to change.
+
+**Sonnet re-run (Sonnet, high effort, staging, GooseWorks, Akhil's exact words; paid top-up declined, 0 credits):**
+- Stops before the first answer: **0** (was 4–5). Gating messages in total: **1**. First message answered "am I in ChatGPT?" (named 5/5 on brand questions, 0/8 on buyer questions; who wins instead; the pattern), with the draft five and the decisions in one block.
+- Free pass reached ChatGPT (22 runs), Google AI Overview, AI Mode and page one in the browser.
+- Report: local file in the marketer's folder with a clickable link; saved copy link verified (HTTP 200). Graded against write-report §3: **pass** — top five lines say what to do first and why; a non-marketer can follow it; no ids, tool names or paths in the story; links open. Minor: "must-win" and an untranslated "sitemap" in the story; one guessed editor field name ("page copy keys") in the developer section.
+
+**Fixed from the re-run's own notes:** draft five ranked with prioritising before the first message (they changed between message and report); browser-outside-target-country rule; saved answers stated as assumptions, not re-asked; same-day re-run overwrites and bumps the roadmap version; name-collision fix type (Gooseworx hijacked "is Gooseworks legit" in Google's AI answer); URL prefill and parallel tabs for speed; report ban list adds "must-win", sitemap jargon, guessed editor field names.
+
+**Open for the orchestrator:** the re-run found `tools_load` missing on staging although §8 names it; the paste-set conflict with the server's "no other app" rule (server-needs §1) and the host-browser ruling (contracts 2.4) still stand.
+
+## Round 7 — schedules rule (AGENTS §8, 18 Oct)
+
+The fixed "offer a monthly re-run" in step 5 became a judgment: offer a repeat only when it would help this brand, with the reason and a cadence (monthly by default; weekly only during a launch or a close fight for a must-win question). One-off asks get a single re-check after the fix instead; pre-launch gets a first check the week after launch. Created paused under spend-gate's automation rule; each scheduled report opens with what changed. Output table and Out of scope updated to match.

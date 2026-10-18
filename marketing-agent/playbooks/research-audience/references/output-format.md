@@ -1,6 +1,6 @@
 # Output format
 
-Load at steps 4–6 (rows, report) and 8 (re-delivery).
+List mode only. Load at list-mode steps 4–5 (rows) and when writing the list section.
 
 ## `list.csv` columns (in this order; one row per person)
 
@@ -14,54 +14,18 @@ Load at steps 4–6 (rows, report) and 8 (re-delivery).
 - Plain CSV, UTF-8, header row, no merged cells — imports into common CRMs and outreach tools.
 - `dropped.csv`: `company, domain, person (if any), stage dropped, reason`.
 
-## `report.md` — the deliverable (what the marketer reads first)
+## The list in the report
 
-Write it so a founder can act on it without opening the CSV. Every fact has a date and a link and is labelled **fact** or **inference**. Fictional example below — never reuse its values.
+List mode adds one section to the audience report (shape: `audience-research.md` §9; rules: `../../../atoms/write-report/ATOM.md`). Write it for the founder: plain words, no codes. Say segments and tiers in words ("agencies hiring sourcers now", "top accounts"), never "S1" or "V1" — those labels live only in the CSV.
 
 ```
-# Prospect report — <Brand> — <YYYY-MM-DD>
-
-## Do this first, because…
-Send to the 6 V1 agencies in S1 this week: each posted a sourcer or recruiter role in the last 14 days (links below) — they are feeling the pain now, and job posts go stale in ~45 days.
-
-## Timely openings (live this week)
-- Brightfold Talent — hiring 3 sourcers, posted 2026-10-09 [link] · fact. For you: lead with the sourcing-hours angle; Dana Ruiz (Head of Delivery) is the route.
-- Harlow Search — new MD started 2026-09-28 [link] · fact. For you: new leaders reset tooling in their first quarter — ask for a teardown of their sourcing stack.
-
-## The list in one paragraph
-41 people at 23 accounts (asked: 50). 12 from free sources fully confirmed; 29 need a title check — the top-up below confirms them. Universe: ~140 agencies match in US/UK (inference from directory counts [link]). Contactable by email: 18 published · 15 pattern-backed · 8 other route only (LinkedIn / phone / portal).
-
-## Who we're pitching (draft definition — correct anything marked assumed)
-- Motion: founder-led outbound · List unit: agency × buying committee · sourced: juicebox.ai/customers [link]
-- Agencies: tech and healthcare staffing, 10–200 recruiters, US/UK · assumed (from customer logos)
-- Buyers: Head of Delivery / Talent (champion), Founder or MD under 50 staff (buyer) · assumed
-- Account value: V1 = 50+ recruiters (team plan) · V3 = under 10 · assumed (pricing page [link])
-- Out: current customers, rival vendors' staff, Germany/Austria, DNC list (none on file)
-
-## Segments — angle and For you
-### S1 Hiring sourcers now (14; 6 V1)
-- Pain: their team is growing faster than their sourcing hours — every new hire adds manual search. (inference from 14 live job posts)
-- Proof: you'd need proof of a time saving first — e.g. one customer's hours per hire (none signed off).
-- Ask: "Worth 15 minutes before the new sourcers start?"
-- For you: fits — our product replaces exactly the search work these roles do (product page [link]). Send first; V1 accounts get 3 people each.
-### S2 New leader <90 days (11) …
-### S3 Fit, no live signal (7 — send after S1–S2 perform) …
-
-## You vs them
-- 5 accounts post jobs naming a rival sourcing tool [links]. Ahead: <signed-off differentiator, or "you'd need proof of X first">. Behind: <what rivals offer we don't, from their pages>. Everyone says "AI sourcing" — don't lead with it.
-
-## What we dropped and why
-Accounts (116): 58 size outside band · 22 customer/open deal · 9 subsidiary of a listed parent · 27 could not confirm the trigger.
-People (100): 12 left the company · 3 ex-rival staff · 6 recruiters/consultants · 62 no contact route · 17 failed QA or the concentration cap.
-
-## Before you send
-Run the `email` column through your own email checker and paste the results back — I'll drop failures and re-issue the counts. One line per region flag present (EU-UK: check the national rule; CASL and AU-NZ: send only to addresses whose published source is recorded; UK sole traders: no email or cold DM — visit or letter; US: CAN-SPAM at send time).
-
-## What we could not read
-- Titles hidden on 29 public profiles (the top-up confirms them) · LinkedIn people search beyond public pages · 4 agency sites blocked automated reading.
-
-## How this list was built
-Public company pages, public profiles, directories, job boards and news, read on <dates>; no purchased data; purpose: B2B outreach about <product>. Keep this note with the list. Re-check anything unsent by <recheck_by>.
+## The list: 41 people to pitch at 23 agencies
+**Send first:** the six largest agencies hiring sourcers right now — each posted the role in the last 14 days ([links](…)).
+- Found 41 of the 50 asked: the market is thinner than it looks — about 140 agencies match in the US and UK.
+- Email: 18 printed on the agency's own site, 15 built from a pattern we saw there, 8 reachable only on LinkedIn or by phone. None is checked yet — run them through your email checker first.
+- Angle for the hiring group: *their pain* — every new hire adds manual search; *proof* — you'd need a customer's hours saved first; *ask* — "worth 15 minutes before the new sourcers start?"
+- Before you send: EU/UK rows need the local rule checked; Canada and Australia only to addresses printed on their own pages; UK sole traders by letter or visit, never cold email.
+- The full list with sources: [list.csv](…)
 ```
 
 ## Sample rows (FICTIONAL — the bar, not data; never reuse these values)

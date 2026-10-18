@@ -248,3 +248,11 @@ It shortlisted 3 real creators (views read for 1, hidden for 2), caught that the
 | Chat summary instead of a document | **Pass** — `report.md` (~19 KB) with sources and "what we could not read", plus roster.csv, near-misses.csv, three briefs with first messages |
 
 It caught that the brain's "approved" 4.9-star rating belongs to a different product (the serum is 4.5 / 95), and offered three claim lines for sign-off instead of using any. **Fixed from re-run 2:** the name-safety search is now always part of the free pass; a dated public page beats a contradicting brain item, flagged in the report. **Accepted:** a fetch-only host cannot read TikTok views — the report says so and the one credit yes fills it; this is the honest limit, not a playbook gap.
+
+## Shared fixes from research-audience's 18 Oct hand test (2026-10-18)
+
+research-audience's hand test showed two bugs this playbook shared: (1) the report was left only as a local file and never saved to the brand (and the next one risked the opposite); (2) the agent applied the no-coworker `brands/<slug>/` path prefix although the brand had a coworker. **Fixed:** delivery now goes through `atoms/write-report` (local file with a clickable link, saved to the brand with a link, write-report §3 check); the workspace line says the prefix applies only when there is no coworker; the closing message is at most three lines. Nothing else in this playbook changed (the orchestrator asked to leave it alone otherwise).
+
+## Schedules rule (AGENTS §8, updated 18 Oct)
+
+The run judges whether a repeat helps: a monthly roster refresh only when a creator programme is running or about to (waves out, rates being quoted, a seeding list to fill), with the reason; never after a one-off shortlist, a single brief or a one-time vet. Step 9 in SKILL.md; edge test added.

@@ -35,7 +35,7 @@ Every test is written before it starts, in this table (analyze-performance calls
 
 | # | Hypothesis | Variable (one) | Cells | Budget / cell | Readable when | Ends | Primary metric | Win / Lose / Unclear → action |
 |---|---|---|---|---|---|---|---|---|
-| T1 | An ingredient-transparency angle ("check your moisturiser's label") beats an award-proof angle on cold Meta | angle | 2 angles × 3 variants, one ad set per angle (ads inside one ad set are not a fair split) | $1,200 | each angle ≥ ~30 purchases, or a gap > ~50% | launch + 14 d | CPA (claimed, checked against store new-customer orders) | Win: release reserve to the winner · Lose: retire angle, brief new one · Unclear: extend 7 days once, then call |
+| 1 | An ingredient-transparency angle ("check your moisturiser's label") beats an award-proof angle on cold Meta | angle | 2 angles × 3 variants, one ad set per angle (ads inside one ad set are not a fair split) | $1,200 | each angle ≥ ~30 purchases, or a gap > ~50% | launch + 14 d | CPA (claimed, checked against store new-customer orders) | Win: release reserve to the winner · Lose: retire angle, brief new one · Unclear: extend 7 days once, then call |
 
 Rules of craft:
 - **One variable per test.** Angle before execution: test the reason to buy before polishing the hook, format or colour.

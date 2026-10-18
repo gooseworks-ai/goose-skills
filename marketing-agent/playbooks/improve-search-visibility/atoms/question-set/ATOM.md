@@ -12,7 +12,7 @@ description: Internal step of improve-search-visibility. Drafts the buyer-questi
 2. First run: draft 18–20 candidates across the stage mix in both forms, never with the brand name in non-brand questions; 3–6 brand-accuracy questions always; local variants per city for physical businesses.
 3. Score value × winnability provisionally with a one-line reason each; drop to the best 12–15. A brand name that is a common word always carries the category in brand questions. Pre-launch: category questions plus one name-collision question only.
 4. **Cluster and weight.** Group the questions into clusters (one cluster = one page that should answer them); with a Search Console export, sum each cluster's impressions as its demand weight and add any high-impression query the list missed. These clusters are the page map's rows.
-5. Present grouped by cluster and stage; ask the human to approve, edit and star 3–5 must-wins. This is the "which battles" gate.
+5. **Pick the must-wins yourself** (the 3–5 highest value × winnability) and run the set — no approval before the free pass. The first message shows the set grouped by cluster for edits; edits apply to the paid top-up and the next runs.
 
-**Writes (after the yes):** `search/questions.md` in the saved-set format (version, date, country, language, engines, runs·route line, the table with a cluster column).
+**Writes:** `search/questions.md` in the saved-set format (version, date, country, language, engines, runs·route line, the table with a cluster column).
 **Never:** invents search volumes or "how many people ask this" — no prompt-volume data exists.

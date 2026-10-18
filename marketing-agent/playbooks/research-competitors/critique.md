@@ -231,3 +231,64 @@ M9 was revised to match §8 point 4: in a host with files, a file plus an offer 
 **Still weak:**
 - Ads and founder posts depend on a host browser and an uncapped search budget. In a fetch-only host they are the couldn't-read list plus the paid top-up.
 - No run yet with a real browser and a real brain roster (Loxo, Eightfold).
+
+## Round 14 — the founder's GooseWorks re-test (2026-10-18)
+
+**Why.** The founder asked "Ok I want to do the competitor research for gooseworks". Read from the transcript:
+- It looked for its worker briefs under the wrong folder, never read rival-pass or category-pass, and wrote its own brief telling workers "a browser is not available".
+- It reported that no ad library could be read and offered a paid read. When the founder said "Can't you do it on your own", it read Meta in the browser in 2 minutes.
+- It chose rivals from memory (Jasper, Copy.ai, Pencil…); the category pass then ranked Higgsfield, Holo and Melius above them.
+- It seeded the own-brand pass with unsourced claims, then "corrected" the founder on a figure he never gave.
+- It asked whether to track rivals instead of pricing the top-up, and asked again for free LinkedIn and Google reads.
+- It patched a section above §1 instead of rewriting, leaving contradictions in the report.
+- Nothing was saved to the brand.
+- The report was dense tables with Fact/Inferred tags, a "Jobs served" line, ids and symbols.
+
+**What changed:**
+- **SKILL.md steps rewritten:**
+  - The field is found first: news, then the category's money searches and AI answers. Rivals come from that evidence, never from memory.
+  - Each worker gets its brief in full, with `brand_id` (the briefs sit next to SKILL.md, and that is now said).
+  - Workers use search and fetch and hand back "Needs the browser" pages. The main run opens every ad library for every main rival and for us, by advertiser name, before the report, with one line to the founder first, never silent on a prompt.
+  - Facts are checked against the returns, and late reads mean a rewrite.
+  - Delivery goes through write-report: a local `gooseworks-reports/<slug>/<D>-competitor-research.md` plus the brand copy and its link.
+  - The closing message: three lines and at most five decisions, including the weekly or monthly repeat.
+  - A paid top-up is offered only for what free reads and the browser couldn't get, with no tracking precondition. Free work is never asked about.
+  - Before you start: the server the project names; a missing brand is created without asking; facts come from the brain first; never change settings; never seed from memory.
+- **The report.** `references/report-format.md` follows write-report: In short, timely openings, who we compared and why, the rivals one by one, how they compare, You vs them, formats worth borrowing, angles worth testing, what to do, what we're watching, what we couldn't check, sources. "For you" is a plain sentence. No ids, tags or symbols. Angle ids stay in the angle bank for the makers.
+- **The watch note** became a write-report "what-changed" report; line 2 `Week of …` is kept for analyze-performance. The scheduled repeat is weekly or monthly.
+- **rival-pass and category-pass:** a "Needs the browser" return; ad libraries searched by advertiser name; never check unsourced claims about us.
+- **Supporting files:** meta 0.3.0 (write-report, brand_setup, job_get, file_url); the test uses the founder's exact ask and write-report §3; listen-social references point to research-market.
+
+**Schedules rule updated (AGENTS §8, 18 Oct):** the repeat offer in step 7 is now a judgment call — offered only when repeating would help this brand, with the reason and a cadence; never for one-off questions. (The in-flight re-run used the earlier fixed-offer wording.)
+
+## Round 14 — Sonnet re-run (2026-10-18)
+
+Sonnet ran the founder's exact ask ("Ok I want to do the competitor research for gooseworks") with read-only staging, web search and page fetch only, and no browser.
+
+**Result:**
+- **Rivals chosen from evidence:** Arcads, SuperScale, Higgsfield, Creatify and AdCreative.ai, with Holo and Novoads as short reads. It dropped the saved roster's cyclist and the names buyers never compare.
+- **No question before the report.**
+- **Timely openings:**
+  - Higgsfield's video "Ad Multiplier" on 6–8 Oct, after a $400M raise, with a counter-position for GooseWorks' 14 July static remix;
+  - rivals' billing anger;
+  - Meta's 30 Oct AI-ad terms, marked "not re-checked".
+- **Against write-report §3:**
+  - "In short" leads with "Do this first" (a plain credits-and-billing page by 25 Oct);
+  - plain words, dated links, a plain "For you" sentence on each finding;
+  - no ids, Fact/Inferred tags or symbols found.
+- **Weaknesses:**
+  - The "In short" bullets run long.
+  - Ad libraries couldn't be read, as the test forbade the browser; the report said so once rather than with columns of question marks.
+
+**Defects it reported, fixed:**
+- **No fallback without a browser:** the server's free ad sample for tracked rivals, said once in "In short"; "Done when" accepts that.
+- **The browser heads-up vs "don't message the founder":** status notes are allowed.
+- **The three-line closing message read too strictly:** now three lines of summary, then the decisions.
+- **Facts from earlier research flowed in unchecked:** they are now re-checked or marked.
+- **No rule to reject a bad roster entry:** one now exists.
+
+These live in a new local atom, `atoms/edge-cases`.
+
+**Still weak:** the run never touched the browser path that matters most here, the ad libraries. It needs a hand test in a host whose browser doesn't ask per site, or the fix logged in server-needs.
+
+

@@ -7,8 +7,8 @@ description: Hidden step of run-organic-social. Turns the audit, the mix, the br
 
 Inputs: the account audit, the voice cards, references/calendar-craft.md, and these sibling artifacts (read each one that exists; never fake one that doesn't):
 - **make-content's repurposed sets:** `gooseworks:file_list` `content/repurposed/` and `content/drafts/` (unslotted social cuts are the raw material).
-- **listen-social's latest weekly report:** `gooseworks:file_list` `social/listening/`, then read the newest `<D>-report.md` (`<D>` = the counting week's Monday). Take the trend read with each trend's post-by date (the reply queue is not ours). If its line-2 `Trends read:` date is older than 7 days, its trends are stale: use only the evergreen fallbacks.
-  - `gooseworks:social_inspiration_search` gives the saved outliers.
+- **This run's platform research** (`social/research/<date>-<platform>.md`): the patterns and examples every slot is modelled on, and the posting-time and format facts.
+- **research-market's latest report** (the newest `research/market/<D>-read.md`): its "What people are saying" section — trends worth posting on, each with a post-by date, and the themes in people's words — and buyer language. Check the section's own date and window line first: research-market runs on ask or monthly, and a narrow run may cover only part of the market. A trend past its post-by date is stale; with no post-by date, a section older than 7 days is stale: use evergreen fallbacks. No such section → no trends from it.
 - **plan-campaign:** `gooseworks:campaign_read` (list mode, then one campaign) for any campaign with an organic leg in the window.
 - **analyze-performance's organic "what overperformed" read:** the latest `reports/performance/<date>.md`.
 - **The brain:**

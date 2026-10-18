@@ -1,7 +1,7 @@
 {
   "slug": "research-competitors",
   "tier": "playbook",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "pillar": "1 — Strategy and planning",
   "intents": [
     "What are my competitors running right now, and what works for them?",
@@ -20,14 +20,14 @@
     "competitor roster, dossiers and suggestions (competitor_read) — research-market / server research",
     "public web: news, launches, pricing (and Wayback), ad libraries (LinkedIn, Google, Meta, TikTok), company and founder posts, reviews, community, jobs, events — host web search, fetch and browser (free)",
     "Meta ad sample (ads_template_read mode competitor) and rival posts (brand_read organic) — server research, free",
-    "voice-of-customer bank and segments: workspace research/market/voc-bank.md, personas.md — research-market",
+    "the newest market report research/market/<date>-read.md, voc-bank.md and personas.md — research-market",
     "angle results: workspace reports/performance/<date>.md — analyze-performance; creatives tagged angle:a-nn — make-static-ads",
     "previous report and rival records with snapshots: workspace research/competitors/* — research-competitors itself",
     "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data",
     "AI-answer and search visibility report: workspace search/visibility/<date>.md — improve-search-visibility (when no AI engine is reachable)"
   ],
   "writes": [
-    "competitor report document ('Do this first', openings, landscape, profiles, swipe file, angles, triggers, couldn't-read): workspace research/competitors/<date>-report.md + brand document (keep-history) — read by the founder and team, the next run",
+    "competitor report ('In short' with 'Do this first', timely openings, rivals one by one, how they compare, You vs them, formats worth borrowing, angles, what to do): local gooseworks-reports/<brand-slug>/<date>-competitor-research.md + workspace research/competitors/<date>-report.md + brand document (keep-history) — read by the founder and team, the next run",
     "rival records with snapshots: workspace research/competitors/<slug>.md (supersede) — read by the weekly watch, plan-campaign, make-content",
     "landscape: workspace research/competitors/landscape.md (supersede) — read by plan-campaign",
     "angle bank keyed A-NN (makers tag angle:a-nn): workspace research/competitors/angle-bank.md (supersede) — read by make-static-ads, make-video-ads, plan-campaign",
@@ -62,14 +62,17 @@
       "gooseworks:ads_library_scrape",
       "gooseworks:media_analyze",
       "gooseworks:file_url",
-      "gooseworks:tools_load"
+      "gooseworks:tools_load",
+      "gooseworks:brand_setup"
     ]
   },
   "atoms": [
     "rival-pass",
-    "category-pass"
+    "category-pass",
+    "edge-cases"
   ],
   "shared_atoms": [
+    "write-report",
     "claims-gate",
     "save-to-brain",
     "save-learning",

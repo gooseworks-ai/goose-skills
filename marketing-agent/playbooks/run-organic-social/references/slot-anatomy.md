@@ -6,7 +6,8 @@ Load at the drafting and handover steps. "Ready to paste" means the human can po
 
 ```
 ### <Mon 19 Oct · 18:30 America/New_York> · Instagram · @brand · carousel · pillar: <…> · bucket: proof · series: <name or —>
-Source: <repurposed set path + unit #> | <trend from the listening report, first seen <date>> | <campaign brief row> | fresh
+Source: <repurposed set path + unit #> | <trend from the research or research-market's report, first seen <date>> | <campaign brief row> | fresh
+Modelled on: <pattern name> — <link to one example post that works on this platform, account, date>. Structure borrowed, words our own.
 Share motive: <…>
 Hook (+2 alternatives): …
 Body / caption (ready to paste): …
@@ -17,13 +18,14 @@ Alt text: …
 Asset line: <what visual it needs> — from <the human's phone or camera roll | a clip at mm:ss–mm:ss of <source> | the human, from the slide table (carousels) | a produced video ad (only one they asked for) | UGC repost (rights asked: draft below) | a single brand image, requested as `Graphic needed: for make-static-ads · <purpose, placement, exact text> · return to: social/calendar/<start-date>.md`>
 Who shoots / makes it: <name> · time needed: <~min>
 Engagement plan: comment prompt in the post · first comment · people or accounts to tag (only ones the human named) · "be online 30–60 min after posting to reply"
+Reply plan (small accounts): the 3–5 named accounts from the strategy to reply to today, and what to add to their conversation
 Checks: <block from post-checks.md>
 Flags: PERSON YES NEEDED (<name>, approver <who>) | TREND — expires <…>, tone risk <…> | NONE
 ```
 
 ## Per format (in the body of the slot)
 
-**Text post (X, LinkedIn, Threads, Facebook):** the exact text with line breaks as they should appear, under the platform's limits.
+**Text post (X, LinkedIn, Threads, Facebook):** the exact text with line breaks as they should appear, under the platform's limits. On X, a post with a screenshot or a short screen recording usually carries more than bare text; check the research card, and if it says so, attach one and say exactly what it shows.
 
 **Carousel, slide by slide** (IG 6–10 slides; LinkedIn PDF 8–12 pages):
 
@@ -36,7 +38,7 @@ Flags: PERSON YES NEEDED (<name>, approver <who>) | TREND — expires <…>, ton
 
 The caption extends the hook. **Who makes it:** the human designs the slides from this table in their own design tool (~45 min, counted in capacity). make-static-ads' graphics side door makes single images only, so at most it can make the slide-1 cover (`Graphic needed: for make-static-ads · slide-1 cover, 4:5, text "<hook>" · return to: social/calendar/<start-date>.md`). Never generate or render images from this playbook.
 
-**Short video script** (TikTok, Reels, Shorts):
+**Short video script** (TikTok, Reels, Shorts, X video, LinkedIn native video). Screen recordings count: for a software product, a 20–40s screen recording with a voiceover or on-screen captions is often the most native, cheapest video there is.
 
 | Time | Shot / visual | On-screen text (≤7 words a card) | Voiceover / dialogue | Note |
 |---|---|---|---|---|

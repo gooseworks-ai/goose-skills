@@ -1,8 +1,23 @@
 # Data sources, costs and yield
 
-Load at steps 2–4 (free pass) and step 7 (the top-up estimate). Every paid lookup goes through the GooseWorks proxy; no vendor keys anywhere.
+Load at steps 1–3 (free pass), list mode, and step 7 (the top-up estimate). Every paid lookup goes through the GooseWorks proxy; no vendor keys anywhere.
 
-## The free pass (always first, no yes needed)
+## Audience research — the free pass (always first, no yes needed)
+
+| Need | Free source |
+|---|---|
+| What the brand sells, to whom, in which words | the brand's site in the host browser; `gooseworks:brand_read` (summary, kit, products, organic, learnings) |
+| Existing segments, voice-of-customer rows, demand | workspace `research/market/` (research-market) — reuse first |
+| Wants | job posts for the role (search + open 3–5), their own public posts and talks, "how do I…" threads |
+| Problems and language | review sites for the tools they use (G2, Capterra, Trustpilot, app stores — page by page in the browser), Reddit and community threads (`site:reddit.com`), Hacker News, public video comments |
+| Where they hang out | web search for the role's communities, newsletters, podcasts, conferences and meetups; subreddit pages (member counts); event pages (dates, speakers) |
+| How rivals reach them | rivals' sites and pricing pages, ad libraries in the browser, rivals' community and event presence |
+
+Same reading rules as below: as a person would, public pages only, no logins, no scripted paging. A host without web search or a browser: say so in "what we couldn't check" and build what the brain and research-market's files allow.
+
+**Paid top-up for audience research** (one yes, after the draft): comment and post reads at volume on the platforms the segment uses (`/v1/reddit/search`, `/v1/reddit/post/comments`, `/v1/tiktok/video/comments`, `/v2/instagram/post/comments`, `/v1/youtube/video/comments`), LinkedIn post search (`/v1/linkedin/search/posts`), X search (`/v1/twitter/search/posts`). Keys and recency: `../../../atoms/spend-gate/proxy-endpoints.md`.
+
+## List mode — the free pass
 
 The GooseWorks MCP has **no** people search, company database, email finder, email verifier or funding/hiring/intent feed (server-needs). Most of a good list is on public pages anyway:
 
@@ -16,7 +31,7 @@ The GooseWorks MCP has **no** people search, company database, email finder, ema
 
 Use the host browser where there is one; a fetch tool that summarises pages misses obfuscated addresses and blocked sites — when a page protects its emails, record "address on page, protected" and the contact form, never a guess. Read pages as a person would — no bulk scraping, no paging through hundreds of results by script; public pages only, no logins, respect each site's terms. A hosted chat without web search or a browser: say so in the report's "what we could not read", build what the brain and free server reads allow, and make the paid top-up the way to the sample.
 
-## The paid top-up (only after the free result, one yes)
+## List mode — the paid top-up (only after the free result, one yes)
 
 What it adds, in plain words: confirming titles hidden on public pages, firmographics at scale, more accounts and people when the free pass falls short of the number, posts for hooks. Through `gooseworks:data_call_provider` (provider `scrapecreators`):
 

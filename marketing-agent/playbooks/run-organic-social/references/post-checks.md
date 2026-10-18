@@ -16,6 +16,21 @@ Load at the check step. Every draft passes all five sections, and a failing draf
 10. **Read-aloud:** it sounds spoken, not written.
 11. **Variety (calendar level):** no two posts in the window share an opener structure or a CTA, nothing repeats last run's posts (read the previous calendar), and nothing re-runs a post already live on the account (`brand_read organic.own_posts`) unless it's a deliberate re-cut.
 
+## 1b. "Would a person actually post this?" (the founder test, fail on any)
+
+Read each draft as the person whose name is on the account, and as someone scrolling past it.
+
+1. **Only they could have written it.** It contains something from their own material: what they shipped, a bug, a number they can share, a screenshot, a customer moment, a view they'd argue. Generic advice ("3 things to write down before…") with the product bolted on fails.
+2. **It isn't an ad.** Most posts are not about the product at all. When the product appears, it's the proof inside the story ("here's the screen where it caught this"), not the closing pitch. No "We built X so that…" endings.
+3. **It sounds like them on that platform.** On X: short, specific, lowercase if they write that way, one idea, no LinkedIn cadence. On LinkedIn: a real story with a turn, not a press release. On TikTok and Reels: spoken words, not written ones.
+4. **It follows a pattern that works there.** It names the example it's modelled on (slot "Modelled on"). A post with no proven pattern behind it is a guess: drop it or make it a labelled test.
+5. **No engagement bait or filler questions.** No "I'll read every reply", "Agree?", "What do you think?" endings, and no weekly recap posts with empty brackets. A question post must be one the person genuinely wants answered, and specific.
+6. **Video where the platform rewards it.** If the research card says the platform is pushing video, a text post needs a reason to be text.
+
+7. **Postable as written.** At most one short fill-in that only the person knows. A post that reads as a template fails.
+
+A draft that fails is rewritten from the person's material, or from material found in the free pass, or it is cut. Two weak posts are worse than one good one.
+
 ## 2. AI-tell blacklist (calibrated against the voice card)
 
 If the account's real posts use an item, it is allowed. Otherwise remove it.
@@ -50,7 +65,7 @@ Claims follow atoms/post-check step 4: the shared claims gate plus the social sp
 
 ## 5. Trend posts
 
-Trends come only from listen-social's latest weekly report (the newest `social/listening/<D>-report.md`; use its per-trend **post-by date**, stage, audio rights and risk) and the inspiration library (`gooseworks:social_inspiration_search`). There is no free trend feed. Do not buy scrapes for one without a credit yes.
+Trends come only from fresh evidence: this run's platform research (atoms/platform-research), research-market's latest report (the "What people are saying" section of the newest `research/market/<D>-read.md`: trends with post-by dates; check its window line), and the inspiration library (`gooseworks:social_inspiration_search`). Every trend carries its first-seen date and a link.
 
 **Fit test (all four must pass):**
 1. The audience already knows the trend.
@@ -64,7 +79,7 @@ Trends come only from listen-social's latest weekly report (the newest `social/l
 - **Red, never draft:** tragedy, disaster, war, elections, religion, identity, health scares, layoffs, lawsuits, anything where someone got hurt.
 - **IP:** copyrighted audio, clips or characters on brand accounts.
 
-**Expiry** = listen-social's post-by date when it gave one; otherwise the earlier of the platform half-life (below, counted from first seen) and the human's next free posting window. **Dated cultural moments** (Halloween, Diwali, Black Friday) are fixed slots, not trends: they carry the date as their expiry and a tone-risk tier, but no TREND flag. If it is past peak when drafted, drop it and say so. A stale trend post is worse than a skipped slot.
+**Expiry** = the report's post-by date when it gave one; otherwise the earlier of the platform half-life (below, counted from first seen) and the human's next free posting window. **Dated cultural moments** (Halloween, Diwali, Black Friday) are fixed slots, not trends: they carry the date as their expiry and a tone-risk tier, but no TREND flag. If it is past peak when drafted, drop it and say so. A stale trend post is worse than a skipped slot.
 
 | Platform | Half-life |
 |---|---|

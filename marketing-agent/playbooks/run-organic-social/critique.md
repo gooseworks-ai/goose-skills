@@ -189,3 +189,112 @@ Verdict **NOT CLEAN: 2 MAJOR, 8 MINOR**. Confirmed passing: tool use (`file_url`
 2026-10-16 final contract check: references/slot-anatomy.md: the calendar template's Source and Asset lines no longer name playbooks (the marketer reads the calendar).
 2026-10-16 final contract check: shared-atom paths `marketing-agent/atoms/...` → file-relative `../../atoms/...` (SKILL.md, atoms, references).
 2026-10-16 final contract check: voice-card path placeholder `brand/voices/<slug>.md` → `<handle>.md` as the voice-card atom names it (skill.meta.json, server-needs.md); `atoms` vs `shared_atoms` split in skill.meta.json.
+
+## Round 11: rebuild after Akhil's hand test (18 Oct, GooseWorks brand, X)
+
+**Akhil's verdict: "among the worst".** His feedback:
+- it doesn't know what works on each platform;
+- it didn't know X now gives video more reach;
+- it had no real strategy for reaching people;
+- its X posts were generic ones no human would post or watch;
+- it couldn't read the social media it needed;
+- its document was hard to read.
+
+**The transcript showed more failures:**
+- questions before any research;
+- pushback on his video point ("I can't confirm that… treat it as a hypothesis") instead of checking;
+- kit value props used as "plain product facts";
+- "check the brand kit" treated as claim approval;
+- `file_list` called without the brand coworker scope (it landed in the org's default agent);
+- `client` sent to `brand_read` (rejected);
+- the product plugged into nearly every post ("We built Gooseworks so that…");
+- "I'll read every reply" and bracket-filled recap posts;
+- no X content read at all;
+- nothing saved or delivered as a document.
+
+**What changed (rebuilt around the platforms):**
+
+| Change | Where |
+|---|---|
+| **Research each platform as it works now, before anything else**: dated web-search card per platform (reach signals, formats rising and fading, what small accounts can do, recent changes, X Premium); 8–15 linked niche examples with patterns; the brand's and the person's own accounts. Hard gate: no draft report without the card and examples. | New atom `atoms/platform-research` |
+| **A strategy per platform**: account job, dated platform facts, niche patterns with our version, topics (product as proof, not the point), hooks from examples, format mix (video-first when rewarded), cadence and times in the audience's time zone, **how this account breaks in** (named accounts, 15–30 replies a day for 0→1k X, communities, quote posts), how we'll know. | New `references/platform-strategy.md` |
+| **Flow per AGENTS §8's research pattern**: free pass (ask nothing) → draft report with strategy and three days of posts built only from found material, then one message (credit yes, exact claim lines, raw-material prompts, unknowns) → deepen → final report. Platform beliefs from the marketer are checked, not argued. | SKILL.md |
+| **Posts modelled on what works**: every slot names its "Modelled on" example; screen-recording video for software; reply plan per post; the founder test in post-checks §1b (only they could write it, not an ad, sounds like them on that platform, follows a proven pattern, no bait, video where rewarded). | slot-anatomy, post-checks, post-check atom |
+| **Delivered through `atoms/write-report`** in a readable shape: In short → per platform → posts (first three days, then an "All posts" appendix) → posting sheet → what we couldn't check → sources. No ids or syntax. Local file plus brand document plus link. | New `references/report-shape.md` |
+| **Mechanics fixes**: coworker scope on every file call; `client` only where the schema has it; don't `card_wait` on the get_started card; value props are never facts; "check the brand kit" is not a yes. | SKILL.md |
+
+## Round 12: critic on the rebuild (high)
+
+Verdict **NOT CLEAN: 5 MAJOR**. All fixed.
+
+| # | Finding | Resolution |
+|---|---|---|
+| M1 | 11 of 14 days lived only in an unreadable workspace file. | The report carries an "All posts" appendix in the readable shape; the workspace calendar is only the machine copy. |
+| M2 | Draft posts were written before the material they need; no checks. | Step 1 mines public raw material (the person's posts, changelog, docs, blog, GitHub). The draft's posts use only found material and plain facts, pass post-check, and show "needs from you" lines, never bracket skeletons. |
+| M3 | No free route that actually reads X. | Per-platform "free routes that work" table: the signed-in host browser with X advanced search (`min_faves:`, `filter:native_video`), else `site:x.com` web search over the past month and single post pages; YouTube, LinkedIn and TikTok/IG notes; find who buyers watch from the people they follow. |
+| M4 | X growth plan too thin; no rule for judging without numbers. | Added: X Premium research; 15–30 substantive replies a day with notifications on target accounts; quote posts and communities; disclosed teammate engagement, never pods. The X cadence for a new account is 1–2 posts a day plus replies. "Judging what works" rule: public view counts, engagement relative to followers, "pattern, numbers not seen", never invent. Marketer beliefs are verified, not argued. |
+| M5 | Two credit yeses in the audit. | One yes to a ceiling under spend-gate B, probe inside it; the contradictory "X pasted" removed. |
+| minors | Step refs, server-needs wording (listening report, intake, `brand_update` → save-learning), tests wording, meta (drop `brand_update`, add `competitor_read`), relative data-access paths, atom frontmatter, voice interview in the ask list, `card_wait`, paid X row's recency | All fixed. Out of this folder (reported to the orchestrator): `foundation/guide` §4 and spend-gate/proxy-endpoints still name listen-social. |
+
+## Round 13: Sonnet re-run 1 on Akhil's exact ask (staging Gooseworks; turn 1 plus turn 2 "start with X…"; paid reads declined, nothing spent)
+
+**Graded against write-report §3 and "would a human post this?"**
+
+**Pass:**
+- **Platform research, done before any question.** 20+ dated web searches and pages, including X's open-sourced ranking code (Sep 2026), the head of product's July statement that video is close to half of impressions, the in-app video editor, Original Content Rewards, the link-penalty reversal, the AI-reply crackdown, and Buffer's format study. Video was agreed with sources and turned into a test, not argued against.
+- **Niche read.** 11 named, linked X accounts with follower counts, read logged out in the browser.
+- **Strategy.** A real strategy for a zero-follower founder: account job, four topic lanes, hooks lifted from examples, five posts a week (four screen-recorded videos), posting times in India and New York time with the US clock change, a daily reply routine, and a pinned intro and bio.
+- **Report and claims.** The report reads cleanly: "Do this first" up top, dated sources, "What we couldn't check" (including price conflicts between the kit and the site). Claims were handled correctly: "check the brand kit" was not taken as a yes, and four exact lines were offered.
+
+**Fail:**
+- **The posts are not postable.** Days 2 and 3 are mostly `[NAME: …]` fill-ins (task, steps, flaw, prompt). They are templates, which is what Akhil hated. The run predated the round-12 rule to mine public material.
+- **Thin reply routine.** 5 replies a day, short of the 15–30 for 0→1k now in the strategy.
+- **Housekeeping.** The report was saved to an undefined `social/report/` path, the draft was imported as a brand document, and the voice card was built from the brand account's 5 posts rather than the founder's own.
+
+**Fixes after run 1:**
+- Every post must be postable as written: at most one short fill-in. Otherwise it is rebuilt from found material (the brand's published runs and videos, changelog, docs, the person's past posts) or replaced by a post that needs no private material. Never a template. (SKILL step 4, post-checks §1b.7, report-shape.)
+- `[NAME: …]` syntax is banned from the report.
+- The draft report is not saved as a brand document; the final goes to `social/plans/<date>-social-plan.md` and to save-to-brain.
+
+**Staging leftovers from run 1** (Gooseworks coworker workspace): `social/{accounts.md,audit,calendar,report,research}` and two brand documents ("Social plan … 2026-10-18" and a DRAFT). Deleting the folder was blocked as a mass delete; listed for cleanup. `brand/voices/brand.md` and `content/pov/2026-10-18-founding-engineer.md` were deleted.
+
+**Schedules rule (AGENTS §8, updated 18 Oct):** added SKILL step 8. At the end of a full plan, judge whether a repeat helps. If it does, offer a two-week refill with the reason: re-read each platform and the niche, judge the tests, write the next two weeks, and open a new report with what changed. Created paused via `automation_upsert` under spend-gate C. Never for a single post.
+
+## Round 14: Sonnet re-run 2 on Akhil's exact ask (the fixed version; staging Gooseworks; paid reads declined, nothing spent)
+
+**Grade: PASS on write-report §3 and "would a human post this?"**
+
+- **Research before questions.** ~20 dated web searches; 25+ public X post pages and 8 LinkedIn post pages read in the browser; 15 linked X examples with views and follower counts.
+- **Platform facts, sourced and dated.**
+  - Video is "close to half the impressions" (X's head of product, 7 Jul). The brand's own numbers agree: its one video got 1,258 views against a 456 median for its text posts.
+  - The open-sourced ranking reads video watch time.
+  - Original Content Rewards reward originals over re-uploads; links go in replies.
+  - X Communities were retired 30 May 2026, so replies are the way in.
+  - Premium's size is unconfirmed.
+
+  Video-first was adopted (5 screen recordings and 5 text posts), with a test.
+- **Strategy.**
+  - Account job, four topic lanes, and hooks from the examples.
+  - Posting times in IST and New York, with the US clock change and Diwali noted.
+  - **12 named reply targets with reasons, and a daily routine.**
+  - A borrowed-audience move under the co-founder's video post.
+- **Posts.** All ten are postable as written: nine have no fill-in, one has an optional one. They are built from the brand's public install file, changelog, docs and repo, and each names its linked model post. Samples:
+  - "Before you paste an install prompt into your agent, read what it does…" (a screen recording with a timed script);
+  - "Three things that were wrong with our video ads, from our public changelog" (with a screenshot).
+
+  They read like an engineer, not an ad. The product share is high, but it is shown as proof, and the report says why and how the founder's own material will replace those posts.
+- **Report.** "Do this first", "what you told me and what I did with it", per-section "so what" and "how sure", a posting sheet, and "what we couldn't check". It was delivered locally, saved to the brand, and linked.
+- **Claims.** "Check the brand kit" was not a yes; five exact lines are offered by number.
+
+**Conflicts the run surfaced, fixed:**
+- The hard gate forced full research on platforms the marketer might not pick: full depth now applies to the named or top platform, with a lighter card for the others.
+- The founder product-share cap clashed with "build from found material": public company material may be used as proof, said in the report.
+- An unknown account owner in the draft: write for the most likely one and state the assumption.
+- The reply plan names whom to reply to and what kind of specific to add, without drafting replies (reply drafting is backlogged).
+- The Communities advice is now conditional on the research.
+
+Noted, not changed: the leftover documents from run 1 polluted `knowledge_search` (a test artifact); save-to-brain's delete step and leftover titles (the atom owner's call). The schedule offer (step 8) was added after run 2 started, so it has not been run-tested yet.
+
+**Staging leftovers (Gooseworks coworker workspace and brand documents), for cleanup:**
+- run 1: `social/{accounts.md,audit,calendar,report,research}` and two documents;
+- run 2: the `-run2` files under `social/` and `brand/voices/`, plus documents "Social plan (run2) — Gooseworks — 2026-10-18" and "Voice card founding-engineer-run2 …".

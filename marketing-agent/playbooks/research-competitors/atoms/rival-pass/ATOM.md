@@ -9,11 +9,11 @@ description: >-
 
 # rival-pass
 
-You are researching **one rival** for **one brand** — or, when the brief says so, **our own brand** (then "openings" are our own events, and skip "where we win" and switching reasons; return the same shape headed "Our side"). Do every section below before you return. Never stop to ask whether to go deeper. If a source is blocked, empty or needs a login, write it in "Couldn't read" and move on — silence is not "nothing there".
+You are researching **one rival** for **one brand** — or, when the brief says so, **our own brand** (never check or repeat a claim about us that no source gave you) (then "openings" are our own events, and skip "where we win" and switching reasons; return the same shape headed "Our side"). Do every section below before you return. Never stop to ask whether to go deeper. If a source is blocked, empty or needs a login, write it in "Couldn't read" and move on — silence is not "nothing there".
 
 **Inputs you get:** rival name and website · our brand, what it sells and its approved claims (for the "we already do this" check) · the off-limits list · the category's subreddits and communities · company type and its weighting (table at the end) · today's date · the rival's last saved snapshot, if any (report what changed since).
 
-**Tools:** the host's web search, web fetch and browser are free — use them for every section. Public pages only: never log in, never sign up, never use fake details, no personal data beyond public professional posts, never unofficial mirrors, scraped copies or unofficial APIs of a platform (the Wayback Machine is fine for history). GooseWorks server reads are free extras when the brief gives you a `brand_id` (`gooseworks:competitor_read` dossier; Meta sample via `gooseworks:ads_template_read` mode `competitor`). Paid proxy reads only if the main run says the human approved them, within that ceiling — never pause to ask for them; name what a paid read would add under "Couldn't read".
+**Tools:** web search and web fetch are free — use them for every section; if you also have a browser, use it. A page you can't open without a browser (ad libraries, X, LinkedIn posts, script-only pricing, review pages that block fetch) goes on **Needs the browser** in your return — the main run opens it before the report; never mark it "none found". Public pages only: never log in, never sign up, never use fake details, no personal data beyond public professional posts, never unofficial mirrors, scraped copies or unofficial APIs of a platform (the Wayback Machine is fine for history). GooseWorks server reads are free extras when the brief gives you a `brand_id` (`gooseworks:competitor_read` dossier; Meta sample via `gooseworks:ads_template_read` mode `competitor`). Paid proxy reads only if the main run says the human approved them, within that ceiling — never pause to ask for them; name what a paid read would add under "Couldn't read".
 
 **If searches run short** (a shared cap or rate limit), keep this order, weighted by company type: §1 news → §5 launches → §4 founder voice → §2 ads → §6 pricing → §7 positioning → §10 reviews → the rest, and list what you dropped under "Couldn't read". Combine query words with OR rather than one search per word.
 
@@ -25,7 +25,7 @@ Search the web for `"<rival>"` with these words, combined with OR in 3–4 searc
 
 ## 2. Paid ads — every library, including the empty ones
 
-Check each and record what you found or "none found (date)" — "none found" only when the library actually opened. If a library won't open here (blocked, script-only page), use the free server sample where the brief gives a `brand_id`, search results (`"<rival>" ad`, `site:linkedin.com "<rival>" sponsored`), and ads the rival shares on its own pages; tag them **partial** and list the library under "Couldn't read" with what a paid read would add:
+Search each library by the advertiser's page or company name (not the domain), and record what you found or "none found (date)" — "none found" only when the library actually opened. If a library won't open here (blocked, script-only page), use the free server sample where the brief gives a `brand_id`, search results (`"<rival>" ad`, `site:linkedin.com "<rival>" sponsored`), and ads the rival shares on its own pages; tag them **partial** and list the library under "Couldn't read" with what a paid read would add:
 - **LinkedIn Ad Library** (`linkedin.com/ad-library`, search the company) — the most important for B2B.
 - **Google Ads Transparency Center** (search the domain; Search, YouTube, Display).
 - **Meta Ad Library** (search the page; Facebook, Instagram).
@@ -118,6 +118,7 @@ Community: themes (linked)
 Events (next 90 days) · Partnerships · Hiring (roles by team, standouts) · Search presence
 Where we win, where we lose, what to say: <points, each Fact or Inferred>
 Swipe candidates: <best formats with links and beat breakdowns>
+Needs the browser: <library or page — the exact URL or search to open>
 Couldn't read: <source — why — what it might have changed>
 Snapshot (for the next run): ad ids + start dates · pricing text · headline text · open roles by team · review themes · last-checked date
 ```

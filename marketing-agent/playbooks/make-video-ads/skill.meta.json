@@ -22,7 +22,7 @@
     "weekly performance read: reports/performance/<date>.md ('what to make next') — analyze-performance",
     "request lines 'Rotation needed: for make-video-ads' / 'Fix needed: for make-video-ads' in ads/campaigns/<slug>/rotation-requests.md, and the health line of ads/campaigns/<slug>/state.md — run-paid-campaigns",
     "Goose-made creative performance — meta_read performance",
-    "saved video outliers (formats carrying the category) — listen-social (social_inspiration_library)",
+    "saved video outliers (formats carrying the category) — research-market, research-competitors (social_inspiration_library)",
     "competitor video ads (structure only) and the brand's own footage — media library",
     "creator paid-usage rights: creators/roster.csv (proposed rights only) — work-with-creators",
     "kept product photos — make-product-photos (product record / approved photos)"

@@ -1,10 +1,10 @@
 # The page map (the search roadmap)
 
-Load at step 9. Pillar 4's core output is a prioritised map from what buyers ask to the page that answers it. The five fixes are this week's slice of it; the briefs are the pages it says are missing. It is a standing record: every run updates it, never starts over.
+Load at step 4. Pillar 4's core output is a prioritised map from what buyers ask to the page that answers it. The five fixes are this week's slice of it; the briefs are the pages it says are missing. It is a standing record: every run updates it, never starts over.
 
 ## Shape (`search/page-map.md`)
 ```
-Do this first, because… <one paragraph: the single highest-value move and why — the report's opening paragraph is this one, copied>
+Do this first: <the one move and why — the report's "In short" first bullet is this one, copied>
 Page map — <Brand> — <YYYY-MM-DD> v<N> · country <cc> · demand source: Search Console impressions (last 3 months) | none (ranked by value × winnability)
 
 | Cluster | Questions (ids) | Primary query | Demand | Page that answers it | Best position now | State | Winnable | Priority | Owner | Quarter | This run's evidence |
@@ -24,11 +24,11 @@ Page map — <Brand> — <YYYY-MM-DD> v<N> · country <cc> · demand source: Sea
 
 ## Page brief — make-content's brief input shape (`search/briefs/<page-slug>.md`)
 ```
-Page brief — <working title> · from: search/page-map.md row "<cluster>" · <date>
+Page brief — <working title> · from the search roadmap, topic "<cluster>" · <date>
 Cluster: <name> · Intent: learn | do | decide | trust | be convinced · Stage: discovery | problem | comparison | price | brand
 Format · where it publishes (URL to create) · by when (the map's quarter)
 Audience: <role/segment>, their situation, what they already know
-Questions the page must answer word for word: <AI form> / <Google form> per question id
+Questions the page must answer word for word: <AI form> / <Google form> for each question
 Information gain: what the cited winners say (URLs, date read) → what ours must add
 H2 outline (as claims): …
 Facts the page must state: <fact> — source: "Claims you may use" fact | product record field | [PROOF NEEDED]
@@ -38,6 +38,6 @@ Internal links to add: from <pages> with anchor <text>
 Markup: Product | Organization | LocalBusiness | SoftwareApplication | Article | none
 Format · length: <a format name from make-content's format list> · <target words>
 CTA: <action> → to confirm with you
-Live data: the visibility rows this rests on (ids, date)
+Live data: the answers this rests on (question, engine, date)
 ```
 make-content's drafts carry this brief's path on their first line, so the next run can see which briefs became pages.

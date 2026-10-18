@@ -150,6 +150,7 @@ Every playbook follows these exactly. The shared atoms implement them; the revie
 | `outcomes-ledger` | Human-filled status per person or creator, permanent suppression, re-check date, dated lessons. | research-audience |
 | `ad-policy-check` | Paid-ad platform rules (Meta, TikTok, Google, LinkedIn) incl. personal-attribute and before/after rules. Organic, email and creator disclosure share `atoms/ad-policy-check/disclosure.md`. | make-static-ads |
 | `honest-review` | Shared principles for reviewing generated media: by eye vs automatic read, what to do when the agent cannot see images, remake only on a priced yes, two tries. Rubrics stay per playbook. | make-static-ads |
+| `write-report` | Write any research, plan, strategy or report for a human reader (summary first, plain words, flow, no ids or jargon) and deliver it so it opens: a local file with a clickable link, an artifact in hosted chat, plus a saved copy with a link. **Every playbook that hands over a document uses it.** | orchestrator |
 
 The connection preamble, brand pick, workspace scope and the index of every sibling artifact path live in `foundation/guide` (owner: orchestrator).
 
@@ -196,12 +197,18 @@ Applies to research-competitors, research-market, listen-social, research-audien
 1. **Free pass first, ask nothing.** Before the first message to the marketer, do everything free: the brand brain and saved files; web search, news first (launches, funding, shutdowns, hires, press) for the brand and every subject; the host browser on public pages (websites, pricing, changelogs, ad libraries, app stores, Reddit threads, review pages); the server's free reads. Cover every dimension of the job for every main subject; never stop after one source to ask "go deeper?".
 2. **Then one message:** what was found, the draft answer, and only the decisions left (scope, a paid top-up, what to act on). Never ask a fact the free pass could find.
 3. **One credit yes, not two.** Show the estimate for the paid top-up and get one yes to a ceiling "up to N credits"; stop at it. Paid reads deepen a free result; they are never the starting point. (Mechanics: `atoms/spend-gate`.)
-4. **A readable report is the deliverable.** It opens with "Do this first, because…" and the timely openings, then the findings with a date and link on every fact, labelled fact or inference, and a "what we could not read" list. In a host with files, write it as a file and offer to open it; in hosted chat, an artifact or document if the host can, else the full report in chat. Always also save it through `atoms/save-to-brain`.
+4. **A readable report is the deliverable**, written and delivered through `atoms/write-report` (human-readable, opens with one click, saved to the brand). Never leave a report only on the GooseWorks server.
 5. **Public review sites** (G2, Capterra, Trustpilot, app stores, Reddit): read pages with the host browser the way a person would. No bulk scraping, no paging through hundreds of reviews by script.
 6. **An optional area picker** is fine when the ask is broad: "Everything" is the default, recommended option; whatever is picked is covered completely.
 7. **Every finding ends in "For you".** Read the brand's own side in the free pass too (its ads in the same libraries, recent posts, product and pricing, approved claims, past learnings). Each finding closes with: does this fit us (yes/no and why, from our facts); if yes, what to make (format, hook, product, the approved claim that backs it) and which maker does it. The report has a "You vs them" section: ahead (say it louder), behind, and where everyone sounds the same. Research recommends; it never makes the asset.
    - **Guardrails:** don't follow the herd: when every rival does X, that is a reason to consider something else, and recommendations weigh what buyers say over what rivals do. No proof, no claim: a recommendation that needs an unapproved claim says "you'd need proof of X first".
    - **Facts-only mode:** when the ask is facts only (an investor update, a board slide, a market map), skip "For you". With an empty brand brain, say "I can't tell what fits you yet" and offer to learn the brand first, instead of guessing.
+
+### Schedules (decided 18 Oct)
+At the end of every run, the agent **judges** whether repeating this job on a schedule would help this brand, and offers it only when it would, with the reason and a suggested cadence. Examples: competitors weekly or monthly ("what changed"); market monthly; performance weekly; the social calendar every two weeks; search visibility monthly. Never for one-off jobs (a single post, a photo set, a one-time list). Each scheduled run produces a new report through `atoms/write-report` that opens with what changed since the last one. Schedules are created paused and follow `atoms/spend-gate`'s automation rule.
+
+### Social listening lives in research-market (decided 18 Oct)
+listen-social is no longer a playbook. Its listening steps are an atom of research-market (category and brand conversations, customer language). Reply drafting moves to BACKLOG.md. Readers of its old outputs read research-market's report instead.
 
 ### Creative tags
 Lower-case only (`angle:a-07`, `picked`, `offer-ends:20261031`), queried lower-case. Picks also go in the batch file.

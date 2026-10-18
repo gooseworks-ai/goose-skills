@@ -1,27 +1,21 @@
 # Test by hand — research-market
 
-## The test (rebuilt 2026-10-17 on the AGENTS §8 research pattern)
+## The test (rebuilt 18 Oct on market research, listening folded in, write-report)
 
-Pick a brand the reviewer knows first-hand, with real customers and public reviews (and, for a second pass, one with almost none). Ask: **"Who actually buys this, and what do they say in their own words?"**
+Use a brand the reviewer knows, on the GooseWorks server the test folder names (staging). Ask, exactly as the founder did on 18 Oct: **"i want to do the market research for gooseworks"**. Second ask, later: **"What are people saying about me and my category this week?"**
 
 Pass, all without being asked:
-1. **No question before the report** (beyond picking the brand when there are several) — not the founder's belief, not "where do customers talk", not private material, not credits.
-2. **News first** for the brand and category.
-3. **The free pass read public evidence itself:** the brand's own reviews (G2/Capterra/TrustRadius for B2B; on-site, Trustpilot, app stores for consumer brands) page by page in the host browser, the closest rivals' reviews, and community threads found by web search — with n read per source and a couldn't-read list. It never asks the founder to copy public reviews.
-4. **A readable report** (`research/market/<date>-read.md`, a local file offered or an artifact in hosted chat) opening "Do this first, because…" with the primary segment, its job and what to lead with; 2–4 ranked segments and an anti-persona; 5–8 themes with counts and quotes; **"For you" on every finding** and a **"You vs them"** section; typed alternatives; a labelled demand read.
-5. **One closing message** with only decisions: the recognition check (is this your buyer, what didn't you know, which quote for an ad), specific private material that would change the answer, claims sign-off, a paid top-up with one yes, rivals to track, rules to keep, refresh cadence.
+1. **No question before the report** (beyond picking a brand when several match; a named brand not in the account is created from its site). No change to the host's settings or permissions.
+2. **It is market research:** the category in buyers' words, size and growth with whose estimates, what's changing, how and where buyers find and buy, pricing norms across the category, where attention is, demand and seasonality, who buys and why in their own words, what people are saying now — and rivals in one short section pointing to competitor research.
+3. **News first**; the worker briefs were handed over in full; workers' rows were kept (a stopped worker's included); pages needing the browser were opened by the main run, with one line to the founder first, and nothing sat waiting on an approval silently.
+4. **Brand facts from the brain**, not the website, and contradictions flagged, never used as claims.
+5. **The report passes write-report §3:** "In short" first with "Do this first"; a story that flows; plain words; no ids, paths, tool names or jargon; "For you" as a plain sentence on each finding; "You vs them"; a local file with a clickable link plus the brand copy with its link.
+6. **The closing message:** at most three lines, then at most five decisions, including a repeat only if it would help, with the reason and a cadence.
+7. The second ask covers only "what people are saying", with the window stated, name collisions excluded, counts called samples, trends with post-by dates, and any serious risk sent to chat at once.
 
-Also pass:
-- Open 10 random quote links: each opens and contains the quote verbatim.
-- Pick 3 persona traits: each cites quote ids that support it.
-- Every demand line is labelled measured / proxy / prior / unknown.
-- `knowledge_search` for a kept quote returns the bank document.
+Fail: questions before the report; a report about rivals' complaints instead of the market; a report saved only on the server; ids or jargon in the report; buyer evidence read and thrown away; an hour waiting on a browser prompt without a word.
 
-Fail: any question before the report; asking the founder to paste public reviews; ending at "cold start" without having read public reviews and communities; a chat summary instead of a document; an untraceable or paraphrased quote; a vendor's "alternatives" page used as buyer evidence; anything paid before the yes; a customer contacted.
-
-Cold-start pass (a brand with few reviews): the report says the floor was not met **after** showing what the free pass read, nothing is padded, and the survey and interview kit is in it.
-
-**The Juicebox case (dry run, 17 Oct, before the rebuild):** the old version's first output was a question asking the founder to hand-copy 15–20 G2 reviews; it refused to open public G2 pages, ran 3 web searches and would have ended at "cold start" with a chat summary. The rebuilt version's Sonnet re-run is recorded in `critique.md`.
+**The 18 Oct hand test (before this rebuild)** turned into rival research, lost the brand's own Product Hunt comments when a worker stalled on a browser prompt for 52 minutes, used the website's prices over the brain's, and produced a report full of ids and agent terms. See `critique.md`.
 
 ## Staging run — 2026-10-16 (GooseWorks staging, brand "Personal Day", acne-safe skincare)
 

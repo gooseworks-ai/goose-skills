@@ -1,20 +1,20 @@
 # Test by hand — research-competitors
 
-## The test
+## The test (rebuilt 18 Oct after the founder's GooseWorks re-test)
 
-Use a brand whose market the reviewer follows. Ask, exactly: **"What are my competitors running right now, and what works for them?"** The run must not ask anything before the report — not the rival list, not "go deeper?", not "shall I continue?", not credits.
+Use the GooseWorks server the test folder names (staging). Ask, exactly as the founder did on 18 Oct: **"Ok I want to do the competitor research for gooseworks"** (GooseWorks is not yet a brand in the account).
 
-Pass — all of these, without being asked:
-1. **News first**, for every rival and for our own brand, last 90 days; any shutdown, acquisition, launch, price change or funding from the last 30 days leads the report as a timely opening, with its window and a drafted move.
-2. **Every main rival covered on every dimension** (`../references/research-spec.md` §6 checklist), weighted by company type — for B2B: LinkedIn ads and posts, founder and exec posts, G2/Capterra, pricing, launches with demos, hiring, integrations, comparison searches and AI answers. Empty libraries recorded as "none found".
-3. **Founder and exec voice** read for 1–3 people per rival, with links.
-4. **Launches** in the last 90 days, with the biggest demo and its best third-party posts broken into hook · setup · reveal · proof · CTA, and a format brief per demo (each beat → our feature and approved proof), and a counter-position kit where we already do it better (our demo, not their name by default). Each breakdown says whether it came from the video or the transcript.
-5. **A readable document** at `research/competitors/<date>-report.md` (published as a page or document where the host can; otherwise a local file offered) that opens with "Do this first", then openings, landscape, same-shape profiles, swipe file, angles, triggers and a "couldn't read" list. The chat reply is three lines.
-6. Every fact linked and dated; every "works" line labelled inferred with its reason; no copied words; no disparaging.
-7. **"For you" closes every finding** (fits us or not, from our facts; what to make, the approved claim, who makes it; "you'd need proof of X first" where a claim isn't approved), and a **"You vs them"** section (ahead, behind, everyone sounds the same). Our own ads, posts, product and pricing were read in the free pass. Nothing is made.
-8. Only decisions asked at the end, in one message: which openings to act on, the rivals covered (add or drop), claims sign-off, a paid top-up with one yes to a ceiling, the weekly watch, saving rules.
+Pass, all without being asked:
+1. **No question before the report.** The brand is created from its website without asking; no permission is asked for free work; no paid read is offered for what the browser could get.
+2. **Rivals chosen from evidence** — the category's searches, AI answers and reviews — never from memory; the strongest current rivals are in the main set.
+3. **Worker briefs handed over in full**; workers' work kept; **every ad library searched for every main rival and us** (Meta, LinkedIn, Google, TikTok, by advertiser name), in the browser by the main run where workers couldn't, with one line to the founder first; nothing waited silently on an approval.
+4. **News first** for every rival and our brand; launches with demos broken down; founder and exec posts.
+5. **The report passes write-report §3:** "In short" first with "Do this first"; plain words; no ids, paths, tool names, Fact/Inferred tags or symbols; "For you" as a plain sentence on each finding; "You vs them"; facts checked against sources; a local file with a clickable link plus the brand copy with its link.
+6. **The closing message:** at most three lines, then at most five decisions, including a repeat only if it would help, with the reason and a cadence.
 
-Fail: any question before the report; stopping after one source; reading only Meta for a B2B brand; missing a recent rival shutdown or launch that a news search finds; a chat summary instead of a document; facts without links or dates.
+Fail: any question before the report; "couldn't read the ad libraries" while a browser was available; rivals from memory; a report saved only locally or only on the server; ids or agent shorthand in the report; a section patched in after the report instead of a rewrite.
+
+**The 18 Oct re-test (before this rebuild):** the agent never read its worker briefs (it looked in the wrong folder), told workers there was no browser, reported that no ad library could be read, offered a paid read, then read Meta in the browser in two minutes when the founder said "Can't you do it on your own". Its rivals came from memory; the strongest ones surfaced only in the category pass. Nothing was saved to the brand. See `critique.md`.
 
 ## The Juicebox case (the run that failed on 16 Oct and set this bar)
 

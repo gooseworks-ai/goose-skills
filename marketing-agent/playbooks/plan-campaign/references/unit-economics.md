@@ -55,7 +55,7 @@ allowable cost per install = (payer rate by day 30 × ARPPU over the payback win
 | Target CAC (the cushion the founder wants) | $20 | founder |
 | Break-even first-order ROAS / MER | 2.2 | 1 ÷ contribution % |
 
-Every value carries its source: *own history*, *human-stated*, *base rate (rule of thumb)* or *assumption*. run-paid-campaigns and analyze-performance inherit this box; they do not re-derive it. If margin is unknown, ask once; if the founder cannot give it, plan to a stated assumption, mark it, and put "confirm margin" first in the assumptions list.
+Every value carries its source: *own history*, *human-stated*, *base rate (rule of thumb)* or *assumption*. run-paid-campaigns and analyze-performance inherit this box; they do not re-derive it. If margin isn't on file (`intake.md`), plan to a stated assumption, mark it, and put "confirm margin" first in What we couldn't check; ask it only when the whole plan turns on it.
 
 **Inventory and capacity cap the plan.** DTC: units the forecast would sell vs stock on hand + inbound before the end date; days of cover at forecast sell-through; never plan paid spend behind a SKU with under ~3 weeks of cover. Local / services: bookings the plan would generate vs open slots or delivery capacity — a salon with 40 open slots cannot absorb 200 leads. Apps and SaaS: support/onboarding capacity for a spike, rarely binding.
 

@@ -8,7 +8,7 @@
 
 **Do:**
 1. Write every mandatory row, then the rows live for this brand type; one line "not relevant: <reason>" for conditional rows that are not.
-2. For each row answer the seven lenses in your head; write the **binding** one, the reason with a brand fact, the evidence source, confidence (evidence / judgment) and, unless Run, the flip condition.
+2. For each row answer the seven lenses in your head; write the **deciding** reason in plain words with a brand fact, the evidence, how sure you are in words, and, unless kept, what would change it.
 3. Prefer one or two channels done properly. A judgment-only Run becomes a Test. Novelty is never a reason. No default channel.
 4. Mark execution per leg: GooseWorks levers (Meta objects it creates or pushes into) or written instructions / human hands. Add founder hours per leg; if the total exceeds what the founder has, cut a leg and say which.
 5. Zero paid is allowed: state it in the paid rows with the numbers.

@@ -1,13 +1,13 @@
 # Foundation check (light, free)
 
-Load at step 2 (site-wide, free, before anything paid) and step 7 (the 3–6 pages behind the gaps). Every item is **pass / fail / not checked** — never pass by default. A blocker on a page outranks any copy fix on that page. Deep technical SEO stays with engineering; this check flags blockers only.
+Load at step 1 (free pass: site-wide and the 3–6 pages behind the gaps). Every item is **pass / fail / not checked** — never pass by default. A blocker on a page outranks any copy fix on that page. Deep technical SEO stays with engineering; this check flags blockers only.
 
 ## Site-wide (once)
 | Check | How (no paid tools) | Class |
 |---|---|---|
 | robots.txt | fetch `/robots.txt`; look for `Disallow` on key paths and these user agents. **Retrieval** (blocking removes you from that engine): Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User, PerplexityBot, Claude-SearchBot, Claude-User. **Training** (a policy choice, not a citation fix): GPTBot, Google-Extended (does not affect AI Overviews or AI Mode, which use Googlebot), CCBot, ClaudeBot | blocker if a retrieval bot is blocked |
 | CDN / bot management | needs a shell: `curl -A "OAI-SearchBot" -sI <url>` vs a normal browser agent (also PerplexityBot); a 403 or a challenge page means blocked. No shell → "not checked — this chat can't test bot access" and a one-line developer check. CDNs' default AI-bot blocking catches many sites | blocker |
-| Indexed at all | Search Console if shared; else the step-4 `site:` probe, run only after the human's yes to it — never during step 2. Bing: Bing Webmaster Tools if shared, else "not checked" (never scrape Bing results pages). ChatGPT search is widely reported to lean on Bing's index — unconfirmed by OpenAI — so Bing indexing is a cheap hedge | blocker if absent |
+| Indexed at all | Search Console if shared; else the paid top-up's first lookup (the site-wide `site:` check, step 3), run only after the human's one yes — never during the free pass; the free pass can only hint at indexing (a web search for the brand's site). Bing: Bing Webmaster Tools if shared, else "not checked" (never scrape Bing results pages). ChatGPT search is widely reported to lean on Bing's index — unconfirmed by OpenAI — so Bing indexing is a cheap hedge | blocker if absent |
 | Duplicate host | the platform's default domain (`*.webflow.io`, `*.myshopify.com`, `*.vercel.app`) redirects or canonicalises to the real domain | blocker if the duplicate is the one indexed |
 | Search Console / Bing Webmaster Tools | asked in intake (one optional question covers both; Bing unknown → "not checked") | fix if missing |
 | Sitemap | `/sitemap.xml` or the robots.txt `Sitemap:` line returns 200 and lists the money pages | polish |

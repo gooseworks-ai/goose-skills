@@ -2,20 +2,25 @@
 
 Run it for a brand whose voice you know cold. Your own is best, because voice is the whole bar. Connect GooseWorks **staging**. The default path spends no credits and posts nothing.
 
-## Test 1: fill two weeks
-Ask: **"Fill my social calendar for the next two weeks and write every post."**
+## Test 1: the founder's ask (the 18 Oct hand test)
+Ask: **"I want to run organic social for my brand <brand>."** Then, after its first message: **"Let's start with X. I'll post myself (I'm the founding engineer). I'm in India, I post in the evening, zero followers, posted yesterday, I want to post regularly. Don't you think we should make more videos?"**
 
 It should:
-- say once, up front, that it plans and writes but does not post, schedule or reply
-- confirm accounts, platforms, cadence and each account's job, asking only what the brain doesn't hold (handles, founder vs brand, hours a week, time zone, posting tool, free windows)
-- audit each account: top and bottom posts and why, the cadence actually kept, best slots
-- build or show a voice card per account (founder gets their own)
-- hand back a dated two-week grid with a ready-to-paste draft in every slot, the flags, and a posting sheet
+- **ask nothing before researching.** Its first message comes with a draft report. It has already web-searched how each candidate platform works right now (dated sources), looked at what gets watched in the brand's niche there, and read the brand's and founder's own accounts.
+- **know the platform today.** If X is pushing video, the plan says so with a dated source and is video-first (screen recordings the founder can make), with no pushback that "we can't confirm it".
+- **give a real X strategy** for a zero-follower founder account: its job, the formats and why, topics, hook patterns lifted from linked examples, cadence and posting times in the audience's time zone, and **how it breaks in**: 10–20 named accounts to reply to, a daily routine in minutes, a pinned intro and a bio.
+- **write posts a person would post:**
+  - each one names the pattern and example it's modelled on;
+  - most are not about the product;
+  - none ends in engagement bait;
+  - video posts come with a script and shot notes.
+- **use claims honestly.** It names the exact claim lines it needs. "Check the brand kit" is not treated as a yes, and value props are not treated as facts.
+- **deliver a readable report** you open with one click (a local file link, or an artifact in a hosted chat), also saved to the brand, with at most 3 lines in chat.
 
-**Pass** if every slot has a draft and you would genuinely post the next three days' drafts after at most light edits.
+**Pass** if a founder would post the next three days after light edits, and the report reads like a good social strategist wrote it.
 
 ## Test 2: gates
-- Every draft that speaks as, or for, a named person (founder, a celebrity founder quoted on the brand account, an employee) carries PERSON YES NEEDED. The intake message asks that person for raw material (one prompt per planned slot). No first-person story or habit appears that the person didn't give. A `[NAME: …]` slot appears only for a prompt left unanswered, and a slot with no material is cut or swapped.
+- Every draft that speaks as, or for, a named person (founder, a celebrity founder quoted on the brand account, an employee) carries PERSON YES NEEDED. The draft-report message asks that person for raw material (one prompt per planned slot). No first-person story or habit appears that the person didn't give. A `[NAME: …]` slot appears only for a prompt left unanswered, and a slot with no material is cut or swapped.
 - Every trend draft carries an expiry, a tone-risk tier with the specific risk, and a recommendation.
 - No line carries a claim that isn't on your approved list. On Personal Day, "100% free of acne-triggering ingredients" and "dermatologist-developed, 6x award-winning" must not appear as facts, because they are not approved claims.
 
@@ -29,9 +34,13 @@ It should:
 - give each named format test a verdict (win / lose / unclear) with the numbers, and reweight the mix from it
 
 ## Test 4: single post
-Ask: **"Write a post on this trend"** or **"a Reel script to shoot on my phone"**. It writes that one post with its checks. It runs no audit, no two-week intake and no paid read, then offers the calendar in one line.
+Ask: **"Write a post on this trend"** or **"a Reel script to shoot on my phone"**. It writes that one post with its checks. It runs no audit, no full research and plan and no paid read, then offers the calendar in one line.
 
 ## Telltale failures
+- Asking questions before doing any research, or planning a platform from memory.
+- Generic posts with the product bolted on ("We built X so that…"), or "I'll read every reply" endings.
+- Text-only plans on a platform that is pushing video.
+- A report that lives only in chat or only on the server.
 - Posts that sound like anyone's brand but yours: they fail the swap test.
 - The same text pasted across platforms.
 - A cadence you could never keep.
@@ -51,7 +60,7 @@ Brand: **Personal Day**. Ask: "Fill my social calendar for the next two weeks an
 | 4 | `brand_read` learnings (full) | No claims sign-off marker | Plain product facts only; efficacy lines from past captions ("kills acne causing bacteria") are flagged and never copied |
 | 5 | `knowledge_search` document "Brand record approved claims" | empty | Confirms no sign-off |
 | 6 | `file_read research/market/voc-bank.md` | not_found | Says "no buyer evidence on file"; press quotes are not buyer words |
-| 7 | `social_inspiration_search` | 0 | Trend slots get evergreen fallbacks; no listen-social report exists (`social/listening/` empty) |
+| 7 | `social_inspiration_search` | 0 | Trend slots get evergreen fallbacks; no research-market report with a "What people are saying" section is on file |
 | 8 | `file_write social/calendar/2026-10-19.md` (header line only, marked TEST RUN) | success | Workspace write path verified |
 
 **Audit, as the playbook produces it** (likes + comments, vs each account's median):
@@ -70,7 +79,7 @@ Brand: **Personal Day**. Ask: "Fill my social calendar for the next two weeks an
 **Gates exercised in the drafted slots:**
 - A Reel quoting Lili's habits is flagged **PERSON YES NEEDED (Lili Reinhart, approver: ask)**, and its lines come from the raw-material prompts the intake sends for her. At the time of the run it was unanswered, so it carries `[NAME: …]` slots and is marked "cut or swap if no answer".
 - Halloween (Oct 31) is a dated fixed slot with a tone tier. It is not a TREND.
-- No trend posts: there is no listening report.
+- No trend posts: there is no "What people are saying" section from research-market.
 
 **Stopped before:**
 - `social_post_create` (no managed account).

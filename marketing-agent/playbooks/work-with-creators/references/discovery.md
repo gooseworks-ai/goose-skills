@@ -11,7 +11,7 @@ Load at step 2. Discovery is free when done the way a person would: web search, 
 2. **Creators proven in the category**
    - Competitors' recent organic posts that tag or feature a creator (free: the brain's competitor organic feed). Check each is a creator in the category before using it — rivals also tag celebrities, comedy series and kids' channels, which are not candidates for this brand. When a dated public page contradicts the brain (a collab the web can't confirm, a rating that differs), the newer dated page wins; say so in the report and flag the brain item.
    - Competitors' **partnership ads** in the Meta Ad Library, read free in the host browser (a brand paid to amplify them — proven to convert; check conflict).
-   - The people behind listen-social's saved outliers in the Inspiration library — strong *format* fit; check they are consistent, not one viral hit.
+   - The people behind research-market's saved outliers in the Inspiration library (tag `research-market`) — strong *format* fit; check they are consistent, not one viral hit.
 3. **Problem-phrase search** — web search and each platform's own search page in the host browser, on what the persona types or says ("acne safe moisturizer", "dog limping on stairs", "month-end close takes forever"), not just hashtags. Hashtag search over-surfaces big accounts.
 4. **Smaller creators in the comments of category leaders** — the micro tier often lives there.
 5. **Lookalikes** — collaborators, duets and stitches of good candidates; accounts suggested alongside them; who a strong candidate follows.

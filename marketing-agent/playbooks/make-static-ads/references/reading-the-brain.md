@@ -36,7 +36,7 @@ The contract and the checks are `../../../atoms/claims-gate/ATOM.md` (owner: lea
 
 ## 5. Inspiration and references
 
-- `gooseworks:social_inspiration_library` / `social_inspiration_search` — outliers saved by listen-social (note = hook · format · topic).
+- `gooseworks:social_inspiration_library` / `social_inspiration_search` — outliers saved by research-market's listening (tag `research-market`; note = outlier multiple · hook · format · topic).
 - Competitor statics: `ads_template_read` `mode: "competitor"` (`ad_started_at`, `ad_ended_at` = last scrape date for running ads). Own past ads: `mode: "mine"`.
 - Kept product photos: `gooseworks:photos_read` `status: "approved"` with the `product_id` (they also appear in the product record).
 

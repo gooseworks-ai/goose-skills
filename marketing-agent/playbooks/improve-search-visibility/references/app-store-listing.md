@@ -1,6 +1,6 @@
 # App store listing audit
 
-Load at step 8 (atom store-listing-audit). Only when there is an app — live, or before release as a launch-day draft (an App Store pre-order page can go live before release once a build is approved).
+Load at step 1 (free pass, atom store-listing-audit). Only when there is an app — live, or before release as a launch-day draft (an App Store pre-order page can go live before release once a build is approved).
 
 ## What is indexed
 - **iOS App Store:** app name (30), subtitle (30) and the keyword field (100, private — ask for it) are indexed. Promotional text (170) is not indexed and can change any time. Name, subtitle and keywords change only with a new version submission. Screenshot caption text appears to be extracted since mid-2025; any ranking effect is disputed and small.
@@ -28,4 +28,4 @@ Now: name "Driftly", subtitle "Your calm place", screenshot 1 a logo splash.
 | Screenshot 2 | A timer that fades out, never jolts | |
 | Screenshot 3 | Works offline. No account needed | |
 | Play short description | Rain, white noise & brown noise sleep sounds with a timer. Works offline. | 73/80 |
-"brown" in keywords + "Noise" in the subtitle matches "brown noise"; "calm" is left out because it is a rival's trademark. Captions like "works offline" are claims: kept only if the claims gate allows them (SKILL step 10).
+"brown" in keywords + "Noise" in the subtitle matches "brown noise"; "calm" is left out because it is a rival's trademark. Captions like "works offline" are claims: kept only if the claims gate allows them (SKILL step 4).

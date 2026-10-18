@@ -21,6 +21,7 @@ It passes if:
 Then: give a budget and say "yes, up to 200 credits" → it re-prices, deepens vetting inside the ceiling (logs every charge), finishes the remaining briefs, re-delivers. You'd pay at least half the shortlist inside the stated range after spot-checking two picks.
 
 Edge tests:
+- Repeats: a monthly roster refresh is offered only when a programme is running or about to (with the reason); after a one-off shortlist or a single vet, no repeat is offered.
 - "I need UGC for my ads" → asks "a real person filming, or AI-made?" first; AI-made goes elsewhere.
 - B2B SaaS asking for LinkedIn creators and newsletters → LinkedIn and newsletter pages read in the browser, sponsor pages and media kits found, no gift-first, per-placement prices.
 - On a re-run, paste fake wave-1 results → scored against `wave-1.md`, `wave_result` set, a roster change proposed for your yes.
@@ -35,7 +36,7 @@ What ran (all free):
 - `knowledge_search` creators / disclosure / banned words → nothing on file: no creators in talks, no disclosure rules, no banned-word list beyond the kit voice "don'ts".
 - `brand_read` kit, products, learnings → 20 products; the spray's record has **price $12.00, no unit cost or margin**; one learning (a video-script "don't").
 - `brand_read` product record → the product description carries efficacy language ("bacteria-fighting", "daily defense against breakouts").
-- `social_inspiration_library` → **empty** (listen-social has not saved outliers yet).
+- `social_inspiration_library` → **empty** (research-market has not saved outliers yet).
 - `campaign_read` → no campaigns. `file_list` query `work-with-creators` → no earlier roster.
 
 What Gate 1 would ask and play back:

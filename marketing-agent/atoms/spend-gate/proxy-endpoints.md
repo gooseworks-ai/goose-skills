@@ -6,7 +6,7 @@ Paths and query keys below were checked against the vendor's published OpenAPI s
 
 ## Recency rule
 
-Always set the newest-first option and the narrowest recency option that still reaches back to the start of the window you need (listen-social: the counting week's Monday — use the month option when the run is more than 6 days after it). Endpoints with a recency filter but no date sort (Instagram reels search, YouTube search, LinkedIn post search) return the window in relevance order: page until results run out or the cap is hit and keep only in-window items — never stop at the first page because its oldest item is out of window; if the cap is hit first, the count is a floor. Where an endpoint has no recency option, the coverage line says "relevance-ranked sample, not all mentions" and items outside the window are dropped after reading — never presented as this week's.
+Always set the newest-first option and the narrowest recency option that still reaches back to the start of the window you need (research-market's listening: the first day of the window it names — the week option for a 7-day window, the month option otherwise). Endpoints with a recency filter but no date sort (Instagram reels search, YouTube search, LinkedIn post search) return the window in relevance order: page until results run out or the cap is hit and keep only in-window items — never stop at the first page because its oldest item is out of window; if the cap is hit first, the count is a floor. Where an endpoint has no recency option, the coverage line says "relevance-ranked sample, not all mentions" and items outside the window are dropped after reading — never presented as this week's.
 
 ## Search and listening
 

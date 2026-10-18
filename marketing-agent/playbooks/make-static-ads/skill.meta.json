@@ -22,7 +22,7 @@
     "request lines 'Rotation needed: for make-static-ads' / 'Fix needed: for make-static-ads' in ads/campaigns/<slug>/rotation-requests.md, and the health line of ads/campaigns/<slug>/state.md — run-paid-campaigns",
     "Goose-made creative performance — meta_read performance",
     "own and competitor scraped ads — ads_template_read mine / competitor (server research)",
-    "saved inspiration outliers — listen-social (social_inspiration_library)",
+    "saved inspiration outliers — research-market, research-competitors (social_inspiration_library)",
     "kept product photos and 'Product imagery ready:' answers — make-product-photos",
     "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)"
   ],

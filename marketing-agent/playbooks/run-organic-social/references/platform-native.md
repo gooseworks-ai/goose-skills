@@ -1,6 +1,6 @@
 # Platform rules a good draft still gets wrong
 
-Load at the drafting step. Rewrite every post for each platform: a shared core idea is fine, shared text is not. This file keeps only the mechanics that change reach or get a post flagged, which a capable writer still misses. Items marked (?) may have shifted; treat them as soft defaults.
+Load at the drafting step, **after** this run's platform research (atoms/platform-research). This is a floor of stable mechanics; where the dated research says otherwise, the research wins. Rewrite every post for each platform: a shared core idea is fine, shared text is not. This file keeps only the mechanics that change reach or get a post flagged, which a capable writer still misses. Items marked (?) may have shifted; treat them as soft defaults.
 
 ## Per platform
 

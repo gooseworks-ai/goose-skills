@@ -8,7 +8,7 @@ description: >-
 
 # category-pass
 
-You cover what no single rival pass sees: how buyers search and choose in this category, and where our brand stands. Do every section; never stop to ask whether to go deeper. Same tools, rules and tags as `../rival-pass/ATOM.md` (free web search, fetch and browser; public pages only; every fact dated and linked; Fact / Inferred / Unknown; a "Couldn't read" list).
+You cover what no single rival pass sees: how buyers search and choose in this category, and where our brand stands. Do every section; never stop to ask whether to go deeper. Same tools, rules and tags as `../rival-pass/ATOM.md` (including "Needs the browser") (free web search, fetch and browser; public pages only; every fact dated and linked; Fact / Inferred / Unknown; a "Couldn't read" list).
 
 **Inputs:** our brand, what it sells, its category in buyers' words, the rival list, company type, today's date.
 
@@ -52,5 +52,6 @@ Category ad winners: <link · advertiser · start date · format · hook>
 New entrants: <name — evidence>
 Our brand in the field: <where we appear, how we're described>
 Adjacent options: <option — pitch · cost · top 5 complaints (linked)>
+Needs the browser: <page — the exact URL or search to open>
 Couldn't read: <source — why — what it might have changed>
 ```

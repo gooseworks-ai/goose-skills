@@ -7,24 +7,24 @@
 
 ## The test
 
-Ask: **"Find me 50 right-fit people at recruiting agencies to pitch, with verified emails."** (or your own ICP).
+Ask, on the GooseWorks brand: **"i want to do the audience research for gooseworks"** (Akhil's words in the 18 Oct hand test).
 
 It passes if:
 
-1. **No question before research.** The first thing you get is the report — not a question, not a definition to approve, not a credit ask. (Only an out-of-scope ask — consumers, journalists, investors — gets a one-line redirect first.)
-2. **Web research happened, for free.** The report cites company sites, directories, job boards, news and public profile pages with dates and links, and has at least five finished rows found without spending credits (or says the universe is thinner than that, and why).
-3. **One message, one credit yes.** After the report: three lines (biggest finding, what to send first, the link), the honest limit ("no email checker here"), then only the decisions — corrections to the *assumed* lines of the definition, an exclusions export, 1–2 proof lines to sign off, and **one** yes to "up to N credits" for a top-up that says what it adds. No second credit question before results.
-4. **A document, not a chat summary.** `report.md` opens with "Do this first, because…", lists timely openings, marks the definition's lines *sourced* or *assumed*, gives every segment pain → proof → ask and **For you**, has **You vs them**, what was dropped, "before you send" per region flag, and "what we could not read". In a host with files you're offered to open it; in hosted chat it's an artifact/document or the full report.
-5. **Rows are honest.** Every person row has a dated title source; no row says verified unless a checker did; pattern-guesses cite the published address they're built from; a shortfall is stated, never padded.
-6. You would genuinely email at least 80% of the rows.
+1. **Audience research, not a prospect list.** The report covers who the audience is (2–5 named segments, the primary one named), what each wants, their problems and how we solve them, their own words (at least five linked quotes per segment), where they hang out (named communities, publications, podcasts, events, with activity evidence) and how to reach them (three first moves per segment). No list of named people unless asked.
+2. **No question before research,** and no "which segment should I go deeper on?" — every segment is researched in the free pass.
+3. **Real web research:** reviews, Reddit and community threads, job posts, public posts, publication and event pages — dated and linked.
+4. **The report passes write-report §3:** the top five lines say what to do first and why; a non-marketer can follow it; no ids, codes, file paths, tool or playbook names; the link opens. It's a local file with a clickable link (host with files) or an artifact, and saved to the brand with a link.
+5. **One short closing message** (at most three lines): the first move, the link, the decisions — including "want a list of named people for one segment?" and one optional credit yes.
+6. Every finding ends in For you; there's a "how rivals talk to them" section; what couldn't be checked is listed.
 
-Then: say "yes, up to 300 credits" and correct one assumed line → it re-runs only what the correction touches, spends inside the ceiling, logs every charge, and re-delivers the report and list. Paste fake checker results for five rows (two invalid, one catch-all) → invalid dropped, catch-all to `catch-all.csv`, the rest `verified-by-tool`, counts re-issued.
+List-mode test: **"Find me 50 right-fit people at recruiting agencies to pitch, with verified emails."** → a lighter audience pass, then the list section and `list.csv`: accounts first, dated title sources, honest email status (no "verified" without a checker), region flags, a stated shortfall, the honest "no email checker" line once.
 
 Edge tests:
-- "Research my audience" / "build me a persona" must **not** start this playbook; nor "find me influencers".
-- "Find me 50 consumers to email" for an app → one-line redirect to partner or B2B lists.
-- A DTC brand asking for retail buyers → chains as account rows plus dated buyer rows, boutiques as account rows, UK sole traders with no email or cold-DM route; the brand's own stockists read from its store locator and excluded.
-- "Top this up every month" → offered as a paused schedule whose yes names a per-run ceiling.
+- "What's the market size for AI ad tools?" / "how do people buy in our category?" → not this playbook (market research).
+- "Find me influencers" → not this playbook.
+- A re-run a month later → reads the saved profile and says what changed.
+- Repeats: after the audience report, a quarterly refresh is offered only with a reason tied to this brand (or not at all if the audience is stable); after a list-mode run, **no** repeat is offered.
 
 ## Staging run log
 

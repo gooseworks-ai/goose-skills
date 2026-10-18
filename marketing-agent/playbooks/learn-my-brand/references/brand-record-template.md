@@ -82,6 +82,6 @@ Voice guide for approval: <personality is/is-not, rules with pairs, banned words
 | Goal number, deadline, budget | campaign planning | none | not asked yet | when you plan a campaign |
 | Margin / most we can pay per customer, unit cost | ads and campaign planning | none | not asked yet | when you plan a campaign or run ads |
 | Who approves spend, spend caps | running ads | none | not asked yet | when you run ads |
-| Who to call if something blows up online | social listening | none | not asked yet | when you set up listening |
+| Who to call if something blows up online | risk alerts in market research (what people are saying) | none | not asked yet | when market research first flags a serious risk |
 | Customers we may name, logos, win/loss notes, do-not-contact list | outbound lists, case studies | default: name no one | not asked yet | when you build a prospect list or a case study |
 ```

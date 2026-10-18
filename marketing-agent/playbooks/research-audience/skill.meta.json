@@ -1,30 +1,31 @@
 {
   "slug": "research-audience",
   "tier": "playbook",
-  "version": "0.3.0",
-  "pillar": "8 — Outbound, demand gen and ABM",
+  "version": "0.4.0",
+  "pillar": "3 — Customers and market (audience) · 8 — Outbound (list mode)",
   "intents": [
-    "Find me 50 right-fit people with verified emails",
-    "Build me a prospect list",
-    "Find retail or wholesale buyers and distributors for our products",
-    "Give me an ABM target account list",
-    "Find partners we should approach",
-    "Top up last month's list with the next 30",
-    "Who should we pitch? (outbound B2B)"
+    "Research our audience",
+    "Who is our audience and who should we target?",
+    "What do our customers want and what problems do they have?",
+    "What words does our audience use?",
+    "Where does our audience hang out — communities, newsletters, podcasts, events?",
+    "How do we reach them?",
+    "Find me 50 right-fit people with verified emails (list mode)",
+    "Give me an ABM target list (list mode)"
   ],
   "reads": [
-    "brand brain: business context, target customers / audience, learnings incl. do-not-contact rules (learn-my-brand); customers, logos, win/loss notes are usually not on file — asked of the human",
-    "brand brain: competitor set — domains only (research-competitors / server)",
-    "brand documents + workspace files: newest 'Prospect fit definition' and 'Outreach lessons' (this playbook, earlier runs)",
-    "workspace research/audience/ledger.csv (outcomes-ledger, earlier runs) and research/credits-log/<YYYY-MM>.md (every playbook that buys public data, via spend-gate)",
-    "claims: 'Claims you may use' facts via claims-gate (learn-my-brand) — for each segment's proof line",
-    "human-supplied: customer / open-deal / do-not-contact exports, account-value rule, warm-path lists, email-checker results, outreach outcomes"
+    "brand brain: summary, kit audience text, products, competitors, organic, learnings (learn-my-brand); customer evidence via knowledge_search",
+    "workspace research/market/ — segments, voice-of-customer bank, demand read (research-market): reused, never redone",
+    "workspace research/competitors/ — rival records (research-competitors)",
+    "workspace research/audience/ — last profile, report, segment notes, ledger (this playbook, earlier runs); research/credits-log/<YYYY-MM>.md (spend-gate)",
+    "claims via claims-gate (learn-my-brand) — for messages and proof lines",
+    "human-supplied (list mode): exclusions export, email-checker results, outreach outcomes"
   ],
   "writes": [
-    "workspace research/audience/<date>-<list>/report.md (→ 'Prospect report — <Brand> — <date>', keep-history), list.csv, catch-all.csv, dropped.csv — read by the human (their outreach tool) and the next run; a future outreach-writing playbook would read the segments' angles",
-    "workspace research/audience/ledger.csv — read by every later run (exclusions, suppression, outcomes) via outcomes-ledger",
-    "workspace research/audience/fit-definition.md → brand document 'Prospect fit definition — <Brand> — <date>' (supersede) — read by later runs",
-    "workspace research/audience/lessons/<date>.md → brand document 'Outreach lessons — <Brand> — <date>' (keep-history; per-segment numbers, no personal data) — read by later runs",
+    "local gooseworks-reports/<brand-slug>/<date>-audience.md and workspace research/audience/<date>-report.md → 'Audience report — <Brand> — <date>' (keep-history) via write-report and save-to-brain — read by the marketer and the next run",
+    "workspace research/audience/profile.md → 'Audience profile — <Brand> — <date>' (supersede) — read by plan-campaign (channels), make-content and run-organic-social (words, places), work-with-creators (who the audience follows)",
+    "workspace research/audience/segments/<slug>.md — read by the next run",
+    "list mode: research/audience/<date>-<list>/list.csv, dropped.csv; research/audience/ledger.csv via outcomes-ledger — read by the marketer's outreach tool and later runs",
     "research/credits-log/<YYYY-MM>.md rows — read by every playbook's spend estimates"
   ],
   "needs": {
@@ -51,11 +52,18 @@
     ]
   },
   "atoms": [
+    "segment-pass",
     "fit-definition",
     "account-sourcing",
     "signals-and-hooks",
     "people-and-contacts",
-    "score-segment-qa"
+    "score-segment-qa",
+    "shared:write-report",
+    "shared:save-to-brain",
+    "shared:claims-gate",
+    "shared:spend-gate",
+    "shared:outcomes-ledger",
+    "shared:save-learning"
   ],
   "shared_atoms": [
     "outcomes-ledger",

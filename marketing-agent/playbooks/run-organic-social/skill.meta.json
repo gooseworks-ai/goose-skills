@@ -4,15 +4,14 @@
   "version": "0.1.0",
   "pillar": "5 — Organic social",
   "intents": [
-    "Fill my social calendar for the next two weeks and write every post",
-    "Write this week's posts",
-    "Plan my LinkedIn / Instagram / TikTok / X",
-    "Ghostwrite my founder's LinkedIn",
-    "Slot these posts into my calendar",
-    "We're launching on the 12th, plan the organic social",
-    "Write a post on this trend",
-    "A TikTok or Reel script to shoot on my phone",
+    "I want to run organic social for my brand",
+    "Fill my social calendar for the next two weeks",
+    "Grow my X / LinkedIn / Instagram / TikTok",
+    "Ghostwrite my founder's posts",
+    "What should we post on X?",
     "Which platforms should we be on (organic)?",
+    "We're launching on the 12th, plan the organic social",
+    "A TikTok or Reel script to shoot on my phone",
     "My accounts went quiet, keep them alive"
   ],
   "reads": [
@@ -24,15 +23,16 @@
     "brand_read organic: own TikTok/IG posts with metrics and posted_at; competitor top posts (server sync)",
     "social_account_list + social_strategy_get: managed TikTok/IG accounts and their strategy (the product; this playbook after a yes)",
     "social_analytics_get: managed account metrics when connected (server sync)",
-    "inspiration library via social_inspiration_search (listen-social)",
-    "workspace social/listening/<D>-report.md (newest *-report.md): trend read with post-by dates (listen-social)",
     "workspace content/repurposed/* and content/drafts/*: social cuts; content/channels.md platform list (make-content)",
     "campaign brief with organic leg via campaign_read (plan-campaign)",
     "workspace reports/performance/<date>.md: organic 'what overperformed' (analyze-performance)",
     "workspace brand/voices/<handle>.md and content/pov/*.md (make-content or this playbook)",
     "workspace social/calendar/*, social/accounts.md (this playbook, earlier runs)",
     "the account's own posts via data_call_provider, verified endpoints only (Instagram, TikTok, LinkedIn company; LinkedIn/Threads searches author-matched), under spend-gate",
-    "workspace 'Graphic ready:' lines under this playbook's request lines (make-static-ads)"
+    "workspace 'Graphic ready:' lines under this playbook's request lines (make-static-ads)",
+    "web search and the host browser: how each platform works now (dated sources), niche top accounts and posts, the brand's and person's public profiles (free)",
+    "research-market's latest report (newest research/market/<date>-read.md, section 'What people are saying': trends with post-by dates, themes, risks; check its window line), buyer language (research-market)",
+    "workspace social/research/<date>-<platform>.md from earlier runs (this playbook; refreshed after 30 days)"
   ],
   "writes": [
     "workspace social/calendar/<start-date>.md: calendar, format tests and their verdicts, drafts, checks, flags, posting sheet, reconciliation (the human; the next run; analyze-performance for what went out); reconciled calendars also imported as brand documents",
@@ -45,14 +45,17 @@
     "social_post_update patch status posted: record of what the human posted on managed accounts (analytics placements)",
     "workspace 'Graphic needed:' request lines in social/calendar (make-static-ads answers them)",
     "workspace social/calendar/<start-date>-sheet.csv posting sheet, with a file_url download link in hosted chats (the marketer's own scheduler)",
-    "workspace research/credits-log/<YYYY-MM>.md: one line per paid proxy read (spend-gate; shared price history)"
+    "workspace research/credits-log/<YYYY-MM>.md: one line per paid proxy read (spend-gate; shared price history)",
+    "the social plan report via write-report: a local file with a link (or an artifact in hosted chat) plus a brand document via save-to-brain, 'Social plan — <Brand> — <date>' (the marketer; analyze-performance)",
+    "workspace social/research/<date>-<platform>.md: platform card, niche examples and patterns, own-account read (the next run)",
+    "a paused automation (automation_upsert) for the two-week refill, only after the marketer's yes (the coworker's scheduled runs)"
   ],
   "needs": {
     "mcp": [
       "gooseworks:get_started",
       "gooseworks:brand_read",
       "gooseworks:knowledge_search",
-      "gooseworks:brand_update",
+      "gooseworks:competitor_read",
       "gooseworks:social_account_list",
       "gooseworks:social_strategy_get",
       "gooseworks:social_strategy_upsert",
@@ -74,15 +77,18 @@
       "gooseworks:file_write",
       "gooseworks:file_read",
       "gooseworks:file_list",
-      "gooseworks:tools_load"
+      "gooseworks:tools_load",
+      "gooseworks:automation_upsert"
     ]
   },
   "atoms": [
+    "platform-research",
     "account-audit",
     "plan-calendar",
     "post-check"
   ],
   "shared_atoms": [
+    "write-report",
     "claims-gate",
     "voice-card",
     "save-learning",

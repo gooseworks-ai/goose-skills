@@ -1,6 +1,6 @@
 # Mining method — how a senior researcher reads buyer evidence
 
-Load at steps 3–6.
+Load in the buyer-voice worker (`../atoms/buyer-voice/ATOM.md`) and at step 5.
 
 ## Sampling
 

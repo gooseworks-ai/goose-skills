@@ -31,7 +31,7 @@ Incident mode skips the brain read, intake and audit, and the pause list needs n
 | Send mistake (wrong price, broken link, wrong segment, "Hi ,") | the remaining batches / the flow step | a short correction draft (only when the mistake affects the reader — a broken link usually doesn't need an apology email); whether to honour a wrong price is the human's call |
 | Leaked or stacking code | the code's use in flows | a new code pool; expiry or usage limit on the leaked code proposed to the human |
 | Checkout or site outage during a send | the remaining sends and SMS | a "we're back" note only to the people who clicked during the outage |
-| Brand incident (a viral complaint, recall or safety issue — often flagged by social listening) | every promotional send and any flow featuring the affected product; transactional only | a short holding note drafted for the human's read, matching what the brand says on social; promos resume only on the human's yes |
+| Brand incident (a viral complaint, recall or safety issue — often flagged by research-market, which posts a hold list in chat naming the promo emails that touch the product) | every promotional send and any flow featuring the affected product; transactional only | a short holding note drafted for the human's read, matching what the brand says on social; promos resume only on the human's yes |
 | Account suspended by the tool | everything | gather the tool's stated reason; answer its compliance questions with consent evidence; no switching tools in a panic |
 | Data-privacy request (delete / unsubscribe everywhere) | — | name the tools where the person must be suppressed; the human executes |
 

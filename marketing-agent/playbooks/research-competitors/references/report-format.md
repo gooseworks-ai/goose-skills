@@ -1,95 +1,70 @@
 # Report format
 
-Load at steps 5–6. The report is a document people read, forward and compare over time: short at the top, depth below. Every fact carries a link and a date; every inference says it is one and why. Example values are for a fictional B2B scheduling tool — never copy them.
+Load at steps 5–6, with `../../../atoms/write-report/ATOM.md` (read it fully — its §1 shape and §3 check govern). A busy founder reads the top section and knows what changed and what to do. Examples are for a fictional B2B scheduling tool — never copy them.
 
-Template notes for you (never copy them into the report): section 5 profiles mirror the rival-pass return; section 7 rows follow `angles-and-gaps.md`; the report never names our own tools, playbooks or data vendors (rivals are named, of course). When a whole dimension couldn't be read for every rival (no ad library opened, say), put one plain line under the jobs line — what couldn't be read and what that means for the answer — and make the paid top-up for it the first decision in the closing message; never fill the gap with guesses.
+## The report
 
-**"For you" — the line that closes every finding** (openings, each profile, each swipe item, each "You vs them" row; skipped in facts-only mode):
-- `For you: fits — <why, from our facts> → make: <format> · hook: <direction> · product: <ours> · claim: "<approved line>" (or "<line>" — needs your sign-off, when it is a plain product fact not yet approved; or "you'd need proof of <X> first") · who: <static ads / video ads / organic posts / creators / landing page / the founder / the campaign plan>`
-- `For you: doesn't fit — <why, from our facts>`
-Plain words for "who" — never a playbook or tool name. The report recommends; it never makes the asset.
-- **No proof, no claim:** a recommendation that needs a claim not on the approved list says "you'd need proof of <X> first".
-- **Don't follow the herd:** when every rival does X, that is a reason to weigh something else; what buyers say outweighs what rivals do.
-- **Facts-only asks** (an investor update, a board slide, a market map): skip "For you" and "You vs them".
-- **Empty brand brain:** "I can't tell what fits you yet — I can learn your brand first." Never guess what fits.
-
-## The report — `research/competitors/<YYYY-MM-DD>-report.md`
-
-Saved through save-to-brain: title `Competitor report — <Brand> — <YYYY-MM-DD>`, tags `research-competitors`, `competitor-report`, `keep-history`.
+Brand copy `research/competitors/<YYYY-MM-DD>-report.md` (title `Competitor research — <Brand> — <YYYY-MM-DD>`, tags `research-competitors`, `competitor-report`, keep-history); local copy `gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-competitor-research.md`. A repeat run opens "In short" with what changed since the last report.
 
 ```markdown
-Do this first, because… <the single most important move and why, in one sentence>
-# Competitor report — <Brand> — <YYYY-MM-DD>
-Jobs served: <creative · messaging · timing · pricing · positioning · product · threats> · Company type: <type> · Rivals: <main> · Adjacent: <…> · Since last report: <one line on how the field changed, or "first report">
+# <Brand> — competitor research, <D Month YYYY>
 
-## 1. Do this first
-| # | Move | Why now | Upside (Inferred, with reason) | Effort | Evidence | Guardrail |
-|---|---|---|---|---|---|---|
-| 1 | Switch campaign for <rival>'s customers, ends <date> | <rival> shut down <date>; data deleted <date> | its users must move within weeks; reviews show they liked <feature> we have | landing page + offer + founder post | [link], [link] | no mocking the shutdown — "a home for your work"; offer approved by the founder |
+## In short
+- **Do this first:** <the one move, and why, in one sentence>.
+- <the biggest thing a rival did — and so what for us>
+- <where we're ahead or behind — and so what>
+- <a timely opening or a threat, with its end date>
 
-## 2. Timely openings (only when there are any — always above everything else)
-### <What happened> — <date> — window: <dates>
-What: <facts, linked> · Who it affects: <…> · The move: <…> · Plan: audience · offer · channels · assets · end date · Claims needing sign-off: <…>
-For you: <…>
+## Timely openings (only when there are any)
+### <What happened>, <date> — the window closes <date>
+<One sentence with the point.> What happened (linked), who it affects, the move (audience, offer, channels, what to make, end date), and the claims that need your OK.
+**For you:** <a plain sentence>
 
-## 3. You vs them
-| | What | Evidence (ours and theirs, linked) | For you |
-|---|---|---|---|
-| Ahead — say it louder | <where we beat them, from our facts and buyer quotes> | | |
-| Behind | <where they beat us — product, price, proof, reach> | | |
-| Everyone sounds the same | <phrases and claims every rival and we use> | | <what to say instead — buyers' words over rivals' habits> |
+## Who we compared, and why
+<One sentence.> The 3–6 rivals buyers compare us with now and how we know (searches, reviews, AI answers), plus the alternatives buyers use instead (a spreadsheet, an agency, an in-house hire).
 
-## 4. The landscape
-Positioning map — axes buyers care about (from reviews and community, not invented), each rival placed, empty seats marked:
-| | <axis A: low> | <axis A: high> |
-|---|---|---|
-| <axis B: high> | Rival A | (empty — opportunity) |
-| <axis B: low> | Rival B, Rival C | Us |
-
-Messaging table:
-| Rival | Exact headline | For whom | Top claims | Proof shown | Worn-out phrases |
-|---|---|---|---|---|---|
-
-Pricing table (date captured; "not public" where it isn't):
-| Rival | Plans and prices | Unit | Free tier / trial | Behind "contact sales" | Changed in last 12 months |
-|---|---|---|---|---|---|
-
-Channel heatmap (● heavy · ◐ some · ○ none found · ? couldn't read):
-| Rival | <columns for this company type> | Founder voice | Pages aimed at us (vs / alternatives) | Events | Partnerships |
-|---|---|---|---|---|---|
-B2B columns: LinkedIn ads · Google · LinkedIn organic · X · YouTube · Meta. DTC: Meta · TikTok · Instagram organic · creators · email. Consumer app: App Store / Play · TikTok · Instagram · creators.
-
-## 5. Rival profiles (one per main rival, same shape, about a page each)
+## The rivals, one by one
 ### <Rival>
-Snapshot: what they are · who they serve · size and funding · news, last 90 days (dated, linked)
-What they're running: top ads (link · start · days · format · hook · offer · landing page · likely-winner tag, inferred) · libraries with "none found"
-Organic: top posts per active platform (vs their own average) · inactive platforms
-Founder voice: <name, role> — repeated stories, claims, predictions, teasers (linked)
-Product and launches: launches (dated) · demo breakdowns · roadmap hints (hiring by team, talks, founder teasers)
-Pricing and offer · Positioning (exact headline) · Funnel and email
-Customers: segments · named customers · where their story and their reviews disagree
-What buyers say: 5 praises · 5 complaints (quotes, links) · switching reasons · n read
-Community · Events, next 90 days · Partnerships and integrations · Hiring (roles by team) · Search presence
-Where we win, where we lose, what to say: <each point Fact or Inferred>
-For you: <the one or two lines this rival implies>
+<One sentence: what they are and the one thing that matters most about them right now.>
+- **What's new:** launches, funding, hires, price changes (dated, linked).
+- **What they're running:** their ads on each platform (or "no ads found on Meta, LinkedIn, Google, TikTok, <date>"), the long-running ones and what they say; what their founders and team post.
+- **How they sell:** headline in their words, price and what you pay per, free trial or demo.
+- **What buyers say:** two or three short quotes (linked) — praise and complaints.
+- **Where we win, where we lose.**
+**For you:** <a plain sentence: fits or not and why; what to make, the claim it rests on, who makes it>
 
-## 6. Swipe file (formats, never words — 8 to 15 items, mixing ads, launch demos, creator demos and organic posts; fewer or text-only when ads and video couldn't be read — say so)
-| Item | Link · date · platform | Run length or engagement | Format breakdown (hook · beats · length · style · CTA) | For you |
-|---|---|---|---|---|
-| <rival> launch demo | [link] · <date> · YouTube | 120k views (3× channel average) | screen-record hook "watch this book…" → 3 bookings → time saved on screen → CTA | fits — our auto-reschedule does this job → make: 45 s LinkedIn screen-record · hook: "the 4-minute week" · product: auto-reschedule · claim: "2 hours saved a week" (approved) · who: video ads |
+## How they compare
+A pricing table (price, what you pay per, free tier or trial, changed recently), a messaging table (their headline, who it's for, the claims they lead with), and where each one shows up (ads by platform, social, founder posts, events — "lots", "some", "none found", "couldn't check").
 
-## 7. Angles (10 to 20 rows; fewer only if the evidence supports fewer — say so)
-| ID | Angle | From (gap / complaint / launch / worn-out phrase) | Evidence | Claim safety (OK as is / needs proof / needs sign-off) |
-|---|---|---|---|---|
+## You vs them
+| | What | For you |
+|---|---|---|
+| Where we're ahead — say it louder | | |
+| Where we're behind | | |
+| Where everyone sounds the same | | <what to say instead, in buyers' words> |
 
-## 8. Watch list and triggers
-Weekly: <what we'll diff> · React now if: <shutdown, acquisition, price change, big launch, outage, a rival bidding on our name, a viral category post>
+## Formats worth borrowing
+8–15 ads, demos and posts that are working in the category (fewer if ads couldn't be read — say so): what it is (linked), why we think it's working (how long it has run, how many versions, engagement against the account's usual), how it's built (hook, beats, length), and **for you** — how we'd make our own version: our hook, the feature that fills the reveal, the proof line, length, channel. Their structure, never their words.
 
-## 9. Sources, method and what we couldn't read
-Per rival: every source checked, including empty ones, with dates · how each was read (browser, search, server sample, paid read) · Couldn't read: <source — why — what it might have changed>
+## Angles worth testing
+10–20 angles in plain words: the reason to buy, who it's for, where it came from (a complaint, a gap, a launch we beat), and whether we can say it now, need proof first, or need your OK.
+
+## What to do
+1. <Move> — who does it · what it needs · how we'll know it worked.
+
+## What we're watching
+What a repeat run will check, and what would make us tell you sooner (a shutdown, a price change, a big launch, a rival bidding on our name).
+
+## What we couldn't check
+- <source — why — what it would change>
+
+## Sources
+- <title> — <link> — <date>
 ```
 
-**Picking moves for section 1:** each move is a "For you" that fits, ranked. Copy a proven format · counter-position a launch · switch campaign · comparison page · objection handling · gap angle · steal a channel they neglect · defend (spec §4). Upside is always inferred with its reason — never an invented number.
+**"For you" is a plain sentence,** never shorthand: does it fit us and why (from our facts); what to make or do; the claim it rests on — approved, "needs your OK", or "you'd need proof of X first"; and who does it in plain words (static ads, video ads, organic posts, creators, landing page, email, the founder, the campaign plan). When every rival does the same thing, that is a reason to weigh something else; what buyers say outweighs what rivals do. Facts-only asks leave it out. With an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
+
+**Never in the report** (write-report §1): angle or quote ids, file paths, tool or playbook names, "Fact / Inferred" tags (say "confirmed", "likely", "a guess, because…"), symbols instead of words, "jobs served" lines, links to local working files, process narration. When a dimension couldn't be read for every rival, say it once in plain words in "In short" and under "What we couldn't check" — never a column of question marks.
 
 ## A rival record — `research/competitors/<rival-slug>.md` (supersede)
 
@@ -97,11 +72,11 @@ Line 1: `COMPETITOR RESEARCH — rivals' claims and prices, not ours. Superseded
 
 ## Landscape — `research/competitors/landscape.md` (supersede)
 
-Line 1: the same marker. Line 2: "Do this first, because…". Then sections 3, 4 and 7 of the latest report (You vs them, map, tables, angles summary), so planners have one stable file. Title `Competitor landscape — <Brand> — <date>`, tags `research-competitors`, `competitor-landscape`.
+Line 1: the same marker. Line 2: "Do this first, because…". Then the latest report's "You vs them", "How they compare" and "Angles worth testing" sections, so planners have one stable file. Title `Competitor landscape — <Brand> — <date>`, tags `research-competitors`, `competitor-landscape`.
 
 ## Angle bank — `research/competitors/angle-bank.md` (supersede)
 
-Line 1: the marker. Line 2: "Do this first, because… <brief A-NN now>". One row per angle in the shape of `angles-and-gaps.md`, ids stable across runs (`A-07`); makers tag ads `angle:a-07`. Title `Angle bank — <Brand> — <date>`, tags `research-competitors`, `angle-bank`.
+Line 1: the marker. Line 2: "Do this first, because… <brief A-NN now>". One row per angle in the shape of `angles-and-gaps.md`, ids stable across runs (`A-07`); makers tag ads `angle:a-07`. The ids live here for the makers, never in the report. Title `Angle bank — <Brand> — <date>`, tags `research-competitors`, `angle-bank`.
 
 ## Watch notes — `research/competitors/watch/<YYYY-MM-DD>.md` (keep-history)
 

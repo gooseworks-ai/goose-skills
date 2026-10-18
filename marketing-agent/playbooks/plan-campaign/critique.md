@@ -119,3 +119,28 @@ Verdict after fixes: no MAJOR open in plan-campaign, run-paid-campaigns or analy
 
 2026-10-16 final contract check: references/channel-decision.md: the example channel row cites "buyer segments (customer research)", not a playbook name (the brief is read by the marketer).
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; shared atoms moved to `shared_atoms`.
+
+## Round 8 — Akhil's hand test (18 Oct, GooseWorks, staging) + Sonnet dry-run findings
+
+What the hand test showed (transcript read in full, beyond Akhil's list):
+- First question was a seven-part form (funnel rates, churn, margin, plan prices, tracking, hours, research) — "What type of question is this?"
+- Never asked which product or offer.
+- Asked before looking: Meta connection, social accounts, onboarding (who makes ads, platforms) and the site's pricing were never checked; asked a technical question (signup event, UTMs).
+- Went into email without saying the plan covers every channel.
+- After approval it went on to request ad generation itself, and filled each concept's proof with unsigned kit product copy to get the quote — a claims-gate breach and out of scope.
+- The plan lived only as campaign-record text; no readable file, no link.
+
+Fixed:
+- **Look first** (`references/intake.md` + SKILL Before you start 2): brand, products and prices, onboarding, Meta, social accounts, campaigns, pending creative, email program and calendar, performance definitions, research files, claims, and the live site — all before the first question.
+- **Ask like a person**: one short message — what I found (2–3 lines), product and offer first, then goal/dates/budget in one sentence, then a statement of what the plan covers ("every channel that could work… say if you want ads only"), then at most one or two plan-changing gaps with a stated default. Never a technical question; margin, funnel rates, hours become labelled assumptions; company-types' "Ask if missing" lists became "look first; ask only what changes the plan".
+- **Channels covered, said up front** — in the first message and as an In short bullet in the plan.
+- **No ad-making**: asked to make or price ads, it stops and offers the next job in plain words; never requests generation or fills proof with unsigned text.
+- **write-report**: the plan follows write-report §1 (In short first, point sentence per section, plain words, sourced and dated facts, no ids — tests numbered 1, 2) and §2 delivery (local clickable file, brand copy via save-to-brain with a link, campaign record); section headings siblings read are unchanged; jargon headings renamed ("If the goal needs changing"); link tags moved out of every asset row into one rule.
+- Ambiguities from the re-run resolved: version numbering continues from the campaign record's brief version; margin is a labelled assumption unless the plan turns on it; sources that disagree → live site wins, said in one line; the found paragraph stays at 2–3 lines.
+- meta.json: `atoms` local only, `shared_atoms` added (claims-gate, write-report, save-to-brain, spend-gate).
+
+Sonnet re-run (Akhil's exact ask and answers, staging, 0 credits) — tests/test-by-hand.md "Re-run 18 Oct": passes 1–6 (6's ad-quote branch not exercised). Graded against write-report §3: top 5 lines say what to do and why ✓; a non-marketer can follow the In short and story ✓, but full link-tag strings in all 23 asset rows and the "Renegotiation case" heading were jargon → fixed above; no ids/paths/tool names ✓ (link tags aside); the local link opens ✓, the brand link is a one-hour presigned URL → noted in the closing line and server-needs #14.
+Not changed: plan length (~29 KB) — the In short carries the 30-second read and the working sections are what makers and the paid run consume.
+
+## Round 9 — schedules rule (AGENTS.md §8 "Schedules", 18 Oct)
+The recurring offer was unconditional ("offer once to replan monthly"). Now the agent judges at the end of the run: a standing or always-on plan with live channels and weekly reads gets a monthly replan offer with its reason and cadence; a one-off push that ends on a date gets no schedule (at most one mid-point replan suggestion). Scheduled replans go through write-report and open with what changed; created paused per spend-gate.

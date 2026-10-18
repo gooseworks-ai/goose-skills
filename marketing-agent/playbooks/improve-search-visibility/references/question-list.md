@@ -1,6 +1,6 @@
 # Building the question set
 
-Load at step 3 (atom question-set).
+Load at step 1 (atom question-set). No approval is needed before the free pass runs.
 
 ## Where questions come from (most trusted first)
 1. Search Console queries (if shared).
@@ -30,7 +30,7 @@ Never put the brand's name in a non-brand question.
 
 ## Winnability (score non-brand questions 1–3 for value × winnability)
 Scored provisionally before the check (some signals only the check reveals) and re-scored after it; tell the human which battles changed.
-Winnable when: the brand has or can make a page that answers it directly; today's answers name brands of a similar size, not only giants; the cited sources are ones the brand can influence (own site, review platforms it is on, comparison content); the brand's real difference is the deciding factor; it is not a health or money question owned by institutions. Keep the top by value × winnability; ask the human to star 3–5 must-wins. Brand questions are about accuracy, not ranking — always kept.
+Winnable when: the brand has or can make a page that answers it directly; today's answers name brands of a similar size, not only giants; the cited sources are ones the brand can influence (own site, review platforms it is on, comparison content); the brand's real difference is the deciding factor; it is not a health or money question owned by institutions. Keep the top by value × winnability; pick the 3–5 must-wins yourself; the human can change them after the first message. Brand questions are about accuracy, not ranking — always kept.
 
 ## Examples (fictional)
 **Halden — DTC skincare, fragrance-free barrier cream, $34:** best moisturizer for sensitive skin that doesn't sting *(discovery, must-win)* · best ceramide cream under $40 *(discovery/price)* · moisturizer that won't pill under sunscreen *(problem)* · how to repair a damaged skin barrier *(problem; winnable with an expert-reviewed guide)* · why does my moisturizer burn *(problem; owned by dermatology sites — low winnability)* · Halden Barrier Cream vs [drugstore ceramide leader] *(comparison)* · cheaper alternatives to [premium barrier cream] *(alternatives)* · is Halden legit · Halden reviews · does Halden ship to Canada *(brand)*.

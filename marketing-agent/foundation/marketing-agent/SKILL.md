@@ -27,9 +27,8 @@ Pick one playbook for the marketer's ask, then run it. Never chain playbooks you
 |---|---|---|
 | where-to-start | "help me with marketing" · "where do I start" · "we just launched and need customers" · "what should I focus on this month" | A named outcome → that playbook; "why did sales drop" with live channels → analyze-performance |
 | learn-my-brand | "learn / set up my brand" · "here's our brand book" · "what can we claim" · "approve our claims" · "our price changed" · "remember how we talk" | Who our customers are → research-market |
-| research-market | "who is my customer" · "build a persona" · "mine our reviews" · "voice of customer" · "why do people buy or not buy" · "is my category growing" | A list of businesses or people to pitch → research-audience; what rivals run → research-competitors |
-| research-competitors | "competitor teardown" · "what ads are my competitors running" · "how do they price" · "find angles to brief" · "competitor X just launched" · "watch my competitors weekly" | What people say about rivals → listen-social |
-| listen-social | "who's talking about us" · "any mentions this week" · "is a complaint blowing up" · "what's trending in my category" · "draft replies to these comments" | Posts that ride a trend → run-organic-social |
+| research-market | "who is my customer" · "build a persona" · "mine our reviews" · "voice of customer" · "why do people buy or not buy" · "is my category growing" · "who's talking about us" · "any mentions this week" · "is a complaint blowing up" · "what's trending in my category" | A list of businesses or people to pitch → research-audience; what rivals run → research-competitors; posts that ride a trend → run-organic-social |
+| research-competitors | "competitor teardown" · "what ads are my competitors running" · "how do they price" · "find angles to brief" · "competitor X just launched" · "watch my competitors weekly" | What people say about rivals → research-market |
 | research-audience | "build me a prospect list" · "find 50 right-fit people with emails" · "find retail buyers or distributors" · "ABM target list" | Personas → research-market; influencers → work-with-creators |
 | plan-campaign | "I have this budget and date — what do I run" · "plan my launch / Black Friday" · "where should I advertise" · "how should I split my budget" · "replan next month" | Pausing ads on a sold-out product → run-paid-campaigns; only email sends → email-lifecycle |
 | make-static-ads | "make me image ads" · "fresh ads this week" · "refresh my tired ads" · "more like my winning ad" · "my image ad got rejected — fix it" · "a header image or social graphic" | Video → make-video-ads; clean product shots → make-product-photos; launching → run-paid-campaigns |
@@ -41,7 +40,7 @@ Pick one playbook for the marketer's ask, then run it. Never chain playbooks you
 | improve-search-visibility | "am I in ChatGPT / Google answers" · "why does ChatGPT recommend my competitor" · "SEO quick wins" · "organic traffic is flat" · "fix my app store listing" | Writing the full page → make-content |
 | work-with-creators | "find influencers" · "find real UGC creators" · "who should we send product to" · "is this creator's engagement real" · "what should I pay this creator" | AI-made UGC-style video → make-video-ads |
 | make-content | "write a blog post / case study / guide" · "draft this week's newsletter" · "repurpose this webinar" · "write one LinkedIn or X post" | A two-week posting calendar → run-organic-social; ad copy → make-static-ads |
-| run-organic-social | "fill my social calendar" · "write this week's posts" · "ghostwrite my founder's LinkedIn" · "plan the social for our launch" · "my accounts went quiet" | One standalone post → make-content; replies and crises → listen-social |
+| run-organic-social | "fill my social calendar" · "write this week's posts" · "ghostwrite my founder's LinkedIn" · "plan the social for our launch" · "my accounts went quiet" | One standalone post → make-content; replies → not covered yet; crises → research-market flags them |
 
 Every playbook lives at `../../playbooks/<playbook>/SKILL.md`. Shared setup, file locations and rules for every playbook are in `../guide/SKILL.md`.
 
@@ -55,4 +54,5 @@ Say so plainly; details and triggers are in `../../BACKLOG.md`.
 - Cold outreach sequences.
 - Amazon and marketplace listings and feeds.
 - Review replies and review monitoring (review-request emails are covered, in the email flows).
+- Drafting replies to comments and DMs, and comment moderation ("draft replies to these comments").
 - Press releases and PR pitching; WhatsApp flows.

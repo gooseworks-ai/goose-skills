@@ -37,7 +37,7 @@ The contract and the checks are `../../../atoms/claims-gate/ATOM.md` (owner: lea
 
 ## 5. Inspiration, owned footage and references
 
-- `gooseworks:social_inspiration_library` / `social_inspiration_search` — video outliers saved by listen-social (note = hook · format · topic): which formats are carrying the category right now.
+- `gooseworks:social_inspiration_library` / `social_inspiration_search` — video outliers saved by research-market's listening (tag `research-market`; note = outlier multiple · hook · format · topic): which formats are carrying the category right now.
 - `gooseworks:brand_read` `sections: ["organic"]` — the brand's own posts with views (and `media_asset_id`), and competitors' top posts. A high-performing owned video is the first candidate for a paid cut-down.
 - Competitor video ads: `gooseworks:media_list` `tags: ["ad_library","competitor_ad"]`, kind `reference` — structure only, never footage.
 - Creator footage rights: `creators/roster.csv` (brand coworker scope) and creator briefs record *proposed* rights only (its `deal_structure` is not a contract) — always ask the human whether paid-usage rights are signed.

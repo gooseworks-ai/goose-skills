@@ -1,6 +1,6 @@
 # Where buyer evidence lives — and how this playbook reaches it
 
-Load at step 1. Build the source plan from the row for the brand's company type; the free pass (step 3) reads every free source on it before the founder hears anything. Proxy paths for the paid top-up are in `../../../atoms/spend-gate/proxy-endpoints.md`.
+Load in the buyer-voice worker. Pick the row for the brand's company type; the free pass reads every free source on it before the founder hears anything. Proxy paths for the paid top-up are in `../../../atoms/spend-gate/proxy-endpoints.md`.
 
 ## How each source is read
 
@@ -38,4 +38,4 @@ All free, all in the free pass:
 2. Reviews of the 3–5 closest rival products — from the roster, suggestions and a web search, labelled "category voice, not your buyers".
 3. Adjacent products doing the same job.
 4. The category's communities: subreddits, creator review comments, YouTube review comments.
-5. If the floor in SKILL.md step 4 is still unmet after all of that: the report says so, shows what was read, and hands over the interview and survey kit.
+5. If the floor (`recognition-and-interviews.md` § The evidence floor) is still unmet after all of that: the report says so, shows what was read, and hands over the interview and survey kit.

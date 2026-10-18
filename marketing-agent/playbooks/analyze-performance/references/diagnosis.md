@@ -24,7 +24,7 @@ Load at step 3. A delta is not an explanation. For every metric that moved mater
 | **Competitor move** | the competitor watch digest (research-competitors) shows a launch or promo in the window | nothing in the digest |
 | **Conversion lag** | the window's last days immature; B2B stage lag | window mature |
 | **Retail / marketplace halo** | ads drive sales at a retailer or Amazon the store doesn't see; sell-through moved with ad spend | retailer data flat or provided and unmoved |
-| **Organic / PR / halo** | a post or press spike (social analytics, listen-social's report), brand-search lift | none |
+| **Organic / PR / halo** | a post or press spike (social analytics, research-market's "What people are saying"), brand-search lift | none |
 
 Without frequency or CPM data, fatigue and auction causes are **candidate, unconfirmed** — say so and ask for the export if the call depends on it.
 
