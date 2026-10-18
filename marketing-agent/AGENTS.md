@@ -192,7 +192,7 @@ Reading a public web page with the host's own fetch, browser or **web search** i
 
 ### Research playbooks: the shared pattern (decided 17 Oct, after the first hand tests)
 
-Applies to research-competitors, research-market, listen-social, research-audience and work-with-creators. The first hand tests failed the same way: questions before research, two credit yeses before any result, almost no web search, a chat summary instead of a report.
+Applies to research-competitors, research-market (which now includes social listening), research-audience, work-with-creators and improve-search-visibility. The first hand tests failed the same way: questions before research, two credit yeses before any result, almost no web search, a chat summary instead of a report.
 
 1. **Free pass first, ask nothing.** Before the first message to the marketer, do everything free: the brand brain and saved files; web search, news first (launches, funding, shutdowns, hires, press) for the brand and every subject; the host browser on public pages (websites, pricing, changelogs, ad libraries, app stores, Reddit threads, review pages); the server's free reads. Cover every dimension of the job for every main subject; never stop after one source to ask "go deeper?".
 2. **Then one message:** what was found, the draft answer, and only the decisions left (scope, a paid top-up, what to act on). Never ask a fact the free pass could find.
