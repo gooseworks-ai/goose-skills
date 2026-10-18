@@ -6278,9 +6278,9 @@
       "determinism": "provider",
       "path": "parts/video-h3max/1.5.0",
       "files": {
-        "README.md": "c7e5495d3e6a9eaa0316ecbc18747dfc81ab8b271a01f851287daf0018953eb7",
-        "part.json": "ad1af9edfb9b3158a2724dbd5f2ba27ef54d01246ae66557a6751fd3178d78ce",
-        "part.mjs": "fbda1ef2162fdbe07632c0dca81f82ce9609c0bb8ac0c950f67a51e99a8fa337"
+        "README.md": "7208a7fe4d0de565068a6ececc4e3e12e127ac83ea1dc17bd228c77a5411fd63",
+        "part.json": "1a794f474b9fc7671a706446c12f05ea2e88df9b16f5a23669fc191a81546cb9",
+        "part.mjs": "e526aa49c0b0f35b1459aaee65876353d45caaac909144fef92df0f857680c34"
       },
       "models": [
         {

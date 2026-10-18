@@ -1455,6 +1455,18 @@ function h3SceneTakePrompt(tpl, base, { id, index, beats, head, seconds, wps, pa
 }
 
 /** Whole-second takes keep the authored beat contract; H3 receives a number. */
+/**
+ * 1.5.0 takes.pad_s: one take's length fitted to its beats, in whole seconds from 4 to 15. Each spoken beat needs
+ * its words at wps plus a breath, each silent beat H3SCENE_TAKE_SILENT_S, and the take gets `pad` more; rounded up.
+ * Spare seconds are where H3 invents words or wanders off the framing, so a take is no longer than its lines need.
+ */
+function h3SceneTakeFitSeconds(words, wps, pad, who) {
+  const need = words.reduce((a, w) => a + (w ? w / wps + H3SCENE_TAKE_BREATH_S : H3SCENE_TAKE_SILENT_S), 0) + pad;
+  const seconds = Math.max(4, Math.ceil(need - 1e-9));
+  if (seconds > 15) throw new Error(`${who}'s beats need ${need.toFixed(1)} s with its pad, more than 15 s; cut words, beats or pad_s`);
+  return seconds;
+}
+
 function h3SceneTakeDuration(seconds) {
   if (!Number.isInteger(seconds) || seconds < 4 || seconds > 15) throw new Error(`a take lasts ${seconds} s; this part takes whole seconds from 4 to 15`);
   return seconds;
@@ -1469,11 +1481,11 @@ function h3SceneTakeJobs(inputs, tpl) {
   const count = many ? spec.count ?? 1 : 1;
   if (inputs.chain && count < 2) throw new Error('chain needs at least two takes');
   const groups = many ? h3SceneTakeGroups(picked, count) : [picked];
+  const pads = spec.pad_s == null ? null : Array.isArray(spec.pad_s) ? spec.pad_s : groups.map(() => spec.pad_s);
+  if (pads && pads.length !== groups.length) throw new Error(`takes.pad_s has ${pads.length} entries for ${groups.length} takes`);
   const limit = many ? H3SCENE_TAKES_MAX_BEATS : H3SCENE_TAKE_MAX_BEATS;
-  const seconds = inputs.seconds ?? H3SCENE_TAKE_DEFAULT_SECONDS;
-  const duration = h3SceneTakeDuration(seconds);
+  if (pads && inputs.seconds != null) throw new Error('takes.pad_s fits each take to its lines; give seconds or takes.pad_s, not both');
   const wps = inputs.words_per_second ?? H3SCENE_TAKE_DEFAULT_WPS;
-  const maxWords = inputs.max_words ?? Math.floor(seconds * wps);
   const named = (key) => tpl.templates && typeof tpl.templates[key] === 'string';
   let first = null;
   let later = null;
@@ -1493,7 +1505,11 @@ function h3SceneTakeJobs(inputs, tpl) {
   for (const [k, beats] of groups.entries()) {
     const id = `t${k + 1}`;
     if (beats.length > limit) throw new Error(`take ${id} has ${beats.length} scenes; a take holds at most ${limit} beats`);
-    const words = beats.reduce((a, b) => a + h3SceneTakeWords(h3SceneTakeSpokenLine(b.scene, pairs)), 0);
+    const beatWords = beats.map((b) => h3SceneTakeWords(h3SceneTakeSpokenLine(b.scene, pairs)));
+    const words = beatWords.reduce((a, w) => a + w, 0);
+    const seconds = pads ? h3SceneTakeFitSeconds(beatWords, wps, pads[k], `take ${id}`) : inputs.seconds ?? H3SCENE_TAKE_DEFAULT_SECONDS;
+    const duration = h3SceneTakeDuration(seconds);
+    const maxWords = inputs.max_words ?? Math.floor(seconds * wps);
     if (words > maxWords) throw new Error(`take ${id} has ${words} spoken words, more than ${maxWords} for ${seconds} s`);
     const job = h3SceneTakePrompt(tpl, base, { id, index: beats[0].index, beats, head: k === 0 ? first : later, seconds, wps, pairs, offScreen });
     if (!job.refs.length) throw new Error(`take ${id} has no reference image: give cast pictures, product photos or scene pictures the template's refs can use`);
@@ -2097,8 +2113,8 @@ const H3SCENE_TAKE_ONLY = {
   words_per_second: ['take', 'takes'],
   max_words: ['take', 'takes'],
   pronunciations: ['take', 'takes'],
-  first_frame: ['take'],
-  last_frame: ['take'],
+  first_frame: ['take', 'takes'],
+  last_frame: ['take', 'takes'],
 };
 // Context inputs make clip placeholders filled or refused. A plain clip list
 // with no plan or template context keeps literal braces as authored.
@@ -2237,16 +2253,23 @@ async function h3SceneRunTakeMode(inputs, ctx, manifest) {
     throw ctx.error('bad_input', String((err && err.message) || err));
   }
   await h3ScenePrepareReferences(ctx, jobs);
-  // 1.5.0: mode take may start on a composed first frame and end on a last one (both fitted by cover, as mode
-  // stills fits its stills). A first frame fixes where the creator and the product sit; a last frame showing the
-  // use done (a cap open) gives H3 both states of a small part a hand covers, so it does not redraw it.
+  // 1.5.0: modes take and takes may start on a composed first frame and end on a last one (both fitted by cover,
+  // as mode stills fits its stills). A first frame fixes where the creator and the product sit; a last frame showing
+  // the use done (a cap open) gives H3 both states of a small part a hand covers, so it does not redraw it. With
+  // several takes, every take starts on the first frame, every take but the last ends on it too, and the last ends on
+  // the last frame: the joins are the same picture on both sides, and the use gets a short take of its own.
   if (inputs.last_frame && !inputs.first_frame) throw ctx.error('bad_input', 'last_frame needs first_frame');
+  if (inputs.first_frame && inputs.chain) throw ctx.error('bad_input', 'first_frame and chain both join the takes; use one');
   if (inputs.first_frame) {
     const fit = { start: inputs.first_frame, who: 'first_frame' };
     const fitEnd = inputs.last_frame ? { start: inputs.last_frame, who: 'last_frame' } : null;
     await h3SceneFitStills(inputs, ctx, fitEnd ? [fit, fitEnd] : [fit]);
-    jobs[0].start = fit.start;
-    if (fitEnd) jobs[0].end = fitEnd.start;
+    for (const [k, j] of jobs.entries()) {
+      j.start = fit.start;
+      const last = k === jobs.length - 1;
+      if (!last) j.end = fit.start;
+      else if (fitEnd) j.end = fitEnd.start;
+    }
   }
   return kitCheckOutputs(ctx, manifest, await h3SceneRunTakes(inputs, ctx, jobs));
 }

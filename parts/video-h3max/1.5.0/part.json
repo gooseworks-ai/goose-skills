@@ -408,7 +408,7 @@
         "maximum": 40
       },
       "takes": {
-        "description": "mode takes: how many takes (scenes split by scene.extra.take, else evenly in order) and the template keys for the text of take 1 (first, default \"first\") and of later takes (later, default \"later\", else first's).",
+        "description": "mode takes: how many takes (scenes split by scene.extra.take, else evenly in order) and the template keys for the text of take 1 (first, default \"first\") and of later takes (later, default \"later\", else first's), and (1.5.0) pad_s: each take's length fitted to its lines (words at words_per_second plus a breath per beat) plus pad_s seconds, rounded up, 4 to 15; one number for every take or one per take; not with seconds.",
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -424,6 +424,25 @@
           "later": {
             "type": "string",
             "pattern": "^[a-z][a-z0-9_]{0,39}$"
+          },
+          "pad_s": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 10
+                }
+              }
+            ]
           }
         }
       },
@@ -594,14 +613,14 @@
         "type": "boolean"
       },
       "first_frame": {
-        "description": "mode take (1.5.0): the frame the take starts on, fitted by cover. Compose it from the real product photo so the creator and the product sit where they must (clear of the caption band); the creator and product references are still sent.",
+        "description": "modes take and takes (1.5.0): the frame the take starts on, fitted by cover; in mode takes every take starts on it and every take but the last ends on it, so each join shows the same picture. Compose it from the real product photo so the creator and the product sit where they must (clear of the caption band); the creator and product references are still sent.",
         "type": "object",
         "x-kit-file": {
           "media": "image"
         }
       },
       "last_frame": {
-        "description": "mode take (1.5.0): the frame the take ends on, fitted by cover; needs first_frame. The same pose with the use done (a cap open), so H3 sees both states of a part a hand covers.",
+        "description": "modes take and takes (1.5.0): the frame the (last) take ends on, fitted by cover; needs first_frame. The same pose with the use done (a cap open), so H3 sees both states of a part a hand covers.",
         "type": "object",
         "x-kit-file": {
           "media": "image"

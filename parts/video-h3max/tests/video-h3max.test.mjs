@@ -7,7 +7,7 @@ import { fileRef, hasFfmpeg, loadNewest, makeCtx, probe, run } from '../../_tool
 import { kitSchemaErrors } from '../../_lib/schema.mjs';
 import { h3SceneProviderPrompt } from '../src/provider.mjs';
 import { h3SceneReferenceCanvas } from '../src/frames.mjs';
-import { h3SceneTakeDuration, h3SceneTakeGroups, h3SceneTakeWindows } from '../src/takes.mjs';
+import { h3SceneTakeDuration, h3SceneTakeFitSeconds, h3SceneTakeGroups, h3SceneTakeWindows } from '../src/takes.mjs';
 import { nativeLine, photo, sample, streetInputs, template, ugcInputs } from './fixture.mjs';
 
 const { dir, manifest, mod } = await loadNewest('video-h3max');
@@ -419,6 +419,39 @@ test('1.5.0 mode take starts on first_frame and ends on last_frame, both fitted;
   assert.deepEqual(body.reference_image_urls, [inputs.cast[0].image, inputs.products[0].images[0]], 'references are still sent');
   const only = makeCtx({ partDir: dir, line: nativeLine() });
   await assert.rejects(mod.run(await ugcInputs(w, { last_frame: last }), only.ctx), (e) => refused(e) && /last_frame needs first_frame/.test(e.message));
-  await assert.rejects(mod.run({ ...(await ugcInputs(w)), mode: 'takes', takes: { count: 1 }, first_frame: first }, only.ctx), (e) => refused(e) && /first_frame works only in mode take/.test(e.message));
+  await assert.rejects(mod.run((({ max_words, pronunciations, ...rest }) => ({ ...rest, mode: 'reference', first_frame: first }))(await ugcInputs(w)), only.ctx), (e) => refused(e) && /first_frame works only in mode take or takes/.test(e.message));
+  assert.equal(only.orders.length, 0);
+});
+
+test('1.5.0 takes.pad_s fits each take to its lines; refuses past 15 s', () => {
+  assert.equal(h3SceneTakeFitSeconds([20, 10], 2.5, 0.5, 'take t1'), 14);
+  assert.equal(h3SceneTakeFitSeconds([10], 3, 2, 'take t2'), 6);
+  assert.equal(h3SceneTakeFitSeconds([2], 3, 0, 'take t2'), 4, 'never under 4 s');
+  assert.equal(h3SceneTakeFitSeconds([0], 3, 1, 'take t2'), 4, 'a silent beat holds its own time');
+  assert.throws(() => h3SceneTakeFitSeconds([40], 2.5, 1, 'take t1'), /more than 15 s/);
+});
+
+test('1.5.0 mode takes: every take starts on first_frame, joins on it, and the last ends on last_frame', { skip }, async () => {
+  const w = work();
+  const first = await photo(w, 'first.png');
+  const last = await photo(w, 'last.png');
+  const base = await ugcInputs(w);
+  delete base.seconds;
+  const inputs = { ...base, mode: 'takes', takes: { count: 2, first: 'take', later: 'take', pad_s: [0.5, 2] }, first_frame: first, last_frame: last };
+  const { ctx, orders } = ctxFor(inputs);
+  const out = await mod.run(inputs, ctx);
+  assert.equal(orders.length, 2);
+  const [a, b] = orders.map((o) => o.body);
+  const at = (x) => x && (x.path || x);
+  assert.ok(at(a.image_url) && at(a.image_url) === at(b.image_url), 'both takes start on the same fitted first frame');
+  assert.equal(at(a.end_image_url), at(a.image_url), 'take 1 ends on the first frame, so the join is the same picture');
+  assert.ok(at(b.end_image_url) && at(b.end_image_url) !== at(a.image_url), 'the last take ends on the last frame');
+  assert.deepEqual(out.timeline.scenes.map((x) => x.id), ['s1', 's2', 's3', 's4']);
+  // s1 "Okay, Glow pop just arrived and I love it." (9 words) + silent s2; s3 and s4 five words each; 2.5 words a second.
+  assert.equal(Number(a.duration), h3SceneTakeFitSeconds([9, 0], 2.5, 0.5, 'take t1'));
+  assert.equal(Number(b.duration), h3SceneTakeFitSeconds([5, 5], 2.5, 2, 'take t2'));
+  const only = makeCtx({ partDir: dir, line: nativeLine() });
+  await assert.rejects(mod.run({ ...inputs, seconds: 9 }, only.ctx), (e) => refused(e) && /give seconds or takes.pad_s, not both/.test(e.message));
+  await assert.rejects(mod.run({ ...inputs, chain: { crop: 'bottom_45' } }, only.ctx), (e) => refused(e) && /first_frame and chain both join the takes/.test(e.message));
   assert.equal(only.orders.length, 0);
 });

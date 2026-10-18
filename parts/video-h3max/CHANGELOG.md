@@ -5,9 +5,18 @@ frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
 ## 1.5.0
 
-- Mode take: `first_frame` (the take starts on it) and `last_frame` (it ends on it; needs `first_frame`), both fitted
-  by cover, the references still sent. A composed first frame fixes where creator and product sit; a last frame with
-  the use done keeps a covered part (a cap) from being redrawn (GOOSE-4034). Refused outside mode take.
+- Modes take and takes: `first_frame` (the take starts on it) and `last_frame` (it ends on it; needs `first_frame`),
+  both fitted by cover, the references still sent. A composed first frame fixes where creator and product sit; a last
+  frame with the use done keeps a covered part (a cap) from being redrawn (GOOSE-4034). In mode takes every take
+  starts on `first_frame`, every take but the last ends on it, and the last ends on `last_frame`, so each join is the
+  same picture on both sides. Refused with `chain` and outside modes take and takes.
+- Mode takes: `takes.pad_s` (one number or one per take) fits each take to its lines: words at `words_per_second`
+  plus a breath per beat, plus `pad_s`, rounded up, 4 to 15 s. Spare seconds are where H3 invents words and lets
+  the product drift down into the caption band. Not with `seconds`.
+- Paid test (GOOSE-4034, Graza, seed 1): a 9 s take for two lines and a 6 s take for the use line and the cap flip,
+  both started on one composed held-high still; the join could not be seen, the bottle stayed above the caption band
+  in both, and the cap stayed visible as it opened. One 15 s take with the same still lowered the bottle into the
+  captions for the use and swung it back to meet the last frame.
 
 ## 1.4.0
 
