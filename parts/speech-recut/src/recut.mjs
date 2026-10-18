@@ -33,7 +33,8 @@
 //   - Muted, not cut (1.1.0): speech in no line inside a scene whose tag is
 //     in mute_tags (the use: a cap flipped open, a pack torn) is silenced and
 //     its picture kept, from the end of the last line word before it for up
-//     to mute_hold_s; then the take is cut (at the take's end) or the silence
+//     to mute_hold_s (only speech after the scene's line; speech before it
+//     is cut as usual); then the take is cut (at the take's end) or the silence
 //     is cut down as dead air. A generated creator fills the seconds after
 //     her line with made-up words while her hands do the use, and cutting the
 //     words cut the use (GOOSE-4034).
@@ -388,10 +389,21 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   const muteKeys = new Set((muteTags || []).map(kitTagKey).filter(Boolean));
   const tagOf = new Map((scenes || []).map((s, i) => [s && s.id != null ? String(s.id) : String(i + 1), kitTagKey(kitSceneTag(s))]));
   const spanOf = (e) => ({ start: Math.min(...e.words.map((w) => w.start)), end: Math.max(...e.words.map((w) => w.end)) });
+  // Only speech AFTER the scene's line: made-up words before it are cut as usual, because muting them would
+  // hold a silent talking mouth before the line (a paid Graza use take talked for 3 s before its line).
+  const lineEnd = (id) => {
+    const words = entries.filter((x) => x.entry.scene_id === id).flatMap((x) => x.words);
+    return words.length ? Math.max(...words.map((w) => w.end)) : null;
+  };
   const mute = entries.map((e, n) => {
     if (!extra[n] || !muteKeys.size) return false;
     const at = spanOf(e).start;
-    return timelineScenes.some((sc) => muteKeys.has(tagOf.get(String(sc.id))) && at >= clamp(sc.start_s) - RECUT_EPS && at < clamp(sc.end_s) + RECUT_EPS);
+    return timelineScenes.some((sc) => {
+      if (!muteKeys.has(tagOf.get(String(sc.id)))) return false;
+      const end = lineEnd(String(sc.id));
+      const from = end == null ? clamp(sc.start_s) : end;
+      return at >= from - RECUT_EPS && at < clamp(sc.end_s) + RECUT_EPS;
+    });
   });
 
   // What may never be cut: kept words, gaps holding speech the line lacks, and silent beats.

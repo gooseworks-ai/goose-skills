@@ -609,3 +609,12 @@ test('1.1.0 mute_tags: made-up words between the use and a later line keep the h
   assert.equal(plan.mutes.length, 1);
   assert.ok(plan.mutes[0].end_s <= words.find((x) => x.text === 'Try').start_s + 1e-6, 'the mute never covers the next line');
 });
+
+test('1.1.0 mute_tags: made-up words before the use line are cut, not muted', () => {
+  const take = useTake();
+  take.speech[1] = line('u', 'This one is a squeeze bottle.', [w('This', 6.2, 6.3), w('one', 6.3, 6.45), w('is', 6.45, 6.55), w('a', 6.55, 6.6), w('squeeze', 6.6, 6.8), w('bottle.', 6.8, 7.0)], 'This one is a squeeze bottle.');
+  take.speech[2] = { text: '', spoken: 'grazes impropanct', start_s: 3.3, end_s: 5.5, words: [w('grazes', 3.3, 4.0), w('impropanct', 4.2, 5.5)] };
+  const plan = recutPlan({ ...take, mute_tags: ['use'] });
+  assert.deepEqual(plan.mutes, []);
+  assert.ok(plan.cuts.some((c) => c.kind === 'extra'), 'the words before the line go');
+});
