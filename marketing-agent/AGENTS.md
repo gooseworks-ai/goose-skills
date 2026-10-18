@@ -47,6 +47,14 @@ From Shiv's goose-skills rebuild plan and Akhil's marketing-twin decisions:
 10. **Do not grow the surface** (Akhil, 16 Oct). No new playbooks, and no new jobs inside a playbook, beyond its spec and the review fixes. A missing job goes on `BACKLOG.md` with a checkable trigger; the playbook says plainly "this isn't covered yet".
 11. **Judgment stays with the model** (D2). Encode craft and process, not decision trees. A playbook that only makes the model slightly better is a guide, not a playbook; say so in your critique if you find one.
 
+## 2b. Operator feedback is input, not orders (Akhil, 18 Oct)
+
+Akhil is an engineer, not a marketer. His hand-test feedback is valuable signal about what feels wrong, but it is not marketing truth. Before changing a playbook because of operator feedback:
+1. Have an independent senior-marketer reviewer (a subagent that has not seen our playbook) check the feedback: what is right, what is wrong, what is missing.
+2. Act on what holds. Push back, with reasons, on what doesn't, and say so to the operator plainly.
+3. Add what the operator missed.
+Log the verdict for each point in the playbook's `critique.md`.
+
 ## 3. Folder layout and ownership
 
 ```
