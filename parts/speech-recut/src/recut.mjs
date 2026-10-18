@@ -30,10 +30,18 @@
 //     shot long enough to cover from keeps a short shot, with a warning.
 //   - Scenes with no line that the timeline places are silent beats (a
 //     reaction, a payoff): their spans are kept whole.
+//   - Muted, not cut (1.1.0): speech in no line inside a scene whose tag is
+//     in mute_tags (the use: a cap flipped open, a pack torn) is silenced and
+//     its picture kept, from the end of the last line word before it for up
+//     to mute_hold_s; then the take is cut (at the take's end) or the silence
+//     is cut down as dead air. A generated creator fills the seconds after
+//     her line with made-up words while her hands do the use, and cutting the
+//     words cut the use (GOOSE-4034).
 //
 // Every top-level name starts with `recut` (bundled modules share one
 // namespace, parts/_tools/bundle.mjs).
 import { kitHeardKey } from '../../_lib/heard.mjs';
+import { kitSceneTag, kitTagKey } from '../../_lib/scene-match.mjs';
 
 /** Nothing is cut closer than this to a heard word (Whisper's word edges drift by tens of ms). */
 export const RECUT_EDGE_S = 0.06;
@@ -43,6 +51,9 @@ export const RECUT_REPEAT_PAD_S = 0.04;
 export const RECUT_LOOKAHEAD = 5;
 /** The longest repeated run of words that counts as a repeat. */
 export const RECUT_MAX_REPEAT_WORDS = 4;
+
+/** How long the picture is held after a line in a mute_tags scene, when mute_hold_s is not given. */
+export const RECUT_MUTE_HOLD_S = 1.5;
 
 /** A take the cut cannot fix: bad_input, because the take (not the cut) is wrong. */
 export class RecutRefusal extends Error {}
@@ -357,7 +368,7 @@ export function recutCheckSpeech(speech, scenes) {
   }
 }
 
-export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: timelineScenes = [], picture_cuts: pictureCuts = [], min_shot_s: minShot = 0.4, max_gap_s: maxGap = 0.25, drop = 'repeats' }) {
+export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: timelineScenes = [], picture_cuts: pictureCuts = [], min_shot_s: minShot = 0.4, max_gap_s: maxGap = 0.25, drop = 'repeats', mute_tags: muteTags = [], mute_hold_s: muteHold = RECUT_MUTE_HOLD_S }) {
   if (!(duration > 0)) throw new RecutRefusal('the take has no length');
   const clamp = (t) => Math.min(Math.max(Number(t) || 0, 0), duration);
   recutCheckSpeech(speech, scenes);
@@ -373,6 +384,15 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   // repeated line, a filler) is cut out with drop 'repeats'; with 'none' it is kept as speech.
   const hasLines = (scenes || []).some((s) => String((s && s.line) || '').trim());
   const extra = entries.map((e) => drop === 'repeats' && hasLines && recutIsExtra(e.entry) && e.words.length > 0);
+  // 1.1.0: extra speech that starts inside a mute_tags scene's span is muted, not cut.
+  const muteKeys = new Set((muteTags || []).map(kitTagKey).filter(Boolean));
+  const tagOf = new Map((scenes || []).map((s, i) => [s && s.id != null ? String(s.id) : String(i + 1), kitTagKey(kitSceneTag(s))]));
+  const spanOf = (e) => ({ start: Math.min(...e.words.map((w) => w.start)), end: Math.max(...e.words.map((w) => w.end)) });
+  const mute = entries.map((e, n) => {
+    if (!extra[n] || !muteKeys.size) return false;
+    const at = spanOf(e).start;
+    return timelineScenes.some((sc) => muteKeys.has(tagOf.get(String(sc.id))) && at >= clamp(sc.start_s) - RECUT_EPS && at < clamp(sc.end_s) + RECUT_EPS);
+  });
 
   // What may never be cut: kept words, gaps holding speech the line lacks, and silent beats.
   const fixed = [];
@@ -392,6 +412,23 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   );
   for (const s of timelineScenes) {
     if (silent.has(String(s.id)) && s.end_s > s.start_s) occupied.push({ start: clamp(s.start_s), end: clamp(s.end_s), kind: 'silent_scene' });
+  }
+  // Muted speech: the picture is held from the last line word before it for up to mute_hold_s (never past the next
+  // line word), and the words under it are silenced; the rest of that silence is cut as usual.
+  const muted = [];
+  const holdEnds = new Set();
+  {
+    const lineWords = occupied.filter((o) => o.kind === 'word');
+    for (const x of recutMerge(entries.filter((_, n) => mute[n]).map((e) => ({ ...spanOf(e), kind: 'muted' })))) {
+      const lo = Math.max(0, ...lineWords.filter((o) => o.end <= x.start + RECUT_EPS).map((o) => o.end));
+      const hi = Math.min(duration, ...lineWords.filter((o) => o.start >= x.end - RECUT_EPS).map((o) => o.start));
+      const holdEnd = Math.min(hi, lo + muteHold);
+      if (holdEnd > lo + RECUT_EPS) {
+        occupied.push({ start: lo, end: holdEnd, kind: 'muted_hold' });
+        holdEnds.add(holdEnd);
+      }
+      muted.push({ start: Math.max(lo, x.start - RECUT_EDGE_S), end: Math.min(hi, x.end + RECUT_EDGE_S) });
+    }
   }
   // A line whose leading or trailing heard words are not in the line: the silence next to it holds them.
   const firstWord = (n) => entries[n].words.find((_, i) => !per[n].droppedWords.has(i));
@@ -424,7 +461,7 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   // (a silent beat) takes only its own words.
   const extraIn = new Map();
   const wordsAt = occupied.filter((o) => o.kind === 'word');
-  for (const x of recutMerge(entries.filter((_, n) => extra[n]).map((e) => ({ start: Math.min(...e.words.map((w) => w.start)), end: Math.max(...e.words.map((w) => w.end)), kind: 'extra' })))) {
+  for (const x of recutMerge(entries.filter((_, n) => extra[n] && !mute[n]).map((e) => ({ start: Math.min(...e.words.map((w) => w.start)), end: Math.max(...e.words.map((w) => w.end)), kind: 'extra' })))) {
     const g = gaps.find((y) => y.start <= x.start + RECUT_EPS && x.end <= y.end + RECUT_EPS);
     if (g) {
       const has = extraIn.get(g);
@@ -490,8 +527,11 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
         continue;
       }
       if (tail && p.end >= duration - RECUT_EPS) {
-        // The tail: hold twice max_gap_s after the last word, so the last reaction lands.
-        if (length > 2 * maxGap) removals.push({ start: p.start + 2 * maxGap, end: duration, kind: 'tail' });
+        // The tail: hold twice max_gap_s after the last word, so the last reaction lands. After a muted hold the
+        // hold was the reaction: the take ends there.
+        const afterHold = [...holdEnds].some((h) => Math.abs(h - p.start) < RECUT_EPS);
+        if (afterHold) removals.push({ start: p.start, end: duration, kind: 'tail' });
+        else if (length > 2 * maxGap) removals.push({ start: p.start + 2 * maxGap, end: duration, kind: 'tail' });
         continue;
       }
       if (length <= maxGap + RECUT_EPS) continue;
@@ -559,8 +599,14 @@ export function recutPlan({ duration, fps, speech, scenes, timeline_scenes: time
   const cuts = merged.map((r) => ({ at_s: t3(r.start), removed_s: +(r.end - r.start).toFixed(3), kind: r.kind }));
   // Source stretches that hold heard speech with no timed words (untimed leading or trailing extras,
   // gaps inside a line the line lacks): never a room-tone window, or the bed would loop that speech.
-  const heard = [...heldGaps, ...occupied.filter((o) => o.kind === 'held')].map((g) => ({ start: g.start, end: g.end }));
-  return { removals: merged, keep, speech: outSpeech, scenes: outScenes, cuts, seconds, warnings, heard, covers };
+  const heard = [...heldGaps, ...occupied.filter((o) => o.kind === 'held'), ...muted].map((g) => ({ start: g.start, end: g.end }));
+  // Muted stretches in edit time: each piece of a muted stretch that the edit keeps.
+  const mutes = recutMerge(
+    muted.flatMap((m) => keep.filter((k) => k.end > m.start + RECUT_EPS && k.start < m.end - RECUT_EPS).map((k) => ({ start: map(Math.max(m.start, k.start)), end: map(Math.min(m.end, k.end)), kind: 'muted' }))),
+  )
+    .filter((m) => m.end - m.start > 1e-3)
+    .map((m) => ({ start_s: +m.start.toFixed(3), end_s: +m.end.toFixed(3) }));
+  return { removals: merged, keep, speech: outSpeech, scenes: outScenes, cuts, seconds, warnings, heard, covers, mutes };
 }
 
 // ---------------------------------------------------------------------------------------------

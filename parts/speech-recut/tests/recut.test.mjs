@@ -549,3 +549,63 @@ test('1.0.3: a room-tone window louder than the ceiling is speech, not room tone
   assert.equal(recutRoomTooLoud({ level_db: -40 }, -45), true, 'a style can set its own ceiling');
   assert.equal(recutRoomTooLoud(null), false);
 });
+
+/** A review take: a line, then the use line, then made-up words while her hands do the use (GOOSE-4034). */
+function useTake() {
+  return {
+    duration: 8,
+    fps: FPS,
+    scenes: [
+      { id: 'a', line: 'Graza Sizzle is made for heat.', extra: { shot: 'selfie' } },
+      { id: 'u', line: 'This one is a squeeze bottle.', extra: { shot: 'use' } },
+    ],
+    speech: [
+      line('a', 'Graza Sizzle is made for heat.', [w('Graza', 0.3, 0.6), w('Sizzle', 0.6, 1.0), w('is', 1.0, 1.1), w('made', 1.1, 1.4), w('for', 1.4, 1.6), w('heat.', 1.6, 2.0)], 'Graza Sizzle is made for heat.'),
+      line('u', 'This one is a squeeze bottle.', [w('This', 3.2, 3.3), w('one', 3.3, 3.45), w('is', 3.45, 3.55), w('a', 3.55, 3.6), w('squeeze', 3.6, 3.8), w('bottle.', 3.8, 4.0)], 'This one is a squeeze bottle.'),
+      { text: '', spoken: 'And Ayan has the green sting', start_s: 4.5, end_s: 7.5, words: [w('And', 4.5, 4.7), w('Ayan', 4.8, 5.3), w('has', 5.5, 5.8), w('the', 6.0, 6.2), w('green', 6.4, 6.9), w('sting', 7.0, 7.5)] },
+    ],
+    timeline_scenes: [
+      { id: 'a', start_s: 0, end_s: 3.0 },
+      { id: 'u', start_s: 3.0, end_s: 8 },
+    ],
+    max_gap_s: 1.2,
+  };
+}
+
+test('1.1.0 mute_tags: made-up words in the use are muted with the picture held mute_hold_s, then the take ends', () => {
+  const plan = recutPlan({ ...useTake(), mute_tags: ['Use'] });
+  assert.ok(!plan.cuts.some((c) => c.kind === 'extra'), 'the made-up words are not cut');
+  const tail = plan.removals.find((r) => r.kind === 'tail');
+  near(tail.start, 4.0 + 1.5, 'the picture is held 1.5 s after the last line word', 0.5 / FPS + 1e-6);
+  near(tail.end, 8, 'then the take ends');
+  assert.equal(plan.mutes.length, 1);
+  near(plan.mutes[0].start_s, 4.5 - RECUT_EDGE_S, 'the mute starts at the made-up words', 1 / FPS);
+  near(plan.mutes[0].end_s, plan.seconds, 'and runs to the end of the hold', 1 / FPS);
+  assert.deepEqual(plan.speech.map((e) => e.scene_id), ['a', 'u'], 'the made-up words leave the speech');
+  assert.ok(plan.heard.some((h) => h.start <= 4.5 && h.end >= 5.4), 'never a room-tone window');
+  assertOnFrames(plan, 8);
+});
+
+test('1.1.0 mute_tags: without it, or in another scene, made-up words are still cut', () => {
+  const plain = recutPlan(useTake());
+  assert.ok(plain.cuts.some((c) => c.kind === 'extra' || c.kind === 'tail'));
+  assert.ok(plain.seconds < 4.0 + 1.2 + 1e-6, `the words go with the tail: ${plain.seconds}`);
+  assert.deepEqual(plain.mutes, []);
+  const other = recutPlan({ ...useTake(), mute_tags: ['hands'] });
+  assert.deepEqual(other.mutes, []);
+  near(other.seconds, plain.seconds, 'a tag no scene has changes nothing');
+});
+
+test('1.1.0 mute_tags: made-up words between the use and a later line keep the hold, then one pause', () => {
+  const take = useTake();
+  take.duration = 11;
+  take.scenes.push({ id: 'c', line: 'Try it.', extra: { shot: 'selfie' } });
+  take.timeline_scenes = [{ id: 'a', start_s: 0, end_s: 3.0 }, { id: 'u', start_s: 3.0, end_s: 8.5 }, { id: 'c', start_s: 8.5, end_s: 11 }];
+  take.speech.push(line('c', 'Try it.', [w('Try', 9.0, 9.3), w('it.', 9.3, 9.6)], 'Try it.'));
+  const plan = recutPlan({ ...take, mute_tags: ['use'], mute_hold_s: 1.0 });
+  const words = wordsOut(plan);
+  const gap = words.find((x) => x.text === 'Try').start_s - words.find((x) => x.text === 'bottle.').end_s;
+  near(gap, 1.0 + 1.2, 'the hold, then max_gap_s of the rest', 1 / FPS + 1e-6);
+  assert.equal(plan.mutes.length, 1);
+  assert.ok(plan.mutes[0].end_s <= words.find((x) => x.text === 'Try').start_s + 1e-6, 'the mute never covers the next line');
+});
