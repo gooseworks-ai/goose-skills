@@ -7260,6 +7260,93 @@
           "model": "eleven_v4_turbo"
         }
       ]
+    },
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.4.0",
+      "interface": 1,
+      "kind": "generate_voice",
+      "kit": ">=1.0.1 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "aresample",
+            "aformat",
+            "atrim",
+            "asetpts",
+            "apad",
+            "concat",
+            "atempo",
+            "asplit",
+            "adelay"
+          ],
+          "encoders": [
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v3"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_multilingual_v2"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v4"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v4_turbo"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "1k_chars",
+        "measure": {
+          "from": "/scenes/*/line",
+          "as": "length"
+        },
+        "rates_usd": {
+          "eleven_v3": 0.1,
+          "eleven_multilingual_v2": 0.1,
+          "eleven_v4": 0.08,
+          "eleven_v4_turbo": 0.04
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/voice-elevenlabs/1.4.0",
+      "files": {
+        "README.md": "a752c62631074ae1f5d44d7b7dfa2fb9a760feea0143a4526d0786eb531220e6",
+        "part.json": "c4568bfae9d8b9bd5e393dc1def80e024d51cc558f5894b761b3f28b128029dd",
+        "part.mjs": "b2f6891ea3470118dfdaf4bce18d1cc99a43564dbde7d335b96daa9405613e8e"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v3"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_multilingual_v2"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v4"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v4_turbo"
+        }
+      ]
     }
   ]
 }
