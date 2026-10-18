@@ -79,3 +79,18 @@ test('refusals cost nothing: no use scene, no extra.after, no product photo, no 
     assert.equal(orders.length, 0);
   }
 });
+
+test('the first frame is drawn in the take\'s own room when setting and settings are given', { skip }, async () => {
+  const w = work();
+  const looks = join(w, 'take.prompt.json');
+  writeFileSync(looks, JSON.stringify({ version: 1, looks: { home: 'filmed at home in a lived-in, tidy kitchen, in bright direct sunlight from a big window.' } }));
+  const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: pngLine });
+  await mod.run(await inputsFor(w, { setting: 'home', settings: await fileRef(looks, 'json') }), ctx);
+  assert.match(orders[0].body.prompt, /a deep red knit sweater\), filmed at home in a lived-in, tidy kitchen, in bright direct sunlight from a big window\. One hand/);
+  assert.doesNotMatch(orders[0].body.prompt, /same room and light as that photo/);
+  for (const [extra, re] of [[{ setting: 'home' }, /go together/], [{ setting: 'car', settings: await fileRef(looks, 'json') }, /no looks\.car/]]) {
+    const c = makeCtx({ partDir: dir, line: pngLine });
+    await assert.rejects(mod.run(await inputsFor(w, extra), c.ctx), (e) => re.test(e.message));
+    assert.equal(c.orders.length, 0);
+  }
+});

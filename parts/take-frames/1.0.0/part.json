@@ -142,6 +142,19 @@
           }
         }
       },
+      "setting": {
+        "description": "The take's setting key (plan.answers.setting), looked up in the looks of settings: the first frame is drawn in that room and light, the same text the take is filmed in. Without it the frame keeps the cast picture's room.",
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 40
+      },
+      "settings": {
+        "description": "A JSON file with a looks object (setting key to its text), such as the take's own template. Goes with setting.",
+        "type": "object",
+        "x-kit-file": {
+          "media": "json"
+        }
+      },
       "use_tags": {
         "description": "The scene tags (extra.shot or a leading \"Tag:\", compared without case or spacing) that mark the use. Default [\"use\"].",
         "type": "array",
@@ -155,7 +168,7 @@
         }
       },
       "template": {
-        "description": "A JSON file with \"first\" and \"last\" prompt texts, to replace the defaults. Placeholders: {look}, {name}, {product.name}, {before}, {after}.",
+        "description": "A JSON file with \"first\" and \"last\" prompt texts, to replace the defaults. Placeholders: {look}, {name}, {product.name}, {before}, {after}, {setting}.",
         "type": "object",
         "x-kit-file": {
           "media": "json"

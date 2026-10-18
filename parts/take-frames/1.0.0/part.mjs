@@ -471,13 +471,17 @@ function kitPickScenes(scenes, pick = 'all', options = {}) {
 //   last   an edit of `first` (plus the product photo again): the same photo, one change, the use's
 //          extra.after ("the lime green flip cap is open").
 //
+// The room is the take's own (setting: a key of the take template's looks, the same text the take is
+// filmed in), never the cast picture's: a frame in another room than the take's words made H3 cut to
+// the words' room in the first 0.2 s and back to the frame's at the end (GOOSE-4034, 18 Oct).
+//
 // The use is the last plan scene tagged with one of use_tags. A plan with no use scene, or a use scene
 // with no extra.after, is refused before anything is ordered.
 
 const EDIT = 'openai/gpt-image-2/edit';
 
 export const TF_FIRST = [
-  'A real, unedited vertical 9:16 selfie photo on the front camera of an iPhone, chest up, held at arm\'s length: the person in reference image 1 (the same face, hair, skin and outfit: {look}), in the same room and light as that photo.',
+  'A real, unedited vertical 9:16 selfie photo on the front camera of an iPhone, chest up, held at arm\'s length: the person in reference image 1 (the same face, hair, skin and outfit: {look}), {setting}.',
   'One hand holds the {product.name} in reference image 2 upright beside the face, its front label to the lens: the same product, shape, colours, cap and label as that photo, never redrawn or mirrored. The hand holds it by the middle of its body, below the name on the label.',
   'The product is held up high: its bottom edge is no lower than the chin, so all of it sits in the top two-thirds of the frame and nothing of it reaches the bottom third, which shows only the top they are wearing.',
   '{before} The lips are closed in a small smile. Real skin texture, natural shine, no retouching. No text, no captions, no watermark.',
@@ -493,7 +497,7 @@ export function tfUseScene(scenes, tags) {
 
 /** A prompt text with its placeholders filled; a placeholder left over is an error. */
 export function tfFill(text, values) {
-  const out = text.replace(/\{(look|name|product\.name|before|after)\}/g, (_, k) => values[k] ?? '').replace(/\s{2,}/g, ' ').trim();
+  const out = text.replace(/\{(look|name|product\.name|before|after|setting)\}/g, (_, k) => values[k] ?? '').replace(/\s{2,}/g, ' ').trim();
   const left = /\{[^{}]*\}/.exec(out);
   if (left) throw new Error(`the prompt has a placeholder this part does not fill: ${left[0]}`);
   return out;
@@ -540,7 +544,21 @@ export async function run(inputs, ctx) {
     if (!tpl || typeof tpl.first !== 'string' || typeof tpl.last !== 'string') throw ctx.error('bad_input', 'template must be a JSON file with "first" and "last" prompt texts');
     texts = { first: tpl.first, last: tpl.last };
   }
+  let setting = 'in the same room and light as that photo';
+  if (inputs.setting != null || inputs.settings) {
+    if (inputs.setting == null || !inputs.settings) throw ctx.error('bad_input', 'setting and settings go together: the key and the file whose looks hold its text');
+    let looks = null;
+    try {
+      looks = JSON.parse(await readFile(inputs.settings.path, 'utf8')).looks;
+    } catch {
+      looks = null;
+    }
+    const text = looks && typeof looks[inputs.setting] === 'string' ? looks[inputs.setting].trim() : '';
+    if (!text) throw ctx.error('bad_input', `settings has no looks.${inputs.setting}`);
+    setting = text.replace(/[.\s]+$/, '');
+  }
   const values = {
+    setting,
     look: member.look || 'the person in the photo',
     name: member.name || 'the creator',
     'product.name': product.name || 'product',

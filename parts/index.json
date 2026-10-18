@@ -5916,8 +5916,8 @@
       "path": "parts/take-frames/1.0.0",
       "files": {
         "README.md": "b77fd4868c28ba9846c482a9ad7faa9c3e266dbeb2673d2c6eb63a1c63db18ca",
-        "part.json": "7e0da8daa9a8d9bb9a775b22ecd2a81d6395c64c2b671c6f32bc2ca74e021f54",
-        "part.mjs": "606f22945dc3339c970cba9aae8300e6f5ec285e2177f67bfa708b686aad796e"
+        "part.json": "5bcc0d8cd180f091de3eb8028fbec63ca7a0301d2dbc41649af5baf8d2b75943",
+        "part.mjs": "f19895dc99d0d05f2c40dfce9eedf3f03ae9d03e6ae00850f251377ae0e7884c"
       },
       "models": [
         {
