@@ -2,8 +2,11 @@
 """Collect actual video/audio evidence and run the final file measurements.
 
 The measurements implement gooseworks-final-measure/1, the same checks the
-GooseWorks server runs on an uploaded final. Any failed check makes the
-command exit 1. Passing measurements never declare creative quality approved.
+GooseWorks server runs on an uploaded final. A failed check is a finding with
+a severity (must_fix, ask or fine; references/check-severity.md). The command
+exits 1 only for a broken file: it can't be played, its length is wrong, or it
+has no sound when sound is planned. Passing measurements never declare creative
+quality approved.
 """
 import argparse
 from fractions import Fraction
@@ -24,9 +27,14 @@ _SCRIPTS = str(Path(__file__).resolve().parent)
 if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 from assembly_timeline import normalize_timeline  # noqa: E402
+from final_grade import broken_reasons, graded_findings, quality_status  # noqa: E402
 from final_measure import final_measure, reference_frozen_share, script_lines  # noqa: E402
 from reference_rate import measure as measure_rate  # noqa: E402
 from reference_shots import reference_setup_count  # noqa: E402
+
+
+class BrokenFile(ValueError):
+    """The file can't be read as a video (no picture, no known length, a failed probe)."""
 
 
 def command(args, timeout=300):
@@ -109,7 +117,7 @@ def silence_intervals(log, duration):
 
 
 def collect(video, destination, timeline_path=None, words_path=None, script_path=None, reference_path=None,
-            reference_words_path=None, plan_path=None, reference_shots_path=None, frame_judge_path=None):
+            reference_words_path=None, plan_path=None, reference_shots_path=None):
     for tool in ("ffmpeg", "ffprobe"):
         if not shutil.which(tool):
             raise ValueError(f"Required local capability unavailable: {tool}")
@@ -119,21 +127,30 @@ def collect(video, destination, timeline_path=None, words_path=None, script_path
     destination = Path(destination).resolve()
     if destination.exists() and any(destination.iterdir()):
         raise ValueError("Use a fresh evidence directory; preserve previous review evidence")
-    probe = json.loads(command(["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(video)]).stdout)
+    try:
+        probe = json.loads(command(["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(video)]).stdout)
+    except (subprocess.CalledProcessError, ValueError) as error:
+        raise BrokenFile(f"Unreadable media: {error}") from error
     streams = probe.get("streams", [])
     visual = next((s for s in streams if s.get("codec_type") == "video"), None)
     if visual is None:
-        raise ValueError("Input has no video stream")
-    duration = float(visual.get("duration") or probe.get("format", {}).get("duration", 0))
+        raise BrokenFile("Input has no video stream")
+    try:
+        duration = float(visual.get("duration") or probe.get("format", {}).get("duration", 0))
+    except (TypeError, ValueError):
+        duration = float("nan")
     if not math.isfinite(duration) or not 0 < duration <= 180.1:
-        raise ValueError("Video duration must be known and between zero and180 seconds")
+        raise BrokenFile("Video duration must be known and between zero and 180 seconds")
     destination.mkdir(parents=True, exist_ok=True)
     frames = destination / "frames"
     frames.mkdir()
-    extraction = command(["ffmpeg", "-nostdin", "-v", "debug", "-i", str(video), "-an", "-vf", "showinfo@qc_source=checksum=0,fps@qc_sampling=2,scale=720:-2", "-frames:v", "361", "-q:v", "3", str(frames / "%04d.jpg")])
+    try:
+        extraction = command(["ffmpeg", "-nostdin", "-v", "debug", "-i", str(video), "-an", "-vf", "showinfo@qc_source=checksum=0,fps@qc_sampling=2,scale=720:-2", "-frames:v", "361", "-q:v", "3", str(frames / "%04d.jpg")])
+    except subprocess.CalledProcessError as error:
+        raise BrokenFile("The picture can't be decoded") from error
     images = sorted(frames.glob("*.jpg"))
     if not images:
-        raise ValueError("No reviewable frames were extracted")
+        raise BrokenFile("No reviewable frames were extracted")
     source_time_base, timestamps = sampled_frame_timestamps(extraction.stderr, len(images))
     audio = None
     loudness = None
@@ -183,9 +200,8 @@ def collect(video, destination, timeline_path=None, words_path=None, script_path
                             measure_rate([reference_words_path])["words_per_second"] if reference_words_path else None,
                             json.loads(Path(plan_path).read_text()) if plan_path else None,
                             reference_setup_count(reference_shots_path or reference_path) if (reference_shots_path or reference_path) else None)
-    judge = json.loads(Path(frame_judge_path).read_text()) if frame_judge_path else None
-    judge_status = ("missing" if judge is None else judge.get("status") if isinstance(judge, dict)
-                    and judge.get("output_sha256") == final_sha and judge.get("kind") == "final" else "other_bytes")
+    broken = broken_reasons(duration, has_audio, pcm, timeline, supplied, final_sha)
+    findings = graded_findings(measure)
     expected_pauses = (assembly.get('timeline') or {}).get('pauses', [])
     unplanned_quiet = [gap for gap in near_silence if not any(p['start_ms']/1000 <= gap['start_s'] + 0.05 and p['end_ms']/1000 >= gap['end_s'] - 0.05 for p in expected_pauses)]
     report = {
@@ -202,11 +218,10 @@ def collect(video, destination, timeline_path=None, words_path=None, script_path
         "final_measure": measure,
         "final_measure_failed": [c["id"] for c in measure["checks"] if c["result"] == "fail"],
         "review_capability": {"audio_perception": False, "motion_perception": False},
-        "content_review_status": "incomplete",
-        "frame_judge_status": judge_status,
-        "measured_review_may_approve": judge_status == "pass" and not any(c["result"] == "fail" for c in measure["checks"]),
-        "quality_status": "requires_visual_and_audio_review",
-        "remaining_review": ["Play the complete exact final at normal speed with actual sound and moving picture", "Inspect every join, quiet candidate and ending; listen to isolated speech and the final mix", "Compare recognized words with actual audio and approved copy; ASR may hallucinate in silence", "Verify product/actions, identity, captions and destination readability", "Bind actual reviewer capability, complete coverage and unresolved notes to this final hash and timeline revision"],
+        "broken": broken,
+        "findings": findings,
+        "quality_status": quality_status(broken, findings),
+        "remaining_review": ["Inspect full-resolution frames for the must_fix list (references/check-severity.md)", "Inspect every join, quiet candidate and ending", "Compare recognized words with the approved copy; ASR may hallucinate in silence", "Mark the video complete and read the host's final check"],
     }
     (destination / "evidence.json").write_text(json.dumps(report, indent=2) + "\n")
     (destination / "final_measure.json").write_text(json.dumps(measure, indent=2) + "\n")
@@ -224,15 +239,20 @@ def main():
     parser.add_argument('--reference-words', help="The reference's word-timed transcript (any reference_rate.py shape); fails the final's speech when over 15%% slower")
     parser.add_argument('--plan', help="The approved shot plan (reference_shots.py PLAN.json): planned callbacks and listed changes")
     parser.add_argument('--reference-shots', help="The reference's shot table (reference_shots.py study); its setups set the floor")
-    parser.add_argument('--frame-judge', help="frame_judge.json (--kind final) for these bytes; a measured review approves only when it passes")
     args = parser.parse_args()
-    report = collect(args.video, args.destination, args.timeline, args.words, args.script, args.reference,
-                     args.reference_words, args.plan, args.reference_shots, args.frame_judge)
+    try:
+        report = collect(args.video, args.destination, args.timeline, args.words, args.script, args.reference,
+                         args.reference_words, args.plan, args.reference_shots)
+    except BrokenFile as error:
+        print(json.dumps({"video": args.video, "broken": [{"id": "unplayable", "detail": str(error)}], "quality_status": "broken"}))
+        print(f"BROKEN unplayable: {error}", file=sys.stderr)
+        return 1
     print(json.dumps(report))
-    failed = [c for c in report["final_measure"]["checks"] if c["result"] == "fail"]
-    for item in failed:
-        print(f"FAIL {item['id']}: {item['detail']} {item['intervals_ms']}", file=sys.stderr)
-    return 1 if failed else 0
+    for item in report["findings"]:
+        print(f"{item['severity'].upper()} {item['id']}: {item['detail']} {item['intervals_ms']}", file=sys.stderr)
+    for item in report["broken"]:
+        print(f"BROKEN {item['id']}: {item['detail']}", file=sys.stderr)
+    return 1 if report["broken"] else 0
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 """gooseworks-final-measure/1: measured checks on a finished video file.
 
-The GooseWorks server runs the same checks on an uploaded final and blocks on
-any fail. This copy gives the agent the same answer before upload. Every
+The GooseWorks server runs the same checks on an uploaded final and reports
+each fail as a graded finding; only a broken file is refused. This copy gives the
+agent the same answer before upload (graded in final_grade.py). Every
 check returns pass, fail or not_applicable with the time ranges it found.
 These are measurements, not a creative verdict.
 """
@@ -84,7 +85,7 @@ def silent_by_choice(raw_timeline):
 
 def final_measure(video, final_sha, duration, has_audio, pcm, activity, raw_timeline, timeline, words, lines,
                   reference_share=None, reference_rate=None, plan=None, reference_setups=None):
-    """gooseworks-final-measure/1. Every fail blocks; not_applicable says why.
+    """gooseworks-final-measure/1. A fail is a finding graded in final_grade.py; not_applicable says why.
 
     reference_share is the reference's frozen-picture share (0-1) when a reference is supplied;
     reference_rate is its measured speaking rate (words/s, from reference_rate.py); plan is the

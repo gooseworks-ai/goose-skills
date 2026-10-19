@@ -561,7 +561,7 @@ export async function run(inputs, ctx) {
         provider: 'fal', model: MODEL, shot_type: 'talking_creator',
         checks: ['script', 'voice', 'lipsync', 'identity', 'framing', 'performance', 'product_action'],
         product_action_required: actionRequired,
-        sources: made.filter((take) => !take.review).map((take) => ({ id: take.id, video: take.file, source_sha256: take.file.sha256, script_sha256: takeScriptSha256(take), coverage_required: { start_s: 0, end_s: take.duration, video_watched: true, audio_listened: true }, expected_lines: take.lines.map((line) => ({ scene_id: line.scene_id, written: line.text, spoken: line.spoken })) })),
+        sources: made.filter((take) => !take.review).map((take) => ({ id: take.id, video: take.file, source_sha256: take.file.sha256, script_sha256: takeScriptSha256(take), coverage_required: { start_s: 0, end_s: take.duration, motion: ['watched', 'measured'], audio: ['listened', 'measured'] }, expected_lines: take.lines.map((line) => ({ scene_id: line.scene_id, written: line.text, spoken: line.spoken })) })),
       },
       takes: made.map((take) => ({ id: take.id, video: take.file, start_s: 0, scene_ids: take.lines.map((line) => line.scene_id), script_sha256: takeScriptSha256(take), content_review_status: take.review ? 'pass' : 'pending', timing_method: take.timing_method })),
     });

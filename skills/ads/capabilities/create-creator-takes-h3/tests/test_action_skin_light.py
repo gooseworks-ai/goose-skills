@@ -69,6 +69,8 @@ class ActionShotTests(unittest.TestCase):
             self.assertEqual(saved["shot"], "talking")
             self.assertIn("looking into the lens", prompt)
             self.assertNotIn("The action:", prompt)
+            self.assertIn("While talking to the lens: she holds up the box.", prompt)
+            self.assertNotIn("both hands are free", prompt)
 
     def test_a_given_framing_and_face_fill_win(self):
         with tempfile.TemporaryDirectory() as tmp:
