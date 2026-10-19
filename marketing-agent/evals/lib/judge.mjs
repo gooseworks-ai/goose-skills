@@ -247,10 +247,14 @@ function readJson(f) { return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, '
 const mark = (v) => (v === 'pass' ? 'pass' : v === 'fail' ? '**FAIL**' : v ? `— ${v}` : '—');
 const cell = (s) => String(s ?? '').replace(/\|/g, '/').replace(/\n/g, ' ');
 
+const ARM_ORDER = ['with-skill', 'legacy', 'baseline'];
+const ARM_LABEL = { 'with-skill': 'With skill (new playbooks)', legacy: 'Legacy (old skills)', baseline: 'Baseline (no skills)' };
+const score = (j) => 2 * j.counts.must.pass + j.counts.should.pass + j.counts.expert.pass;
+
 /** results.json + summary.md for one playbook, from whatever arms exist. */
 export function writePlaybookSummary(outDir, slug) {
   const arms = {};
-  for (const arm of ['with-skill', 'baseline']) {
+  for (const arm of ARM_ORDER) {
     const run = readJson(path.join(outDir, arm, 'run.json'));
     const judge = readJson(path.join(outDir, arm, 'judge.json'));
     if (run || judge) arms[arm] = { run, judge };
@@ -259,10 +263,11 @@ export function writePlaybookSummary(outDir, slug) {
   fs.writeFileSync(path.join(outDir, 'results.json'), JSON.stringify(results, null, 2));
 
   const rubric = loadRubric(slug);
+  const present = ARM_ORDER.filter((a) => arms[a]);
   const v = (arm, id) => arms[arm]?.judge?.criteria.find((c) => c.id === id);
-  let md = `# ${slug} — eval ${today()}\n\n`;
-  md += `| | With skill | Baseline |\n|---|---|---|\n`;
-  const line = (label, f) => { md += `| ${label} | ${arms['with-skill'] ? f(arms['with-skill']) : '—'} | ${arms.baseline ? f(arms.baseline) : '—'} |\n`; };
+  const head = (first) => `| ${first} | ${present.map((a) => ARM_LABEL[a]).join(' | ')} |\n|${'---|'.repeat(present.length + 1)}\n`;
+  let md = `# ${slug} — eval ${today()}\n\n` + head('');
+  const line = (label, f) => { md += `| ${label} | ${present.map((a) => f(arms[a])).join(' | ')} |\n`; };
   line('**Verdict (all must-pass)**', (a) => (a.judge ? (a.judge.must_pass ? '**PASS**' : '**FAIL**') : 'not judged'));
   line('Must-pass', (a) => (a.judge ? `${a.judge.counts.must.pass}/${a.judge.counts.must.total}` : '—'));
   line('Should-pass', (a) => (a.judge ? `${a.judge.counts.should.pass}/${a.judge.counts.should.total}` : '—'));
@@ -271,14 +276,17 @@ export function writePlaybookSummary(outDir, slug) {
   line('Files written', (a) => (a.run ? (a.run.files.join(', ') || 'none') : '—'));
   line('Minutes', (a) => (a.run ? a.run.minutes : '—'));
   line('Cost (subject + simulator + judge)', (a) => `$${((a.run?.subject_cost_usd ?? 0) + (a.run?.sim_cost_usd ?? 0) + (a.judge?.judge_cost_usd ?? 0)).toFixed(2)}`);
-  md += `\n## Criteria\n\n| Id | Tier | Criterion | With skill | Baseline |\n|---|---|---|---|---|\n`;
-  for (const c of rubric.criteria) {
-    md += `| ${c.id} | ${c.tier} | ${cell(c.text.length > 120 ? c.text.slice(0, 117) + '…' : c.text)} | ${mark(v('with-skill', c.id)?.verdict)} | ${mark(v('baseline', c.id)?.verdict)} |\n`;
+  line('Brand reset (undone / flagged / errors)', (a) => (a.run?.brand_reset?.actions ? `${a.run.brand_reset.undone} / ${a.run.brand_reset.flagged.length} / ${a.run.brand_reset.errors.length}` : a.run?.brand_reset?.error ? 'FAILED' : 'off'));
+  if (arms.legacy?.run?.legacy) {
+    const L = arms.legacy.run.legacy;
+    md += `\n## Legacy arm: old skills\n\n- Installed: ${L.installed.map((s) => s.slug + (s.picked ? '' : ' (dependency)')).join(', ')}\n- Loaded by the agent: ${L.loaded.join(', ') || 'none'}\n- Vendor keys a logged-in user lacks: ${L.keys.missing_vendor_keys.join(', ') || 'none'}\n- Key or login failures seen: ${L.key_failures.length ? L.key_failures.map((k) => `${k.skill} (${cell(k.evidence).slice(0, 120)})`).join('; ') : 'none'}\n`;
   }
+  md += `\n## Criteria\n\n` + head('Id | Tier | Criterion').replace('|---|', '|---|---|---|');
+  for (const c of rubric.criteria) md += `| ${c.id} | ${c.tier} | ${cell(c.text.length > 120 ? c.text.slice(0, 117) + '…' : c.text)} | ${present.map((a) => mark(v(a, c.id)?.verdict)).join(' | ')} |\n`;
   md += `\n## Judge's overall read\n\n`;
-  for (const arm of Object.keys(arms)) md += `- **${arm}:** ${cell(arms[arm].judge?.overall || 'not judged')}\n`;
-  md += `\n## Evidence\n\n| Id | With skill | Baseline |\n|---|---|---|\n`;
-  for (const c of rubric.criteria) md += `| ${c.id} | ${cell(v('with-skill', c.id)?.evidence)} | ${cell(v('baseline', c.id)?.evidence)} |\n`;
+  for (const arm of present) md += `- **${arm}:** ${cell(arms[arm].judge?.overall || 'not judged')}\n`;
+  md += `\n## Evidence\n\n` + head('Id');
+  for (const c of rubric.criteria) md += `| ${c.id} | ${present.map((a) => cell(v(a, c.id)?.evidence)).join(' | ')} |\n`;
   fs.writeFileSync(path.join(outDir, 'summary.md'), md);
   console.log(`  [${slug}] summary → ${path.join(outDir, 'summary.md')}`);
   return results;
@@ -289,28 +297,29 @@ export function writeSuiteSummary(outRoot, slugs) {
   const frac = (c) => (c?.total ? `${c.pass}/${c.total}` : '–');
   let md = `# Marketing-agent evals — ${path.basename(outRoot)}\n\n`;
   md += `A run passes only if every must-pass criterion passes. Cost = agent + simulated marketer + judge, as reported by the CLI.\n\n`;
-  md += `| Playbook | Arm | Verdict | Must | Should | Expert | Turns | Stopped because | Min | Cost |\n|---|---|---|---|---|---|---|---|---|---|\n`;
+  md += `| Playbook | Arm | Verdict | Must | Should | Expert | Turns | Stopped because | Min | Cost | Reset |\n|---|---|---|---|---|---|---|---|---|---|---|\n`;
   let total = 0;
   const helps = [];
   for (const slug of slugs) {
     const outDir = path.join(outRoot, slug);
-    for (const arm of ['with-skill', 'baseline']) {
+    for (const arm of ARM_ORDER) {
       const run = readJson(path.join(outDir, arm, 'run.json'));
       const judge = readJson(path.join(outDir, arm, 'judge.json'));
+      if (!run && !judge && !fs.existsSync(path.join(outDir, arm))) continue;
       const failed = fs.existsSync(path.join(outDir, arm, 'judge-error.txt')) && !judge ? 'judge failed' : fs.existsSync(path.join(outDir, arm, 'arm-error.txt')) ? 'run failed' : null;
       const cost = (run?.subject_cost_usd ?? 0) + (run?.sim_cost_usd ?? 0) + (judge?.judge_cost_usd ?? 0);
       total += cost;
-      md += `| [${slug}](${slug}/summary.md) | ${arm} | ${failed ?? (judge ? (judge.must_pass ? '**PASS**' : 'FAIL') : '—')} | ${frac(judge?.counts.must)} | ${frac(judge?.counts.should)} | ${frac(judge?.counts.expert)} | ${run?.turns ?? '—'} | ${run?.stopped ?? '—'} | ${run?.minutes ?? '—'} | $${cost.toFixed(2)} |\n`;
+      const reset = run?.brand_reset?.actions ? `${run.brand_reset.undone} undone${run.brand_reset.left_over.length ? ', LEFT OVER' : ''}` : run?.brand_reset?.error ? 'FAILED' : 'off';
+      md += `| [${slug}](${slug}/summary.md) | ${arm} | ${failed ?? (judge ? (judge.must_pass ? '**PASS**' : 'FAIL') : '—')} | ${frac(judge?.counts.must)} | ${frac(judge?.counts.should)} | ${frac(judge?.counts.expert)} | ${run?.turns ?? '—'} | ${run?.stopped ?? '—'} | ${run?.minutes ?? '—'} | $${cost.toFixed(2)} | ${reset} |\n`;
     }
-    const w = readJson(path.join(outDir, 'with-skill', 'judge.json'));
-    const b = readJson(path.join(outDir, 'baseline', 'judge.json'));
-    if (w && b) {
-      const score = (j) => 2 * j.counts.must.pass + j.counts.should.pass + j.counts.expert.pass;
-      const d = score(w) - score(b);
-      helps.push(`- **${slug}:** ${d > 0 ? 'skill ahead' : d < 0 ? '**baseline ahead**' : 'no difference'} (with skill ${frac(w.counts.must)} must, baseline ${frac(b.counts.must)} must)`);
+    const j = Object.fromEntries(ARM_ORDER.map((a) => [a, readJson(path.join(outDir, a, 'judge.json'))]));
+    const scored = ARM_ORDER.filter((a) => j[a]).map((a) => `${a} ${score(j[a])} (${frac(j[a].counts.must)} must)`);
+    if (scored.length > 1) {
+      const best = ARM_ORDER.filter((a) => j[a]).sort((x, y) => score(j[y]) - score(j[x]))[0];
+      helps.push(`- **${slug}:** best = ${best === 'with-skill' ? best : `**${best}**`} · ${scored.join(' · ')}`);
     }
   }
-  md += `\nTotal cost: $${total.toFixed(2)}\n\n## Does the skill help?\n\nScore = 2 × must passed + should passed + expert passed.\n\n${helps.join('\n') || 'Not enough judged pairs.'}\n`;
+  md += `\nTotal cost: $${total.toFixed(2)}\n\n## Does the skill help?\n\nScore = 2 × must passed + should passed + expert passed. Within 2 points is judge noise (see README).\n\n${helps.join('\n') || 'Not enough judged pairs.'}\n`;
   const routing = path.join(outRoot, 'routing');
   if (fs.existsSync(routing)) md += `\nRouting: see ${fs.readdirSync(routing).map((m) => `[${m}](routing/${m}/summary.md)`).join(', ')}.\n`;
   fs.writeFileSync(path.join(outRoot, 'summary.md'), md);
