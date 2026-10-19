@@ -30,19 +30,19 @@ Never put the brand's name in a non-brand question.
 
 ## Winnability (score non-brand questions 1–3 for value × winnability)
 Scored provisionally before the check (some signals only the check reveals) and re-scored after it; tell the human which battles changed.
-Winnable when: the brand has or can make a page that answers it directly; today's answers name brands of a similar size, not only giants; the cited sources are ones the brand can influence (own site, review platforms it is on, comparison content); the brand's real difference is the deciding factor; it is not a health or money question owned by institutions. Keep the top by value × winnability; pick the 3–5 must-wins yourself; the human can change them after the first message. Brand questions are about accuracy, not ranking — always kept.
+Winnable when: the brand has or can make a page that answers it directly; today's answers name brands of a similar size, not only giants; the cited sources are ones the brand can influence (own site, review platforms it is on, comparison content); the brand's real difference is the deciding factor; it is not a health or money question owned by institutions. Keep the top by value × winnability; pick the 3–5 key questions yourself; the human can change them after the first message. Brand questions are about accuracy, not ranking — always kept.
 
 ## Examples (fictional)
-**Halden — DTC skincare, fragrance-free barrier cream, $34:** best moisturizer for sensitive skin that doesn't sting *(discovery, must-win)* · best ceramide cream under $40 *(discovery/price)* · moisturizer that won't pill under sunscreen *(problem)* · how to repair a damaged skin barrier *(problem; winnable with an expert-reviewed guide)* · why does my moisturizer burn *(problem; owned by dermatology sites — low winnability)* · Halden Barrier Cream vs [drugstore ceramide leader] *(comparison)* · cheaper alternatives to [premium barrier cream] *(alternatives)* · is Halden legit · Halden reviews · does Halden ship to Canada *(brand)*.
+**Halden — DTC skincare, fragrance-free barrier cream, $34:** best moisturizer for sensitive skin that doesn't sting *(discovery, key question)* · best ceramide cream under $40 *(discovery/price)* · moisturizer that won't pill under sunscreen *(problem)* · how to repair a damaged skin barrier *(problem; winnable with an expert-reviewed guide)* · why does my moisturizer burn *(problem; owned by dermatology sites — low winnability)* · Halden Barrier Cream vs [drugstore ceramide leader] *(comparison)* · cheaper alternatives to [premium barrier cream] *(alternatives)* · is Halden legit · Halden reviews · does Halden ship to Canada *(brand)*.
 
-**Shiftwise — restaurant scheduling SaaS:** best scheduling software for restaurants *(must-win)* · scheduling app for a 20-person restaurant · how to stop staff no-shows *(problem)* · 7shifts alternatives *(must-win)* · Shiftwise vs 7shifts · scheduling software that integrates with Toast *(highly winnable)* · restaurant scheduling software cost per location *(price)* · free restaurant scheduling software *(low value)* · what is Shiftwise · Shiftwise pricing *(brand)*.
+**Shiftwise — restaurant scheduling SaaS:** best scheduling software for restaurants *(key question)* · scheduling app for a 20-person restaurant · how to stop staff no-shows *(problem)* · 7shifts alternatives *(key question)* · Shiftwise vs 7shifts · scheduling software that integrates with Toast *(highly winnable)* · restaurant scheduling software cost per location *(price)* · free restaurant scheduling software *(low value)* · what is Shiftwise · Shiftwise pricing *(brand)*.
 
 ## The saved set (`search/questions.md`)
 ```
 version: 1 · agreed: [date] by [human] · country: US · language: en · city: — 
 who ships: [you / developer / agency] · pages a month: [n] · may name competitors: [yes/no, names never to touch] · locations: [list or —]
 engines: chatgpt-search, google-organic, google-aio, google-ai-mode[, perplexity]
-runs·route: chatgpt 3 (must-wins 5) browser | 2 pasted · aio 2 browser | 1 pasted · ai-mode 2 browser | 1 pasted · organic 1 lookup
-| id | AI form | Google form | stage | value | winnable | must-win | why |
+runs·route: chatgpt 1 (key questions 3) browser | 2 pasted · aio 1 | 1 pasted · ai-mode 1 | 1 pasted · organic 1 lookup (paid top-up only)
+| id | AI form | Google form | stage | value | winnable | key question | why |
 ```
 Changing the set bumps the version; diffs compare only questions present in both versions.

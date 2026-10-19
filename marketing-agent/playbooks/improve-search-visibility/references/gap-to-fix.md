@@ -5,7 +5,7 @@ Load at step 4 (pattern and fixes).
 ## Find the pattern (countable statements only)
 1. Take the cited URLs from lost and partial rows; classify each by source type.
 2. Count by stage and surface. Write statements a reader can check: "6 of 8 lost comparison runs cite rivals' own 'vs' pages; Halden has none." "Category answers cite three listicles; Halden is in none." "Brand answers call Shiftwise 'an AI workforce platform' (its 2022 positioning) — traced to its Crunchbase profile."
-3. For each lost must-win, open the passage the engine lifted from the winner and the brand's nearest page. Note what the winner has: a first sentence that answers outright, the entity named, numbers (price, size, counts), a comparison table, a visible date, a page that matches the intent at all.
+3. For each lost key question, open the passage the engine lifted from the winner and the brand's nearest page. Note what the winner has: a first sentence that answers outright, the entity named, numbers (price, size, counts), a comparison table, a visible date, a page that matches the intent at all.
 
 ## Lever by cause
 | Cause | Fix type | Counts in the five? |
@@ -35,5 +35,6 @@ Load at step 4 (pattern and fixes).
 ```
 To: [editor or contact found on the page; "find on the page" if none]
 Subject: [Page title] — a [category] option for [the page's audience]
-Hi [name], your "[page title]" ([URL], updated [date]) covers [category] for [audience]. [Brand] is [one-line description, canonical]. For your readers: [2–3 checkable facts — price, the one difference, a proof point from the approved claims]. Happy to send a sample / a trial account / anything you need to test it. [Name, role, brand]
+Hi [name], your "[page title]" ([URL], updated [date]) covers [category] for [audience]. [Brand] is [one-line description, canonical]. For your readers: [2–3 checkable facts — price, the one difference, a proof point from the approved claims]. [One reason the editor's readers gain: a data point only the brand has, a real side-by-side test they can reproduce, or an honest "when not to use us" line — not just "happy to give you a free account".] Happy to set you up to test it. [Name, role, brand]
 ```
+Many "best X" lists are affiliate-driven; if the cited lists all carry affiliate links, say so and note that an affiliate programme may be the real ask (a decision for the human, not drafted here).

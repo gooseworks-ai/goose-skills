@@ -8,11 +8,12 @@ Say only: "I want to plan a campaign." When asked, answer as Akhil did: GooseWor
 
 Pass if:
 1. **Looks first.** Before the first question it has read the brand, products and prices, onboarding, what's connected (Meta, social accounts), existing campaigns, research files and the site's pricing page — and says what it found in two or three lines.
-2. **Asks like a person.** One short message, at most ~4 questions, no form: product/plan and offer first, then goal + dates + budget in one sentence, then at most one or two gaps that change the plan (e.g. how many past users it could email). No funnel-rate, churn, margin, tracking or "who makes the ads" questions.
+2. **Asks like a person.** One short message, at most ~4 questions, no form: product/plan and offer first, **then who it's for — new people or people who already know you, and how many** — then goal + dates + budget in one sentence, then at most one more plan-changing gap (a plain "can you see what brought an upgrade?" is allowed). No funnel-rate, churn, margin, pixel/link-tag or "who makes the ads" questions.
 3. **Says what the plan covers** up front: every channel that could work (ads, email, organic, creators), kept only if it fits, "say if you want ads only".
 4. The plan opens with **In short** ("Do this first:"), says which channels it covers and why, where we run and where we don't, and reads like a good marketer wrote it: no ids, codes, paths, tool or playbook names; every outside fact with a dated source.
 5. Delivered so it opens: a clickable local file, a copy saved to the brand with a link, and — because an approved Thanksgiving plan already exists — the live brief is not overwritten before the yes.
-6. Spends nothing, makes no ads, fills no concept proof with unsigned text. Asked for an ad quote, it says making the ads is the next step (starting with a claims check) and stops.
+6. The plan names the buyer's busy moment in the window (for a tool sold to ecommerce marketers, their November sales crunch) where it differs from the seller's date; any retargeting leg states audience size and weekly frequency and is capped near ~5/week; founder outreach is weighed for win-back; every leg says how it moves paying accounts.
+7. Spends nothing, makes no ads, fills no concept proof with unsigned text. Asked for an ad quote, it says making the ads is the next step (starting with a claims check) and stops.
 
 Telltale failures: a seven-part question form; asking what it could have looked up; a technical question; going into email without having said the plan covers it; a plan full of codes; a report left only on the server.
 

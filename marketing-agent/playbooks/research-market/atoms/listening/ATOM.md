@@ -15,6 +15,13 @@ You listen to **what people are saying right now** about the brand, its founder,
 
 **Tools:** web search (recency words, `site:` queries) and web fetch, freely; the platforms' own public pages only — never unofficial mirrors, archives or unofficial APIs; never log in. Pages that need the browser go on "Needs the browser" for the main run. Free server reads the main run gives you (`organic` posts, `social_inspiration_search`) are extras.
 
+## Two ways you run
+
+- **Inside a market report:** all steps below; return the full shape.
+- **Brand watch (alone, on a schedule or on ask):** steps 1–2 only, plus a quick re-read of the brand's mentions since the last watch — risk first, alerts only. Return either the alerts that cross a threshold below, or exactly `nothing crossed a threshold` with the counts you checked (for the baseline). No themes, outliers or trends.
+
+**Brand-watch thresholds** (alert when any is crossed): a serious or rising risk (craft file § Risk); brand mentions at ≥2× the last watch's count on the same method; a new negative theme raised by 3+ separate people; a post about the brand from an account with ≥100k followers or ≥50k views; misinformation about the brand; a rival's shutdown, price change or launch aimed at the brand's buyers.
+
 ## Steps
 
 1. **Watchlist.** Use the saved one, or draft it: name forms, handle, products, founder, rivals, category and problem terms. Search the bare name first and write the name-collision exclusions.
@@ -36,7 +43,8 @@ Sales signals, rival complaints, reuse candidates, creators who fit: …
 Rivals' conversation: <rival — what people say — volume (same method) or "not comparable">
 Outliers: <link · creator · multiple (baseline n) · hook · format · topic> — save list for the main run
 Trends: <trend · first seen · platform · evidence · stage · fit · audio rights · post-by · confidence>
-Buyer-language quotes for the bank: <verbatim · link · date>
+Quotes worth keeping (people's own words, for the report and for audience research to pick up): <verbatim · link · date>
+Source mix: <share of items by kind of source — e.g. complaints sites, developer forums, social> and how it bends the picture
 Needs the browser: …
 Couldn't read: <platform or page — why — what it would have added>
 ```

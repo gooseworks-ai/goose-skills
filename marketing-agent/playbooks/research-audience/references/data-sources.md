@@ -1,21 +1,23 @@
 # Data sources, costs and yield
 
-Load at steps 1–3 (free pass), list mode, and step 7 (the top-up estimate). Every paid lookup goes through the GooseWorks proxy; no vendor keys anywhere.
+Load at steps 1–3 (free pass), list mode, and step 8 (the top-up estimate). Every paid lookup goes through the GooseWorks proxy; no vendor keys anywhere.
 
 ## Audience research — the free pass (always first, no yes needed)
 
 | Need | Free source |
 |---|---|
+| Who actually pays, stays and leaves — and why | the brand's own customer data, asked for once up front (customer or order export, cancel reasons, win/loss notes, support themes); synced reviews and pasted exports via `gooseworks:knowledge_search` — first, and it wins conflicts |
 | What the brand sells, to whom, in which words | the brand's site in the host browser; `gooseworks:brand_read` (summary, kit, products, organic, learnings) |
-| Existing segments, voice-of-customer rows, demand | workspace `research/market/` (research-market) — reuse first |
-| Wants | job posts for the role (search + open 3–5), their own public posts and talks, "how do I…" threads |
+| Earlier buyer groups and quote bank; the market's sizing | workspace `research/audience/` (this playbook's last run — extend, don't re-mine); `research/market/` (the market report — its figures are context; group sizes are counted here) |
+| Group size in buyers | store and company directories, company counts by size band, association member lists, job-post counts for the role, industry figures — community member counts are reach only |
+| Wants | their own public posts and talks, review headlines, "how do I…" threads; job posts for what a role is measured on (the employer's view, never the group's voice) |
 | Problems and language | review sites for the tools they use (G2, Capterra, Trustpilot, app stores — page by page in the browser), Reddit and community threads (`site:reddit.com`), Hacker News, public video comments |
 | Where they hang out | web search for the role's communities, newsletters, podcasts, conferences and meetups; subreddit pages (member counts); event pages (dates, speakers) |
 | How rivals reach them | rivals' sites and pricing pages, ad libraries in the browser, rivals' community and event presence |
 
 Same reading rules as below: as a person would, public pages only, no logins, no scripted paging. A host without web search or a browser: say so in "what we couldn't check" and build what the brain and research-market's files allow.
 
-**Paid top-up for audience research** (one yes, after the draft): comment and post reads at volume on the platforms the segment uses (`/v1/reddit/search`, `/v1/reddit/post/comments`, `/v1/tiktok/video/comments`, `/v2/instagram/post/comments`, `/v1/youtube/video/comments`), LinkedIn post search (`/v1/linkedin/search/posts`), X search (`/v1/twitter/search/posts`). Keys and recency: `../../../atoms/spend-gate/proxy-endpoints.md`.
+**Paid top-up for audience research** (one yes, after the draft): comment and post reads at volume on the platforms the group uses — the first decision when the forums this audience uses were unreadable (`/v1/reddit/search`, `/v1/reddit/post/comments`, `/v1/tiktok/video/comments`, `/v2/instagram/post/comments`, `/v1/youtube/video/comments`), LinkedIn post search (`/v1/linkedin/search/posts`), X search (`/v1/twitter/search/posts`). Keys and recency: `../../../atoms/spend-gate/proxy-endpoints.md`.
 
 ## List mode — the free pass
 
@@ -51,7 +53,7 @@ Not usable for this playbook even though it exists: `/v1/find-creator-emails` (b
 
 ## Credits
 
-Spending follows `../../../atoms/spend-gate/ATOM.md` (proxy branch): a probe with the human's yes for an endpoint with no logged charge, then a yes to "up to N credits", labelled an estimate, drawn from logged charges; stop at it. `gooseworks:data_price_provider` does not price these lookups (server-needs #1). Every charge is logged in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`) — the kind of query, never a prospect's name. Never retry a failed paid call blindly; a resubmit pays again. The counts below are for a list built mostly from paid reads; a top-up that only fills gaps in a free result needs far fewer — count the rows it touches.
+Spending follows `../../../atoms/spend-gate/ATOM.md` (proxy branch): one yes to a ceiling "up to N credits", estimated from the credits log (or, with no history, from one small probe run inside that same ceiling), labelled an estimate; stop at it. `gooseworks:data_price_provider` does not price these lookups (server-needs #1). Every charge is logged in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`) — the kind of query, never a prospect's name. Never retry a failed paid call blindly; a resubmit pays again. The counts below are for a list built mostly from paid reads; a top-up that only fills gaps in a free result needs far fewer — count the rows it touches.
 
 ## Yield (approximate, from outbound practice — use it to size the lookup counts you show)
 

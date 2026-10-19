@@ -144,3 +144,27 @@ Not changed: plan length (~29 KB) — the In short carries the 30-second read an
 
 ## Round 9 — schedules rule (AGENTS.md §8 "Schedules", 18 Oct)
 The recurring offer was unconditional ("offer once to replan monthly"). Now the agent judges at the end of the run: a standing or always-on plan with live channels and weekly reads gets a monthly replan offer with its reason and cadence; a one-off push that ends on a date gets no schedule (at most one mid-point replan suggestion). Scheduled replans go through write-report and open with what changed; created paused per spend-gate.
+
+## Round 10 — independent senior-marketer review of Akhil's feedback (AGENTS §2b; `marketing-agent-test/results/reviews/social-plan-search-review.md`, 18 Oct)
+
+Verdicts on Akhil's points (the review's, checked here):
+| Point | Review's verdict | Ours | What changed |
+|---|---|---|---|
+| The questions were weird (a form) | Right | Agree | Already fixed in Round 8 (look first, one short message). |
+| Ask about products first | Partly right — for a one-product SaaS the bigger question is **who** the campaign is for | Agree | The first message now asks product and offer, then **audience second** (new people or people who already know you, and how many), before the money. For a one-product brand it states the product and asks only the offer. |
+| An ads campaign turned into email | Right that it should span channels; say so up front | Agree | Already fixed (coverage stated in the first message and in In short). Founder outreach added to what's covered. |
+| Tracking is never a question (our Round 8 fix) | Over-correction | Agree | One plain-words question when the goal is paid conversions and nothing on file shows attribution: "When someone upgrades, can you see what brought them?" Never jargon. |
+
+What the operator missed, from the review, now in the playbook:
+- **Buyer's season**, not only the seller's date — `launch-and-calendar.md` § The buyer's calendar; step 1; In short names it when it differs.
+- **Retargeting frequency check** — `budget-and-tests.md` §2b (list × match rate, CPM → weekly frequency; cap near ~5/week); worked example ($450 / 1,000 emails ≈ 11 per person per week).
+- **Founder one-to-one outreach** as a win-back channel — channel-decision table, self-serve SaaS live channels, first-message coverage line.
+- **Tie the plan to the business result** — step 1 names it; every leg says how it moves it; SaaS legs carry tagged links to count signups.
+- **Check the audience is the buyer** — channel-decision lens 1 and step 4: say once if a channel reaches peers or builders instead of buyers, then follow the marketer's choice.
+- **Stale real-brand facts** — the GooseWorks example with $99/$299/$599 (SKILL.md, intake.md) replaced by a fictional brand (Fernly); a rule that examples are never a source of facts.
+- **write-report's new shape** (Decisions for you, What we're not doing, ≤ 150-word In short, body ≤ 3,000 words, ≤ 6 moves) — template restructured; working tables moved to an appendix with their headings unchanged so siblings still find them.
+
+Pushback (with reasons):
+- **Frequency cap "about 5 per week" as a hard line:** kept as the default, but allowed up to ~8 when several fresh creatives rotate — retargeting tolerance depends on creative variety (our run-paid reading guide uses 5–8 for retargeting). A single number would over-cut small but well-rotated legs.
+- **"GooseWorks' buyers are buried in BFCM creative all November":** right as a pattern, but the playbook must derive the buyer's season from the brand's research and personas, not assume it — the calendar section says "never assume them" and the BFCM line is one illustration among several.
+- **Plan length (~29 KB acceptable):** the review accepted it; the newer write-report budget does not. Followed write-report: body ≤ 3,000 words, tables in the appendix.

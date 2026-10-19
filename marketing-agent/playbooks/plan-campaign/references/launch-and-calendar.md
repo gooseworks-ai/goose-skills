@@ -58,6 +58,14 @@ Example (T = 1 Mar):
 | T+14 | Test T1 called | analyze-performance |
 | T+30 | Debrief — the next weekly read covers it; learnings proposed there | analyze-performance |
 
+## The buyer's calendar (not only yours)
+
+A campaign is timed to when the **buyer** has the problem, budget and attention — which is often not the seller's date. Before fixing the window, name the buyer's busy moments in it from the personas and research (never assume them):
+- A tool sold to DTC marketers: their Black Friday / Cyber Monday creative crunch runs through November, with creative locked days before — a "get your BFCM ads made" push must land before their lock, not on Thanksgiving.
+- Accountants and freelancers: year-end and tax season; schools: term start; B2B buyers: budget planning in Q4, quiet weeks in late December.
+- Retail buyers and consumers: the retailer's or the category's own peaks.
+Write the buyer's moments as calendar rows, and say in In short when the seller's date and the buyer's moment disagree, with which one the plan follows and why.
+
 ## Collisions to check
 
 - The brand's promo calendar: a full-price launch inside 30 days of a sitewide sale trains customers to wait.

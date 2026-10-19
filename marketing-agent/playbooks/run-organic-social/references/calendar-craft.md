@@ -53,7 +53,7 @@ For TikTok and Instagram accounts the product already manages (`gooseworks:socia
 |---|---|
 | Founder LinkedIn | 3–4 |
 | Company page | 2 |
-| X | New or small accounts the marketer chose: 1–2 posts a day plus the daily reply routine. Established accounts: what they kept, +20% |
+| X | New or small accounts the marketer chose: about one post a weekday plus the daily reply routine, fitted inside the person's stated hours (text posts ~15 min, videos 35–50 min). Established accounts: what they kept, +20% |
 | Instagram | 3 feed or Reels, plus Stories on 3–5 days |
 | TikTok | 3–4 |
 | Shorts | Re-cuts of TikTok |

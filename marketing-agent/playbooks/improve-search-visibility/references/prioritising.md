@@ -1,6 +1,6 @@
 # Picking the five
 
-Load at step 4. Candidates come from the top of the page map (`page-map.md`) plus site-wide blockers and profile fixes.
+Load at step 4. Candidates come from the top of the page map (`page-map.md`) plus site-wide blockers and profile fixes. State each priority's demand evidence (or "no demand data, ranked by judgment"). Measurement first when it's missing (Search Console + Bing + an AI-referral baseline): about 20 minutes, and every later check depends on it.
 
 ## Score
 (Impact × Confidence) ÷ Effort, each 1–5.
@@ -9,7 +9,7 @@ Load at step 4. Candidates come from the top of the page map (`page-map.md`) plu
 - **Effort:** for the named person who ships it: under 2 hours, no engineering = 1; needs a developer or an app release = 3–4.
 
 ## Order
-1. Foundation blockers on must-win pages.
+1. Foundation blockers on key question pages.
 2. Brand-accuracy fixes (entity, About page).
 3. Near-winner rewrites (pages ranking ~4–15, or already cited sometimes).
 4. Off-site fixes the pattern points to (inclusion requests, review profiles).

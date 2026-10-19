@@ -5,7 +5,7 @@ Load at step 1 (free pass) and step 3 (paid top-up), through the atom citation-c
 ## Surfaces and how each is observed
 | Surface | Default observation route today | Runs |
 |---|---|---|
-| ChatGPT with search | free: host browser (private window, not signed in); else the human's paste set | 1 per question, 3 for the 3–5 must-wins (2 pasted) |
+| ChatGPT with search | free: host browser (private window, not signed in); else the human's paste set | 1 per question, 3 for the 3–5 key questions (2 pasted) |
 | Google AI Overview | free: host browser, when Google lets it in; else paste set | 1 (1 pasted) |
 | Google AI Mode (`google.com/search?udm=50`) | free: host browser, when Google lets it in; else paste set | 1 (1 pasted) |
 | Who ranks for each question | free: the host's web search, labelled "web search" | 1 |
@@ -16,13 +16,15 @@ Every report row says how it was observed: **looked up through GooseWorks** (org
 
 **Wait for the answer to finish.** ChatGPT streams: re-read the page until the text stops changing and the sources show (up to about 60 seconds); an answer that never finishes is retried once, then marked "didn't finish" — never scored as "not named". If ChatGPT asks to log in for one question, retry it once in a fresh private window, then mark it.
 
+**What signed-out checks can't show.** A signed-out answer is not what a signed-in buyer sees: memory, past chats, the paid model and personalisation all change answers. Say so in the report's "couldn't check" section, every time. Other engines: check Perplexity signed out when the buyers are technical or AI-native; Claude, Gemini and Copilot need sign-in for their consumer apps, so name them as not checked rather than borrowing anyone's account.
+
 **Where the browser really is.** Record the browser's real location (an answer showing local prices or a local-language result gives it away). If it isn't the target market, label those rows ("read from India, region set to US") — Google rows then count as a first look, and the paid top-up (which sets the region) is the way to the exact read; ChatGPT's location can't be set, so say so.
 
 **Speed.** Open the question straight in the address bar (`https://chatgpt.com/?q=<question>&hints=search`) and run several tabs side by side; the free pass is about 20–40 page reads.
 
 **Agent browser rules:** a private window for Google; chatgpt.com in a private window, not signed in — a Temporary Chat only if ChatGPT forces sign-in and never in the founder's account; record which was used. On any CAPTCHA or bot challenge, stop and hand that surface to the human; never solve it.
 
-**Minimum paste set (offered in the first message only when the host has no browser or Google blocked it; the human runs them):** 5 questions — up to 4 must-wins plus at least one brand question ("what is [brand] [category]" or "is [brand] legit"; pre-launch: the name-collision question); ChatGPT twice, AI Overview and AI Mode once each — 20 pastes. For the "AI says something false" entry, the paste set is the brand questions (3–6) instead of the must-wins. Give it as plain steps, no jargon:
+**Minimum paste set (offered in the first message only when the host has no browser or Google blocked it; the human runs them):** 5 questions — up to 4 key questions plus at least one brand question ("what is [brand] [category]" or "is [brand] legit"; pre-launch: the name-collision question); ChatGPT twice, AI Overview and AI Mode once each — 20 pastes. For the "AI says something false" entry, the paste set is the brand questions (3–6) instead of the key questions. Give it as plain steps, no jargon:
 ```
 For each question below:
 1. Open chatgpt.com in a private window without signing in (use a Temporary Chat only if it insists on sign-in). Paste the question, wait for the answer, click "Sources" if shown (else write "no sources"), then copy everything back here under a line like:  Question 3 · ChatGPT · try 2
@@ -48,7 +50,7 @@ Source types: our site · competitor's own page (comparison, alternatives, prici
 
 ## What can and cannot be claimed
 Can: "On [date], from [country], logged out, [surface] named you in k of N runs; [rival] in N of N; it cited [sources]."
-Cannot: share of all users' answers; how often anyone asks the question (no prompt-volume data exists — never invent it); a "rank in ChatGPT"; traffic or revenue impact; that a fix caused a later change from one re-run (variance is larger than most effects; call a trend after 2–3 runs).
+Cannot: share of all users' answers; how often anyone asks the question in AI apps — only vendor prompt-volume estimates exist; use one only when the brand has that account, label it an estimate, never invent one; a "rank in ChatGPT"; traffic or revenue impact; that a fix caused a later change from one re-run (variance is larger than most effects; call a trend after 2–3 runs).
 Always print n runs, date, location and logged-out state on the report.
 
 ## Search Console, in plain words (optional ask)

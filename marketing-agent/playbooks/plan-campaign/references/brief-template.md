@@ -1,22 +1,27 @@
 # The campaign plan — fixed shape
 
-Load at step 7; the Write-back section at the end is used after the marketer's yes. One text, three homes (versions continue from the campaign record's brief version — the first replan of an approved v2 is v3): the readable file (`gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md`), the brand copy (`plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md`) and the campaign record's `brief_md`. It follows `../../../atoms/write-report/ATOM.md` §1 — title, In short, the story, what to do, what we couldn't check, sources — while keeping the **section headings below exactly**, because the paid run, the weekly analysis, the ad makers and the email sends find their section by heading. Each section opens with its point in one plain sentence, then the detail. No internal ids, codes, file paths, tool or playbook names anywhere; rows are numbered 1, 2, 3.
+Load at step 7; the Write-back section at the end is used after the marketer's yes. One text, three homes (versions continue from the campaign record's brief version — the first replan of an approved v2 is v3): the readable file (`gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md`), the brand copy (`plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md`) and the campaign record's `brief_md`. It follows `../../../atoms/write-report/ATOM.md` §1 — title, In short (≤ 150 words), Decisions for you, the story, What to do (≤ 6 moves), What we're not doing, What we couldn't check, Sources with a source-skew line; body under 3,000 words, the long working tables in an appendix — while keeping the **section headings below exactly**, because the paid run, the weekly analysis, the ad makers and the email sends find their section by heading. Each section opens with its point in one plain sentence, then the detail. No internal ids, codes, file paths, tool or playbook names anywhere; rows are numbered 1, 2, 3.
 
 ```markdown
 # <Brand> — campaign plan: <campaign name>, <D Mon YYYY>
 
 ## In short
+(At most 150 words; nothing unverified.)
 - **Do this first:** <the one move this week> — because <the reason that matters most>.
-- **The goal:** <number, metric, date>. The expected case gets <n> (<hits / misses by n>); the cautious case gets <n>.
-- **What this plan covers:** every channel that could work — <ads / email / organic / creators…> — kept: <list with budget each>, because <brand facts>; dropped: <the 2–3 that matter, one reason each>.
-- **The money:** <proven / tests / reserve, in dollars>. **First test:** <what we'll learn> — readable by <date>.
-- **Needed from you this week:** <approvals, inputs, assets>.
+- **The goal:** <number, business result, date>. The expected case gets <n> (<hits / misses by n>); the cautious case gets <n>.
+- **Who it's for:** <new people / people who already know you / both — how many>. **When:** <the buyer's moment, if it differs from your date>.
+- **What this plan covers:** every channel that could work — kept: <list with budget each>; dropped: <the 2–3 that matter>.
+- **The money:** <proven / tests / reserve>. **First test:** <what we'll learn> — readable by <date>.
+
+## Decisions for you
+| Decision | My recommendation | Needed by |
+(goal and forecast · channels · split · asset list · tier and headline message · anything else)
 
 ## Audience and message
-<Point sentence: who this is for and the one thing every piece says.> Primary group (from the customer research) · who it's not for · the headline message (you approve it).
+<Point sentence: who this is for and the one thing every piece says.> **Who:** new people, people who already know you (past customers, free or lapsed users, the list), or both — with how many we can reach (the number assumed if unknown). **Is this the buyer?** One line on whether the people these channels reach are the ones who buy. Primary group (from the customer research) · who it's not for · the headline message (you approve it).
 
 ## Goal chain
-<Point sentence: whether the money gets there.>
+<Point sentence: whether the money gets there, in the business result (signups, paid accounts, orders, bookings).>
 The goal: <number, metric, date> — agreed by <founder>. Without the campaign: … · What the campaign must add: …
 | Channel | Target | Where the number comes from | Readable by |
 Cautious / expected / hopeful → <outcome each>. <If only the hopeful case hits the goal, say so here.>
@@ -39,9 +44,7 @@ Your hours this plan needs: ~N h/week (by channel).
 <Point sentence.>
 | Line | Before launch | Launch week | After | Total | % | Smallest amount that teaches us anything | Enough? |
 Reserve: $X — released when <a test wins / a miss>.
-
-## Paid structure
-One line per paid channel: what it optimises for, how it's set up, who it reaches, budget, how many ads, where the ads link (with link tags), and whether GooseWorks makes the change or you do from written steps.
+Any leg aimed at a known list or retargeting: audience size, expected weekly frequency, and the cap that keeps it near ~5 a week (`budget-and-tests.md` §2b).
 
 ## Test plan
 <Point sentence: what we'll learn first.>
@@ -53,8 +56,26 @@ One line per paid channel: what it optimises for, how it's set up, who it reache
 ## Offer
 none / <the offer you named> / needs an offer designed (not covered yet). What it costs in margin: … Clashes: …
 
+## What to do
+At most 6 numbered moves, each with who does it, what it needs, and how we'll know it worked.
+
+## What we're not doing, and why
+One line each: the tempting moves the plan decided against (e.g. cold ads at a goal they can't reach, a channel that reaches peers instead of buyers, a discount nobody asked for).
+
+## What we couldn't check
+One line each, with why: assumptions to confirm, unknowns, risks.
+
+## Sources
+Dated links for every outside fact (benchmarks, competitor ads, prices). One line on source skew (e.g. "benchmarks are mostly from DTC brands, not SaaS").
+
+## Appendix — working detail
+(The plan reads without these; makers, the paid run and the weekly read use them.)
+
+## Paid structure
+One line per paid channel: what it optimises for, how it's set up, who it reaches, budget, how many ads, where the ads link (with link tags), and whether GooseWorks makes the change or you do from written steps.
+
 ## Calendar
-<Point sentence: the date everything works back from.>
+<Point sentence: the date everything works back from, and the buyer's busy moments in the window.>
 | Date | What | Who (role) |
 
 ## Asset list
@@ -70,12 +91,6 @@ none / <the offer you named> / needs an offer designed (not covered yet). What i
 
 ## Replan triggers
 | If this happens | Threshold | Then |
-
-## What we couldn't check
-One line each, with why: assumptions to confirm, unknowns, risks.
-
-## Sources
-Dated links for every outside fact (benchmarks, competitor ads, prices).
 
 ## Status
 Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-DD · mode: launch | goal push | always-on | replan (month) | trigger replan (<trigger>)

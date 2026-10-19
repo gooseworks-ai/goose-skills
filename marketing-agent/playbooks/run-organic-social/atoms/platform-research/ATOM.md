@@ -20,7 +20,11 @@ Run web searches dated to the **last 6 months** (put the current month and year 
 Prefer, in order:
 1. the platform's own posts, help pages and executives' statements;
 2. reporting on them (tech press, creator-economy newsletters);
-3. large-sample studies, with the sample named.
+3. large-sample studies, with the sample size and dates named.
+
+**Source quality:** a tool vendor's "how the algorithm works" page is never the only source for a fact, because many carry made-up weights. Each platform card has at least one source that is the platform's own statement or a study that states its sample. **Keep share and per-post apart:** "video is half of all impressions" is a share of activity; whether one video reaches more people than one text post for an account this size needs per-post data. Label which kind each fact is.
+
+**For reply-led plans, also research:** what the platform says paid verification (e.g. X Premium) does for replies and reach, sized data on it, and today's price and tiers. For links, X's own statement next to the independent data.
 
 Open the pages (host browser or fetch) and read them. Never rely on a headline.
 
@@ -72,7 +76,7 @@ Plan the reads per platform, cap every row, and ask one yes to "up to N credits"
 
 **Judging "what works":** X and TikTok show view counts publicly, so read them. Rank posts by engagement relative to the author's follower count, not raw likes. An example with no numbers seen is labelled "pattern, numbers not seen". Never call a winner without numbers, and never invent an example or a link.
 
-**For each platform, keep 8–15 examples that worked.** For each one record:
+**For each platform, keep 8–15 examples that worked, at least 3 from accounts under 10k followers** (big accounts' reach says little about what a small account can do). For each one record:
 - link, account, date, numbers
 - format: text, thread, video and its length, carousel, image, poll
 - the hook (first line or first 2 seconds), quoted

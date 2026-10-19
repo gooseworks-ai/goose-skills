@@ -29,7 +29,7 @@ Default platforms by company type: DTC — TikTok, Instagram, Reddit, YouTube ·
 - **Only the platform's own public pages,** or the paid read on a yes. Never unofficial mirrors, archives or unofficial APIs — they can break the platform's terms and hold deleted posts.
 - **Counts from the free pass are samples** — say so. Week-over-week or month-over-month change only when both runs used the same method and query set.
 - **Paid top-up** (bulk reads through `../../../atoms/spend-gate/proxy-endpoints.md`, one yes): full counts per platform, comments on the top posts, author baselines, platforms behind logins. Caps for a first plan: ≤3 pages per query per platform (stop early when a page is under half on-target); comments on the top 5 posts per account × top 100 comments; baselines for the top ~10 outlier candidates; a crisis reserve of up to 3 calls inside the same ceiling.
-- Not on this path: review sites (the buyer-voice pass reads them), private groups, DMs, the support inbox.
+- Not on this path: review sites (audience research reads them), private groups, DMs, the support inbox.
 
 ## Who is speaking, and when
 
@@ -38,7 +38,8 @@ Default platforms by company type: DTC — TikTok, Instagram, Reddit, YouTube ·
 - **affiliated** — paid advisers and ambassadors, gifted or PR posts, affiliate and shop links, retailers, fan accounts reposting the founder's promotion: shown, never counted as independent or as outliers.
 - A famous founder's name counts only with a topic word; say the count is topic-filtered.
 - **Undated** items (tag and discover pages often hide dates): listed "date unknown", checked for risk, never counted.
-- **The window:** the last 30 days by default (the last 7 days when the ask says "this week"), plus anything risky up to the moment of the run. Say the window in the section's first line.
+- **The window:** the last 30 days by default (the last 7 days when the ask says "this week"; since the last watch in brand-watch mode), plus anything risky up to the moment of the run. Say the window in the first line.
+- **Source mix:** say what share of items came from each kind of source. Complaint sites (Trustpilot) over-represent angry customers, developer forums (Hacker News) over-represent developers, and missing Reddit or LinkedIn hides in-house marketers — name the skew and how it bends the picture.
 
 ## Classify
 
@@ -63,7 +64,7 @@ What to pull out for the report: sales signals ("anyone tried…", "switching fr
 | **Rising (S2)** | a credible complaint gaining speed, or one from a high-reach poster | In chat before continuing if it is moving fast; top of the report. |
 | **Low (S3)** | isolated, low reach | In the report. |
 
-Never reply, comment, hide, report, or contact anyone; never draft a statement that denies, blames or guesses a cause. A monthly or on-ask read catches problems late — say so whenever S1 or S2 appears.
+Never reply, comment, hide, report, or contact anyone; never draft a statement that denies, blames or guesses a cause. A market report catches problems late; the brand-watch mode (weekly, daily during a launch or a crisis) is the faster path — offer it whenever S1 or S2 appears.
 
 ## Outliers and trends
 

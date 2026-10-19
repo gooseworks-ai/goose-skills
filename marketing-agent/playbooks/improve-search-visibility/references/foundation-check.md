@@ -11,6 +11,7 @@ Load at step 1 (free pass: site-wide and the 3–6 pages behind the gaps). Every
 | Duplicate host | the platform's default domain (`*.webflow.io`, `*.myshopify.com`, `*.vercel.app`) redirects or canonicalises to the real domain | blocker if the duplicate is the one indexed |
 | Search Console / Bing Webmaster Tools | asked in intake (one optional question covers both; Bing unknown → "not checked") | fix if missing |
 | Sitemap | `/sitemap.xml` or the robots.txt `Sitemap:` line returns 200 and lists the money pages | polish |
+| Templated page sets | in the sitemap, any set of dozens of pages on one pattern (`/brand/<name>`, `/city/<name>`, `/vs/<name>`): sample 3–5, check whether each has unique, useful content or near-identical boilerplate, and whether they're indexed. Read them before any copy fix | top of the risk list if thin: a proposal to improve, consolidate or noindex, with risk and undo |
 | Organization markup on home/About | view-source for JSON-LD | polish (entity) |
 
 ## Per page

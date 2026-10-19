@@ -1,19 +1,19 @@
 # Test by hand — research-market
 
-## The test (rebuilt 18 Oct on market research, listening folded in, write-report)
+## The test (rebuilt 18 Oct after the senior-marketer review)
 
-Use a brand the reviewer knows, on the GooseWorks server the test folder names (staging). Ask, exactly as the founder did on 18 Oct: **"i want to do the market research for gooseworks"**. Second ask, later: **"What are people saying about me and my category this week?"**
+Use the GooseWorks server the test folder names (staging). Asks, exactly as the founder typed them: **"i want to do the market research for gooseworks"**; later, **"What are people saying about me and my category this week?"**; and **"watch my brand"**.
 
 Pass, all without being asked:
-1. **No question before the report** (beyond picking a brand when several match; a named brand not in the account is created from its site). No change to the host's settings or permissions.
-2. **It is market research:** the category in buyers' words, size and growth with whose estimates, what's changing, how and where buyers find and buy, pricing norms across the category, where attention is, demand and seasonality, who buys and why in their own words, what people are saying now — and rivals in one short section pointing to competitor research.
-3. **News first**; the worker briefs were handed over in full; workers' rows were kept (a stopped worker's included); pages needing the browser were opened by the main run, with one line to the founder first, and nothing sat waiting on an approval silently.
-4. **Brand facts from the brain**, not the website, and contradictions flagged, never used as claims.
-5. **The report passes write-report §3:** "In short" first with "Do this first"; a story that flows; plain words; no ids, paths, tool names or jargon; "For you" as a plain sentence on each finding; "You vs them"; a local file with a clickable link plus the brand copy with its link.
-6. **The closing message:** at most three lines, then at most five decisions, including a repeat only if it would help, with the reason and a cadence.
-7. The second ask covers only "what people are saying", with the window stated, name collisions excluded, counts called samples, trends with post-by dates, and any serious risk sent to chat at once.
+1. **No question before the report** (beyond picking or creating the brand). No change to the host's settings.
+2. **It decides which market** — 2–3 candidate categories, the one buyers use, a recommendation — and **sizes it top-down and bottom-up** (likely buyers × price per buyer group, from research-audience's buyer groups, or provisional groups with "run audience research" as a decision).
+3. It covers change (dated, primary-checked or marked), buying, pricing (8+ products with units), attention, demand and what people are saying; rivals stay in one short section; it never builds its own buyer groups or quote bank.
+4. **It reads the sibling reports** and states any disagreement; it ends the story with **what this means for positioning**.
+5. **The report passes write-report §3:** In short ≤ 150 words, "Do this first" first, nothing unverified; Decisions for you; body ≤ 3,000 words; ≤ 6 moves; What we're not doing; a baselines table; couldn't-check; sources with a source-skew line; "For you" only where a finding matters; no ids or jargon; a local file with a clickable link plus the brand copy.
+6. **The closing message:** three lines, at most five decisions, a repeat only with a reason (monthly pulse plus quarterly report; brand watch weekly or daily).
+7. **"Watch my brand"** runs the listening alone, risk first, and says nothing beyond one line when nothing crosses a threshold; an alert has what, reach, separate people, what we know, who handles it, and a hold list for serious risks.
 
-Fail: questions before the report; a report about rivals' complaints instead of the market; a report saved only on the server; ids or jargon in the report; buyer evidence read and thrown away; an hour waiting on a browser prompt without a word.
+Fail: questions before the report; a report about rivals' complaints instead of the market; no market decision or no bottom-up size; buyer groups invented here that contradict research-audience's buyer groups without saying so; a report saved only on the server; ids or jargon; a brand watch that sends a full report when nothing happened.
 
 **The 18 Oct hand test (before this rebuild)** turned into rival research, lost the brand's own Product Hunt comments when a worker stalled on a browser prompt for 52 minutes, used the website's prices over the brain's, and produced a report full of ids and agent terms. See `critique.md`.
 

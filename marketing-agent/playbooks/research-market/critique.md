@@ -267,6 +267,24 @@ These edge cases moved into a new local atom, `atoms/edge-cases`, to keep SKILL.
 - Fetch returns excerpts, never page-verified quotes.
 
 
+## Round 4 — senior-marketer review (2026-10-18): verdicts per AGENTS §2b
+
+Source: `marketing-agent-test/results/reviews/research-review.md` (§2, §3, §6). Akhil approved applying the ranked fixes; positioning stays on the backlog. Each point was checked before acting.
+
+| Review point | Verdict | What changed / why not |
+|---|---|---|
+| §6 #1 Buyer groups and the customer-quote bank have one owner, research-audience; market sizes and reads them | **Agree** | Removed the buyer-voice worker, mining-method, sources-by-company-type and recognition-and-interviews (handed to the audience session in the shared notes folder). research-market now reads `research/audience/buyer-groups.md` (confirmed by the audience session: audience counts buyers or companies per group; market multiplies by price, uses its own figures as context, and says where it disputes a count; audience imports the old `research/market/voc-bank.*` and personas once). It no longer writes `personas.md` or `voc-bank.*`. Trigger phrases were rescoped: "who is my customer", "voice of customer" and "who actually buys this" are removed from the description. Not done here: readers of `research/market/voc-bank.*` and `personas.md` in seven other playbooks — that is the audience session's half, flagged to the orchestrator. |
+| §6 #3 Brand-watch mode: listening alone, risk first, alerts only; weekly, daily in launch or crisis; silent below threshold. Reply drafts up the backlog, owner run-organic-social | **Agree** | Listening atom: "two ways you run", plus explicit brand-watch thresholds. SKILL: a "Brand watch — alerts only" section and `research/market/watch/<D>.md`. BACKLOG: reply drafts moved from #18 to #3, owner run-organic-social; internal card references renumbered. Caveat: scheduled runs have no browser, so a scheduled watch reads only search and fetchable pages, and the offer says so. A true always-on alert still needs the server's watcher (watch-and-alert, backlog). |
+| (follow-up) research-market no longer proposes the brand's audience field | **Agree** | research-audience proposes `knowledge.audience` now; `brand_update` removed from research-market's needs. |
+| §6 #4 Decide which market; size it bottom-up; delete "skip TAM/SAM/SOM" | **Agree** | market-pass §1 is now a decision: 2–3 candidate categories, which one buyers use, a recommendation, and what changes otherwise. §2 is top-down (publisher, year) plus bottom-up (likely buyers × price per buyer group, inputs sourced or labelled assumptions, never community counts). The skip line went with mining-method. |
+| §6 #6 Read sibling reports, state disagreements, end with "what this means for positioning" | **Agree** | Brain read now includes `research/audience/`, `research/competitors/` and `plans/`. The report has a "where this disagrees" section (only when it does) and "what this means for positioning" (a pointer; write-my-positioning stays on the backlog). |
+| §6 #8 Cadences | **Agree** | A monthly one-page pulse plus a full report each quarter; brand watch weekly, daily in a launch or crisis. The offer is still a judgment, with the reason, and says scheduled runs have no browser. |
+| Source balance and skew line; baselines | **Agree** | The listening return has a source mix; the report's sources end with a skew line; the market-pass returns baselines; the report keeps a fixed baselines table. |
+| write-report changes (Decisions box, not-doing section, length budget, "For you" only where it matters, no unverified claim in "In short") | **Agree** | `references/report-format.md` rewritten to the new shape, including a one-page pulse and the brand-watch note. |
+| §3 #7 For B2B, offer the paid read in the opening message rather than after a thin report | **Push back** | The test runs had no browser; with one, the free pass reads part of these sources. An upfront offer reintroduces a pre-research question and a spend ask before any result — the exact failure §8 was written to stop. Kept: the top-up comes after the free pass, and the report says plainly what it couldn't read. Revisit if browser-equipped runs still can't read Reddit, G2 or LinkedIn. |
+| §8 one upfront customer-data question | **Not used here** | Customer data serves buyer groups, which audience research now owns; it asks. Market sizing reads audience's results. |
+| (noticed) write-report's banned-vendor list includes "Claude", but GooseWorks' own product claim is "inside Claude" | **Flag to the orchestrator** | A brand whose product names a vendor would fail the mechanical check for stating its own facts. write-report needs an exception for the brand's own product facts. |
+
 ## Appendix — listen-social critique history (playbook removed 18 Oct; its listening now lives here as atoms/listening)
 
 ## Critique log — listen-social

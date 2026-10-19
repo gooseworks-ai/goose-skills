@@ -11,20 +11,21 @@ Ask, on the GooseWorks brand: **"i want to do the audience research for goosewor
 
 It passes if:
 
-1. **Audience research, not a prospect list.** The report covers who the audience is (2–5 named segments, the primary one named), what each wants, their problems and how we solve them, their own words (at least five linked quotes per segment), where they hang out (named communities, publications, podcasts, events, with activity evidence) and how to reach them (three first moves per segment). No list of named people unless asked.
-2. **No question before research,** and no "which segment should I go deeper on?" — every segment is researched in the free pass.
-3. **Real web research:** reviews, Reddit and community threads, job posts, public posts, publication and event pages — dated and linked.
-4. **The report passes write-report §3:** the top five lines say what to do first and why; a non-marketer can follow it; no ids, codes, file paths, tool or playbook names; the link opens. It's a local file with a clickable link (host with files) or an artifact, and saved to the brand with a link.
-5. **One short closing message** (at most three lines): the first move, the link, the decisions — including "want a list of named people for one segment?" and one optional credit yes.
-6. Every finding ends in For you; there's a "how rivals talk to them" section; what couldn't be checked is listed.
+1. **Audience research, not a prospect list.** The report covers who the audience is (2–5 buyer groups by situation, each sized in buyers or companies with sourced inputs — never subreddit members — and who uses, pays and approves), what each wants, their problems and how we solve them, why they buy and why they leave (where the brand has data), their own words (at least five first-hand quotes for the lead group — no vendor blogs, case studies or job posts), where they gather (with evidence the group is there) and how to reach them (three moves per group). No list of named people unless asked.
+2. **At most one question before research** — the customer-data ask (an export, cancel reasons, win/loss notes), only because the brand has customers; "go" starts the free pass. No "which group should I go deeper on?".
+3. **The lead group clears the evidence bar** (the customer data, or 5+ distinct first-hand people from 2+ kinds of source, mostly recent) — or the lead is labelled "provisional — <what's missing>" and the gap is a decision. A lead resting on two people and a company's own blog fails.
+4. **Moves rest on what the run read.** "Do this first" cites sources in the report; a move on a forum the run couldn't open is labelled unverified and isn't first. Fail: a first move to post on a site listed under "what we couldn't check".
+5. **The report passes write-report §3:** "In short" under 150 words; a decisions box; "what we're not doing"; a source-skew line; no ids, codes, file paths, tool or playbook names; one line on agreement or difference with the market and competitor reports; a local file with a clickable link (or an artifact), and saved to the brand with a link. The buyer groups and quote bank are saved as their own files.
+6. **One short closing message** (at most three lines): the first move, the link, the decisions — a paid top-up named by the gap it fills when key forums were blocked.
 
 List-mode test: **"Find me 50 right-fit people at recruiting agencies to pitch, with verified emails."** → a lighter audience pass, then the list section and `list.csv`: accounts first, dated title sources, honest email status (no "verified" without a checker), region flags, a stated shortfall, the honest "no email checker" line once.
 
 Edge tests:
 - "What's the market size for AI ad tools?" / "how do people buy in our category?" → not this playbook (market research).
 - "Find me influencers" → not this playbook.
-- A re-run a month later → reads the saved profile and says what changed.
-- Repeats: after the audience report, a quarterly refresh is offered only with a reason tied to this brand (or not at all if the audience is stable); after a list-mode run, **no** repeat is offered.
+- A re-run a month later → reads the saved buyer groups and quote bank and says what changed.
+- "What's our market and who's in it?" → market research; "who are our buyers?" → this playbook. The two descriptions share no trigger phrase.
+- Repeats: after the audience report, a refresh twice a year — or on a trigger (a new product, a new market, a shift in who buys or why they leave) — is offered only with a reason tied to this brand; after a list-mode run, **no** repeat is offered.
 
 ## Staging run log
 

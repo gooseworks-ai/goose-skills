@@ -4,8 +4,8 @@ Load after platform research (atoms/platform-research). A strategy is a plan for
 
 ## The strategy, per platform (the report shows this as one section per platform)
 
-1. **The job of this account here.** Who it is for, and the one thing they should think after five posts. A founder's or engineer's personal account and a brand page have different jobs: say which this is.
-2. **How the platform rewards content now.** Three lines from the "how it works now" card, each with its date and link: what gets reach, which format to lead with, and what to avoid. When the platform rewards video, the plan is **video-first**. That means real video the person can shoot on a phone or screen-record, not "add some video later".
+1. **The job of this account here.** Who it is for, and the one thing they should think after five posts. A founder's or engineer's personal account and a brand page have different jobs: say which this is. **Check the audience is the buyer:** if this platform mostly reaches people other than the buyer, say so once with the evidence, then follow the marketer's choice.
+2. **How the platform rewards content now.** Three lines from the "how it works now" card, each with its date and link: what gets reach, which format to lead with, and what to avoid. **Every format needs a reason.** A platform pushing a format, or a format's share of all views ("video is half of impressions"), is not proof that one post in that format reaches more people for a small account; only per-post evidence for accounts like this one is. On X, a founder's everyday post defaults to **text plus a screenshot or a short screen capture** (cheap enough to keep the rhythm, and large per-post studies found text level with or ahead of video). **Video is used when the content is visual:** a finished output appearing on screen, a before/after, a surprising demo. The default flips only if current per-post evidence says so. The same applies on every platform (LinkedIn's evidence leans to document carousels).
 3. **What works in this niche, and our version of it.** The 3–5 patterns from the research, each with one linked example and how this account does it honestly. Formats come from what buyers watch, not from what competitors do (don't follow the herd).
 4. **Topics.** 3–4 topic lanes from the overlap of what this audience engages with (the research), what this person or brand can talk about with authority (their own material) and what the brand sells. The product shows up as proof inside a useful post, rarely as the point. A default for a brand account is roughly 1 post in 5 directly about the product; for a person, less. Exception: when the only material found is the company's own public material (changelog, docs, install file, repo), the product can appear in more posts **as proof, never as a pitch**. Say so in the report, and say that each piece of the person's own material replaces one of those posts.
 5. **Hooks that work here.** 4–6 hook patterns lifted from the examples, as patterns rather than copied lines, each with the example it came from.
@@ -14,25 +14,26 @@ Load after platform research (atoms/platform-research). A strategy is a plan for
    - A cadence the marketer can keep: their hours, the cadence they actually kept, at most +20%.
    - Posting times in the **audience's** time zone, not only the poster's. A founder in India writing for US marketers posts into US mornings.
 7. **How this account breaks in** (the most important part for small accounts). Concrete, for this account:
-   - **Where the audience already is:** 10–20 named accounts to reply to, communities or lists, hashtags or search terms. Name them from the research, with links.
-   - **The daily or weekly routine,** in minutes. On X and LinkedIn early growth comes mostly from replies on larger accounts' posts. For a 0→1k X account the usual practice is **15–30 substantive replies a day**:
-     - notifications on for the 10–20 target accounts, replying within the first ~30 minutes of their posts;
+   - **Where the buyer already is:** 15–25 named accounts to reply to, with links, each with a one-line reason tied to the **buyer**. **At least half are accounts the buyer follows** (for a DTC marketing buyer: DTC operators, Meta-ads buyers, ecommerce newsletter writers), not peers building similar tools. At most 3 are direct competitors. Replies grow you among the people you reply to, so pick the buyer's crowd. Add communities or lists, hashtags or search terms where the research finds active ones.
+   - **The daily or weekly routine,** in minutes. On X and LinkedIn early growth comes mostly from replies on larger accounts' posts. For a 0→1k X account aim for **10–15 substantive replies a day**, in two short windows during the audience's morning, scaled to the person's stated hours. Quality beats count; practitioner guides vary and none is measured research:
+     - notifications on for the target accounts, replying within the first ~30 minutes of their posts;
      - each reply adds a specific (a number, a screenshot, a counter-example, how they did it), never "great point";
      - add value-adding quote posts, and join communities or groups only where the research finds active ones (X Communities were reported retired in 2026, so check before suggesting them).
 
      A teammate's or the company account's early engagement is fine when disclosed and genuine, never an engagement pod.
-   - **X Premium (verification):** what the research says it does for reply ranking, reach and video length right now, and whether it's worth it for this account.
+   - **X Premium is a researched line item for any reply-led plan.** Say what X's own help pages say it does for reply ranking (being a subscriber is listed as a factor), what sized studies found for reach, and today's price and tiers, looked up this run (they change). Then give a recommendation for this account. For a plan that grows through replies, Premium is usually the cheapest lever, so say so plainly; buying it is the marketer's decision.
+   - **Links:** report X's own statement and the independent data side by side, with dates. (X's then head of product denied a link penalty and said links can go in the post body; third-party data still shows link posts doing worse.) Pick a hedge, such as the link in the first reply, and say why.
    - **The first 9 posts** (new accounts): a pinned intro post, a bio line, and a first run that shows what the account is about.
    - **One collaboration or borrowed-audience move** where it fits: a reply thread, a quote post, a guest spot, a creator duet.
-8. **How we'll know it's working.** One or two signals per platform for this account size. For 0–1k followers: replies from the target accounts, profile visits and follows per post, never raw likes. Each format test also names its read date.
+8. **How we'll know it's working.** One or two signals per platform for this account size. For 0–1k followers: replies from the target accounts, profile visits and follows per post, never raw likes. **Plus one business outcome:** signups or site clicks through a tracked link (UTM) in the reply or first comment, read at each refill. Each format test also names its read date.
 
 ## Platform-specific craft the research usually confirms (check, don't assume)
 
 These are starting hypotheses for the research to confirm or overturn, with what to look for.
 
 - **X:**
-  - Short video and native screen recordings, real build-in-public numbers and screenshots, sharp single posts, and replies.
-  - Look for: whether video posts get more distribution right now; how links are treated; whether long posts or threads do better in this niche.
+  - Text with a screenshot as the everyday post, sharp single posts, real build-in-public numbers, video when there's something worth watching, and replies.
+  - Look for: **per-post** evidence on video against text for accounts this size (not share-of-views quotes); X's own statements on links and Premium next to the independent data; whether long posts or threads do better in this niche.
   - An engineer's or founder's account wins with specifics only they have: what they shipped, what broke, the number, the screenshot. A "here are 3 tips" post can come from anyone.
 - **LinkedIn:**
   - Personal profiles out-reach company pages. The opening lines before "see more" decide everything. Document carousels and native video. Comments matter.

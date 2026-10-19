@@ -283,3 +283,47 @@ Result: 9 real people at 5 agencies (5 published, 1 pattern-guess, 3 other route
 **Fixed from the re-run:** quotes — say who is speaking, prefer the last 12 months, employers' job posts aren't audience voice, and thin sources are stated, never padded · reach moves — three for the top one or two segments, one honest line for the rest · conflicting brand facts — rank on evidence and make the story choice the first decision · report length ~1,500–2,500 words, one-sentence "In short" bullets, no methods section at the top (limits go in "What we couldn't check").
 
 **Schedules (AGENTS §8, updated 18 Oct):** the run now judges whether a repeat helps — a quarterly audience refresh only when the audience is moving, with the reason; never after a list-mode run.
+
+## Senior-marketer review fixes (2026-10-18, research-review.md — audience 2.5/5)
+
+Per AGENTS §2b each point was checked against the files and the re-run, not just applied. Positioning stays on the backlog (Akhil).
+
+| # | Reviewer point | Verdict | What changed |
+|---|---|---|---|
+| R1 | One owner for buyer groups and the quote bank; distinct triggers (§6 #1) | **Agree** | This playbook now owns `research/audience/buyer-groups.md` and `voc-bank.md` / `.jsonl` (same row schema the makers filter on, plus `buying_role`, `source_class`) and proposes the audience field. New `references/quote-bank.md` (who counts as voice, sampling, integrity, tags, themes, skew, saved format). Description triggers are buyer/customer asks only and end "Not for market size, trends or pricing norms". research-market's half is its own session; pb-research was sent the paths and schema. |
+| R2 | One upfront question for the brand's own customer data (§6 #2) | **Agree** | Before-you-start step 3: one specific export per company type (`audience-research.md` § Customer data), plus cancel reasons, win/loss and support themes; only when the brand has customers; "go" skips it. Customer data wins conflicts; only counts and patterns reach the brain. |
+| R3 | Lead buyer rested on two people and a vendor blog | **Agree** | § Evidence bar: a lead group needs the customer data, or 5+ distinct first-hand people from 2+ kinds of source, mostly within 18 months; else "no clear lead yet" and the gap becomes a decision. |
+| R4 | "Do this first" on a channel the run couldn't read | **Agree** | Moves rest on sources read; a move on an unread place is labelled "unverified — read the community and its rules first" and is never first (SKILL step 5, `audience-research.md` §6, segment-pass §4–5 mark each place read/unread). |
+| R5 | Community size used as group size | **Agree** | Size in buyers or companies, bottom-up, inputs sourced or labelled; member counts are reach (§1, segment-pass §0, data-sources). |
+| R6 | Agency blog copy and 2021–22 quotes as voice | **Agree** | quote-bank.md excludes vendor, agency, case-study (incl. a company about its own team), job-post and second-hand text; ≥70% of quotes from the last 18 months; old-dominated themes are "dated". |
+| R7 | Solo founders ranked last despite the $29 price | **Agree, as a rule** | Ranking criteria now say price fit counts — a budget that matches our price is a fit. The ranking itself stays a per-run judgment. |
+| R8 | No buying roles; no own users | **Agree** | Uses / pays / approves per group; customer data first. |
+| R9 | Win/loss and churn missing (§3 #3) | **Agree** | "Why they leave" and "why we win or lose" tables where the brand has data; quote-bank tags `switch`, `why they left`, `why we won / lost`. |
+| R10 | Over length; paragraph "In short" | **Agree** | Through write-report's budget (≤150-word In short, ≤3,000 body, ≤6 moves); the §9 example now has a decisions box, "what we're not doing" and a skew line. |
+| R11 | Cadence: twice a year or on a trigger (§6 #8) | **Agree** | Step 9 and the tests; triggers: a new product, a new market, a shift in who buys or why they leave. Never after a list. |
+| R12 | Sibling consistency / one "Do this first" (§3 #8) | **Agree** | Step 5 and §7: read the market and competitor reports and say in one line where this agrees or differs. |
+| R13 | For B2B, offer the paid read in the opening message (§3 #7) | **Push back (partly)** | The opening slot is now the customer-data question, which changes the answer more than any paid read (the reviewer's own point 2); a second upfront ask breaks AGENTS §8 (paid reads never the starting point, one question). The reviewer also notes the gap is partly the browserless test host. Instead: when the forums that matter were unreadable, the top-up is the **first** closing decision, named by the gap it fills. |
+| R14 | Three reach moves for every group (rubric M4) vs "three for the top one or two" (my last round) | **Comply, with a caveat** | Three moves per group; for lower-ranked groups they are small, cheap tests labelled lower priority. Risk: filler moves for weak groups — the evidence and read-only rules still apply to each. |
+| R15 | Baselines to measure against (§3 #9) | **Not this playbook** | The listed numbers (mentions, AI answers, review count, alternative-search rank) are market and competitor baselines. The audience equivalent — group sizes and the source mix — is already saved for the next run's "what changed". |
+| R16 | What buyers would pay (§3 #11) | **No change now** | It belongs to an interview kit, which doesn't exist; price-fit evidence from reviews and threads is already tagged `price / value`. Backlog with positioning. |
+| R17 | Keep list mode's email/compliance rules out of the audience flow | **Already so** | They load only in list mode (`list-mode.md`). |
+| R18 | Brand-watch mode, market frame-of-reference | **Not this playbook** | research-market's half. |
+
+Flags for the orchestrator (other folders): makers and plan-campaign still read `research/market/voc-bank.*` and market's personas — move them to `research/audience/voc-bank.*` and `buyer-groups.md`; research-competitors' "who your buyers are → research-market" pointer is stale; this playbook now proposes `knowledge.audience`, so research-market should stop.
+
+No Sonnet re-run this round (per the orchestrator); the eval suite scores next.
+
+### Contract critic against the eval rubric (subagent, effort high)
+
+| Finding | Verdict | Outcome |
+|---|---|---|
+| Example report titled "GooseWorks", with customer numbers, invites copying on the eval brand | Agree | Renamed "Acme Creative (fictional)". |
+| "No clear lead yet" fails M3/E7 (a primary must be named) | Agree — reconciles R3 with the rubric | The top-ranked group is always named; below the evidence bar it is "provisional — <what's missing>", kept out of "In short" as settled, and the gap is a decision; the audience-field proposal is skipped for a provisional lead. |
+| write-report's "≤ 6 moves" vs three reach moves per group (M4) | Agree | Here: group reach moves sit in their sections and don't count toward "What to do" (≤6). write-report itself is not my file — flagged. |
+| "Do this first" has no owner (E3); "couldn't check" lacks what it would change and the group lists (E4); "In short" numbers unlinked (E2) | Agree | Fixed in audience-research §9 and SKILL step 7; write-report's own wording flagged. |
+| "mostly" vs "at least 70%" recent | Agree | SKILL Done-when says at least 70%. |
+| Leftover "research-market sizes them" while this playbook sizes | Agree | Market figures are context; group sizes are counted here (SKILL, data-sources, meta). |
+| data-sources asks a probe yes then a ceiling yes | Agree | Copied §8: one yes, probe inside the ceiling. |
+| Places count four per top group vs four for the lead | Agree | Four for the lead group, everywhere. |
+| data-sources step 7 → step 8 | Agree | Fixed. |
+| write-report banned list misses "free pass", "worker", "maker", "corpus" (E5) | Agree | Not my file — flagged. |

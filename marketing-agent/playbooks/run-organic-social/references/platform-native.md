@@ -5,7 +5,8 @@ Load at the drafting step, **after** this run's platform research (atoms/platfor
 ## Per platform
 
 **X**
-- Put links in a reply, because links in the post cut reach (?).
+- Links: X's then head of product denied a link penalty (Apr 2026; re-check in the research), while third-party data still shows link posts doing worse. Report both from the research and pick a hedge, usually the link in the first reply.
+- Premium: X lists subscribers as a factor in reply ranking. For any reply-led plan, research its current effect and price and make a recommendation.
 - Use 0–1 hashtags.
 - A single strong post usually beats a thread. Never open a thread with "🧵" or "A thread:".
 

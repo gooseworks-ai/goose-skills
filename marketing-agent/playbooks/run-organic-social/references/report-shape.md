@@ -9,6 +9,10 @@ Written and delivered through `../../../atoms/write-report/ATOM.md`. Follow its 
 - The biggest thing the platform research found, with its so-what. Example: "X is pushing native video harder than text right now, so half your posts are 30-second screen recordings."
 - What's working in your niche there, in one line.
 - What you'll post, how often, and how long it takes you a week.
+- Keep "In short" under 150 words, with only confirmed points (write-report §1). A belief the research couldn't confirm goes lower, with its doubt stated.
+
+## Decisions for you (a short dated box)
+E.g. Premium (with today's price and the recommendation), the exact claim lines to approve, which account it's for if unknown, the paid top-up. Each has a recommendation.
 
 ## Per platform (one section each)
 1. **How <platform> works right now:** 3–5 dated, linked facts that shape the plan, each with what it means for you. Say how sure we are.
@@ -25,6 +29,9 @@ Written and delivered through `../../../atoms/write-report/ATOM.md`. Follow its 
 - Then one line for what you need to do (record this screen, fill in this number) and any approval it needs ("needs your yes: it's in your voice").
 - **All posts** (an appendix at the end of the report): every other post of the two weeks, in posting order, in the same readable shape: the what-it-is line, the post exactly as it goes out, and what you need to do. The workspace calendar keeps the machine copy; the marketer never needs to open it.
 
+## What we're not doing, and why
+The tempting moves we decided against, one line each, e.g. "Not going video-first: video is half of X's views overall, but per-post studies show text doing as well for accounts like yours." Or: "Not replying mostly to other AI-tool builders: they aren't your buyers."
+
 ## Posting sheet
 One table in posting order: date, time (your time and the audience's), platform, format, first line, what to prepare, posted ✓.
 
@@ -33,6 +40,9 @@ Plain lines, one each, with why: "Couldn't read your X posts: X doesn't let us r
 
 ## Sources
 Every link used, with its date, grouped per platform.
+
+## Length
+The body stays under ~3,000 words (write-report). The "All posts" appendix sits outside that budget, but the report must work without it.
 
 ## Never in this report
 - Slot ids, test codes, bucket names, file paths, check blocks or the internal flag syntax, including `[NAME: …]` brackets. Say "needs your yes" instead of "PERSON YES NEEDED", and "fill in: <what>" for the one allowed fill-in.

@@ -298,3 +298,40 @@ Noted, not changed: the leftover documents from run 1 polluted `knowledge_search
 **Staging leftovers (Gooseworks coworker workspace and brand documents), for cleanup:**
 - run 1: `social/{accounts.md,audit,calendar,report,research}` and two documents;
 - run 2: the `-run2` files under `social/` and `brand/voices/`, plus documents "Social plan (run2) — Gooseworks — 2026-10-18" and "Voice card founding-engineer-run2 …".
+
+## Round 15: independent senior-marketer review (18 Oct; AGENTS §2b), Akhil's social feedback and run 2's output
+
+Source: `marketing-agent-test/results/reviews/social-plan-search-review.md`. **Organic social graded 3/5:** a big step up, but over-corrected.
+
+### Verdicts on Akhil's feedback (logged per §2b)
+
+| # | Akhil's point | Reviewer's verdict | What we did |
+|---|---|---|---|
+| 1a | Each platform works differently; know what works there now | Right | Kept: platform research before anything. |
+| 1b | "X gives more reach to video today" | **Partly right, mostly unproven.** "Video ≈ half of impressions" is video's share of all views. Buffer (18.8M posts) and Ordinal (B2B-skewed, to May 2026) found text level or ahead per post. | Reversed video-first. Every format needs a reason. On X, a founder's everyday post is text plus a screenshot unless current per-post evidence says otherwise. A marketer's platform belief gets a web check and a verdict (confirmed / contradicted / unclear) that names share vs per-post. |
+| 1c | Build a strategy for how to get seen | Right | Kept, sharpened (below). |
+| 1d | Posts were generic | Right | Kept "postable as written". The stranger test and brand-risk check were added. |
+
+### The reviewer's ranked fixes for this playbook (§5)
+
+| # | Fix | Done |
+|---|---|---|
+| 1 | Reverse the "no pushback" pass criterion. | Done. tests Test 1: a pass is a web check plus a verdict with a source; agreeing is not a pass, and neither is refusing unchecked. The telltale failures list both. |
+| 2 | Symmetric format reasons; text plus screenshot is the default on X for founders. | Done in SKILL (What you get, step 2 belief check, step 4), platform-strategy §2 and the X craft list, post-checks §1b.6. |
+| 3 | Premium as a researched line item; links reported both ways. | Done: platform-research (paid verification, price and tiers, link statements next to the data), platform-strategy §7 (a recommendation for this account; usually the cheapest lever in a reply-led plan; buying it is the marketer's call), platform-native X. |
+| 4 | Reply targets lean to the buyer; 10–15 replies a day. | Done: 15–25 named accounts, at least half followed by the buyer, at most 3 direct competitors, a buyer-tied reason each; 10–15 substantive replies in two short windows in the audience's morning, scaled to the person's hours. |
+| 5 | Content mix plus brand risk. | Done: at least 3 in 10 useful to a stranger, at most half mainly about the product (SKILL step 4, post-checks §1b.9). The brand-risk question is post-checks §1b.8, wired into atoms/post-check. |
+| 6 | One blocking question. | Done: SKILL Before you start #4 allows one blocking question up front, when a single fact changes everything and no public source answers it (e.g. the handle). |
+| 10 | Log the verdicts. | This section. |
+
+**Also adopted from the review's §2 (what nobody asked for):**
+- A line to the business: a tracked link in the reply or first comment, with signups or clicks read at each refill (SKILL step 4, strategy §8).
+- An audience check: say once if the platform reaches people other than the buyer, then follow the marketer's choice.
+- Source quality: a vendor "algorithm" page is never the only source; each card has a platform statement or a sized study; share and per-post findings are labelled.
+- At least 3 examples from accounts under 10k followers.
+- The report shape now follows the updated write-report: "In short" ≤150 words with confirmed points only, a dated "Decisions for you" box, "What we're not doing, and why", a ~3,000-word body with the posts appendix outside it.
+
+### Pushback (§2b), with reasons
+- **Don't hardcode "text by default" either.** The reviewer's per-post evidence predates X's July 2026 video push: Buffer's sample is Aug 2024–Aug 2025, and Ordinal runs to May 2026. So the playbook makes text plus a screenshot the *prior* for X founder accounts, and lets fresh per-post evidence flip it. That's the reviewer's own rule ("unless research shows otherwise"), stated so neither direction becomes dogma.
+- **"10–15 replies" is folklore too.** The reviewer says so about 15–30, and none of the guides is measured research. We use 10–15 as a starting point scaled to the person's hours, and the format tests and refill read decide from the account's own results.
+- **Premium:** we recommend it when the research supports it, but never as a purchase made for the marketer, and with today's price looked up. The reviewer notes X reorganised tiers on 12 Oct, so a fixed price would go stale.

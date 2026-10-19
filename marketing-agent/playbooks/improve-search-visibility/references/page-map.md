@@ -13,8 +13,8 @@ Page map — <Brand> — <YYYY-MM-DD> v<N> · country <cc> · demand source: Sea
 | brand facts | Q9–Q11 | halden reviews | 900 impr. | /pages/about + profiles | #1 | fix | 3 | 2 | founder | now | Crunchbase repeats 2022 positioning |
 ```
 - **State:** ok · rewrite · fix (profile or foundation) · needed (brief) · merge (two pages compete for one cluster; proposal with redirect risk) · blocked (foundation blocker) · parked (not winnable now, or a comparison when the human said not to name competitors; why).
-- **Demand:** Search Console impressions summed over the cluster's queries when shared; otherwise "—" and the priority rests on value × winnability. Never invent volumes.
-- **Priority:** 1 = do first. Blockers on must-win pages and false brand facts rank first; then near-winners (positions ~4–15 or cited sometimes); then missing pages by demand × winnability; prestigious-but-hopeless clusters are parked with the reason.
+- **Demand:** always name the source. In order: Search Console impressions summed over the cluster's queries (when shared); Google Keyword Planner ranges (when the brand shares its Ads account); Google Trends relative interest and autocomplete presence (free, in the browser — relative, not counts); a vendor's AI prompt-volume estimate only if the brand already has that account, labelled "estimate". None → "no demand data, ranked by judgment". Never invent volumes.
+- **Priority:** 1 = do first. Blockers on key question pages and false brand facts rank first; then near-winners (positions ~4–15 or cited sometimes); then missing pages by demand × winnability; prestigious-but-hopeless clusters are parked with the reason.
 - **Quarter:** "now" for this-week fixes; then fill quarters in priority order at the human's stated capacity (pages a month from intake), so the map reads as a realistic quarterly roadmap. The map grows from 12–15 questions toward 25–40 over runs.
 
 ## How the five and the briefs come from it

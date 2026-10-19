@@ -23,6 +23,18 @@ For every paid leg write: % of budget · $ amount · the leg's minimum to learn 
 
 Meta's learning floor, as a worked example: ~50 optimisation events per ad set per week → weekly ad-set budget ≈ 50 × target CPA. At a $25 CPA that is ~$1,250/week (~$5.4k/month) per ad set. A $3,000/month Meta budget cannot fully feed even one purchase-optimised ad set — a judgment call: run one on a seasoned pixel anyway, or optimise a higher event, and say which.
 
+## 2b. Retargeting frequency check (small audiences burn fast)
+
+Any leg aimed at a known list or site visitors (past users, lapsed customers, retargeting) states its **audience size** and **expected weekly frequency** before it gets a budget:
+
+```
+matched people ≈ list size × match rate (often 40–60% for an uploaded email list — rule of thumb)
+weekly impressions = weekly spend ÷ CPM × 1,000
+weekly frequency ≈ weekly impressions ÷ matched people
+```
+
+Example: $450 over 4 weeks against 1,000 emails → ~500 matched; at a $20 CPM that is ~5,600 impressions a week → **~11 per person per week**. Far too many: the same people see the same ad until they ignore or hide it. Cap the leg so frequency stays at about **5 a week** (up to ~8 only with several fresh creatives rotating), and move the rest of the money to where it can reach new people or to the reserve. A small list is reached more cheaply by email and a personal note than by paid reminders.
+
 ## 3. Phasing
 
 Split each leg across **pre-launch / launch week / sustain** (or week by week for an always-on replan). Launch weeks are front-loaded on owned channels (list, existing customers) and creators; paid ramps after the first read rather than spending the peak on day one blind.

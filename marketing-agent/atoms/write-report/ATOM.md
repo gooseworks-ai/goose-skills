@@ -9,11 +9,17 @@ Every playbook that hands over research, a plan, a strategy or a report writes i
 
 **Shape, in this order:**
 1. **Title**: what it is, for which brand, the date. Example: "GooseWorks — market research, 18 Oct 2026".
-2. **In short**: 3–5 bullets. The first is "Do this first:" with the one move and why. Then the biggest findings, each with its "so what".
-3. **The story**: the findings in an order that flows. Context → what we found → what it means for you → what to do. Each section opens with its point in one sentence, then the evidence.
-4. **What to do**: numbered moves, each with who does it, what it needs, and how we will know it worked.
-5. **What we couldn't check**: plain list, one line each, with why.
-6. **Sources**: links, dated. This goes at the end so it doesn't interrupt the story.
+2. **In short**: 3–5 bullets, **at most 150 words**. The first is "Do this first:" with the one move and why. Then the biggest findings, each with its "so what". **No unverified claim here**: anything in "In short" is confirmed, or it moves down to the story with its doubt stated.
+3. **Decisions for you**: a short dated box: the decisions the marketer needs to make, each with your recommendation, and the date by which it matters if there is one.
+4. **The story**: the findings in an order that flows. Context → what we found → what it means for you → what to do. Each section opens with its point in one sentence, then the evidence. Where a finding means nothing for this brand, say "nothing to do here" rather than invent a move.
+5. **What to do**: **at most 6** numbered moves, each with who does it, what it needs, and how we will know it worked.
+6. **What we're not doing, and why**: the tempting moves you decided against, one line each. This is where herd-following and over-reaction get stopped.
+7. **What we couldn't check**: plain list, one line each, with why.
+8. **Sources**: links, dated, at the end. Add one line on **source skew**, e.g. "Most buyer quotes come from Trustpilot, which over-represents complaints."
+
+**Length budget:** the body (everything after "In short") stays under **3,000 words**. Cut repetition and detail that no decision needs. An appendix may hold tables a specialist wants, but the report must work without it.
+
+**Agree with the sibling reports, or say why not.** Before writing, read the brand's latest market, audience and competitor reports (and any plan). Where you disagree with one (a different lead buyer, a different first move), say so and why, in one line.
 
 **Language:**
 - Plain words, short sentences, active voice. If a simpler word works, use it.
@@ -40,8 +46,13 @@ In the chat, after delivering, write at most 3 lines: the one thing to do first,
 
 ## 3. Check before you hand it over
 
-Re-read it as the founder, for the first time:
-- Do the top 5 lines tell them what to do and why?
+**Run the mechanical check.** Scan the report text and fix every hit before delivering:
+- **Banned in the report:** id-like codes (`A-07`, `R14`, `G1`, `T1`, `S1`, `D2`…), local or workspace file paths (`research/market/…`, `*.md`, `*.json`, `gooseworks-reports/`; web links in Sources are fine), tool or skill names (`gooseworks:`, `brand_read`, `knowledge_search`, `research-market`, `playbook`, `atom`, `MCP`), model or vendor names (Claude, Sonnet, Opus, GPT, ScrapeCreators, fal, ElevenLabs), process words ("I called", "per the checklist", "Step 4"), made-up precision ("confidence 0.7", "82% likely").
+- **Budget:** "In short" ≤ 150 words; body ≤ 3,000 words; ≤ 6 moves. Count them.
+- **Sections present:** In short, Decisions for you, What we're not doing, What we couldn't check, Sources with a source-skew line.
+
+**Then re-read it as the founder, for the first time:**
+- Do the top 5 lines tell them what to do and why, with nothing unverified?
 - Could a non-marketer follow it?
-- Does any id, path, tool name or agent jargon appear? Remove it.
+- Does every recommendation trace to a dated source in the report?
 - Does the link open?

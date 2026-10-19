@@ -25,9 +25,11 @@ Read each draft as the person whose name is on the account, and as someone scrol
 3. **It sounds like them on that platform.** On X: short, specific, lowercase if they write that way, one idea, no LinkedIn cadence. On LinkedIn: a real story with a turn, not a press release. On TikTok and Reels: spoken words, not written ones.
 4. **It follows a pattern that works there.** It names the example it's modelled on (slot "Modelled on"). A post with no proven pattern behind it is a guess: drop it or make it a labelled test.
 5. **No engagement bait or filler questions.** No "I'll read every reply", "Agree?", "What do you think?" endings, and no weekly recap posts with empty brackets. A question post must be one the person genuinely wants answered, and specific.
-6. **Video where the platform rewards it.** If the research card says the platform is pushing video, a text post needs a reason to be text.
+6. **Every format has a reason.** A video needs something worth watching (a finished output appearing, a before/after); a text post needs a point that lands without motion. A platform "pushing" a format is not a reason on its own.
 
 7. **Postable as written.** At most one short fill-in that only the person knows. A post that reads as a template fails.
+8. **Could this make a buyer trust us less?** A bug list, an outage, a cost surprise or anything that reads like one customer's data reaching another needs a lesson and a fix the buyer cares about, or it doesn't go out. Build-in-public works when there's a lesson; a list of what broke is not one.
+9. **Useful to a stranger?** (calendar level) At least 3 posts in 10 help someone who has never heard of the brand, and at most half are mainly about the product. Changelog, install and plumbing posts inform existing users; they rarely earn a follow.
 
 A draft that fails is rewritten from the person's material, or from material found in the free pass, or it is cut. Two weak posts are worse than one good one.
 

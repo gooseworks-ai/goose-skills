@@ -53,7 +53,9 @@ Week of <date> · <n> changes that matter · rivals watched: <names> · not re-c
 
 Then rewrite each rival's Snapshot block (keep the old one as `## Previous snapshot`), save each changed rival record through `../../../atoms/save-to-brain/ATOM.md` (`supersede`, its `Competitor file:` title and tags), and save the note through `../../../atoms/save-to-brain/ATOM.md` (`keep-history`, title `Competitor watch — <Brand> — <date>`, tags `research-competitors`, `competitor-watch`).
 
-### Scheduled repeat — weekly or monthly (only on a yes)
+### Scheduled repeat (only on a yes)
+
+Weekly by default when rivals are active: a what-changed report only when something crosses a threshold above — otherwise nothing is sent and only the snapshots are refreshed — plus a full teardown each quarter (a normal run). Scheduled runs have no browser: they read news, pages that fetch can read and the server's free samples, never the ad libraries; say so when offering it.
 
 Follow `../../../atoms/spend-gate/ATOM.md` branch C. Needs a coworker; without one, say so and keep running on ask. Before asking, say what the scheduled run can and cannot re-read: it uses free sources — the server's competitor research and samples, and web search and pages if the scheduled worker has them — and never spends on data unless the yes names a per-run ceiling. Its own run cost is unknown until the first run; show it afterwards from `gooseworks:automation_list`.
 

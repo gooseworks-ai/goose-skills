@@ -292,3 +292,21 @@ These live in a new local atom, `atoms/edge-cases`.
 **Still weak:** the run never touched the browser path that matters most here, the ad libraries. It needs a hand test in a host whose browser doesn't ask per site, or the fix logged in server-needs.
 
 
+
+
+## Round 15 — senior-marketer review (2026-10-18): verdicts per AGENTS §2b
+
+| Review point | Verdict | What changed / why not |
+|---|---|---|
+| §6 #1 Stale "who your buyers are → research-market" pointer | **Agree** | The description now points to research-audience. The brain read includes `research/audience/profile.md` and `plans/`; the meta reads are updated. |
+| §6 #7 "Do this first" can't be table stakes | **Agree** | Step 5 and "Done when": neither "Do this first" nor the top angle may be something the report calls table stakes. The re-run led with a billing page it had itself called "not a reason to choose you". |
+| §6 #7 Leverage test before counter-positioning | **Agree** | Step 4: counter-position only if we're the challenger, genuinely do the job better, have dated proof, and our answer reaches enough of the rival's buyers. Otherwise it goes under "What we're not doing". The re-run's "we've had this since July" against Higgsfield's video launch would now fail the test. |
+| §6 #7 Frame-of-reference line | **Agree** | Step 1 states the frame in one line (research-market's decision when it exists) and the other frames we could claim, since the frame decides which rivals matter. The report has "The frame we compared in". |
+| §6 #6 Sibling reports, disagreements, positioning | **Agree** | Same as research-market. |
+| §6 #8 Cadence: weekly, silent below thresholds, quarterly teardown; scheduled runs have no browser | **Agree** | watch-and-react: a weekly what-changed report only when something crosses a threshold (otherwise snapshots only), a quarterly full teardown, and the offer says scheduled runs can't read ad libraries. |
+| "For you" on every finding inflates moves; at most 6 moves | **Agree** | "For you" only where it matters; at most 6 moves; formats and angles cut to the top 5 each in the report, with the rest in the angle bank. |
+| Baselines; source skew | **Agree** | A baselines table (rank for "<rival> alternative", AI answers, reviews, active ads per library) and a skew line. |
+| Unrealistic measures ("ranking by end of November") | **Agree** | "What to do" success checks must be on a realistic timeline. |
+| Vanity measures (GitHub stars as "ahead") | **Agree, by rule** | Covered by "Where we're ahead" needing what buyers value; nothing to hard-code. |
+| §3 #7 Paid read offered upfront for B2B | **Push back** | As in research-market: it reintroduces a pre-research question and spend ask, and the gap was partly the browserless test. Kept after the free pass. |
+| §3 #10 Battlecards for B2B sales | **Not now** | Backlog card "Sales collateral"; the competitor report notes where a battlecard would help. |

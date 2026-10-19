@@ -64,7 +64,7 @@ A gap claimed with no buyer evidence is an invented gap. Do not report it as whi
 
 ## Frameworks
 
-Use: the matrix above, a positioning map when it helps (in "How they compare" — axes taken from the evidence, for example price × "self-serve vs sales-led", never invented), the offer-architecture table, awareness levels on every hook, the hook taxonomy in `reading-ads-honestly.md`, a format line per rival. Skip: SWOT, Porter's five forces, TAM, estimated share of voice or traffic (an ad-count ratio across the set, from full-library reads, is the only honest proxy, and say it is one).
+Use: the matrix above, a positioning map when it helps (in "How they compare" — axes taken from the evidence, for example price × "self-serve vs sales-led", never invented), the offer-architecture table, awareness levels on every hook, the hook taxonomy in `reading-ads-honestly.md`, a format line per rival. Skip: SWOT, Porter's five forces (market size is research-market's job), estimated share of voice or traffic (an ad-count ratio across the set, from full-library reads, is the only honest proxy, and say it is one).
 
 ## What a senior rejects
 

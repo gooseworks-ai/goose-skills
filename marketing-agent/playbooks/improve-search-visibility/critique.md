@@ -197,3 +197,25 @@ Open for the orchestrator: (1) the paste set vs the server's "no other app" inst
 ## Round 7 — schedules rule (AGENTS §8, 18 Oct)
 
 The fixed "offer a monthly re-run" in step 5 became a judgment: offer a repeat only when it would help this brand, with the reason and a cadence (monthly by default; weekly only during a launch or a close fight for a must-win question). One-off asks get a single re-check after the fix instead; pre-launch gets a first check the week after launch. Created paused under spend-gate's automation rule; each scheduled report opens with what changed. Output table and Out of scope updated to match.
+
+## Round 8 — independent senior-marketer review of the 18 Oct re-run (graded 4/5), applied per AGENTS §2b
+
+Source: `marketing-agent-test/results/reviews/social-plan-search-review.md` (search parts, ranked fix #8, eval criteria §4). Each point checked, not just obeyed.
+
+| Review point | Verdict | What changed / why not |
+|---|---|---|
+| Positioning decided silently (re-run retitled outbound pages to ads) | **Agree** | Free pass reads the positioning the site sells today; the question set covers every audience; the decisions message asks "which buyer do we want to win?" with a recommendation; fixes that retitle pages across positionings stay conditional on the answer (SKILL steps 1–2, question-set, free-pass) |
+| No demand data | **Agree, with a limit** | Every cluster states its demand source: Search Console, Keyword Planner (only if the brand shares its Ads account), Google Trends and autocomplete (free, relative), a vendor prompt-volume estimate only if the brand already has that account — labelled "estimate"; else "no demand data, ranked by judgment" (page-map, prioritising, question-set). *Limit:* GooseWorks has no keyword or prompt-volume tool, and AGENTS §2.4 forbids vendor keys, so we can't fetch Keyword Planner or Profound/Ahrefs data ourselves (server-needs §8 already asks for it) |
+| "No prompt-volume data exists" is stale | **Agree** | Replaced in citation-protocol and the question-set atom: vendor estimates exist, used only when the brand has them, always labelled estimates |
+| 79–90 templated `/brand/` pages not read | **Agree, reframed** | New foundation row and free-pass step: sample any large templated page set first; thin → top of the risk list as a proposal (improve, consolidate or noindex) with risk and undo. Framed as a quality risk to check, not an asserted site-wide penalty — that would be a claim we can't verify |
+| Signed-out ChatGPT isn't what signed-in buyers see; Perplexity, Gemini, Claude skipped | **Agree on the limit; partial pushback on the engines** | Every report states the signed-out limit in "couldn't check". Perplexity is checked signed out when buyers are technical or AI-native. **Pushback:** Claude, Gemini and Copilot's consumer apps require sign-in; borrowing the founder's account would personalise the answer and breaks the browser rules, so they are named as not checked rather than run |
+| Search Console + Bing should be "fix 0" | **Agree in spirit** | Measurement comes first in the five when missing (Search Console, Bing, plus an AI-referral baseline in analytics). Kept inside the five rather than as a sixth so the "at most five fixes" rule (rubric E7) holds |
+| AI-referral baseline missing | **Agree** | Added to the measurement fix (visits from chatgpt.com, perplexity.ai and similar in the brand's analytics) |
+| Monthly re-check with one run reports noise | **Agree** | Scheduled checks run every key question 3 times and call a trend only after 2–3 checks; a "nothing material changed" report is valid |
+| Outreach emails weak; lists often affiliate-driven | **Agree** | Inclusion template now needs a reason the editor's readers gain (a data point, a reproducible test, an honest "when not to use us"); affiliate-driven lists flagged as a human decision |
+| Broke its own rules ("must-win", guessed editor field, "sitemap" in In short) | **Agree** | write-report's mechanical check now runs before delivery with this playbook's extra banned list (must-win, key question, probe, proxy, surface, row, runs·route, 0/1, Q-ids, guessed field names); In short must hold only verified points. "must-win" renamed to "key question" inside the playbook so the term stops leaking into reports |
+| write-report additions (decisions box, "not doing", length budget, source skew) | **Agree** | Report template follows them |
+| §8 now allows one upfront customer-data question | **Pushback (not used here)** | For search the brand's own data is Search Console, which is optional and asked in the decisions message. An upfront question would delay the answer the ask is about, and the eval's must-pass E1 requires no question before the first answer |
+| Rubric E2/E5/E9 | Applied | Each AI table states date, browser location and signed-out state; single-run answers are "a first look", unfinished ones "didn't finish"; every engine statement about the brand gets right / wrong / unsupported; competitor facts only from the competitor's own page, read this run and cited |
+
+Not re-run (per orchestrator: the eval suite scores it next).

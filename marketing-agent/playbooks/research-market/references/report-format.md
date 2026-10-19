@@ -1,83 +1,117 @@
 # Report format
 
-Load at steps 5–6, with `../../../atoms/write-report/ATOM.md` (read it fully — its §1 shape and §3 check govern). The report is for a busy founder: the top section alone tells them what we found and what to do. Examples below are for a fictional B2B scheduling tool — never copy them.
+Load at steps 5–6 with `../../../atoms/write-report/ATOM.md` — read it fully; its shape, length budget and §3 check govern. Examples are for a fictional B2B scheduling tool — never copy them.
 
 ## The market report
 
-Brand copy `research/market/<YYYY-MM-DD>-read.md` (title `Market research — <Brand> — <YYYY-MM-DD>`, tags `research-market`, `market-research`, keep-history); local copy `gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-market-research.md`.
+Brand copy `research/market/<YYYY-MM-DD>-read.md` (title `Market research — <Brand> — <YYYY-MM-DD>`, tags `research-market`, `market-research`, keep-history); local copy `gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-market-research.md`. A monthly pulse is the same shape cut to one page: In short, Decisions, What changed, What people are saying, Baselines, Sources.
 
 ```markdown
 # <Brand> — market research, <D Month YYYY>
 
 ## In short
-- **Do this first:** <the one move, and why, in one sentence>.
-- <the biggest finding about the market — and so what>
-- <the biggest finding about the buyers — and so what>
-- <what people are saying right now — and so what>
-- <one more if it matters: a timely opening, a risk>
+- **Do this first:** <one move, who does it, and why — nothing unverified>.
+- <which market we're in, and how big the reachable part is>
+- <the change that matters most — and so what>
+- <what people are saying — and so what>
+(≤ 150 words. A repeat run opens with what changed since the last report.)
 
-## The market at a glance
-<One sentence with the point.> What buyers call it, how big it is and how fast it's growing (with whose estimate and when), and our verdict — growing, flat or shrinking — with how sure we are.
+## Decisions for you
+| Decision | My recommendation | Matters by |
+|---|---|---|
+| Which market to compete in | <one, and why> | <date or "before the next campaign"> |
+
+## Which market we're in
+<One sentence with the decision.> The 2–3 categories we could be filed under, what buyers call each (with evidence), who else sits in each, and the one we recommend — with what changes if you pick another.
+
+## How big it is
+<One sentence.> Top-down: two or three analyst figures (publisher, year, what they count). Bottom-up, the part we can reach: one line per buyer group — likely buyers × what they'd pay a year = total — each input linked or marked "an assumption, because…". Buyer groups come from your audience research's buyer groups; where there's none, they're marked "provisional — run audience research to confirm". Verdict: growing, flat or shrinking, and how sure.
 
 ## What's changing
-<One sentence with the point.> 3–6 changes, newest first, each: what happened (linked, dated) and what it means for us.
-**For you:** <one plain sentence: what to do about it, or "nothing yet — watch it">
-
-## Who buys, and why
-<One sentence naming the buyer to lead with and the job they hire the product for.> Then each buyer group in a short paragraph: who they are (in their own words), what pushes them to look, what nearly stops them, what they compare us with, the words they use and never use, two or three short quotes with links. A small table ranks the groups (how much evidence, how sharp the pain, signs they'd pay, how easy to reach, how well we fit).
-**For you:** <e.g. "Lead with the 'four-minute week' — their words — for ops leads at 20–200-person agencies. Make a static ad and a landing-page headline from it; the time-saved line needs your OK first. Who: static ads, landing page.">
+3–6 changes from the last 12 months, newest first: what happened (linked, dated, checked on the primary page or marked "not confirmed") and what it means for us.
 
 ## How and where they buy
-<One sentence.> Where they first hear of products, how they compare, who signs off, how long it takes, where they buy. **For you:** …
+Where buyers first hear of products, how they compare, who signs off, how long it takes, where they buy — each line marked "evidence" or "our inference".
 
 ## What they pay
-<One sentence with the norm.> A short table of 8–15 products: price, what you pay per, free tier or trial. Where we sit. **For you:** …
+<The norm in one sentence.> A table of 8–15 products: price, what you pay per, free tier or trial, read on the vendor's page or third-hand. Where we sit — or the conflict in our own prices.
 
 ## Where their attention is
-<One sentence.> The communities, newsletters, creators, events, ad platforms and AI answers that matter, each with why. **For you:** …
+The communities, newsletters, creators, events, ad platforms and AI answers that matter, with numbers where they exist and why each matters.
 
 ## When they buy
-<One sentence.> Seasons and triggers, each said as measured, a proxy, a known pattern, or unknown. **For you:** …
+Seasons and triggers, each line marked measured, a proxy, a known pattern, or unknown.
 
 ## What people are saying
-<One sentence with the point, and the window: "In the last 30 days…".> How much people talked about us and the category (a sample — say where we could and couldn't look), how they feel (positive n vs negative n), the themes in their words with quotes, **trends worth posting on, each with a post-by date**, and any risks with what we know. **For you:** <e.g. "Three people asked whether it works with Outlook — post a 30-second demo this week. Who: organic posts.">
+<One sentence with the point and the window ("In the last 30 days…").> How much people talked about us and the category (a sample; where we could and couldn't look; what our name gets confused with), how they feel, the themes in their words with short quotes, trends worth posting on with a post-by date, and a risk line ("no serious risk found" or what was sent to you).
 
 ## The competition in brief
-<One sentence.> At most 8 names, one line each, and which looks strongest now. "For a full look at rivals, run a competitor research."
+At most 8 names, one line each, the strongest now, and the alternatives buyers use instead (a spreadsheet, an agency, the platforms' own free tools). "For a full look at rivals, run a competitor research."
 
 ## You vs them
 | | What buyers say | For you |
 |---|---|---|
 | Where we're ahead — say it louder | | |
 | Where we're behind | | |
-| Where everyone sounds the same | | <what to say instead, in buyers' words> |
+| Where everyone sounds the same | | |
+
+## Where this disagrees with your other reports (only if it does)
+- <The audience report leads with X; this report sees Y, because…>
+
+## What this means for positioning
+Three lines: who we're for, what we're up against, why we win — as this research sees it, with the decision it implies. Writing the positioning itself is a separate job.
 
 ## What to do
-1. <Move> — who does it · what it needs · how we'll know it worked.
-2. …
+1. <Move> — who does it · what it needs · how we'll know it worked (a number or something you can see) · by when.
+(≤ 6, ranked.)
+
+## What we're not doing, and why
+- <The tempting move we decided against — one line why.>
+
+## Baselines for next time
+| Measure | Now | Source, date |
+|---|---|---|
+| Mentions of us in the window (sample) | | |
+| AI answers that name us (of the questions asked) | | |
+| Our review count and rating, per site | | |
+| Our rank for "<main rival> alternative" | | |
+| Our main social account's typical engagement | | |
 
 ## What we couldn't check
-- <source or question — why — what it would change>
+- <source — why — what it would change>
 
 ## Sources
 - <title> — <link> — <date>
+Source skew: <e.g. "Most buyer quotes come from Trustpilot, which over-represents complaints, so the anger at billing is likely overstated.">
 ```
 
-**"For you" is a plain sentence,** never shorthand: does it fit us and why (from our facts), what to make or do, the claim it rests on (approved, "needs your OK", or "you'd need proof of X first"), and who does it in plain words (static ads, video ads, organic posts, creators, landing page, email, the founder, the campaign plan). Facts-only asks leave it out. With an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
+**"For you" only where a finding matters,** as a plain sentence: does it fit us and why (from our facts), what to make or do, the claim it rests on (approved, "needs your OK", or "you'd need proof of X first"), and who does it in plain words. "Nothing to do here" is a fine answer; never invent a move to fill the line. Facts-only asks leave it out; with an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
 
-**Cold start** (`recognition-and-interviews.md` § The evidence floor): the first bullet is "Do this first: talk to 5–8 recent buyers, starting with <the likely buyer>, because only <n> of the <N> things I read came first-hand from your own buyers"; buyer groups are marked "likely, not yet confirmed"; the interview kit goes in before "What we couldn't check".
+**When most of the buyer voice is about rivals,** say "this is the category's voice, not yet your buyers'".
 
-**A narrow ask** (one area only) keeps the same shape with only that area's sections, and says in "In short" which areas weren't covered this time.
+**Never in the report** (write-report §3): ids or codes, file paths, tool or playbook names, "free pass", "corpus", "worker", "maker", sum-style arithmetic, process narration, a preamble line above "In short", an unverified claim in "In short".
 
-**A repeat run** opens "In short" with what changed since the last report.
+## The brand-watch note — `research/market/watch/<YYYY-MM-DD>.md`
 
-**Never in the report** (write-report §1): ids or codes, file paths, tool or playbook names, "free pass", "corpus", "cold start" as a label, sum-style arithmetic ("24+11+7, overlapping") — a plain "18 of about 270" is fine — process narration, or a preamble line above "In short". Brand facts that contradict each other (two prices) go in one line under "What we couldn't check" and are never used in "For you".
+Only when something crossed a threshold; otherwise the file holds just the counts checked and the window. Title `Brand watch — <Brand> — <YYYY-MM-DD>`, tags `research-market`, `brand-watch`.
 
-## Brand files (data for the other playbooks — readable, plain)
+```markdown
+# <Brand> — brand watch, <D Month YYYY>
+Window: <since the last watch> · Checked: <platforms> · Mentions (sample): <n> (last watch: <n>)
 
-**`voc-bank.md`** (title `Voice-of-customer bank — <Brand> — <D>`, tags `research-market`, `voc-bank`, supersede): opens "Do this first, because… <which quotes to brief from>"; one line on what was read; then the themes in buyers' words, each with its quotes — quote, who said it (self-description), where, date, link. Quotes that make a claim or name a personal condition are marked "buyer words only — don't use as a claim". Filterable copy: `voc-bank.jsonl`, one row per quote with `id`, `verbatim`, `about`, `capture`, `platform`, `url`, `posted`, `retrieved`, `stars`, `self_descriptor`, `type`, `theme`, `segment`, `vividness`, `contains_claim`, `personal_attribute`, `status` (ids stable; a dead link becomes `retired`).
+## In short
+- **Do this first:** <the action, who, by when>.
+- <what crossed the threshold>
 
-**`personas.md`** (title `Buyer segments — <Brand> — <D>`, tags `research-market`, `buyer-segments`, supersede): opens "Do this first, because… lead with <buyer> and their job <job>"; the ranking table; then each buyer group by name with who they are, their job, triggers, worries and what answers them, words they use and don't, alternatives, where they hang out, what to lead with — each with example quotes. B2B: role × company size and who signs off.
+## What happened
+<quoted, linked, dated; reach; how many separate people; what we know and don't; who handles it>
+Hold list (serious risks only): <ads, scheduled posts, emails that touch the product — for you to pause>
+
+## What we couldn't check
+## Sources
+```
+
+## Brand files
 
 **`demand.md`** (title `Demand read — <Brand> — <D>`, tags `research-market`, `demand-read`, supersede): opens "Do this first, because…"; direction, seasonality, how buyers search (their phrasings), each line labelled measured · proxy · known pattern · unknown.
 

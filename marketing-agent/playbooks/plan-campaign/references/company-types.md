@@ -26,7 +26,9 @@ Load at step 1, after the look-first pass (`intake.md`). The lists below are **w
 ## B2B SaaS — self-serve
 - **Needed (look first):** price per seat and seats per account (→ ARPA); signup → activated → trial → paid rates; trial length; monthly churn; gross margin.
 - **Goal chain:** signups → activated (the aha event) → paid accounts; cost per activated signup and per paying account. Allowable CAC = ARPA × gross margin × payback months accepted (often ≤ 12, rule of thumb).
-- **Live channels:** Google Search (problem, competitor and "alternatives" terms), content/SEO and comparison pages, review sites, Product Hunt and directories, communities (Reddit, Slack groups), founder LinkedIn/X, integrations/partners, LinkedIn ads only if ARPA carries the CPL.
+- **Live channels:** email and in-app messages to free and lapsed users, **founder one-to-one outreach** to the most active lapsed accounts (win-back), Google Search (problem, competitor and "alternatives" terms), content/SEO and comparison pages, review sites, Product Hunt and directories, communities (Reddit, Slack groups), founder LinkedIn/X, integrations/partners, LinkedIn ads only if ARPA carries the CPL.
+- **The business result:** signups → activated → paid accounts; every leg (posts included) carries a tagged link so its signups can be counted.
+- **The buyer's season:** the season of the people the product serves (e.g. a tool for ecommerce marketers is busiest for its buyers in the November sales crunch) — plan around it.
 
 ## B2B SaaS — sales-led
 - **Needed (look first):** ACV; sales cycle length; lead → qualified (MQL/SQL) → opportunity → won rates; sales capacity to follow up; whether the CRM records lead source.

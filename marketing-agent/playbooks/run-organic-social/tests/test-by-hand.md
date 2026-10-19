@@ -7,8 +7,8 @@ Ask: **"I want to run organic social for my brand <brand>."** Then, after its fi
 
 It should:
 - **ask nothing before researching.** Its first message comes with a draft report. It has already web-searched how each candidate platform works right now (dated sources), looked at what gets watched in the brand's niche there, and read the brand's and founder's own accounts.
-- **know the platform today.** If X is pushing video, the plan says so with a dated source and is video-first (screen recordings the founder can make), with no pushback that "we can't confirm it".
-- **give a real X strategy** for a zero-follower founder account: its job, the formats and why, topics, hook patterns lifted from linked examples, cadence and posting times in the audience's time zone, and **how it breaks in**: 10–20 named accounts to reply to, a daily routine in minutes, a pinned intro and a bio.
+- **check the platform claim, then give a verdict.** When the marketer says "videos are working more on X now", the agent web-checks it before answering. It answers confirmed, contradicted or unclear, with a dated source, and says whether the evidence is about video's share of all views or per-post reach for an account like his. **Agreeing is not a pass, and neither is refusing without checking.** Formats each have a reason. On X a founder's everyday post is usually text with a screenshot, with video when there's something worth watching.
+- **give a real X strategy** for a zero-follower founder account: its job, the formats and why, topics, hook patterns lifted from linked examples, cadence and posting times in the audience's time zone, and **how it breaks in**: 15–25 named accounts, at least half of them accounts the buyer follows (at most 3 rivals), 10–15 substantive replies a day, and a Premium recommendation with a dated source and today's price, a daily routine in minutes, a pinned intro and a bio, and one business outcome (a tracked link, signups read at refill).
 - **write posts a person would post:**
   - each one names the pattern and example it's modelled on;
   - most are not about the product;
@@ -39,7 +39,10 @@ Ask: **"Write a post on this trend"** or **"a Reel script to shoot on my phone"*
 ## Telltale failures
 - Asking questions before doing any research, or planning a platform from memory.
 - Generic posts with the product bolted on ("We built X so that…"), or "I'll read every reply" endings.
-- Text-only plans on a platform that is pushing video.
+- A format chosen with no reason, in either direction: video-first because "the platform is pushing video", or text-only when there is something worth showing.
+- Simply agreeing with the marketer's platform belief (or refusing it) without a web check and a verdict.
+- Reply targets that are mostly peers or rivals rather than accounts the buyer follows. Most posts about product plumbing. A post that could make a buyer trust the brand less.
+- No line to the business (a tracked link and signups read at refill).
 - A report that lives only in chat or only on the server.
 - Posts that sound like anyone's brand but yours: they fail the swap test.
 - The same text pasted across platforms.

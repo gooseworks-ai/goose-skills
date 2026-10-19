@@ -1,7 +1,7 @@
 {
   "slug": "research-competitors",
   "tier": "playbook",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "pillar": "1 — Strategy and planning",
   "intents": [
     "What are my competitors running right now, and what works for them?",
@@ -20,7 +20,7 @@
     "competitor roster, dossiers and suggestions (competitor_read) — research-market / server research",
     "public web: news, launches, pricing (and Wayback), ad libraries (LinkedIn, Google, Meta, TikTok), company and founder posts, reviews, community, jobs, events — host web search, fetch and browser (free)",
     "Meta ad sample (ads_template_read mode competitor) and rival posts (brand_read organic) — server research, free",
-    "the newest market report research/market/<date>-read.md, voc-bank.md and personas.md — research-market",
+    "the newest market report research/market/<date>-read.md (which market) — research-market; buyer groups research/audience/buyer-groups.md and the latest audience report — research-audience; plans/ — plan-campaign",
     "angle results: workspace reports/performance/<date>.md — analyze-performance; creatives tagged angle:a-nn — make-static-ads",
     "previous report and rival records with snapshots: workspace research/competitors/* — research-competitors itself",
     "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data",

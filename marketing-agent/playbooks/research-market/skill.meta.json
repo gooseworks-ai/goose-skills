@@ -1,35 +1,34 @@
 {
   "slug": "research-market",
   "tier": "playbook",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "pillar": "1 — Strategy and planning",
   "intents": [
     "Do the market research for <brand>",
-    "How big is my market, and is it growing?",
-    "What's changing in my market?",
-    "Who actually buys this, and what do they say in their own words?",
+    "Which market are we in, and how big is it?",
+    "Is my category growing / what's changing?",
     "How do people buy in my category, and what do others charge?",
-    "What are people saying about me and my category this week?",
-    "Who's talking about us / what's trending in my category?",
-    "Repeat my market research every month"
+    "What are people saying about me and my category?",
+    "Watch my brand / tell me if something blows up",
+    "Repeat my market research (monthly pulse, quarterly report)"
   ],
   "reads": [
     "brand brain: summary, kit, products, competitors, learnings, sources, organic, accounts (brand_read); evidence and earlier documents (knowledge_search) — learn-my-brand / server research",
+    "buyer groups and the customer-quote bank: workspace research/audience/buyer-groups.md (counts per group) and the latest research/audience/<date>-report.md — research-audience",
+    "sibling reports: the latest research/competitors/<date>-report.md and plans/ — research-competitors, plan-campaign",
     "competitor roster (competitor_read) and rival records research/competitors/* — research-competitors",
     "public web: news, analyst estimates, funding, pricing pages, review sites, communities, social platforms' public pages, AI answers — host web search, page fetch and browser (free)",
     "previous run: workspace research/market/* incl. watchlist.md — research-market itself",
     "claims through the claims-gate shared atom — learn-my-brand",
-    "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data",
-    "private material the founder chooses to share after the report"
+    "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data"
   ],
   "writes": [
-    "market report ('In short' with 'Do this first', the market, change, buyers, buying, pricing, attention, demand, what people are saying, competition in brief, You vs them, what to do): local gooseworks-reports/<brand-slug>/<date>-market-research.md + workspace research/market/<date>-read.md + brand document (keep-history) — read by the founder, plan-campaign, analyze-performance, run-organic-social, the next run",
-    "buyer segments: research/market/personas.md + document (supersede) — plan-campaign, work-with-creators, make-content, run-organic-social",
-    "voice-of-customer bank: research/market/voc-bank.md + document, voc-bank.jsonl (supersede) — make-static-ads, make-video-ads, make-content, run-organic-social, research-competitors, plan-campaign",
+    "market report (In short, Decisions for you, which market, size top-down and bottom-up, change, buying, pricing, attention, demand, what people are saying, competition in brief, You vs them, disagreements with sibling reports, what it means for positioning, what to do, not doing, baselines, couldn't check, sources with skew): local gooseworks-reports/<brand-slug>/<date>-market-research.md + workspace research/market/<date>-read.md + brand document (keep-history) — read by the founder, plan-campaign, research-audience, research-competitors, analyze-performance, run-organic-social, the next run",
+    "brand-watch notes (alerts only, else counts): research/market/watch/<date>.md + document (keep-history) — read by the founder, the next watch, analyze-performance",
     "demand read: research/market/demand.md + document (supersede) — plan-campaign",
     "listening watchlist: research/market/watchlist.md + document (supersede) — this playbook",
     "outlier posts: inspiration library via social_inspiration_save (tag research-market) — makers, work-with-creators, run-organic-social",
-    "on yes only: rivals via competitor_save; [market …] and [listening …] rules via save-learning; audience summary as a brand_update agent proposal; a monthly repeat via automation_upsert (created paused)"
+    "on yes only: rivals via competitor_save; [market …] and [listening …] rules via save-learning; a monthly pulse / quarterly report or a weekly brand watch via automation_upsert (created paused)"
   ],
   "needs": {
     "mcp": [
@@ -38,7 +37,6 @@
       "gooseworks:automation_upsert",
       "gooseworks:brand_read",
       "gooseworks:brand_setup",
-      "gooseworks:brand_update",
       "gooseworks:competitor_read",
       "gooseworks:competitor_save",
       "gooseworks:data_call_provider",
@@ -64,7 +62,6 @@
   },
   "atoms": [
     "market-pass",
-    "buyer-voice",
     "listening",
     "edge-cases"
   ],

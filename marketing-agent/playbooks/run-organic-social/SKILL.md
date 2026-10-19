@@ -1,7 +1,7 @@
 ---
 name: run-organic-social
 description: >-
-  Run my organic social. Use when a founder or marketer says "run organic social for my brand", "fill my social calendar", "grow my X / LinkedIn / Instagram / TikTok", "ghostwrite my founder's posts", "what should we post on X?", "which platforms should we be on?", "we're launching on the 12th, plan the social", "a TikTok or Reel script to shoot on my phone", or "my accounts went quiet". First researches how each platform works right now and what is getting watched in the brand's niche there, then delivers a readable plan: a strategy per platform (formats, topics, hooks, cadence, how a small account breaks in) and two weeks of posts modelled on what works, video-first where the platform rewards it, in the brand's or person's real voice. You post by hand; posting, scheduling and replies are not available yet. Not for a standalone post or repurposing one piece — use make-content.
+  Run my organic social. Use when a founder or marketer says "run organic social for my brand", "fill my social calendar", "grow my X / LinkedIn / Instagram / TikTok", "ghostwrite my founder's posts", "what should we post on X?", "which platforms should we be on?", "we're launching on the 12th, plan the social", "a TikTok or Reel script to shoot on my phone", or "my accounts went quiet". First researches how each platform works right now and what is getting watched in the brand's niche there, then delivers a readable plan: a strategy per platform (formats, topics, hooks, cadence, how a small account breaks in) and two weeks of posts modelled on what works, each format chosen for a reason, in the brand's or person's real voice. You post by hand; posting, scheduling and replies are not available yet. Not for a standalone post or repurposing one piece — use make-content.
 ---
 
 # run-organic-social
@@ -20,7 +20,7 @@ A report the marketer opens with one click (delivered through `../../atoms/write
   - **how this account breaks in:** named accounts to reply to, the daily routine, the first posts;
   - how we'll know it's working.
 - **Two weeks of posts,** each modelled on a pattern that works on that platform, written the way a person posts there.
-  - Video-first where the platform rewards it: a script with time, words, on-screen text and shot notes, which the marketer shoots on a phone or screen-records.
+  - Every format has a reason from the research. On X a founder's everyday post is usually text with a screenshot, and video is used when there is something worth watching (a finished output appearing, a before/after), unless current per-post evidence says otherwise. Video slots get a script with time, words, on-screen text and shot notes, which the marketer shoots on a phone or screen-records.
   - Text posts ready to paste.
   - Carousels slide by slide.
   - The first three days in full at the top of the posts section; every other post in the report's "All posts" appendix, in the same readable shape. The workspace calendar is only the machine copy.
@@ -38,7 +38,7 @@ Every post is checked for claims, voice and disclosure. Posts that speak for a n
    - **Every file call carries `scope: {type: "agent", agent_id: <coworker_agent_id>}`.** A file call without a scope lands in the wrong workspace.
    - No coworker → the default workspace, with paths prefixed `brands/<brand-slug>/`, and tell the marketer.
 3. **One post, not a plan?** If the ask is a single post or script, use the brand read and the voice card only. Write that one post to the platform's research card if a fresh one exists (`social/research/`, under 30 days). Otherwise do one quick web check of how that platform treats that format now. Run atoms/post-check, then offer the full plan in one line.
-4. **Ask nothing yet.** Do the free pass (step 1) first. Never ask a fact the free pass could find.
+4. **Ask nothing yet,** with one exception: a single blocking question is allowed up front when one fact changes everything and no public source can answer it (e.g. the person's handle, when the plan is for their own account). Do the free pass (step 1) first. Never ask a fact the free pass could find.
 
 ## Steps
 
@@ -70,8 +70,9 @@ Every post is checked for claims, voice and disclosure. Posts that speak for a n
   - the 3–5 claim lines the posts need, for the scoped sign-off (`../../atoms/claims-gate/ATOM.md`). Name each line exactly. "Check the brand kit" is not a yes to a line;
   - raw material for every named person the posts feature, one prompt per planned slot: something shipped, a mistake, a number they may share, an opinion they'd argue, a screenshot or clip they can record. Add the short voice interview when fewer than ~8 of their posts were found;
   - anything only the marketer knows: handles not found, hours a week, time zone, who approves a person's posts.
-- **When the marketer states a platform belief** ("video works more on X now"), check it in the research. If confirmed, adopt it and say so with the source. If unclear, make it a labelled test. Never push back from memory.
-- Never ask before the draft exists.
+- **When the marketer states a platform belief** ("video works more on X now"), check it on the web before answering, then give a **verdict: confirmed, contradicted or unclear**, with the source. Say whether the evidence is about **share of all activity** (e.g. "video is half of impressions") or **per-post reach for an account like theirs**; only the second decides their formats. Neither agree nor refuse from memory. An unclear belief becomes a labelled test.
+- Never ask before the draft exists (except the one blocking question in #4).
+- **Check the audience is the buyer.** If the chosen platform reaches people other than the brand's buyer (e.g. X grows a B2B founder among builders while the buyer, a DTC marketing lead, is more on LinkedIn or Instagram), say so once, plainly, then follow the marketer's choice.
 
 **3. Deepen** (only what the marketer said yes to).
 - Run the paid reads inside the ceiling and log every charge.
@@ -80,9 +81,11 @@ Every post is checked for claims, voice and disclosure. Posts that speak for a n
 
 **4. Write the posts** (references/slot-anatomy.md; plan with atoms/plan-calendar and references/calendar-craft.md).
 - **Model every post on a pattern from the research.** Each slot names the pattern and links one example it follows ("built like @x's teardown video, 14 Oct"). Borrow the structure; never copy the words.
-- **Video-first where the platform rewards it.** Each video slot has a script table (time · words · on-screen text · shot), a feasibility line ("screen recording, 25 seconds, no face") and who shoots it.
+- **Every format needs a reason** from the research: per-post evidence for this kind of account, what the content is (video when something is worth watching), and what the person can make in their hours. Each video slot has a script table (time · words · on-screen text · shot), a feasibility line ("screen recording, 25 seconds, no face") and who shoots it.
 - **Write like the person posts.** Use the voice card and real specifics from their own material: the thing they shipped, the number, the screenshot. Use the product as proof inside a useful post, not as the point.
 - **Every post must be postable as written.** It can have **at most one** short fill-in that only the person knows (their first name, one number, the exact prompt they ran), written in plain words ("fill in: the prompt you used"). A post that would need more is rebuilt from material found in the free pass: the brand's own published runs and videos, the changelog, docs, release notes, the person's past posts. If nothing is found, it is replaced by a post that needs no private material, such as a reaction to a real post by a named account, or a teardown of a public example. Never hand over a template.
+- **The mix:** at most half the posts are mainly about the product, and at least 3 in 10 are useful to a stranger who has never heard of the brand (an insight, a teardown, a how-to, what you learned building). Changelog and install details inform existing users; they rarely earn a stranger's follow.
+- **A line to the business:** each post that can carry one gets a tracked link (UTM) in its reply or first comment to the site or sign-up. Signups or site clicks are read at the next refill, alongside follows and replies.
 - **Small or new accounts:** each post comes with its reply plan (which named accounts to engage that day), because that's where early reach comes from. The daily reply routine is part of the plan, not an extra. It names whom to reply to and what kind of specific to add; it doesn't draft the replies themselves.
 
 **5. Check and remake** (atoms/post-check): voice match, the "would a person post this?" test, AI-tells, claims through the claims gate, disclosure and rights, the person gate, trend expiry. A weak draft is remade or the slot is dropped. Never pad.
