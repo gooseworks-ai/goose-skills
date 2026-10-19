@@ -1,0 +1,86 @@
+{
+  "slug": "make-video-ads",
+  "tier": "playbook",
+  "version": "0.2.0",
+  "pillar": "6 — Paid media / performance marketing (creative production with pillar 15)",
+  "intents": [
+    "everyone says video converts — I cannot produce it myself",
+    "make me a 30-second video ad for paid social",
+    "a Reel / TikTok / Shorts ad for the new product",
+    "a UGC-style video made with AI",
+    "remake this ad I like for my brand",
+    "more like my winning video, with new hooks",
+    "my video ad got rejected — fix it",
+    "cut my own footage into an ad"
+  ],
+  "reads": [
+    "brand brain: kit (voice, value props), products (facts, price, images), learnings incl. do/dont/must rules, organic posts with views — learn-my-brand / server research",
+    "claims sign-off marker and 'Claims you may use' facts (via the shared claims-gate atom) — learn-my-brand",
+    "voice-of-customer bank: research/audience/voc-bank.md / 'Voice-of-customer bank' document — research-audience",
+    "angle bank: research/competitors/angle-bank.md (A-NN) / 'angle bank' document — research-competitors",
+    "campaign record: brief, concepts, asset list — plan-campaign (campaign_read)",
+    "weekly performance read: reports/performance/<date>.md ('what to make next') — analyze-performance",
+    "request lines 'Rotation needed: for make-video-ads' / 'Fix needed: for make-video-ads' in ads/campaigns/<slug>/rotation-requests.md, and the health line of ads/campaigns/<slug>/state.md — run-paid-campaigns",
+    "Goose-made creative performance — meta_read performance",
+    "saved video outliers (formats carrying the category) — research-market, research-competitors (social_inspiration_library)",
+    "competitor video ads (structure only) and the brand's own footage — media library",
+    "creator paid-usage rights: creators/roster.csv (proposed rights only) — work-with-creators",
+    "kept product photos — make-product-photos (product record / approved photos)"
+  ],
+  "writes": [
+    "video projects named <product>_<A-NN|angle_type>_<hook_family>_<ratio>_<date>, kept/rejected with reasons — read by analyze-performance (attribution) and run-paid-campaigns (launch picks kept videos)",
+    "launch notes ads/videos/<project_id>.md (one per video, each kept hook variant included): script, angle, claim trace, cuts, people and disclosures, the chosen script-checked launch copy (primary text, headline, CTA, destination — run-paid-campaigns launches from it verbatim), AI-label and music notes, which hook is which — read by run-paid-campaigns and analyze-performance",
+    "lines put to the human through the claims gate's scoped sign-off, recorded through learn-my-brand's contract; declined lines listed with restore-proof in the launch notes",
+    "brand learnings and corrections only through the shared save-learning atom, in the human's words — read by every creative playbook",
+    "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:tools_load",
+      "gooseworks:account_whoami",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:brand_update",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:campaign_read",
+      "gooseworks:meta_read",
+      "gooseworks:social_inspiration_library",
+      "gooseworks:social_inspiration_search",
+      "gooseworks:catalog_fetch",
+      "gooseworks:media_search",
+      "gooseworks:media_list",
+      "gooseworks:media_analyze",
+      "gooseworks:media_excerpt",
+      "gooseworks:media_upload",
+      "gooseworks:video_references",
+      "gooseworks:video_formats",
+      "gooseworks:video_create",
+      "gooseworks:video_change",
+      "gooseworks:video_approve",
+      "gooseworks:video_make",
+      "gooseworks:video_read",
+      "gooseworks:video_fix",
+      "gooseworks:video_review",
+      "gooseworks:video_batch",
+      "gooseworks:video_share",
+      "gooseworks:video_import",
+      "gooseworks:card_wait"
+    ]
+  },
+  "atoms": [
+    "write-script",
+    "script-check",
+    "present-gate",
+    "review-render"
+  ],
+  "shared_atoms": [
+    "claims-gate",
+    "save-learning",
+    "spend-gate",
+    "ad-policy-check",
+    "honest-review"
+  ]
+}

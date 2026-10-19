@@ -1,0 +1,73 @@
+{
+  "slug": "analyze-performance",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "pillar": "13 — Analytics, measurement and experimentation",
+  "intents": [
+    "What worked this week across every channel we run — why, and what do I make next?",
+    "write my Monday report",
+    "which ad won?",
+    "are my ads actually making money?",
+    "Meta says 4x ROAS but revenue is flat",
+    "did the test win?",
+    "monthly numbers for the replan",
+    "anything on fire today?"
+  ],
+  "reads": [
+    "campaign brief (campaign_read): economics, targets, test plan, measurement plan, replan triggers, change-log slug — plan-campaign",
+    "ads/campaigns/<slug>/state.md (harness frontmatter, health line, open recommendations) and decisions.md (### dated blocks) — run-paid-campaigns and the server",
+    "statics' lower-case tags (ads_creative_read) and batch files ads/batches/<YYYY-MM-DD>-<slug>.md — make-static-ads; videos' angle and hook names (video_read, ads/videos/<project_id>.md) — make-video-ads",
+    "Goose ads' Meta results (meta_read performance) — cross-check only",
+    "own TikTok/Instagram analytics (social_account_list, social_analytics_get)",
+    "lifecycle/program.md — email-lifecycle; social calendar — run-organic-social; creator roster and wave results creators/roster.csv — work-with-creators (roster seeding, creators row)",
+    "research/competitors/watch/<date>.md — research-competitors; research/market/<D>-read.md section 'What people are saying' (newest *-read.md; check its window line) — research-market; improve-search-visibility's last check, when they exist",
+    "learnings log (brand_read learnings, knowledge_search learning)",
+    "measurement contract, past reports and their Decisions (reports/performance/) — its own",
+    "human (one message): the type's referee (store, CRM, app consoles, bookings), exports per rostered channel, retailer sell-through, customer-level export monthly"
+  ],
+  "writes": [
+    "reports/performance/<YYYY-MM-DD>.md weekly read (with Decisions) — read by run-paid-campaigns, plan-campaign, make-static-ads, make-video-ads, make-content, run-organic-social, email-lifecycle",
+    "reports/performance/monthly/<YYYY-MM>.md + brand document — read by plan-campaign",
+    "reports/performance/inputs/<YYYY-MM-DD>.md — read by run-paid-campaigns (reuses exports)",
+    "reports/performance/definitions.md + brand document (contract, roster, story pick) — its own, every week",
+    "learnings rows (brand_update patch.facts, user_correction) — read by every planner and maker; angle ids for research-competitors",
+    "daily pulse (chat, exception-only) — interim until watch-and-alert"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:brand_update",
+      "gooseworks:campaign_read",
+      "gooseworks:ads_creative_read",
+      "gooseworks:meta_read",
+      "gooseworks:social_account_list",
+      "gooseworks:social_analytics_get",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:automation_upsert",
+      "gooseworks:video_read",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:account_whoami",
+      "gooseworks:tools_load"
+    ]
+  },
+  "atoms": [
+    "intake",
+    "revenue-join",
+    "diagnose",
+    "rank-and-read",
+    "call-and-learn"
+  ],
+  "shared_atoms": [
+    "save-to-brain",
+    "save-learning",
+    "spend-gate"
+  ]
+}

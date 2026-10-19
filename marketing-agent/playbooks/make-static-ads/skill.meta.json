@@ -1,0 +1,81 @@
+{
+  "slug": "make-static-ads",
+  "tier": "playbook",
+  "version": "0.2.0",
+  "pillar": "6 — Paid media / performance marketing (creative production with pillar 15)",
+  "intents": [
+    "I need ten fresh ads this week and I have no designer",
+    "make me static / image ads for Meta, Instagram, TikTok or LinkedIn",
+    "refresh my fatiguing ads",
+    "more like my winning ad — new hooks",
+    "my image ad got rejected — fix it",
+    "ads for our sale / launch",
+    "a header image or social graphic in our brand style"
+  ],
+  "reads": [
+    "brand brain: kit, products, learnings incl. do/dont/must rules — learn-my-brand / server research",
+    "claims sign-off marker and 'Claims you may use' facts (via the shared claims-gate atom) — learn-my-brand",
+    "voice-of-customer bank: research/market/voc-bank.jsonl / .md — research-market",
+    "angle bank: research/competitors/angle-bank.md (A-NN) — research-competitors",
+    "approved campaign record: brief (Status: Approved), concepts — plan-campaign (campaign_read)",
+    "weekly performance read: reports/performance/<date>.md ('what to make next') — analyze-performance",
+    "request lines 'Rotation needed: for make-static-ads' / 'Fix needed: for make-static-ads' in ads/campaigns/<slug>/rotation-requests.md, and the health line of ads/campaigns/<slug>/state.md — run-paid-campaigns",
+    "Goose-made creative performance — meta_read performance",
+    "own and competitor scraped ads — ads_template_read mine / competitor (server research)",
+    "saved inspiration outliers — research-market, research-competitors (social_inspiration_library)",
+    "kept product photos and 'Product imagery ready:' answers — make-product-photos",
+    "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)"
+  ],
+  "writes": [
+    "lower-case creative tags (angle:a-nn, type, archetype, hook, stage, batch, test, offer-ends, claims, src, picked) — read by analyze-performance (angle ranking) and research-competitors (angle test status)",
+    "the human's picks: feedback rating happy + 'picked' tag + the batch file — read by run-paid-campaigns",
+    "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, angle/type, claims and policy lines, special-category flag, picks, test question, test structure with the stated budget, cut list, flags — run-paid-campaigns launches from it verbatim",
+    "'Product imagery needed: for make-product-photos · …' request lines in the batch file — answered by make-product-photos",
+    "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run",
+    "'Graphic ready:' answer lines under sibling request lines — read by email-lifecycle, run-organic-social, make-content on their next run",
+    "render feedback with reason codes — read by the ad engine's quality loop",
+    "brand learnings through the shared save-learning atom, on the human's own words — read by every creative playbook"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:tools_load",
+      "gooseworks:card_wait",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:brand_update",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:campaign_read",
+      "gooseworks:update_campaign_concept",
+      "gooseworks:add_campaign_concept",
+      "gooseworks:request_campaign_generation",
+      "gooseworks:meta_read",
+      "gooseworks:social_inspiration_library",
+      "gooseworks:social_inspiration_search",
+      "gooseworks:photos_read",
+      "gooseworks:ads_template_read",
+      "gooseworks:ads_generate",
+      "gooseworks:ads_creative_read",
+      "gooseworks:ads_approval_decide",
+      "gooseworks:ads_creative_update",
+      "gooseworks:media_analyze",
+      "gooseworks:job_get"
+    ]
+  },
+  "atoms": [
+    "angle-grid",
+    "ad-copy",
+    "claims-extract",
+    "render-review",
+    "graphic-request"
+  ],
+  "shared_atoms": [
+    "claims-gate",
+    "save-learning",
+    "spend-gate",
+    "ad-policy-check",
+    "honest-review"
+  ]
+}

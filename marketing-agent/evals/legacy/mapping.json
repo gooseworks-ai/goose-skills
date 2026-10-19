@@ -1,0 +1,148 @@
+{
+  "$comment": "Old goose-skills (skills/ on dev) a user would have used for the same job as each new playbook. Source: marketing-agent-test/results/release-and-legacy.md, Q2 table. Picked 2-4 per playbook, preferring the skills the CLI router (gooseworks-cli skills/routes.json, brand_growth_routes) sends users to, since those are the most-used. The runner also installs each pick's requires_skills (transitively, from skills-index.json), as the catalog fetch would.",
+  "source": "skills/ in the goose-skills checkout (GOOSE_SKILLS_DIR, default: the repo root above marketing-agent/)",
+  "playbooks": {
+    "research-market": [
+      {
+        "slug": "social-listening-brief",
+        "why": "router route: Social listening and product demand"
+      },
+      {
+        "slug": "product-demand-research",
+        "why": "router route: Social listening and product demand"
+      },
+      {
+        "slug": "trend-discovery",
+        "why": "router route: Trends and outlier posts"
+      },
+      {
+        "slug": "market-research",
+        "why": "the old skill by name; calls the GooseWorks API (CLI login)"
+      }
+    ],
+    "research-audience": [
+      {
+        "slug": "audience-research",
+        "why": "router route: Audience definition"
+      },
+      {
+        "slug": "comment-mining",
+        "why": "router route: Customer language and angles"
+      },
+      {
+        "slug": "ad-angle-miner",
+        "why": "router route: Customer language and angles"
+      },
+      {
+        "slug": "buyer-persona-generator",
+        "why": "persona skill a user would pick by name"
+      }
+    ],
+    "research-competitors": [
+      {
+        "slug": "competitor-ad-intelligence",
+        "why": "router route: Competitor ads"
+      },
+      {
+        "slug": "competitor-social-research",
+        "why": "router route: Competitor social content"
+      },
+      {
+        "slug": "competitor-research",
+        "why": "the old skill by name; calls the GooseWorks API (CLI login)"
+      },
+      {
+        "slug": "competitor-intel",
+        "why": "competitive-intel composite; Apify optional"
+      }
+    ],
+    "run-organic-social": [
+      {
+        "slug": "trend-discovery",
+        "why": "router route: Trends and outlier posts"
+      },
+      {
+        "slug": "outlier-post-finder",
+        "why": "router route: Trends and outlier posts"
+      },
+      {
+        "slug": "content-repurposing",
+        "why": "router route: Written content and repurposing"
+      },
+      {
+        "slug": "create-x-content",
+        "why": "X post writer (the scenario starts with X)"
+      }
+    ],
+    "plan-campaign": [
+      {
+        "slug": "campaign-brief-generator",
+        "why": "campaign brief composite"
+      },
+      {
+        "slug": "feature-launch-playbook",
+        "why": "launch plan composite"
+      },
+      {
+        "slug": "ads-north-star-strategy",
+        "why": "paid strategy composite (needs META_ACCESS_TOKEN via its dependencies)"
+      }
+    ],
+    "improve-search-visibility": [
+      {
+        "slug": "aeo",
+        "why": "AI-answer visibility; already installed user-level on this machine, so present in every arm"
+      },
+      {
+        "slug": "seo-analyzer",
+        "why": "SEO audit; calls the GooseWorks API (CLI login)"
+      },
+      {
+        "slug": "seo-opportunity-finder",
+        "why": "SEO opportunities; Apify"
+      },
+      {
+        "slug": "seo-content-audit",
+        "why": "content audit; Apify"
+      }
+    ],
+    "where-to-start": [
+      {
+        "slug": "brand-research",
+        "why": "router route: Brand foundation (the router itself is the user-level gooseworks skill, present in every arm)"
+      },
+      {
+        "slug": "icp-identification",
+        "why": "'routes to the right next step'"
+      }
+    ],
+    "research-audience-list": [
+      {
+        "slug": "apollo-lead-finder",
+        "why": "heavily used: people search, then reveal emails"
+      },
+      {
+        "slug": "lead-discovery",
+        "why": "heavily used front door for lead sources (lead-gen-devtools pack)"
+      },
+      {
+        "slug": "lead-qualification",
+        "why": "scores and qualifies a list"
+      }
+    ],
+    "write-outreach": [
+      {
+        "slug": "email-drafting",
+        "why": "cold-email craft the old library routed to"
+      },
+      {
+        "slug": "linkedin-message-writer",
+        "why": "LinkedIn messages by type"
+      },
+      {
+        "slug": "cold-email-outreach",
+        "why": "sequence plus export; launching is blocked in evals"
+      }
+    ]
+  }
+}
