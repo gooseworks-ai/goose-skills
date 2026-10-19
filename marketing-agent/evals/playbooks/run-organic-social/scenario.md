@@ -4,7 +4,7 @@
 
 - **Brand:** GooseWorks on GooseWorks **staging** (brand name "Gooseworks"). Other staging brands: Juicebox (AI recruiting search), Personal Day (acne-safe skincare).
 - **Source of the ask:** Akhil's messages in the 18 Oct hand test (session 8b04b55a), used as the persona's answers.
-- **Settings:** max_turns: 6
+- **Settings:** max_turns: 10
 
 ## Brand
 

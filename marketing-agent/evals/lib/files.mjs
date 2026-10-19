@@ -61,7 +61,8 @@ export function sections(md) {
 }
 
 /**
- * scenario.md → { text, ask, maxTurns }.
+ * scenario.md → { text, ask, maxTurns, requiresReport }.
+ * `requires_report: false` (default true) marks jobs whose deliverable is a chat answer, not a document.
  * The opening ask is the first ```text fence under "## Opening ask".
  */
 export function loadScenario(slug) {
@@ -73,7 +74,8 @@ export function loadScenario(slug) {
   const fence = askSec.match(/```(?:text)?\n([\s\S]*?)\n```/);
   const ask = (fence ? fence[1] : askSec).trim();
   const mt = text.match(/max_turns:\s*(\d+)/);
-  return { file, text, ask, maxTurns: mt ? Number(mt[1]) : 8 };
+  const rr = text.match(/requires_report:\s*(true|false)/);
+  return { file, text, ask, maxTurns: mt ? Number(mt[1]) : 8, requiresReport: rr ? rr[1] === 'true' : true };
 }
 
 /**

@@ -26,7 +26,7 @@ node run.mjs all
 node run.mjs judge results/2026-10-18/research-market
 ```
 
-Useful options: `--mode with-skill|baseline|both` · `--subject-model sonnet|opus|haiku` · `--judge-model opus` · `--max-turns 8` · `--turn-timeout 45` (minutes per agent turn) · `--effort high` · `--keep-workspace` (keep the temp folder to inspect) · `--no-judge` · `--out <dir>`.
+Useful options: `--mode with-skill|baseline|both` · `--subject-model sonnet|opus|haiku` · `--judge-model opus` · `--max-turns 10` · `--arm-cap 60` (wall-clock minutes per arm; the arm stops with "time cap") · `--turn-timeout <min>` (default: the arm cap) · `--effort high` · `--keep-workspace` (keep the temp folder to inspect) · `--no-judge` · `--out <dir>`.
 
 ## How to read the results
 
@@ -48,14 +48,14 @@ To check the judge, open the arm folder: `transcript.md` (the whole conversation
 | Eval | Time | Cost |
 |---|---|---|
 | Routing, 68 asks on Haiku | ~3 min | ~$1 |
-| One behaviour eval, both arms | 40–120 min | ~$10–40 |
+| One behaviour eval, both arms | 10–120 min (60 min cap per arm) | ~$3–45 (research-competitors with the skill: ~45 min, ~$35) |
 | The whole suite (7 playbooks + routing) | 5–12 hours, run unattended | ~$80–250 |
 
 The agent (Sonnet) doing real research is most of the cost: a research run reads dozens of pages and spawns workers. The judge (Opus) adds about $1–3 per arm, the simulated marketer cents. Costs are what the CLI reports (`total_cost_usd`); on a Claude subscription they count against usage limits rather than a bill. GooseWorks credits spent: zero.
 
 ## Things to know
 
-- **Staging state carries over.** Both arms read and write the same staging GooseWorks brand. A run that saves a report to the brand makes that report visible to the next run. The runner runs the **baseline first** so the skill arm can't help it; still, earlier hand tests' saved work is visible to both arms.
+- **Staging state carries over, and it matters (19 Oct run).** Both arms read and write the same staging Gooseworks brand. The runner does the baseline first, so the skill arm can't help the baseline — but then the skill arm sees what earlier runs saved. On 19 Oct: the competitors skill arm found a same-day report on the brand and re-delivered it in 4 minutes instead of researching; where-to-start built its advice on a campaign plan an earlier eval had saved; market research read the audience and competitor reports from earlier arms. **Before trusting a comparison, check the arm's transcript for reads of saved work** (file_read of research/…, campaign_read). The real fix is a fresh staging brand per arm (not built yet).
 - **No browser.** Headless runs have web search and web fetch, not a real browser, in both arms. Steps that need a browser (ad libraries, logged-out ChatGPT) degrade the same way for both.
 - **The agent's other user-level skills and MCP servers are present in both arms** (for example the published `gooseworks` skill and the GooseWorks server's own instructions). That is the realistic baseline: a customer with GooseWorks connected but without these playbooks.
 - **Expert criteria.** Six rubrics include pass/fail checks from the two senior-marketer reviews of 18 Oct (`marketing-agent-test/results/reviews/research-review.md` and `social-plan-search-review.md`). Checks the reviewers marked *new* need a playbook change first, so they are scored but not yet must-pass. where-to-start has no expert review yet. After editing a rubric, re-score saved runs with `node run.mjs judge …` instead of re-running.
@@ -89,9 +89,9 @@ evals/
 1. **Workspace.** A fresh temp folder with: a neutral `README.md` (says "use staging"), `.claude/settings.json` copied from the hand-test folder (`~/projects/marketing-agent-test`, override with `GOOSE_EVAL_TEST_DIR`; denies production GooseWorks). `with-skill` also symlinks the 16 playbooks + 3 foundation skills into `.claude/skills/`, plus `.claude/{atoms,foundation,BACKLOG.md}` (playbooks reach shared atoms as `../../atoms`). `baseline` links nothing.
 2. **Subject turn.** `claude -p --model <subject> --output-format stream-json --verbose --append-system-prompt <subject-note> --permission-mode dontAsk --allowedTools … --disallowedTools …`, message on stdin, `--session-id` on turn 1 and `--resume` after. Env is cleaned to HOME/PATH/USER/SHELL/TMPDIR/LANG: an inherited `CLAUDE_CODE_SIMPLE` forces `--bare` (no OAuth) and an inherited `ANTHROPIC_BASE_URL` points at the wrong endpoint.
 3. **Permissions.** `dontAsk` denies anything not allowed. Allowed: Read/Glob/Grep, Write/Edit inside the workspace only (`Write(./**)`), WebSearch, WebFetch, Skill, Task/Agent, TodoWrite, read-only Bash (curl, ls, cat, …), `mcp__gooseworks-staging`. Denied: production GooseWorks, `AskUserQuestion` (the subject must ask in text), and the staging tools that spend or publish (list `PAID_OR_PUBLISHING` in `lib/behaviour.mjs`).
-4. **Simulator.** After each subject turn, Haiku gets `scenario.md` plus the conversation (marketer messages + the subject's final message per turn) and returns `{"done", "reply", "why"}`. It stops when the deliverable is handed over, or at `max_turns`.
+4. **Simulator.** After each subject turn, Haiku gets `scenario.md`, the conversation (marketer messages + the subject's final message per turn) and the list of document files in the workspace, and returns `{"done", "reply", "why"}`. It answers the agent's decision questions as the persona, declines paid top-ups and other jobs, and says "ok, go on" when the agent pauses mid-work. **Enforced in code:** for a report job (`requires_report`, default true) DONE is refused while no document file exists — the marketer asks once for the full report as a doc; if there is still none, the arm stops with "no report file after asking". An empty reply becomes "ok, go on.". A DONE that still carries a typed answer sends the answer first (once in a row). The arm also stops at `max_turns` or at the wall-clock arm cap ("time cap", default 60 min; a running turn is killed at the cap).
 5. **Collect.** Every file the subject wrote (outside `.claude/`) is copied to `<arm>/files/`; the full session JSONL (and sub-agent transcripts) to `<arm>/session.jsonl` and `<arm>/session/`; per-turn stream-json to `<arm>/turns/`; a condensed `transcript.md`; `run.json` with turns, costs, stop reason and a per-turn log. The temp folder is deleted unless `--keep-workspace`.
-6. **Judge.** One no-tool call per arm with the scenario, the full rubric, the transcript (title stripped so the arm isn't named; tool traffic clipped) and the files (text up to 80k chars each, 200k total). Returns `{criteria:[{id, verdict, evidence}], overall}` → `<arm>/judge.json`. Then `summary.md` + `results.json` in the playbook folder.
+6. **Judge.** One no-tool call per arm with the scenario, the full rubric, a judge-sized transcript built from `turns/*.jsonl` and the files (text up to 80k chars each, 200k total). The transcript keeps every agent message in full; tool calls are short, results clipped, and each sub-agent is one line (its tool counts and what it searched or read). If it is over 180k chars, tool calls are folded into count lines. The judge answers one line per criterion (`M1 | pass | evidence`, then `OVERALL: …`), which survives quotes in evidence better than JSON; a reply missing criteria is retried once; the raw reply is saved in `judge-raw.txt`. Before judging, a code check searches the **full** tool results (main agent and sub-agents) and the marketer's messages for every number in the agent's files and tells the judge which ones appear nowhere, because the judge only sees clipped tool results. A judge or arm failure is logged (`judge-error.txt`, `arm-error.txt`) and the suite carries on. Output: `<arm>/judge.json`, then `summary.md` + `results.json` per playbook and `summary.md` per suite (one row per arm: verdict, must/should/expert, turns, stop reason, minutes, cost).
 
 ## Formats
 
@@ -103,7 +103,8 @@ evals/
 
 **`playbooks/<slug>/scenario.md`** — sections the runner reads:
 - `## Opening ask` — the first ```` ```text ```` fence is sent verbatim as the first message.
-- `max_turns: N` anywhere in the file (default 8).
+- `max_turns: N` anywhere in the file (default 8; the seven scenarios use 10, where-to-start 6).
+- `requires_report: false` for jobs whose deliverable is a chat answer (where-to-start). Default true.
 - The whole file goes to the simulator as its persona sheet, and to the judge as context.
 
 **`playbooks/<slug>/rubric.md`** — criteria are lines `- **M1** — text` (also `S1…`, `E1…`). M = must, S = should, E = expert; an E line containing "(must)" counts as must. Everything else in the file is shown to the judge as context.

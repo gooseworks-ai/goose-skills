@@ -7,7 +7,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { ask, parseJsonLoose, runClaude } from './claude.mjs';
 import { EVALS_DIR, MA_DIR, listSkills, loadScenario, loadRubric, today } from './files.mjs';
-import { judgeArm, writePlaybookSummary } from './judge.mjs';
+import { judgeArmSafe, writePlaybookSummary } from './judge.mjs';
 
 // The hand-test folder: we copy its .claude/settings.json (production GooseWorks denied, staging allowed).
 export const TEST_DIR = process.env.GOOSE_EVAL_TEST_DIR || path.join(os.homedir(), 'projects', 'marketing-agent-test');
@@ -93,12 +93,25 @@ async function subjectTurn({ cwd, sessionId, first, message, model, effort, time
   };
 }
 
-async function simulate({ scenarioText, history, model }) {
+async function simulate({ scenarioText, history, model, reportFiles, requiresReport, askedForReport }) {
   const convo = history.map((h) => `${h.role === 'marketer' ? 'MARKETER' : 'AGENT'}:\n${h.text}`).join('\n\n---\n\n');
-  const prompt = `${scenarioText}\n\n=== Conversation so far ===\n\n${convo}\n\n=== Your move ===\nYou are the marketer. Reply with JSON only: {"done": true|false, "reply": "<what you type back, empty if done>", "why": "<one short line for the eval log>"}`;
-  const r = await ask({ model, system: SIM_SYSTEM, prompt, timeoutMs: 5 * 60_000 });
-  const j = parseJsonLoose(r.text);
-  return { done: !!j.done, reply: String(j.reply ?? '').trim(), why: String(j.why ?? ''), costUsd: r.costUsd };
+  const state = [
+    `This job's deliverable is ${requiresReport ? 'a written report or plan you can open as a document' : 'an answer or recommendation in the chat'}.`,
+    `Document files the agent has written in your folder so far: ${reportFiles.length ? reportFiles.join(', ') : 'none'}.`,
+    askedForReport ? 'You already asked once for the full report as a document.' : '',
+  ].filter(Boolean).join('\n');
+  const prompt = `${scenarioText}\n\n=== Conversation so far ===\n\n${convo}\n\n=== Facts for your decision (you can see your own folder) ===\n${state}\n\n=== Your move ===\nYou are the marketer. Reply with JSON only: {"done": true|false, "reply": "<what you type back, empty if done>", "why": "<one short line for the eval log>"}`;
+  let cost = 0;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const r = await ask({ model, system: SIM_SYSTEM, prompt, timeoutMs: 5 * 60_000 });
+      cost += r.costUsd;
+      const j = parseJsonLoose(r.text);
+      return { done: !!j.done, reply: String(j.reply ?? '').trim(), why: String(j.why ?? ''), costUsd: cost };
+    } catch (e) {
+      if (attempt === 2) return { done: false, reply: 'ok, go on.', why: `[simulator failed twice: ${String(e.message).slice(0, 120)}]`, costUsd: cost };
+    }
+  }
 }
 
 function clip(s, n) {
@@ -140,7 +153,7 @@ function walk(dir, base = dir, out = []) {
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, ent.name);
     const rel = path.relative(base, p);
-    if (rel === '.claude' || rel === 'README.md') continue;
+    if (rel === '.claude' || rel === 'README.md' || ent.name === '.DS_Store') continue;
     if (ent.isDirectory()) walk(p, base, out);
     else if (ent.isFile()) out.push(rel);
   }
@@ -155,6 +168,14 @@ function findSessionFile(sessionId) {
   }
   return null;
 }
+
+const DOC_EXT = /\.(md|markdown|html?|txt|csv|pdf|docx?)$/i;
+/** Document-like files the subject wrote in the workspace (what a marketer could open). */
+function reportFiles(cwd) {
+  return walk(cwd).filter((rel) => DOC_EXT.test(rel));
+}
+
+const ASK_FOR_REPORT = "can you give me the full report as a doc i can open? the chat summary isn't enough for me to share.";
 
 /** One arm (with-skill or baseline): the whole conversation, saved to armDir. */
 export async function runArm({ slug, mode, armDir, opts }) {
@@ -171,26 +192,53 @@ export async function runArm({ slug, mode, armDir, opts }) {
   let stopped = 'turn cap';
   let subjectCost = 0;
   let simCost = 0;
+  let askedForReport = false;
+  const capMs = (opts.armCapMin ?? 60) * 60_000;
+  const turnMs = (opts.turnTimeoutMin ?? opts.armCapMin ?? 60) * 60_000;
   console.log(`  [${slug} · ${mode}] workspace ${cwd}`);
 
   for (let n = 1; n <= maxTurns; n++) {
+    const remaining = capMs - (Date.now() - started);
+    if (remaining < 60_000) { stopped = 'time cap'; break; }
+    const timeoutMs = Math.min(turnMs, remaining);
     console.log(`  [${slug} · ${mode}] subject turn ${n}: ${clip(message.replace(/\s+/g, ' '), 100)}`);
     const t = await subjectTurn({
       cwd, sessionId, first: n === 1, message, model: opts.subjectModel, effort: opts.effort,
-      timeoutMs: opts.turnTimeoutMin * 60_000, rawFile: path.join(armDir, 'turns', `turn-${String(n).padStart(2, '0')}.jsonl`),
+      timeoutMs, rawFile: path.join(armDir, 'turns', `turn-${String(n).padStart(2, '0')}.jsonl`),
     });
     subjectCost += t.costUsd;
     turns.push({ message, ...t });
     history.push({ role: 'marketer', text: message }, { role: 'agent', text: t.finalText || '(no reply)' });
     log.push({ turn: n, marketer: message, agent_final: t.finalText, cost_usd: t.costUsd, ms: t.ms, timed_out: t.timedOut, error: t.isError ? t.stderr : undefined, permission_denials: t.denials.map((d) => d.tool_name) });
     console.log(`  [${slug} · ${mode}] subject turn ${n} done in ${Math.round(t.ms / 1000)}s, $${t.costUsd.toFixed(2)}${t.timedOut ? ' (TIMED OUT)' : ''}${t.isError ? ' (ERROR)' : ''}`);
-    if (t.isError && !t.finalText) { stopped = t.timedOut ? 'subject timed out' : 'subject error'; break; }
+    if (t.timedOut && timeoutMs === remaining) { stopped = 'time cap'; break; }
+    if (t.isError && !t.finalText) { stopped = t.timedOut ? 'subject turn timed out' : 'subject error'; break; }
 
-    const sim = await simulate({ scenarioText: scenario.text, history, model: opts.simModel });
+    const docs = reportFiles(cwd);
+    const sim = await simulate({ scenarioText: scenario.text, history, model: opts.simModel, reportFiles: docs, requiresReport: scenario.requiresReport, askedForReport });
     simCost += sim.costUsd;
+    // DONE but with an answer typed: the agent asked something, so send the answer (once in a row).
+    if (sim.done && sim.reply && !log.at(-2)?.simulator?.why?.includes('[code: done with a reply')) {
+      sim.done = false;
+      sim.why = `[code: done with a reply → reply sent] ${sim.why}`;
+    }
+    // The agent paused mid-work with nothing to answer: nudge it on.
+    if (!sim.done && !sim.reply) { sim.reply = 'ok, go on.'; sim.why = `[code: empty reply → nudge] ${sim.why}`; }
+    // Enforced in code, not only in the prompt: a report job is not done until a document exists.
+    if (sim.done && scenario.requiresReport && !docs.length) {
+      if (askedForReport) {
+        log.at(-1).simulator = { done: true, reply: '', why: `${sim.why} [code: still no report file after asking once]` };
+        console.log(`  [${slug} · ${mode}] simulator: DONE — still no report file after asking once`);
+        stopped = 'no report file after asking'; break;
+      }
+      sim.done = false;
+      sim.reply = ASK_FOR_REPORT;
+      sim.why = `[code: no report file yet, asked for it] ${sim.why}`;
+    }
+    if (sim.reply === ASK_FOR_REPORT || /full report|as a doc|document i can open/i.test(sim.reply)) askedForReport = true;
     log.at(-1).simulator = { done: sim.done, reply: sim.reply, why: sim.why };
     console.log(`  [${slug} · ${mode}] simulator: ${sim.done ? 'DONE' : clip(sim.reply.replace(/\s+/g, ' '), 100)} (${sim.why})`);
-    if (sim.done || !sim.reply) { stopped = 'marketer satisfied'; break; }
+    if (sim.done) { stopped = 'marketer satisfied'; break; }
     if (n === maxTurns) { stopped = 'turn cap'; break; }
     message = sim.reply;
   }
@@ -210,7 +258,7 @@ export async function runArm({ slug, mode, armDir, opts }) {
   fs.writeFileSync(path.join(armDir, 'transcript.md'), `# ${slug} — ${mode}\n\nWorkspace files written: ${files.length ? files.join(', ') : 'none'}\n` + condense(turns));
   const meta = {
     slug, mode, session_id: sessionId, subject_model: opts.subjectModel, sim_model: opts.simModel,
-    turns: turns.length, stopped, files, subject_cost_usd: subjectCost, sim_cost_usd: simCost,
+    turns: turns.length, stopped, arm_cap_min: capMs / 60_000, files, subject_cost_usd: subjectCost, sim_cost_usd: simCost,
     minutes: Math.round((Date.now() - started) / 6000) / 10, log,
   };
   fs.writeFileSync(path.join(armDir, 'run.json'), JSON.stringify(meta, null, 2));
@@ -229,8 +277,15 @@ export async function runPlaybook(slug, opts) {
   for (const mode of modes) {
     const armDir = path.join(outDir, mode);
     if (fs.existsSync(armDir)) fs.rmSync(armDir, { recursive: true, force: true });
-    await runArm({ slug, mode, armDir, opts });
-    if (!opts.noJudge) await judgeArm({ slug, armDir, model: opts.judgeModel });
+    try {
+      await runArm({ slug, mode, armDir, opts });
+    } catch (e) {
+      console.log(`  [${slug} · ${mode}] ARM FAILED: ${String(e?.stack || e).split('\n')[0]}`);
+      fs.mkdirSync(armDir, { recursive: true });
+      fs.writeFileSync(path.join(armDir, 'arm-error.txt'), String(e?.stack || e));
+      continue;
+    }
+    if (!opts.noJudge) await judgeArmSafe({ slug, armDir, model: opts.judgeModel });
   }
   return writePlaybookSummary(outDir, slug);
 }
