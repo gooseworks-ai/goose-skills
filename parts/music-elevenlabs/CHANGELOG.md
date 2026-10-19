@@ -1,5 +1,9 @@
 # music-elevenlabs
 
+## 1.1.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.1.0.
+
 ## 1.1.0
 
 - Orders `music_v2_5` and sends it explicitly as `model_id` (ElevenLabs Music API: `music_v1`, `music_v2`, `music_v2_5`; default `music_v1`). Same request fields, finish and price basis. A minor version: an intended change in sound, so styles move to it through their pins.

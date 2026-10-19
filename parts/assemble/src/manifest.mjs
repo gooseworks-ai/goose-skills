@@ -67,7 +67,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'assemble',
-  version: '1.2.0',
+  version: '1.2.1',
   kind: 'compose',
   title: 'Assemble scenes',
   summary: 'Joins clips and stills into one cut at one size and frame rate, frame exact: timed to a voice or song, built from shot recipes per scene tag, with cuts kept between words, marks for sounds, an end card, Ken Burns and grain looks.',

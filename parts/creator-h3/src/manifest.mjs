@@ -58,7 +58,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'creator-h3',
-  version: '1.8.0',
+  version: '1.8.1',
   kind: 'generate_video',
   title: 'Talking creator (H3)',
   summary: 'Controlled H3 creator production: first take reviewed, then the rest, then assembly. Phone capture, deep focus, no selfie for a both-hands action. Takes up to 15 s, sized from the reference rate, at most 3.2 words a second.',

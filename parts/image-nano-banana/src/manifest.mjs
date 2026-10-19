@@ -51,7 +51,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-nano-banana',
-  version: '2.0.0',
+  version: '2.0.1',
   kind: 'generate_image',
   title: 'Stills (Nano Banana)',
   summary: 'Cartoon and illustrated stills with Nano Banana on fal, one piece per image. Never for real people or real products: those use image-gpt-image-2 edit. Needs subject: cartoon; products mode is withdrawn.',

@@ -1,5 +1,9 @@
 # speech-recut
 
+## 1.0.3
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.0.2.
+
 ## 1.0.2
 
 - Heard speech in no line (transcribe-whisper 1.1.2's speech entries with no `scene_id` and empty `text`: a repeated line, a filler) is cut out with `drop: repeats`, with the silence around it down to `max_gap_s` (the join on a picture cut when one is in reach; at the head or tail with the trim; inside a silent beat only the words). New cut kind `extra`. 1.0.1 kept such words, and with 1.1.1's placement a repeated question made later lines look unheard, so the take was refused as needing a re-roll (staging, 13 Oct 2026).

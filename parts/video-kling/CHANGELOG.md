@@ -1,5 +1,9 @@
 # video-kling
 
+## 1.1.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. A template that cannot be read is named by its file name on Windows too (the whole path was shown). Nothing else changed from 1.1.0.
+
 ## 1.1.0
 
 - Withdraws Kling 2.5 Turbo (`fal-ai/kling-video/v2.5-turbo/pro/image-to-video`): removed from `model`, `needs.models` and the rates (fix-forward contract section 5). v2.1 standard and v3 standard are unchanged. A minor version: styles move to it through their pins.

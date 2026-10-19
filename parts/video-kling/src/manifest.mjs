@@ -50,7 +50,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-kling',
-  version: '1.1.0',
+  version: '1.1.1',
   kind: 'generate_video',
   title: 'Moving stills (Kling image-to-video)',
   summary: 'Turns stills into short silent clips with Kling image-to-video on fal, one piece per clip: one clip per plan scene timed to the voice or song, or one per still.',

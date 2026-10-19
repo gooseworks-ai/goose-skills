@@ -16,8 +16,8 @@ const work = () => mkdtempSync(join(tmpdir(), 'sd-take-'));
 const ctxFor = (inputs, line = falLine) => makeCtx({ partDir: dir, line, seed: inputs.seed ?? null });
 const refused = (e) => e.code === 'bad_input';
 
-test('the newest version is 1.3.0 and declares the take outputs', () => {
-  assert.equal(manifest.version, '1.3.0');
+test('the newest version is 1.3.1 and declares the take outputs', () => {
+  assert.equal(manifest.version, '1.3.1');
   assert.deepEqual(manifest.inputs.properties.mode.enum, ['reference', 'image_to_video', 'take', 'takes']);
   for (const key of ['takes', 'timeline', 'seconds']) assert.ok(manifest.outputs.properties[key], key);
   assert.deepEqual(manifest.outputs.required, ['clips', 'video'], 'the 1.1.0 outputs stay required, nothing new is');

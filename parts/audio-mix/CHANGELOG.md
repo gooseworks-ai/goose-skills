@@ -1,5 +1,9 @@
 # audio-mix
 
+## 1.1.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.1.0.
+
 ## 1.1.0
 
 - `room_tone {color, gain_db, highpass_hz, lowpass_hz}`: a seeded, band-limited noise bed under the whole video, laid after the voice is levelled (podcast skit: brown, 90-2600 Hz, -27 dB).

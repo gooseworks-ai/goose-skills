@@ -1,5 +1,9 @@
 # check-layer
 
+## 1.8.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.8.0.
+
 ## 1.8.0
 
 - `setup_count_vs_reference`: with `expect.reference_setups`, fails when the final cut has more than 30 % fewer distinct setups than the reference; otherwise `not_applicable`. Setups are shot keyframes (one per shot of at least 0.5 s, flat cards skipped) clustered by 64-bit dHash within 10 bits. A test video had 4 setups against about 10 in the reference.

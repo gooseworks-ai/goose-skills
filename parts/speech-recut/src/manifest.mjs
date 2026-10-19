@@ -4,7 +4,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'speech-recut',
-  version: '1.0.2',
+  version: '1.0.3',
   kind: 'compose',
   title: 'Re-cut on-camera speech',
   summary: 'Re-cuts one take of on-camera speech: dead air cut on its own picture cuts, repeats dropped inside a line and speech that is in no line dropped, a minimum shot, 30 fps; optional room tone from its quietest window and a light street grade.',
