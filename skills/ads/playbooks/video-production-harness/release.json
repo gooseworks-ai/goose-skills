@@ -26,9 +26,9 @@
       "sha256": "ddd827ce55cbd26cd9b58e5e7d691f26c044981372d955231891025555dfc139"
     },
     "create-clips.md": {
-      "bytes": 15347,
-      "catalog_sha256": "b712f60f944c6510955585a916ad554ef1a5a14babb96dbea7113017c4777732",
-      "sha256": "b712f60f944c6510955585a916ad554ef1a5a14babb96dbea7113017c4777732"
+      "bytes": 15352,
+      "catalog_sha256": "25ab6364cc1e29118e106487a83c7d43cb0dd584006b7fd733a9fe9648cec358",
+      "sha256": "25ab6364cc1e29118e106487a83c7d43cb0dd584006b7fd733a9fe9648cec358"
     },
     "create-design-brief.md": {
       "bytes": 13735,
@@ -51,9 +51,9 @@
       "sha256": "c41157aa9483216ec21a770be85b0fefc99bccec328bb47916ddf44c2375e944"
     },
     "lock-character.md": {
-      "bytes": 12600,
-      "catalog_sha256": "faec18507633795bf76b01e3540b05e350b1edcbf189b8ed5a8e1606a05601fb",
-      "sha256": "faec18507633795bf76b01e3540b05e350b1edcbf189b8ed5a8e1606a05601fb"
+      "bytes": 12531,
+      "catalog_sha256": "630cb064880293bea5ba7009da49823bbf4f2712824e5fbf72dfcb355ff0069d",
+      "sha256": "630cb064880293bea5ba7009da49823bbf4f2712824e5fbf72dfcb355ff0069d"
     },
     "lock-script.md": {
       "bytes": 8911,
@@ -61,9 +61,9 @@
       "sha256": "c1a7847d4568067782b2caac1e54afcd043afb14d376c74f481a5163d144000e"
     },
     "orchestrator.md": {
-      "bytes": 10960,
-      "catalog_sha256": "40dfc523fbc200a6a03fbdc1c1480db6c221eae1237f534308b1a0039e6c15a4",
-      "sha256": "40dfc523fbc200a6a03fbdc1c1480db6c221eae1237f534308b1a0039e6c15a4"
+      "bytes": 11204,
+      "catalog_sha256": "40167a672561bc154596e96f3028748db4dbd1aaccd96b8233917b563a9d07a5",
+      "sha256": "40167a672561bc154596e96f3028748db4dbd1aaccd96b8233917b563a9d07a5"
     },
     "polish.md": {
       "bytes": 9445,
@@ -81,9 +81,9 @@
       "sha256": "8d47b268ffdba4e10a52c377b32fa40a7a64d6f11a71a183b1ab33c388f53539"
     },
     "references/check-severity.md": {
-      "bytes": 9799,
-      "catalog_sha256": "38e2afe8c50a9139242719951e0350841cf3d53fb7f7927d15237bc4535cf397",
-      "sha256": "38e2afe8c50a9139242719951e0350841cf3d53fb7f7927d15237bc4535cf397"
+      "bytes": 9861,
+      "catalog_sha256": "c4af83ea8a5583b30890f9ab5efeb7e0d93e1a8b783c98c5bd70fb337fa9b6cd",
+      "sha256": "c4af83ea8a5583b30890f9ab5efeb7e0d93e1a8b783c98c5bd70fb337fa9b6cd"
     },
     "references/creative-contract-and-review.md": {
       "bytes": 11633,
@@ -247,8 +247,8 @@
     },
     "skill.meta.json": {
       "bytes": 683,
-      "catalog_sha256": "5caeade1914191511b3ff4ec3d4e34d0958aff3ed29e88e973c26401db5179f0",
-      "sha256": "5caeade1914191511b3ff4ec3d4e34d0958aff3ed29e88e973c26401db5179f0"
+      "catalog_sha256": "b2c3a3a86e25714986ec369e0fbe825903fca15dd1cd5a814260d06dd46959c6",
+      "sha256": "b2c3a3a86e25714986ec369e0fbe825903fca15dd1cd5a814260d06dd46959c6"
     },
     "states/edit-to-delivery.md": {
       "bytes": 8440,
@@ -292,7 +292,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "0e4c9a6bc69a65afffe23cb3d714d86fdfb4b8d2",
+  "source_commit": "8086ff15daaceac0e21bcfc7e0d52c6a3b10ed52",
   "source_files": {
     "SKILL.md": {
       "sha256": "131fa7e05e40c8477ec6e2026e6b5dc500bcad79d722a7c1d77cd9d19763ecc0",
@@ -315,7 +315,7 @@
       "source": "capabilities.md"
     },
     "create-clips.md": {
-      "sha256": "b712f60f944c6510955585a916ad554ef1a5a14babb96dbea7113017c4777732",
+      "sha256": "25ab6364cc1e29118e106487a83c7d43cb0dd584006b7fd733a9fe9648cec358",
       "source": "create-clips.md"
     },
     "create-design-brief.md": {
@@ -335,7 +335,7 @@
       "source": "edit-video.md"
     },
     "lock-character.md": {
-      "sha256": "faec18507633795bf76b01e3540b05e350b1edcbf189b8ed5a8e1606a05601fb",
+      "sha256": "630cb064880293bea5ba7009da49823bbf4f2712824e5fbf72dfcb355ff0069d",
       "source": "lock-character.md"
     },
     "lock-script.md": {
@@ -343,7 +343,7 @@
       "source": "lock-script.md"
     },
     "orchestrator.md": {
-      "sha256": "40dfc523fbc200a6a03fbdc1c1480db6c221eae1237f534308b1a0039e6c15a4",
+      "sha256": "40167a672561bc154596e96f3028748db4dbd1aaccd96b8233917b563a9d07a5",
       "source": "orchestrator.md"
     },
     "polish.md": {
@@ -359,7 +359,7 @@
       "source": "promote.md"
     },
     "references/check-severity.md": {
-      "sha256": "38e2afe8c50a9139242719951e0350841cf3d53fb7f7927d15237bc4535cf397",
+      "sha256": "c4af83ea8a5583b30890f9ab5efeb7e0d93e1a8b783c98c5bd70fb337fa9b6cd",
       "source": "references/check-severity.md"
     },
     "references/creative-contract-and-review.md": {
@@ -507,6 +507,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "0273b5935fcd6ffe157dbeac90fa1fafae9533e17cdde9580554a2b84a8c256c",
-  "source_version": "5-0273b5935fcd"
+  "source_hash": "83a8dd5111ced20a673a3b300139baa3ca0ee7149836210f3c5436edd0cc0652",
+  "source_version": "5-83a8dd5111ce"
 }

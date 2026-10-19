@@ -129,7 +129,7 @@ Review each clip against its handoff: revision, line, assets, full action and pr
 - Every planned scene has a checked clip in the brief's audio mode; native dialogue is never doubled.
 - Every voice file decodes and matches `locked_script` (hard fail if `design_brief` differs).
 - Person keyframes used the locked anchor; the style or person anchor was reviewed before animation.
-- No brand or UI text in any image prompt.
+- Use scene overlays or the static-ad workflow.
 - Every generated clip has a clip check; an open `must_fix` reaches the final only when the customer keeps it; no scene is dropped.
 - Clips match the approved ratio and duration and decode.
 - An ambiguous timeout never forces a duplicate paid retry.
