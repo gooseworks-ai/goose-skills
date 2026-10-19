@@ -579,6 +579,18 @@ export const RECUT_LEVEL_RATE = 16000;
 export const RECUT_SILENCE_DB = -80;
 /** Speech is kept this far clear of a room-tone window (Whisper's word edges drift). */
 export const RECUT_ROOM_PAD_S = 0.12;
+/**
+ * A window louder than this on average is speech the transcript missed, not room tone. Real room
+ * tone in H3 takes sits near -64 to -68 dB; the Cryo Cure UGC run (2026-10-17) picked a -21 dB window
+ * that held a voice Whisper never timed, and the bed looped it under the whole edit.
+ */
+export const RECUT_ROOM_MAX_DB = -35;
+
+/** True when a room-tone window is too loud to be room tone (its mean level over `max_db`). */
+export function recutRoomTooLoud(win, max_db = RECUT_ROOM_MAX_DB) {
+  return !!win && Number.isFinite(win.level_db) && win.level_db > max_db;
+}
+
 /** Window lengths tried for the bed, longest first: a longer loop repeats less often. */
 export const RECUT_ROOM_LENGTHS = [1.0, 0.8, 0.6, 0.4];
 
