@@ -14,11 +14,14 @@ Fetch current slugs; these are starting points.
 
 | Family | Package to inspect | What comes back and what to check |
 | --- | --- | --- |
+| Realistic generated talking actor | [Talking-actor method](talking-actor.md), and talking-actor specialist when available. Check managed transport and the exact voice-reference interface before paid work. | Three new actor choices only when needed, actual script auditions, a selected pair, native performance compared with its voice reference, and exact-byte clip review. |
 | Exact-script UGC creator | `creator-h3@1.8.0` on the kit path; [[composes::create-creator-takes-h3]] 2.9.0 (superseded; agent-built path; its make_character.py pairs the voice, `--no-voice-pair` for native speech, pair_voice.py `--library-searches`, `--designed` and `--accept-nearest`, with `nearest` across heritage when none shares it; take reviews may be measured). Inspect its first_take, remaining_takes and assemble schemas; `run_takes` defaults to dry run. | The first take stays pending until hash-bound acceptance; assembly needs reviewed sources and real word timing. |
 | Product demo from owned media | [[composes::footage-cutlist]]: survey, preview and cut take sources and beats with source/in/out/fit/why. | Right variant, visible action during the claim, crop, source time mapping, real duration. A diagram or claim card is not feature proof. |
 | Branded graphics and motion | [[composes::goose-graphics]] gives HTML/static composition, not a video renderer. Add a motion capability or the FFmpeg motion path for approved stills. | A rendered motion clip and timeline, exact text/logo, font, safe space, reading time. A PNG export is not a video. |
 
 For creator plus product footage, [[composes::compose-creator-layer]] may combine checked tracks. No fixed face share or cut count; motion-only scenes skip voice and creator dependencies.
+
+When the video shows work made by a product, use actual outputs from that product/workflow. For static ads, discover the host's static-template/remix capability, ground it in the real brand/product and quote each operation. Generic mock cards or frames borrowed from this video's own footage cannot prove that the product made ads. Inspect full-size text, logos and product fidelity; save the actual outputs as customer assets. An illustrative mockup is allowed only when that distinction fits the approved brief.
 
 ## Handoff checklist
 

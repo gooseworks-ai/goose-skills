@@ -39,6 +39,8 @@ The rebuild checker proves reproducibility only, never fidelity, performance, sy
 5. Download the inputs into an empty folder, then `python3 scripts/check_recipe.py --bundle recipe/source.json --inputs DOWNLOADED_DIR --final FINAL.mp4 --work EMPTY_DIR`. Keep the JSON it prints.
 6. Save the production record's `source` (below). After a recipe change repeat steps 3 to 6 (source-only update when the host has one).
 
+The build creates its own output and temporary directories (for example `mkdir -p out build`); an existing working folder must not hide a missing setup step. Include the actual timeline file among `files`. Every scene's production clip record binds the rendered video bytes used in assembly, even when its content began as a still or graphic. Keep the original still as an input too. A changed timeline requires the full updated production record and renewed affected review; a recipe-only change can use the host's source-only update. Poll completion at the returned retry interval on the same run; never resubmit generation to wait for validation.
+
 ## SPEC.json (input to the packer)
 
 | Field | Required | What it holds |
