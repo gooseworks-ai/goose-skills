@@ -42,3 +42,9 @@ The customer picks Standard or Best at the script approval (`quality_tier`, Stat
   - **It doesn't fit:** the price check lists `custom_video_budget_exceeded` in `blocked_by`, or the call is refused with it (409; `details.this_call_credits` is the redo's price, beside `committed_credits` and `approved_max_credits`). Follow its `next_step`: save the revised estimate, show the new total, and make the redo only after the customer's yes; the redo money is then in the approved total.
   - Add `customer_asked` + `upgrade_quote` only when the redo is above the choice's setting (1080p, or Fabric 720p under Standard). Never drop the scene to save the cost.
 - Pictures before the ingredient approval never send `reroll_scene`: a retry there is the same call again, and an upgrade adds the `failed_attempt` query params; both are paid from the preview budget.
+
+## Revisions and reused work
+
+Keep the full creative scene plan, but put only remaining paid operations in preview/render estimates. Reused, hash-checked assets cost zero new credits; do not list their original generation again. Use zero for a local-only edit with no new paid work, while preserving real committed spend. Price new assets and any redo allowance with current supported requests, not a price or buffer remembered from another video.
+
+The host's approval quote is cumulative: show its returned committed amount, remaining work and total distinctly. Never add committed spend into an estimate the host will add it to again, or change the approval total yourself. Script/ingredient changes still refresh affected approvals. A shot-list tier quote may price the whole plan: do not delete scenes or mark reused speech as B-roll to lower it. If the returned quote still counts reused work as new, report the mismatch on the same project and resolve the quote before requesting that spend; a hand-written estimate cannot override the server.

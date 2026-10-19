@@ -44,11 +44,11 @@ Load existing jobs and approved media first. Match input fingerprints and probe 
 
 ## Prompt constraints
 
-Bind the real identity, product and scale references. State each load-bearing constraint three times: positive framing at the top ("Camera stays at knee level"), a negation in the middle ("NO face visible"), a crop rule at the end ("Camera never tilts above the chest"). Soft preferences need one. Repetition guarantees nothing; inspect every output. Every photoreal still and every motion prompt ends with the **light and realism block** ([libraries, look and rubric](references/libraries-look-and-rubric.md)), B-roll included; a stub like "natural light" is not it.
+Bind the real identity, product and scale references. State each load-bearing constraint three times: positive framing at the top ("Camera stays at knee level"), a negation in the middle ("NO face visible"), a crop rule at the end ("Camera never tilts above the chest"). Soft preferences need one. Repetition guarantees nothing; inspect every output. Use the approved look; phone footage uses the **light and realism block** ([libraries, look and rubric](references/libraries-look-and-rubric.md)), B-roll included.
 
 ## Hard rules
 
-- **No brand or UI text typed into any image prompt.** Image models garble words ("EXAMPLE" becomes "EXAMPEL"). "Unlabeled" is for non-brand objects only (neutral screens, props); add their text in post. The advertised product keeps its real label: a pack held or used on screen is made on the edit route with the real product photo as reference image 1, front label facing the camera, and each use state from a real brand photo ([product scale and world](references/product-scale-and-world.md)). Never ask for a blank, unprinted, unlabelled or back-facing pack; one on screen is `must_fix`.
+- **Scene keyframes: no typed brand or UI text.** Actual static-ad outputs follow [specialist handoffs](references/specialist-handoff.md). "Unlabeled" is for non-brand objects only (neutral screens, props); add their text in post. The advertised product keeps its real label: a pack held or used on screen is made on the edit route with the real product photo as reference image 1, front label facing the camera, and each use state from a real brand photo ([product scale and world](references/product-scale-and-world.md)). Never ask for a blank, unprinted, unlabelled or back-facing pack; one on screen is `must_fix`.
 - **Resolve each model's real reference and start-image fields** through the binding. Upload local files through the host first and use the returned media id. `.avif` references are rejected.
 - **Dark or vignetted keyframes fail in Veo.** Use a neutral background; grade in post.
 - **fal is the default gateway.** A generation counts as failed, and triggers the fallback router, when: the submit raises; the job status is `failed`; the output URL 404s; a download under 1 KB (image) or 10 KB (video); a credit-limit error; or the job passes 10 minutes (15 for Veo and Seedance).
@@ -102,7 +102,7 @@ Only for missing or invalid generative animation the plan assigns.
 
 ### Phase 4 — Voice
 
-Only for narration, audio-driver, song or source-speech routes. No-speech scenes keep their planned soundtrack; native scenes keep their checked clip audio. Follow [speech and route qualification](references/speech-and-route-qualification.md). A talking face across several clips uses `exact_audio_lipsync`: final ElevenLabs line first, then one lip-sync per line, one line per clip.
+Only for narration, audio-driver, song or source-speech routes. No-speech scenes keep their planned soundtrack; native scenes keep their checked clip audio. Follow [speech and route qualification](references/speech-and-route-qualification.md). Exact supplied audio uses `exact_audio_lipsync`; qualified native speech follows [talking-actor production](references/talking-actor.md), retaining its own sound.
 
 1. Read the exact `locked_script` or `locked_lyrics` and each speaker's selected audition. Never pick a new voice or silently regenerate a valid audition.
 2. Reuse the audition audio, voice id and settings; a full render uses those exact settings and text, inside budget, on `eleven_v4`.
