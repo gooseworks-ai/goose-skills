@@ -1,8 +1,8 @@
 {
   "slug": "research-audience",
   "tier": "playbook",
-  "version": "0.5.0",
-  "pillar": "3 — Customers and audience (owns buyer groups and the quote bank) · 8 — Outbound (list mode)",
+  "version": "0.7.0",
+  "pillar": "3 — Customers and audience (owns buyer groups and the quote bank) · 8 — Outbound (list mode: build, score, watch)",
   "intents": [
     "Research our audience",
     "Who is my customer / who are our buyers?",
@@ -11,8 +11,11 @@
     "Why do people buy us or leave?",
     "Where does our audience hang out?",
     "How do we reach them?",
-    "Find me 50 right-fit people with verified emails (list mode)",
-    "Give me an ABM target list (list mode)"
+    "Find me 50 right-fit people with emails (list mode)",
+    "Build a prospect or ABM list; find retail buyers or distributors (list mode)",
+    "Score these leads / which inbound leads do we answer first? (list mode)",
+    "Who's looking for an alternative to <rival>? (list mode, switch intent)",
+    "Tell me when a past champion changes jobs / when target accounts start hiring (list mode, watch)"
   ],
   "reads": [
     "the brand's own customer data, asked for once up front when it has customers: customer or order export, cancel reasons, win/loss notes, support themes (counts and patterns only reach the brain)",
@@ -21,7 +24,9 @@
     "workspace research/competitors/ — rival records and report (research-competitors): read for consistency",
     "workspace research/audience/ — buyer groups, quote bank, last report, group notes, ledger (this playbook, earlier runs); research/credits-log/<YYYY-MM>.md (spend-gate)",
     "claims via claims-gate (learn-my-brand) — for messages and proof lines",
-    "human-supplied (list mode): exclusions export, email-checker results, outreach outcomes"
+    "human-supplied (list mode): exclusions export, email-checker results, outreach outcomes",
+    "human-supplied (list mode): a list to score (sign-ups, demo requests, webinar or event attendees they collected), a champions list, a target-account list for watches",
+    "public sources (list mode): Hacker News search API, public GitHub API, event speaker and sponsor pages, rivals' customer pages"
   ],
   "writes": [
     "local gooseworks-reports/<brand-slug>/<date>-audience.md and workspace research/audience/<date>-report.md → 'Audience report — <Brand> — <date>' (keep-history) via write-report and save-to-brain — read by the marketer, the next run, research-market and research-competitors",
@@ -29,8 +34,10 @@
     "workspace research/audience/voc-bank.md → 'Voice-of-customer bank — <Brand> — <date>' (supersede) and voc-bank.jsonl (not imported) — the quote bank; read by the ad and video makers, make-content, run-organic-social, research-competitors, plan-campaign",
     "brand audience field: ranked buyer-group summary proposed via brand_update (knowledge.audience, agent_proposal) — skipped when the lead is provisional",
     "workspace research/audience/segments/<slug>.md — read by the next run",
-    "list mode: research/audience/<date>-<list>/list.csv, dropped.csv; research/audience/ledger.csv via outcomes-ledger — read by the marketer's outreach tool and later runs",
-    "research/credits-log/<YYYY-MM>.md rows — read by every playbook's spend estimates"
+    "research/credits-log/<YYYY-MM>.md rows — read by every playbook's spend estimates",
+    "list mode: local gooseworks-reports/<brand-slug>/<date>-list.md + <date>-list.csv; workspace research/audience/<date>-<list>/report.md → 'Prospect list report — <Brand> — <date>' (keep-history, no people's data), list.csv, segments.csv, catch-all.csv, dropped.csv (not imported); research/audience/ledger.csv via outcomes-ledger — read by write-outreach, the marketer's outreach tool and later runs",
+    "research/audience/fit-definition.md — read by list mode, score-a-list and write-outreach",
+    "watches: research/audience/watch/champions.csv, accounts.csv (not imported), watch/<date>.md — read by the scheduled watch and the marketer"
   ],
   "needs": {
     "mcp": [

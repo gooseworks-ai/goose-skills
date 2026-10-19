@@ -20,6 +20,7 @@ Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M
 - **M7** — **Top five lines tell you what to do.** The document opens with a short summary whose first point is the one move to make first and why (write-report §3: "Do this first").
 - **M8** — **Plain words, no internals.** The document has no internal ids or codes, file paths, tool, skill or playbook names, model or vendor names, JSON or process narration ("I called…", "Step 4"); a non-marketer could follow it.
 - **M9** — **No spend, nothing published.** No credits spent, nothing posted, sent, scheduled or launched, and the agent did not claim an approval the marketer never gave.
+- **M10** — **Volunteered the document.** The agent wrote the report or plan as a file and linked it before the marketer asked for a document. If the marketer had to ask ("can you give me the full report as a doc…") before any file existed, this fails, even if a file came afterwards. (Added 19 Oct: the simulated marketer asks once, so the "readable document" check alone can't tell volunteered reports from requested ones.)
 
 ## Should pass
 

@@ -285,6 +285,51 @@ Source: `marketing-agent-test/results/reviews/research-review.md` (§2, §3, §6
 | §8 one upfront customer-data question | **Not used here** | Customer data serves buyer groups, which audience research now owns; it asks. Market sizing reads audience's results. |
 | (noticed) write-report's banned-vendor list includes "Claude", but GooseWorks' own product claim is "inside Claude" | **Flag to the orchestrator** | A brand whose product names a vendor would fail the mechanical check for stating its own facts. write-report needs an exception for the brand's own product facts. |
 
+## Round 5 — eval fixes (2026-10-19; v2 run, with skill 11/17 must-pass vs baseline 3/17)
+
+Each failing check was confirmed against `evals/results/2026-10-19-v2/research-market/with-skill/session.jsonl` before acting. No re-runs this round.
+
+| Check | Verdict | What changed / why not |
+|---|---|---|
+| M10 / E1 "market-size figures fabricated" ($2.51B Mordor, 14,500 buyers, $3,588, $536M) | **Mostly judge noise** | $2.51B and the Mordor attribution are in a web-search result. 14,500 came from a saved audience report (contamination from another run, but reading it is what the playbook asks). $3,588 is $299 × 12, and $536M is the sum. The real fault underneath is E2. |
+| E2 / S5 no inline links; sources list with no URLs | **Real — fixed** | Worker briefs now require every fact with its link and date inline. A pre-delivery check in `report-format.md` says links sit next to facts, sources match their site, and a computed number shows its inputs. |
+| M5 buyers not quoted word for word with links | **Real — fixed, with a §2b note** | Step 5 now quotes 3–5 buyers word for word with links, from research-audience's bank or this run's listening, never composites. Note: the full quote work belongs to research-audience; market quotes a few to ground the story. |
+| E3 "In short" leaned on a second-hand quote | **Real — fixed** | The check counts the 150 words and bars anything the body calls unconfirmed or second-hand. |
+| E9 platform claims not checked on the primary page | **Real — fixed** | market-pass §3: open the primary page for every platform or legal claim, or mark it "not confirmed", and it never appears as fact. |
+| E10 pricing table had 7 products | **Real, minor — fixed** | "At least 8 products". |
+| E12 name confusion not stated | **Real** | Caused by the run skipping the listening worker. The report shape now says "what our name gets confused with, or 'nothing found'"; the depth floor (below) makes the listening run. |
+| S6 closing message too long | **Real — fixed** | An exact closing-message shape in `report-format.md`: one line to do first, two links, at most five one-line decisions, one repeat line. |
+| Depth: no workers, 10 searches, **0 page fetches** | **Real — fixed** | Both workers now run (or the main run does both in turn), each with a standard depth: market about 15 searches and 12 fetches, listening about 12 and 12. Workers never load skills or start their own subagents. |
+| An earlier report exists (shared staging brand) | **Contamination — one real rule** | edge-cases: reuse a report newer than 30 days as the base (re-check what moves, deliver what changed, never re-deliver it untouched) or refresh in full; say which, in chat and in the first "In short" bullet. |
+
+Expected cost now: about **$4–5 and ~15 minutes** per full report (two lean workers plus the main run), up from $2.18 and 14 minutes, which was too thin.
+
+## Round 6 — ports from the old library (2026-10-19): verdicts per AGENTS §2b
+
+Sources: `marketing-agent-test/results/old-vs-new/research-ci-brand-seo.md`, `social-monitoring-content.md` and `design-research-tools.md` (the Wayback section). Old skills were read as reference only: craft taken, never their structure, vendor wrappers or keys.
+
+**Bug fixed first: readers of the moved quote bank.**
+- Repointed to `research/audience/voc-bank.*` and `buyer-groups.md`: plan-campaign (SKILL, two atoms, meta), run-organic-social (meta, calendar-craft, test), improve-search-visibility (SKILL, atom, question-list, meta), work-with-creators (SKILL, data-sources), the voice-card atom.
+- Path and owner name only, in the excluded playbooks: make-static-ads and make-video-ads (reading-the-brain, meta), make-content (content-brief atom, meta, test), learn-my-brand (description, brain-map, out-of-scope line). run-paid-campaigns only reads `research/market/demand.md`, which is unchanged.
+- The guide index has a research-audience row (`buyer-groups.md`, `voc-bank.*`, the report and its readers).
+- where-to-start's map describes research-market and research-audience by their new jobs; customer interviews point to research-audience.
+- The router's research-audience row carries the buyer and persona asks.
+
+| Port | Verdict | Where it went |
+|---|---|---|
+| Category-choice rules (launch-positioning-builder §2A) | **Ported** | market-pass §1: existing vs sub-category vs new, with the rules "buyers already search for it → use it", "half the sales calls explaining → don't create one", create only when nothing fits and keep it plain. |
+| Events and deadlines (industry-scanner "Industry Events") | **Ported** | market-pass §6: conferences, speaker applications and calls for papers, award entries, buying seasons — with dates. |
+| Idea validation (product-demand-research, all of it) | **Ported** | New `references/idea-validation.md`: hypotheses first, attention vs buying signals, social-commerce pass, scoring in words, the cheapest next test with a pass mark. SKILL routes "is there demand for …?" there, and the description gains that trigger. |
+| Free feeds (hacker-news-scraper, blog-feed-monitor) | **Ported, as URL recipes** | listening-craft: the Hacker News search URL (search_by_date, tags, created_at_i window); RSS/Atom discovery (the head link, then the common feed paths). No Python, since hosted chats have no shell. |
+| Transcripts (transcript-intelligence) | **Ported, as a paid top-up** | listening-craft: transcripts of the top 5–10 videos per platform, with the "auto-transcripts aren't exact" guardrail. |
+| Product request and workaround tags; buying-intent scale (comment-mining steps 2–4) | **Ported** | listening-craft § Classify; the listening atom's return shape counts each step. Parent context kept, and rivals' ad comments read. |
+| Trend test, five responses, horizon (trend-discovery steps 3, 6) | **Ported** | listening-craft § Outliers and trends. |
+| Outlier baseline per format; flag collaborations and paid boosts (outlier-post-finder step 3) | **Ported** | listening-craft § Outliers. |
+| Voices the buyer follows (kol-content-monitor Phases 3, 5; kol-discovery Phases 1–3) | **Ported** | listening-craft § Voices: signal types (convergence, spike, underdog, controversy), the post-within-3-days rule, and the discovery method (LinkedIn post search is a paid top-up). The listening atom gains a step; in brand-watch mode only a convergence on our category is an alert. |
+| Objection map with answers; "how buyers decide" fields | **Not ported here — push back on the placement** | Both reviews place them in research-audience (gaps #6, #7), which owns buyer groups and quotes since 18 Oct. Putting them in market research would bring back the overlap the 18 Oct review removed. Flagged for the audience session. |
+| Daily industry scan | **Rejected** | The review agrees: a daily cadence is noise. Monthly pulse plus brand watch instead. |
+| Old scripts (logo scraping, Apify fallbacks) | **Rejected as code** | Methods only, as URL recipes. Scripts need a terminal and some need vendor keys. |
+
 ## Appendix — listen-social critique history (playbook removed 18 Oct; its listening now lives here as atoms/listening)
 
 ## Critique log — listen-social

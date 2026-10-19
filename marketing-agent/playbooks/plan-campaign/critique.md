@@ -168,3 +168,25 @@ Pushback (with reasons):
 - **Frequency cap "about 5 per week" as a hard line:** kept as the default, but allowed up to ~8 when several fresh creatives rotate — retargeting tolerance depends on creative variety (our run-paid reading guide uses 5–8 for retargeting). A single number would over-cut small but well-rotated legs.
 - **"GooseWorks' buyers are buried in BFCM creative all November":** right as a pattern, but the playbook must derive the buyer's season from the brand's research and personas, not assume it — the calendar section says "never assume them" and the BFCM line is one illustration among several.
 - **Plan length (~29 KB acceptable):** the review accepted it; the newer write-report budget does not. Followed write-report: body ≤ 3,000 words, tables in the appendix.
+
+## Round 11 — eval 2026-10-19-v2 (with skill 13/16 must-pass, baseline 11/16)
+
+**Side-by-side read of the two transcripts.** Both arms were contaminated the same way: each found the approved Thanksgiving plan already on the staging brand (written by earlier hand tests) and largely re-delivered it, so neither actually planned. Per the orchestrator, contamination itself is ignored — but it exposed a real playbook gap: the skill arm pasted the stored v4 brief in its old shape (Decision/Status at the top), with the stale "$99/mo" price its own notes contradicted ($29/$59/$149 on the live site), research codes (T-06, T-03), and its old two-variable test. The skill's own economics, frequency and test checks never ran.
+
+**Judge evidence checked against the transcript and output file** (to avoid chasing ±2 noise): every with-skill failure is real — no live pricing fetch (no web fetch in the transcript), research codes and "mode: goal push to a date" in the file (M8), long re-paste in the closing chat (S6/E12), test 1 changing subject and angle (E8), no retargeting frequency (E7). The baseline's M7/E4/E5/E10/S5 failures are also real (no In short, no per-leg sourced math, no levers, no maker/claim columns, no dated sources).
+
+**Where the skill already beat the plain model:** In short with "Do this first" (M7), per-leg math with sources (E4), the case for changing the goal with levers (E5), complete asset rows with claim and maker (E10), dated sources (S5), the audience question asked well (turn 3: "lapsed users or new people?").
+
+**Fixes (make that value show every run):**
+- **An existing plan is input, never the deliverable.** Step 1: say a plan exists, then refresh it — re-check every number against today's look-first facts (live prices first), re-run the money math, channel/buyer check, frequency check and tests, write it in the current shape with one "What changed since the last plan" line. Never paste a stored plan. Test 8 added.
+- **Live site fetch is required every run** (home + pricing via the host's web fetch or browser); live prices beat saved notes and old plans; with no web access, say so and label prices unconfirmed. (M1/E1)
+- **brand_read kept small**: lean read, then the hero product's record, then learnings in their own call — the full-detail all-sections read overflowed (80k chars) and was skipped. One `tools_load` for campaigns, meta, social and files up front (the run never found `social_account_list`).
+- **No research codes or visible "mode:" line** in the plan: codes translated into words; mode and slug moved into the hidden comment. (M8)
+- **Closing chat is a literal three-line template** plus the approval ask; no tables, no re-pasted sections. (S6/E12)
+- **Attack step names the five things a generic plan gets wrong**: today's-price economics, channel vs actual buyer, retargeting audience size + weekly frequency + cap, one-variable tests with an "unclear" action, the buyer's busy moment. (E7/E8 and the value the eval should see)
+
+**Pushback on criteria (§2b):**
+- **E8 "every test has one variable":** right as a default, but a founder with a ~500-person list sometimes runs a bundled "package" test (new subject + new angle) because there's only one send; acceptable if the plan says what it can't tell you. The playbook allows that with the caveat; a strict judge may still fail it.
+- **E7 "cap if frequency exceeds about 5 per week":** kept as default, with up to ~8 allowed when several fresh creatives rotate (logged Round 10).
+- **M6/E12 "chat did not re-paste":** right for hosts with files; in a hosted chat with no files write-report requires the full plan in the chat. The playbook says so; a judge should not fail a hosted-chat run for that.
+- **S3 approval respected / contamination:** a run that finds an approved plan and refreshes it is behaving like a real marketer, not "duplicating" — the criterion should reward a refresh with re-checked numbers, not a copy.

@@ -8,6 +8,10 @@ import crypto from 'node:crypto';
 import { ask, parseJsonLoose, runClaude } from './claude.mjs';
 import { EVALS_DIR, MA_DIR, listSkills, loadScenario, loadRubric, today } from './files.mjs';
 import { judgeArmSafe, writePlaybookSummary } from './judge.mjs';
+import { installLegacy, keyFailures } from './legacy.mjs';
+import { connectBrand, snapshot, planReset, applyPlan, attributeToArm } from './brandstate.mjs';
+
+export const ARMS = ['baseline', 'legacy', 'with-skill'];
 
 // The hand-test folder: we copy its .claude/settings.json (production GooseWorks denied, staging allowed).
 export const TEST_DIR = process.env.GOOSE_EVAL_TEST_DIR || path.join(os.homedir(), 'projects', 'marketing-agent-test');
@@ -29,6 +33,8 @@ const ALLOWED_TOOLS = [
   'Read', 'Glob', 'Grep', 'Edit(./**)', 'Write(./**)', 'WebSearch', 'WebFetch', 'Skill', 'Task', 'Agent', 'TodoWrite',
   'Bash(curl:*)', 'Bash(ls:*)', 'Bash(cat:*)', 'Bash(mkdir:*)', 'Bash(date:*)', 'Bash(head:*)', 'Bash(tail:*)',
   'Bash(grep:*)', 'Bash(wc:*)', 'Bash(find:*)',
+  // What old skills run (scripts, the CLI). Same list in every arm so only the skills differ.
+  'Bash(python3:*)', 'Bash(node:*)', 'Bash(npx:*)', 'Bash(export:*)', 'Bash(jq:*)', 'Bash(gooseworks:*)',
   'mcp__gooseworks-staging',
 ];
 
@@ -37,15 +43,40 @@ const DISALLOWED_TOOLS = [
   'mcp__a7a7f498-8597-4c8c-bb6a-3d2d1ef9be6d', // production GooseWorks (desktop connector id)
   'AskUserQuestion', // headless: the subject must ask in plain text so the simulator can answer
   ...PAID_OR_PUBLISHING.map((t) => `mcp__gooseworks-staging__${t}`),
+  // The real home's CLI login is PRODUCTION; the sandbox home's is staging. Keep the real one out of reach.
+  `Read(/${os.homedir()}/.gooseworks/**)`, `Bash(cat ${os.homedir()}/.gooseworks/credentials.json)`,
 ];
 
 const SUBJECT_NOTE = fs.readFileSync(path.join(EVALS_DIR, 'prompts', 'subject-note.md'), 'utf8');
 const SIM_SYSTEM = fs.readFileSync(path.join(EVALS_DIR, 'prompts', 'simulator.md'), 'utf8');
 
-/** A fresh temp copy of the hand-test folder. with-skill links the 16 playbooks + 3 foundation skills. */
+/**
+ * A sandbox home for the subject: the real Claude config, keychain, user-level skills (~/.agents, ~/.claude/skills)
+ * and npm cache are linked in, but ~/.gooseworks/credentials.json points at the STAGING CLI login. So old skills
+ * that read the CLI login (GOOSEWORKS_API_KEY) get staging, like a user logged in to staging. Same in every arm.
+ */
+function sandboxHome(root) {
+  const home = path.join(root, 'home');
+  fs.mkdirSync(path.join(home, '.gooseworks'), { recursive: true });
+  for (const n of ['.claude', '.claude.json', 'Library', '.agents', '.npm']) {
+    const target = path.join(os.homedir(), n);
+    if (fs.existsSync(target)) fs.symlinkSync(target, path.join(home, n));
+  }
+  const staging = path.join(os.homedir(), '.gooseworks', 'profiles', 'staging', 'credentials.json');
+  if (fs.existsSync(staging)) fs.symlinkSync(staging, path.join(home, '.gooseworks', 'credentials.json'));
+  else console.warn('warning: no staging CLI login (~/.gooseworks/profiles/staging/credentials.json); old skills that need it will fail');
+  return home;
+}
+
+/**
+ * A fresh temp copy of the hand-test folder plus a sandbox home.
+ * with-skill links the 16 playbooks + 3 foundation skills; legacy copies the old skills from legacy/mapping.json; baseline adds nothing.
+ */
 function prepareWorkspace(slug, mode) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), `goose-eval-${slug}-${mode}-`));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), `goose-eval-${slug}-${mode}-`));
+  const dir = path.join(root, 'ws');
   fs.mkdirSync(path.join(dir, '.claude'), { recursive: true });
+  const home = sandboxHome(root);
   const settings = path.join(TEST_DIR, '.claude', 'settings.json');
   if (fs.existsSync(settings)) fs.copyFileSync(settings, path.join(dir, '.claude', 'settings.json'));
   else console.warn(`warning: ${settings} not found; relying on --disallowedTools only`);
@@ -62,10 +93,13 @@ function prepareWorkspace(slug, mode) {
       if (fs.existsSync(target)) fs.symlinkSync(target, path.join(dir, '.claude', name));
     }
   }
-  return dir;
+  const legacy = mode === 'legacy' ? installLegacy(slug, dir) : null;
+  return { root, dir, home, legacy };
 }
 
-async function subjectTurn({ cwd, sessionId, first, message, model, effort, timeoutMs, rawFile }) {
+export { prepareWorkspace };
+
+async function subjectTurn({ cwd, home, sessionId, first, message, model, effort, timeoutMs, rawFile }) {
   const args = [
     '-p', '--model', model, '--output-format', 'stream-json', '--verbose',
     '--append-system-prompt', SUBJECT_NOTE,
@@ -78,7 +112,7 @@ async function subjectTurn({ cwd, sessionId, first, message, model, effort, time
   const out = fs.createWriteStream(rawFile);
   const events = [];
   const r = await runClaude({
-    args, input: message, cwd, timeoutMs,
+    args, input: message, cwd, home, timeoutMs,
     onLine: (line) => { out.write(line + '\n'); try { events.push(JSON.parse(line)); } catch { /* ignore */ } },
   });
   await new Promise((res) => out.end(res));
@@ -177,12 +211,45 @@ function reportFiles(cwd) {
 
 const ASK_FOR_REPORT = "can you give me the full report as a doc i can open? the chat summary isn't enough for me to share.";
 
-/** One arm (with-skill or baseline): the whole conversation, saved to armDir. */
+/**
+ * Brand isolation: snapshot the staging brand before the arm, undo the arm's changes after it, then check.
+ * Returns a record for run.json. Never throws: a failed reset is recorded and the suite goes on.
+ */
+async function resetBrand(before, opts, label, events) {
+  try {
+    const ctx = await connectBrand(opts.brandSlug ?? 'gooseworks'); // fresh MCP session: the arm may have run an hour
+    const after = await snapshot(ctx, { withContents: false });
+    const spent = before.credits != null && after.credits != null ? before.credits - after.credits : null;
+    if (spent) console.log(`  [${label}] STAGING CREDITS CHANGED during the arm: ${before.credits} → ${after.credits}`);
+    // The arm's own tool traffic (main agent and sub-agents): only changes it explains are undone.
+    const haystack = events.map((e) => JSON.stringify(e.message?.content ?? '')).join('\n').replace(/\\\//g, '/');
+    const plan = attributeToArm(planReset(before, after), haystack);
+    const done = await applyPlan(ctx, plan);
+    const residue = attributeToArm(planReset(before, await snapshot(ctx, { withContents: false })), haystack).filter((a) => a.op !== 'flag');
+    const n = (r) => done.filter((d) => d.result === r).length;
+    console.log(`  [${label}] brand reset: ${done.length - n('flagged') - n('error')} undone, ${n('flagged')} flagged, ${n('error')} errors, ${residue.length} left over`);
+    return { snapshot_at: before.taken_at, credits_before: before.credits, credits_after: after.credits, credits_spent: spent, actions: done, undone: done.length - n('flagged') - n('error'), flagged: done.filter((d) => d.result === 'flagged').map((d) => d.label), errors: done.filter((d) => d.result === 'error').map((d) => `${d.label}: ${d.error}`), left_over: residue.map((a) => a.label) };
+  } catch (e) {
+    console.log(`  [${label}] BRAND RESET FAILED: ${String(e.message).slice(0, 200)}`);
+    return { error: String(e.message).slice(0, 500) };
+  }
+}
+
+/** One arm (baseline, legacy or with-skill): the whole conversation, saved to armDir. */
 export async function runArm({ slug, mode, armDir, opts }) {
   const scenario = loadScenario(slug);
   const maxTurns = opts.maxTurns ?? scenario.maxTurns;
   fs.mkdirSync(path.join(armDir, 'turns'), { recursive: true });
-  const cwd = prepareWorkspace(slug, mode);
+  const ws = prepareWorkspace(slug, mode);
+  const cwd = ws.dir;
+  let before = null;
+  if (opts.reset !== false) {
+    try {
+      before = await snapshot(await connectBrand(opts.brandSlug ?? 'gooseworks'));
+    } catch (e) {
+      console.log(`  [${slug} · ${mode}] brand snapshot failed, arm runs WITHOUT isolation: ${String(e.message).slice(0, 200)}`);
+    }
+  }
   const sessionId = crypto.randomUUID();
   const started = Date.now();
   const turns = [];
@@ -203,7 +270,7 @@ export async function runArm({ slug, mode, armDir, opts }) {
     const timeoutMs = Math.min(turnMs, remaining);
     console.log(`  [${slug} · ${mode}] subject turn ${n}: ${clip(message.replace(/\s+/g, ' '), 100)}`);
     const t = await subjectTurn({
-      cwd, sessionId, first: n === 1, message, model: opts.subjectModel, effort: opts.effort,
+      cwd, home: ws.home, sessionId, first: n === 1, message, model: opts.subjectModel, effort: opts.effort,
       timeoutMs, rawFile: path.join(armDir, 'turns', `turn-${String(n).padStart(2, '0')}.jsonl`),
     });
     subjectCost += t.costUsd;
@@ -256,23 +323,33 @@ export async function runArm({ slug, mode, armDir, opts }) {
     if (fs.existsSync(sess.dir)) fs.cpSync(sess.dir, path.join(armDir, 'session'), { recursive: true });
   }
   fs.writeFileSync(path.join(armDir, 'transcript.md'), `# ${slug} — ${mode}\n\nWorkspace files written: ${files.length ? files.join(', ') : 'none'}\n` + condense(turns));
+  const allEvents = turns.flatMap((t) => t.events);
+  const legacy = ws.legacy ? {
+    installed: ws.legacy.installed.map((s) => ({ slug: s.slug, picked: s.picked, required_by: s.required_by, keys_needed: s.keys_needed })),
+    missing: ws.legacy.missing,
+    keys: ws.legacy.keys,
+    loaded: [...new Set(allEvents.flatMap((e) => (e.message?.content ?? []).filter((c) => c.type === 'tool_use' && c.name === 'Skill').map((c) => c.input?.skill)))],
+    key_failures: keyFailures(allEvents, ws.legacy.installed.map((s) => s.slug)),
+  } : undefined;
+  const brandReset = before ? await resetBrand(before, opts, `${slug} · ${mode}`, allEvents) : { skipped: opts.reset === false ? 'disabled (--no-reset)' : 'snapshot failed' };
   const meta = {
     slug, mode, session_id: sessionId, subject_model: opts.subjectModel, sim_model: opts.simModel,
     turns: turns.length, stopped, arm_cap_min: capMs / 60_000, files, subject_cost_usd: subjectCost, sim_cost_usd: simCost,
-    minutes: Math.round((Date.now() - started) / 6000) / 10, log,
+    minutes: Math.round((Date.now() - started) / 6000) / 10, legacy, brand_reset: brandReset, log,
   };
   fs.writeFileSync(path.join(armDir, 'run.json'), JSON.stringify(meta, null, 2));
-  if (!opts.keepWorkspace) fs.rmSync(cwd, { recursive: true, force: true });
-  else meta.workspace = cwd;
+  if (!opts.keepWorkspace) fs.rmSync(ws.root, { recursive: true, force: true });
+  else meta.workspace = ws.root;
   console.log(`  [${slug} · ${mode}] stopped: ${stopped}; ${turns.length} turn(s); files: ${files.length}`);
   return meta;
 }
 
-/** Run both arms (baseline first, so the with-skill run's brand writes can't help it), judge, summarise. */
+/** Run the arms in order (each starts from the same brand state, thanks to the reset), judge, summarise. */
 export async function runPlaybook(slug, opts) {
   loadRubric(slug); // fail fast on a broken rubric
   const outDir = path.join(opts.outRoot ?? path.join(EVALS_DIR, 'results', today()), slug);
-  const modes = opts.mode === 'both' ? ['baseline', 'with-skill'] : [opts.mode];
+  const modes = opts.mode === 'both' ? ['baseline', 'with-skill'] : opts.mode === 'all' ? ARMS : String(opts.mode).split(',');
+  for (const m of modes) if (!ARMS.includes(m)) throw new Error(`unknown mode ${m} (use ${ARMS.join(', ')}, both or all)`);
   console.log(`\n=== ${slug} (${modes.join(' + ')}) → ${path.relative(process.cwd(), outDir)}`);
   for (const mode of modes) {
     const armDir = path.join(outDir, mode);

@@ -1,19 +1,20 @@
 # Watch and react
 
-Both modes use the same dimension list as the teardown (`../atoms/rival-pass/ATOM.md`) and compare against each rival's saved **Snapshot** block. A quiet week is a valid result — but "no change" only ever covers what was actually re-read.
+Both modes use the same dimension list as the teardown (`rival-craft.md`) and compare against each rival's saved **Snapshot** block. A quiet week is a valid result — but "no change" only ever covers what was actually re-read.
 
 ## Weekly watch — "what changed this week?"
 
 For every main rival, re-read and diff:
-1. **News** (last 7–14 days): the rival-pass §1 queries, plus our own brand. Any shutdown, acquisition, price change, outage, launch or funding is a react-now item and leads the note.
-2. **Ads:** every library from rival-pass §2 — new ads (start date after the last snapshot), ads gone since the last snapshot (full-library reads only; never from a sample), ideas gaining versions.
+1. **News** (last 7–14 days): the rival-craft §1 queries, plus our own brand. Any shutdown, acquisition, price change, outage, launch or funding is a react-now item and leads the note.
+2. **Ads:** every library from rival-craft §2 — new ads (start date after the last snapshot), ads gone since the last snapshot (full-library reads only; never from a sample), ideas gaining versions.
 3. **Founder and company posts:** new posts beating their usual engagement; new claims or teasers.
 4. **Launches:** changelog, release notes, Product Hunt, launch posts — and the first third-party demos of anything new.
 5. **Pricing and headline:** pricing-page and homepage text against the snapshot.
 6. **Hiring:** open roles by team against the snapshot.
 7. **Reviews and community:** new complaint or praise themes; spikes.
 8. **Search and AI answers:** the category pass's prompts, if anything moved.
-9. **Email, events, partnerships:** new newsletter offers; the next flagship event (a launch often lands on it — an early warning); new integrations or platform partners.
+9. **Free feeds** (what a scheduled run, with no browser, can still read): each rival's blog and changelog feed, diffed since the last snapshot (the `<link rel="alternate" type="application/rss+xml">` in the page head, else `/feed`, `/rss`, `/atom.xml`, `/feed.xml`, `/rss.xml`, `/blog/feed`, `/index.xml`); Hacker News search for launches in the category (`https://hn.algolia.com/api/v1/search_by_date?query=<rival>&tags=story` or `show_hn`, `&numericFilters=created_at_i><last run>`); each rival's `/sitemap.xml` for new comparison, alternatives or pricing pages.
+10. **Email, events, partnerships:** new newsletter offers; the next flagship event (a launch often lands on it — an early warning); new integrations or platform partners.
 
 Report only what crossed a threshold:
 
@@ -21,7 +22,7 @@ Report only what crossed a threshold:
 |---|---|
 | News | anything material in the window (always) |
 | Ads | a new idea (not a new size of an old one) · an idea crosses 30 / 60 / 90 days · an idea gains 3+ versions · active count moves ≥25% (full-library reads only) |
-| Pricing / offer | any price, plan, unit, trial or guarantee change · a new discount ≥10% or switch offer |
+| Pricing / offer | any price, plan, unit, trial or guarantee change (a pricing-model change is critical; price, free tier: high; tiers or feature gating: medium — rival-craft §6) · a new discount ≥10% or switch offer |
 | Positioning | a new headline promise · a new "vs" or "alternatives" page |
 | Product | a launch, a new tier, a deprecation |
 | Founder voice | a post at ≥3× their usual engagement · a new claim about the category or about us |

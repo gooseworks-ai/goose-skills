@@ -52,6 +52,7 @@ Find the accounts and posts that the brand's buyers actually watch on this platf
 | YouTube | Search and channel pages open without a login: sort by views or recent. |
 | LinkedIn | Web search `site:linkedin.com/posts "<term>"` for the past month; post pages often open. Profiles' activity needs a login: say so. |
 | TikTok, Instagram | Web search `site:tiktok.com` / `site:instagram.com` plus the term; single video pages often open, search pages usually need a login: say so. |
+| Bluesky (B2B and developer brands) | Check first that the niche's voices are there; many developer and B2B voices moved in 2025–26. Profiles and posts are public: read them in the host browser on bsky.app. Its public, keyless API (`public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=<handle>`) returns an account's posts with like and repost counts; check it on first use. Search may need a login, so say so if it does. |
 | Any | `gooseworks:brand_read` `sections: ["organic"]` (`competitor_top_posts`), `gooseworks:social_inspiration_search`, `gooseworks:competitor_read` (skip anything outside the brand's category, such as a mis-matched competitor); research-market's latest report and `research/competitors/` files. |
 
 **Finding who the buyers actually watch:** start from the people they follow, not "best accounts" listicles:
@@ -65,7 +66,8 @@ Web search finds these names; their profiles lead to the posts.
 
 | Platform | Reads |
 |---|---|
-| X | keyword search (`/v1/twitter/search/posts`) on the niche's terms. It is a relevance sample with no recency option, so drop out-of-window items and keep the high-engagement posts. Test in the probe whether operators like `min_faves:` pass through. |
+| X | keyword search (`/v1/twitter/search/posts`) on the niche's terms. It is a relevance sample with no recency option, so drop out-of-window items and keep the high-engagement posts. In the first probe, test whether `since:`, `until:`, `from:<handle>` and `min_faves:` pass through inside the query. If they do, X search gets a real date window. Named accounts: `/v1/twitter/profile`, then `/v1/twitter/user-tweets` (see §3 for its pitfalls). |
+| Video examples | Transcripts of the top 5–10 video examples (`/v1/youtube/video/transcript`, `/v1/tiktok/video/transcript`, `/v2/instagram/media/transcript`, per `../../../../foundation/data-access/SKILL.md`), so the hook and structure come from what is *said*, not just the caption. An auto-transcript isn't exact: flag unclear names and numbers. |
 | TikTok | keyword search sorted by likes, and search suggestions for buyer phrasing |
 | Instagram | reels search |
 | LinkedIn | posts by keyword (last month) |
@@ -74,7 +76,25 @@ Web search finds these names; their profiles lead to the posts.
 
 Plan the reads per platform, cap every row, and ask one yes to "up to N credits".
 
-**Judging "what works":** X and TikTok show view counts publicly, so read them. Rank posts by engagement relative to the author's follower count, not raw likes. An example with no numbers seen is labelled "pattern, numbers not seen". Never call a winner without numbers, and never invent an example or a link.
+**Judging "what works":**
+- X and TikTok show view counts publicly, so read them.
+- Rank posts by engagement relative to the author's follower count, not raw likes.
+- **Baseline per format:** compare a carousel with the account's other carousels and a video with its videos, using each format's median. Never compare across formats.
+- **Set apart** giveaways, collaborations, paid boosts and one-off viral events. They don't repeat.
+- An example with no numbers seen is labelled "pattern, numbers not seen".
+- Never call a winner without numbers, and never invent an example or a link.
+
+**Read the comments under the best examples** (and later under the brand's own posts): what people say is often worth more than the post itself. Keep a parent comment when a reply changes its meaning. Tag each useful comment as one or more of:
+- pain;
+- question;
+- objection;
+- **product request** ("I wish it…");
+- **workaround** ("I just use a spreadsheet for this"), a classic sign of an unmet need;
+- praise.
+
+Mark **buying intent** on a scale: curiosity → consideration → a price or availability question → comparison → stated purchase → repeat use → recommendation. Questions, requests and workarounds become hooks and topics. Buyers' own words become post lines (not claims).
+
+**"Why did this one post do well?"** (a link the marketer pastes): read that post's page in the host browser. Use a single-post proxy read only once `../../../../atoms/spend-gate/proxy-endpoints.md` lists one for that platform. Compare the post with the author's own per-format baseline; name the likely drivers (hook, format, topic, timing, collaboration, a paid push) without claiming cause.
 
 **For each platform, keep 8–15 examples that worked, at least 3 from accounts under 10k followers** (big accounts' reach says little about what a small account can do). For each one record:
 - link, account, date, numbers
@@ -96,8 +116,13 @@ Then name the **3–5 patterns** that repeat, and note what everyone does that t
 **Read them:**
 - TikTok and Instagram: free via `brand_read organic`.
 - Every platform: the public profile in the host browser.
-- The paid top-up, for LinkedIn (company posts, or a keyword search filtered to the author's posts) and X (a keyword search for the handle, keeping only the author's own posts). It is unverified as an own-feed read, so say so.
+- **X:** `/v1/twitter/profile` (bio, followers, join date), then `/v1/twitter/user-tweets` for the posts, through the proxy under the spend gate's one yes. Three pitfalls:
+  - it returns the account's **popular** posts, not the newest, so check each post's `created_at` before calling the account active or treating them as "the last 30 posts";
+  - the numbers sit inside each post's `legacy` object (`favorite_count`, `retweet_count`, `reply_count`); the post link is the top-level `url`;
+  - read profiles first for every account in question, then posts only for the shortlist.
+- **LinkedIn:** company posts, or a keyword search filtered to the author's posts (patchy for a person's feed; say so).
 - If none of these work, ask for 5–10 pasted posts in the draft-report message.
+- Outliers are read against the account's own per-format median (§2).
 
 **Record:**
 - handle and follower count
@@ -106,6 +131,30 @@ Then name the **3–5 patterns** that repeat, and note what everyone does that t
 - the voice: build or update the card with `../../../../atoms/voice-card/ATOM.md`
 
 A new account with zero followers is a fact to plan around, not a gap to apologise for.
+
+## 3b. A model account: "tear down this one account" (when the marketer names one, or one account is clearly the pattern to learn from)
+
+The question is why one account works and what this brand should take from it. Read that account in full (§3's routes) and answer:
+- **Promise and positioning:** what a follower gets, in one line; who it's for; the profile funnel (bio, pinned post, link).
+- **Pillars and recurring series:** a table with one linked example each.
+- **Outliers against its own per-format baseline,** with giveaways, collaborations and paid pushes set apart, plus the likely drivers (labelled as inference, not cause). Read transcripts for its key videos and comments where the audience's reaction matters.
+- **Mechanics:** hooks, formats, proof, CTAs, visual pattern, cadence.
+- **Adapt vs don't copy:** take the mechanism and the audience insight, never the wording, likeness or identity.
+- **Five tests for this brand,** ranked, each one a format test the calendar can run.
+
+When the teardown is the whole ask, it's the report (through write-report). Inside a full plan, it's one section of the report.
+
+## 3c. Voices the buyer follows: the refill read
+
+At every refill (SKILL.md step 7), and in a weekly light pass if the marketer posts daily:
+- Read the last 7 days of the 15–25 break-in accounts (§3's routes, X through the proxy reads).
+- Cluster their posts by topic and flag four signals:
+  - **convergence:** 3+ voices on one topic in the same week;
+  - **spike:** a topic at 2× last week;
+  - **underdog:** one voice early on a topic no one else covers;
+  - **controversy:** a high comment-to-reaction ratio.
+- Feed the strongest into the flex slots as reaction posts (references/post-checks.md §5). Post within about 3 days of the peak, or skip.
+- **Finding more voices** (paid top-up): search LinkedIn and X posts on the category's *authority* terms (not pain words), group the posts by author, and keep authors with 2+ posts. Rank them on post count × engagement, drop recruiters and vendors, and merge with the web-found newsletter writers, podcast hosts and speakers.
 
 ## 4. Output, kept for the report and the next run
 

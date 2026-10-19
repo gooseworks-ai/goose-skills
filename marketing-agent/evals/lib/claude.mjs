@@ -11,9 +11,10 @@ import path from 'node:path';
 
 const KEEP_ENV = ['HOME', 'PATH', 'USER', 'LOGNAME', 'SHELL', 'TMPDIR', 'LANG', 'LC_ALL'];
 
-export function cleanEnv() {
+export function cleanEnv(home) {
   const env = {};
   for (const k of KEEP_ENV) if (process.env[k]) env[k] = process.env[k];
+  if (home) env.HOME = home;
   env.TERM = 'dumb';
   if (!env.LANG) env.LANG = 'en_US.UTF-8';
   return env;
@@ -24,10 +25,10 @@ export function cleanEnv() {
  * Calls onLine(line) for each stdout line (used to stream-save stream-json).
  * Resolves { code, stdout, stderr, timedOut, ms }.
  */
-export function runClaude({ args, input = '', cwd, timeoutMs = 10 * 60_000, onLine }) {
+export function runClaude({ args, input = '', cwd, timeoutMs = 10 * 60_000, onLine, home }) {
   return new Promise((resolve) => {
     const started = Date.now();
-    const child = spawn('claude', args, { cwd, env: cleanEnv(), stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn('claude', args, { cwd, env: cleanEnv(home), stdio: ['pipe', 'pipe', 'pipe'] });
     let stdout = '';
     let stderr = '';
     let buf = '';

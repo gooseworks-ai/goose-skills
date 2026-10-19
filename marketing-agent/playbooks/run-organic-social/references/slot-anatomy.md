@@ -15,7 +15,7 @@ First comment: … (link or context, if the platform buries links)
 CTA: …
 Hashtags / search keywords: … (platform counts from platform-native.md)
 Alt text: …
-Asset line: <what visual it needs> — from <the human's phone or camera roll | a clip at mm:ss–mm:ss of <source> | the human, from the slide table (carousels) | a produced video ad (only one they asked for) | UGC repost (rights asked: draft below) | a single brand image, requested as `Graphic needed: for make-static-ads · <purpose, placement, exact text> · return to: social/calendar/<start-date>.md`>
+Asset line: <what visual it needs> — from <the human's phone or camera roll | a clip at mm:ss–mm:ss of <source> | rendered slides or card with goose-graphics (references/graphics.md; slide copy only where the host can't render) | make-video-ads (only a produced video they asked for) | UGC repost (rights asked: draft below)>
 Who shoots / makes it: <name> · time needed: <~min>
 Engagement plan: comment prompt in the post · first comment · people or accounts to tag (only ones the human named) · "be online 30–60 min after posting to reply"
 Reply plan (small accounts): the 3–5 named accounts from the strategy to reply to today, and what to add to their conversation
@@ -36,7 +36,7 @@ Flags: PERSON YES NEEDED (<name>, approver <who>) | TREND — expires <…>, ton
 | 3 … N−1 | One idea each, ≤25–30 words | |
 | N | Save or send prompt in the brand's voice | |
 
-The caption extends the hook. **Who makes it:** the human designs the slides from this table in their own design tool (~45 min, counted in capacity). make-static-ads' graphics side door makes single images only, so at most it can make the slide-1 cover (`Graphic needed: for make-static-ads · slide-1 cover, 4:5, text "<hook>" · return to: social/calendar/<start-date>.md`). Never generate or render images from this playbook.
+The caption extends the hook. **Who makes it:** rendered with goose-graphics in the brand's style (references/graphics.md): slide 1 previewed first, density and type rules, a PDF for LinkedIn documents, files uploaded to GooseWorks, about 10 minutes for the marketer to review and post. Where the host can't render, the marketer designs from this table (~45 min), and we say so.
 
 **Short video script** (TikTok, Reels, Shorts, X video, LinkedIn native video). Screen recordings count: for a software product, a 20–40s screen recording with a voiceover or on-screen captions is often the most native, cheapest video there is.
 

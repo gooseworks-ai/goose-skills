@@ -46,7 +46,7 @@ For TikTok and Instagram accounts the product already manages (`gooseworks:socia
 ## Cadence realism
 
 - Plan the cadence the human actually kept over the last ~8 weeks (from the audit), plus 20% at most, never the aspiration. If there is no history, ask how many hours a week they have and cap it.
-- **Rough cost:** a text post takes ~15 minutes to finish and post; a carousel ~45 with design; a short video 30–90 minutes to shoot and edit.
+- **Rough cost:** a text post takes ~15 minutes to finish and post; a carousel ~10 to review and post when rendered with goose-graphics (~45 to design by hand where the host can't render); a short video 30–90 minutes to shoot and edit.
 - **Solo-marketer ceiling:** about 10–15 slots a week across all accounts, founder posts included.
 
 | Platform | Typical slots per week |
@@ -63,7 +63,7 @@ For TikTok and Instagram accounts the product already manages (`gooseworks:socia
 - Every video slot needs a person who can shoot it that week. Name who in the slot.
 - One short-video shoot can fill TikTok, Reels and Shorts slots, each with its own caption, cover and on-screen text and no watermark. Count the shoot once.
 - When the ask exceeds capacity, say so with the numbers ("3 platforms daily is ~8 hours a week; you said 3. I recommend Instagram and TikTok, 3× a week each") and let the human pick. **A skipped slot beats filler.**
-- Brand has no platforms, or dead ones: recommend 2–3 platforms, each with a job. Base the choice on research-market's persona (`research/market/personas.md`, "where to reach them") when it exists, and on company type, inferred from the description and audience (the kit's `brandType` field can be wrong). Say when it rests on general knowledge. The human picks. Never "all of them".
+- Brand has no platforms, or dead ones: recommend 2–3 platforms, each with a job. Base the choice on research-audience's buyer groups (`research/audience/buyer-groups.md` and its latest report, "where to reach them") when it exists, and on company type, inferred from the description and audience (the kit's `brandType` field can be wrong). Say when it rests on general knowledge. The human picks. Never "all of them".
 
 ## Evergreen vs trend
 

@@ -51,7 +51,7 @@ The outcome they are hired or living for, in their terms — "launch more ads wi
 
 ## 4. Their language — the quote bank
 
-The rules for who counts as their voice, sampling, integrity and tagging are in [quote-bank.md](quote-bank.md). In the report: at least five first-hand quotes for the lead group and three for each other top group, each linked, dated and with who's speaking — or "thin" said plainly, with why (e.g. the forums they use were unreadable). Never pad with vendor, agency, case-study or job-post text. Add a short **their words vs ours** table (what we say on our site vs what they say).
+The rules for who counts as their voice, sampling, integrity and tagging are in [quote-bank.md](quote-bank.md). In the report: at least five first-hand quotes for the lead group and three for each other top group, each linked, dated and with who's speaking — or "thin" said plainly, with why (e.g. the forums they use were unreadable). Never pad with vendor, agency, trade-press, case-study or job-post text. Add a short **their words vs ours** table (what we say on our site vs what they say).
 
 ## 5. Where they gather
 
@@ -70,7 +70,7 @@ Name the actual places, each with **evidence of activity** (members, posts per w
 
 ## 6. How to find and reach them
 
-Three first moves per group (inside the group's section — the report's "What to do" list is the separate, capped list of at most six), each with the channel, the message in their words, the first ask, who does it, what it needs and how we'll know it worked. For lower-ranked groups the moves are small and cheap (a test, a listen, one post) and labelled lower priority.
+Three first moves per group (inside the group's section — the report's "What to do" list is the separate, capped list of at most six), each with the channel, the message in their words, the first ask, **who does it**, **what it needs**, and **a success check with a number and a date** ("10 replies or 3 demo asks by 15 Nov"). For lower-ranked groups the moves are small and cheap (a test, a listen, one post) and labelled lower priority.
 
 - **Moves rest on what this run read.** A move on a channel the run couldn't read (a blocked forum, a login-only group) is labelled "unverified — read the community and its rules before posting", and is never the first move. "Do this first" always rests on sources read and cited in the report.
 - **To find them:** ad targeting that matches "how to recognise one" (titles, interests, lookalike seeds from the customer data, keywords), search terms they type, directories that hold them.
@@ -92,54 +92,47 @@ How rivals talk to this audience (their homepage words, ad hooks, the communitie
 | Marketplace | each side separately | reviews and Q&A on both sides | seller forums, buyer communities |
 | Local business | radius × occasion | Google and Yelp reviews, local groups | local Facebook groups, Nextdoor, local events |
 
-## 9. The report (through atoms/write-report — fictional example, never reuse its values)
+## 9. The report — this shape, these headings, in this order
 
-Write it through write-report: "In short" at most 150 words and five bullets, body under 3,000 words, a decisions box, at most six moves in "What to do" (each group's three reach moves sit in its own section and don't count), "what we're not doing", and a source-skew line in Sources. The first bullet is "Do this first: <move> — <who does it> — because <why>". Every number in "In short" keeps its link and date. "What we couldn't check" merges every group's unread sources, each with what it would change. "In short" bullets are one or two sentences each — the point and why; the evidence lives in the sections. What wasn't readable goes in "What we couldn't check", never in a methods section at the top. Long tables of every quote go in an appendix after Sources.
+Write through write-report (read it first). Body under **3,000 words** — budget it: lead group ~900, each other group ~350, everything else ~900. Cut detail no decision needs; long quote tables go to the saved quote bank, not the report.
+
+1. **Title** — "<Brand> — audience research, <D Mon YYYY>".
+2. **In short** — at most 5 bullets, 150 words. Bullet 1 is literally "**Do this first:** <move> — <who> — because <why, from a source this run read>". Then the lead group (with "provisional" if it is), the biggest surprise in their words, and one line on agreement with the market and competitor reports. Nothing here that the body calls unverified, provisional or second-hand stated as settled.
+3. **Decisions for you** — 1–4 rows: decision, our recommendation, what it changes.
+4. **Who the audience is** — one table: group · how you'd recognise one · size in buyers (inline source link and date, or "assumption") · uses / pays / approves · evidence (people, kinds of source, customer data) · rank.
+5. **One section per group, lead first, each with the same five parts** — lower-ranked groups shorter, never missing a part:
+   - **What they want** — 1–3 lines, their words, linked.
+   - **Their problems, and how we solve them** — the §3 table: problem in their words · how often (posts, people) · quote + link and date · solved / partly / not solved · proof (a signed-off claim, or "you'd need proof of X first").
+   - **In their words** — quotes inline: "…" — <who> ([site, date](link)). Five for the lead, three for others, or "thin" with why.
+   - **Where they gather** — places with activity and evidence the group is there, linked and dated (four+ for the lead).
+   - **How to reach them** — three moves: channel · message in their words · first ask · who · needs · success check (number, date). An unread channel is labelled unverified and never first.
+   End each group with **For you:** one line, or "nothing to do here".
+6. **Why they buy, why they leave** — from the brand's data; without it, from switch and churn evidence, said so.
+7. **How rivals talk to them** — one table: rival · their words to this audience · where they show up · where we differ.
+8. **What to do** — at most 6 ranked moves across all groups (the group moves feed it; don't repeat them all), each with who, what it needs, and a success check with a number and a date.
+9. **What we're not doing** — the tempting moves for *this brand* you decided against, one line each with why (e.g. "Ads to agencies yet — they churn without white-label"). Never a scope list, never names of other reports' owners.
+10. **What we couldn't check** — every source that failed in this run, one line each: what, why, what it would change.
+11. **Sources** — dated links; then the source-skew line.
+
+**Naming other work:** "the market report (18 Oct)", "the competitor report", "your campaign plan" — never a playbook name, file path or folder. **Every fact** carries its own link and date inline; "via secondary sources" or a bare domain is not a source, and the source named must match the link's site.
+
+**Before handing over, count:** In short words and bullets; body words; quotes per group and the lead's share from the last 18 months; three moves per group, each with who, needs and a dated number; the banned list in write-report §3 plus "worker", "free pass", "corpus", "maker", "segment-pass", "quote bank file". Fix, then deliver.
+
+Fictional example of the top (never reuse its values):
 
 ```
 # Acme Creative (fictional) — audience research, 18 Oct 2026
 
 ## In short
-- **Do this first:** answer three of this week's "creative fatigue" threads on the Meta ads forum we read ([12 Oct](…)) — you, 30 minutes — because in-house growth leads ask there every week how to make more variations, and no tool seller answers in their words.
-- **Your best audience** is in-house growth leads at consumer brands spending on Meta: 31 of your 52 paying customers ([your export, 17 Oct](…)), and the group that stays longest.
-- **Agencies are second** — they leave after 2–3 months because there's no white-label output (9 of 14 cancel notes, [your export](…)).
+- **Do this first:** answer three of this week's "creative fatigue" threads on the Meta ads forum we read ([12 Oct](…)) — you, 30 minutes — because in-house growth leads ask there every week and no tool seller answers in their words.
+- **Lead group:** in-house growth leads at consumer brands — 31 of your 52 paying customers ([your export, 17 Oct](…)), and the group that stays longest.
+- **Agencies leave after 2–3 months** — 9 of 14 cancel notes say no white-label output ([your export](…)).
 - **They don't say "AI creative".** They say "more variations", "fresh ads every week".
-- This agrees with the market report's lead group, and moves the first step from ads to forum answers.
+- Agrees with the market report's lead group; moves the first step from ads to forum answers.
 
 ## Decisions for you
-1. Are the 52 paying customers in the export the full list? (It decides the lead group.)
-2. Sign off the proof line "a week of variations in an hour" — or we lead without it.
-3. A named list of 50 growth leads — yes or not now.
-
-## Who the audience is
-| Group | How you'd recognise one | Size (buyers) | Who uses / pays / approves | Evidence |
-|---|---|---|---|---|
-| In-house growth leads at consumer brands (lead) | "growth" or "performance" lead, Shopify brand, Meta ad library shows 20+ live ads | ~6,800 US brands (store directory count of 10+ staff brands × ad-library share running Meta — both linked) | the lead uses and pays under $500/month; the founder approves above | 31 of 52 customers; 14 first-hand posts from 11 people on 2 forums and 1 review site |
-| Agency owners running client ads | … | ~2,100 agencies (directory, linked) | … | 14 customers, 9 cancel notes |
-| Founders doing their own marketing | … | unknown — no count we could source | … | 6 posts — provisional |
-
-## In-house growth leads at consumer brands
-**What they want:** … **Problems, and how we solve them:** (table) **Why they stay, why they leave:** …
-**In their words:** "…" (forum, 12 Oct, growth lead at a skincare brand) ×5+
-**Where they gather:** … (activity and evidence this group is there, each linked)
-**How to reach them:** 1. Answer the weekly threads (read and linked above) … 2. … 3. A post in the closed founders' group — *unverified: read the group and its rules before posting.*
-**For you:** …
-
-## How rivals talk to them
-…
-
-## What to do
-1. … (who, what it needs, how we'll know)
-
-## What we're not doing
-- Ads to agencies — they churn without white-label; revisit when it ships.
-
-## What we couldn't check
-- The closed founders' group and LinkedIn posts (login only) — founders may be under-counted; reading them could move founders above agencies.
-
-## Sources
-- Source skew: 60% of the lead group's public quotes come from one forum, which over-represents hands-on buyers; the customer export balances it.
-- …
+| Decision | We recommend | What it changes |
+|---|---|---|
+| Is the export the full customer list? | Yes → keep the lead | The lead group |
+| Sign off "a week of variations in an hour"? | Sign off with the test data | The headline proof |
 ```
-
-No ids, codes, file paths, tool or playbook names in the report (write-report §1).

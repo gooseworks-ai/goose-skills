@@ -4,7 +4,7 @@
 
 **Load:** `../../references/brief-template.md`, `../../references/launch-and-calendar.md`, `../../../../atoms/write-report/ATOM.md` (§1 writing rules, §3 check).
 
-**Inputs:** all earlier sections; approved claims = learn-my-brand's sign-off ("Claims sign-off" marker, "Claims you may use" `must` facts, dated Brand record), with server applicability from `knowledge_search` `["claim"]` + `product_id`; the angle bank and voc bank files (`research/competitors/angle-bank.md`, `research/market/voc-bank.md`); existing campaign concepts; the brand voice from the kit.
+**Inputs:** all earlier sections; approved claims = learn-my-brand's sign-off ("Claims sign-off" marker, "Claims you may use" `must` facts, dated Brand record), with server applicability from `knowledge_search` `["claim"]` + `product_id`; the angle bank and voc bank files (`research/competitors/angle-bank.md`, `research/audience/voc-bank.md`); existing campaign concepts; the brand voice from the kit.
 
 **Do:**
 1. Angles per Run/Test channel: one reason to buy each, resting on a named customer line and an exact approved claim (with id) whose `applicability` covers it (`brand`, or `product` for that product). `unknown` applicability is not brand-wide proof — the server refuses it on a concept; mark **needs proof (scope unconfirmed)**. Adapt the expression per channel. No approved proof → **needs proof**, never invented. Press quotes and the brand's own site copy are not customer words; if research-market's voice-of-customer bank is empty, say so.

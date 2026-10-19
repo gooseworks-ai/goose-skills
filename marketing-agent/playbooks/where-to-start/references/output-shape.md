@@ -4,14 +4,16 @@ Load at step 5. Every recommendation has the same parts, in this order, and fits
 
 1. **The read** — two sentences on the situation, citing at least two facts the founder gave.
 2. **The constraint** — one sentence naming the one thing in the way, and the evidence that points there.
-3. **First move** — one move (two only if the first feeds the second, or one is a quick fix alongside), named by what it does (the map's "Say it as"), never by its internal name, each with: why now, what it produces. If the real first move is a human step off the map, it comes first, named as such, with at most one playbook that helps alongside. A small human step can also sit beside a playbook pick, labelled "Off the map, alongside (you)".
+3. **First move** — one move (two only if the first feeds the second, or one is a quick fix alongside), named by what it does (the map's "Say it as"), never by its internal name, each with: why now, what it produces. If the real first move is a step the founder takes themselves (not covered by any job here), it comes first, said as "You, this week:", with at most one playbook that helps alongside. A small human step can also sit beside a playbook pick, labelled "You, this week:" — never internal labels such as "off the map" or version numbers.
 4. **Bring** — what the founder needs to have to run it, including signing off what they may claim (learning the brand) when the move writes copy and no sign-off exists, and the founder's time.
 5. **Not yet** — what they might expect to do and shouldn't yet, each with the reason and when it becomes a yes. Include every channel or idea the founder raised that you are not recommending.
-6. **Worked if** — a concrete signal with a number and a timeframe.
+6. **Worked if** — an outcome the founder can see in their own numbers (customers, replies, sign-ups who come back, orders), with a number and a date. Finishing a task ("list pulled, account connected") is never a "worked if".
 7. **Come back when** — the trigger for the next check-in.
-8. **Hand-off offer** — one line, in plain words: "When you're ready, ask me for your welcome emails — your answers are saved, so I won't ask again." This playbook never starts the next job; their own request does. If the first move is only a human step, say instead when to come back and for which playbook.
+8. **Hand-off offer** — one line, in plain words: "When you're ready, ask me for your welcome emails." This playbook never starts the next job; their own request does. If the first move is only a human step, say instead when to come back and for which job. Never say the answers are saved in the recommendation: the save happens after they agree, and you say so only once it has come back.
 
 Commit. No hedging both ways, no menu of "you could also…", no essays.
+
+If you found earlier work saved on the brand (a campaign plan, research), the read says in one clause whether the founder confirmed it still stands. An unconfirmed plan is never the basis of the first move, and its blockers are not the constraint.
 
 The examples below show the target quality, for a spread of company types and constraints. They illustrate the reasoning, not answers to copy. A different company gets a different answer, and the founder's own assets, dates and limits always beat any pattern here. Never carry a tool, platform, number or asset from an example into a real answer; use only what the founder or the brain gave you.
 
@@ -30,7 +32,7 @@ The examples below show the target quality, for a spread of company types and co
 
 **Not yet.** Paid search (fix the listings first, or you pay to send people to a weak profile). Social posting. A new website.
 
-**Off the map, alongside (you):** ask every patient finishing treatment this month for a Google review, with the link on a card at the desk.
+**You, this week:** ask every patient finishing treatment this month for a Google review, with the link on a card at the desk.
 
 **Worked if.** 30 new reviews and more calls from the listings within six weeks.
 
@@ -45,7 +47,7 @@ The examples below show the target quality, for a spread of company types and co
 **The constraint.** Supply — not enough maths tutors.
 
 **First move.**
-- **You, this week (off the map):** ask your 25 tutors for introductions, with a referral reward when a new tutor completes ten sessions.
+- **You, this week:** ask your 25 tutors for introductions, with a referral reward when a new tutor completes ten sessions.
 - **A list of tutoring businesses to contact**, alongside: tutoring businesses and independent tutors who advertise near your two busiest areas, each with a sourced contact route and why they fit; you check the addresses and send the invitations yourself.
 
 **Bring.** What makes a good tutor for you, your tutor pay rate, your own email tool, three hours a week for interviews.
@@ -77,14 +79,14 @@ The examples below show the target quality, for a spread of company types and co
 
 ---
 
-## Example (d), off the map: services firm (two-person B2B consultancy), no budget, "help me with marketing"
+## Example (d), a step the founder takes: services firm (two-person B2B consultancy), no budget, "help me with marketing"
 
 **The read.** Your last eight clients all came from referrals and you have no pipeline for next quarter. You have ten happy past clients and a founder who writes well.
 
 **The constraint.** Demand — and your strongest channel, referrals, has no playbook here.
 
 **First move.**
-- **You, this week (off the map):** email your ten past clients, ask each for one introduction, and ask two of them for a short quote you may use.
+- **You, this week:** email your ten past clients, ask each for one introduction, and ask two of them for a short quote you may use.
 - **First drafts of your content**, alongside: turns one recent project into a case study and three LinkedIn posts in your voice (claims and client names only with their permission).
 
 **Bring.** The project write-up or a call transcript, the client's written OK to be named, two hours a week.

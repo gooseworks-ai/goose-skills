@@ -18,14 +18,18 @@ E.g. Premium (with today's price and the recommendation), the exact claim lines 
 1. **How <platform> works right now:** 3–5 dated, linked facts that shape the plan, each with what it means for you. Say how sure we are.
 2. **What's getting watched in your space:** a short table of the patterns (pattern · one example with link · why it works · our version). Then the "everyone does this, so we won't" line.
 3. **Your account today:** handle, followers, what has worked so far, bio and pinned post (with suggested rewrites), and voice in one line.
-4. **The strategy:** the job of the account, topics, the format mix, hooks, cadence and posting times (in the audience's time zone and yours).
-5. **How you break in:** the named accounts to reply to (linked), the daily routine with minutes, the first posts, and one borrowed-audience move.
-6. **How we'll know it's working:** the signals for your account size, and the format tests with what each one checks and when we read it, described in words.
+4. **The strategy:** the job of the account, topics, the format mix (each format with its reason), hooks, cadence and posting times (in the audience's time zone and yours). Then **total time a week**: posts plus the reply routine, in hours, checked against the hours the marketer gave (or a stated guess until they do).
+5. **How you break in:** the named accounts to reply to (linked, each with a reason tied to the buyer), the daily routine with minutes, the first posts, and one borrowed-audience move. **For a reply-led plan on X, a Premium line:** what X says Premium does for reply ranking, what a sized study found for reach (each with its date and link), today's price, and a recommendation for this account.
+6. **A model account** (when the marketer named one, or one account is clearly the pattern): why it works, a table of its pillars and series, its outliers against its own baseline, what to adapt and what not to copy, and five tests for you.
+7. **How we'll know it's working:** the signals for your account size, and the format tests with what each one checks and when we read it, described in words.
+
+## On a refill: what your buyers' voices talked about this week
+The topics that converged, spiked, started early or caused debate among the accounts you reply to, each with a linked post and the post we made from it (or why we skipped it).
 
 ## The posts
 - The next three days in full, in the order they go out.
 - Each post opens with a line saying what it is: "Tuesday, 8:30 pm IST (9 am New York) — screen-recording video, modelled on @x's 'watch it fix this' clips ([example](link))".
-- Then the post exactly as it goes out: text ready to paste, or the video script table with on-screen text and shot notes, or the slides.
+- Then the post exactly as it goes out: text ready to paste, the video script table with on-screen text and shot notes, or the rendered slides as linked images (with the slide copy beside them).
 - Then one line for what you need to do (record this screen, fill in this number) and any approval it needs ("needs your yes: it's in your voice").
 - **All posts** (an appendix at the end of the report): every other post of the two weeks, in posting order, in the same readable shape: the what-it-is line, the post exactly as it goes out, and what you need to do. The workspace calendar keeps the machine copy; the marketer never needs to open it.
 

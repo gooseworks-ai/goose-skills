@@ -62,7 +62,7 @@ Brand: **Personal Day** (`0e5b2fb0-…`, DTC acne-safe skincare). Ask: "Turn our
 | 4 | `knowledge_search` claim | 7 rows `claim_status: approved`, all research-created (4 press quotes, free returns, free shipping $45+, 4.9/234 reviews) | Treated as candidates per learn-my-brand's contract, not proof |
 | 5 | `knowledge_search` document "Brand record approved claims" | empty | Confirms no sign-off has run |
 | 6 | `knowledge_search` evidence | Only the 4 press quotes, no buyer words | Says "no buyer evidence on file"; press quotes are not VoC |
-| 7 | `file_read research/market/voc-bank.md` | not_found (research-market has not run on staging) | Falls back to the evidence search (step 6) |
+| 7 | `file_read research/audience/voc-bank.md` | not_found (research-market has not run on staging) | Falls back to the evidence search (step 6) |
 | 8 | `media_analyze read` on asset `96cdce4e-…` (the IG video of 2026-10-12) | 11.7s, 6 scenes, `visible_text` "Lili's secret to clear skin on the go💧", **transcript empty**; free | source-to-units short/silent rule: 2 usable units. The playbook says so and recommends a richer own asset (e.g. the 2026-10-10 TikTok with speech) before writing filler |
 | 9 | `social_inspiration_search` "hypochlorous acid spray acne" | 0 items | Falls back to `brand_read organic.competitor_top_posts` (10 posts, IG/TikTok) for format references |
 | 10 | `file_list` (coworker scope) | only `agent-config/` | First run, no earlier content |

@@ -13,7 +13,7 @@ It passes when, in order:
 6. The roadmap maps each topic to the page that should answer it, and the five fixes are finished: you could hand each to whoever edits the site today.
 7. Nothing live was touched; nothing was sent; no fact appears that you never approved.
 
-Telltale failures (the 18 Oct hand test hit the first four): intake questions before any result; two credit yeses; reports left only in the workspace with paths shown as links; a report full of ids and "0/1" scoring; generic advice ("add an FAQ", "improve E-E-A-T"); one run reported as fact; a rank "in ChatGPT"; FAQ markup sold as a rich result; a fix on a page that can't be crawled; llms.txt in the five.
+Telltale failures (the 18 Oct hand test hit the first four; the 19 Oct evals hit the next five): a first turn that ends "say the word and I'll write the report"; yesterday's answers counted as today's; a number with no source opened this run; the brand's own marketing lines or unread rival facts in fix copy; a bare file path instead of a link, or the report never saved to the brand; intake questions before any result; two credit yeses; reports left only in the workspace with paths shown as links; a report full of ids and "0/1" scoring; generic advice ("add an FAQ", "improve E-E-A-T"); one run reported as fact; a rank "in ChatGPT"; FAQ markup sold as a rich result; a fix on a page that can't be crawled; llms.txt in the five.
 
 ## Staging run — 2026-10-16, brand Personal Day (DTC acne-safe skincare), up to the first paid step
 

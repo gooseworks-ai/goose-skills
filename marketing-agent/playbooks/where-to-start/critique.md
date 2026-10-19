@@ -149,6 +149,33 @@ Rejected or left as is:
 
 No major findings for this playbook (round 8's four are confirmed fixed; saves before hand-off; plain names; base rates sane). Minor fixed: a gap-table line said "the playbooks will use it" to the founder → "everything I make for you will use it".
 
+## Round 10 — eval 2026-10-19-v2 fix pass (lost to no skill: 5/10 must-pass vs 7/10)
+
+**Evidence checked against the transcript** (`evals/results/2026-10-19-v2/where-to-start/with-skill/transcript.md`). Every failing verdict holds: the run asked one question (which brand), never asked a situation question, quoted a campaign plan an earlier eval had saved on the shared staging brand as "your plan", named "no approved claims" as the constraint, carried the plan's Meta legs forward, set "worked if: list pulled, Meta connected, claims signed off by Oct 23", and said "your context is saved" with no save made. An independent senior-marketer reviewer (§2b; had not seen this playbook) agreed and judged the run a little worse than scored: M5 should fail too (every fact it cited came from the saved plan, none from the founder), M10 and M6 are borderline ("off the map", feasibility by luck).
+
+**What in our text caused it, and the fix:**
+
+| Failing check | Cause in the playbook's own text | Fix |
+|---|---|---|
+| M3, M4, M9 (wrong constraint, ads endorsed, regret) | Step 1's search for "ads running, offers, results, what was tried" pulls saved plans, and nothing said they are other sessions' outputs. "Map what you found against the five questions" let the plan answer them. The step-1 claims-marker check and the map's learn-my-brand "Bring" line primed "no approved claims"; the lens had no rule that a setup step is not a constraint, and no "activation" row for the freemium leak | Step 1: earlier work is evidence, not the situation — name it with its date, ask whether it still stands, never call it "your plan", use its facts only as confirmations, treat it as a second opinion and say so if your read differs. Step 3 and lens §1: the constraint is about customers or the business; a missing setup step (claims, account connection, a list export) is never the constraint. Lens: new **Activation** row (sign-ups who never reach a first useful result; talk to those who paid then cancelled; add the missing event); re-reaching an existing list is not buying attention. Output shape: an unconfirmed saved plan is never the basis of the first move. |
+| M2 gap / no situation learned (and M5, M6 by luck) | Step 2 "A rich brain may need none" and questions.md "a rich brain may need none or two" let a brain full of other jobs' documents replace the founder | Step 2 "Ask the founder (always, before any advice)": questions 2, 4, 5 (where it's stuck, what they can put in, goal and date) are always asked on a first visit; skip one only if said in this conversation or confirmed on an earlier visit; never recommend in the same message as the questions. Question 3 also asks what they were thinking of trying next, so their idea ("maybe run some ads?") gets an answer. |
+| M7 (worked if) | output-shape said only "a concrete signal with a number and a timeframe" | An outcome the founder can see in their own numbers, with a number and a date; task completion is never a "worked if". Step 5 repeats it. |
+| M8 (false save claim) | output-shape's hand-off template itself said "your answers are saved, so I won't ask again", inside the recommendation, before agreement; step 6's "save first" never fired after the founder's "makes sense" | The template no longer mentions saving; step 6: save as soon as they agree ("makes sense", "ok" count), and say "saved" only after the save returns. |
+| S2 (next big date) | Lens §7 existed, but nothing made the read name the date | Step 3: name the next big date for the business and for its customers. |
+| M10 risk | output-shape taught the label "Off the map, alongside (you)" | Label is "You, this week:"; internal labels and version numbers banned. |
+| M1 detail (reviewer) | Brand pick offered five of the brands, leaving out the right one | Never offer a partial list; name the assumed brand or ask by name. |
+
+**§2b verdicts on the eval's criteria** (reviewer-checked):
+- **Accepted as right:** M1, M4, M7, M8, M10, S1, S3, S4 — fixed above.
+- **M2 is too loose** (a cap with no floor; the skill passed it while learning nothing). We now require the founder-owned questions; suggest the rubric add "learns the goal, deadline and time/money, by asking or confirming".
+- **M3 is too narrow as worded.** "Activation and retention, not traffic" is right here, but fit or first-value is an equally senior read; any constraint about why existing sign-ups don't convert should pass. Our lens covers both (Activation row says when it is fit).
+- **M5 should require at least one fact the founder confirmed** — otherwise facts lifted from a saved document pass.
+- **S2 bundles leverage and date, and frames the date wrongly for this business.** GooseWorks doesn't need a Black Friday sale; its buyers are making Black Friday ads now and go quiet from about Nov 20, and the founder's own end-of-November goal is the binding date. Our step 3 now asks for the date for the business and for its customers.
+- **Missing from the rubric** (passed to the orchestrator): talk to those who paid then cancelled; who the 1,000 actually are; an activation event; a goal sanity check (20 of 1,000 ≈ 2%); hands-on onboarding for the first 20.
+- **Contamination is an eval-harness issue too:** each arm should start from a clean brand (or the scenario should plant the saved plan on purpose and score how it is handled — test case 11 now does).
+
+**Why the skill should now beat a plain model.** The baseline won on judgment and lost on grounding (it never looked at the brand: M1 and M2 failed). The skill already won on grounding; the defects were all in its own text — it let saved documents replace the founder and offered a template that claimed a save. With the founder-owned questions always asked, saved work demoted to evidence, setup steps barred from the constraint, an Activation row, outcome-based "worked if" and save-then-say, it keeps its grounding advantage (looks first, plain names, ≤5 asks, one screen, saves) and now has the same diagnosis path the baseline used, plus the calendar and leverage checks the baseline missed (S2, S3). Not verified by a re-run (no eval runs this round, by instruction).
+
 ## Overlaps to note for the consolidation pass
 - The playbook map (references/playbook-map.md) is the same knowledge the foundation router needs. Candidate to move to foundation and share.
 - situation-save writes the same business facts plan-campaign asks for; both should read one home once server-needs #1 ships.

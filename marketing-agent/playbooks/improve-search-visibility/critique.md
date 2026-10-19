@@ -219,3 +219,48 @@ Source: `marketing-agent-test/results/reviews/social-plan-search-review.md` (sea
 | Rubric E2/E5/E9 | Applied | Each AI table states date, browser location and signed-out state; single-run answers are "a first look", unfinished ones "didn't finish"; every engine statement about the brand gets right / wrong / unsupported; competitor facts only from the competitor's own page, read this run and cited |
 
 Not re-run (per orchestrator: the eval suite scores it next).
+
+## Round 9 — fixes from the 19 Oct evals (v1: stopped after one turn, no file; v2: 11/16 must-pass with the skill vs 7/16 without)
+
+Each failing check confirmed against `evals/results/2026-10-19-v2/improve-search-visibility/with-skill/transcript.md` and its files before fixing. The eval host had no browser.
+
+| Check | Confirmed cause in the run | Playbook cause → fix |
+|---|---|---|
+| v1 M6 / pattern "report written without being asked" | v1 pasted everything in chat; v2 turn 1 ended "Ready to write the full report — say the word" | Step 2 let the report wait for the decisions → step 2 now writes, checks and delivers the report **in the same turn**, then the message; answers, pasted ChatGPT answers and the top-up update the same report |
+| E1 (must) counts in the first message | first message gave a qualitative ChatGPT read "based on yesterday's run" | No rule on counts or on earlier runs → first message leads with counts of what was checked **this run** (ChatGPT, or web search on a no-browser host, with ChatGPT "not checked today — last checked <date>") |
+| E2 (must) runs/date/location/signed-out per row | yesterday's ChatGPT table presented as today's, no per-row notes | Earlier answers are history, never today's evidence (SKILL Before you start 2, citation-check step 3); every table row carries its own "checked" note (report template) |
+| M9 (must) / pattern "every number traces to a source" | "27,000+ GitHub stars" for Block's Goose — no source opened in the run; v1 had stale prices $99/$299/$599 | New free-pass rule: every number traces to a source opened this run, cited with its date; figures from memory are cut or checked |
+| E9 (must) unapproved claims in fix copy | "closes the loop… growth outcomes" (the brand's own site copy) and a Preflight/InspectAd comparison table from pages never read | fix-writer: the brand's own marketing lines are claims (cut, rewrite to plain facts, or `[needs your sign-off]`); no rival table or outreach line unless each cell comes from that rival's page read this run |
+| E12 (must) link, saved copy, banned words | bare path in backticks; brand save attempted via `brand_update` (rejected) and working files written to a local look-alike folder; "proxy" and "surface" in the report | Step 5: mechanical check before delivery (search the file for each banned word), markdown link not a bare path, save through save-to-brain (`file_write` to the GooseWorks workspace + import, link via `file_url`), never `brand_update` for a report, say plainly if the save fails; "proxy" wording banned in the template |
+| S6 closing message | listed three working-file paths plus extras | Chat after delivery: three lines, never working files or paths |
+| S7 saved to brand | see E12 | see E12 |
+| E3 3–6 brand-accuracy questions | reused yesterday's set with 2 brand questions | question-set: a re-run tops the saved set up to the mix (≥ 3 brand questions, every audience) before running |
+| E10 AI-referral baseline | Search Console + Bing only | The measurement fix always has three parts: Search Console, Bing, AI-referral baseline in analytics |
+
+**Not fixed — noise or contamination:** the agent's malformed tool calls (`brand_read` with `id`, `knowledge_search` with `source_ids`) are model slips, not playbook text. Yesterday's saved run on the shared staging brand is contamination; the playbook still now treats any earlier run as history only.
+
+**Pushback (§2b):**
+- **E1 on a host without a browser.** "Answer 'am I named in ChatGPT?' with counts" can't be met honestly when the host cannot reach ChatGPT. Recycling yesterday's counts (what the run did) or estimating would be worse. The playbook answers with today's web-search counts, says ChatGPT was not checked today and gives the last-checked date and the paste set. The criterion should accept that.
+- **E2 "every row states runs, date, location, signed-in/out".** Right in substance; repeating four fields on every row makes the table hard for a founder to read. Kept as a short per-row "checked" note ("19 Oct · signed out · 3 tries") with location stated once above the table.
+
+## Round 10 — ports from the old library (19 Oct old-vs-new review, `research-ci-brand-seo.md`)
+
+Old skills read as reference only (skills/seo: site-content-catalog, programmatic-seo-spy, seo-content-audit, seo-opportunity-finder, topical-authority-mapper, programmatic-seo-planner; competitive-intel landing-page-intel; brand update-brand-kit). Craft taken; no scripts, structure, vendor wrappers or keys.
+
+| Review point | Verdict | What changed / why not |
+|---|---|---|
+| 3a. Rival page-type map is missing ("they have 12 comparison pages; you have none") | **Agree — ported, free** | New `references/rival-content-map.md`: sitemaps of the brand + 3–5 rivals (sitemap → index → robots → feed; never crawl page by page), every URL sorted into 14 page types, templated sets sampled and scored 1–5 on depth, unique value, data, freshness, internal links, and a page-type gap table. A gap counts only when ≥ 2 rivals invest **and** it answers a question in our set (no herd-following). A gap becomes one "needed" row in the roadmap, never a whole set. Wired into SKILL step 1, free-pass 9b and its outputs |
+| 3b. Topic gap table, templated-page planning (pattern scoring, blueprint, build sequence), topic-cluster architecture | **Agree, deferred** | All need keyword volume and difficulty, which we can't fetch (server-needs §8). Listed at the end of `rival-content-map.md` as the seed for backlog #17 (B2B content roadmap); note left for the orchestrator. Building a templated set goes in the report's "What we're not doing" |
+| 3c. Commercial-intent filter | **Agree — ported** | question-list: value is now buying intent 1–5 (5 = maps straight to the product … 1 = traffic that rarely buys), keep ≥ 3; winnability stays 1–3. question-set atom updated |
+| 3d. Internal linking plan | **Agree — ported** | page-map brief: hub ↔ page both ways, siblings in the cluster, glossary/explainer → page, each with the page, exact anchor and position |
+| 11a. Tracking-pixel / analytics detection | **Agree, scoped** | foundation-check row: which analytics and ad pixels the homepage and one money page run. It decides where the AI-referral baseline goes; no analytics → part of the measurement fix. A measurement blocker, never sold as a ranking issue |
+| 11b. Email-record checks (SPF/DKIM/DMARC) in the search foundation check | **Pushback** | Email deliverability has nothing to do with search or AI answers; a red SPF in a search report is noise the marketer can't act on here. email-lifecycle already checks it — properly, from headers, not a root DNS guess (our own round-3 fix). The review itself places it in a shared site-signals reference for research-competitors, research-audience, email-lifecycle and where-to-start, not search. AGENTS rule 10: don't grow the surface |
+| 4. Brand-name pronunciation | **Agree on the craft; pushback on the owner** | Recording a pronunciation fact is learn-my-brand's job (the review puts it there); search never writes one. Search *reads* it if present and turns the spoken form into the spellings buyers type ("Goose Works", "Goosework", "Gooseworx"): brand questions, Organization `alternateName`, the namesake line (entity-and-local). No fact and a name that's easy to mishear → a question in "couldn't check". learn-my-brand has no such fact yet — flagged to the orchestrator |
+| 5a. goose-aeo as the missing AI-answer check tool | **Agree** | server-needs §1 names it: hosted server-side behind `data_call_provider` with GooseWorks' keys, enables scheduled monthly re-checks (no browser today), rows labelled "asked through the engine's API". Never a vendor key in a skill |
+| 5b. Keyword data provider (DataForSEO) behind the proxy | **Agree** | server-needs §8 rewritten and raised to HIGH: volume, difficulty, keywords per rival page/pattern, traffic estimates, backlinks, app-store popularity. Meanwhile rules unchanged: no invented volumes, no vendor keys |
+| 5c. Scraping Semrush / Ahrefs / BuiltWith pages | **Agree it's not worth it** | Stated in server-needs §8. Tag detection from page source covers what BuiltWith gave us |
+| Old scripts (sitemap parsers, Apify crawls) | **Not ported** | The host's fetch reads sitemaps; methods kept, scripts not |
+
+Also fixed while here: server-needs step numbers still pointed at the pre-research-pattern 11-step flow; one stale "must-win" left in server-needs §2.
+
+Not re-run (per orchestrator: no evals or re-runs this round).

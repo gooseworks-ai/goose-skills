@@ -12,6 +12,7 @@ Ask: *if this one thing were fixed, would growth follow?* Name exactly one. The 
 | **Knowing the buyer** (who buys and why is still a guess) | Generic messaging; "everyone" as the audience; the founder describes features, not the job the customer hires it for |
 | **Demand / awareness** (people who try it love it, but too few hear of it) | Good repeat or retention, good reviews, little traffic; word of mouth works but slowly |
 | **Conversion** (people arrive but don't buy or sign up) | Traffic but few orders; ads get clicks, not sales; no clear first-order reason to buy; weak store page |
+| **Activation** (people sign up or install but never reach the first moment of value, so they don't come back) | Many free sign-ups or installs, few active a week later, few converting to paid; "they try it once and disappear"; nobody knows where they drop off. Ask what the first useful result is and how many get there; if those who get there also leave, it is fit. People who paid and then cancelled are the strongest evidence: talking to them is often the first move. No event tracks the first useful result → add it (blindness) alongside |
 | **Retention / lifecycle** (customers buy once and are never brought back) | List exists but no flows; repeat rate low for a repeatable product; no welcome or cart emails |
 | **Creative supply** (paid works but the ads wear out faster than they are replaced) | Few ads running for weeks, frequency rising, click rate sliding, cost per sale climbing |
 | **Blindness** (nobody can say what is working) | "I don't know my numbers"; platform revenue and store revenue disagree; tracking never checked |
@@ -21,7 +22,7 @@ Ask: *if this one thing were fixed, would growth follow?* Name exactly one. The 
 
 When two seem tied, choose the one upstream: fit before demand, blindness before *more* spend, conversion before more traffic, economics before paid. Weigh the calendar too: a constraint that can be eased before a big date (e.g. retention flows before Black Friday) may beat a deeper one that takes months.
 
-Place the constraint from evidence the founder gave (or the brain holds), and say which evidence in one clause. The founder's own guess ("where do you think it's stuck?") is a lead, not a verdict: it is often a symptom.
+Place the constraint from evidence the founder gave (or the brain holds), and say which evidence in one clause. The constraint is about customers or the business. A missing setup step (claims not signed off, an ad account not connected, a list not exported) is never the constraint; it is something to bring. A plan saved on the brand by an earlier session is evidence of what someone once intended, not of what is in the way. The founder's own guess ("where do you think it's stuck?") is a lead, not a verdict: it is often a symptom.
 
 If the constraint is not a marketing problem (the product doesn't work yet, pricing is broken, the business needs a salesperson), say so. That is a valid and valuable answer.
 
@@ -37,6 +38,7 @@ Place the company in one of four stages by evidence (customers, repeat, a channe
 Defaults, each overridable by the evidence:
 - Pre-launch and pre-fit companies **earn attention and learn the buyer's own words**; they don't buy attention. Paid spend before fit makes sense only as a small, deliberate learning test.
 - With traction, **buy more of what already converts**, and fix the leak before adding traffic.
+- **Re-reaching people who already signed up or bought** (email, a founder note, ads shown only to that list) is not buying attention; it is often the cheapest first move when a list exists. Paying to reach new people waits until the leak is understood.
 - When stalled, **diagnose before prescribing**. A falling number has a cause; find it before spending more.
 
 ## 3. One or two, deep

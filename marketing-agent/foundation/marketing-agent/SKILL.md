@@ -3,14 +3,14 @@ name: marketing-agent
 description: >-
   Any marketing ask: "help me with marketing", "make me ads", "who are my customers", "what are my
   competitors running", "plan my launch", "write this week's posts", "write my email flows", "how did
-  my ads do", "am I in ChatGPT answers", "find influencers". Picks the one GooseWorks marketing
+  my ads do", "am I in ChatGPT answers", "find influencers", "find leads and write my cold emails". Picks the one GooseWorks marketing
   playbook that does the job, end to end, on the brand's own memory. Use when the ask is about
   marketing and no playbook was named. Not for a playbook already chosen: run that one directly.
 ---
 
 # marketing-agent (router)
 
-Pick one playbook for the marketer's ask, then run it. Never chain playbooks yourself: each one reads what the others saved.
+Pick one playbook for the marketer's ask, then run it. Never chain playbooks yourself: each one reads what the others saved. One exception: an ask for both a list and the messages ("find leads and write my cold emails") → research-audience, whose list mode goes on into write-outreach itself.
 
 ## How to pick
 
@@ -26,10 +26,11 @@ Pick one playbook for the marketer's ask, then run it. Never chain playbooks you
 | Playbook | The marketer says | Not this — use |
 |---|---|---|
 | where-to-start | "help me with marketing" · "where do I start" · "we just launched and need customers" · "what should I focus on this month" | A named outcome → that playbook; "why did sales drop" with live channels → analyze-performance |
-| learn-my-brand | "learn / set up my brand" · "here's our brand book" · "what can we claim" · "approve our claims" · "our price changed" · "remember how we talk" | Who our customers are → research-market |
+| learn-my-brand | "learn / set up my brand" · "here's our brand book" · "what can we claim" · "approve our claims" · "our price changed" · "remember how we talk" | Who our customers are → research-audience |
 | research-market | "do the market research" · "which market are we in" · "how big is my market" · "is my category growing" · "what's changing in my market" · "how do people buy in my category" · "what do others charge" · "who's talking about us" · "any mentions this week" · "is a complaint blowing up" · "watch my brand" · "what's trending in my category" | Who our buyers are, personas, their words, mining reviews → research-audience; what rivals run → research-competitors; posts that ride a trend → run-organic-social |
 | research-competitors | "competitor teardown" · "what ads are my competitors running" · "how do they price" · "find angles to brief" · "competitor X just launched" · "watch my competitors weekly" | What people say about rivals → research-market |
-| research-audience | "build me a prospect list" · "find 50 right-fit people with emails" · "find retail buyers or distributors" · "ABM target list" | Market size, trends and how people buy → research-market; influencers → work-with-creators |
+| research-audience | "who is my customer" · "who are our buyers" · "build buyer personas" · "voice of customer" · "mine our reviews" · "what words do customers use" · "where does our audience hang out" · "build me a prospect list" · "find 50 right-fit people with emails" · "ABM target list" · "score these leads" · "which inbound leads first" · "who's looking for an alternative to X" · "tell me when a past champion changes jobs" | Market size, trends and how people buy → research-market; writing the messages → write-outreach; influencers → work-with-creators |
+| write-outreach | "write a cold email sequence" · "what do I send to this list" · "LinkedIn messages for these leads" · "first lines for my prospects" · "how do I reply to this prospect" · "handle this objection" · "win back accounts that churned" · "why is nobody replying to my outreach" | Finding the people → research-audience; emails to subscribers or customers → email-lifecycle; sending → not covered (the marketer sends) |
 | plan-campaign | "I have this budget and date — what do I run" · "plan my launch / Black Friday" · "where should I advertise" · "how should I split my budget" · "replan next month" | Pausing ads on a sold-out product → run-paid-campaigns; only email sends → email-lifecycle |
 | make-static-ads | "make me image ads" · "fresh ads this week" · "refresh my tired ads" · "more like my winning ad" · "my image ad got rejected — fix it" · "a header image or social graphic" | Video → make-video-ads; clean product shots → make-product-photos; launching → run-paid-campaigns |
 | make-video-ads | "make me a video ad" · "a Reel / TikTok / Shorts ad" · "AI UGC-style video" · "product demo video" · "my video ad got rejected — fix it" | Real creators → work-with-creators |
@@ -51,7 +52,7 @@ Say so plainly; details and triggers are in `../../BACKLOG.md`.
 - Landing pages, product pages, homepages, popups; sales one-pagers and battlecards.
 - Google search-ad copy and keywords.
 - Writing positioning from scratch.
-- Cold outreach sequences.
+- Sending outreach (we write the emails and LinkedIn messages; the marketer sends them from their own tool).
 - Amazon and marketplace listings and feeds.
 - Review replies and review monitoring (review-request emails are covered, in the email flows).
 - Drafting replies to comments and DMs, and comment moderation ("draft replies to these comments").

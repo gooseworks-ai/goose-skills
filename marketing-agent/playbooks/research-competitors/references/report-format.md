@@ -37,11 +37,15 @@ The 3–6 rivals buyers compare us with now and how we know; the alternatives bu
 - **What they're running:** ads per platform (or "couldn't open (reason)" / "none found, <date>" only where the library loaded); founder and team posts.
 - **How they sell:** headline word for word, price and what you pay per (vendor page or third-hand), trial or demo.
 - **What buyers say:** a praise and a complaint, quoted and linked.
+- **Customers:** named ones (confirmed / likely), and logos that left their site this year — likely lost, a switch target.
 - **Where we win, where we lose.**
 **For you:** <only if it matters>
 
 ## How they compare
-Pricing table; messaging table (headline, who it's for, lead claims); where each shows up (lots / some / none found / couldn't check).
+- **Pricing:** list price and unit; **what a buyer like ours actually pays a month** (one stated scenario, e.g. "a 10-person team making 40 ads a month"); the cheapest tier that has the features buyers care about; hidden costs; changed recently. Us in the same table.
+- **Messaging:** headline word for word, who it's for, lead claims.
+- **Channel scorecard, judged against each one's stage** (a seed-stage rival with no analyst coverage isn't weak): self-serve and free trial · search and content · reviews · founder voice · paid ads · events · partners and marketplaces · community · video — each "strong", "fine for their stage", "weak" or "couldn't check", with the evidence. The biggest gap nobody fills is a candidate move.
+- **Topics:** a short table — topics each rival publishes on that we don't, and topics buyers ask about that nobody covers.
 
 ## You vs them
 | | What | For you |
@@ -87,6 +91,25 @@ Source skew: <e.g. "Buyer quotes are mostly Trustpilot, which over-represents co
 **"For you" only where a finding matters,** as a plain sentence, never shorthand ("nothing to do here" is fine): does it fit us and why (from our facts); what to make or do; the claim it rests on — approved, "needs your OK", or "you'd need proof of X first"; and who does it in plain words (static ads, video ads, organic posts, creators, landing page, email, the founder, the campaign plan). When every rival does the same thing, that is a reason to weigh something else; what buyers say outweighs what rivals do. Facts-only asks leave it out. With an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
 
 **Never in the report** (write-report §1): angle or quote ids, file paths, tool or playbook names, "Fact / Inferred" tags (say "confirmed", "likely", "a guess, because…"), symbols instead of words, "jobs served" lines, links to local working files, process narration. When a dimension couldn't be read for every rival, say it once in plain words in "In short" and under "What we couldn't check" — never a column of question marks.
+
+## Before you deliver — the check
+
+Count, don't estimate, and fix every miss:
+- **"In short":** at most 5 bullets and **150 words** (count them); the first is "Do this first:" with one action, who does it and why; nothing in it that the body calls unconfirmed, second-hand or needing sign-off.
+- **Every fact has its link and date inline**, next to the fact — not only in the sources list; the named source matches the link's site; a computed number shows its inputs.
+- **Body under 3,000 words** (count it, excluding sources); cut detail no decision needs.
+- **"What to do":** at most 6 moves, each naming **who does it** (a role: the founder, whoever runs the website, the ad maker), what it needs, a success check you can count or see, and a realistic date.
+- None of: ids or codes, file paths, tool, skill or playbook names, "worker", "maker", "free pass", process narration.
+
+## The closing message (in chat, after the link)
+
+```text
+Do this first: <one line>.
+Report: [<title>](<local path>) · saved to your brand: [open](<link>)
+Decide: 1. <one line, with my recommendation> 2. … (at most five, one line each)
+<Repeat: one line with the reason and cadence — only if it would help>
+```
+Nothing else — no re-telling the findings.
 
 ## A rival record — `research/competitors/<rival-slug>.md` (supersede)
 

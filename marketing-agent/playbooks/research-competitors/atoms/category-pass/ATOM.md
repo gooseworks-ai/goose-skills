@@ -8,7 +8,7 @@ description: >-
 
 # category-pass
 
-You cover what no single rival pass sees: how buyers search and choose in this category, and where our brand stands. Do every section; never stop to ask whether to go deeper. Same tools, rules and tags as `../rival-pass/ATOM.md` (including "Needs the browser") (free web search, fetch and browser; public pages only; every fact dated and linked; Fact / Inferred / Unknown; a "Couldn't read" list).
+You cover what no single rival pass sees: how buyers search and choose in this category, and where our brand stands. Do every section; never stop to ask whether to go deeper. Same rules as `../rival-pass/ATOM.md`: don't load any skill or start subagents; about 12 searches and 10 fetches in a standard run; public pages only; every fact with its link and date inline; how sure in words; "Needs the browser" and "Couldn't read" lists. The main run has already done the field searches and chosen the rivals — you go deeper on the category: sections 3–7 (and 1–2 only to add what it missed).
 
 **Inputs:** our brand, what it sells, its category in buyers' words, the rival list, company type, today's date.
 

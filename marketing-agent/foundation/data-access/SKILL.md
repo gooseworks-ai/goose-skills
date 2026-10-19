@@ -33,9 +33,18 @@ Pick by the question. Paths below are the ones the playbooks use today; query ke
 | What are people saying about a topic? | `/v1/reddit/search`, `/v1/reddit/post/comments`, `/v1/twitter/search/posts`, `/v1/threads/search`, `/v1/tiktok/search/keyword`, `/v2/instagram/reels/search`, `/v1/youtube/search`, `/v1/linkedin/search/posts`, `/v1/pinterest/search` |
 | What do customers say under posts and videos? | `/v1/tiktok/video/comments`, `/v2/instagram/post/comments`, `/v1/youtube/video/comments`, `/v1/facebook/post/comments` |
 | What is a brand or creator posting? | `/v2/instagram/user/posts`, `/v1/instagram/user/reels`, `/v3/tiktok/profile/videos`, `/v1/youtube/channel-videos`, `/v1/linkedin/company/posts`, `/v1/twitter/user-tweets` |
+| What does this video say? (transcript of a public video) | `/v1/youtube/video/transcript`, `/v1/tiktok/video/transcript`, `/v2/instagram/media/transcript` |
+| Who is this X account? | `/v1/twitter/profile`, then `/v1/twitter/user-tweets` for its posts |
 | Who is this creator, and how do I reach them? | `/v1/instagram/profile`, `/v1/linkedin/profile`, link-in-bio reads (`/v1/linktree`, `/v1/linkbio`, `/v1/komi`, `/v1/pillar`) |
 | What is trending? | `/v1/tiktok/get-trending-feed`, `/v1/instagram/reels/trending`, `/v1/youtube/shorts/trending`, search suggestions and typeahead reads |
 | What do buyers say about a product on TikTok Shop? | `/v1/tiktok/shop/product/reviews` |
+
+## Free sources that need no proxy
+
+Use these first, with the host's own fetch, including in scheduled runs that have no browser:
+- **Hacker News:** the public Algolia search API (`https://hn.algolia.com/api/v1/search?query=<terms>&tags=story`, add `&numericFilters=created_at_i><unix>` for recent) for launches, developer chatter and B2B buying signals.
+- **RSS and Atom feeds:** blogs, changelogs and press pages (`/feed`, `/rss`, `/blog/rss.xml`, or the `<link rel="alternate">` in a page's head) to watch what rivals publish and ship.
+- **Sitemaps:** `/sitemap.xml` to map a site's page types (comparison, alternatives, pricing, use-case pages) without crawling it.
 
 ## Money rules
 

@@ -4,7 +4,7 @@ Load at step 1 (atom question-set). No approval is needed before the free pass r
 
 ## Where questions come from (most trusted first)
 1. Search Console queries (if shared).
-2. The words customers use: research-market's `research/market/voc-bank.md` and `research/market/demand.md` (how buyers search), reviews, support tickets, sales calls; `knowledge_search` with `source_types: ["document", "evidence"]` (query "Voice-of-customer bank …") for "customer questions, objections, words customers use".
+2. The words customers use: research-audience's `research/audience/voc-bank.md` and research-market's `research/market/demand.md` (how buyers search), reviews, support tickets, sales calls; `knowledge_search` with `source_types: ["document", "evidence"]` (query "Voice-of-customer bank …") for "customer questions, objections, words customers use".
 3. The brand brain's audience, pains and use cases; the product catalogue.
 4. Google autocomplete and "People also ask" seen during the check.
 5. Reddit and forum thread titles in the category.
@@ -28,9 +28,12 @@ Never put the brand's name in a non-brand question.
 
 **Brand names that are common words** ("Personal Day", "Notion", "Halo"): every brand question carries the category ("Personal Day skincare"), and the namesake is confirmed with the human, so brand rows never read as false misses.
 
-## Winnability (score non-brand questions 1–3 for value × winnability)
+## Value and winnability (non-brand questions: value 1–5 × winnability 1–3)
 Scored provisionally before the check (some signals only the check reveals) and re-scored after it; tell the human which battles changed.
-Winnable when: the brand has or can make a page that answers it directly; today's answers name brands of a similar size, not only giants; the cited sources are ones the brand can influence (own site, review platforms it is on, comparison content); the brand's real difference is the deciding factor; it is not a health or money question owned by institutions. Keep the top by value × winnability; pick the 3–5 key questions yourself; the human can change them after the first message. Brand questions are about accuracy, not ranking — always kept.
+
+**Value = buying intent, 1–5:** 5 — maps straight to what the brand sells ("best AI ad tool for DTC brands"); 4 — the buyer has the problem but no product in mind ("how to make more ad creative without a designer"); 3 — an adjacent pain ("Meta ad rejection reasons"); 2 — educational, tangential ("what is a UGC ad"); 1 — traffic that rarely buys. Keep questions scoring 3 or more; a 1–2 question earns a place only as the anchor of a hub page that the buying questions link up to.
+
+**Winnability, 1–3.** Winnable when: the brand has or can make a page that answers it directly; today's answers name brands of a similar size, not only giants; the cited sources are ones the brand can influence (own site, review platforms it is on, comparison content); the brand's real difference is the deciding factor; it is not a health or money question owned by institutions. Keep the top by value × winnability; pick the 3–5 key questions yourself; the human can change them after the first message. Brand questions are about accuracy, not ranking — always kept. They include the spellings a buyer would type after hearing the name (`entity-and-local.md`, "How the name is said and misheard") when the name is easy to mishear.
 
 ## Examples (fictional)
 **Halden — DTC skincare, fragrance-free barrier cream, $34:** best moisturizer for sensitive skin that doesn't sting *(discovery, key question)* · best ceramide cream under $40 *(discovery/price)* · moisturizer that won't pill under sunscreen *(problem)* · how to repair a damaged skin barrier *(problem; winnable with an expert-reviewed guide)* · why does my moisturizer burn *(problem; owned by dermatology sites — low winnability)* · Halden Barrier Cream vs [drugstore ceramide leader] *(comparison)* · cheaper alternatives to [premium barrier cream] *(alternatives)* · is Halden legit · Halden reviews · does Halden ship to Canada *(brand)*.
