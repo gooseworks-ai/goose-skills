@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-16",
+  "generated": "2026-10-19",
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -894,7 +894,6 @@
       "path": "skills/sales/capabilities/champion-tracker",
       "files": [
         "skills/sales/capabilities/champion-tracker/SKILL.md",
-        "skills/sales/capabilities/champion-tracker/input/champions.csv",
         "skills/sales/capabilities/champion-tracker/input/champions_template.csv",
         "skills/sales/capabilities/champion-tracker/scripts/champion_tracker.py",
         "skills/sales/capabilities/champion-tracker/skill.meta.json"
@@ -5414,12 +5413,6 @@
         "skills/lead-generation/capabilities/pain-language-engagers/configs/artisan-ai.json",
         "skills/lead-generation/capabilities/pain-language-engagers/configs/happy-robot.json",
         "skills/lead-generation/capabilities/pain-language-engagers/configs/outset-ai.json",
-        "skills/lead-generation/capabilities/pain-language-engagers/output/artisan-ai-20260225_1237.csv",
-        "skills/lead-generation/capabilities/pain-language-engagers/output/artisan-ai-20260225_1344.csv",
-        "skills/lead-generation/capabilities/pain-language-engagers/output/outset-ai-20260225_1232.csv",
-        "skills/lead-generation/capabilities/pain-language-engagers/output/outset-ai-20260225_1237.csv",
-        "skills/lead-generation/capabilities/pain-language-engagers/output/outset-ai-20260225_1250-cleaned.csv",
-        "skills/lead-generation/capabilities/pain-language-engagers/output/outset-ai-20260225_1250.csv",
         "skills/lead-generation/capabilities/pain-language-engagers/scripts/pain_language_engagers.py",
         "skills/lead-generation/capabilities/pain-language-engagers/skill.meta.json"
       ],
