@@ -1,12 +1,12 @@
 # Watch and react
 
-Both modes use the same dimension list as the teardown (`../atoms/rival-pass/ATOM.md`) and compare against each rival's saved **Snapshot** block. A quiet week is a valid result — but "no change" only ever covers what was actually re-read.
+Both modes use the same dimension list as the teardown (`rival-craft.md`) and compare against each rival's saved **Snapshot** block. A quiet week is a valid result — but "no change" only ever covers what was actually re-read.
 
 ## Weekly watch — "what changed this week?"
 
 For every main rival, re-read and diff:
-1. **News** (last 7–14 days): the rival-pass §1 queries, plus our own brand. Any shutdown, acquisition, price change, outage, launch or funding is a react-now item and leads the note.
-2. **Ads:** every library from rival-pass §2 — new ads (start date after the last snapshot), ads gone since the last snapshot (full-library reads only; never from a sample), ideas gaining versions.
+1. **News** (last 7–14 days): the rival-craft §1 queries, plus our own brand. Any shutdown, acquisition, price change, outage, launch or funding is a react-now item and leads the note.
+2. **Ads:** every library from rival-craft §2 — new ads (start date after the last snapshot), ads gone since the last snapshot (full-library reads only; never from a sample), ideas gaining versions.
 3. **Founder and company posts:** new posts beating their usual engagement; new claims or teasers.
 4. **Launches:** changelog, release notes, Product Hunt, launch posts — and the first third-party demos of anything new.
 5. **Pricing and headline:** pricing-page and homepage text against the snapshot.

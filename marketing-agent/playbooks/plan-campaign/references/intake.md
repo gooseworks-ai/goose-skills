@@ -16,7 +16,8 @@ Load in Before you start. The first hand test failed here: the agent asked a sev
 | `reports/performance/definitions.md` + newest weekly read | margin, the real number (store / CRM), tracking state, recent results | margin, "is tracking set up?" |
 | the last approved plan's money and status sections | AOV, margin, list size, founder hours given last time | anything already stated |
 | research files (market read, personas, customer words, demand; competitor report, angle bank) | who buys, why, what rivals run | "who's your customer?" |
-| the brand's public site (host fetch / browser): product and pricing pages | live offer, prices, positioning | "is there a sale on?" — confirm instead of asking |
+| **the brand's live site — required every run** (host web fetch / browser): home and pricing pages | live offer, prices, positioning; beats saved notes and old plans | "is there a sale on?" — confirm instead of asking |
+| an existing plan for the same occasion | what was decided before — **input to refresh, never the answer**; its numbers are re-checked against today's facts | "is this the same campaign?" — say what you found and that you'll refresh it |
 
 When sources disagree (e.g. saved notes vs the live pricing page), use the live site and say which you used in one line.
 

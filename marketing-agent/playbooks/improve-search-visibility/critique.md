@@ -219,3 +219,26 @@ Source: `marketing-agent-test/results/reviews/social-plan-search-review.md` (sea
 | Rubric E2/E5/E9 | Applied | Each AI table states date, browser location and signed-out state; single-run answers are "a first look", unfinished ones "didn't finish"; every engine statement about the brand gets right / wrong / unsupported; competitor facts only from the competitor's own page, read this run and cited |
 
 Not re-run (per orchestrator: the eval suite scores it next).
+
+## Round 9 — fixes from the 19 Oct evals (v1: stopped after one turn, no file; v2: 11/16 must-pass with the skill vs 7/16 without)
+
+Each failing check confirmed against `evals/results/2026-10-19-v2/improve-search-visibility/with-skill/transcript.md` and its files before fixing. The eval host had no browser.
+
+| Check | Confirmed cause in the run | Playbook cause → fix |
+|---|---|---|
+| v1 M6 / pattern "report written without being asked" | v1 pasted everything in chat; v2 turn 1 ended "Ready to write the full report — say the word" | Step 2 let the report wait for the decisions → step 2 now writes, checks and delivers the report **in the same turn**, then the message; answers, pasted ChatGPT answers and the top-up update the same report |
+| E1 (must) counts in the first message | first message gave a qualitative ChatGPT read "based on yesterday's run" | No rule on counts or on earlier runs → first message leads with counts of what was checked **this run** (ChatGPT, or web search on a no-browser host, with ChatGPT "not checked today — last checked <date>") |
+| E2 (must) runs/date/location/signed-out per row | yesterday's ChatGPT table presented as today's, no per-row notes | Earlier answers are history, never today's evidence (SKILL Before you start 2, citation-check step 3); every table row carries its own "checked" note (report template) |
+| M9 (must) / pattern "every number traces to a source" | "27,000+ GitHub stars" for Block's Goose — no source opened in the run; v1 had stale prices $99/$299/$599 | New free-pass rule: every number traces to a source opened this run, cited with its date; figures from memory are cut or checked |
+| E9 (must) unapproved claims in fix copy | "closes the loop… growth outcomes" (the brand's own site copy) and a Preflight/InspectAd comparison table from pages never read | fix-writer: the brand's own marketing lines are claims (cut, rewrite to plain facts, or `[needs your sign-off]`); no rival table or outreach line unless each cell comes from that rival's page read this run |
+| E12 (must) link, saved copy, banned words | bare path in backticks; brand save attempted via `brand_update` (rejected) and working files written to a local look-alike folder; "proxy" and "surface" in the report | Step 5: mechanical check before delivery (search the file for each banned word), markdown link not a bare path, save through save-to-brain (`file_write` to the GooseWorks workspace + import, link via `file_url`), never `brand_update` for a report, say plainly if the save fails; "proxy" wording banned in the template |
+| S6 closing message | listed three working-file paths plus extras | Chat after delivery: three lines, never working files or paths |
+| S7 saved to brand | see E12 | see E12 |
+| E3 3–6 brand-accuracy questions | reused yesterday's set with 2 brand questions | question-set: a re-run tops the saved set up to the mix (≥ 3 brand questions, every audience) before running |
+| E10 AI-referral baseline | Search Console + Bing only | The measurement fix always has three parts: Search Console, Bing, AI-referral baseline in analytics |
+
+**Not fixed — noise or contamination:** the agent's malformed tool calls (`brand_read` with `id`, `knowledge_search` with `source_ids`) are model slips, not playbook text. Yesterday's saved run on the shared staging brand is contamination; the playbook still now treats any earlier run as history only.
+
+**Pushback (§2b):**
+- **E1 on a host without a browser.** "Answer 'am I named in ChatGPT?' with counts" can't be met honestly when the host cannot reach ChatGPT. Recycling yesterday's counts (what the run did) or estimating would be worse. The playbook answers with today's web-search counts, says ChatGPT was not checked today and gives the last-checked date and the paste set. The criterion should accept that.
+- **E2 "every row states runs, date, location, signed-in/out".** Right in substance; repeating four fields on every row makes the table hard for a founder to read. Kept as a short per-row "checked" note ("19 Oct · signed out · 3 tries") with location stated once above the table.

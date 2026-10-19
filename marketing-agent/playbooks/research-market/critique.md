@@ -285,6 +285,25 @@ Source: `marketing-agent-test/results/reviews/research-review.md` (§2, §3, §6
 | §8 one upfront customer-data question | **Not used here** | Customer data serves buyer groups, which audience research now owns; it asks. Market sizing reads audience's results. |
 | (noticed) write-report's banned-vendor list includes "Claude", but GooseWorks' own product claim is "inside Claude" | **Flag to the orchestrator** | A brand whose product names a vendor would fail the mechanical check for stating its own facts. write-report needs an exception for the brand's own product facts. |
 
+## Round 5 — eval fixes (2026-10-19; v2 run, with skill 11/17 must-pass vs baseline 3/17)
+
+Each failing check was confirmed against `evals/results/2026-10-19-v2/research-market/with-skill/session.jsonl` before acting. No re-runs this round.
+
+| Check | Verdict | What changed / why not |
+|---|---|---|
+| M10 / E1 "market-size figures fabricated" ($2.51B Mordor, 14,500 buyers, $3,588, $536M) | **Mostly judge noise** | $2.51B and the Mordor attribution are in a web-search result. 14,500 came from a saved audience report (contamination from another run, but reading it is what the playbook asks). $3,588 is $299 × 12, and $536M is the sum. The real fault underneath is E2. |
+| E2 / S5 no inline links; sources list with no URLs | **Real — fixed** | Worker briefs now require every fact with its link and date inline. A pre-delivery check in `report-format.md` says links sit next to facts, sources match their site, and a computed number shows its inputs. |
+| M5 buyers not quoted word for word with links | **Real — fixed, with a §2b note** | Step 5 now quotes 3–5 buyers word for word with links, from research-audience's bank or this run's listening, never composites. Note: the full quote work belongs to research-audience; market quotes a few to ground the story. |
+| E3 "In short" leaned on a second-hand quote | **Real — fixed** | The check counts the 150 words and bars anything the body calls unconfirmed or second-hand. |
+| E9 platform claims not checked on the primary page | **Real — fixed** | market-pass §3: open the primary page for every platform or legal claim, or mark it "not confirmed", and it never appears as fact. |
+| E10 pricing table had 7 products | **Real, minor — fixed** | "At least 8 products". |
+| E12 name confusion not stated | **Real** | Caused by the run skipping the listening worker. The report shape now says "what our name gets confused with, or 'nothing found'"; the depth floor (below) makes the listening run. |
+| S6 closing message too long | **Real — fixed** | An exact closing-message shape in `report-format.md`: one line to do first, two links, at most five one-line decisions, one repeat line. |
+| Depth: no workers, 10 searches, **0 page fetches** | **Real — fixed** | Both workers now run (or the main run does both in turn), each with a standard depth: market about 15 searches and 12 fetches, listening about 12 and 12. Workers never load skills or start their own subagents. |
+| An earlier report exists (shared staging brand) | **Contamination — one real rule** | edge-cases: reuse a report newer than 30 days as the base (re-check what moves, deliver what changed, never re-deliver it untouched) or refresh in full; say which, in chat and in the first "In short" bullet. |
+
+Expected cost now: about **$4–5 and ~15 minutes** per full report (two lean workers plus the main run), up from $2.18 and 14 minutes, which was too thin.
+
 ## Appendix — listen-social critique history (playbook removed 18 Oct; its listening now lives here as atoms/listening)
 
 ## Critique log — listen-social

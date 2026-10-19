@@ -327,3 +327,33 @@ No Sonnet re-run this round (per the orchestrator); the eval suite scores next.
 | Places count four per top group vs four for the lead | Agree | Four for the lead group, everywhere. |
 | data-sources step 7 → step 8 | Agree | Fixed. |
 | write-report banned list misses "free pass", "worker", "maker", "corpus" (E5) | Agree | Not my file — flagged. |
+
+## Eval round 2026-10-19-v2 (with skill 12/18 must, baseline 5/18; $32.20, 40 min)
+
+Each failure was checked against the with-skill transcript and report before fixing. No eval or Sonnet re-run this round (orchestrator).
+
+| Check | Judge said | Confirmed? | Cause → fix |
+|---|---|---|---|
+| M9, E3 | "In short" led with a finding; "Do this first" sat near the end; >150 words | Yes (five paragraph bullets; "Do this first" was a section after the groups) | The report shape lived in write-report only and the run never followed it. `audience-research.md` § The report now gives the exact headings in order, bullet 1 literally "Do this first: move — who — because", and a count-before-handover list; SKILL step 7 says read write-report and use that shape. |
+| M10, E5 | Playbook names and a file path in "What we're not doing" | Yes ("— research-market", "research/market/ from 18 Oct") | The run copied SKILL's Out-of-scope list. "What we're not doing" is now tempting moves for this brand, never a scope list; other work is named "the market report (18 Oct)", never a playbook, path or folder. Body 5,950 words → per-section word budget (lead ~900, others ~350). |
+| M4, E10 | Only the lead group had problem → solution mapping and moves | Yes | Every group gets the same five parts (shorter for lower ranks, never missing one); the problems table carries solved / partly / not solved and proof status. |
+| E6 | Moves without owner, needs, dated numeric check | Yes | Every move (group and "What to do"): who, what it needs, a success check with a number and a date. |
+| E9 | Lead quotes ~43% from the last 18 months; trade-press and vendor lines as voice | Yes (Digiday's unnamed "brand rep", an ad-tool vendor blog, an agency founder's blog) | Workers never got the voice rules (they loaded the whole skill instead and skimmed). The worker brief now carries them inline; trade press and analyst articles added to the exclusions; the main run filters on return and counts the recent share, saying "thin on recent voice" when under 70%. |
+| E2 | "via multiple secondary sources", bare domains, source name ≠ link | Yes | Every fact has its own inline link and date; a bare domain or "secondary sources" is not a source. |
+| S3, S6 | No named-list offer; long closing message with file lists and a findings recap | Yes | Step 8 is now a literal three-line shape ending with "want a list of named people in <lead group>?". |
+| "Agreement with the 18 Oct campaign plan" | — | Contamination (an earlier run's plan on the shared staging brand) | Ignored; the consistency rule itself is right. |
+
+**Cost — the main fix.** The run spent ~95% of its cost in 20 subagents: the main run started four group workers, each group worker started five more (per source and topic), and **every one loaded the whole skill** (21 loads). About 1,100 web calls and ~60M context tokens. Changes:
+- Depth matches the ask: quick (no workers, ~20 calls), standard (default: at most three group workers, one level, ~80 calls in all), deep (on request or after the paid yes: up to five workers, same caps).
+- The worker brief is `atoms/segment-pass` pasted whole (≈800 words), opening "don't load any skill, don't read playbook files, don't start other agents". Workers never start workers; never one per source or topic.
+- Per worker: at most 12 searches and 10 page reads, search before fetch, page reads asked for exact sentences, a return of at most 700 words.
+- Report written once; the brand copy is the same text.
+Expected per standard run on Sonnet: roughly $3–6 (three workers ≈ $0.7 each, main ≈ $2–3), 10–15 minutes; quick ≈ $1–2. An estimate from token counts, not measured.
+
+**§2b pushbacks**
+- **S2 (five linked quotes for every group): keep five for the lead, three for others.** Five for every group is what produced the padding the senior review flagged (agency blog copy to hit a count) and costs a worker's budget on low-ranked groups. The senior review's own check (A3) asks three per top group. Lower groups say "thin" when they have fewer.
+- **Depth vs cost:** the lead group will carry fewer quotes than this run's 13 (5–8). That is the right trade for a customer paying per run; the quality checks are about who is speaking and how recent, not volume.
+
+### Contract critic after the eval fixes (subagent, effort high)
+
+All agreed and fixed: 70% recent in every group's report quotes (older rows stay in the bank) · problems table gains quote + link + date · worker return fields carry dates · a 4th/5th group's moves labelled unverified unless resting on a read page · repeat offer states cadence · workers make no GooseWorks calls · quote-bank sampling and saving moved to the main run, written once, re-check capped at 3 · sibling reports read once in step 2 · write-report's "offer to open it" skipped (step 8 is the whole message) · the report's banned list adds worker, free pass, corpus, maker. Flagged to the orchestrator (not my file): write-report's own banned list should add those four words.

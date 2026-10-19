@@ -16,7 +16,8 @@ It passes if:
 3. **The lead group clears the evidence bar** (the customer data, or 5+ distinct first-hand people from 2+ kinds of source, mostly recent) — or the lead is labelled "provisional — <what's missing>" and the gap is a decision. A lead resting on two people and a company's own blog fails.
 4. **Moves rest on what the run read.** "Do this first" cites sources in the report; a move on a forum the run couldn't open is labelled unverified and isn't first. Fail: a first move to post on a site listed under "what we couldn't check".
 5. **The report passes write-report §3:** "In short" under 150 words; a decisions box; "what we're not doing"; a source-skew line; no ids, codes, file paths, tool or playbook names; one line on agreement or difference with the market and competitor reports; a local file with a clickable link (or an artifact), and saved to the brand with a link. The buyer groups and quote bank are saved as their own files.
-6. **One short closing message** (at most three lines): the first move, the link, the decisions — a paid top-up named by the gap it fills when key forums were blocked.
+6. **One short closing message** in the step 8 shape: "Do this first", the two links, the decisions ending with "want a list of named people in <lead group>?". No file lists, no findings recap.
+7. **Cost:** at most three group workers, none nested, none loading a skill; about 80 web calls in all; a few dollars, not tens.
 
 List-mode test: **"Find me 50 right-fit people at recruiting agencies to pitch, with verified emails."** → a lighter audience pass, then the list section and `list.csv`: accounts first, dated title sources, honest email status (no "verified" without a checker), region flags, a stated shortfall, the honest "no email checker" line once.
 

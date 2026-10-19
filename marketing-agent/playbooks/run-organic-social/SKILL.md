@@ -42,15 +42,15 @@ Every post is checked for claims, voice and disclosure. Posts that speak for a n
 
 ## Steps
 
-**1. Free pass (ask nothing).** **Hard gate: no draft report without a dated "how it works now" card and at least 8 linked examples of what's working in the niche, for each platform the marketer named (or the top recommended one).** Other recommended platforms get a lighter read: the card plus 3 examples, deepened once the marketer picks them. If the host has no web search or browser, say so at the top of the report and in chat, and plan nothing from memory.
+**1. Free pass (ask nothing).** **Keep it proportionate:** research the platforms the marketer named, or the top 1–2 recommended. Roughly 10–15 web searches and 15–20 page reads per main platform is enough; stop a line of search when it repeats what you have. Write the report once, then revise it in place. **Hard gate: no draft report without a dated "how it works now" card and at least 8 linked examples of what's working in the niche, for each platform the marketer named (or the top recommended one).** Other recommended platforms get a lighter read: the card plus 3 examples, deepened once the marketer picks them. If the host has no web search or browser, say so at the top of the report and in chat, and plan nothing from memory.
 - **Pick the platforms in scope first:** the ones the marketer named. Otherwise recommend 2–3 from where the audience is and what the brand can make, and say why.
 - **Platform research** (atoms/platform-research), for each platform in scope:
   - how it works right now (web search, dated sources);
   - what's working in the niche (the free routes that work per platform, plus examples);
   - the brand's and the person's own accounts.
-- **Brand read.** `gooseworks:brand_read` lean, with `sections: ["summary","kit","learnings","accounts","sources","organic","products"]`, then `product_ids` for the products in play.
+- **Brand read.** `gooseworks:brand_read` lean, with `sections: ["summary","kit","learnings","accounts","sources","organic","products"]`, then `product_ids` for the products in play. **Never pass `detail: "full"` here.** On a settled brand it returns 100k+ characters that no host can read; the lean read already carries every rule and claim.
 - **Rules and saved files.** `gooseworks:knowledge_search` for operating rules, disclosure and off-limits topics. Saved files, all with the scope from #2:
-  - `social/` (the last calendar, `social/accounts.md`, `social/research/`)
+  - `social/` (the last calendar, `social/accounts.md`, `social/research/`). A saved research card under 30 days old is reused only if it still meets this step's bar (8+ examples with numbers, at least 3 from accounts under 10k followers, a platform or sized-study source). Otherwise top it up. Files from other people's tests or drafts are not history.
   - `brand/voices/`
   - `content/repurposed/`, `content/channels.md`, `content/pov/`
   - research-market's and research-competitors' latest reports
@@ -102,7 +102,18 @@ Also save:
 - `social/research/`;
 - a CSV on request, with a `file_url` download link (same scope, `expires_in_seconds: 3600`).
 
-In chat, at most 3 lines: the first move, the link, the decisions left.
+**Before you deliver, scan the report text** for anything a marketer shouldn't see, and fix every hit:
+- file paths (`/`, `.md`)
+- tool or server names (`brand_read`, `gooseworks`, `file_write`)
+- internal codes such as slot or test ids (S1, T1)
+- `[` brackets
+- process narration ("I called", "the file exceeded")
+
+Name posts by day ("Monday's post"); the one allowed fill-in reads "fill in: <what>".
+
+In chat, at most 3 lines (the first move, the link) plus the decisions left, at most 5 short items.
+
+**Revisions** ("rewrite them in my voice"): edit the report file and the workspace copy in place. Then reply in at most 3 lines: what changed, the link, and anything still open. Show a post in chat only when the marketer asks to see that post. Never re-paste the set.
 
 **7. Next run (refill).** Reconcile what went out and read the format tests against the account's own numbers (references/slot-anatomy.md, Reconciliation). Refresh any platform research card older than 30 days. Then write the next week.
 

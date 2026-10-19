@@ -18,8 +18,8 @@ E.g. Premium (with today's price and the recommendation), the exact claim lines 
 1. **How <platform> works right now:** 3–5 dated, linked facts that shape the plan, each with what it means for you. Say how sure we are.
 2. **What's getting watched in your space:** a short table of the patterns (pattern · one example with link · why it works · our version). Then the "everyone does this, so we won't" line.
 3. **Your account today:** handle, followers, what has worked so far, bio and pinned post (with suggested rewrites), and voice in one line.
-4. **The strategy:** the job of the account, topics, the format mix, hooks, cadence and posting times (in the audience's time zone and yours).
-5. **How you break in:** the named accounts to reply to (linked), the daily routine with minutes, the first posts, and one borrowed-audience move.
+4. **The strategy:** the job of the account, topics, the format mix (each format with its reason), hooks, cadence and posting times (in the audience's time zone and yours). Then **total time a week**: posts plus the reply routine, in hours, checked against the hours the marketer gave (or a stated guess until they do).
+5. **How you break in:** the named accounts to reply to (linked, each with a reason tied to the buyer), the daily routine with minutes, the first posts, and one borrowed-audience move. **For a reply-led plan on X, a Premium line:** what X says Premium does for reply ranking, what a sized study found for reach (each with its date and link), today's price, and a recommendation for this account.
 6. **How we'll know it's working:** the signals for your account size, and the format tests with what each one checks and when we read it, described in words.
 
 ## The posts

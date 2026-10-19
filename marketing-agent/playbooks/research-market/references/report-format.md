@@ -34,7 +34,7 @@ Brand copy `research/market/<YYYY-MM-DD>-read.md` (title `Market research — <B
 Where buyers first hear of products, how they compare, who signs off, how long it takes, where they buy — each line marked "evidence" or "our inference".
 
 ## What they pay
-<The norm in one sentence.> A table of 8–15 products: price, what you pay per, free tier or trial, read on the vendor's page or third-hand. Where we sit — or the conflict in our own prices.
+<The norm in one sentence.> A table of at least 8 products (up to 15): price, what you pay per, free tier or trial, read on the vendor's page or third-hand. Where we sit — or the conflict in our own prices.
 
 ## Where their attention is
 The communities, newsletters, creators, events, ad platforms and AI answers that matter, with numbers where they exist and why each matters.
@@ -43,7 +43,7 @@ The communities, newsletters, creators, events, ad platforms and AI answers that
 Seasons and triggers, each line marked measured, a proxy, a known pattern, or unknown.
 
 ## What people are saying
-<One sentence with the point and the window ("In the last 30 days…").> How much people talked about us and the category (a sample; where we could and couldn't look; what our name gets confused with), how they feel, the themes in their words with short quotes, trends worth posting on with a post-by date, and a risk line ("no serious risk found" or what was sent to you).
+<One sentence with the point and the window ("In the last 30 days…").> How much people talked about us and the category (a sample; where we could and couldn't look; what our name gets confused with, or "nothing found"), how they feel, the themes with 3–5 buyers quoted word for word and linked, trends worth posting on with a post-by date, and a risk line ("no serious risk found" or what was sent to you).
 
 ## The competition in brief
 At most 8 names, one line each, the strongest now, and the alternatives buyers use instead (a spreadsheet, an agency, the platforms' own free tools). "For a full look at rivals, run a competitor research."
@@ -90,6 +90,25 @@ Source skew: <e.g. "Most buyer quotes come from Trustpilot, which over-represent
 **When most of the buyer voice is about rivals,** say "this is the category's voice, not yet your buyers'".
 
 **Never in the report** (write-report §3): ids or codes, file paths, tool or playbook names, "free pass", "corpus", "worker", "maker", sum-style arithmetic, process narration, a preamble line above "In short", an unverified claim in "In short".
+
+## Before you deliver — the check
+
+Count, don't estimate, and fix every miss:
+- **"In short":** at most 5 bullets and **150 words** (count them); the first is "Do this first:" with one action, who does it and why; nothing in it that the body calls unconfirmed, second-hand or needing sign-off.
+- **Every fact has its link and date inline**, next to the fact — not only in the sources list; the named source matches the link's site; a computed number shows its inputs.
+- **Body under 3,000 words** (count it, excluding sources); cut detail no decision needs.
+- **"What to do":** at most 6 moves, each naming **who does it** (a role: the founder, whoever runs the website, the ad maker), what it needs, a success check you can count or see, and a realistic date.
+- None of: ids or codes, file paths, tool, skill or playbook names, "worker", "maker", "free pass", process narration.
+
+## The closing message (in chat, after the link)
+
+```text
+Do this first: <one line>.
+Report: [<title>](<local path>) · saved to your brand: [open](<link>)
+Decide: 1. <one line, with my recommendation> 2. … (at most five, one line each)
+<Repeat: one line with the reason and cadence — only if it would help>
+```
+Nothing else — no re-telling the findings.
 
 ## The brand-watch note — `research/market/watch/<YYYY-MM-DD>.md`
 

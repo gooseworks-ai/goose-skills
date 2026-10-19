@@ -310,3 +310,26 @@ These live in a new local atom, `atoms/edge-cases`.
 | Vanity measures (GitHub stars as "ahead") | **Agree, by rule** | Covered by "Where we're ahead" needing what buyers value; nothing to hard-code. |
 | §3 #7 Paid read offered upfront for B2B | **Push back** | As in research-market: it reintroduces a pre-research question and spend ask, and the gap was partly the browserless test. Kept after the free pass. |
 | §3 #10 Battlecards for B2B sales | **Not now** | Backlog card "Sales collateral"; the competitor report notes where a battlecard would help. |
+
+
+## Round 16 — eval fixes (2026-10-19; trustworthy with-skill run 16/20 must-pass vs baseline 6/20)
+
+Each failure was confirmed against `evals/results/2026-10-19/research-competitors/with-skill/` (main session plus 26 subagent logs). The v2 with-skill run is set aside: it re-delivered a cached report from the shared staging brand (contamination). No re-runs this round.
+
+| Check | Verdict | What changed / why not |
+|---|---|---|
+| E7 field before rivals | **Real — fixed** | The run read the roster and launched the rival workers in parallel with the category worker, before any field search. Step 1 is now done by the main run itself, before any worker: about 6–10 searches (news, "best <category>", "<brand> alternatives", "<strongest saved rival> alternatives", one AI answer); the roster is a starting list, never the answer. category-pass now goes deeper after that choice. |
+| Cost: 46 min, $35 | **Real — fixed** | The run started **26 subagents**, not 7. Every one loaded the whole skill on start, rival workers spawned their own sub-workers, the main run also started a workflow, and each worker made 50–60 uncapped web calls. Now: rival-pass is a short worker brief (the full method moved to `references/rival-craft.md`, read only for a section that needs depth); workers must not load skills or start subagents; exactly one worker per main rival plus the category and own-brand workers, with no workflow on top; a cap of about 12 searches and 12 fetches per worker, doubled for a deep quarterly teardown. |
+| E8 same-shape profiles (founder-post line and two quotes missing; "watch only" rival) | **Real — fixed** | The worker's return shape requires a founder-posts line or "couldn't read (reason)", the headline word for word, a praise and a complaint quoted with links, and pricing with unit and source type. A name we'd only watch now goes in the brief competition line, not as a main rival. |
+| E10 launch breakdown not labelled by how it was read | **Real — fixed** | The breakdown is in the return shape with "from video / transcript only / page text only". |
+| E2 links only in the end list | **Real — fixed** | Inline link and date on every fact, in the worker brief and the pre-delivery check. |
+| E3 "In short" about 170 words, leaning on facts the body said must be confirmed | **Real — fixed** | The pre-delivery check: count the words (150 or fewer), and nothing unconfirmed or awaiting sign-off. |
+| E5 body over 3,000 words | **Real — fixed** | The check counts the body; profiles target about 400–600 words from workers, trimmed in synthesis. |
+| E6 moves without owners | **Real — fixed** | The check requires a named role for each move. |
+| S5 closing message too long | **Real — fixed** | An exact closing-message shape in `report-format.md`. |
+| E9 ads "couldn't open (no browser)" | **Pass, and the rule held** | No change. |
+| The v2 run re-delivered a cached report | **Contamination — one real rule** | edge-cases: an earlier report newer than 7 days is reused as the base — re-check news, launches and prices, then deliver what changed, never untouched. Older, or asked for fresh: refresh in full. Say which, in chat and in the first "In short" bullet. |
+
+**§2b pushback:** none on the criteria; each one matches what a senior marketer expects. One note on E5 (body under 3,000 words with five rivals): it holds only if profiles stay short. That is now enforced at the worker, not trimmed at the end.
+
+Expected cost now: 7 lean workers at about 24 web calls each, plus the main run. About **$8–12 and 15–20 minutes** for a standard run, against $35 and 46 minutes. A deep quarterly teardown is roughly double.

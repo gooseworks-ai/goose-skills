@@ -1,6 +1,6 @@
 # The customer-quote bank — how to read buyer evidence and keep it
 
-Load at step 3 (in each group worker) and at the save step. research-audience owns the bank; every maker, market research and competitor research read it. A bank is only as good as who is speaking: one honest buyer beats ten vendor blog lines.
+Load in the main run: at the filter after step 3 and at the save step. Workers get only the short rules in segment-pass. research-audience owns the bank; every maker, market research and competitor research read it. A bank is only as good as who is speaking: one honest buyer beats ten vendor blog lines.
 
 ## Who counts as the audience's voice (first-hand)
 
@@ -12,14 +12,15 @@ Counts:
 Never counts as audience voice (keep as context at most, never as a quote row):
 - **vendor marketing** — any company's blog, landing page, case study or "alternatives" page, including a big company describing its own team (a vendor writing about itself is curated, not a buyer);
 - **agency copy** written for their clients;
+- **trade press and analyst articles** — a journalist's or analyst's summary, or an unnamed "brand rep" quoted in one, is second-hand; use it for context and find the person's own words;
 - **job posts** — they are the employer's words about a role; use them for wants and sizing, not as the audience's voice;
 - **quotes second-hand** on someone else's page — find the original or leave it out;
 - people who aren't plausible buyers (fans of a founder, candidates complaining about recruiters, competitors' staff, resellers).
 
 ## Sampling
 
-- Batches of 20–25 per source, at most ~6 per source; stop a source when two batches in a row add no new theme. Typical totals where volume exists: 100–300 read, 30–60 kept.
-- Write rows to the bank as you go (read the file, add, write it back); quotes are copied from the source, never retyped from memory.
+- Sample inside the run's budget (SKILL § Depth): stop a source when it adds no new theme. A standard run keeps about 25–40 rows across groups; a deep or paid run more.
+- Write the bank once, at the save step; quotes are copied from the source, never retyped from memory.
 - **Stratify by rating** (1★ failures and objections; 2–3★ trade-offs; 4★ "good but"; 5★ outcomes and identity words) and sort by lowest and newest — review widgets lead with 5★.
 - **Recency:** weight the last 18 months; at least 70% of kept quotes from that window. Older rows only for themes still alive, labelled with their year; a theme resting mostly on rows older than 24 months is "dated" and never carries the lead group.
 - Mark verified purchases; mark and down-weight incentivised reviews ("received free", gifted); syndicated duplicates count once; the same person across sites counts once.
@@ -28,7 +29,7 @@ Never counts as audience voice (keep as context at most, never as a quote row):
 ## Quote integrity
 
 - Verbatim only, typos kept, cuts marked `[...]`, never stitched from two places.
-- `capture`: `page` (read on the page), `snippet` (the site's own text in search results), `fetch-excerpt` (a summarising fetch tool's fragment — counts for themes, never as an ad line until seen on the page). Re-open a sample of kept quotes and say how many matched.
+- `capture`: `page` (read on the page), `snippet` (the site's own text in search results), `fetch-excerpt` (a summarising fetch tool's fragment — counts for themes, never as an ad line until seen on the page). Re-open up to 3 kept quotes and say how many matched.
 - Every row: link, platform, posted date (or "undated"), retrieved date, rating if any; private rows cite the export or document and its date.
 - Strip names and handles of private individuals; keep self-descriptions they wrote ("ops lead at a 40-person agency"); strip health, medication and other sensitive details, emails, phone numbers and order numbers.
 - `about`: `brand` · `prospect` · `competitor:<name>` · `category`. Rival complaints are opportunity evidence, not traits of our buyer.

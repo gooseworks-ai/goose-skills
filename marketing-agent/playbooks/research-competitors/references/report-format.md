@@ -88,6 +88,25 @@ Source skew: <e.g. "Buyer quotes are mostly Trustpilot, which over-represents co
 
 **Never in the report** (write-report §1): angle or quote ids, file paths, tool or playbook names, "Fact / Inferred" tags (say "confirmed", "likely", "a guess, because…"), symbols instead of words, "jobs served" lines, links to local working files, process narration. When a dimension couldn't be read for every rival, say it once in plain words in "In short" and under "What we couldn't check" — never a column of question marks.
 
+## Before you deliver — the check
+
+Count, don't estimate, and fix every miss:
+- **"In short":** at most 5 bullets and **150 words** (count them); the first is "Do this first:" with one action, who does it and why; nothing in it that the body calls unconfirmed, second-hand or needing sign-off.
+- **Every fact has its link and date inline**, next to the fact — not only in the sources list; the named source matches the link's site; a computed number shows its inputs.
+- **Body under 3,000 words** (count it, excluding sources); cut detail no decision needs.
+- **"What to do":** at most 6 moves, each naming **who does it** (a role: the founder, whoever runs the website, the ad maker), what it needs, a success check you can count or see, and a realistic date.
+- None of: ids or codes, file paths, tool, skill or playbook names, "worker", "maker", "free pass", process narration.
+
+## The closing message (in chat, after the link)
+
+```text
+Do this first: <one line>.
+Report: [<title>](<local path>) · saved to your brand: [open](<link>)
+Decide: 1. <one line, with my recommendation> 2. … (at most five, one line each)
+<Repeat: one line with the reason and cadence — only if it would help>
+```
+Nothing else — no re-telling the findings.
+
 ## A rival record — `research/competitors/<rival-slug>.md` (supersede)
 
 Line 1: `COMPETITOR RESEARCH — rivals' claims and prices, not ours. Superseded by newer dated versions.` Line 2: `Do this first, because… <the one move this rival's file implies>`. Then the rival's profile as returned by `../atoms/rival-pass/ATOM.md`, ending with its **Snapshot** block (ad ids and start dates — or the library links checked and "not read" — pricing text, headline text, open roles by team, review themes, last-checked date). Title `Competitor file: <Rival> — <Brand> — <date>`, tags `research-competitors`, `competitor-file`, `rival:<slug>`. The weekly watch diffs against this snapshot; keep the previous one as `## Previous snapshot`.

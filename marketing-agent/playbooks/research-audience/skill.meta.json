@@ -1,7 +1,7 @@
 {
   "slug": "research-audience",
   "tier": "playbook",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "pillar": "3 — Customers and audience (owns buyer groups and the quote bank) · 8 — Outbound (list mode)",
   "intents": [
     "Research our audience",

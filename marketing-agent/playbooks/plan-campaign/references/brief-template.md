@@ -93,12 +93,14 @@ One line per paid channel: what it optimises for, how it's set up, who it reache
 | If this happens | Threshold | Then |
 
 ## Status
-Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-DD · mode: launch | goal push | always-on | replan (month) | trigger replan (<trigger>)
-<!-- change-log slug: <campaign-slug> -->
+Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-DD
+<!-- mode: launch | goal push | always-on | replan | trigger replan · change-log slug: <campaign-slug> -->
 ```
 
 ## Writing each section well
 
+- **No research codes or internal labels** in anything the marketer reads: theme, quote, angle or test ids from the research files (T-06, V-112, A-07, T1) are translated into words ("the complaint that every fix costs a full re-render, from about 40 reviews of rival tools"). Tests and assets are numbered 1, 2, 3.
+- **A refresh is a new plan, not a copy.** When a matching plan exists, every number is re-derived from today's facts (live prices first); In short carries one line "What changed since the last plan" (or "nothing material — the plan stands, prices re-checked").
 - **Goal chain** rows say where every number came from (own history / human / base rate / assumption).
 - **Angles** rest on the angle bank (research-competitors) and the customer's own words (research-market's voice-of-customer bank). Name the source line. Every claim used is one learn-my-brand signed off (the "Claims you may use" `must` facts named by the "Claims sign-off" marker and the dated Brand record), quoted exactly, within its scope and before its review date. With no sign-off on file every claim and proof point is a candidate: the message is marked **needs proof (sign-off)** — never filled in. A product with no approved claim gets a calendar row "claims signed off" (owner: claims) by T-30.
 - **Same angle, adapted per channel.** Meta: a scroll-stopping first 2 seconds; Google: the searcher's words; email: the story; LinkedIn: the business outcome with proof. Copy-pasting one line everywhere is a failure.
