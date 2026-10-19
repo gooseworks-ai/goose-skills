@@ -22,3 +22,7 @@ snapshots/
 skillopt/outputs/
 skillopt/data/
 skillopt-venv/
+# Run outputs and input lists of real people (names, LinkedIn URLs, emails).
+# Never commit personal data to this public repo.
+skills/**/output/
+skills/sales/capabilities/champion-tracker/input/
