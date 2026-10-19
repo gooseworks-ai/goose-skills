@@ -1,0 +1,27 @@
+# The five situation questions
+
+Load at steps 1 and 2. Five questions cover what a senior advisor needs before naming a first move. Read the brain first; ask only what it cannot answer. Each question exists because its answer can change the recommendation.
+
+| # | Question (plain words) | Why it changes the answer | Often already in the brain |
+|---|---|---|---|
+| 1 | **What do you sell, to whom, and where do people buy it?** (a store / an app / software for businesses / a local business / a service / something else, plus a link) | Company type, sales motion and where it is sold decide which playbooks are even relevant. | `brand_read` summary (description, `brandType`), products, kit `audience`; the short look at the homepage and store page |
+| 2 | **Where are you right now?** (a) not launched yet; (b) launched, few or no paying customers; (c) steady sales, want more; (d) it was growing, now it's flat or falling. **And who are your customers today, and how did they find you?** Then one proxy for fit, matched to the stage: (b) are your first users or design partners using it every week, and would they pay? (c) roughly what share of customers buy again? (d) what changed around the time it flattened (an ad, a price, a product, a season, a competitor)? | Stage, the channel that already works, and the fact that separates a fit problem from a demand or conversion problem. | `ad_library_ad_count` in the brand list (own ads live), the rating line among research claims, organic posts, campaigns (`campaign_read`) |
+| 3 | **What have you tried, and how did it go?** Plus anything you already have: an email list of about how many, a following, a network, press, partners. | Avoids repeating failures; surfaces unfair advantages that beat any cold channel. | the one `knowledge_search` across evidence, learnings, documents and creatives (own ads, offers, results), accounts, learnings |
+| 4 | **What can you put in each month?** Money: $0 / under $1k / $1–5k / $5k+. Your time: about 2 / 5 / 10+ hours a week. Who else does the work, if anyone. | Feasibility. Money without time points one way, time without money another. | onboarding `ad_spend` band (a band, not a number) |
+| 5 | **What would make the next 90 days a win, and is a big date coming** (a launch, a season, a fundraise, an event)? **Where do you think it's stuck?** | The goal and deadline set the urgency and the order; the founder's own guess surfaces the constraint (and is often a symptom). | `brand/situation.md` from an earlier visit, onboarding `goals` |
+
+## How to ask
+
+- **Open with what you know.** "Here's what I already know about you: … Correct anything." Then ask only the gaps.
+- **One message, numbered, with options** plus "or say it your way". **At most five asks in total** — count every separate thing you ask, not the numbered lines. Pick the five whose answers could change the recommendation; drop the rest. A rich brain may need none or two.
+- **State, don't ask, what you can work out:** the season and the category's big moments from today's date (e.g. a DTC brand in October: "Black Friday is about six weeks out"), the stage when the brain already shows it.
+- **Plain words.** No CAC, ICP, ROAS, MER, PMF in the questions.
+- **"I don't know" is an answer.** Offer a proxy ("roughly how many orders last week?", "who were your last three customers?"); accept ranges. If the unknown decides the recommendation, make the first move the one that answers it, or give a conditional answer ("if most of your customers came back for a second order, start here; if not, start there"). State any assumption in one line.
+- **At most one follow-up round,** and only for a fact that would flip the recommendation.
+- **Echo the situation back** in one line before recommending, so a misread is caught before the advice.
+
+## Never
+- Ask what the brain or the founder's own message already answered.
+- Turn it into a form or more than five questions.
+- Ask for passwords, account access or documents. The recommended playbook asks for what it needs.
+- Research beyond the short look (at most three of their own public pages): no competitors, ad libraries or paid data. The founder's words, the brain and those pages are the only inputs.

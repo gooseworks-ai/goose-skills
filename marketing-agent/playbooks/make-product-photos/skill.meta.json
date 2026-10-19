@@ -1,0 +1,63 @@
+{
+  "slug": "make-product-photos",
+  "tier": "playbook",
+  "version": "0.2.0",
+  "pillar": "15 — Creative and design production",
+  "intents": [
+    "studio-quality photos of my product without a shoot",
+    "product photos for my store page",
+    "lifestyle / on-model shots of the new product",
+    "photos for the new colourway",
+    "fresh product imagery for my ads",
+    "our packaging changed — redo the photos",
+    "photos for our launch page (we only have a render)"
+  ],
+  "reads": [
+    "brand brain: products (real photos, variants, description, notes, ai_creative_notes, listed_at), kit (aesthetic, brandType), learnings (photo dont rules), the house-style card (brand/photo-style.md / 'Photo house style' document) — learn-my-brand and earlier runs",
+    "claims sign-off marker and 'Claims you may use' facts (via the shared claims-gate atom) — learn-my-brand (results may be shown only when signed; otherwise physical facts only)",
+    "the product's media and earlier approved outputs (media_list, photos_read)",
+    "imagery requests: 'Product imagery needed: for make-product-photos · …' lines in ads/batches/<YYYY-MM-DD>-<slug>.md — make-static-ads"
+  ],
+  "writes": [
+    "approved keeper photos linked to the product and available in the brand kit — read by make-static-ads and make-video-ads (ad generation) and the human's store",
+    "house-style card as brand/photo-style.md and the 'Photo house style' brand document (shared save-to-brain atom), on the marketer's confirmation — read by the next run and the creative playbooks",
+    "rules the human states (e.g. 'Don't show … with a pump top') through the shared save-learning atom; rejects archived with no reason — read by the photo engine and every creative playbook",
+    "on the human's yes: new real photos added to the product (media_upload; the kit hero only when they choose), the product created or imported (pre-launch / not yet imported), its photo list replaced on new packaging, and old approved outputs archived with no reason",
+    "'Product imagery ready: <photo links> · <date>' answers under make-static-ads' request lines — read by make-static-ads on its next run"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:tools_load",
+      "gooseworks:account_whoami",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:brand_update",
+      "gooseworks:media_list",
+      "gooseworks:media_analyze",
+      "gooseworks:media_upload",
+      "gooseworks:media_update",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:photos_generate",
+      "gooseworks:photos_read",
+      "gooseworks:photos_update",
+      "gooseworks:job_get",
+      "gooseworks:media_confirm",
+      "gooseworks:file_write",
+      "gooseworks:knowledge_import"
+    ]
+  },
+  "atoms": [
+    "source-audit",
+    "shot-list",
+    "fidelity-check"
+  ],
+  "shared_atoms": [
+    "claims-gate",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "honest-review"
+  ]
+}

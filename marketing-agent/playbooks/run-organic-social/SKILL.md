@@ -1,0 +1,151 @@
+---
+name: run-organic-social
+description: >-
+  Run my organic social. Use when a founder or marketer says "run organic social for my brand", "fill my social calendar", "grow my X / LinkedIn / Instagram / TikTok", "ghostwrite my founder's posts", "what should we post on X?", "which platforms should we be on?", "we're launching on the 12th, plan the social", "a TikTok or Reel script to shoot on my phone", or "my accounts went quiet". First researches how each platform works right now and what is getting watched in the brand's niche there, then delivers a readable plan: a strategy per platform (formats, topics, hooks, cadence, how a small account breaks in) and two weeks of posts modelled on what works, each format chosen for a reason, in the brand's or person's real voice. You post by hand; posting, scheduling and replies are not available yet. Not for a standalone post or repurposing one piece — use make-content.
+---
+
+# run-organic-social
+
+**Say once, at the start, in these words or close:** "I'll look at how each platform works right now and what's getting watched in your space, then give you a plan and two weeks of posts. I can't post for you yet; you'll post by hand." Never name tools, ids or other playbooks to the marketer.
+
+## What you get
+
+A report the marketer opens with one click (delivered through `../../atoms/write-report/ATOM.md`):
+
+- **In short:** the one move to make first, and why.
+- **Per platform:**
+  - how it works right now (dated, with sources);
+  - what's working in this niche there, with linked examples;
+  - the strategy for this account: its job, formats, topics, hooks, cadence and posting times;
+  - **how this account breaks in:** named accounts to reply to, the daily routine, the first posts;
+  - how we'll know it's working.
+- **Two weeks of posts,** each modelled on a pattern that works on that platform, written the way a person posts there.
+  - Every format has a reason from the research. On X a founder's everyday post is usually text with a screenshot, and video is used when there is something worth watching (a finished output appearing, a before/after), unless current per-post evidence says otherwise. Video slots get a script with time, words, on-screen text and shot notes, which the marketer shoots on a phone or screen-records.
+  - Text posts ready to paste.
+  - Carousels slide by slide.
+  - The first three days in full at the top of the posts section; every other post in the report's "All posts" appendix, in the same readable shape. The workspace calendar is only the machine copy.
+- **A posting sheet** (plus a CSV on request).
+- **What we couldn't check,** in plain words.
+
+Every post is checked for claims, voice and disclosure. Posts that speak for a named person are flagged for that person's yes.
+
+## Before you start
+
+1. **Connect** (`../../foundation/guide/SKILL.md` §1).
+   - First GooseWorks call: `gooseworks:get_started` with the marketer's words. If it shows a card, write one line and carry on with this ask: don't call `card_wait`, because the card has no organic-social option and this playbook's gates win (AGENTS §8).
+   - Pass `client` only to tools whose schema has it (e.g. `get_started`, `job_get`), never to `brand_read`.
+2. **Brand and workspace.** Even when `get_started` already named the brand, call `gooseworks:brand_read` with no `brand_id` to get its `coworker_agent_id`.
+   - **Every file call carries `scope: {type: "agent", agent_id: <coworker_agent_id>}`.** A file call without a scope lands in the wrong workspace.
+   - No coworker → the default workspace, with paths prefixed `brands/<brand-slug>/`, and tell the marketer.
+3. **One post, not a plan?** If the ask is a single post or script, use the brand read and the voice card only. Write that one post to the platform's research card if a fresh one exists (`social/research/`, under 30 days). Otherwise do one quick web check of how that platform treats that format now. Run atoms/post-check, then offer the full plan in one line.
+4. **Ask nothing yet,** with one exception: a single blocking question is allowed up front when one fact changes everything and no public source can answer it (e.g. the person's handle, when the plan is for their own account). Do the free pass (step 1) first. Never ask a fact the free pass could find.
+
+## Steps
+
+**1. Free pass (ask nothing).** **Hard gate: no draft report without a dated "how it works now" card and at least 8 linked examples of what's working in the niche, for each platform the marketer named (or the top recommended one).** Other recommended platforms get a lighter read: the card plus 3 examples, deepened once the marketer picks them. If the host has no web search or browser, say so at the top of the report and in chat, and plan nothing from memory.
+- **Pick the platforms in scope first:** the ones the marketer named. Otherwise recommend 2–3 from where the audience is and what the brand can make, and say why.
+- **Platform research** (atoms/platform-research), for each platform in scope:
+  - how it works right now (web search, dated sources);
+  - what's working in the niche (the free routes that work per platform, plus examples);
+  - the brand's and the person's own accounts.
+- **Brand read.** `gooseworks:brand_read` lean, with `sections: ["summary","kit","learnings","accounts","sources","organic","products"]`, then `product_ids` for the products in play.
+- **Rules and saved files.** `gooseworks:knowledge_search` for operating rules, disclosure and off-limits topics. Saved files, all with the scope from #2:
+  - `social/` (the last calendar, `social/accounts.md`, `social/research/`)
+  - `brand/voices/`
+  - `content/repurposed/`, `content/channels.md`, `content/pov/`
+  - research-market's and research-competitors' latest reports
+  - the newest `reports/performance/<date>.md`
+- **Mine the raw material that's already public:**
+  - the person's own recent posts, read in the browser;
+  - the brand's changelog, docs, blog, release notes, GitHub and product pages.
+
+  Real shipped things, numbers and screenshots found here are what the first posts are built from.
+- **Own-account audit** (atoms/account-audit) and voice cards (`../../atoms/voice-card/ATOM.md`, social additions in references/voice-card.md).
+
+**2. The draft report and one message.**
+- Write the strategy per platform (references/platform-strategy.md) and the first three days of posts (step 4). Where the account isn't known yet (whose it is, the handle), write for the most likely one and state that assumption at the top. **only from found material and plain product facts**, run through atoms/post-check (step 5). A post that needs the person shows the finished post plus one "needs from you" line, never a skeleton of brackets.
+- Deliver them as a **draft** report through write-report.
+- Then one message, at most a few lines plus a short list. It holds the link and the one move to make first. It asks **only** the decisions left:
+  - the paid top-up for deeper niche and own-post reads: one yes to "up to N credits" (`../../atoms/spend-gate/ATOM.md` branch B), with what it adds;
+  - the 3–5 claim lines the posts need, for the scoped sign-off (`../../atoms/claims-gate/ATOM.md`). Name each line exactly. "Check the brand kit" is not a yes to a line;
+  - raw material for every named person the posts feature, one prompt per planned slot: something shipped, a mistake, a number they may share, an opinion they'd argue, a screenshot or clip they can record. Add the short voice interview when fewer than ~8 of their posts were found;
+  - anything only the marketer knows: handles not found, hours a week, time zone, who approves a person's posts.
+- **When the marketer states a platform belief** ("video works more on X now"), check it on the web before answering, then give a **verdict: confirmed, contradicted or unclear**, with the source. Say whether the evidence is about **share of all activity** (e.g. "video is half of impressions") or **per-post reach for an account like theirs**; only the second decides their formats. Neither agree nor refuse from memory. An unclear belief becomes a labelled test.
+- Never ask before the draft exists (except the one blocking question in #4).
+- **Check the audience is the buyer.** If the chosen platform reaches people other than the brand's buyer (e.g. X grows a B2B founder among builders while the buyer, a DTC marketing lead, is more on LinkedIn or Instagram), say so once, plainly, then follow the marketer's choice.
+
+**3. Deepen** (only what the marketer said yes to).
+- Run the paid reads inside the ceiling and log every charge.
+- Fold the new examples into the patterns and strategy.
+- Rebuild the voice card from the fuller corpus.
+
+**4. Write the posts** (references/slot-anatomy.md; plan with atoms/plan-calendar and references/calendar-craft.md).
+- **Model every post on a pattern from the research.** Each slot names the pattern and links one example it follows ("built like @x's teardown video, 14 Oct"). Borrow the structure; never copy the words.
+- **Every format needs a reason** from the research: per-post evidence for this kind of account, what the content is (video when something is worth watching), and what the person can make in their hours. Each video slot has a script table (time · words · on-screen text · shot), a feasibility line ("screen recording, 25 seconds, no face") and who shoots it.
+- **Write like the person posts.** Use the voice card and real specifics from their own material: the thing they shipped, the number, the screenshot. Use the product as proof inside a useful post, not as the point.
+- **Every post must be postable as written.** It can have **at most one** short fill-in that only the person knows (their first name, one number, the exact prompt they ran), written in plain words ("fill in: the prompt you used"). A post that would need more is rebuilt from material found in the free pass: the brand's own published runs and videos, the changelog, docs, release notes, the person's past posts. If nothing is found, it is replaced by a post that needs no private material, such as a reaction to a real post by a named account, or a teardown of a public example. Never hand over a template.
+- **The mix:** at most half the posts are mainly about the product, and at least 3 in 10 are useful to a stranger who has never heard of the brand (an insight, a teardown, a how-to, what you learned building). Changelog and install details inform existing users; they rarely earn a stranger's follow.
+- **A line to the business:** each post that can carry one gets a tracked link (UTM) in its reply or first comment to the site or sign-up. Signups or site clicks are read at the next refill, alongside follows and replies.
+- **Small or new accounts:** each post comes with its reply plan (which named accounts to engage that day), because that's where early reach comes from. The daily reply routine is part of the plan, not an extra. It names whom to reply to and what kind of specific to add; it doesn't draft the replies themselves.
+
+**5. Check and remake** (atoms/post-check): voice match, the "would a person post this?" test, AI-tells, claims through the claims gate, disclosure and rights, the person gate, trend expiry. A weak draft is remade or the slot is dropped. Never pad.
+- Optional, managed TikTok/IG accounts only, after a yes: free draft posts (`gooseworks:social_post_create` `render: false`).
+- Never `render: true` or `carousel`. Never `social_post_update` `approve`. Never `organic_creative_queue`. Posting stays parked.
+
+**6. Deliver the final report** through `../../atoms/write-report/ATOM.md`, shaped by references/report-shape.md:
+- a local file with a clickable link (or an artifact or the full report in a hosted chat);
+- saved to the brand through `../../atoms/save-to-brain/ATOM.md`, with a `gooseworks:file_url` link.
+
+Also save:
+- `social/calendar/<start-date>.md`: the grid, the posts, the posting sheet and the tests;
+- `social/accounts.md`;
+- `social/research/`;
+- a CSV on request, with a `file_url` download link (same scope, `expires_in_seconds: 3600`).
+
+In chat, at most 3 lines: the first move, the link, the decisions left.
+
+**7. Next run (refill).** Reconcile what went out and read the format tests against the account's own numbers (references/slot-anatomy.md, Reconciliation). Refresh any platform research card older than 30 days. Then write the next week.
+
+**8. Offer the repeat (judge first).** At the end of a full plan, judge whether a repeat would help this brand. It usually does when the marketer means to keep posting.
+- If it would, offer it in one line, with the reason and a cadence: "Want me to refill this every two weeks? Each time I'd re-check what's working on X, read how your posts did, and write the next two weeks."
+- On a yes, create it with `gooseworks:automation_upsert` as an agent job: every two weeks, running this playbook's refill (step 7). It re-reads each platform's research card and the niche examples, reconciles and judges the tests, then writes the next two weeks, with a new report through write-report that opens with what changed since the last one.
+- Create it **paused**, per `../../atoms/spend-gate/ATOM.md` branch C. Switch it on only on the marketer's yes, and name any per-run data ceiling in that yes; without one, scheduled runs use free sources only.
+- Never offer a repeat for a single post or a one-off script.
+
+## Approval gates
+
+- **Named people.** Any post that speaks as, or for, a named person carries PERSON YES NEEDED: that person's own yes. Their material comes only from their own words.
+- **Claims.** Only through the claims gate: signed-off lines, the scoped sign-off for the exact lines this plan needs, or plain product facts. The kit's value props, proof points and site copy are **not** usable facts until signed off.
+- **Money.** The free pass costs nothing. Paid reads only after one yes to a ceiling, logged.
+- **Trends.** Each trend post has an expiry, a tone-risk tier with the specific risk, and a recommendation. Red-tier moments are never drafted.
+- **Strategy changes to a managed account** need a yes before `social_strategy_upsert`.
+- **Publishing.** Nothing is posted by this playbook.
+
+## Output and write-back
+
+- **The report:** the draft (step 2) goes to the local file or artifact and to the workspace only. It is not saved as a brand document. The final (step 6) goes through write-report: local file or artifact; workspace `social/plans/<YYYY-MM-DD>-social-plan.md`; and save-to-brain (`versioned: keep-history`), titled "Social plan — <Brand> — <YYYY-MM-DD>".
+- **Workspace** (coworker scope):
+  - `social/research/<date>-<platform>.md`
+  - `social/calendar/<start-date>.md` (+ `-sheet.csv`)
+  - `social/accounts.md`
+  - `social/audit/<date>.md`
+  - `content/pov/` (person answers)
+  - voice cards via the voice-card atom
+  - `research/credits-log/<YYYY-MM>.md` (spend-gate)
+- **Learnings** only through `../../atoms/save-learning/ATOM.md`, with the marketer's own words, prefix `[social YYYY-MM-DD]`.
+- **Managed TikTok/IG accounts:** strategy via `social_strategy_upsert` after a yes; the posted status as a record via `social_post_update` `patch.status`.
+- **Read downstream by:** analyze-performance (what went out, and the tests).
+
+## Done when
+
+The marketer reads the report and finds the research, strategy and posts specific to each platform and to their niche. Every platform fact is dated and sourced, and every post points to a pattern that works there. They would post the next three days after light edits because the posts read like a person wrote them. Nothing was posted, and nothing was invented.
+
+## Out of scope
+
+- A standalone post or a repurposed piece: **make-content**. #3 above handles a stray single-post ask.
+- Posting, scheduling, replies, DMs, comment moderation: **parked** until the posting tools work. Reply drafting is in the backlog.
+- Market and category listening: **research-market**. This playbook reads its report and does its own platform research.
+- Making media: images via make-static-ads' graphics side door (single images only); produced video via **make-video-ads**. Phone and screen-recorded video is shot by the marketer from our scripts.
+- Boosting a winner with paid budget: **analyze-performance** flags it, **run-paid-campaigns** stages it.
+- Creator programs: **work-with-creators**.
+- Posting in Reddit, Facebook groups or Discord: out for v1. Google Business Profile posts and Amazon Posts: not covered yet.

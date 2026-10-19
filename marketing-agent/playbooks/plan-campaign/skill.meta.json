@@ -1,0 +1,73 @@
+{
+  "slug": "plan-campaign",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "pillar": "1 — Strategy and planning (also 10 — launches, 18 — promo calendar read)",
+  "intents": [
+    "I have this budget and a launch date — what do I run, where?",
+    "plan a campaign",
+    "plan my launch / drop / Black Friday push",
+    "where should I advertise?",
+    "should we even run ads?",
+    "how should I split my budget?",
+    "plan next month / replan the budget",
+    "we sold out / CAC blew up — what do we change?"
+  ],
+  "reads": [
+    "brand brain: summary, kit, products, learnings log, onboarding, competitors (brand_read)",
+    "claims through the shared claims-gate atom (learn-my-brand's sign-off contract); server scope check for concept proof (knowledge_search claim + product_id)",
+    "voice-of-customer bank, personas, demand read (research/market/*.md or brand documents) — research-market",
+    "angle bank, landscape, competitor files (research/competitors/*.md or documents) and competitor roster (competitor_read) — research-competitors",
+    "send calendar lifecycle/calendar/<YYYY-MM>.md — email-lifecycle",
+    "existing campaigns, concepts and pending creative plans (campaign_read, ads_creative_read approvals)",
+    "weekly and monthly performance reads (reports/performance/) — analyze-performance, replan mode",
+    "change log (ads/campaigns/<slug>/decisions.md ### dated blocks, incl. the server's Meta outcomes) and fired triggers (state.md) — run-paid-campaigns, replan mode",
+    "human: goal, budget, date, baseline, margin/ARPA, repeat, stock or capacity, list size, creative capacity, founder hours, tracking state, type-specific items",
+    "creator roster creators/roster.csv (wave results) — work-with-creators, when a creator leg is Run/Test"
+  ],
+  "writes": [
+    "readable campaign plan gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md (local file, via write-report) — the marketer",
+    "brand copy plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md + document 'Campaign plan — <Brand> — <date> v<N>' (save-to-brain, supersede) — the marketer, any host",
+    "campaign record (campaign_upsert): brief_md with fixed headings — economics box, goal chain, channel decisions, budget split, paid structure, test plan, angles, calendar, asset list, measurement plan, hand-offs, replan triggers; read by run-paid-campaigns, analyze-performance, make-static-ads, make-video-ads, make-product-photos, make-content, email-lifecycle, run-organic-social, work-with-creators",
+    "campaign concepts (add_campaign_concept / update_campaign_concept) — read by make-static-ads and make-video-ads",
+    "optional monthly replan schedule (automation_upsert) — only on the human's explicit yes",
+    "draft brief for an approved live campaign: plans/<slug>/draft-v<N>.md (workspace) until the human's yes"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:competitor_read",
+      "gooseworks:campaign_read",
+      "gooseworks:campaign_upsert",
+      "gooseworks:add_campaign_concept",
+      "gooseworks:update_campaign_concept",
+      "gooseworks:ads_creative_read",
+      "gooseworks:file_read",
+      "gooseworks:file_list",
+      "gooseworks:automation_upsert",
+      "gooseworks:file_write",
+      "gooseworks:tools_load",
+      "gooseworks:account_whoami",
+      "gooseworks:meta_read",
+      "gooseworks:social_account_list",
+      "gooseworks:file_url",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get"
+    ]
+  },
+  "atoms": [
+    "goal-chain",
+    "channel-decision",
+    "budget-and-tests",
+    "brief-and-assets"
+  ],
+  "shared_atoms": [
+    "claims-gate",
+    "write-report",
+    "save-to-brain",
+    "spend-gate"
+  ]
+}

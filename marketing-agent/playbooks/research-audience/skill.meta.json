@@ -1,0 +1,74 @@
+{
+  "slug": "research-audience",
+  "tier": "playbook",
+  "version": "0.5.0",
+  "pillar": "3 — Customers and audience (owns buyer groups and the quote bank) · 8 — Outbound (list mode)",
+  "intents": [
+    "Research our audience",
+    "Who is my customer / who are our buyers?",
+    "Build buyer personas",
+    "Voice of customer — mine our reviews; what words do customers use?",
+    "Why do people buy us or leave?",
+    "Where does our audience hang out?",
+    "How do we reach them?",
+    "Find me 50 right-fit people with verified emails (list mode)",
+    "Give me an ABM target list (list mode)"
+  ],
+  "reads": [
+    "the brand's own customer data, asked for once up front when it has customers: customer or order export, cancel reasons, win/loss notes, support themes (counts and patterns only reach the brain)",
+    "brand brain: summary, kit audience text, products, competitors, organic, learnings (learn-my-brand); customer evidence via knowledge_search",
+    "workspace research/market/ — latest market report (research-market): its market figures are context, group sizes are counted here; read for consistency",
+    "workspace research/competitors/ — rival records and report (research-competitors): read for consistency",
+    "workspace research/audience/ — buyer groups, quote bank, last report, group notes, ledger (this playbook, earlier runs); research/credits-log/<YYYY-MM>.md (spend-gate)",
+    "claims via claims-gate (learn-my-brand) — for messages and proof lines",
+    "human-supplied (list mode): exclusions export, email-checker results, outreach outcomes"
+  ],
+  "writes": [
+    "local gooseworks-reports/<brand-slug>/<date>-audience.md and workspace research/audience/<date>-report.md → 'Audience report — <Brand> — <date>' (keep-history) via write-report and save-to-brain — read by the marketer, the next run, research-market and research-competitors",
+    "workspace research/audience/buyer-groups.md → 'Buyer groups — <Brand> — <date>' (supersede) — the one list of buyer groups; read by research-market, plan-campaign, make-content, run-organic-social, the ad and video makers, work-with-creators, list mode",
+    "workspace research/audience/voc-bank.md → 'Voice-of-customer bank — <Brand> — <date>' (supersede) and voc-bank.jsonl (not imported) — the quote bank; read by the ad and video makers, make-content, run-organic-social, research-competitors, plan-campaign",
+    "brand audience field: ranked buyer-group summary proposed via brand_update (knowledge.audience, agent_proposal) — skipped when the lead is provisional",
+    "workspace research/audience/segments/<slug>.md — read by the next run",
+    "list mode: research/audience/<date>-<list>/list.csv, dropped.csv; research/audience/ledger.csv via outcomes-ledger — read by the marketer's outreach tool and later runs",
+    "research/credits-log/<YYYY-MM>.md rows — read by every playbook's spend estimates"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:tools_load",
+      "gooseworks:account_whoami",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:competitor_read",
+      "gooseworks:data_call_provider",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:file_url",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:brand_update",
+      "gooseworks:automation_upsert",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:automation_list"
+    ]
+  },
+  "atoms": [
+    "segment-pass",
+    "fit-definition",
+    "account-sourcing",
+    "signals-and-hooks",
+    "people-and-contacts",
+    "score-segment-qa"
+  ],
+  "shared_atoms": [
+    "write-report",
+    "save-to-brain",
+    "claims-gate",
+    "spend-gate",
+    "outcomes-ledger",
+    "save-learning"
+  ]
+}

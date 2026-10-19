@@ -1,0 +1,105 @@
+# Report format
+
+Load at steps 5–6, with `../../../atoms/write-report/ATOM.md` (read it fully — its shape, length budget (body ≤ 3,000 words) and §3 check govern). A busy founder reads the top section and knows what changed and what to do. Examples are for a fictional B2B scheduling tool — never copy them.
+
+## The report
+
+Brand copy `research/competitors/<YYYY-MM-DD>-report.md` (title `Competitor research — <Brand> — <YYYY-MM-DD>`, tags `research-competitors`, `competitor-report`, keep-history); local copy `gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-competitor-research.md`. A repeat run opens "In short" with what changed since the last report.
+
+```markdown
+# <Brand> — competitor research, <D Month YYYY>
+
+## In short
+- **Do this first:** <one move, who does it, and why — never something this report calls table stakes, never unverified>.
+- <the biggest thing a rival did — and so what>
+- <where we're ahead or behind — and so what>
+- <a timely opening or a threat, with its end date>
+(≤ 150 words. A repeat run opens with what changed since the last report.)
+
+## Decisions for you
+| Decision | My recommendation | Matters by |
+|---|---|---|
+
+## The frame we compared in
+One line: the category we compete in, the other frames we could claim, and why we picked this one (it decides which rivals matter).
+
+## Timely openings (only when there are any)
+### <What happened>, <date> — the window closes <date, and why that date>
+What happened (linked), who it affects, the move, the claims that need your OK — and for a counter-position, why it's worth answering (we're the challenger, we do it better, we have dated proof, our answer reaches enough of their buyers).
+
+## Who we compared, and why
+The 3–6 rivals buyers compare us with now and how we know; the alternatives buyers use instead (doing it themselves, an agency, the platforms' own tools).
+
+## The rivals, one by one
+### <Rival>
+<One sentence: what they are and what matters most about them now.>
+- **What's new:** last 90 days (dated, linked).
+- **What they're running:** ads per platform (or "couldn't open (reason)" / "none found, <date>" only where the library loaded); founder and team posts.
+- **How they sell:** headline word for word, price and what you pay per (vendor page or third-hand), trial or demo.
+- **What buyers say:** a praise and a complaint, quoted and linked.
+- **Where we win, where we lose.**
+**For you:** <only if it matters>
+
+## How they compare
+Pricing table; messaging table (headline, who it's for, lead claims); where each shows up (lots / some / none found / couldn't check).
+
+## You vs them
+| | What | For you |
+|---|---|---|
+| Where we're ahead — say it louder | | |
+| Where we're behind | | |
+| Where everyone sounds the same | <at least 2 phrases shared by 2+ rivals> | <what to say instead> |
+
+## Formats and angles worth testing
+The top 5 formats (linked; why we think they work; how we'd make our own) and the top 5 angles (the reason to buy, who it's for, where it came from, proof status). The rest live in the angle bank for the ad makers.
+
+## Where this disagrees with your other reports (only if it does)
+
+## What this means for positioning
+Three lines: who we're for, what we're up against, why we win — as this research sees it.
+
+## What to do
+1. <Move> — who does it · what it needs · how we'll know it worked (a number or something you can see, on a realistic timeline) · by when.
+(≤ 6, ranked.)
+
+## What we're not doing, and why
+- <e.g. "Not answering Higgsfield's launch: they're 100× our reach and we can't prove we do video better.">
+
+## What we're watching
+What the next run checks, and what makes us tell you sooner.
+
+## Baselines for next time
+| Measure | Us | Each main rival | Source, date |
+|---|---|---|---|
+| Rank for "<rival> alternative" searches | | | |
+| AI answers that name us (of the questions asked) | | | |
+| Review count and rating | | | |
+| Active ads per library (where read) | | | |
+
+## What we couldn't check
+- <source — why — what it would change>
+
+## Sources
+- <title> — <link> — <date>
+Source skew: <e.g. "Buyer quotes are mostly Trustpilot, which over-represents complaints.">
+```
+
+**"For you" only where a finding matters,** as a plain sentence, never shorthand ("nothing to do here" is fine): does it fit us and why (from our facts); what to make or do; the claim it rests on — approved, "needs your OK", or "you'd need proof of X first"; and who does it in plain words (static ads, video ads, organic posts, creators, landing page, email, the founder, the campaign plan). When every rival does the same thing, that is a reason to weigh something else; what buyers say outweighs what rivals do. Facts-only asks leave it out. With an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
+
+**Never in the report** (write-report §1): angle or quote ids, file paths, tool or playbook names, "Fact / Inferred" tags (say "confirmed", "likely", "a guess, because…"), symbols instead of words, "jobs served" lines, links to local working files, process narration. When a dimension couldn't be read for every rival, say it once in plain words in "In short" and under "What we couldn't check" — never a column of question marks.
+
+## A rival record — `research/competitors/<rival-slug>.md` (supersede)
+
+Line 1: `COMPETITOR RESEARCH — rivals' claims and prices, not ours. Superseded by newer dated versions.` Line 2: `Do this first, because… <the one move this rival's file implies>`. Then the rival's profile as returned by `../atoms/rival-pass/ATOM.md`, ending with its **Snapshot** block (ad ids and start dates — or the library links checked and "not read" — pricing text, headline text, open roles by team, review themes, last-checked date). Title `Competitor file: <Rival> — <Brand> — <date>`, tags `research-competitors`, `competitor-file`, `rival:<slug>`. The weekly watch diffs against this snapshot; keep the previous one as `## Previous snapshot`.
+
+## Landscape — `research/competitors/landscape.md` (supersede)
+
+Line 1: the same marker. Line 2: "Do this first, because…". Then the latest report's "You vs them", "How they compare" and "Formats and angles worth testing" sections, so planners have one stable file. Title `Competitor landscape — <Brand> — <date>`, tags `research-competitors`, `competitor-landscape`.
+
+## Angle bank — `research/competitors/angle-bank.md` (supersede)
+
+Line 1: the marker. Line 2: "Do this first, because… <brief A-NN now>". One row per angle in the shape of `angles-and-gaps.md`, ids stable across runs (`A-07`); makers tag ads `angle:a-07`. The ids live here for the makers, never in the report. Title `Angle bank — <Brand> — <date>`, tags `research-competitors`, `angle-bank`.
+
+## Watch notes — `research/competitors/watch/<YYYY-MM-DD>.md` (keep-history)
+
+Line 1: `COMPETITOR RESEARCH — rivals' claims and prices, not ours. Weekly record; kept as history.` Line 2: `Week of <date> · <n> material changes · rivals watched: <…> · not re-read this run: <…>` (analyze-performance reads it). Line 3: "Do this first, because…". Title `Competitor watch — <Brand> — <date>`, tags `research-competitors`, `competitor-watch`. Shape in `watch-and-react.md`.

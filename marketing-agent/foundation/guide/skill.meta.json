@@ -1,0 +1,26 @@
+{
+  "slug": "guide",
+  "tier": "foundation",
+  "version": "0.1.0",
+  "pillar": "all",
+  "intents": [],
+  "reads": [],
+  "writes": [],
+  "needs": {
+    "mcp": [
+      "gooseworks:tools_load",
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:file_read",
+      "gooseworks:file_write"
+    ]
+  },
+  "atoms": [],
+  "shared_atoms": [
+    "claims-gate",
+    "save-to-brain",
+    "save-learning",
+    "spend-gate"
+  ]
+}
