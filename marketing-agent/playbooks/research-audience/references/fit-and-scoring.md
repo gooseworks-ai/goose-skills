@@ -1,10 +1,10 @@
 # Fit definition and scoring
 
-Load at step 1 (writing the definition) and step 7 (scoring).
+Load at list-mode step 1 (writing the definition) and step 6 (scoring).
 
 ## A finished fit definition contains all of this
 
-A definition is finished when someone else could build the same list from it. If any line below is blank, ask for it or mark it "not a filter" on purpose.
+A definition is finished when someone else could build the same list from it. If any line below is blank, assume it from the site, the brain and the ask, label it "assumed" (or "not a filter" on purpose), and let the human correct it after they see rows.
 
 **The example column is fictional and only shows the level of detail. Never reuse its values** — every value in a real definition comes from the brain or from the human, and a line nobody can fill stays a question.
 
@@ -20,9 +20,9 @@ A definition is finished when someone else could build the same list from it. If
 | **Disqualifiers (gates)** | Hard no's | Existing customers, open deals, competitors, partners, the seller's own staff, do-not-contact list, Germany/Austria (consent rules) |
 | **Negative ICP** | Looks like a fit, never buys — ideally from loss notes | Companies on SAP (lost 4 of 4); under 150 staff (no AP team) |
 | **Exclusion sources** | The files the human supplied, and the standing ledger | customers.csv (412 domains), ledger.csv |
-| **Size** | What the human asked for, checked against what they can work (ask how many new people a week they send to — do not cap them) and the account cap | 40 people, max 3 per account |
+| **Size** | What the human asked for, checked against what they can work (assume about 100 new people a week unless they said — never cap them; they correct it in the decisions) and the account cap | 40 people, max 3 per account |
 
-Play it back as one compact block in plain words, then ask for a yes. A "yes" to a vague definition is worthless; if a line still says "any", say what that will do to the list ("any industry" → the list will be mostly noise).
+Show it with the rows as one compact block in plain words, assumed lines first — never wait for a yes before building. A vague line is worthless; if a line still says "any", say what that will do to the list ("any industry" → the list will be mostly noise).
 
 ## Retail and wholesale variant
 
@@ -30,17 +30,17 @@ For lists of retailers, boutiques, distributors or venues, replace firmographics
 
 | Part | What to write |
 |---|---|
-| Retailer type and split | Chains vs independents (ask the split); category (e.g. clean-beauty boutiques, pharmacies, grocery) |
+| Retailer type and split | Chains vs independents (assume from the ask and the brand's stockists; label it); category (e.g. clean-beauty boutiques, pharmacies, grocery) |
 | Size | Door count (chains) or single/multi-location (independents) |
 | Price tier and fit | Price band of what they stock vs the brand's price |
 | Assortment | Stocks a direct competitor (yes/no — evidence of category fit, not a disqualifier unless the human says so) |
 | Geography | Region or radius |
-| Timing | The retailer's line-review / category-reset window (ask the human or find the retailer's published vendor calendar), new store openings |
+| Timing | The retailer's line-review / category-reset window (the retailer's published vendor calendar; otherwise "unknown — tell us if you know it" in the decisions), new store openings |
 | Route | Chains: an account row with the vendor portal, buying office or broker, **plus 1–2 dated category-buyer rows** (never a guessed person); independents: an account row with the published shop inbox or IG (UK sole traders: no email or cold DM — see contacts-and-compliance), owner named only from a dated source |
 
 Scoring for retail lists: account match 35 (type, price tier, assortment fit), persona/route 15 (owner or buyer named, or a published shop inbox), evidence 10, timing 40 where a review window or opening is known. Tier B if fit is at least 40 of 60 whatever the timing, otherwise out; tier A needs a known window or opening. Never invent a window.
 
-**When the brain has no ICP at all** (new brand, founder unsure): do not invent one. Offer two or three candidate definitions built from what the brand sells and who its known customers are (from the brain), each with its reasoning, and let the human pick or edit. Label them proposals.
+**When the brain has no ICP at all** (new brand, founder unsure): do not invent one. Build on the strongest of two or three candidate definitions (from what the brand sells and who its known customers are), name the others in the report as alternatives, and let the human switch after seeing rows. Label it a proposal.
 
 ## Scoring: gates first, then points
 
@@ -72,4 +72,4 @@ The list is ranked by fit tier and value together: an A/V1 account gets the most
 
 ## Re-tuning from outcomes
 
-When the human feeds back replies/meetings/bounces (the shared outcomes ledger): compare reply and meeting rate by segment, by tier and by signal type. Raise the weight of signals that convert, demote segments that do not, add to the negative ICP anything that replied "not a fit". Show the change and get a yes before it becomes the saved definition. Small numbers (under ~30 contacted per segment) are directional only — say so.
+When the human feeds back replies/meetings/bounces (the shared outcomes ledger): compare reply and meeting rate by segment, by tier and by signal type. Raise the weight of signals that convert, demote segments that do not, add to the negative ICP anything that replied "not a fit". Show the change and get a yes before it becomes the saved definition. Small numbers (under ~10 positive replies, or under 50 contacted, per segment) are directional only — say so.

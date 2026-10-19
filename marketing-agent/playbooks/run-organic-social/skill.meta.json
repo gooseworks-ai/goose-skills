@@ -12,6 +12,7 @@
     "Which platforms should we be on (organic)?",
     "We're launching on the 12th, plan the organic social",
     "A TikTok or Reel script to shoot on my phone",
+    "Tear down @x's account: why does it work and what should we take?",
     "My accounts went quiet, keep them alive"
   ],
   "reads": [
@@ -19,7 +20,7 @@
     "brand brain: claims sign-off marker in learnings + 'Claims you may use' must facts, with proof in the 'Brand record — <brand>' document (learn-my-brand); before sign-off, plain product facts only",
     "brand brain: operating rules, disclosure, topics off limits via knowledge_search (learn-my-brand); person-post approver (this playbook, asked once and saved as a fact)",
     "this week's focus, promotions, launches via knowledge_search and campaign_read (the human / plan-campaign)",
-    "workspace research/market/voc-bank.md and personas.md, or their brand documents (research-market)",
+    "workspace research/audience/voc-bank.md and buyer-groups.md, or their brand documents (research-audience)",
     "brand_read organic: own TikTok/IG posts with metrics and posted_at; competitor top posts (server sync)",
     "social_account_list + social_strategy_get: managed TikTok/IG accounts and their strategy (the product; this playbook after a yes)",
     "social_analytics_get: managed account metrics when connected (server sync)",
@@ -28,11 +29,12 @@
     "workspace reports/performance/<date>.md: organic 'what overperformed' (analyze-performance)",
     "workspace brand/voices/<handle>.md and content/pov/*.md (make-content or this playbook)",
     "workspace social/calendar/*, social/accounts.md (this playbook, earlier runs)",
-    "the account's own posts via data_call_provider, verified endpoints only (Instagram, TikTok, LinkedIn company; LinkedIn/Threads searches author-matched), under spend-gate",
-    "workspace 'Graphic ready:' lines under this playbook's request lines (make-static-ads)",
+    "the account's own posts via data_call_provider under spend-gate: X profile and user-tweets, Instagram and TikTok own posts, LinkedIn company posts, LinkedIn/Threads searches author-matched; video transcripts of top examples",
     "web search and the host browser: how each platform works now (dated sources), niche top accounts and posts, the brand's and person's public profiles (free)",
     "research-market's latest report (newest research/market/<date>-read.md, section 'What people are saying': trends with post-by dates, themes, risks; check its window line), buyer language (research-market)",
-    "workspace social/research/<date>-<platform>.md from earlier runs (this playbook; refreshed after 30 days)"
+    "workspace social/research/<date>-<platform>.md from earlier runs (this playbook; refreshed after 30 days)",
+    "Bluesky public author feeds (public.api.bsky.app, keyless) and bsky.app pages, for B2B and developer niches (free)",
+    "the goose-graphics skill (GooseWorks catalog, via catalog_fetch when not installed) to render carousels, LinkedIn documents, diagrams and cards"
   ],
   "writes": [
     "workspace social/calendar/<start-date>.md: calendar, format tests and their verdicts, drafts, checks, flags, posting sheet, reconciliation (the human; the next run; analyze-performance for what went out); reconciled calendars also imported as brand documents",
@@ -43,12 +45,12 @@
     "social_strategy_upsert: pillars/voice/rules for managed TikTok/IG accounts, after a yes (the product's own generator)",
     "social_post_create render:false: free draft posts on managed TikTok/IG accounts, optional, after a yes (the human in the product)",
     "social_post_update patch status posted: record of what the human posted on managed accounts (analytics placements)",
-    "workspace 'Graphic needed:' request lines in social/calendar (make-static-ads answers them)",
     "workspace social/calendar/<start-date>-sheet.csv posting sheet, with a file_url download link in hosted chats (the marketer's own scheduler)",
     "workspace research/credits-log/<YYYY-MM>.md: one line per paid proxy read (spend-gate; shared price history)",
     "the social plan report via write-report: a local file with a link (or an artifact in hosted chat) plus a brand document via save-to-brain, 'Social plan — <Brand> — <date>' (the marketer; analyze-performance)",
     "workspace social/research/<date>-<platform>.md: platform card, niche examples and patterns, own-account read (the next run)",
-    "a paused automation (automation_upsert) for the two-week refill, only after the marketer's yes (the coworker's scheduled runs)"
+    "a paused automation (automation_upsert) for the two-week refill, only after the marketer's yes (the coworker's scheduled runs)",
+    "rendered slide PNGs and LinkedIn document PDFs, uploaded with media_upload to the brand (the marketer, from the report's links)"
   ],
   "needs": {
     "mcp": [
@@ -73,6 +75,7 @@
       "gooseworks:knowledge_import",
       "gooseworks:media_confirm",
       "gooseworks:data_call_provider",
+      "gooseworks:catalog_fetch",
       "gooseworks:file_url",
       "gooseworks:file_write",
       "gooseworks:file_read",
@@ -94,6 +97,7 @@
     "save-learning",
     "save-to-brain",
     "spend-gate",
-    "ad-policy-check"
+    "ad-policy-check",
+    "honest-review"
   ]
 }

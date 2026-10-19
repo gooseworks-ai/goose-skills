@@ -8,7 +8,7 @@ Load at steps 2–3 (free pass) and step 7 (the top-up estimate). No vendor keys
 |---|---|
 | Brand, products (price; unit cost only if stored — usually not), kit, rivals, the brand's and rivals' recent organic posts with numbers and captions (collabs show here) | `gooseworks:brand_read` (summary, kit, products, competitors, organic, accounts, learnings) |
 | Claims — never read here: always through `../../../atoms/claims-gate/ATOM.md` | — |
-| Past creator deals and rates, persona, creators in talks | `gooseworks:knowledge_search`; workspace `research/market/personas.md` |
+| Past creator deals and rates, persona, creators in talks | `gooseworks:knowledge_search`; workspace `research/audience/buyer-groups.md` |
 | Saved outlier posts and the creators behind them | `gooseworks:social_inspiration_library`, `gooseworks:social_inspiration_search` |
 | Rival roster and records; a campaign's creator leg | `gooseworks:competitor_read`, workspace `research/competitors/`; `gooseworks:campaign_read` |
 | Earlier roster, reports, briefs; the credits log | `gooseworks:file_list`, `gooseworks:file_read` (brand coworker workspace) |

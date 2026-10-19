@@ -34,7 +34,7 @@ H2 outline (as claims): …
 Facts the page must state: <fact> — source: "Claims you may use" fact | product record field | [PROOF NEEDED]
 Claims allowed / never say: from the claims gate (scoped sign-off status)
 Competitor names: allowed | not allowed (the human's stance) · public source for each competitor fact
-Internal links to add: from <pages> with anchor <text>
+Internal links to add: the hub page for this topic ↔ this page (both directions); this page ↔ its closest sibling pages in the same cluster; glossary or explainer pages → this page where the term appears — each with the page, the exact anchor text and where in the page it sits
 Markup: Product | Organization | LocalBusiness | SoftwareApplication | Article | none
 Format · length: <a format name from make-content's format list> · <target words>
 CTA: <action> → to confirm with you

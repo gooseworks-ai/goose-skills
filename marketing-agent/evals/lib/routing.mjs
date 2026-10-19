@@ -1,4 +1,4 @@
-// Routing eval: give a model only the 19 skill descriptions and one marketer ask;
+// Routing eval: give a model only the skill descriptions and one marketer ask;
 // score whether it picks the playbook we expect.
 import fs from 'node:fs';
 import path from 'node:path';

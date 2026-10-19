@@ -30,7 +30,8 @@ You listen to **what people are saying right now** about the brand, its founder,
 2. **Risk first.** Search the brand, products and founder with words like recall, reaction, rash, scam, lawsuit, refund, broke, hacked, boycott. Anything serious (S1 in the craft file) goes at the very top of your return, marked **TELL THE FOUNDER NOW**, so the main run can alert them before the report.
 3. **Listen.** Every query on every default platform for the company type, within the window: web search, then the platform's public pages, then the comments on the top posts. Tag who is speaking (independent · owned · affiliated) and undated items. Count only independent, dated, on-target items; say every count is a sample.
 4. **Themes, outliers, trends.** Themes in people's words with n and two linked quotes; quotes worth keeping as buyer language; outlier candidates with their baselines (or "baseline not read"); trends with dated evidence and a post-by date.
-5. **Rivals' conversation.** What people say about the main rivals (complaints, praise, switching talk) — same method, so the volumes are comparable; otherwise say "not comparable".
+5. **Voices the buyer follows.** Read their last 7 days (30 in a full report) and flag convergence, spike, underdog and controversy (craft file § Voices); in brand-watch mode only a convergence on our category is an alert.
+6. **Rivals' conversation.** What people say about the main rivals (complaints, praise, switching talk) — same method, so the volumes are comparable; otherwise say "not comparable".
 
 ## Return this, in this shape
 
@@ -42,6 +43,9 @@ Mentions (sample): <n independent by platform> · positive n · negative n · mi
 Themes: <theme in their words — n — two quotes with links>
 Risks: <S2 / S3 items with link, reach, separate people, what we know>
 Sales signals, rival complaints, reuse candidates, creators who fit: …
+Product requests and workarounds: <quote — link — date>
+How close to buying: curiosity n · consideration n · price or availability n · comparison n · bought n · repeat n · recommends n
+Voices: <topic — signal (convergence / spike / underdog / controversy) — who — links — post-by date>
 Rivals' conversation: <rival — what people say — volume (same method) or "not comparable">
 Outliers: <link · creator · multiple (baseline n) · hook · format · topic> — save list for the main run
 Trends: <trend · first seen · platform · evidence · stage · fit · audio rights · post-by · confidence>

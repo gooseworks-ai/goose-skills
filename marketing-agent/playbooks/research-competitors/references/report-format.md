@@ -37,11 +37,15 @@ The 3–6 rivals buyers compare us with now and how we know; the alternatives bu
 - **What they're running:** ads per platform (or "couldn't open (reason)" / "none found, <date>" only where the library loaded); founder and team posts.
 - **How they sell:** headline word for word, price and what you pay per (vendor page or third-hand), trial or demo.
 - **What buyers say:** a praise and a complaint, quoted and linked.
+- **Customers:** named ones (confirmed / likely), and logos that left their site this year — likely lost, a switch target.
 - **Where we win, where we lose.**
 **For you:** <only if it matters>
 
 ## How they compare
-Pricing table; messaging table (headline, who it's for, lead claims); where each shows up (lots / some / none found / couldn't check).
+- **Pricing:** list price and unit; **what a buyer like ours actually pays a month** (one stated scenario, e.g. "a 10-person team making 40 ads a month"); the cheapest tier that has the features buyers care about; hidden costs; changed recently. Us in the same table.
+- **Messaging:** headline word for word, who it's for, lead claims.
+- **Channel scorecard, judged against each one's stage** (a seed-stage rival with no analyst coverage isn't weak): self-serve and free trial · search and content · reviews · founder voice · paid ads · events · partners and marketplaces · community · video — each "strong", "fine for their stage", "weak" or "couldn't check", with the evidence. The biggest gap nobody fills is a candidate move.
+- **Topics:** a short table — topics each rival publishes on that we don't, and topics buyers ask about that nobody covers.
 
 ## You vs them
 | | What | For you |

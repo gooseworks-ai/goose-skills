@@ -3,8 +3,8 @@
 **What this is.** Evals that tell us whether each marketing playbook actually helps. For each playbook we run the same marketer's ask up to three times — **with** the new playbooks, with the **old** goose-skills a user would have used for the job (legacy), and with **no** marketing skills (baseline) — and an AI judge scores each run against the same pass/fail checklist. If the baseline or the old skills do as well, the new playbook isn't earning its place.
 
 **In short**
-- **Two kinds of eval.** *Routing:* given only the 19 skill descriptions, does a model pick the right playbook for 68 real asks? *Behaviour:* does a full run of a playbook deliver what a good marketer would, compared with no skill?
-- **Seven behaviour evals so far**, one per hand-tested playbook: research-market, research-audience, research-competitors, run-organic-social, plan-campaign, improve-search-visibility, where-to-start. All use the GooseWorks brand on **staging**, with Akhil's real opening asks from the 18 Oct hand tests.
+- **Two kinds of eval.** *Routing:* given only the 20 skill descriptions, does a model pick the right playbook for 79 real asks? *Behaviour:* does a full run of a playbook deliver what a good marketer would, compared with no skill?
+- **Nine behaviour evals so far**: one per hand-tested playbook (research-market, research-audience, research-competitors, run-organic-social, plan-campaign, improve-search-visibility, where-to-start), plus research-audience's **list mode** (`research-audience-list`, where the marketer actually asks for the list) and **write-outreach** (added 19 Oct, not yet run). All use the GooseWorks brand on **staging**, with Akhil's real opening asks from the 18 Oct hand tests.
 - **Nothing is spent or published.** Paid and publishing GooseWorks tools are switched off for the agent, production GooseWorks is blocked, and the simulated marketer declines every top-up.
 - **Every arm starts from the same brand state.** The runner snapshots the staging Gooseworks brand before an arm and undoes that arm's changes afterwards (details below).
 - **Results land in `evals/results/<date>/`** (not committed): one `summary.md` per playbook with a side-by-side table.
@@ -14,7 +14,7 @@
 From this folder (`marketing-agent/evals/`), with Node 20+ and the `claude` CLI signed in:
 
 ```bash
-# Routing: all 68 asks, cheap (Haiku). About 3 minutes.
+# Routing: all 79 asks, cheap (Haiku). About 3 minutes.
 node run.mjs routing
 
 # One playbook, both arms, default models (Sonnet agent, Haiku marketer, Opus judge).
@@ -62,7 +62,7 @@ To check the judge, open the arm folder: `transcript.md` (the whole conversation
 
 | Eval | Time | Cost |
 |---|---|---|
-| Routing, 68 asks on Haiku | ~3 min | ~$1 |
+| Routing, 79 asks on Haiku | ~3 min | ~$1 |
 | One behaviour eval, both arms | 10–120 min (60 min cap per arm) | ~$3–45 (research-competitors with the skill: ~45 min, ~$35) |
 | The whole suite (7 playbooks + routing) | 5–12 hours, run unattended | ~$80–250 |
 

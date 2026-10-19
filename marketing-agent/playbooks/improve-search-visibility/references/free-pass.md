@@ -12,7 +12,8 @@ Load at step 1. Everything here costs no credits. Do all of it before the first 
 6. **News and mentions, web search:** the brand and each main rival — launches, funding, press, reviews, "vs" pages, listicles that name them, in the last 12 months.
 7. **Profiles answer engines read** (`entity-and-local.md`): the five that matter for this business type, read like a person would; never G2, Capterra, Trustpilot or Amazon by script.
 8. **App store**, only if there is an app: Apple's public search lookup, then the listing (`app-store-listing.md`).
-9. **Foundation** (`foundation-check.md`): crawler access by bot, CDN blocking (needs a shell), duplicate domains, structured data on the checked pages, and any large templated page set in the sitemap (sample it).
+9. **Foundation** (`foundation-check.md`): crawler access by bot, CDN blocking (needs a shell), duplicate domains, structured data on the checked pages, which analytics and ad tags the site runs, and any large templated page set in the sitemap (sample it).
+9b. **Rival content map** (`rival-content-map.md`): the sitemaps of the brand and 3–5 rivals, sorted by page type; templated sets sampled and scored; the page-type gap table. Reuses the brand's sitemap from step 1.
 10. **Demand evidence** (`page-map.md` Demand): Google Trends and autocomplete for each cluster in the browser; say "no demand data" where there is none.
 
 ## Hosts without a browser
@@ -21,5 +22,6 @@ ChatGPT, AI Overview and AI Mode can't be asked. Do everything else, say plainly
 ## What the free pass must produce
 - Per question: ChatGPT named yes/no (k of N), who is named instead, which sources it cited.
 - The pattern in one sentence.
+- The page-type gap table (what kinds of pages rivals have that we don't), or "not mapped" with the reason.
 - Draft five fixes, each in one plain line.
 - What wasn't checked and why.

@@ -354,3 +354,29 @@ The judge's evidence was checked against `with-skill/transcript.md`. **Contamina
 **Noise, not chased:** M1–M7, M9 and E1–E5 passed. The baseline's wins (M8) come from a shorter report, not a better rule.
 
 **For the orchestrator:** delete the staging leftovers (Gooseworks coworker workspace: `social/{accounts.md,accounts-run2.md,audit,calendar,plans,report,research}`, `brand/voices/founding-engineer-run2.md`, and the "Social plan" / "Voice card … run2" brand documents) before the next eval. My folder delete was blocked as a mass delete.
+
+## Round 17: port what the old library did better (skills/social, skills/content, skills/design/composites/goose-graphics; read as reference only)
+
+Took the craft, not the structure, the vendor wrappers or the keys. make-content untouched. No evals, re-runs or git writes.
+
+| # | Port | Verdict | Where |
+|---|---|---|---|
+| 1 | X account reads: `/v1/twitter/profile` then `/v1/twitter/user-tweets` | **Adopted.** Pitfalls written in: it returns popular posts, not the newest (check `created_at`); numbers sit in `legacy.*`; read profiles first, then posts only for the shortlist. The "X can't be read" text is gone. | platform-research §3, account-audit, voice-card.md, server-needs #4, #13, #19 |
+| 2 | "Tear down this one account" (creator-profile-teardown) | **Adopted** as a request type, not a new playbook: promise and positioning, profile funnel, pillars and series table, outliers against its own per-format baseline (inference labelled), transcripts and comments of the outliers, mechanics, adapt vs don't copy, five tests. Delivered as its own report or as a "model account" section of the plan. | SKILL "Before you start" #3, platform-research §3b, report-shape §6 |
+| 3 | A weekly read of the voices the buyer follows | **Adopted, inside the refill.** Last 7 days of the 15–25 break-in accounts; signals are convergence (3+ voices), spikes (2× their normal), early topics and debate; they feed the flex slots, posted within ~3 days. A light weekly pass only if posting daily. How to find voices (authority terms, group by author, rank, drop recruiters and vendors) ported too. | platform-research §3c, SKILL step 7, report-shape refill section |
+| 4a | Comment tags and a buying-intent scale | **Adopted** within research and reconciliation: pain, question, objection, product request, workaround, praise; intent ladder from curiosity to recommendation. Keep the parent comment. | platform-research "Comments" |
+| 4b | Bluesky | **Adopted, conditionally:** only when the niche is actually there. The public author feed is keyless and free; search may need a login. | platform-research Bluesky row, voice-card.md, server-needs #18 |
+| 4c | Trend response types | **Adopted:** an acceleration test, five responses (join in, borrow the format, answer the question, evergreen version, ignore) and a horizon. | post-checks §5 |
+| 4d | Outlier baselines split by format | **Adopted:** per-format median baseline; giveaways, collaborations, paid boosts and one-off virals set apart. | platform-research "Judging what works", §3b |
+| 4e | Single-post "why did this do well" reads | **Adopted with the host browser now; proxy single-post reads wait** until proxy-endpoints verifies them (owner research-market). | platform-research, server-needs #18 |
+| 4f | Video transcripts of the top examples | **Adopted** for the top 5–10 videos, auto-transcript errors flagged. | platform-research video row |
+| 5 | Carousels and graphics via goose-graphics | **Adopted.** New references/graphics.md: get it (installed, `catalog_fetch` with hash check, or no shell), style from the brand kit and `--ref` on the brand's own best post, slide 1 as a style preview, a canvas per slot (PDF for LinkedIn documents), slide density and type rules, diagram rules, honest-review, `media_upload`. Not routed through make-static-ads. Time per rendered carousel drops from ~45 to ~10 minutes. | graphics.md, SKILL step 4, step 5, slot-anatomy, calendar-craft, meta, server-needs #16 |
+
+### Pushback and rejections (§2b), with reasons
+- **No hosted-chat rendering pretended.** goose-graphics needs a shell, Node and Playwright. In hosted chat the playbook hands over the slide copy and says it takes about 45 minutes by hand. The free `image_carousel` renderer only works on managed TikTok/IG accounts as a post draft, so the fix is server need #16, not a workaround.
+- **No community "surprise me" styles by default.** Brand posts should look like the brand; community styles only on request.
+- **Bluesky is not a default platform.** Most niches aren't there; adding it everywhere grows research time without reach.
+- **The voices read is not a new schedule or job.** It rides on the two-weekly refill (rule 10, §8). A daily poster gets an optional light weekly pass, offered, not created.
+- **Comment mining is not a separate job.** The tags and intent scale are applied where comments are already read.
+- **Not ported (belongs elsewhere):** the launch kit, case-study pack, content-brief details and transcript-to-post repurposing belong to make-content (excluded this round) or other owners. The old vendor wrappers, env keys and the old "post via API" steps stay out: posting is by hand or a managed draft after a yes.
+- **Single-post proxy reads are not used until verified.** Guessing endpoint paths would spend credits on 404s.

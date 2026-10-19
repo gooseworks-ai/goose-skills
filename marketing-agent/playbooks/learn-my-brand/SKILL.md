@@ -9,7 +9,7 @@ description: >-
   that matter signed off with proof, scope and review date, turns the voice into rules the owner confirms,
   checks logo, colours and fonts, and saves it all as it goes so every other job loads it instead of asking.
   Ends with an unknowns list and a read-back. Not for who our customers are and what they say (use
-  research-market) or writing positioning from scratch (not covered yet).
+  research-audience) or writing positioning from scratch (not covered yet).
 ---
 
 # learn-my-brand
@@ -102,6 +102,6 @@ The owner has signed off the claims that matter and the voice (or they are pendi
 
 - The website read, ad-library presence, review import, the asset kit — the server's research.
 - Positioning from scratch — not covered yet (write-my-positioning, backlog); the owner's own one-liner is recorded, or it stays unknown.
-- Customer research and the voice-of-customer bank — research-market. Competitor research — research-competitors.
+- Customer research and the voice-of-customer bank — research-audience. Competitor research — research-competitors.
 - Goal, budget, margins, spend caps, this week's focus — where-to-start, plan-campaign, run-paid-campaigns.
 - Inventing claims, customers, proof or numbers. Any creative. Legal advice.

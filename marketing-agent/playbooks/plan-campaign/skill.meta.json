@@ -16,7 +16,7 @@
   "reads": [
     "brand brain: summary, kit, products, learnings log, onboarding, competitors (brand_read)",
     "claims through the shared claims-gate atom (learn-my-brand's sign-off contract); server scope check for concept proof (knowledge_search claim + product_id)",
-    "voice-of-customer bank, personas, demand read (research/market/*.md or brand documents) — research-market",
+    "voice-of-customer bank and buyer groups (research/audience/voc-bank.md, buyer-groups.md or brand documents) — research-audience; demand read and market report (research/market/demand.md, <date>-read.md) — research-market",
     "angle bank, landscape, competitor files (research/competitors/*.md or documents) and competitor roster (competitor_read) — research-competitors",
     "send calendar lifecycle/calendar/<YYYY-MM>.md — email-lifecycle",
     "existing campaigns, concepts and pending creative plans (campaign_read, ads_creative_read approvals)",

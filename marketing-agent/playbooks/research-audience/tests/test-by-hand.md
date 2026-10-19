@@ -19,14 +19,20 @@ It passes if:
 6. **One short closing message** in the step 8 shape: "Do this first", the two links, the decisions ending with "want a list of named people in <lead group>?". No file lists, no findings recap.
 7. **Cost:** at most three group workers, none nested, none loading a skill; about 80 web calls in all; a few dollars, not tens.
 
-List-mode test: **"Find me 50 right-fit people at recruiting agencies to pitch, with verified emails."** → a lighter audience pass, then the list section and `list.csv`: accounts first, dated title sources, honest email status (no "verified" without a checker), region flags, a stated shortfall, the honest "no email checker" line once.
+List-mode tests (the eval: `evals/playbooks/research-audience-list/`):
+- **Build:** "find me 50 right-fit people to pitch gooseworks to, with emails. growth or marketing leads at consumer brands that run a lot of meta ads" → **no audience pass first**; rows within the run; accounts with gate evidence (ad-library pages, company pages, dated); people with dated title sources; honest email status (no "verified" without a checker); a signal or "none" per row; region flags; a shortfall with the universe size; `list.csv` plus a short list report; the closing decisions offer the messages for the list. At most three workers, none loading a skill; about 100 web calls.
+- **Switch intent:** "who's looking for an alternative to AdCreative.ai?" → Hacker News and forum posts by identifiable people at fitting companies (authors only, never people who liked or replied), each with the post, its date and their words; anonymous posts become quotes, not leads.
+- **Score a list:** upload 20 fictional sign-ups (some gmail, one competitor's staff, two demo requests) → free-mail rows not looked up as companies, the competitor flagged out, the demo requests "answer first" within an hour, every row with tier, confidence and action, the 10-row calibration table at the top.
+- **Watch:** "tell me when any of these 10 past users changes jobs" (a fictional list) → a baseline, the paid per-run cost stated, a watch offered **created paused** with a standing ceiling; no emails stored.
+- **Developer tool:** for a dev-tool brand, "find companies adopting tools like ours" → GitHub activity on rivals' repos, company clusters of 3+, the buyer listed (not the developers), no commit emails.
+- **With the contact routes** (once the connector has them): a count and a sample before any reveal; every address checked before it is called sendable; no phones.
 
 Edge tests:
 - "What's the market size for AI ad tools?" / "how do people buy in our category?" → not this playbook (market research).
 - "Find me influencers" → not this playbook.
 - A re-run a month later → reads the saved buyer groups and quote bank and says what changed.
 - "What's our market and who's in it?" → market research; "who are our buyers?" → this playbook. The two descriptions share no trigger phrase.
-- Repeats: after the audience report, a refresh twice a year — or on a trigger (a new product, a new market, a shift in who buys or why they leave) — is offered only with a reason tied to this brand; after a list-mode run, **no** repeat is offered.
+- Repeats: after the audience report, a refresh twice a year — or on a trigger (a new product, a new market, a shift in who buys or why they leave) — is offered only with a reason tied to this brand; after a list-mode run, **no** repeat of the list is offered (a watch may be, with its reason).
 
 ## Staging run log
 

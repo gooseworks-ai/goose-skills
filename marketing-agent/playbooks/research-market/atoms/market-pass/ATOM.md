@@ -21,7 +21,15 @@ You research **the market** a brand sells into — not its rivals one by one (co
 
 ## 1. Which market are we in — a decision, not a description
 
-List the 2–3 categories the brand could be filed under (from its own site and brand record, how press and directories file it, what its rivals call themselves — e.g. "AI ad-creative tool" vs "AI coworkers for go-to-market teams"). For each: what buyers call it (search phrasings, review-site categories, subreddit names), who else sits in it, and the evidence that buyers actually use that name. **Recommend one**, with the reason, and say what changes if the brand picks another (different rivals, different buyers, different price norms). Name the neighbours buyers use instead: a spreadsheet, an agency, an in-house hire, the platform's own free tools, doing nothing.
+List the 2–3 categories the brand could be filed under (from its own site and brand record, how press and directories file it, what its rivals call themselves — e.g. "AI ad-creative tool" vs "AI coworkers for go-to-market teams"). For each: what buyers call it (search phrasings, review-site categories, subreddit names), who else sits in it, and the evidence that buyers actually use that name. **Recommend one**, with the reason, and say what changes if the brand picks another (different rivals, different buyers, different price norms). The choice is one of three kinds:
+
+| Kind | When | Example |
+|---|---|---|
+| **Existing category** | you compete head-to-head and buyers already search for it | "CRM for startups" |
+| **Sub-category** | you serve a niche of it clearly better | "AI-native sales engagement" |
+| **New category** | nothing buyers search for describes what you do | "revenue orchestration" |
+
+Rules: if buyers already search for the category, use it or a sub-category of it; if you'd spend half your sales calls explaining the category, don't create a new one; create one only when nothing existing fits, and keep its name plain enough to guess. (After April Dunford's positioning method; writing the full positioning is a separate, backlog job.) Name the neighbours buyers use instead: a spreadsheet, an agency, an in-house hire, the platform's own free tools, doing nothing.
 
 ## 2. How big — top-down and bottom-up
 
@@ -45,7 +53,7 @@ Across 8–15 products in the category (not only the brand's main rivals): the p
 
 ## 6. Where attention is — channels
 
-Which channels carry this category's buyers' attention: the communities and subreddits, newsletters and podcasts, creators and analysts, events, ad platforms the category spends on (from public ad libraries' counts where readable), and AI answers (ask the same 3–4 category questions in any AI answer you can reach; Google's AI Overview in results counts). Each with a link and why it matters.
+Which channels carry this category's buyers' attention: the communities and subreddits, newsletters and podcasts, creators and analysts, events, ad platforms the category spends on (from public ad libraries' counts where readable), and AI answers (ask the same 3–4 category questions in any AI answer you can reach; Google's AI Overview in results counts). Each with a link and why it matters. Also **dates that matter** in the next 90 days: the category's conferences, speaker applications and calls for papers, award entries, budget and buying seasons — each with its date and deadline.
 
 ## 7. Demand and seasonality
 

@@ -62,7 +62,7 @@ Brand: **Personal Day**. Ask: "Fill my social calendar for the next two weeks an
 | 3 | `social_account_list` (Personal Day, Cumin Club, Braxley) | 0 managed accounts on every staging brand | `social_strategy_*` and `social_post_create` paths do not apply; everything lives in the workspace |
 | 4 | `brand_read` learnings (full) | No claims sign-off marker | Plain product facts only; efficacy lines from past captions ("kills acne causing bacteria") are flagged and never copied |
 | 5 | `knowledge_search` document "Brand record approved claims" | empty | Confirms no sign-off |
-| 6 | `file_read research/market/voc-bank.md` | not_found | Says "no buyer evidence on file"; press quotes are not buyer words |
+| 6 | `file_read research/audience/voc-bank.md` | not_found | Says "no buyer evidence on file"; press quotes are not buyer words |
 | 7 | `social_inspiration_search` | 0 | Trend slots get evergreen fallbacks; no research-market report with a "What people are saying" section is on file |
 | 8 | `file_write social/calendar/2026-10-19.md` (header line only, marked TEST RUN) | success | Workspace write path verified |
 

@@ -357,3 +357,45 @@ Expected per standard run on Sonnet: roughly $3–6 (three workers ≈ $0.7 each
 ### Contract critic after the eval fixes (subagent, effort high)
 
 All agreed and fixed: 70% recent in every group's report quotes (older rows stay in the bank) · problems table gains quote + link + date · worker return fields carry dates · a 4th/5th group's moves labelled unverified unless resting on a read page · repeat offer states cadence · workers make no GooseWorks calls · quote-bank sampling and saving moved to the main run, written once, re-check capped at 3 · sibling reports read once in step 2 · write-report's "offer to open it" skipped (step 8 is the whole message) · the report's banned list adds worker, free pass, corpus, maker. Flagged to the orchestrator (not my file): write-report's own banned list should add those four words.
+
+## Lead gen completed (2026-10-19, Akhil: "complete lead gen")
+
+**Input.** The old-vs-new review of 72 old lead-gen, outreach and sales skills (`marketing-agent-test/results/old-vs-new/leads-outreach-sales.md`). Old skills were read **as reference only** this round (orchestrator's permission), through two subagents that extracted craft into notes; structure and vendor wrappers dropped. A third subagent mapped the server's lead routes in gooseworks-app `origin/dev`.
+
+**What changed in list mode**
+- **Straight to the list.** A list ask no longer runs the audience pass first; it starts from the saved buyer groups or drafts the fit from the ask, site and brain, and offers the audience report afterwards (the old flow made list users wait through research they didn't ask for).
+- **Three jobs, picked from the ask:** build a list; **score a list they bring** with inbound triage (`references/score-a-list.md`: free-mail check, hard yes/no and confidence rules, a 10-row calibration table shown with the rest, urgency tiers with response times, boosters and dampeners, the action table, referral / nurture / polite no); **standing watches** (`references/watches.md`: champion moved by snapshot-then-compare on the paid profile read, account hiring, switch intent; created paused with a standing ceiling).
+- **Sources by situation** (`references/list-sources.md`): database (when routes exist), switch intent (pain words not solution words; nine kinds of buying language with strengths; the Hacker News search API, free), hiring (role map, tiers by post age, one level above the role), new leaders, rivals' customers, events (speakers, sponsors, exhibitors — never attendee lists), developer activity (GitHub weights, multi-repo people, 3+ people at one company = adoption, write to the buyer; no commit emails), ad libraries, past champions, directories.
+- **Signals table** gains switch intent, rivals' customers, event roles and developer adoption, with windows and strength anchors.
+- **Speed and cost:** at most three workers on short briefs, 25 searches + 20 reads each, ~100 web calls for a 50-row ask; bigger asks deliver the full account list with people for the top accounts.
+- **Server routes** (`server-needs.md`, rewritten): exact paths and prices for email check (first), work-email find, people search and company search; never the deprecated Apollo search, phone finders or personal modes; cost and approval rules (count and sample before reveals, cheapest first, stop at three good people, check every address). `data-sources.md` § When the contact routes exist tells the run to use them as soon as the connector lists them; until then it works honestly as before.
+- **The list leads somewhere:** the closing decisions offer the messages for the list (write-outreach); `score-segment-qa` no longer says "the human writes from the angle".
+- Shared: `outcomes-ledger` adds write-outreach as a loader, `sequence_id / last_touch / reply_category` columns and the 12-week cool-down after a sequence ends with no reply.
+
+**Never brought back:** scraping who liked, reacted or commented; personal emails and phones; attendee and RSVP lists; commit emails; Smartlead launching; SMS; Supabase pipelines; any committed real-people data (all examples fictional, `.example` domains).
+
+**Evals written, not run:** `evals/playbooks/research-audience-list/` (the marketer asks for the list — the 19 Oct scenario always declined it) and `evals/playbooks/write-outreach/`; legacy mappings added; 10 routing cases added and R07/R43 re-pointed.
+
+### Round 1 on list mode — depth (senior demand-gen) and adversarial walks (2026-10-19, subagents, effort high)
+
+| # | Finding | Verdict | Fix |
+|---|---|---|---|
+| 1 | ~100 web calls can't build 50 people at 13–20 lookups each | Agree | The report's first line says what the free pass builds: the full account list with gates and signals, people with routes for the top 10–15 accounts, the rest "people to find"; the routes build every row once they exist |
+| 2 | Many reference lines still said "ask" before rows; the outcomes ask could fire first | Agree | Every such line now "assume, label, correct after rows"; customer list, outcomes and open fit lines move to the closing decisions; fit-definition no longer "plays back for a yes" |
+| 3 | Unchecked addresses sat in the sendable `email` column | Agree | `email` holds only checker-passed addresses; published and pattern-built ones go in `email_candidate` |
+| 4 | Attendee and buyer lists allowed in three files, banned in one | Agree | Exhibitors, speakers and sponsors only, everywhere |
+| 5 | Handles could be matched across sites; GitHub's terms on unsolicited email | Agree | A row only from the author's own profile on the same site; never cross-site matching; GitHub → accounts only, never developers |
+| 6 | Inbound triage dropped demo requests; no lead age; no cap on huge exports | Agree | Nothing that asked is dropped; `lead_age` + overdue flag; score from the file first, fill gaps for the top ~100 only |
+| 7 | GitHub keyless rate limit; star/watcher weights | Agree | Company lookups for the top ~50 only; stars and watchers dropped; usage from manifests and imports, not interest |
+| 8 | Switch-intent searches outran the budget; windows disagreed; no rival-event trigger | Agree | Top two queries per kind, one 30-day window; "rival event" signal row |
+| 9 | Stale step numbers; list report had two shapes | Agree | Load lines renumbered to list-mode's order (with a 5b hooks step); the list is its own report |
+| 10 | Two checks on every address; providers check unspecified; wrong spend-gate section | Agree | One checker, a second only on `unknown`; read the provider list from the tool description and probe once; § C |
+| 11 | Watches had no state; one alert per person forever; no cost | Agree | `watch/queries.md`, `watch/seen.csv`; alerts keyed on person + new employer; cost per run stated |
+| 12 | No account-list refresh (tam-builder) | **Backlog** | BACKLOG #19 (standing account list), built when the connector has company search |
+| 13 | No developer-tools row; Product Hunt; small-company job boards; lessons logic | Agree | Row added; Product Hunt source; Workable, Wellfound, Indeed; lessons use write-outreach's reading-results table |
+| 14 | No retention; phone routes | Agree | Never-contacted ledger and watch rows deleted after 12 months (suppressed keys kept); phone only a business's published main line, after DNC/TPS checks |
+| A1 | A consumer waitlist would be scored and looked up by name | Agree — the worst finding | Consumer test first in score-a-list: no lookups, no ledger rows, no outreach list; pick who to talk to; email-lifecycle for any email |
+| A2 | Companies House match by name could mark a sole trader emailable | Agree | Match on registered address or an officer; webmail-only shop with no matched company = sole trader; a `UK-ltd` flag |
+| A3 | Angles didn't reach write-outreach | Agree | `segments.csv` written next to `list.csv` |
+| A4 | "…then write the emails" still got an offer | Agree | When the ask includes the messages, list mode goes straight on to write-outreach |
+| A5 | write-outreach results never read here | Agree | Step 2 reads the newest `outreach/*/results.md` for referrals and lessons |

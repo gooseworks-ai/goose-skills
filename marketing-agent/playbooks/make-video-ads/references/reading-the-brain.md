@@ -16,7 +16,7 @@ The contract and the checks are `../../../atoms/claims-gate/ATOM.md` (owner: lea
 
 ## 2. Customer words (research-market)
 
-- Prefer `research/market/voc-bank.jsonl` (one row per quote: `id` `V-NN`, `verbatim`, `about` brand / prospect / competitor / category, `type`, `theme`, `segment`, `vividness`, `contains_claim`, `testimonial_ok`, `personal_attribute`); else `voc-bank.md`, or the document "Voice-of-customer bank — <brand> — <date>" (`knowledge_search` `["document"]`).
+- Prefer `research/audience/voc-bank.jsonl` (one row per quote: `id` `V-NN`, `verbatim`, `about` brand / prospect / competitor / category, `type`, `theme`, `segment`, `vividness`, `contains_claim`, `testimonial_ok`, `personal_attribute`); else `voc-bank.md`, or the document "Voice-of-customer bank — <brand> — <date>" (`knowledge_search` `["document"]`).
 - Hooks use rows with `contains_claim: false` and `personal_attribute: false` (vividness 3 first). Quote cards only from rows with `testimonial_ok: true` and `about: brand`. Cite `V-NN`.
 - Second source: `knowledge_search` `["evidence"]` (the server's own captured evidence — often press quotes and site metrics, not customer words).
 

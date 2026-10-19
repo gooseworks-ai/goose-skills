@@ -22,7 +22,7 @@
 | 3 | **Reply drafts** — finished replies to comments, mentions and DMs on the brand's own posts and in the places it is mentioned, each with a recommendation (reply / take private / stay silent), disclosure on third-party communities, and holding statements in a crisis; the human sends. Owner: **run-organic-social**, which already runs the daily engagement routine. research-market's brand-watch mode finds the threads and flags risks; this card drafts the replies. The old craft is in git history at `playbooks/listen-social/references/reply-drafting.md` | Mode in run-organic-social | DTC and consumer brands with active comment sections; any brand in a crisis | 3 customers ask for reply drafts after a research-market run flags threads, or the first crisis where a drafted holding statement is needed |
 | 4 | **Search-ad copy** — Google responsive search ads, sitelinks, keyword themes, starter negatives; Apple Search Ads keywords | Mode in `make-static-ads` | B2B SaaS, local and DTC whenever plan-campaign marks Google Search "Run" | The first customer with a live Google Search line in a plan |
 | 5 | **write-my-positioning** — 2–3 positioning options, a messaging framework traced to approved claims, boilerplate, homepage hero lines | New playbook | Just-launched B2B SaaS, services firms, pre-launch apps, in week 1 | 3 founders in a month where where-to-start reports "no positioning", or the first services customer |
-| 6 | **do-outreach (writing half)** — email and LinkedIn sequences per segment, first lines, reply templates; the human sends | New playbook | B2B founders in weeks 2–3 holding a prospect list and no words; services firms; brands pitching retail buyers | 3 customers who ran research-audience ask "now what do I send?" (sending and reply handling wait for a sending layer) |
+| 6 | **do-outreach (sending half)** — sending sequences from the customer's own domain and mailboxes, warm-up, stop-on-reply, reply handling in the product. **The writing half is built (19 Oct): write-outreach** drafts sequences, first lines, replies and results reads; the human sends | Sending layer (server) + a mode in write-outreach | B2B founders and sellers running outbound weekly | A sending layer that connects the customer's own mailbox (not the @agentmail.to workspace inbox), and 3 customers who use write-outreach ask to send from GooseWorks |
 | 7 | **Sales collateral** — one-pagers, battlecards, demo scripts, sell-sheets | Mode in `make-content` | B2B launches (plan-campaign lists them on asset lists); CPG retail pitches | Built together with #4 or #5, whichever comes first |
 | 8 | **optimize-listings v1** — Amazon/marketplace listing audit and copy, the listing image set, feed health (Merchant Center, Meta catalogue, TikTok Shop); plus Amazon rows in analyze-performance and Sponsored Products moves in run-paid-campaigns | New playbook + modes | Amazon and marketplace sellers from week 1 (about 15–20% of their work is served today); DTC brands when a feed disapproval stops catalogue ads | The first marketplace seller signs up, or feed disapprovals show up in 2 accounts |
 | 9 | **manage-reviews** — reply drafts and rating watch across Google, app stores, Amazon, Trustpilot (review-request emails already exist in email-lifecycle's flows) | New playbook | Local businesses, apps and Amazon sellers, weekly | The first local or app customer, or a review-site read becomes available through the data proxy |
@@ -35,6 +35,31 @@
 | 16 | **PR drafts** — launch press release, gift-guide pitches, press kit (research plus drafts; the human pitches) | Mode in make-content | DTC gifting season, launches | 3 customer asks |
 | 17 | **B2B content roadmap** — a topic and keyword roadmap, not just single pieces | Mode in improve-search-visibility | B2B SaaS doing content-led growth | 3 B2B customers using make-content for search pieces |
 | 18 | **whatsapp-flows** — broadcasts, catalogue and click-to-WhatsApp flows | New playbook | Brands in WhatsApp-first markets (India, Brazil, Indonesia) | The first customer in a WhatsApp-first market, and an approved sending route |
+| 19 | **Standing account list** — every company that fits, scored and refreshed: new fits added, stale ones retired after two missed refreshes, 2–3 people watched per top account | Mode in research-audience (list mode) | B2B teams running account-based outbound every week | The connector has company and people search (research-audience server-needs #3–#4), and 2 customers re-run list mode on the same definition monthly |
+
+## Seed notes for cards #5 and #7 (from the old library, 19 Oct)
+
+The old skills are being deleted; these keep what was worth having. Craft only — not their structure, vendor calls or keys.
+
+- **#5 write-my-positioning — seed: `skills/brand/composites/launch-positioning-builder/SKILL.md` (in git history).** Keep its April Dunford spine:
+  - what buyers use instead (rivals, substitutes, doing nothing);
+  - the brand's unique attributes turned into value, each with proof;
+  - a message hierarchy (one headline claim, two or three supporting messages);
+  - messages by buyer group;
+  - where to use them (homepage, ads, sales deck, bios);
+  - a "what we're not saying" list.
+
+  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". When built: proof goes through `atoms/claims-gate` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `atoms/write-report`.
+- **#7 Sales collateral — seed: `skills/competitive-intel/composites/battlecard-generator/SKILL.md` § "Phase 3: Output — Battlecard" (in git history).** Keep the one-page sheet a salesperson opens five minutes before a call:
+  - a 30-second version;
+  - questions that frame the deal;
+  - landmine questions to plant;
+  - objections with answers;
+  - an honest feature and price comparison (the hidden costs from its § "1E Pricing Deep Dive");
+  - where we win (lead with these), where we lose (don't engage there) and where it's close;
+  - short email replies for common moments.
+
+  When built: it reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `atoms/claims-gate`.
 
 ## Still skipped on purpose
 
@@ -47,4 +72,5 @@ These are not playbooks, but several cards above wait on them. Each playbook's `
 - A typed home in the brand brain for margins, stock, offers and email programs — cards #1, #7.
 - Reading the customer's own tools (email, Search Console, Seller Central) — cards #1, #7, #11.
 - A sending layer — card #6 (sending half), #18.
+- The lead-data routes on the connector (people search, email find, email check — they exist on the server's CLI proxy) — research-audience list mode, write-outreach (`playbooks/research-audience/server-needs.md`).
 - A watcher layer — cards #9, #10.

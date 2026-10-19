@@ -333,3 +333,21 @@ Each failure was confirmed against `evals/results/2026-10-19/research-competitor
 **§2b pushback:** none on the criteria; each one matches what a senior marketer expects. One note on E5 (body under 3,000 words with five rivals): it holds only if profiles stay short. That is now enforced at the worker, not trimmed at the end.
 
 Expected cost now: 7 lean workers at about 24 web calls each, plus the main run. About **$8–12 and 15–20 minutes** for a standard run, against $35 and 46 minutes. A deep quarterly teardown is roughly double.
+
+
+## Round 17 — ports from the old library (2026-10-19): verdicts per AGENTS §2b
+
+Sources as in research-market's Round 6. Old skills were read as reference only.
+
+| Port | Verdict | Where it went |
+|---|---|---|
+| Pricing teardown (competitive-pricing-intel §2B, §2C, feature gating, §2D; battlecard-generator §1E hidden costs) | **Ported** | rival-craft §6: what a typical buyer actually pays (one stated scenario), the packaging model, a feature-gating table, hidden costs, and change severity for the watch. The rival-pass brief carries the scenario; the report's pricing table now has a "what a buyer like ours pays" column and the cheapest tier with the key features. watch-and-react thresholds use the severity scale. |
+| Wayback mechanics (web-archive-scraper "How it works") | **Ported** | rival-craft §6: the CDX query with `collapse=digest` (only change dates), raw snapshots with `id_`, about 15 requests a minute. Used for pricing, headline and customer-logo history. |
+| Rivals' lost customers and real users (customer-discovery: Wayback logos, job postings, integration directories, Step 5 confidence) | **Ported** | rival-craft §9: logos gone since a year ago ("likely lost", a switch target), "experience with <rival>" job posts, integration directories, and confirmed / likely / a guess with evidence. Added to the rival-pass brief within its read cap, and to the report's profiles. |
+| Channel scorecard against stage (company-current-gtm-analysis §3A) | **Ported, in words not letter grades** | The report's "How they compare" grades each channel strong / fine for their stage / weak / couldn't check, judged against the rival's stage. write-report bans invented scores, and A–F grades read as false precision. The research-spec's promised channel heatmap now exists. |
+| Topic gap (competitor-content-tracker Phase 5) | **Ported** | The report's "How they compare": topics rivals publish on that we don't, and topics buyers ask about that nobody covers. |
+| Transcripts for demo breakdowns (transcript-intelligence workflow and guardrails) | **Ported** | rival-craft §5: the proxy transcript reads as a paid top-up, an extraction schema (hook and payoff with timestamps, claims with evidence, objections, CTA, sponsorship, quotable lines) and the accuracy guardrails. |
+| Free feeds for scheduled watches (blog-feed-monitor, hacker-news-scraper; sitemaps from data-access) | **Ported** | watch-and-react item 9: diff each rival's blog and changelog feed since the last snapshot, Hacker News search for launches, and sitemaps for new comparison or pricing pages. These are what a browserless scheduled run can still read. |
+| Battlecard (battlecard-generator Phase 3) | **Seeded, not built** | BACKLOG seed note on card #7, as agreed: the surface stays frozen. |
+| Objection map | **Not ported here** | Belongs to research-audience (review gap #6). research-competitors' "where we win, where we lose" stays its competitive half. |
+| Apify topic tracking, BuiltWith scraping, review scrapers | **Rejected** | Vendor keys or scraping vendor sites, against the free-pass rules. Methods are kept where they work on public pages. |

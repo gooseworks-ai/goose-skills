@@ -21,7 +21,7 @@ Decide the mode at the start and label every item with how it was checked. Never
 ## 2. Compare against the truth, not against expectations
 
 - Product: the brand's real product photos (curated — never an earlier generated image as the reference).
-- Words: the approved text (script, prompt fence, on-image copy) word for word.
+- Words: the approved text (script, the image brief's exact on-image text, on-image copy) word for word.
 - Claims: the signed claims; anything drawn or spoken that is not on the approved text is a finding.
 - When you cannot see: compare the automatic read of the output with the automatic read of the reference **on named fields** — part or item count, readable label or on-screen text, colour words, which product is in which scene — and report each mismatch specifically ("the reference reads 'DIVE DEEP' on the label; the output read shows 'DIVE DEEEP'").
 

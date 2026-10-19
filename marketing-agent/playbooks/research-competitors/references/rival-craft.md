@@ -39,11 +39,18 @@ Find the 1–3 most visible people (CEO, founders, CMO, head of product) from th
 
 Changelog / release notes, product blog, Product Hunt, the rival's YouTube channel, launch posts on LinkedIn and X. Then search YouTube, TikTok, X and LinkedIn for `"<rival> <feature>"`, `"<rival> demo"`, `"<rival> review"`, `"I tried <rival>"`. For the 1–2 biggest launches: watch the official demo and the 3 best third-party posts about it, and break each into **hook · setup · reveal · proof · CTA · length · style**. Note what commenters praised and complained about. Flag any launch of something **our brand already does** (check our product records and site) — a counter-position candidate.
 
-**How to watch a video:** the host's video-watching tool if it has one; otherwise the transcript or captions (YouTube transcript, description, chapters) plus the thumbnail and on-screen text you can see; `gooseworks:media_analyze` for videos already in the brand's library. Tag each breakdown **from video**, **from transcript only**, **from page text only** (a launch with no video), or **couldn't watch** (→ Couldn't read). Never infer beats from a title.
+**How to watch a video:** the host's video-watching tool if it has one; otherwise a transcript read (`/v1/youtube/video/transcript`, `/v1/tiktok/video/transcript`, `/v2/instagram/media/transcript` through the proxy, a paid top-up) or the captions (YouTube transcript, description, chapters) plus the thumbnail and on-screen text you can see; `gooseworks:media_analyze` for videos already in the brand's library. Tag each breakdown **from video**, **from transcript only**, **from page text only** (a launch with no video), or **couldn't watch** (→ Couldn't read). Never infer beats from a title. From a transcript, pull: the hook and first payoff (with timestamps), each claim with the evidence offered, objections answered, the call to action, any sponsorship, and quotable lines. An auto-transcript isn't exact: flag unclear brand names, numbers and regulated claims; high engagement never proves a claim true.
 
 ## 6. Pricing and packaging
 
-Pricing page: plan names, prices, the unit (seat, credit, search, contact), free tier or trial, annual discount, what sits behind "contact sales", the feature that pushes buyers up a tier. Compare with the Wayback Machine (`web.archive.org/web/*/<domain>/pricing`) for changes in the last 6–12 months. G2/Capterra pricing sections and Reddit `"<rival> pricing"` for what buyers actually pay. "Price not public" where it isn't — never guess.
+Pricing page: plan names, prices, the unit (seat, credit, search, contact), free tier or trial, annual discount, what sits behind "contact sales", the feature that pushes buyers up a tier. Compare with the Wayback Machine for changes in the last 6–12 months. G2/Capterra pricing sections and Reddit `"<rival> pricing"` for what buyers actually pay. "Price not public" where it isn't — never guess.
+
+- **What a typical buyer actually pays.** Write one scenario for the brand's typical buyer (e.g. "a 10-person growth team making 40 ads a month") and work out each rival's monthly cost for it, list price and any usage charges included — not the cheapest plan. It shows the real price position, which list prices hide.
+- **What sits in which tier:** the packaging model (good-better-best tiers · usage-based · per seat · freemium · reverse trial · platform plus add-ons) and a feature-gating table — the 5–8 features buyers care about, and the cheapest tier that includes each.
+- **Hidden costs:** setup or onboarding fees, overage charges, paid add-ons, annual-only plans, seat minimums, what triggers "talk to sales".
+- **Changes, by how serious** (for the watch): a change of pricing model is critical; a price rise or cut, or a free-tier change, is high; a tier added or removed, or a feature moved between tiers, is medium.
+
+**Wayback Machine, efficiently:** list only the dates a page actually changed — `https://web.archive.org/cdx/search/cdx?url=<page>&output=json&collapse=digest&from=<YYYYMM>` — then fetch just those snapshots raw, without the archive toolbar, by adding `id_` after the timestamp (`https://web.archive.org/web/<timestamp>id_/<page>`). Stay under about 15 requests a minute.
 
 ## 7. Positioning and messaging
 
@@ -55,7 +62,10 @@ Follow the main CTA from an ad and from the homepage: landing page type, free tr
 
 ## 9. Customers
 
-Logo wall, case studies (industry, company size, result claimed), testimonials, segments they lean into, 5–10 named customers. Note where their story and their reviews disagree.
+Logo wall, case studies (industry, company size, result claimed), testimonials, segments they lean into, 5–10 named customers. Note where their story and their reviews disagree. Two stronger signals:
+- **Customers they likely lost** — logos on the customers page a year ago (Wayback, change dates only, as in §6) that are gone now. Each is a switch target; say "likely lost", never "lost".
+- **Who really uses it** — job posts asking for "experience with <rival>": `"experience with <rival>" site:linkedin.com/jobs OR site:greenhouse.io OR site:lever.co`. Also the rival's listings in integration directories (Zapier, Slack, Salesforce and the category's marketplaces).
+Rate each named customer: **confirmed** (current logo, published case study or testimonial, partner page) · **likely** (a review by someone at that company, press, a job post, a video testimonial) · **a guess** (one weak signal). Keep the evidence link for each.
 
 ## 10. Reviews — the voice of the buyer
 

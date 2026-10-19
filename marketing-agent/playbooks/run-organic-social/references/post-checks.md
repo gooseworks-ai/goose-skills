@@ -67,6 +67,17 @@ Claims follow atoms/post-check step 4: the shared claims gate plus the social sp
 
 ## 5. Trend posts
 
+**Is it really a trend?** It must show acceleration (growing this week against last), repetition across unrelated accounts, or spread across platforms. Big lifetime views alone don't count.
+
+**Pick one of five responses:**
+1. join in;
+2. borrow the format for our own topic;
+3. answer the question the trend raises;
+4. make an evergreen version that outlives it;
+5. ignore it.
+
+Say which, and why. Also name the horizon: react this week, plan for next month, or let it shape the quarter.
+
 Trends come only from fresh evidence: this run's platform research (atoms/platform-research), research-market's latest report (the "What people are saying" section of the newest `research/market/<D>-read.md`: trends with post-by dates; check its window line), and the inspiration library (`gooseworks:social_inspiration_search`). Every trend carries its first-seen date and a link.
 
 **Fit test (all four must pass):**

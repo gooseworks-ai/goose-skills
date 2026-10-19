@@ -15,32 +15,32 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Reads:** the brand research the server already ran.
 - **Not:** positioning from scratch, market research, any creative.
 
-## research-market — "Who actually buys this, and what do they say in their own words?"
-- **Say it as:** "finding out who actually buys, the words they use, and what people are saying about you" (never the name above, to the founder).
-- **Fits:** the founder has customers, users, a waitlist or beta testers but doesn't know who buys and why; messaging feels generic; before positioning, campaigns or ads; a new segment appears. Pre-launch only when there is a waitlist, beta users or customer notes to mine. Also "what are people saying about us?": brands with a social footprint or a community, a complaint brewing, consumer categories driven by trends (a narrow ask covers just that area).
-- **Produces:** a voice-of-customer bank (sourced quotes), a grounded persona, a named competitor list, a labelled demand read (direction, seasonality, how buyers phrase it), and a "what people are saying" section (mentions, sentiment, themes, trends with post-by dates, risk flags; a serious risk is told in chat at once; standout posts saved as inspiration). With fewer than about 30 items from the brand's own customers or prospects (pre-launch, no list) it runs as a cold start: category language labelled "not your buyers", no persona, and an interview and survey kit for the founder to run.
-- **Must bring:** who they believe buys today; where customers talk or review; any existing evidence (reviews, support tickets, call notes).
-- **Reads:** the brand brain.
-- **Not:** competitor ad teardowns, positioning, contacting customers, channel planning, posting or replying (reply drafts are not covered yet).
-- **Costs:** May spend credits on public-data pulls (reviews, forums, search, social platforms), within a credit ceiling the founder approves first.
+## research-market — "Which market are we in, how big is it, and what's changing?"
+- **Say it as:** "researching your market: which category you compete in, how big it is, what's changing, how people buy and what they pay — and what people are saying about you" (never the name above, to the founder).
+- **Fits:** before positioning, a plan or a raise; when the category is moving (platform changes, new entrants, price shifts); "what are people saying about us?" (a narrow ask covers just that); "watch my brand" (alerts only, weekly or daily during a launch or crisis).
+- **Produces:** a market report — which market to compete in, its size top-down and bottom-up (buyers × price, from research-audience's buyer groups), what's changing, how and where buyers find and buy, pricing norms, where attention is, demand and seasonality, what people are saying (mentions, sentiment, trends with post-by dates, risks), the competition in brief, what it means for positioning; a demand read; or brand-watch alerts. A serious risk is told in chat at once.
+- **Must bring:** nothing — it researches first.
+- **Reads:** the brand brain; research-audience's buyer groups; the latest competitor report.
+- **Not:** who the buyers are and their words (research-audience), rival teardowns, positioning, posting or replying (reply drafts are not covered yet).
+- **Costs:** Free first; paid reads (full social counts, platforms behind logins) only within one credit ceiling the founder approves after the report.
 
 ## research-competitors — "What are my competitors running right now, and what works for them?"
 - **Say it as:** "looking at what your competitors are running and what works for them" (never the name above, to the founder).
 - **Fits:** before briefing ads, before a planning cycle, when a competitor visibly moves; categories with active advertisers (DTC, apps).
-- **Produces:** a competitor file (positioning, pricing, live ads, content, social), an angle bank with evidence, an optional weekly watch digest.
-- **Must bring:** which competitors matter (confirm the known set), which markets and channels matter.
-- **Reads:** the competitor list from research-market or the brand brain.
-- **Not:** making ads, budget calls, review mining, social listening.
-- **Costs:** Free from the brain; paid pulls (other ad libraries, social mentions, search) only within a credit ceiling the founder approves first.
+- **Produces:** a competitor report (the frame we compete in, timely openings, rivals one by one, pricing and what a typical buyer actually pays, how they compare, formats and angles, what to do), rival records with snapshots, an angle bank, and an optional weekly what-changed report.
+- **Must bring:** nothing — rivals are chosen from category evidence; the founder can add or drop them afterwards.
+- **Reads:** the brand brain and its tracked rivals, the latest market report, research-audience's buyer groups.
+- **Not:** making ads, budget calls, mining customer reviews, brand listening.
+- **Costs:** Free first; paid reads (other ad libraries, social mentions) only within one credit ceiling the founder approves after the report.
 
-## research-audience — "Find me 50 right-fit people with verified emails."
-- **Say it as:** "building a list of right-fit businesses or people to contact" (never the name above, to the founder).
-- **Fits:** outbound to businesses: B2B founder-led sales, wholesale and retail buyers, distributors, partners, agency prospects, and marketplace supply that is a business (providers with a business presence). Never private individuals, consumers or gig workers.
-- **Produces:** a fit-scored, accounts-first list (B2B usually up to 50 people; partner lists 20–30; marketplace supply 100–300 provider businesses), each with a sourced contact route and an honest email status. There is no email verifier: the founder verifies before sending.
-- **Must bring:** roughly who they sell to (the playbook firms up the fit definition with them), who to exclude, their own tool to send from and verify addresses.
-- **Reads:** the ICP from the brand brain.
-- **Not:** writing or sending sequences (the human runs outreach), creator discovery, CRM upkeep.
-- **Costs:** Spends credits on people and email lookups; the founder sets a ceiling first.
+## research-audience — "Who are our buyers, in their own words, and how do we reach them?"
+- **Say it as:** "finding out who your buyers are, what they want and struggle with, the words they use and where to reach them" (never the name above, to the founder).
+- **Fits:** the founder doesn't know who buys and why; messaging feels generic; before positioning, campaigns or ads; a new segment appears. A named list of businesses or people to contact only when asked.
+- **Produces:** buyer groups (how to recognise each, size, who uses, pays and approves), the voice-of-customer bank (sourced quotes), an audience report with where each group gathers and how to reach it; on request, a fit-scored list with sourced contact routes.
+- **Must bring:** one thing, if the brand has customers: its own customer data (a list or export, win/loss or churn notes) — the one question allowed up front.
+- **Reads:** the brand brain; the latest market and competitor reports.
+- **Not:** market size and trends (research-market), writing or sending outreach, creator discovery.
+- **Costs:** Free first; people and email lookups in list mode spend credits within a ceiling the founder approves.
 
 ## plan-campaign — "I have this budget and a launch date — what do I run, where?"
 - **Say it as:** "planning the campaign: where to run, what to spend, on which dates" (never the name above, to the founder).
@@ -119,7 +119,7 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Fits:** categories creators move (beauty, fashion, food, fitness, consumer apps, games); a budget for gifting or paid posts.
 - **Produces:** a vetted creator shortlist with benchmarked prices and gift-vs-paid calls, and one-page briefs. The human contacts and closes every deal.
 - **Must bring:** the goal (awareness, content, tracked sales), budget, platforms, creators already in talks.
-- **Reads:** research-market's saved outliers and persona, campaign brief.
+- **Reads:** research-market's saved outliers, research-audience's buyer groups, campaign brief.
 - **Not:** outreach, gifting, codes, contracts, affiliates.
 - **Costs:** Spends credits on creator discovery and vetting lookups, within a ceiling the founder sets.
 
@@ -158,7 +158,7 @@ Name these out loud using the "What to say" line only; backlog card names are in
 | Always-on alerts (spikes, disapprovals, stock-outs) | watch-and-alert (backlog) | "Standing alerts aren't built; the weekly read and daily pulse cover it for now." | analyze-performance |
 | Setting up tracking, analytics, the pixel, the ad account | human or developer | "Setting up tracking is yours (or your developer's); once it exists, the weekly read checks it." | analyze-performance (tracking-health check) |
 | Recruiting individual supply or freelancers (gig workers, walkers, tutors without a business presence): job boards, referral rewards from current supply | human | "Recruiting individuals isn't covered; here is the first step you take." | none (research-audience only for supply that is a business) |
-| Customer interviews and surveys | human | "Talk to five customers yourself; I can tell you who and what to ask." | research-market |
+| Customer interviews and surveys | human | "Talk to five customers yourself; I can tell you who and what to ask." | research-audience |
 | PR and press, referrals and loyalty, community, events and trade shows, retail and trade, WhatsApp and chat, offline and local field marketing, product-led growth and onboarding loops | no playbook | "This is real work I can't do for you yet; here is the first step you take yourself." | make-content for community posts or a founder article, where it fits (it does not write press releases or pitches) |
 | Product-market fit, the product itself, pricing, hiring a salesperson, raising money | not marketing | "This is not a marketing problem yet; here is why." | none. Never give investment or fundraising advice. |
 

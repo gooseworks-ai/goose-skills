@@ -13,6 +13,7 @@ Load at step 1 (free pass: site-wide and the 3–6 pages behind the gaps). Every
 | Sitemap | `/sitemap.xml` or the robots.txt `Sitemap:` line returns 200 and lists the money pages | polish |
 | Templated page sets | in the sitemap, any set of dozens of pages on one pattern (`/brand/<name>`, `/city/<name>`, `/vs/<name>`): sample 3–5, check whether each has unique, useful content or near-identical boilerplate, and whether they're indexed. Read them before any copy fix | top of the risk list if thin: a proposal to improve, consolidate or noindex, with risk and undo |
 | Organization markup on home/About | view-source for JSON-LD | polish (entity) |
+| Measurement tags (homepage and one money page) | in the page source: which analytics runs (Google Analytics 4 / Tag Manager, Plausible, Fathom, PostHog, Mixpanel, Segment) and which ad pixels (Meta, Google Ads, LinkedIn, TikTok). It decides how the measurement fix is written: the AI-referral baseline goes into the analytics the site already has; no analytics at all → that becomes part of the measurement fix | blocker for measuring results, not for ranking — say which |
 
 ## Per page
 | Check | How | Class |

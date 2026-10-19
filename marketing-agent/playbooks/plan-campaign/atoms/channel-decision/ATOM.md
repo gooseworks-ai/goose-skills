@@ -4,7 +4,7 @@
 
 **Load:** `../../references/channel-decision.md`.
 
-**Inputs:** brand type and distribution footprint (where the product is sold); personas and demand read (`research/market/personas.md`, `demand.md`); landscape and where competitors invest (`research/competitors/landscape.md`, competitor files, `competitor_read` roster); the economics box and per-leg minimums; creative capacity (which makers and how much volume; past creative in `ads_creative_read`); tracking state; email list size; learnings log; the founder's hours; channels already committed or off-limits; existing campaign concepts (`campaign_read`).
+**Inputs:** brand type and distribution footprint (where the product is sold); buyer groups and demand read (`research/audience/buyer-groups.md`, `research/market/demand.md`); landscape and where competitors invest (`research/competitors/landscape.md`, competitor files, `competitor_read` roster); the economics box and per-leg minimums; creative capacity (which makers and how much volume; past creative in `ads_creative_read`); tracking state; email list size; learnings log; the founder's hours; channels already committed or off-limits; existing campaign concepts (`campaign_read`).
 
 **Do:**
 1. Write every mandatory row, then the rows live for this brand type; one line "not relevant: <reason>" for conditional rows that are not.
