@@ -1,8 +1,8 @@
 # Human version
 
-**What this folder is.** The GooseWorks marketing agent's skills, rebuilt from scratch: 14 released playbooks plus 3 foundation skills. Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back in `unreleased/` until their server work exists (Akhil, 20 Oct; see `unreleased/README.md`). A playbook is one marketer want, done end to end ("fill my email flows", "which ad won and what do I make next").
+**What this folder is.** The GooseWorks marketing agent's skills, rebuilt from scratch: 14 released playbooks, their steps ("atoms"), the shared steps and 2 foundation skills, all published to the GooseWorks catalog as separate skills, plus the `marketing-agent` router (kept for evals, not published). Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back in `unreleased/` until their server work exists (Akhil, 20 Oct; see `unreleased/README.md`). A playbook is one marketer want, done end to end ("fill my email flows", "which ad won and what do I make next").
 
-**Why a separate folder.** We are scrapping the old 295-skill library, not patching it. Building in a clean folder keeps the old skills out of the builders' heads and keeps the live ad engine untouched. Nothing here is published: the catalog build only reads `skills/` and `parts/`.
+**Why a separate folder.** We are scrapping the old 295-skill library, not patching it. Building in a clean folder keeps the old skills out of the builders' heads and keeps the live ad engine untouched. Since 20 Oct `marketing-agent/skills/` is published: `scripts/build-index.js` lists every folder there in `skills-index.json` (domain `marketing-agent`), and a merge to `dev` syncs them to staging.
 
 **The rules in one breath.**
 - Never read `skills/`, `parts/`, `collections/` or `skillopt/`. Build from the specs and from first principles of marketing.
@@ -39,8 +39,8 @@ From Shiv's goose-skills rebuild plan and Akhil's marketing-twin decisions:
 2. **Playbooks are listed and user-invoked. Atoms are hidden** and loaded by a playbook. Users only ever see playbooks.
 3. **Media, money and state live on the GooseWorks MCP.** Reference a tool by name as `gooseworks:<tool>`. Never re-describe its parameters (the live schema is the truth). Never invent a tool.
 4. **No vendor keys, ever.** Public data goes through the GooseWorks data proxy (`gooseworks:data_call_provider` and friends). No `APIFY_API_TOKEN`, `FAL_KEY`, `APOLLO_API_KEY`, `ELEVENLABS_API_KEY`, `OPENAI_API_KEY` in any file.
-5. **The brand brain is the single memory** (D5). Read it first (`brand_read`, `knowledge_search`, or whatever the live MCP exposes). Write durable results back into it (claims list, competitor set, voice-of-customer bank, learnings). If the write-back tool does not exist yet, say so in `server-needs.md`; do not fake it with a local file pretending to be memory (except local mode, `foundation/guide` §5, in the playbooks that declare it).
-6. **Without the GooseWorks connection a playbook stops** with one clear sentence telling the user to connect GooseWorks, except local mode (`foundation/guide` §5) in the playbooks that declare it. It never half-runs.
+5. **The brand brain is the single memory** (D5). Read it first (`brand_read`, `knowledge_search`, or whatever the live MCP exposes). Write durable results back into it (claims list, competitor set, voice-of-customer bank, learnings). If the write-back tool does not exist yet, say so in `server-needs.md`; do not fake it with a local file pretending to be memory (except local mode, `skills/marketing-guide/SKILL.md` §5, in the playbooks that declare it).
+6. **Without the GooseWorks connection a playbook stops** with one clear sentence telling the user to connect GooseWorks, except local mode (`skills/marketing-guide/SKILL.md` §5) in the playbooks that declare it. It never half-runs.
 7. **Never invent facts.** No made-up offers, claims, proof, customers or numbers. Claims come only from the brand's approved-claims list; anything else is cut and shown to the human.
 8. **Money moves and publishing are human decisions.** Spend, launches, sends and posts are proposals the human approves. Paid generation needs the user's yes to the credit total first.
 9. **Workflows never call other playbooks.** They chain through written artifacts: one playbook writes, the next reads (see each spec's "from sibling playbooks"). A playbook may **offer** the next job to the human in plain words; it never starts another playbook itself — the human's own request does.
@@ -61,21 +61,26 @@ Log the verdict for each point in the playbook's `critique.md`.
 marketing-agent/
 ├── AGENTS.md                this file (owner: orchestrator)
 ├── README.md                human overview + how to test (owner: orchestrator)
-├── foundation/<slug>/       marketing-agent (the router), guide, data-access (owner: orchestrator)
-├── atoms/<atom>/ATOM.md     shared atoms several playbooks load (owner named in §8)
 ├── reviews/                 cross-set critique reports
-└── playbooks/<slug>/        one folder per playbook (owner: the session assigned it)
-    ├── SKILL.md             the playbook
-    ├── skill.meta.json      metadata (format below)
-    ├── references/*.md      craft knowledge the playbook loads when needed
-    ├── atoms/<atom>/ATOM.md   hidden steps only this playbook uses
-    ├── tests/test-by-hand.md  the spec's "How to test it", sharpened after critique
-    ├── critique.md          every critique round: findings, what changed, what was rejected and why
-    └── server-needs.md      tools/data the playbook needs that the MCP does not have today
+├── unreleased/<slug>/       built but held back (not published)
+└── skills/<slug>/           one flat folder per published skill — each is its own catalog skill
+    ├── <playbook>/          a playbook (owner: the session assigned it)
+    │   ├── SKILL.md             the playbook
+    │   ├── skill.meta.json      metadata (format below)
+    │   ├── references/*.md      craft knowledge the playbook loads when needed
+    │   ├── tests/test-by-hand.md  the spec's "How to test it", sharpened after critique
+    │   ├── critique.md          every critique round (kept here, never published)
+    │   └── server-needs.md      tools/data the playbook needs that the MCP does not have today
+    ├── <playbook>-<step>/   a step only that playbook uses (SKILL.md + skill.meta.json), owned with it
+    ├── <shared-step>/       a step several playbooks load (claims-gate, run-memory…; owner named in §8)
+    ├── marketing-guide/, marketing-data-access/   foundation skills (owner: orchestrator)
+    └── marketing-agent/     the router; "catalog": false, so never published (evals and hand tests only)
 ```
 
-- **You write only inside your own `playbooks/<slug>/` folders.** Never touch another playbook's folder, this file, or anything outside `marketing-agent/`.
-- **A step several playbooks share lives once in `atoms/`** (claims gate, save-to-brain, spend gate…; list in §8). Load it from there; never copy it into your playbook. Only the owner named in §8 edits a shared atom; others send the owner a request.
+**Why flat.** The catalog ships each skill as its own folder only, and an install puts them side by side (`~/.agents/skills/<slug>/`). With one flat folder per slug, `../<slug>/SKILL.md` resolves the same here, in an install, in the catalog archive and in the evals.
+
+- **You write only inside your own playbook's folders** (`skills/<playbook>/` and `skills/<playbook>-<step>/`). Never touch another playbook's folder, this file, or anything outside `marketing-agent/`.
+- **A step several playbooks share lives once, as its own skill** (claims gate, save-to-brain, spend gate…; list in §8). Load it from there; never copy it into your playbook. Only the owner named in §8 edits a shared atom; others send the owner a request.
 - **No git writes.** No `git add`, `commit`, `stash`, `checkout`, `reset`, branch changes. Several sessions share this worktree; the orchestrator makes one commit and one PR at the end.
 
 ## 4. The GooseWorks MCP (the server contract)
@@ -97,8 +102,9 @@ description: >-
 ```
 
 - **Description ≤ 1,024 characters** (the Agent Skills limit several hosts enforce). Always use the `>-` block form: a description that opens with a quoted phrase and continues after the quote is invalid YAML.
-- **Atoms are not skills.** An atom's file is `atoms/<atom>/ATOM.md` (not `SKILL.md`), so hosts that scan folders never list it.
-- **Never name a playbook, tool, id, model or vendor to the marketer.** Say what happens next in plain words ("I'll check your claims first"), not "run research-audience". The one exception: two or three outside tools the marketer must run themselves (an email finder, an email platform), as examples, never an endorsement (`foundation/guide` §3). Credits are quoted exactly as GooseWorks gives them: never dollars, never your own sums.
+- **Every step is its own small skill** (decided 20 Oct, Akhil): `skills/<slug>/SKILL.md` with `name`, `description` and `version`. A step that works alone says "<what it does>. Use alone when you already have <inputs>; otherwise run <playbook>." Every other step says "Step of the <playbook> playbook: …. Run <playbook> instead; not for direct use." Shared steps say which playbooks load them.
+- **`name` is the folder name (the slug)** and slugs are unique across the whole catalog: a playbook's own step is `<playbook>-<step>`. The `version` in SKILL.md and `skill.meta.json` must match (the catalog reads SKILL.md; `scripts/validate-skills.js` checks). Raise it when the skill changes.
+- **Never name a playbook, tool, id, model or vendor to the marketer.** Say what happens next in plain words ("I'll check your claims first"), not "run research-audience". The one exception: two or three outside tools the marketer must run themselves (an email finder, an email platform), as examples, never an endorsement (`skills/marketing-guide/SKILL.md` §3). Credits are quoted exactly as GooseWorks gives them: never dollars, never your own sums.
 
 Body sections, in order: **What you get** (the output, concretely) · **Before you start** (connection check, brain read, what to ask only if missing) · **Steps** (the process a great marketer follows, each step saying what it reads and writes) · **Approval gates** · **Output and write-back** · **Done when** · **Out of scope** (and which playbook owns it).
 
@@ -116,13 +122,19 @@ Write for an agent: precise, imperative, no filler. Put long craft knowledge (fr
   "reads": ["<artifact or brain item it reads, and from which playbook>"],
   "writes": ["<artifact or brain item it writes back>"],
   "needs": { "mcp": ["gooseworks:<tool>"] },
-  "atoms": ["<local atom slug>"],
-  "shared_atoms": ["<shared atom slug>"]
+  "category": "playbooks",
+  "tags": ["<from schemas/skill-meta.schema.json>"],
+  "collections": ["brand-growth"],
+  "collection_stage": "research | analyze | create",
+  "installation": { "base_command": "npx goose-skills install <slug>", "supports": ["claude", "cursor", "codex"] },
+  "requires_skills": ["<every skill it uses, flattened>"]
 }
 ```
 
-- `atoms`: this playbook's own local atoms only (`playbooks/<slug>/atoms/<atom>/`), as plain slugs. `shared_atoms`: atoms it loads from the shared `marketing-agent/atoms/` folder, as plain slugs.
-- **Shared-atom paths inside a playbook** are always file-relative: `../../atoms/<atom>/ATOM.md` from the playbook's `SKILL.md`, `../../../atoms/<atom>/ATOM.md` from `references/` or `tests/`, `../../../../atoms/<atom>/ATOM.md` from inside a local atom. Never the bare `atoms/<atom>` shorthand, which reads as the playbook's own `atoms/` folder.
+A step's meta is shorter: `slug`, `category: "capabilities"`, `tier: "atom"`, `version`, `playbook` (its playbook; a shared step has `used_by` instead), `tags`, `standalone`, `installation`, `requires_skills`.
+
+- **Referring to another skill:** "the `<slug>` skill (`../<slug>/SKILL.md`)", or `../<slug>/<file>` for a file inside it, file-relative (one more `../` from `references/` or `tests/`). The path works on disk; the slug lets a hosted agent fetch it (`marketing-guide` explains this once). Files inside the skill stay plain relative paths (`references/<file>.md`). Never link `unreleased/`, `BACKLOG.md` or this file from a published skill.
+- **`requires_skills`** lists every skill it refers to, **flattened**: only one level of dependencies is delivered, so a playbook also lists what its steps need. A step does not list the playbook that runs it, unless it works alone and reads that playbook's references. Shared steps and foundation skills never require a playbook. `node scripts/check-marketing-agent-links.js` (in CI) checks every reference resolves in the installed layout, names a listed dependency, and that the list is flat.
 
 ## 6. The critique loop (the most important part)
 
@@ -148,7 +160,7 @@ Every playbook follows these exactly. The shared atoms implement them; the revie
 
 ### Shared atoms and their owners
 
-| Atom (`atoms/<slug>/ATOM.md`) | Does | Owner session |
+| Shared step (`skills/<slug>/SKILL.md`) | Does | Owner session |
 |---|---|---|
 | `claims-gate` | Load the brand's claims contract once, classify every claim-like span, keep / rewrite / cut, list each cut with the proof that would restore it. Also the inline **scoped sign-off**: when no sign-off exists, put the 3–5 lines this job needs to the human and record their answer through the contract in its §5. Makers keep their own extract step (on-image text, page sections, post copy). | orchestrator (was learn-my-brand, held back 20 Oct) |
 | `save-learning` | The one seam for writing learnings into the brand brain, by the rules below. Holds any interim handling of today's server. | orchestrator (was learn-my-brand, held back 20 Oct) |
@@ -156,26 +168,26 @@ Every playbook follows these exactly. The shared atoms implement them; the revie
 | `save-to-brain` | Workspace file → brand document, with `versioned: supersede | keep-history`. | research-market |
 | `spend-gate` | Engine-quoted branch and proxy branch (probe, ceiling, log); automation rule. | research-market |
 | `outcomes-ledger` | Human-filled status per person or creator, permanent suppression, re-check date, dated lessons. | research-audience |
-| `ad-policy-check` | Paid-ad platform rules (Meta, TikTok, Google, LinkedIn) incl. personal-attribute and before/after rules. Organic, email and creator disclosure share `atoms/ad-policy-check/disclosure.md`. | make-static-ads |
+| `ad-policy-check` | Paid-ad platform rules (Meta, TikTok, Google, LinkedIn) incl. personal-attribute and before/after rules. Organic, email and creator disclosure share `skills/ad-policy-check/disclosure.md`. | make-static-ads |
 | `honest-review` | Shared principles for reviewing generated media: by eye vs automatic read, what to do when the agent cannot see images, remake only on a priced yes, two tries. Rubrics stay per playbook. | make-static-ads |
 | `write-report` | Write any research, plan, strategy or report for a human reader (summary first, plain words, flow, no ids or jargon) and deliver it so it opens: a local file with a clickable link, an artifact in hosted chat, plus a saved copy with a link. **Every playbook that hands over a document uses it.** | orchestrator |
 | `run-memory` | Gives a repeatable playbook a memory of its own runs. **Start:** find the last run record, check each earlier recommendation (done / not done / unknown, and its measured result), and write 3–5 lines of "since last time". **End:** save a short run record (checked, numbers, decisions, recommendations with id, owner, review-by date and test, outcomes of the last ones) through `save-to-brain`. | orchestrator |
 
-The connection preamble, brand pick, workspace scope, the shared runtime rules (claims, money, research pattern, schedules) and the index of every sibling artifact path live in `foundation/guide` (owner: orchestrator). The runtime text points there or to an atom, never to this file. The sections below keep the decisions and why.
+The connection preamble, brand pick, workspace scope, the shared runtime rules (claims, money, research pattern, schedules) and the index of every sibling artifact path live in `skills/marketing-guide/SKILL.md` (owner: orchestrator). The runtime text points there or to an atom, never to this file. The sections below keep the decisions and why.
 
 ### Connection
-Runtime rule: `foundation/guide` §1. Local mode (guide §5) is declared by `skill.meta.json` `needs.gooseworks` starting "optional": plan-campaign, run-paid-campaigns, analyze-performance only.
+Runtime rule: `skills/marketing-guide/SKILL.md` §1. Local mode (guide §5) is declared by `skill.meta.json` `needs.gooseworks` starting "optional": plan-campaign, run-paid-campaigns, analyze-performance only.
 
 ### Workspace
-Runtime rules: `foundation/guide` §2 (scope, read before write, request lines) and §4 (every path, who writes it, who reads it).
+Runtime rules: `skills/marketing-guide/SKILL.md` §2 (scope, read before write, request lines) and §4 (every path, who writes it, who reads it).
 - When a playbook changes a path, it updates guide §4's table in the same change. Paths only unreleased playbooks write are in `unreleased/README.md`.
 - `ads/campaigns/<slug>/` follows the server's campaign-harness contract: `state.md` frontmatter with `meta_push_ids` / `goose_campaign_id`; recommendations as `- R<n> (YYYY-MM-DD): …`; decisions as `### YYYY-MM-DD — <title>` blocks.
 
 ### Brand documents
-Runtime rules: `atoms/save-to-brain` (title, tags, upload → import → retire → verify).
+Runtime rules: `skills/save-to-brain/SKILL.md` (title, tags, upload → import → retire → verify).
 
 ### Learnings and the brand brain
-Runtime rules: `atoms/save-learning` (learnings and typed facts, openings, prefixes) and `atoms/save-to-brain` (documents).
+Runtime rules: `skills/save-learning/SKILL.md` (learnings and typed facts, openings, prefixes) and `skills/save-to-brain/SKILL.md` (documents).
 - **Two seams only** (orchestrator ruling, 16 Oct; typed `brain_save` targets added 20 Oct). Brain **memory** (learnings and documents) is written only through those two atoms. Typed brand fields a playbook's spec owns (`brand_update` kit / products / onboarding / audience proposals, `knowledge_import` of the brand's own published URLs, `competitor_save`, `campaign_upsert`, and the matching typed `brain_save` targets) are written directly by that playbook, as `found`; audience, plan, budget and positioning changes wait for the human's yes in the app.
 - **Do not design around today's server limits.** The rebuild removes the silent cut of long fact text and the engines' small fact window. Playbooks never ration or shorten learnings; any interim handling lives inside `save-learning`.
 - The fixed-opening facts (`Claims sign-off (learn-my-brand, …`, `Claims you may use —`, …) keep learn-my-brand's opening as a data format although it is unreleased; only `claims-gate` §5 writes the marker and claims.
@@ -184,22 +196,22 @@ Runtime rules: `atoms/save-learning` (learnings and typed facts, openings, prefi
 Prefer `brain_*` where listed and fall back to `brand_read` / `knowledge_search` otherwise: production does not list `brain_*` yet, so every brain step needs its fallback, and playbooks do not change when production gets it. Runtime rules, including found vs confirmed: guide §1.4; writes through the two atoms above.
 
 ### Run memory (decided 19 Oct)
-- **Every repeatable playbook** (anything that can run again for the same brand, weekly, monthly or on request) loads its last run record at the start and saves a new one at the end, through `atoms/run-memory`. Scheduled runs with no human present do both. Anything needing a yes waits as a proposal, and open questions go into the report's "Decisions for you".
+- **Every repeatable playbook** (anything that can run again for the same brand, weekly, monthly or on request) loads its last run record at the start and saves a new one at the end, through `skills/run-memory/SKILL.md`. Scheduled runs with no human present do both. Anything needing a yes waits as a proposal, and open questions go into the report's "Decisions for you".
 - **Recommendations are checked, not forgotten.** Each one carries an id, an owner, a review-by date and a test ("how we'll know"). The next run marks it done / not done / unknown from a source, never from inference, and judges its result against the recorded baseline. A move that didn't work is not repeated without a new reason.
 - **Ads playbooks** keep a **per-ad scorecard** in every record (run-paid-campaigns, analyze-performance). run-paid-campaigns also keeps a short **money-move table**: each budget change, pause or launch with its `R<n>` / `change_id` / `push_id`, from → to, applied date, **baseline recipe** (object, metric, window, attribution, ad ids) and verdict. The next run re-pulls both windows and judges the extra results against the allowable cost, after the change's learning days and with settled data. The campaign harness files (`state.md`, `decisions.md`) stay the source of truth for approval state and checks; the record links them and never forks them.
 - A run record is a few hundred words, never the report, and never holds personal data.
 
 ### Claims
-Runtime rules: `atoms/claims-gate` (both paths: the older sign-off marker, and confirmed brain claims when `brain_*` is listed). Across the playbooks, "signed-off claims" means claims usable through `claims-gate` on either path.
+Runtime rules: `skills/claims-gate/SKILL.md` (both paths: the older sign-off marker, and confirmed brain claims when `brain_*` is listed). Across the playbooks, "signed-off claims" means claims usable through `claims-gate` on either path.
 
 ### Money and publishing
-Runtime rules: `atoms/spend-gate` (engine quotes, the proxy ceiling and credits log, automations) and guide §3 "Publishing".
+Runtime rules: `skills/spend-gate/SKILL.md` (engine quotes, the proxy ceiling and credits log, automations) and guide §3 "Publishing".
 
 ### Public web pages
-Reading a public web page with the host's own fetch, browser or **web search** is allowed (no key involved): news, press, funding, launches, changelogs, job posts, ad-library pages. Bulk social, search and ad-library reads go through the proxy (`foundation/data-access`).
+Reading a public web page with the host's own fetch, browser or **web search** is allowed (no key involved): news, press, funding, launches, changelogs, job posts, ad-library pages. Bulk social, search and ad-library reads go through the proxy (`skills/marketing-data-access/SKILL.md`).
 
 ### Research playbooks: the shared pattern (decided 17 Oct, after the first hand tests)
-The first hand tests failed the same way: questions before research, two credit yeses before any result, almost no web search, a chat summary instead of a report. The fix (free pass first, one message, one credit yes, a readable report, "For you" on every finding) is `foundation/guide/research-pattern.md`, pointed to from guide §3.
+The first hand tests failed the same way: questions before research, two credit yeses before any result, almost no web search, a chat summary instead of a report. The fix (free pass first, one message, one credit yes, a readable report, "For you" on every finding) is `skills/marketing-guide/research-pattern.md`, pointed to from guide §3.
 
 ### Schedules (decided 18 Oct; cadences set after the marketer review)
 The agent judges whether a schedule helps and offers it only then; never for one-off jobs. Cadences and the scheduled-worker rule: guide §3 **Schedules.**
@@ -211,4 +223,4 @@ listen-social is no longer a playbook. Its listening steps are an atom of resear
 Lower-case only (`angle:a-07`, `picked`, `offer-ends:20261031`), queried lower-case. Picks also go in the batch file.
 
 ### Keep SKILL.md lean
-SKILL.md holds the process. Edge-case procedure (dates, paging, re-runs, save order) goes in an atom; craft goes in references. Every research or plan report opens with the In short shape in `atoms/write-report/ATOM.md` §1: what we looked at, the key findings, then "So, do this first". Working records that planners read still open with "Do this first, because…".
+SKILL.md holds the process. Edge-case procedure (dates, paging, re-runs, save order) goes in an atom; craft goes in references. Every research or plan report opens with the In short shape in `skills/write-report/SKILL.md` §1: what we looked at, the key findings, then "So, do this first". Working records that planners read still open with "Do this first, because…".

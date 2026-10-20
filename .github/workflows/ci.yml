@@ -31,6 +31,10 @@ jobs:
       - name: Verify generated index is committed
         run: git diff --exit-code skills-index.json
 
+      - name: Marketing agent skills resolve as published
+        # Every reference in marketing-agent/skills resolves when skills sit side by side, names a listed dependency, and the lists are flat.
+        run: node scripts/check-marketing-agent-links.js
+
       - name: Test the Git LFS pointer check
         run: node --test scripts/__tests__/check-lfs-pointers.test.js
 

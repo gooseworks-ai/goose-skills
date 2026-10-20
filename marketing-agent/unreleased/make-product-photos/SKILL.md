@@ -19,12 +19,12 @@ The engine composes, generates, judges and retries. This playbook is the e-comme
 
 **Hard rules:**
 
-1. **Honesty:** a scene may show only what the product physically is and does — its size, contents, finish, colour and how it is used — from the product record, the real photos and the human's confirmation. Never a result unless it is a signed-off claim (`../../atoms/claims-gate/ATOM.md`), never a feature it lacks (`references/fit-and-honesty.md` §2 is the one list).
+1. **Honesty:** a scene may show only what the product physically is and does — its size, contents, finish, colour and how it is used — from the product record, the real photos and the human's confirmation. Never a result unless it is a signed-off claim (`../../skills/claims-gate/SKILL.md`), never a feature it lacks (`references/fit-and-honesty.md` §2 is the one list).
 2. **References:** only real photos of this exact product, size and colour; never text graphics, other sizes, duplicates or earlier generated images.
-3. **Money:** nothing generates before the marketer's yes to the engine's quotes, shown one by one exactly as given — never your own sum (`../../atoms/spend-gate/ATOM.md`, branch A); the hero runs first; a re-shoot is quoted again.
+3. **Money:** nothing generates before the marketer's yes to the engine's quotes, shown one by one exactly as given — never your own sum (`../../skills/spend-gate/SKILL.md`, branch A); the hero runs first; a re-shoot is quoted again.
 4. **People:** any shot with a person or a body part (hands included) needs the human's own attestation; no real likeness; no children.
 5. **Keepers:** only the human's picks are approved into the brand kit; nothing is uploaded to a store.
-6. **Honest review** (`../../atoms/honest-review/ATOM.md`) and **plain words**: never name a playbook, tool, id, model or vendor to the marketer.
+6. **Honest review** (`../../skills/honest-review/SKILL.md`) and **plain words**: never name a playbook, tool, id, model or vendor to the marketer.
 
 **Setup:**
 
@@ -67,16 +67,16 @@ Per shot: one call — product, `variant_id` if any, `category`, `count` 1 or 2 
 Submit the hero call alone. Read it back (`gooseworks:photos_read` `generation_id`): the `ratio`, `quality` and `overridden_controls` actually used, and run the fidelity check on the hero — a blocker, or controls the shot needed dropped, stops the run and goes to the human before the rest is spent. In "cannot see" mode, show the hero link with its three-item checklist and ask "carry on with the rest?" before submitting the other calls (same quotes, no new price). Poll `gooseworks:job_get` (`kind: "photo_generation"`) for a bounded time; still queued → "I'll check when you're back" and end the turn — never resubmit (it pays again). `workflow_error` with nothing charged is an infrastructure failure: offer a fresh quote; quality failures carry `final_defect_code` / `final_defect_message`.
 
 ### 7. Check every output against the real product
-Run `atoms/fidelity-check/ATOM.md` (follows `../../atoms/honest-review/ATOM.md`; rubric in `references/fidelity-rubric.md`) on every `passed` and `flagged` output — `final_image_url`, `quality_score`, `final_defect_*`, `media_asset_id`. Honesty first, then parts, logo and text (by eye; OCR is a hint), silhouette, colour, scale, hands, physics, background, finish, house style. "Cannot see": `gooseworks:media_analyze` on the output's `media_asset_id` and on the same-angle reference, and compare them **field by field** — part and item counts, the readable label text, colour words, which product is shown — flagging each mismatch specifically ("reference label reads 'DIVE DEEP'; output reads 'DIVE DEEEP'"); label the photo "not checked by eye" and give a checklist aimed at what the reads could not settle. A re-shoot is quoted again, with the engine's `suggested_control_change` offered.
+Run `atoms/fidelity-check/ATOM.md` (follows `../../skills/honest-review/SKILL.md`; rubric in `references/fidelity-rubric.md`) on every `passed` and `flagged` output — `final_image_url`, `quality_score`, `final_defect_*`, `media_asset_id`. Honesty first, then parts, logo and text (by eye; OCR is a hint), silhouette, colour, scale, hands, physics, background, finish, house style. "Cannot see": `gooseworks:media_analyze` on the output's `media_asset_id` and on the same-angle reference, and compare them **field by field** — part and item counts, the readable label text, colour words, which product is shown — flagging each mismatch specifically ("reference label reads 'DIVE DEEP'; output reads 'DIVE DEEEP'"); label the photo "not checked by eye" and give a checklist aimed at what the reads could not settle. A re-shoot is quoted again, with the engine's `suggested_control_change` offered.
 
 ### 8. Present the set and the keeper pick
 Lay it out as the page: slot, photo, use, engine status and score, verdict and reason, who checked it; recommend the page order (next to the current live hero when one exists). Say "generated from your product photos". Report the credits GooseWorks charged per call (`credits_charged`), as it reports them.
 
 ### 9. Record the decision
 - Keepers the human picks: `gooseworks:photos_update` `approve` — on their words only (approved photos flow into ad generation).
-- Rejects: `archive` with **no** reason — the engine turns any reason into a brand-wide "dont" the ad and video engines read, so the agent never writes one. A durable product rule the human states in their own words ("Don't show Dive Deep with a pump top — it has a flip cap") goes through `../../atoms/save-learning/ATOM.md` (text starting `[photos YYYY-MM-DD]`, one idea each, own superseded ones retired). Fine-but-unpicked photos are left alone.
+- Rejects: `archive` with **no** reason — the engine turns any reason into a brand-wide "dont" the ad and video engines read, so the agent never writes one. A durable product rule the human states in their own words ("Don't show Dive Deep with a pump top — it has a flip cap") goes through `../../skills/save-learning/SKILL.md` (text starting `[photos YYYY-MM-DD]`, one idea each, own superseded ones retired). Fine-but-unpicked photos are left alone.
 - Old approved photos the human retires (packaging changed, product changed): `archive` with **no** reason.
-- The confirmed style card: `brand/photo-style.md` saved as the brand document "Photo house style — <Brand> — <YYYY-MM-DD>" through `../../atoms/save-to-brain/ATOM.md` (`versioned: supersede`). A rule the marketer states in their own words ("never a white background for this range") → `../../atoms/save-learning/ATOM.md`, text starting `[photos YYYY-MM-DD]`.
+- The confirmed style card: `brand/photo-style.md` saved as the brand document "Photo house style — <Brand> — <YYYY-MM-DD>" through `../../skills/save-to-brain/SKILL.md` (`versioned: supersede`). A rule the marketer states in their own words ("never a white background for this range") → `../../skills/save-learning/SKILL.md`, text starting `[photos YYYY-MM-DD]`.
 
 ## Approval gates
 

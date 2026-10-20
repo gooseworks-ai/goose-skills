@@ -26,11 +26,11 @@ Every item in the working ledger that is confirmed and not yet written, whicheve
 
 ### 2. Brand record version
 - The current record is the highest `v<N>` in a `gooseworks:file_list` of `brand/records/` (brand coworker scope). Read it in full (`gooseworks:file_read`); if the marker names a lower version, use the highest anyway (a scoped sign-off or a pending-client save may have added one) and the marker is rewritten below. Apply this save's changes; carry every old row over, change it deliberately, or move it to Retired. Set the status line (`in progress, resume at step N` or `complete`; list anything that failed to save) and the `Claims:` / `Voice:` tokens.
-- Save through `../../../../atoms/save-to-brain/ATOM.md`: path `brand/records/<YYYY-MM-DD>-v<N+1>.md`, artifact `Brand record`, title `Brand record — <Brand> — <YYYY-MM-DD> v<N+1>`, tags `[learn-my-brand, brand-record]`, `versioned: supersede`. It writes, imports, waits, deletes the older versions' documents and verifies. If any answer shows a price, stop and ask.
+- Save through `../../../../skills/save-to-brain/SKILL.md`: path `brand/records/<YYYY-MM-DD>-v<N+1>.md`, artifact `Brand record`, title `Brand record — <Brand> — <YYYY-MM-DD> v<N+1>`, tags `[learn-my-brand, brand-record]`, `versioned: supersede`. It writes, imports, waits, deletes the older versions' documents and verifies. If any answer shows a price, stop and ask.
 - If it fails, stop here: write no learnings that would name this version.
 
-### 3. Learnings (the claims contract, by `../../../../atoms/save-learning/ATOM.md` and `../../../../atoms/claims-gate/ATOM.md` §5)
-One `brand_update` `patch.facts` call through `../../../../atoms/save-learning/ATOM.md`, `knowledge_intent: "user_correction"`, the confirming person's words as `user_statement`. **One idea per fact**: never a list of claims or rejected lines in one fact, so each can be found, merged and retired on its own (full detail lives in the record).
+### 3. Learnings (the claims contract, by `../../../../skills/save-learning/SKILL.md` and `../../../../skills/claims-gate/SKILL.md` §5)
+One `brand_update` `patch.facts` call through `../../../../skills/save-learning/SKILL.md`, `knowledge_intent: "user_correction"`, the confirming person's words as `user_statement`. **One idea per fact**: never a list of claims or rejected lines in one fact, so each can be found, merged and retired on its own (full detail lives in the record).
 
 1. **Retire** (`{id, active: false}`): the old marker; changed claims; `Never say —`, `Policy:`, `Not public —` and `Banned words —` facts only when they changed; an email-lifecycle `Standing offer:` fact whose offer the owner just changed.
 2. **Add** (only what is new or changed):
@@ -43,7 +43,7 @@ One `brand_update` `patch.facts` call through `../../../../atoms/save-learning/A
 
 **Status rule** (the same everywhere): `signed-off` once the approver has approved at least one claim — it stays `signed-off` when new lines wait on the sign-off sheet; `pending-client` when nothing is approved yet and the approver is someone not in the chat; `not-signed` when nothing is approved yet otherwise (nobody asked, or the approver approved nothing). `approver:` is `owner` when the owner approves claims, or `client <name>` when someone outside the chat does.
 
-3. **Read back** `gooseworks:brand_read` `sections: ["learnings"]` (lean returns every `must`/`dont`), as `../../../../atoms/save-learning/ATOM.md` does: each fact stored, exactly one active marker, no retired text still active (if a retired fact still shows, delete it with `delete: true`; the record keeps the history). If the call failed, retry it before anything else.
+3. **Read back** `gooseworks:brand_read` `sections: ["learnings"]` (lean returns every `must`/`dont`), as `../../../../skills/save-learning/SKILL.md` does: each fact stored, exactly one active marker, no retired text still active (if a retired fact still shows, delete it with `delete: true`; the record keeps the history). If the call failed, retry it before anything else.
 
 ### 4. Report
 What saved where, what did not and why; unsaved items also go in the record's status line on the next successful save.

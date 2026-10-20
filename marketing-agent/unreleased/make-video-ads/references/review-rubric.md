@@ -49,4 +49,4 @@ Never say "it looks great" about motion or audio you did not perceive. A shell a
 
 - Fixes are targeted: a scene rewritten (`scenes` with the new line, on-screen text or picture), a scene remade as is (`remake`), a new voice or music mood. Each has a price and is made only for a defect the human confirmed, on their yes; new words are shown even when the earlier yes covers the money. Two rounds at most.
 - The human's decision: `gooseworks:video_review` `kept` / `rejected` with `reasons` (`off_brand`, `bad_hook`, `glitch`, `wrong_product`, `boring`) and their words as the `note` (claim problems, wrong words, unreadable text, bad voice, fake-looking person and pacing have no reason code yet — put them in the note).
-- A brand correction the human makes while reviewing (a name said wrong, a claim never to make) → saved through the shared save-learning atom (`../../../atoms/save-learning/ATOM.md`) in the same turn, in their words.
+- A brand correction the human makes while reviewing (a name said wrong, a claim never to make) → saved through the shared save-learning atom (`../../../skills/save-learning/SKILL.md`) in the same turn, in their words.

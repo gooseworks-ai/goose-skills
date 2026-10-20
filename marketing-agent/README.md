@@ -1,8 +1,8 @@
 # GooseWorks Marketing Agent — skills rebuilt from scratch
 
 **In short**
-- The skills a marketing agent needs to do the whole job of a marketer: **14 released playbooks** (one marketer want each, done end to end; 3 more are built but held back, see [unreleased/](unreleased/README.md)) and **3 foundation skills**: `marketing-agent` (the router that picks a playbook), `guide` (shared setup and rules) and `data-access` (live public data with no vendor keys).
-- Built from scratch in this folder. The old library under `skills/` is being scrapped, not patched. This folder is not published to any catalog yet.
+- The skills a marketing agent needs to do the whole job of a marketer: **14 released playbooks** (one marketer want each, done end to end; 3 more are built but held back, see [unreleased/](unreleased/README.md)) their steps, and **2 foundation skills**: `marketing-guide` (shared setup and rules) and `marketing-data-access` (live public data with no vendor keys). The `marketing-agent` router is kept for evals and hand tests only; customers reach the playbooks through the GooseWorks CLI's own `gooseworks` router.
+- Built from scratch in this folder. The old library under `skills/` is being scrapped, not patched. **Published since 20 Oct:** every folder in `skills/` here is its own catalog skill (14 playbooks, 66 steps, 2 foundation skills = 82), listed in the repo's `skills-index.json` under domain `marketing-agent`. A merge to `dev` publishes them to staging; `main` to production.
 - Each playbook is built from its spec, then attacked by critics for **scope** (missed work) and **depth** (shallow output) until they find nothing major. Every round is logged in the playbook's `critique.md`.
 - Source plans: [the Marketing Agent map](https://claude.ai/artifact/6PAQXoadLzETsFd57vP79a) (Akhil) on top of [the goose-skills rebuild plan](https://goose-publish.shiv-861.workers.dev/goose-skills-rebuild/) (Shiv).
 
@@ -32,8 +32,12 @@
 ## How to test a playbook
 
 1. Connect GooseWorks **staging** to your agent.
-2. Link the playbook into your agent's skills folder, for example:
-   `ln -s "$PWD/marketing-agent/playbooks/make-content" ~/.claude/skills/make-content`
+2. Link **every** skill into your agent's skills folder, side by side, so `../<slug>/` links resolve (a playbook needs its steps and the shared steps). From the repo root, for the hand-test folder:
+   ```bash
+   mkdir -p ~/projects/marketing-agent-test/.claude/skills
+   for d in "$PWD"/marketing-agent/skills/*/; do ln -sfn "${d%/}" ~/projects/marketing-agent-test/.claude/skills/"$(basename "$d")"; done
+   ```
+   That also links the `marketing-agent` router (not published) — remove its link to test what customers get. Links from the old layout (`playbooks/`, `atoms/`, `foundation/`) are dead: delete them first (`find ~/projects/marketing-agent-test/.claude -maxdepth 2 -type l ! -exec test -e {} \; -print -delete`).
 3. Follow that playbook's `tests/test-by-hand.md`. It passes when its "Done when" line holds.
 
 ## Later: retiring the old library

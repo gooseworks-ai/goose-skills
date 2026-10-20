@@ -5,7 +5,7 @@ Load at Steps 2, 4 and 5 (and Step 11 for a disapproval). Craft knowledge, not l
 ## 1. Two traces for every script
 
 1. **Idea trace:** every hook and body idea → the angle bank (`A-NN`), a voice-of-customer row, or a **labelled brand source** — the kit audience or positioning, the brand's own top organic posts, the marketer's words in this chat ("brand-stated, not customer-tested"). A hook "inspired by customers" that no customer said fails; engine-drafted angles are labelled "untested".
-2. **Claim trace:** every claim-bearing word → a signed-off claim through the shared claims gate (`../../../atoms/claims-gate/ATOM.md`, including its scoped sign-off), or a plain product fact (a line okayed in chat is not a sign-off — it goes through the claims gate's scoped sign-off, §4 of that atom) (ingredients, dose, size, price with currency, how to use). Kit proof points, the `approvedClaims` list, the engine's `buyer_brief.may_claim` and product-page efficacy wording are **candidates**, not proof — on staging the moisturiser's `may_claim` held press quotes about a mist and a toner, and "calms skin" / "balances moisture" passed the engine's warnings.
+2. **Claim trace:** every claim-bearing word → a signed-off claim through the shared claims gate (`../../../skills/claims-gate/SKILL.md`, including its scoped sign-off), or a plain product fact (a line okayed in chat is not a sign-off — it goes through the claims gate's scoped sign-off, §4 of that atom) (ingredients, dose, size, price with currency, how to use). Kit proof points, the `approvedClaims` list, the engine's `buyer_brief.may_claim` and product-page efficacy wording are **candidates**, not proof — on staging the moisturiser's `may_claim` held press quotes about a mist and a toner, and "calms skin" / "balances moisture" passed the engine's warnings.
 
 **Secondary check:** search `["claim"]` with the `product_id`; these fields only narrow a signed claim — `approved_scope_unknown` → not for this product unless the claims gate's scoped sign-off records it.
 
@@ -39,11 +39,11 @@ Styles that lean on generated people or social proof (creator review, narrated c
 
 ## 4. Platform and category rules
 
-The paid-ad platform and category rules (personal attributes, before/after, supplements and cosmetics wording, regulated categories, special ad categories, trademarks, AI labels, on-asset disclosures) are the shared `../../../atoms/ad-policy-check/ATOM.md`. Video-specific points it leaves to this playbook:
+The paid-ad platform and category rules (personal attributes, before/after, supplements and cosmetics wording, regulated categories, special ad categories, trademarks, AI labels, on-asset disclosures) are the shared `../../../skills/ad-policy-check/SKILL.md`. Video-specific points it leaves to this playbook:
 - **Hooks:** situational ("3:07am") and identity-by-behaviour ("for people who rehearse conversations in bed") pass; first person passes the platform rule but, from a generated person, must also pass the speaker test (§3).
 - **Supplements and melatonin:** know the market before writing (prescription-only in the UK and Australia); no children, no "candy"/"treat"; TikTok is stricter than Meta on ingestibles — flag it at the gate when TikTok is a placement.
 - **Music:** engine-generated or licensed only; never "the song from the reference" or a sound-alike; a trending TikTok sound is added in-platform from the Commercial Music Library at launch — note it in the launch notes.
-- **Material connections:** paid creators, gifted product, affiliates → "#ad" / "Paid partnership" (`../../../atoms/ad-policy-check/disclosure.md`).
+- **Material connections:** paid creators, gifted product, affiliates → "#ad" / "Paid partnership" (`../../../skills/ad-policy-check/disclosure.md`).
 
 ## 5. keep_claims
 

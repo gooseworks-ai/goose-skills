@@ -80,4 +80,4 @@ Each entry: the phrase or pattern, why, the source tag, and a **safe alternative
 
 ## How other playbooks use the list
 
-Through `../../../atoms/claims-gate/ATOM.md`, the only claims contract (AGENTS §8): approved claims verbatim or a listed variant, in scope, before the review date, with the qualifier; a claim past its review date is a candidate again; anything not on the list is cut and shown to the human, never softened into something "close". When a job needs a line nobody approved, the gate's scoped sign-off asks for the 3–5 lines that job needs and records them exactly as this playbook does.
+Through `../../../skills/claims-gate/SKILL.md`, the only claims contract (AGENTS §8): approved claims verbatim or a listed variant, in scope, before the review date, with the qualifier; a claim past its review date is a candidate again; anything not on the list is cut and shown to the human, never softened into something "close". When a job needs a line nobody approved, the gate's scoped sign-off asks for the 3–5 lines that job needs and records them exactly as this playbook does.

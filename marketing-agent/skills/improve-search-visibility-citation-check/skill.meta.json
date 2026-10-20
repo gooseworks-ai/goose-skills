@@ -1,0 +1,29 @@
+{
+  "slug": "improve-search-visibility-citation-check",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.0",
+  "playbook": "improve-search-visibility",
+  "tags": [
+    "seo"
+  ],
+  "standalone": false,
+  "installation": {
+    "base_command": "npx goose-skills install improve-search-visibility-citation-check",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

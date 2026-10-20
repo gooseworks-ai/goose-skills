@@ -25,7 +25,7 @@ The kit's `voice`, `tone`, `aesthetic`; `existingAds` hooks; voice rules already
 - The confirmed voice for the kit's `voice` field: personality, the rules with their pairs, terminology, mechanics and channel/speaker flex (siblings read the kit voice, its home; voice rules don't also go in learnings).
 - Banned words: the full list in the kit voice under "Banned:" and in the record's Voice section; the `Banned words —` fact holds the full list, the owner's own words first.
 - Voice status for the marker: `confirmed`, or `provisional` (then nothing voice-related is written; the draft lives in the Brand record).
-- For a founder's or account's own voice: hand over to `../../../../atoms/voice-card/ATOM.md` to build the card.
+- For a founder's or account's own voice: hand over to `../../../../skills/voice-card/SKILL.md` to build the card.
 - The owner's approval words verbatim.
 
 ## Rules
