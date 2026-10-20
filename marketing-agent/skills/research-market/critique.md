@@ -630,3 +630,4 @@ Sonnet, web search and page fetch only (no browser, no GooseWorks calls), Person
 | Finding | Fix |
 |---|---|
 | #1 (shared, spend-gate) restated the probe | `server-needs.md` #3 points to spend-gate branch B; the hand test's first paid step asks for a numeric ceiling, or a lone probe with its maximum charge. |
+| Codex check: the hand test offered a probe yes for an uncapped Reddit search | Removed: spend-gate allows a lone probe only on a tool with its own credit cap. |

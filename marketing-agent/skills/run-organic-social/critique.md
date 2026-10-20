@@ -489,3 +489,4 @@ Took the craft, not the structure, the vendor wrappers or the keys. make-content
 | Finding | Fix |
 |---|---|
 | #1 (shared, spend-gate) the account-audit step restated the probe | It points to spend-gate branch B, its yes asked in the draft-report message. |
+| Codex check: `references/post-checks.md` let any dated brain offer or price into a public post | Offers and prices only as claims-gate §1.8–1.9 allows (live and confirmed in this job, and public). |

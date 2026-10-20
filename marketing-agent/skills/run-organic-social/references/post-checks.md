@@ -55,7 +55,7 @@ If the account's real posts use an item, it is allowed. Otherwise remove it.
 
 ## 3. Claims and banned words
 
-Claims follow the `run-organic-social-post-check` skill (`../../run-organic-social-post-check/SKILL.md`) step 4: the shared claims gate plus the social spans (world facts, product match, past posts are not proof). Remove every banned word from the voice guide and every `dont` learning. In regulated categories (beauty, health, supplements, finance, kids, alcohol) there is no treat or cure language beyond signed-off wording. Offers and prices appear only as dated in the brain; never invent a discount, drop date or giveaway.
+Claims follow the `run-organic-social-post-check` skill (`../../run-organic-social-post-check/SKILL.md`) step 4: the shared claims gate plus the social spans (world facts, product match, past posts are not proof). Remove every banned word from the voice guide and every `dont` learning. In regulated categories (beauty, health, supplements, finance, kids, alcohol) there is no treat or cure language beyond signed-off wording. Offers and prices appear only as the claims gate allows them in public copy (its §1.8–1.9: live and confirmed in this job, and public; brain path: confirmed and `is_public: true`), with their dates; never invent a discount, drop date or giveaway.
 
 ## 4. Disclosure and rights
 

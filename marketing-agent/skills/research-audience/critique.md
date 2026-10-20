@@ -468,3 +468,4 @@ From the cold-outreach hand test (session 8571396a): the paid list run delivered
 | Finding | Fix |
 |---|---|
 | #1 (shared, spend-gate) restated the probe | `references/data-sources.md` and `server-needs.md` point to spend-gate branch B; the hand test now asks for a numeric ceiling (or a lone probe with its maximum charge). |
+| Codex check: the hand test offered a probe yes for uncapped lookups | Removed: spend-gate allows a lone probe only on a tool with its own credit cap. |

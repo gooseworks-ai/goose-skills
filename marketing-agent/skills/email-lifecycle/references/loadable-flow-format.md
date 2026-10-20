@@ -41,7 +41,7 @@ dynamic_blocks:  source (cart items, recommendations), fallback, out-of-stock be
 split:           property or metric · branches · default branch
 images:          file, size, alt text written as content ("Barrier Cream jar, 50 ml, on a bathroom shelf")
 plain_text:      written in full, not auto-generated
-claims_used:     each factual sentence → the approved claim's exact wording / live product page fact / `Policy:` or `[lifecycle]` policy fact (never a bare id)
+claims_used:     each factual sentence → the approved claim's exact wording / live product page fact / a `Policy:` or `[lifecycle]` policy the claims gate's §1.9 allows in public copy (never a bare id)
 compliance:      legal name + physical address, unsubscribe, preference link; SMS: brand name + "Reply STOP to opt out" on the first message and periodically
 qa:              dark mode, HTML < 102 KB, single column ~600px, body text ≥ 14–16px, tap targets ≥ 44px, live text not one image
 ```

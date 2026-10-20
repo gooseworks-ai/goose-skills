@@ -21,7 +21,7 @@ Load at step 4 (writing) and step 7 (checking). The edge in 2026 inboxes is spec
 3. Over-discounting: a code in every email; escalating discounts in the first cart reminder; a discount to returning full-price buyers.
 4. Same shape everywhere: identical length and layout across the flow.
 5. No single job: three equal CTAs; product + blog + social + referral in one email.
-6. Invented facts: review counts, ingredient percentages, study results, "dermatologist-approved", "ships tomorrow", "free returns" — anything not in an approved claim, product record or stated operating rule.
+6. Invented facts: review counts, ingredient percentages, study results, "dermatologist-approved", "ships tomorrow", "free returns" — anything the `claims-gate` skill (`../../claims-gate/SKILL.md`) §1.7–1.9 doesn't allow in public copy.
 7. Merge-tag breakage: tags without fallbacks; product blocks without out-of-stock handling.
 8. Subject and preview that repeat each other.
 9. Voice drift: exclamation marks, emoji and "elevate / unlock / transform / journey / game-changer / seamless / delve" in a brand that does not talk that way.

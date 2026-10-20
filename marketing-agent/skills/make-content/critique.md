@@ -221,3 +221,4 @@ Round 10 alignment: the scoped sign-off ask now uses the claims gate's exact con
 | Finding | Fix |
 |---|---|
 | #1 (shared, spend-gate) "a probe with a yes, then a ceiling" contradicted the one-yes rule | SKILL.md Money and the content-brief step point to spend-gate branch B only. |
+| Codex check: limitations, our own test answers and release-note availability came from the product record | `references/fact-rules.md` and `references/formats.md`: only live docs or pricing pages, a fact claims-gate §1.7–1.9 allows, or the human in this run saying it may be public. |

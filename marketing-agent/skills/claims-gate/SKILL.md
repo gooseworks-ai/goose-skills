@@ -14,7 +14,7 @@ version: 0.1.2
 
 One contract for every playbook that writes copy, scripts, briefs, emails, posts, pages or captions. Only this atom ever writes a claim as approved; claims and markers already in the brand (from the GooseWorks app or an earlier brand pass) are read the same way. The calling playbook keeps its own extract step (on-image text, video scenes, page sections) and hands this atom the spans.
 
-Say it to the human in plain words ("two lines need your OK before I use them"), never as tool, fact or playbook names.
+Say it to the human in plain words ("two lines need your sign-off; a third needs its test report"), never as tool, fact or playbook names.
 
 ## 1. Load the contract (once per job)
 
@@ -65,7 +65,7 @@ Run it when a line the job depends on is not usable under §1: on the older path
 1. **Pick the 3–5 load-bearing lines** — the benefit line, the hook's promise, the offer — not everything the job could say; never a test-named brand, a likely test brand only after the human's yes, and a backer or customer line only with its source (§2.5). Prefer the brain's own wording (value props, product descriptions) over new wording.
 2. **Check who may approve.** Read the marker's `approver:`. No marker: ask once who approves claims (local mode: `local-claims.md` § Who approves, which also keeps the answer). If it names a client, or the person says someone else approves claims, don't ask the person in the chat for these lines: use the claims already approved plus plain product facts, add the new lines to the Brand record's "Decisions needed" sheet for the approver (saved as §5 step 1; local mode: its `pending` rows), and rewrite the marker naming the new version, `approver: client <name>`, by §5's status rule. `user_statement` is the person's words (e.g. "Dana approves claims").
 3. **Put them to the human in one message**, each line with: the exact wording, what kind of claim it is, the proof on file or "no proof on file", and your recommendation (approve / approve with this qualifier / reword to … / leave out). Say once that this is not legal advice.
-   - **Proof-required lines** (`claim-types.md`) need their proof on file, and permission where the type asks for it. Without them the line can't be approved, whoever says yes: recommend leaving it out or a safer wording, and name the proof that would unlock it. The owner's word is enough only for a verifiable fact about the business (who formulated it, where it is made, which awards).
+   - **Proof-required lines** (`claim-types.md`) need their proof on file, and permission where the type asks for it. Without them the line can't be approved, whoever says yes: recommend leaving it out or a safer wording, and name the proof that would unlock it. The owner's word is enough only for a verifiable business fact that is not proof-required (where it is made, which awards).
    - Ask for an approval that stands on its own: "Yes, approve 1, 2 and 4." A bare "ok" to a list is not a sign-off.
 4. **If they decline or don't answer,** ship plain product facts and say which lines were left out and why.
 5. **Record the answer** (§5) before any line is used.
