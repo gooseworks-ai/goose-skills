@@ -440,3 +440,7 @@ Took the craft, not the structure, the vendor wrappers or the keys. make-content
 - SKILL step 8, run-record.md and skill.meta.json now point to it.
 
 **For the orchestrator:** foundation/guide's file index lists the research playbooks' `method/` folders. Add `social/method/` (run-organic-social's scheduled refill). I didn't edit the shared guide.
+
+## Round 20: second Codex review of PR #322 (20 Oct)
+
+**Adopted.** The scheduled-refill prompt named method files bare (`brand.md`, `run-record.md`, `plan-calendar.md`, `shared/write-report.md`…), so the server's worker couldn't find them. Every method file in the prompt now has its full workspace path, `social/method/…` or `social/method/shared/…`, matching where the copy step writes it. Output paths (`social/calendar/`, `social/plans/`, `runs/…`) were already full.

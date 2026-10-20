@@ -131,7 +131,7 @@ Report: <workspace path of this run's report, or "none">
   - **run-paid-campaigns** adds a **per-ad scorecard**: the top 10 ads by spend plus an "all others" row. Columns: ad, spend, results, cost per result or ROAS, CTR, days live, verdict (`scale` / `keep` / `watch` / `cut` / `too new`), change since the last record. Use a settled window (for example `days: 14` minus `days: 3`), and say what share of spend it covers and where any rows from outside GooseWorks came from.
   - run-paid-campaigns also adds **money moves**, one short row each: id + `R<n>` + `change_id`/`push_id`, from → to, applied on, baseline recipe, verdict. Approval state, trip-wires and checks stay in `state.md`. Link it.
   - **analyze-performance** keeps the scorecard but no money-move table. Its recommendations to change spend are owned by run-paid-campaigns.
-- **Never put personal data in a run record.** No names, emails, phone numbers or handles of private people. Use counts, groups and the row keys of the playbook's own ledger. Public brand and ad names are fine, but an ad name that contains a private person's name (a UGC creator, say) is replaced by its ad id.
+- **Never put personal data in a run record.** No names, emails, phone numbers or handles of private people. Use counts and non-personal group ids only: list id, segment, opener, wave, ad id, campaign id. Never copy a ledger's row keys (emails, profile URLs, name plus domain) or any one person's row into a record. Public brand and ad names are fine, but an ad name that contains a private person's name (a UGC creator, say) is replaced by its ad id.
 
 ### 7. Save it
 

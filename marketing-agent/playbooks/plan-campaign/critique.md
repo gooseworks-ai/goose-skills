@@ -208,3 +208,10 @@ Findings touching this playbook: none of its own (the reviewer found its paths, 
 | # | Finding | Fix |
 |---|---|---|
 | 2 MAJOR | The monthly replan schedule pointed the server's worker at skill files it doesn't have. | `references/run-memory.md` § Setting up the schedule: method copied to `plans/method/` (incl. claims-gate), automation created paused with a self-contained prompt (paths, reads and writes, "draft for approval only; never overwrite the live brief, move money, publish, spend or save to the brain"). SKILL Output line and skill.meta.json updated. |
+
+## Round 14 — second Codex review of PR #322 (2026-10-20)
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 MAJOR | The scheduled prompt copied files to `plans/method/references/…` but read `references/…` and `shared/…` from the workspace root. | Full workspace paths throughout the prompt, plus the mapping line for the copied files' relative links. |
+| 2 (from the paid finding) | A found or waiting chapter-20 target could feed the plan's economics. | It is listed under "Decisions for you"; the economics never rest on it until confirmed (`references/run-memory.md` § Start). |

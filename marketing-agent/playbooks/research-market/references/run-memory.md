@@ -32,7 +32,7 @@ A **brand watch** record keeps only: the window and its length in days, the watc
 
 ## Recommendations and how to check them
 
-The report's "What to do" moves become the record's recommendations. **Owner mapping:** the founder, "whoever runs the website", the ad or content maker → `marketer` (or the maker playbook once it takes the move); waiting for a yes in GooseWorks → `approval page`; this job's next run → `agent`. **Not yet due** (review-by not reached, nothing shows): carried forward, never asked about — recorded as `unknown — not due until <date>` until the shared atom has an `open` status. Typical tests, with their **baseline recipe**:
+The report's "What to do" moves become the record's recommendations. **Owner mapping:** the founder, "whoever runs the website", the ad or content maker → `marketer` (or the maker playbook once it takes the move); waiting for a yes in GooseWorks → `approval page`; this job's next run → `agent`. **Not yet due** (review-by not reached, nothing shows): carried forward, never asked about — recorded with status `open` and its review-by date. Typical tests, with their **baseline recipe**:
 - **A move to compete in the recommended market** (a homepage or category change): the brand's site or brand record shows the new category by <date> — fetch the page; `gooseworks:brain_search` / `brand_read` for the positioning field.
 - **A post or content move on a trend or a voice's topic:** posted by its post-by date — `gooseworks:social_post_list`; its result belongs to analyze-performance.
 - **Running audience research** (when there were no buyer groups): `research/audience/buyer-groups.md` exists by <date>.

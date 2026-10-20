@@ -153,3 +153,9 @@ Status: all majors in this playbook fixed; not re-reviewed by a second critic.
 | # | Finding | Fix |
 |---|---|---|
 | 2 MAJOR | The Monday report / pulse schedule pointed the server's worker at skill files it doesn't have. | `references/run-memory.md` § Setting up the schedule: method copied to `reports/performance/method/`, automation created paused with a self-contained prompt (paths, reads and writes, claims-only rule, the spending rule, "read and report only; never apply, publish or spend; save no learning or readout"). SKILL approval-gates line, monthly-and-pulse and skill.meta.json updated. |
+
+## Round 10 — second Codex review of PR #322 (2026-10-20)
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 MAJOR | The scheduled prompt copied files to `reports/performance/method/references/…` but read `references/…` and `definitions.md` from the workspace root. | Full workspace paths throughout the prompt (`reports/performance/method/…`, `reports/performance/definitions.md`, `ads/campaigns/<slug>/decisions.md`), plus the mapping line for the copied files' relative links. |

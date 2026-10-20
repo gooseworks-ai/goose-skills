@@ -574,3 +574,5 @@ Sonnet, web search and page fetch only (no browser, no GooseWorks calls), Person
 - Share of voice stays "not comparable" unless the method matches.
 
 **Still weak:** a fetch-only host can't read Reddit, TikTok, YouTube or X, so the listening free pass there is mostly coverage gaps plus the paid top-up. server-needs #17 (GooseWorks web search and page fetch) is the fix.
+
+- **19 Oct, Codex review 2 of the run-memory PR:** not-yet-due recommendations now use the shared atom's `open` status instead of `unknown`, so they never reach "Decisions for you" before their review date.

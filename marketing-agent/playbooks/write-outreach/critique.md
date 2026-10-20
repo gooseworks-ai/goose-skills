@@ -76,3 +76,9 @@ Every round: the finding, the fix, or why it was rejected. Critics are subagents
 | Unmatched stop/bounce created a row holding the raw address, kept forever (MAJOR, outcomes-ledger) | Agree | reply-reader writes a suppression-only row with a one-way `key_hash`; the raw address only on the marketer's yes; the send file matches hashed keys |
 | run-memory read the request lines from `results.md` | Agree | Reads and links `results-working.md` for per-reply state and request lines; `results.md` stays aggregate |
 | `outreach-copy` source | Checked | Registered centrally; this playbook writes `[outreach-copy …]` and reads both `[outreach …]` and `[outreach-copy …]` |
+
+## Round 5 — second Codex review of PR #322 (2026-10-20)
+
+| Finding | Verdict | Fix |
+|---|---|---|
+| Positives counted twice: "interested + meetings", while a booked row keeps `reply_category: interested` (MAJOR) | Agree | Positive = distinct rows where `reply_category` is `interested` or `status` is `meeting`; meetings reported separately as a subset — in reading-results.md and both run-memory files (write-outreach, research-audience) |

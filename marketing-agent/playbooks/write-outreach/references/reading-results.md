@@ -9,7 +9,7 @@ Sends, replies and bounces per touch and per segment (or per variant), unsubscri
 ## The numbers
 
 - **Reply rate per touch** = replies to that touch ÷ people who got it and hadn't replied yet. Touches 2–4 should bring a real share of replies (roughly a third); if touch 1 brings nearly all of them, the follow-ups add nothing — shorten or change them.
-- **Positive rate** = interested + meetings ÷ people contacted.
+- **Positive rate** = distinct rows where `reply_category` is `interested` **or** `status` is `meeting` ÷ people contacted — an interested reply that books a meeting is one positive, not two. **Meetings** are reported separately, as a subset of the positives.
 - **Bounce rate** per send (hard bounces): over 2% → stop and clean the list; aim under 1%.
 - **Unsubscribe and complaint rate:** complaints over 0.3% is the line inbox providers act on; aim under 0.1%.
 - **Sample size, said every time — judge on replies, not sends:** under 50 contacted in a group → counts and what to watch only, no rates judged; 50+ but under ~10 positive replies per group or variant → directional only. Never kill a variant before about 100 sends. (The ledger's lessons use the same rule: replies, not sends.)

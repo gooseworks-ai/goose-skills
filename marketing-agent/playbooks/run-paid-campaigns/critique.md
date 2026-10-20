@@ -157,3 +157,11 @@ Status: all majors in this playbook fixed; not re-reviewed by a second critic (n
 | 2 MAJOR | The weekly schedule pointed the server's worker at skill files it doesn't have. | `references/run-memory.md` § Setting up the schedule: method copied to `ads/method/` (SKILL, references, atoms, shared atoms, versioned), automation created paused with a self-contained prompt: paths, reads and writes, approval gates, the spending rule, caps and emergency stop, and "never pause, apply, publish, launch or accept; stage proposals only". SKILL Output line and skill.meta.json updated. |
 | 3 | Direct `brain_save` operating-plan write. | Now allowed by AGENTS §8 (20 Oct ruling) for the owning playbook; the text cites it, says the save is found, never confirmed, waits for the marketer's yes in the app, and the brief's number stays in use until confirmed. |
 | 4 | Ids. | Matches the shared rule (a stable source id is the record id): `R<n>` is the id; a dated id only where no `R<n>` exists. Wording aligned. |
+
+## Round 10 — second Codex review of PR #322 (2026-10-20)
+
+Confirmed: Round 9's four fixes. Two new majors, both fixed:
+| # | Finding | Fix |
+|---|---|---|
+| 1 MAJOR | The scheduled prompt copied files to `ads/method/references/…` but told the worker to read `references/…` from the workspace root. | Every path in the prompt is now a full workspace path (`ads/method/references/run-memory.md`, `ads/campaigns/<slug>/state.md` …), plus one line mapping the copied files' relative links (`references/`, `atoms/`, `../../atoms/…` → `ads/method/shared/`) and saying links to other playbooks aren't copied. |
+| 2 MAJOR | `proposal-and-log.md` let a found or waiting target be "used" as the yardstick, against SKILL step 4. | Found or waiting targets, caps and stops appear only under "Decisions for you" and never compute a verdict, scale step, pacing or ceiling, or stage a move until confirmed. A pending stop or a pending lower cap may only block increases and launches; it never authorises a change. SKILL step 4 and the scheduled prompt say the same. |

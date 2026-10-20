@@ -394,3 +394,5 @@ Sources as in research-market's Round 6. Old skills were read as reference only.
 - open questions are routed to "the report's Decisions for you" even on quiet scheduled runs that send no report (handled here as `to ask` in the record);
 - AGENTS §8 Schedules says every scheduled run produces a report, which contradicts silent watches;
 - the atom's saved-line wording "so next week starts from here" is wrong for quarterly and ad hoc jobs.
+
+- **19 Oct, Codex review 2 of the run-memory PR:** not-yet-due recommendations now use the shared atom's `open` status instead of `unknown`, so they never reach "Decisions for you" before their review date.
