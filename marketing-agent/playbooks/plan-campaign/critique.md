@@ -215,3 +215,48 @@ Findings touching this playbook: none of its own (the reviewer found its paths, 
 |---|---|---|
 | 1 MAJOR | The scheduled prompt copied files to `plans/method/references/…` but read `references/…` and `shared/…` from the workspace root. | Full workspace paths throughout the prompt, plus the mapping line for the copied files' relative links. |
 | 2 (from the paid finding) | A found or waiting chapter-20 target could feed the plan's economics. | It is listed under "Decisions for you"; the economics never rest on it until confirmed (`references/run-memory.md` § Start). |
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| Plan In short | "What this plan rests on" (research and numbers with dates, the main gap) → goal, who/channels, money as numbered points with how sure → "So, do this first (because of …)", assuming no unconfirmed budget, proof or offer. Section headings unchanged (other playbooks read them); closing message and Done-when updated |
+
+### Works without GooseWorks, economics and calendar
+
+| Finding | Fix |
+|---|---|
+| The plan stopped without GooseWorks (Akhil, validated) | Before you start 1 offers local mode (guide §5): live site, the marketer's answers and their connectors (read-only); the plan is saved in the local `plans/<slug>/` in place of the campaign record. `intake.md` § Local mode. |
+| "Start from scratch" dropped stored facts; "100 sign-ups a day" (~3,000 a month) went unflagged against "> 1,000 free users" in total | **First half rejected — owner was simulating a first run** (Akhil, 20 Oct): "start from scratch" now makes it a first run (no earlier plans, notes or run records; one line "Starting fresh: I won't use earlier plans or notes."; brand rules and approved claims still apply). **Kept:** a new number that contradicts what the marketer said earlier in this conversation is flagged before planning on it. |
+| $200 per paying account against a $29.50 first month was called "normal" | `unit-economics.md`: self-serve break-even cost per paying account (margin × expected months retained) and payback in months, always in the economics box, with a worked example. |
+| A Meta leg run through GooseWorks was priced on sign-ups, but a GooseWorks campaign is Traffic-only | `unit-economics.md` §3 and `channel-decision.md` lens 7: price it as cost per landing-page view ÷ the site's sign-up rate, or make "founder sets up a conversion campaign" a dated step; `intake.md` folds "can Meta see the sign-up too?" into the one plain measurement question. (The brief's wording "× the sign-up rate" was corrected to ÷.) |
+| The calendar had no dated step for the offer going live on the landing page | `launch-and-calendar.md`: "offer live on the landing page (with any code)" is a T-7 dependency; no paid launch before it. |
+| Retargeting an uploaded list: business emails match lower than the 40–60% rule of thumb | `budget-and-tests.md` §2b: ~30–60% for business emails, 40–60% for consumer lists. |
+| `references/run-memory.md` linked `../../atoms/write-report/ATOM.md` (broken) | Now `../../../atoms/…`. |
+| Consistency pass: plan-campaign offers local mode but its metadata still required GooseWorks; the tracking question named only what brought a buyer in | `skill.meta.json`: `needs.gooseworks` optional (local mode) + `connectors_optional`, and a local-mode writes line, as in run-paid-campaigns / analyze-performance. Step 3: "Can Meta see when someone signs up?" when Meta ads are likely. `references/run-memory.md`: local path line. |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| Stale report-top wording: test-by-hand item 4 and the 18 Oct staging line still said In short ("Do this first:") | Item 4 now: the plan passes write-report §3 (§1's shape); the staging line is marked as the pre-20 Oct shape. Done-when points at write-report §3 too. |
+| Connector rule copies in channel-decision lens 7 and unit-economics §3 ("one named yes each, created paused") | Both point to run-paid-campaigns' one connector rule (`meta-levers.md`). |
+| Owner (Akhil): "start from scratch / remove the old plan / I won't answer" was test setup simulating a first run, not a defect | The earlier "resets the strategy, not the facts" fix is rejected (row above marked). Step 1: "start from scratch" is a first run — no earlier plans, notes or run records, one line "Starting fresh: I won't use earlier plans or notes."; brand rules and approved claims still apply. Kept: a new number that contradicts what the marketer said earlier in this conversation is flagged. Test 8 added. |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Contradiction: SKILL Before you start 3 asked "Can Meta see when someone signs up?" as its own question; `references/intake.md` §1–2 folds Meta into the one plain measurement question | `intake.md` §2 is the single source; SKILL step 3 keeps only "≤ 4 plain questions, product and offer first" + the blockers line and points to it. |
+| Look-first bullets (brain chapters, connections, plans, research, run memory, claims, live site) repeated `intake.md` §1 | One line: "Do `references/intake.md` §1 in full before the first message". Unique bits moved into §1: `competitor_read`, creators roster, claims-contract row, the `brand_read` call-split gotcha, the no-web-fetch fallback. |
+| Copied setup (connection, `get_started`, workspace clause) and the plain-words line | Replaced by the guide setup line (job line "plan your campaign"); local-mode deviation and the tool groups kept. |
+| Step 8 and 9 restated write-report §2–3 (word budgets, banned words, file path, `file_url` expiry) | Pointers to write-report §2 (topic `campaign-plan`) and §3; plan-specific saves and the 3-line chat close kept. |
+| Schedule branch copied the "worker has no skills folder" text | "Set it up by guide §3 Schedules"; method folder and prompt pointer kept; branch left in place. |
+| Done when: "the split is defensible" (not checkable) | "every budget line traces to a goal-chain leg and the lines sum to the budget". |
+| Description 944 chars, deliverables list | 653 chars: what it is, one trigger per branch, the three Not-fors kept. |
+| One name for the person | "founder"/"the human" → "marketer" in SKILL, atoms and references where it means the approver; kept as a role (founder outreach, founder hours, owner column, `human` hand-off role). Source label "human" → "marketer". |
+| `intake.md` opened with a dated hand-test story | Cut to the positive rule (read first, then 3–4 plain questions). |

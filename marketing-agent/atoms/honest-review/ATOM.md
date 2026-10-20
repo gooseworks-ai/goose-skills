@@ -1,12 +1,12 @@
 ---
 name: honest-review
 description: >-
-  Shared atom (owner make-static-ads). The principles for reviewing generated media — ad images, videos, product photos — honestly: what was checked by eye versus by an automatic read, what to do when the agent cannot see images or watch video, findings as things for the human to confirm, remakes only on a priced yes, two tries. Each playbook keeps its own rubric.
+  Shared atom. The principles for reviewing generated media — ad images, videos, product photos — honestly: what was checked by eye versus by an automatic read, what to do when the agent cannot see images or watch video, findings as things for the human to confirm, remakes only on a priced yes, two tries. Each playbook keeps its own rubric.
 ---
 
 # honest-review
 
-Used by: make-static-ads (`../../playbooks/make-static-ads/atoms/render-review/ATOM.md`), make-video-ads (`../../playbooks/make-video-ads/atoms/review-render/ATOM.md`), make-product-photos (`../../playbooks/make-product-photos/atoms/fidelity-check/ATOM.md`). The rubric — what to check — lives in each playbook; this atom is how to check and how to report.
+Used by: make-static-ads (`../../playbooks/make-static-ads/atoms/render-review/ATOM.md`), and, once released, make-video-ads (`../../unreleased/make-video-ads/atoms/review-render/ATOM.md`) and make-product-photos (`../../unreleased/make-product-photos/atoms/fidelity-check/ATOM.md`), both held back for now. The rubric — what to check — lives in each playbook; this atom is how to check and how to report.
 
 ## 1. Know what you can perceive
 

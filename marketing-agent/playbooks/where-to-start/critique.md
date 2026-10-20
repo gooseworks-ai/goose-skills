@@ -184,3 +184,34 @@ No major findings for this playbook (round 8's four are confirmed fixed; saves b
 2026-10-16 final contract check: references/playbook-map.md: cost lines follow the spend gate (engine price shown first; public-data reads within a credit ceiling approved first), not "the total is shown first".
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; `save-to-brain` moved to `shared_atoms`.
 2026-10-16 orchestrator ruling: a playbook may offer the next job but never starts another playbook (AGENTS §2 rule 9): step 6, step 3 and the hand-off line in references/output-shape.md now offer in plain words; references/playbook-map.md local row lists a review-request brief, not review-reply drafts; bare `atoms/<shared>` paths converted to file-relative form.
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+Scored worse than no skill in one eval (weak evidence; causes fixed).
+- **Agent-written plans and setup flags read as facts; the skill pointed at process steps ("claims not signed off") instead of activation.** → SKILL step 1: flags, onboarding fields, learnings and "blockers" an agent wrote are proposals, checked against the founder's words; step 3: check fit, activation, retention and pricing before any marketing move. (Earlier work and the setup-step rule were already there; extended.)
+- **Five numbered questions holding ~14 asks.** → questions.md: each numbered question is one ask; the fit proxy moved to the follow-up round; an explicit "fourteen asks is fourteen".
+- **Saved the buyer/strategy before the founder agreed.** → SKILL step 6 and situation-save Rules: run only after they answered; buyer, audience or strategy lines only once agreed.
+- **"Talk to N users" before asking for notes.** → Q3 asks for user or cancel-call notes to paste.
+- **Product-scope calls given as advice; "price-churners aren't our audience" vs solo founders as best customers.** → SKILL step 5 and situation-lens: scope calls shown as the founders' decisions; questions.md follow-up: ask who the churners were before saving.
+- **One founding engineer given social + cold email + creators at once.** → SKILL step 5 and situation-lens §4: sequence by hours, with the trigger for each next move.
+- tests/test-by-hand.md case 12 covers all of the above.
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| Step 1 treats agent-written learnings as proposals, but the lean brand read used here doesn't show who wrote a learning | Step 1: on that read, every plan, flag and learning not plainly in the founder's own words is something to confirm. |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Brand pick said "name the one you assume … or ask", against guide §1 (ask by name, never default) | Setup now follows the guide; test case 8 expects "asks by name, never defaults" |
+| Copied setup (connection line, get_started, tools_load, brand_read pick) and a brand_read-only brain read with no brain_* path | One "Setup first" line to guide §1–2, plus only what is unique here (`wants: "more"`, `ad_library_ad_count`, no partial brand lists, empty placeholder brands, no brand setup here); step 1 keeps the fallback brand_read sections and knowledge_search tags as one line |
+| On the brain path, found items had no rule | Step 1: every found item, and every item waiting for a yes, is something to confirm; the "not in the marketer's own words → confirm" rule stays for the lean read |
+| Builder ids at runtime: AGENTS §2 rule 9, D2 (twice), and the "Decision rulebooks — judgment stays with the model" out-of-scope no-op | Removed |
+| Opening routing sentence repeated the description; the talk rule repeated guide §3 | Removed; kept the "Say it as" pointer |
+| Output and write-back restated situation-save (no-brand case, later-in-conversation case) | One pointer line to the atom |
+| Done when not checkable; "under about 250 words" here vs "about 200–250" in output-shape | Done when is now a checklist (≤ 5 asks, constraint with evidence, worked-if with number and date, ≤ 250 words, saved only after agreement or "not saved"); step 5, output-shape and test check 8 all say "at most 250 words" |
+| "Founder" and "marketer" both named the user | "Marketer" in SKILL.md; "the founders' decision" kept as a role. References and the atom still say "founder" (later pass) |
+| Description 898 characters, opened with a quote, listed deliverables | 562 characters: what it is first, one trigger per branch, "Not for" kept. Routing cases R15 and R28 still match |

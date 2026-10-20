@@ -22,8 +22,12 @@ Every number has a date and a link to the post it came from and is labelled **fa
 ```
 # Creator report — <Brand> — <YYYY-MM-DD>
 
-## Do this first, because…
-Message @fictional_skinnotes and @fictional_acnediary this week: both already post acne-safe routines that out-perform their own median (links), neither works with a rival, and a $600 test of the two tells you within 14 days whether paid creators beat your current ads.
+## In short
+**What we looked at:** 40 TikTok and Instagram creators in acne skincare, public pages read 2026-10-17 — last 12 posts each, comments on 3. Reel plays and audience countries were hidden logged-out.
+1. **Two creators already post acne-safe routines that beat their own median views** — @fictional_skinnotes and @fictional_acnediary (fact, links below).
+2. **Neither works with a rival** (inference from their last 6 months of posts).
+**So, do this first (because of 1 and 2):** message both this week. A $600 test of the two tells you within 14 days whether paid creators beat your current ads — if you confirm that budget.
+Assumed, not known (correct any): budget, your margin per order, your current ad cost per order — the test's pass mark rests on these.
 
 ## Timely openings
 - @fictional_acnediary posted "my breakout-safe routine" on 2026-10-14 — 3.1× her median views (link) · fact. For you: she's in the buying moment for your audience now; gift first, pay for usage if it lands.

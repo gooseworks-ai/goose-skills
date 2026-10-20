@@ -69,7 +69,7 @@ The atom's scheduled rules apply: free reads only, ask nothing, claims-only unle
 
 The scheduled worker runs on the server with **no skills folder and no browser**, so it can't open this playbook. On the marketer's yes (`../../../atoms/spend-gate/ATOM.md` branch C; needs a coworker workspace), record the offer in `definitions.md`, then:
 
-1. **Copy the method** into `reports/performance/method/` with `gooseworks:file_write`, each file headed `Method version: <skill.meta.json version>, copied <date>`, re-copied whenever the schedule changes or is switched on: `playbook.md` (this SKILL.md), `references/` (every file in this playbook's `references/`), `atoms/` (each local atom's ATOM.md), and `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md` (a link such as `../../atoms/run-memory/ATOM.md` means `shared/run-memory.md`).
+1. **Copy the method** into `reports/performance/method/` with `gooseworks:file_write`, each file headed `Method version: <skill.meta.json version>, copied <date>`, re-copied whenever the schedule changes or is switched on: `playbook.md` (this SKILL.md), `references/` (every file in this playbook's `references/`), `atoms/` (each local atom's ATOM.md), and `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md` (a link such as `../../../atoms/run-memory/ATOM.md` means `shared/run-memory.md`).
 2. **Create the automation** with `gooseworks:automation_upsert`: `execution_mode: "agent"`, `enabled: false`, a Monday cron in the marketer's timezone before the paid check's, and this `agent_prompt` (the pulse uses the same prompt with "Daily pulse" and only step 1 and references/monthly-and-pulse.md § Daily pulse):
 
 ```text

@@ -70,7 +70,7 @@ function sandboxHome(root) {
 
 /**
  * A fresh temp copy of the hand-test folder plus a sandbox home.
- * with-skill links the 16 playbooks + 3 foundation skills; legacy copies the old skills from legacy/mapping.json; baseline adds nothing.
+ * with-skill links the released playbooks + 3 foundation skills (not unreleased/); legacy copies the old skills from legacy/mapping.json; baseline adds nothing.
  */
 function prepareWorkspace(slug, mode) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), `goose-eval-${slug}-${mode}-`));

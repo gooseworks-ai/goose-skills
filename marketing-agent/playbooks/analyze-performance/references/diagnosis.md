@@ -36,9 +36,9 @@ Write each cause as: *Cause (confidence): evidence.* Example:
 
 ## Plumbing flags (loud, top of the report)
 
-Inputs: the numbers; run-paid-campaigns' `state.md` health line (tracking, stock, disapprovals, push failures); the human's reports. **Measurement absent by design** (no attribution/analytics on an app, no source field on leads, no UTMs) is a plumbing flag with setup steps: what to turn on, who does it, and which next decision it unblocks.
+Inputs: the numbers; run-paid-campaigns' `state.md` health line (tracking, stock, disapprovals, push failures); the marketer's reports. **Measurement absent by design** (no attribution/analytics on an app, no source field on leads, no UTMs) is a plumbing flag with setup steps: what to turn on, who does it, and which next decision it unblocks.
 
-Fix instructions are plain click-path steps the human asked for (as with run-paid-campaigns' cards), never ids or code. The agent cannot inspect pixels, server events, tags or feeds directly; it detects breaks from the numbers and from what run-paid-campaigns or the human reports (push failures, disapprovals, feed errors). For each break write a **fix instruction** at the depth the evidence allows:
+Fix instructions are plain click-path steps the marketer asked for (as with run-paid-campaigns' cards), never ids or code. The agent cannot inspect pixels, server events, tags or feeds directly; it detects breaks from the numbers and from what run-paid-campaigns or the marketer reports (push failures, disapprovals, feed errors). For each break write a **fix instruction** at the depth the evidence allows:
 
 > **Tracking — likely broken since Thu 9 Oct.** Symptom: Meta reported 3 purchases Thu–Sun vs 61 store orders from Meta UTMs (normal ratio ~0.7). Likely location: the purchase event on the order-confirmation page (a theme or checkout change Thursday?). Check: Events Manager → your pixel → Purchase event, last 7 days; Test Events on a test order. Fix if confirmed: re-add the purchase event to the confirmation page / re-connect the store integration. Until fixed: run-paid-campaigns makes no scale moves; Meta's CPA this week is not usable.
 
@@ -46,4 +46,4 @@ A break poisons every later number, so the report marks every affected figure as
 
 ## Page and message match (light, read-only)
 
-For the top 2–3 winning and losing ads only: open the destination (when the host can browse; otherwise ask for a screenshot) and check the product shown, headline promise, offer/code, price and stock match the ad. Mismatches are listed with the ad, the page and the gap. If the human provides the store funnel (sessions → add-to-cart → checkout → purchase), note the step that moved. Fixes are audit-my-pages' (backlog) — this playbook only reports.
+For the top 2–3 winning and losing ads only: open the destination (when the host can browse; otherwise ask for a screenshot) and check the product shown, headline promise, offer/code, price and stock match the ad. Mismatches are listed with the ad, the page and the gap. If the marketer provides the store funnel (sessions → add-to-cart → checkout → purchase), note the step that moved. Fixes are audit-my-pages' (backlog) — this playbook only reports.

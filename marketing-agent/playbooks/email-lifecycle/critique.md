@@ -248,3 +248,30 @@ The search hand test showed documents left only in the workspace, with workspace
 - **Weekly scheduled runs** usually have no export. They still read the last record and write a new one, marked "no export this week". Only a record with numbers becomes a baseline.
 
 Not re-run (per orchestrator: no evals).
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+| Finding | Fix |
+|---|---|
+| Description said cold outreach is "not covered yet"; Out of scope and `references/flow-library.md` named "do-outreach" | All point to write-outreach (which exists since 19 Oct); named accounts a person emails go there, automated list emails stay here |
+| No way to hand-test without a brand that has a real list | `tests/test-by-hand.md` § Test without a real list: a made-up freemium SaaS setup in one message, a 20-row send export, real Gmail headers; pass/fail and four edge cases; an optional free real-load test |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| Owner (Akhil): good intake questions, but it never asked which email tool they use | SKILL Before #5 and `references/intake.md` Q2: the email tool is asked first unless the brain names it (the guide's "The marketer's own tools"): none → two or three that fit the company type (store, product-led SaaS or app, small list), as their choice; connected → read lists, consent, flows, recent sends and the sending domain first and drop the questions they answer, read-only; not connected → one line on connecting, never claiming a connector it can't see, then the questions. Test cases: connected, not connected, no tool. |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Before you start 1 hand-rebuilt connect, brand pick and workspace | Guide setup line (job line "build your email program"); kept `wants: "more"`, the tool groups and the incident-first deviation. |
+| Before you start 3 restated the guide's brain read (brain_map core, waiting items) | Kept the chapter list, the brand_read sections, claims contract, standing-offer sources and voice card. |
+| Standing-offer / `Policy:` write rules lived in three places (step 9, `references/intake.md`, the Output table) | One copy in `intake.md` § Saving what the marketer said; step 9 points to it. |
+| Output table repeated step 9 and guide §4's lifecycle row | Table deleted; a two-line pointer kept with the results loop (analyze-performance ↔ step 1). The calendar's "interim offer home, read by plan-campaign" moved into step 9. |
+| Step 4 restated the read-only connector rule | Pointer to `intake.md` Q2, which keeps the rule. |
+| Out of scope: 11 bullets, several naming backlog playbooks and "pillar 21" | Five routing bullets kept; the rest in one "Not covered yet" line. |
+| Done when had no in-run check | Added: send-check passed on every flow; no [placeholder] in a flow marked ready. |
+| Description 998 chars | 695 chars; one trigger per branch (dropped "my list just sits there", "write my email flows"); Not-fors kept. |
+| One name for the person | "the human" → "marketer" in SKILL, atoms and references; "founder note"/"[Founder]" kept as roles. |

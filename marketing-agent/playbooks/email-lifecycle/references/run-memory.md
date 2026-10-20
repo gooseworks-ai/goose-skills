@@ -19,7 +19,7 @@ What this playbook hands `../../../atoms/run-memory/ATOM.md` at the start and en
 **One program, several jobs.**
 - **Recommendations.** Find the newest record across all the email jobs: `file_list` `runs/email-lifecycle/`, then each job folder. Its open recommendations, whichever job made them, are checked this run. A weekly check follows up what the build run recommended.
 - **Numbers.** Compare only with the newest record whose window has the same length: weekly against weekly, monthly against monthly. A build run's 90-day read is the baseline for the first monthly review. Never compare a 7-day window with a 90-day one.
-- **Incidents.** An incident record is short: what happened, the pause list given, and what the human said they paused. The next weekly check reads it, so a paused flow isn't judged as a failing one.
+- **Incidents.** An incident record is short: what happened, the pause list given, and what the marketer said they paused. The next weekly check reads it, so a paused flow isn't judged as a failing one.
 
 **What it does not replace.** `lifecycle/program.md` stays the source of truth for flows live and staged, each flow's hypothesis and target, segments and cadence. `lifecycle/deliverability/<date>.md` stays the full deliverability report. The run record holds only the numbers below, the recommendations with their baseline recipes, and their outcomes, and it links those files by path.
 

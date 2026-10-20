@@ -70,3 +70,10 @@ Wikidata only with ≥ 2 independent published sources; otherwise skip and say w
 ## (f) robots.txt line (a proposal, with risk)
 Observed: `User-agent: *` allowed, but `User-agent: OAI-SearchBot / Disallow: /` present (added by a plugin); ChatGPT cites only third-party pages for the brand.
 Change: remove the two OAI-SearchBot lines (keep any GPTBot block if the brand chose to refuse training). Risk: none for Google; the site becomes eligible for ChatGPT search citations within about a day. Undo: restore the lines. Requires the human's explicit yes (a policy setting).
+
+## (g) Retiring old pages — Halden's discontinued "Classic" range
+Observed: `/collections/classic` and three `/products/classic-*` pages still indexed; they say "made in Switzerland" (no longer true) and two live Meta ads still send clicks there.
+- **Default: 301 redirect** each page to its nearest current page (`/products/classic-cream` → `/products/barrier-cream`; the collection → `/collections/moisturizers`). In Shopify: Online Store → Navigation → URL Redirects. Then update internal links and the sitemap so nothing links to the old URLs.
+- **Ads first:** list the live ads, emails and profiles pointing at the old URLs; the redirect keeps them working, and the owner of the ads repoints them at the new page. Never leave an old page live "for ads" with claims that are no longer true.
+- **noindex** only for a page with no equivalent (e.g. a one-off event page someone still needs), and only after its wrong claims are removed.
+Who: the store admin, 20 minutes. Risk: a redirect to an unrelated page reads as a soft 404 — always the matching page. Undo: delete the redirect. Verify: each old URL returns 301 to the new one; the ads land on the new page.

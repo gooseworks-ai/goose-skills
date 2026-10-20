@@ -9,9 +9,11 @@ Pass, all without being asked:
 2. **It decides which market** — 2–3 candidate categories, the one buyers use, a recommendation — and **sizes it top-down and bottom-up** (likely buyers × price per buyer group, from research-audience's buyer groups, or provisional groups with "run audience research" as a decision).
 3. It covers change (dated, primary-checked or marked), buying, pricing (8+ products with units), attention, demand and what people are saying; rivals stay in one short section; it never builds its own buyer groups or quote bank.
 4. **It reads the sibling reports** and states any disagreement; it ends the story with **what this means for positioning**.
-5. **The report passes write-report §3:** In short ≤ 150 words, "Do this first" first, nothing unverified; Decisions for you; body ≤ 3,000 words; ≤ 6 moves; What we're not doing; a baselines table; couldn't-check; sources with a source-skew line; "For you" only where a finding matters; no ids or jargon; a local file with a clickable link plus the brand copy.
+5. **The report passes write-report §3** (check its list: the top says what was looked at and the findings before the first move). Also: a baselines table; "For you" only where a finding matters; a local file with a clickable link plus the brand copy.
 6. **The closing message:** three lines, at most five decisions, a repeat only with a reason (monthly pulse plus quarterly report; brand watch weekly or daily).
 7. **"Watch my brand"** runs the listening alone, risk first, and says nothing beyond one line when nothing crosses a threshold; an alert has what, reach, separate people, what we know, who handles it, and a hold list for serious risks.
+
+Fail (20 Oct hand test): "Do this first" before the reader knows what was researched; a same-week sibling report with a different first move or lead buyer, not named or settled; a report delivered over its word budget.
 
 Fail: questions before the report; a report about rivals' complaints instead of the market; no market decision or no bottom-up size; buyer groups invented here that contradict research-audience's buyer groups without saying so; a report saved only on the server; ids or jargon; a brand watch that sends a full report when nothing happened.
 

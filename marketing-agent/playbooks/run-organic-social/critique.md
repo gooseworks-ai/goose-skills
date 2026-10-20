@@ -444,3 +444,42 @@ Took the craft, not the structure, the vendor wrappers or the keys. make-content
 ## Round 20: second Codex review of PR #322 (20 Oct)
 
 **Adopted.** The scheduled-refill prompt named method files bare (`brand.md`, `run-record.md`, `plan-calendar.md`, `shared/write-report.md`…), so the server's worker couldn't find them. Every method file in the prompt now has its full workspace path, `social/method/…` or `social/method/shared/…`, matching where the copy step writes it. Output paths (`social/calendar/`, `social/plans/`, `runs/…`) were already full.
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+- **The brand account (~300–1.2k views) did the work while the cofounder's X gets 40k–611k; the tester's own account was dropped.** → platform-strategy §1: rank accounts by the reach they already have; people's accounts run the reply routine, the brand amplifies; never drop a named account without saying why and a yes.
+- **Stale news as a hook; BFCM post on 6 Nov.** → post-checks §5: news over 7 days old is never the hook; seasonal posts go out when the buyer plans (lead time in the slot).
+- **Published ranking code treated as confirmed; bookmarks counted in one place and not in make-content.** → platform-research §1: published code or weights are "likely"; the dated card is the one shared view, updated rather than contradicted. make-content's platform rules now defer to that card.
+- **Format tests read on 2 posts a side.** → calendar-craft, run-record, plan-calendar: a verdict needs ≥ 4 scored posts a side (a test may span two calendars); 2–3 a side gives a direction labelled "a first look, not a verdict" and stays `too early`.
+- **"Start from scratch" dropped the facts** (who posts, time zone, evenings). → **Rejected — owner was simulating a first run** (Akhil, 20 Oct). SKILL Before #5 now: "start from scratch" is a first run — no last record, earlier calendars or notes, one line "Starting fresh: I won't use earlier plans or notes."; brand rules, approved claims and what the marketer says in this conversation still hold.
+- **Asserted a setup choice the marketer never made** ("you set both IG/TikTok aside at setup"). → SKILL Before #6: never assert a choice without their own words; an agent's saved plan is not their choice.
+- **No total workload.** → platform-strategy §6 and What you get: the plan's hours a week across every account, next to the hours they have. (The report's top-section shape is writer 1's.)
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| The social plan shipped at 4,387 words vs the 3,000 body budget and In short at 202 vs 150 — counted and delivered anyway | Length section: both budgets counted, over budget blocks delivery, with what to cut first; write-report §3 now blocks too |
+| Total time a week buried in the strategy (coordinator, from writer 4) | A "Time a week" line in In short, checked against the marketer's hours |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| Owner (Akhil): "start from scratch" was test setup simulating a first run, not a defect | The earlier fix is rejected (bullet above marked). Before #5: "start from scratch" is a first run — no last record, earlier calendars or notes, one line "Starting fresh: I won't use earlier plans or notes."; brand rules, approved claims and what the marketer says in this conversation still hold. |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Setup in Before you start #1–2 and again in step 1's "Brand read" (including the waiting-items and claims-only-through-the-gate copies) | One setup line (guide §1–2) plus the playbook's own reads in Before you start #1: the card_wait exception, chapters, the lean `accounts`/`sources`/`organic` read, the fallback sections, the no-`detail: "full"` rule. Step 1's Brand read removed; items renumbered (#2–#5) with every reference updated. |
+| "Pass `client` only to tools whose schema has it" and "(AGENTS §8)" repeat the server and a builder doc | Deleted. |
+| "Never name tools, ids or other playbooks" under the opening line repeats guide §3 | Deleted. |
+| X-only format rule in What you get duplicated step 4 | Kept once, in step 4's format-reason bullet. |
+| Step 6's report scan restated write-report §3 | Pointer to write-report §3, plus the job-specific `[` bracket scan, post-by-day naming and the fill-in wording. |
+| Step 8 copied references/scheduled-refill.md §1 | A pointer to the reference; the paused-schedule rule now points to guide §3, "Schedules". |
+| Done when was a test oracle; the hard bars lived only in the steps | Done when now lists the bars: dated card + 8 linked examples per named platform (card + 3 for others), dated sources and a linked pattern per post, at most one fill-in, the product-mix caps, format reasons and video scripts, the run record. The light-edit oracle stays in tests/test-by-hand.md. |
+| Description 961 characters | 643 characters, one trigger per branch. |
+| Not changed (item 3, later) | Refill and repeat set-up stay in place. |

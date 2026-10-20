@@ -22,13 +22,13 @@ You research **one rival** for **one brand** — or **our own brand** when the b
 
 ## Get these, in this order
 
-1. **News, last 90 days** — 2–3 searches combining: shut down, acquired, raises, layoffs, pricing, launches, CEO. Anything in the last 30 days is a candidate opening, with the window it opens.
+1. **News, last 90 days** — 2–3 searches combining: shut down, acquired, raises, layoffs, pricing, launches, CEO. Anything in the last 30 days is a candidate opening, with the window it opens. Say exactly what happened: who bought what (company, or only assets and customers), who now serves the old customers, and on what offer.
 2. **Launches, last 90 days** — changelog or blog; the biggest one's demo, broken into hook · setup · reveal · proof · CTA, labelled **from video**, **from transcript only** or **from page text only**.
 3. **Founder and exec posts** — 1–2 people: `site:linkedin.com/posts "<name>"`, `site:x.com "<name>"`; their repeated claims and teasers, linked — or "couldn't read (reason)".
 4. **Ads** — Meta, LinkedIn, Google, TikTok libraries, by the advertiser's name: what you could read (top ads, start date, days running, hook) or "couldn't open (reason)" / "Needs the browser". Never spend, return on ad spend or "best ad" as fact.
 5. **Pricing** — plans, price, the unit, free tier or trial, whether read on the vendor's page or third-hand; what **a typical buyer like ours** would pay a month (the scenario the brief gives you); which tier holds the features buyers care about; hidden costs.
 6. **Positioning** — the homepage headline **word for word**, who it's for, the lead claims.
-7. **Buyers** — at least one praise and one complaint, quoted verbatim with links (review sites, Reddit, community), and how many you read.
+7. **Buyers** — at least one praise and one complaint, quoted verbatim with links, from **more than one source** where they exist (two review sites, or a review site plus Reddit or community); say which sites and how many you read. One site only (Trustpilot over-represents complaints) → say so. The praise is why their customers stay — never skip it.
 8. **Hiring, customers and search** — open roles by team (one look at the careers page); named customers, logos on the customers page a year ago that are gone now (Wayback, `../../references/rival-craft.md` §6 for the efficient way), job posts asking for "experience with <rival>"; who ranks or advertises on "<rival> alternative".
 
 ## Weighting by company type
@@ -49,10 +49,10 @@ What they are: <one line> · Frame: <the category they claim>
 News (90 days): <dated items with links> · Candidate openings: <event — date — window, or "none">
 Launches: <dated> · Biggest launch breakdown (<from video | transcript only | page text only>): hook · setup · reveal · proof · CTA
 Founder posts: <name, role — claims and teasers with links> or "couldn't read (reason)"
-Ads: Meta <…> · LinkedIn <…> · Google <…> · TikTok <…> — each read (top ads, start dates, days) or "couldn't open (reason)"
+Ads: Meta <…> · LinkedIn <…> · Google <…> · TikTok <…> — each read (count and what it counts — "active now" or "shown since <date>" — top ads, start dates, days) or "couldn't open (reason)"
 Pricing: <plans, price, unit, trial> — <vendor page | third-hand>, <link, date> · a typical buyer pays: <$/month for the scenario> · tier for key features: <…> · hidden costs: <…>
 Headline (word for word): "<…>" · for whom · lead claims
-Buyers say: praise "<quote>" (<link, date>) · complaint "<quote>" (<link, date>) · n read · main review site: count and rating
+Buyers say: praise "<quote>" (<site, link, date>) · complaint "<quote>" (<site, link, date>) · sites read and n per site · main review site: count and rating
 Hiring: <roles by team> · Customers: <named, each confirmed / likely / a guess, linked> · likely lost: <logos gone since a year ago> · Search: <who ranks or advertises on "<rival> alternative">
 Where we win / where we lose: <points, each with how sure>
 Needs the browser: <exact URLs or searches>

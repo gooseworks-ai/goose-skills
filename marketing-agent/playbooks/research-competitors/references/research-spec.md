@@ -2,11 +2,11 @@
 
 ## 1. Summary
 
-- **Competitor research tells you what to do next.** It is not a list of ads. Each run should end with 3 to 5 moves the founder can make this week, each dated and sourced.
+- **Competitor research tells you what to do next.** It is not a list of ads. Each run ends with at most six moves the founder can make, each dated and sourced, and one of them first.
 - **Cover every dimension for every main rival before you report anything:** news, launches, ads on every platform, organic and founder posts, pricing, positioning, hiring, reviews and community talk. Stopping after one source is how a real test run missed its biggest story: a rival's shutdown, one news search away.
 - **Look for news first.** A rival's shutdown, price rise, outage, launch or acquisition is a short window to act. These go at the top of the report, above any ad analysis.
 - **Copy formats, never words.** Use a rival's demo structure, hook pattern or offer type. Never copy their copy, footage or claims. Every comparison must be true, provable and fair.
-- **Deliver a readable document, not a chat reply.** It opens with "Do this first", then timely openings, rival profiles, a positioning map, a swipe file with links, and an angle list. It is saved to the brand's memory so the next run only adds what changed.
+- **Deliver a readable document, not a chat reply.** It opens with In short in the write-report shape (`../../../atoms/write-report/ATOM.md` §1), then timely openings, rival profiles, a positioning map, a swipe file with links, and an angle list. It is saved to the brand's memory so the next run only adds what changed.
 
 ---
 
@@ -38,6 +38,7 @@ For each dimension: **what to look for**, **why it matters**, **best sources (fr
 
 - **Look for:** funding rounds, acquisitions (both ways), shutdowns or "sunsetting" notices, layoffs, new CEO, CMO or CRO, rebrands, lawsuits, outages and security incidents, price-rise emails, big customer wins and losses, analyst mentions.
 - **Why:** this is where time-boxed openings come from. A shutdown, price rise or outage means a switch campaign. A funding round means more ad spend soon. A new CMO means new messaging within about 90 days.
+- **Name the event exactly.** An acquisition is several different events. A company buying a shut-down rival's assets or customers (e.g. one recruiting tool buying another's assets) is running a **migration offer to the customers it inherited** and will try to own "<rival> alternative" searches — for us that's a race for the customers it doesn't keep and for those searches, not a "switch campaign" it is running. A rival buying a company → a bundle or new feature soon. A rival being bought → roadmap and pricing doubts among its buyers. A shutdown → a home for their customers' work.
 - **Sources (free):** web and news search on `"<rival>"` plus each keyword (shut down, acquired, raises, layoffs, pricing, outage, sunset, CEO), limited to the last 90 days. Also the rival's own blog and press page, their LinkedIn company page, Crunchbase or PitchBook free pages, TechCrunch, trade press, status pages (status.<rival>.com), and the founder's own posts, where news often breaks first. Then run the **same search on our own brand**. In one real case the biggest story — buying a shut-down rival's assets — was the founder's own news.
 - **Depth:** every main rival, last 90 days, every result read. Any hit from the last 30 days becomes a candidate "timely opening".
 
@@ -209,7 +210,7 @@ The dimensions stay the same. What changes is **where to spend depth**. The agen
 
 ### Ground rules
 
-1. **Do the whole job before reporting.** Research every dimension in section 3 for every main rival before presenting anything. **Never stop after one source to ask "go deeper?".** The founder asked for competitor research, and depth is part of the request. The only reasons to pause midway are a missing fact only the founder knows (section 6.4) or an action that needs permission (signing up, paid tools). *(Superseded by AGENTS §8: both go in the closing message with the report.)*
+1. **Do the whole job before reporting.** Research every dimension in section 3 for every main rival before presenting anything. **Never stop after one source to ask "go deeper?".** The founder asked for competitor research, and depth is part of the request. The only reasons to pause midway are a missing fact only the founder knows (section 6.4) or an action that needs permission (signing up, paid tools). Both go in the closing message with the report.
 2. **News first, then everything else.** Run section 3.1 (news) for every rival and for our own brand in the first minutes. If it finds a timely opening, keep going, but mark it so it leads the report.
 3. **Run rivals in parallel.** One worker per rival, each with the same checklist and output shape. One more worker covers the category-wide checks (AI answers, money searches, community threads, creator demos). Merge at the end.
 4. **Date and source every fact.** Each claim gets a link and an "as of" date (date seen, plus date published where known). Ads get their start date. Prices get the date captured.
@@ -246,7 +247,7 @@ The dimensions stay the same. What changes is **where to spend depth**. The agen
 
 ### Ask the founder very little, find the rest
 
-*Superseded by AGENTS §8 (free pass first, ask nothing): these questions go in the closing message with the report, never before research.*
+These questions go in the closing message with the report, never before research (`../../../foundation/guide/research-pattern.md`).
 
 **Ask, only if not already in brand memory:**
 - Who are your main rivals? Who do buyers mention on sales calls? (The agent should propose a list and let him correct it, not start from blank.)
@@ -276,9 +277,7 @@ A **readable document** (a shareable doc or artifact page), not a chat reply. Th
 
 ### Document structure
 
-1. **Executive summary: "Do this first"** (half a page)
-   - The 3 to 5 moves, ranked, each with **why now**, **expected upside**, **effort**, and **link to evidence**.
-   - One line on how the field has changed since the last report.
+1. **In short** — the write-report shape (`../../../atoms/write-report/ATOM.md` §1; this playbook's version: `report-format.md`): what we looked at, the findings with how sure, then the one first move resting on them, and a line on what changed since the last report. The ranked moves (at most six, each with why now, expected upside, effort and a link to evidence) sit in "What to do", not in the summary.
 2. **Timely openings** (only when there are any, and always above everything else)
    - E.g. *"Rival X shut down on <date>. Its users need a new home now. Window: roughly 4 to 8 weeks, until their data is deleted."* Then the switch-campaign plan: audience, offer, channels, assets, end date, and claims that need sign-off.
 3. **The landscape**
@@ -306,7 +305,7 @@ A **readable document** (a shareable doc or artifact page), not a chat reply. Th
 
 - **The document:** published as a shareable doc or page the founder can read, comment on and forward to the team.
 - **Brand memory:** a structured competitor record per rival (profile, ad snapshot with IDs and start dates, pricing snapshot, headline text, hiring counts, review themes, last-checked dates) plus the dated report. The next run starts from memory and **reports what changed**, so it never begins from zero.
-- **Swipe file items** also go into the brand's creative inspiration library so ad and video briefs can link straight to them.
+- **Swipe file items** also go into the brand's creative inspiration library so ad briefs can link straight to them.
 
 ---
 

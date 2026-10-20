@@ -4,7 +4,7 @@ Load at step 4. Pillar 4's core output is a prioritised map from what buyers ask
 
 ## Shape (`search/page-map.md`)
 ```
-Do this first: <the one move and why — the report's "In short" first bullet is this one, copied>
+Do this first: <the one move and why — the report's "So, do this first" line, copied>
 Page map — <Brand> — <YYYY-MM-DD> v<N> · country <cc> · demand source: Search Console impressions (last 3 months) | none (ranked by value × winnability)
 
 | Cluster | Questions (ids) | Primary query | Demand | Page that answers it | Best position now | State | Winnable | Priority | Owner | Quarter | This run's evidence |

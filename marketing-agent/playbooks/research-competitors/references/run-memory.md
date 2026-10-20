@@ -21,7 +21,7 @@ One row per main rival, plus a row for us. Each cell carries its read date and h
 
 | Number | How it's read | Unit / note |
 |---|---|---|
-| Active ads per library (Meta, LinkedIn, Google, TikTok) | the library page, by advertiser | a count, or "couldn't open" — never 0 unless the library loaded |
+| Active ads per library (Meta, LinkedIn, Google, TikTok) | the library page, by advertiser | a count labelled with what it counts (Meta "active now", Google "shown since <date>") — never 0 unless the library loaded; compare a library only with itself across runs |
 | Longest-running active ad | the library | days, with its ad id |
 | Entry price and a typical buyer's monthly cost | pricing page (scenario from rival-craft §6) | $/month; "not public" |
 | Launches in the last 90 days | changelog, news | count, with the biggest named |
@@ -53,6 +53,6 @@ Save the run record **before** the closing message, and put the one-line "saved"
 Run-memory's scheduled rules apply in full. Here specifically:
 - Free reads only (news, pages and feeds a fetch can read, the server's free samples); never the ad libraries — the record says "ad libraries not read (scheduled run)" under Not checked, and the ad-count cells keep the previous value marked "carried, not re-read".
 - **Nothing crossed a threshold** → no report is sent, but the run record is still written: the numbers re-read, "nothing crossed a threshold", the open recommendations carried forward. That record is the next baseline.
-- **Something crossed** → a what-changed report through write-report: "Do this first", then what changed against the stored numbers, in "In short"; its "Decisions for you" holds any `unknown` statuses (once each, with the date asked).
+- **Something crossed** → a what-changed report through write-report: what was re-read, what changed against the stored numbers, then "So, do this first (because of …)", in "In short"; its "Decisions for you" holds any `unknown` statuses (once each, with the date asked).
 - **Questions on a quiet week** (no report goes out): mark the item `to ask` in the record with "asked on" empty; it is asked in the next report or the next run with the founder present.
 - A run that can't read its sources (a connection missing, every page failing) writes a `Not run: <why>` record and keeps the previous baseline.

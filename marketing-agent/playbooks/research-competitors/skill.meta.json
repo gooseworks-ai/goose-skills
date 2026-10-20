@@ -15,8 +15,8 @@
     "Watch my competitors every week"
   ],
   "reads": [
-    "brand brain: summary, kit, products, competitors, organic, learnings (brand_read) — learn-my-brand / server research",
-    "claims through the claims-gate shared atom — learn-my-brand",
+    "brand brain: summary, kit, products, competitors, organic, learnings (brand_read) — server research and the app (learn-my-brand, unreleased)",
+    "claims through the claims-gate shared atom — its scoped sign-off, or earlier records (learn-my-brand, unreleased)",
     "competitor roster, dossiers and suggestions (competitor_read) — research-market / server research",
     "public web: news, launches, pricing (and Wayback), ad libraries (LinkedIn, Google, Meta, TikTok), company and founder posts, reviews, community, jobs, events — host web search, fetch and browser (free)",
     "Meta ad sample (ads_template_read mode competitor) and rival posts (brand_read organic) — server research, free",
@@ -30,8 +30,8 @@
     "competitor report ('In short' with 'Do this first', timely openings, rivals one by one, how they compare, You vs them, formats worth borrowing, angles, what to do): local gooseworks-reports/<brand-slug>/<date>-competitor-research.md + workspace research/competitors/<date>-report.md + brand document (keep-history) — read by the founder and team, the next run",
     "rival records with snapshots: workspace research/competitors/<slug>.md (supersede) — read by the weekly watch, plan-campaign, make-content",
     "landscape: workspace research/competitors/landscape.md (supersede) — read by plan-campaign",
-    "angle bank keyed A-NN (makers tag angle:a-nn): workspace research/competitors/angle-bank.md (supersede) — read by make-static-ads, make-video-ads, plan-campaign",
-    "swipe-file items: inspiration library via social_inspiration_save — read by make-static-ads, make-video-ads, make-content",
+    "angle bank keyed A-NN (makers tag angle:a-nn): workspace research/competitors/angle-bank.md (supersede) — read by make-static-ads, plan-campaign (and make-video-ads, unreleased)",
+    "swipe-file items: inspiration library via social_inspiration_save — read by make-static-ads, make-content (and make-video-ads, unreleased)",
     "weekly watch notes: workspace research/competitors/watch/<date>.md (keep-history; line 2 'Week of …') — read by the founder, analyze-performance",
     "new rivals on the roster via competitor_save, on the founder's yes",
     "rules for top angles through the save-learning shared atom, on the founder's words",

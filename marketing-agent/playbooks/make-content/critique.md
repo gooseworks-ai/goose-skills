@@ -187,3 +187,31 @@ Round 10 alignment: the scoped sign-off ask now uses the claims gate's exact con
 2026-10-16 final contract check: shared-atom paths `marketing-agent/atoms/...` → file-relative `../../atoms/...` (SKILL.md, atoms, references).
 2026-10-16 final contract check: voice-card path placeholder `brand/voices/<slug>.md` → `<handle>.md` (skill.meta.json, atoms/content-brief, server-needs.md); `atoms` vs `shared_atoms` split in skill.meta.json.
 2026-10-16 orchestrator ruling: the hand-over ends with an offer of the posting calendar, never starting it (AGENTS §2 rule 9); the claims step (SKILL.md step 6, atoms/two-pass-edit) loads ../../atoms/ad-policy-check/disclosure.md for sponsored, affiliate, gifted or creator-collaboration pieces.
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+- **No X Article / long post / thread anatomy.** → formats.md: a new anatomy (when to pick each, what shows before "Show more", the share post, check X's limits this run). SKILL What you get and the description now name X articles and long posts (coordinator ask, for routing; description 1,018 characters).
+- **A category-grading piece built on rivals' complaints before our own answer was settled; rivals identifiable from rating ranges.** → fact-rules (grading row) and point-of-view: settle our answer on the same test first, else the replies do the teardown; don't make rivals identifiable by detail unless naming is approved.
+- **Adopted hook "Our credits expire every month. One rival's last two."** → editing: hooks lead with the reader's pain, never our weakness or a rival comparison; reviewer suggestions go through the same checks.
+- **Fill-ins grew 1 → 4 though the credit-cost answer was in the brand's quickstart.** → SKILL step 4.5: check the brand's own public docs before leaving a fill-in; fill-ins shrink between drafts.
+- **Quotes without links; prices from memory.** → fact-rules: no quote without a link to its actual page; prices and offers re-read live the same day, pointing to the guide's live-facts-before-copy rule.
+- **Consistency pass: fact-rules cited "live facts before copy", a rule name the guide doesn't use.** → Now cites the guide's "Live facts" rule, §3.
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| Two versions of the live-facts rule (fact-rules: re-read on the live page the same day; guide: only when > 14 days old) | The guide's rule now always re-reads prices, plans, free offers and credit amounts that go into copy; fact-rules' price row points to it without restating. |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Contradiction: the brain read was `brand_read` only, with no `brain_*` path, while the guide reads the Brand Brain first | Before you start #1 is now the guide's setup line (§1–2 carries both paths) plus this playbook's reads: brain chapters 2, 5, 11, 22 and a lean `sources`/`organic` read; the fallback `brand_read` sections line kept; `content/`, `brand/voices/`, `content/channels.md` and the platform order kept. |
+| Connection, `get_started`, `client`, brand/workspace scope and "talk in outcomes" copied from the guide and the server | Deleted; the guide and the server carry them. |
+| The claims rule written three times (Before you start #4, step 6.2, Approval gates) | One live copy in Approval gates § Claims (now holding the scoped sign-off details and the someone-else-approves exception); Before you start #2 and step 6.2 point to it. |
+| Orphaned "(step 4)" and "#5 message" pointers | Now "(Steps, 4.1)" and "the intake message" (Before you start #3). |
+| Write paths listed per step and again in Output | Per-step "Writes" lines removed; Output carries the full paths (dated file names added). The page draft's line-one rule stays in step 4.5. |
+| "(AGENTS §2 rule 9)" runtime pointer into a builder doc; "pillar 11" in references/formats.md | Both removed. |
+| Done when was a test oracle ("edits rather than starts over", already in tests/test-by-hand.md) | Checkable per-path bars: units table, hook + 2 alternatives, brief + recorded outline yes + publish kit, redline with reasons, saved template; on every path an edit note, one claims block and every gap tagged. |
+| Description 1,018 characters with synonyms and a deliverables list | 693 characters: what it is, one trigger per branch (carousel copy kept for routing case R46), the Not-for lines. |

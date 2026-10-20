@@ -1,7 +1,7 @@
 ---
 name: spend-gate
 description: >-
-  Shared atom (owner: research-market session). Gets the human's yes before any credit is spent, in one of two branches - engine-quoted work (the quote shown exactly as GooseWorks gives it) or proxy data reads (one yes to a ceiling, the first call as the probe inside it, stop at it, log every charge). Also the rule for scheduled runs. Loaded by any playbook that spends credits; never listed.
+  Shared atom. Gets the human's yes before any credit is spent, in one of two branches - engine-quoted work (the quote shown exactly as GooseWorks gives it) or proxy data reads (one yes to a ceiling, the first call as the probe inside it, stop at it, log every charge). Also the rule for scheduled runs. Loaded by any playbook that spends credits; never listed.
 ---
 
 # spend-gate
@@ -21,16 +21,16 @@ Pick the branch by the tool:
 
 Covers `gooseworks:data_call_provider` / `gooseworks:data_post_provider` with ScrapeCreators, `gooseworks:competitor_research` with `mentions`, and capped imports (`gooseworks:knowledge_sync`, `gooseworks:knowledge_import` with a `source`, `gooseworks:ads_library_scrape` for Google). Endpoint paths, query keys and recency options: `proxy-endpoints.md` in this folder.
 
-Paid reads deepen a free result; they are never the starting point. Offer them only after the playbook's free pass, in the same message as the draft answer (AGENTS §8 research pattern), and ask **once**.
+Paid reads deepen a free result; they are never the starting point. Offer them only after the playbook's free pass, in the same message as the draft answer (`../../foundation/guide/research-pattern.md`), and ask **once**.
 
-1. **Read the price history:** `research/credits-log/<YYYY-MM>.md` for this month and last (coworker scope, or the save-to-brain no-coworker fallback `brands/<brand-slug>/research/credits-log/…`).
+1. **Read the price history:** `research/credits-log/<YYYY-MM>.md` for this month and last (the scope in [`../../foundation/guide/SKILL.md`](../../foundation/guide/SKILL.md) §2).
 2. **Plan the top-up** with a cap on every row (pages per query, items per page, comments per post, profiles per list) and say in plain words what it adds to the free result.
 3. **Estimate and ask one yes** to "up to N credits", labelled an estimate:
    - with history: N from the logged charges for these kinds of reads;
    - with no history: never invent a price. Say what the top-up adds and roughly how many reads it takes, that the first read shows the real price, and let the human name the ceiling in the same yes ("up to how many credits?"); with no number given, run only the probe call and report its price before anything else. The first call runs as the probe **inside that same ceiling** — never a separate yes.
    Caps that tools take in their own unit (a few import tools take a small dollar cap) are described in words — "a small capped import" — and the credits charged are reported afterwards; never quote the dollar figure.
 4. **Run inside it.** Run the probe call first and keep its results. If the real per-call charge means the plan cannot fit, trim the plan to fit the ceiling — never cross it; ask again only if the human wants more. Then the cheapest and most decisive rows first; stop a row when it saturates. Calls that depend on earlier results (comments on the posts a search finds) fit inside the same ceiling. A playbook may reserve part of the ceiling for a named purpose (research-market's crisis reserve for its listening).
-5. **Log every charge** as it comes back, in `research/credits-log/<YYYY-MM>.md` (same scope or fallback as step 1; read it, add the row, write the whole file back):
+5. **Log every charge** as it comes back, in `research/credits-log/<YYYY-MM>.md` (same scope as step 1; read it, add the row, write the whole file back):
    `date | playbook | tool/endpoint | query kind | items | credits`
    "Query kind" describes the read ("brand name search, TikTok, past month"), never a private person's name or contact.
 6. **Stop at the ceiling.** If the next call would cross it, stop. A failed call is retried once only when its error says that is safe; a bad path or key is logged, never guessed again.

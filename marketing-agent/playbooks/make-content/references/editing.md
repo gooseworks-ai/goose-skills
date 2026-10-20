@@ -19,7 +19,7 @@ Questions 1, 3, 8 and 9 go into the edit note (atoms/two-pass-edit). Run the oth
 
 ## Pass 2: readability
 
-- **Headline.** Does it promise something the piece delivers within the first 100 words?
+- **Headline and hook.** Does it promise something the piece delivers within the first 100 words? The hook leads with the reader's pain or want, never with our weakness or a rival comparison ("Our credits expire every month. One rival's last two." opens on our gap and invites the comparison: lead with the reader's problem instead).
 - **Lede.** The claim or the tension arrives by sentence two. Delete the first paragraph and check whether anything is lost (usually nothing is, so keep it deleted). No scene-setting. No "In today's…". How-to and search pieces answer first.
 - **H2s as claims.** Reading only the subheads should give the argument.
 - **Scannability.** Paragraphs ≤4 lines, one idea each. Bold only the sentence a skimmer must take, at most once per section. Use lists only for parallel items, never to chop up an argument.
@@ -48,6 +48,8 @@ If the brand's own real writing uses an item below, it is allowed for that brand
 - Bolded phrases scattered through every paragraph.
 - Invented dialogue in quote marks.
 - Title Case Hooks on social.
+
+**Reviewers' suggestions get the same checks.** A hook or line suggested by a reviewer, a subagent or the marketer's colleague goes through the substance pass, the claims and fact checks and this list before it's adopted; "a reviewer suggested it" is not a pass.
 
 **Report it.** List each tell you removed in the piece's notes ("removed: 3 × 'leverage', 2 × colon reveals"). The human then sees the check was run.
 

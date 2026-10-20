@@ -24,6 +24,6 @@ One test with a pass mark, chosen to settle the weakest important hypothesis che
 
 ## The report's top
 
-- **In short**, first bullet: "**Verdict:** proceed · refine · test further · weak evidence — because …", then "Do this first:" with the test and its pass mark.
+- **In short** (write-report §1): "What we looked at" (the idea, the sources, the date, the main limit); then "**Verdict:** proceed · refine · test further · weak evidence", with the 2–3 findings behind it, each with how sure; then "So, do this first (because of …)": the test and its pass mark.
 - **Decisions for you:** go or no-go on the test, the price to test, who runs it.
 - In the story, a hypothesis table: hypothesis · what supports it (linked) · what weakens it (linked) · score in words. No market-size claims beyond what a source supports.

@@ -6,14 +6,9 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 
 ---
 
-## learn-my-brand — "Learn my brand once — stop asking me every time."
-- **Say it as:** "learning your brand: what you may claim, how you sound, what's still unknown" (never the name above, to the founder).
-- **Fits:** a prerequisite, not usually a pick. Name it under "Bring" ("first, about 20–30 minutes to sign off what you may claim and how you sound") whenever a recommended playbook writes copy that states benefits, results, health, ingredient or allergen facts and the brain has no "Claims sign-off" rule (common in regulated categories). Picks that work from plain facts (listing and profile fixes, research) don't need it first. It is the pick itself only when brand facts are the constraint (the founder can't say what they sell, to whom, or what they may claim). A new account with no brand yet: it still goes under "Bring", since it also sets the brand up.
-- **Costs:** free (optional paid website-page or review imports, price shown first).
-- **Produces:** the brand brain with signed-off claims (what may and may never be said, with proof), a confirmed voice with do/don't examples, the basic facts, and a list of what is still unknown. About 20–30 minutes of the founder's time.
-- **Must bring:** a website or app-store page (or a plain description if neither exists), 20–30 minutes, and the authority to say what the company may claim (or the name of who has it).
-- **Reads:** the brand research the server already ran.
-- **Not:** positioning from scratch, market research, any creative.
+## Claims before copy (not a playbook)
+- Whenever a recommended playbook writes copy that states benefits, results, health, ingredient or allergen facts and the brain has no "Claims sign-off" rule (common in regulated categories), name it under "Bring": "about 5 minutes to OK the few claim lines the first job needs — I'll ask inside that job." The maker's claims check puts those 3–5 lines to the founder; when the Brand Brain is on, they confirm them in the GooseWorks app. Picks that work from plain facts (listing and profile fixes, research) don't need it.
+- Learning the whole brand in one pass (every claim audited, the voice signed off, a brand book read) is not covered yet. When brand facts themselves are the constraint (the founder can't say what they sell, to whom, or what they may claim), the first move is a human step: write down those three things. research-audience helps alongside.
 
 ## research-market — "Which market are we in, how big is it, and what's changing?"
 - **Say it as:** "researching your market: which category you compete in, how big it is, what's changing, how people buy and what they pay — and what people are saying about you" (never the name above, to the founder).
@@ -59,24 +54,6 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Reads:** the brand brain; angle bank, voice-of-customer bank, campaign brief and performance read when they exist.
 - **Not:** launching, budgets, video, landing pages.
 - **Costs:** Spends credits per ad; the price is shown first.
-
-## make-video-ads — "Everyone says video converts — I cannot produce it myself."
-- **Say it as:** "making a video ad" (never the name above, to the founder).
-- **Fits:** a brief or an ad account that calls for video; no videographer or on-camera talent.
-- **Produces:** a ready-to-post video ad (plus placement versions) with its script and angle. Costs credits (price shown first).
-- **Must bring:** the product, the one message, placement and length, any no-gos.
-- **Reads:** the brand brain; angle bank, voice-of-customer bank, campaign brief.
-- **Not:** statics, launching, organic calendars, real creators.
-- **Costs:** Spends credits per video (among the most expensive); the price is shown first.
-
-## make-product-photos — "Studio-quality photos of my product without a shoot."
-- **Say it as:** "making studio-quality product photos" (never the name above, to the founder).
-- **Fits:** physical products whose store page or ads look amateur, or a launch that cannot wait for a shoot.
-- **Produces:** store-ready product photos by style (studio, lifestyle, on-model); kept photos join the brand's assets. Costs credits.
-- **Must bring:** real product images, which product and variant, what the photos are for.
-- **Reads:** the brand brain (product images, kit).
-- **Not:** ad copy, video, publishing to the store, marketplace listing images; food service, restaurants, hospitality and real estate (declined).
-- **Costs:** Spends credits per photo set; the price is shown first.
 
 ## run-paid-campaigns — "Take the winner, scale it, kill the loser."
 - **Say it as:** "running your live ads: what to scale, pause or swap each week" (never the name above, to the founder).
@@ -152,12 +129,14 @@ Name these out loud using the "What to say" line only; backlog card names are in
 | Positioning from scratch (no clear "who it's for and why us") | write-my-positioning (backlog) | "Writing positioning isn't covered yet. You decide it; finding out who buys and their words gives you what it's built from." | research-market |
 | Offers, pricing, discount design | plan-offers (backlog) | "Offer design isn't covered yet. Decide the offer; everything I make for you will use it." | email-lifecycle slots a standing offer |
 | Landing page, store, checkout or onboarding fixes (CRO) | audit-my-pages (backlog) | "Page fixes aren't covered yet; you or your developer make them." | analyze-performance (a light check that top ads match their landing pages) |
-| Marketplace listings (Amazon, Etsy, Walmart…) | optimize-listings (backlog) | "Listing optimization isn't covered yet." | make-product-photos for clean product shots (not the listing image set) |
+| Marketplace listings (Amazon, Etsy, Walmart…) | optimize-listings (backlog) | "Listing optimization isn't covered yet." | none |
 | Sending outreach, sequences, follow-ups | do-outreach (backlog) | "We build the list; you send from your own tool." | research-audience |
 | Replying to comments and DMs, comment moderation | Reply drafts (backlog) | "Drafting replies isn't covered yet; you reply yourself. I can show you what people are saying." | research-market |
 | Always-on alerts (spikes, disapprovals, stock-outs) | watch-and-alert (backlog) | "Standing alerts aren't built; the weekly read and daily pulse cover it for now." | analyze-performance |
 | Setting up tracking, analytics, the pixel, the ad account | human or developer | "Setting up tracking is yours (or your developer's); once it exists, the weekly read checks it." | analyze-performance (tracking-health check) |
 | Recruiting individual supply or freelancers (gig workers, walkers, tutors without a business presence): job boards, referral rewards from current supply | human | "Recruiting individuals isn't covered; here is the first step you take." | none (research-audience only for supply that is a business) |
+| Video ads (Reels, TikTok and Shorts ads, AI UGC-style video, product demos) | held back from release | "Making video ads isn't covered yet. I can plan what to make and write the brief for whoever makes it." | plan-campaign (the asset list), work-with-creators (real creators filming) |
+| Product photos without a shoot | held back from release | "Making product photos isn't covered yet; your image ads use the photos you already have." | make-static-ads (ads from existing photos) |
 | Customer interviews and surveys | human | "Talk to five customers yourself; I can tell you who and what to ask." | research-audience |
 | PR and press, referrals and loyalty, community, events and trade shows, retail and trade, WhatsApp and chat, offline and local field marketing, product-led growth and onboarding loops | no playbook | "This is real work I can't do for you yet; here is the first step you take yourself." | make-content for community posts or a founder article, where it fits (it does not write press releases or pitches) |
 | Product-market fit, the product itself, pricing, hiring a salesperson, raising money | not marketing | "This is not a marketing problem yet; here is why." | none. Never give investment or fundraising advice. |
@@ -168,14 +147,14 @@ A lens, not a route: it shows which playbooks touch each type's heaviest work (p
 
 | Company type | Heaviest work on the map | Heaviest work off the map |
 |---|---|---|
-| DTC e-commerce | make-static-ads, make-video-ads, make-product-photos, run-paid-campaigns, email-lifecycle, work-with-creators, analyze-performance | offers and promos, store and product-page conversion, WhatsApp |
+| DTC e-commerce | make-static-ads, run-paid-campaigns, email-lifecycle, work-with-creators, analyze-performance | offers and promos, store and product-page conversion, video ads, product photos, WhatsApp |
 | B2B SaaS / sales-led | research-market, research-audience, make-content, improve-search-visibility, run-organic-social (founder account) | positioning from scratch, sending outreach, product-led onboarding |
 | B2B non-SaaS, CPG in retail | research-audience, make-content | trade and distributors, trade shows, retail, sampling |
-| Consumer app | improve-search-visibility (app-store listing), make-video-ads, email-lifecycle (push and in-app), run-organic-social, analyze-performance (cohorts) | onboarding and growth loops (product work) |
-| Marketplace seller (Amazon, Etsy, Walmart) | make-product-photos (clean shots), improve-search-visibility (search and AI answers off the marketplace), analyze-performance (from exports the seller pastes) | listing copy and images, marketplace ads (Sponsored Products), reviews and deals; the marketplace's own rules on claims |
+| Consumer app | improve-search-visibility (app-store listing), email-lifecycle (push and in-app), run-organic-social, analyze-performance (cohorts) | video ads, onboarding and growth loops (product work) |
+| Marketplace seller (Amazon, Etsy, Walmart) | improve-search-visibility (search and AI answers off the marketplace), analyze-performance (from exports the seller pastes) | listing copy and images, product photos, marketplace ads (Sponsored Products), reviews and deals; the marketplace's own rules on claims |
 | Marketplace (two-sided) | research-audience (supply that is a business), improve-search-visibility (demand side), plan-campaign | recruiting individual supply (gig workers), liquidity incentives, community |
 | Local / multi-location | improve-search-visibility (local search, listings, review-request brief), research-market (what locals say on Instagram and local forums), make-content | offline and field, referrals, WhatsApp, review replies |
 | Services, agency, consultant | make-content (thought leadership), research-audience, run-organic-social (founder account), improve-search-visibility | positioning, referrals, speaking, PR |
 | Creator / media | run-organic-social, make-content, email-lifecycle (newsletter welcome) | sponsorship sales, memberships |
 | Non-profit | email-lifecycle (donors), make-content | grants, events, PR |
-| Regulated categories (health, beauty, supplements, finance, food, kids) | learn-my-brand's claims sign-off before any writing or making playbook | legal review |
+| Regulated categories (health, beauty, supplements, finance, food, kids) | the claims check's sign-off of the lines each writing or making job needs, before anything states a fact | a full claims audit, legal review |

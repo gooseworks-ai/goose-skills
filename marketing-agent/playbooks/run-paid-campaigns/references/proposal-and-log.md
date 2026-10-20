@@ -81,7 +81,7 @@ Replan triggers fired: stock cover < 3 weeks on a featured SKU (Clear Serum)
 ## Open recommendations
 - R7 (2026-10-13): graduate Angle B winners into Sales – Broad (option A link, push 9ab3…) — evidence report:2026-10-13, cost/LPV $0.58, 37 orders — awaiting; check 2026-10-20: CPA on new ads ≤ $40 keep, > $50 pause them
 - R11 (2026-10-13): swap 3 benefits static → Benefits v2 (change 41c…) — evidence report:2026-10-13, CTR −38% over 3 wks — awaiting
-- R17 (2026-10-13): card — Google Search – Non-brand daily $80 → $65 — evidence user export 6–12 Oct, CPA $80 — awaiting the human ("done")
+- R17 (2026-10-13): card — Google Search – Non-brand daily $80 → $65 — evidence user export 6–12 Oct, CPA $80 — awaiting the marketer ("done")
 
 ## Checks due
 - R7 check 2026-10-20: CPA on the new ads ≤ $40 keep, > $50 pause them · trip-wire none
@@ -93,11 +93,11 @@ Replan triggers fired: stock cover < 3 weeks on a featured SKU (Clear Serum)
 | 7f2a… | Angle B – Traffic (238…/239…) | 2384… UGC unboxing · 2385… Problem hook | /serum?utm_… | 20 Oct | lifetime $900 |
 ```
 
-Pushes made before this playbook ran have no push id here and no tool lists them: treat those ads as non-Goose (cards) until the human gives the push link or id.
+Pushes made before this playbook ran have no push id here and no tool lists them: treat those ads as non-Goose (cards) until the marketer gives the push link or id.
 
 ## decisions.md — the change log
 
-Path: `ads/campaigns/<slug>/decisions.md`. **Append-only**, dates never earlier than the newest entry — an older event logged late takes today's date and names its real date in the Outcome line. The server appends a block for every Meta outcome it sees (approved, declined, paused, swapped) when the call named the push or campaign; this playbook appends, in the same grammar, what the server can't see: card moves once the human says "done", declines the human gives in chat, holds the human chose, and each check's result. Re-read immediately before appending (the server writes the same file).
+Path: `ads/campaigns/<slug>/decisions.md`. **Append-only**, dates never earlier than the newest entry — an older event logged late takes today's date and names its real date in the Outcome line. The server appends a block for every Meta outcome it sees (approved, declined, paused, swapped) when the call named the push or campaign; this playbook appends, in the same grammar, what the server can't see: card moves once the marketer says "done", declines the marketer gives in chat, holds the marketer chose, and each check's result. Re-read immediately before appending (the server writes the same file).
 
 Grammar (one line per field, no paragraph breaks):
 ```markdown
@@ -110,17 +110,17 @@ campaign: serum-launch
 ### 2026-10-13 — Founder story held
 - Recommended: R10 — kill or hold (near threshold)
 - Evidence: report:2026-10-13 — $410, 8 orders, CPA $51
-- Decided: human chose hold; trip-wire $60 CPA at $800
+- Decided: marketer chose hold; trip-wire $60 CPA at $800
 - Outcome: open until 2026-10-20
 
-### 2026-10-14 — Google budget lowered (applied by the human)
+### 2026-10-14 — Google budget lowered (applied by the marketer)
 - Recommended: R17 — Search – Non-brand daily $80 → $65
 - Evidence: user request — export 6–12 Oct, CPA $80 = 2× allowable, 14 conv / $1,120
-- Decided: human said "done" at 09:12
+- Decided: marketer said "done" at 09:12
 - Outcome: applied; expected −$105/week; check 2026-10-20
 
 ### 2026-10-14 — Sales – Broad raise read
-- Recommended: R5 — card — Sales – Broad daily $100 → $140 (applied by the human 2026-09-30)
+- Recommended: R5 — card — Sales – Broad daily $100 → $140 (applied by the marketer 2026-09-30)
 - Evidence: user request — your export, pre 23–29 Sep vs post 4–10 Oct, 7d click / 1d view
 - Decided: check rule from Checks due
 - Outcome: worked — +2.1 orders/day at $36 per extra order vs $40 allowable (claimed); rest of account flat

@@ -12,7 +12,7 @@ Read the test's row in the campaign brief's **Test plan** (hypothesis, variable,
 
 - **Win / Loss / Unclear** — against the written criteria only. Under ~30 conversions per arm, Unclear unless the gap exceeds ~50%; reliably detecting a ~20% lift needs ~100+ per arm (rules of thumb).
 - Use the primary metric the brief named, on store-joined data where available; a platform-only read caps confidence at medium.
-- A messy result: say whether it is enough to act on or the test should run again (the brief's Unclear rule) — the human decides.
+- A messy result: say whether it is enough to act on or the test should run again (the brief's Unclear rule) — the marketer decides.
 - Negative results are learnings too.
 - A Win or Loss is a **measured result**: saved as a readout (kind 23 `experiment_readout.<campaign-slug>-t<n>`) through save-learning's readout path in a run with the marketer present (`run-memory.md` § Experiment readouts). Unclear is not.
 
@@ -29,7 +29,7 @@ Each call also carries **"would change if"** — the evidence that would reverse
 
 ## The learnings log
 
-Written through the shared atom `../../../atoms/save-learning/ATOM.md`, which picks the Brand Brain path or the older path and holds their mechanics: the human's own words as the statement, one idea per learning, read back to confirm, own superseded learnings retired.
+Written through the shared atom `../../../atoms/save-learning/ATOM.md`, which picks the Brand Brain path or the older path and holds their mechanics: the marketer's own words as the statement, one idea per learning, read back to confirm, own superseded learnings retired.
 
 **One fact = one line**, starting `[learning YYYY-MM-DD]` (plus ` A-NN` when it is about an angle-bank angle):
 
@@ -39,13 +39,13 @@ Written through the shared atom `../../../atoms/save-learning/ATOM.md`, which pi
 
 The full evidence (test, dates, ads, spend, CPAs, scope, what it supersedes) stays in the weekly report's Tests section, which is the long-form record — the fact points back to it by date.
 
-**Kind:** `insight` by default; `do` / `dont` only for a rule the human states as a rule in their reply; low confidence is never written.
+**Kind:** `insight` by default; `do` / `dont` only for a rule the marketer states as a rule in their reply; low confidence is never written.
 
 **What qualifies** (anything else stays in the report, not the log):
 - an **ended test**, called; or a pattern holding **2+ weeks that clears the same n floors as a test call** (≥ ~30 conversions per arm, and for DTC with UTM-joined store orders or the account-level new-customer number moving with it; or a gap > ~50%) — B2B's one or two SQLs a week and app CPI never qualify; or a confirmed channel surprise; or a confirmed failure with its reason.
 - Never weekly snapshots ("CTR was 1.2%" is a metric, not a learning).
 - One rule per fact, scoped narrowly (channel, product, audience, market).
-- **It must have appeared in a report the human saw.** Learnings are *proposed* in the report's decisions block and written only after the human's reply — and not those they strike.
+- **It must have appeared in a report the marketer saw.** Learnings are *proposed* in the report's decisions block and written only after the marketer's reply — and not those they strike.
 
 **Show what it would retire.** Each proposed learning carries "retires: <old fact>" when it supersedes one, so a yes to it is a yes to the retirement too.
 
@@ -53,4 +53,4 @@ The full evidence (test, dates, ads, spend, CPAs, scope, what it supersedes) sta
 - Before writing, look for the same claim (the atom's read step: `brain_search` / `brain_map` kind 23 where listed, else `knowledge_search` `["learning"]`): update the existing entry rather than add a near-duplicate.
 - When a new learning contradicts an old one of ours, retire the old one as the atom says.
 - When a fact's review date has passed, propose re-confirm / retire in the next decisions block.
-- Promote `insight` → `do`/`dont` only when the human states it as a rule.
+- Promote `insight` → `do`/`dont` only when the marketer states it as a rule.

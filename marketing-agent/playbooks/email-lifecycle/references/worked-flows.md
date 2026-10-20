@@ -47,7 +47,7 @@ Preview: "A one-line reply is perfect."
 
 No button, no discount. After the flow, non-buyers join the engaged-30 broadcast segment.
 
-**Shared-code variant** (the popup shows one code for everyone, no expiry): W1 prints the popup's shared code as plain text and drops the "good until" line; the header drops the pool and expiry; drop W4's deadline email (there is no real date), and C3's condition becomes "subscribed via the popup (any time) and placed order zero times", restating the code without urgency ("Your 10% code still works: [CODE]"); flag the leakage to the human as a proposal to move to unique codes.
+**Shared-code variant** (the popup shows one code for everyone, no expiry): W1 prints the popup's shared code as plain text and drops the "good until" line; the header drops the pool and expiry; drop W4's deadline email (there is no real date), and C3's condition becomes "subscribed via the popup (any time) and placed order zero times", restating the code without urgency ("Your 10% code still works: [CODE]"); flag the leakage to the marketer as a proposal to move to unique codes.
 
 **Why it is senior:** one job per message; the discount appears where it belongs and nowhere else; urgency comes from a real date; lengths run 40–150 words; the voice decides for the reader; one message exists to earn replies.
 
@@ -74,7 +74,7 @@ Subject: "What you've set up in Ledgerly so far" · alt: "3 days left — here's
 
 Split: `first_report_run` = false → the P&L paragraph; true → "Your [month] P&L is ready to share with your accountant: [link]."
 
-**T-1, expired, +2 days** follow the same rule: one job each (the plan choice with the one plan [most similar teams] pick; what happens to their data; a reply-to-extend offer only if the human approved extensions).
+**T-1, expired, +2 days** follow the same rule: one job each (the plan choice with the one plan [most similar teams] pick; what happens to their data; a reply-to-extend offer only if the marketer approved extensions).
 
 ## D. Local booking reminder — [Northside Physio]
 

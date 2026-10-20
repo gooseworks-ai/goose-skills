@@ -28,5 +28,5 @@ Run on the whole pack and the send file. Fix every failure, then run again. Noth
 
 **The pack**
 - The brand copy holds no person's name, company or first line.
-- write-report §3 passes (In short opens with who to send to first and why; decisions box; no ids, paths, tool or playbook names).
+- write-report §3 passes; its first move is who to send to first and why (with no list, that there is no one yet). Outside tools the marketer runs (an email finder, a checker, a sending tool) may be named as examples, never endorsed.
 - The send file imports: header row, one subject and body column per touch, no merged cells, UTF-8.

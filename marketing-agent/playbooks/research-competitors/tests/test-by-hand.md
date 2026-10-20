@@ -9,9 +9,11 @@ Pass, all without being asked:
 2. **Rivals chosen from evidence** — the category's searches, AI answers and reviews — never from memory; the strongest current rivals are in the main set.
 3. **Worker briefs handed over in full**; workers' work kept; **every ad library searched for every main rival and us** (Meta, LinkedIn, Google, TikTok, by advertiser name), in the browser by the main run where workers couldn't, with one line to the founder first; nothing waited silently on an approval.
 4. **News first** for every rival and our brand; launches with demos broken down; founder and exec posts.
-5. **The report passes write-report §3:** "In short" first with "Do this first"; plain words; no ids, paths, tool names, Fact/Inferred tags or symbols; "For you" as a plain sentence on each finding; "You vs them"; facts checked against sources; a local file with a clickable link plus the brand copy with its link.
+5. **The report passes write-report §3** (check its list: the top says what was looked at and the findings before the first move). Also: no Fact/Inferred tags or symbols; "For you" as a plain sentence on each finding; "You vs them"; facts checked against sources; a local file with a clickable link plus the brand copy with its link.
 6. **After the senior-marketer review (18 Oct):** the frame of reference is stated in one line; "Do this first" is not something the report calls table stakes; a counter-position appears only with the leverage test passed (challenger, does it better, dated proof, reach), otherwise under "What we're not doing"; the report has Decisions for you, a baselines table, a source-skew line, disagreements with the market and audience reports if any, and "what this means for positioning"; body ≤ 3,000 words, ≤ 6 moves.
 7. **The closing message:** at most three lines, then at most five decisions, including a repeat only if it would help, with the reason and a cadence.
+
+Fail (20 Oct hand test): "Do this first" before the reader knows what was researched; a same-week sibling report with a different first move or lead buyer, not named or settled; a report delivered over its word budget.
 
 Fail: any question before the report; "couldn't read the ad libraries" while a browser was available; rivals from memory; a report saved only locally or only on the server; ids or agent shorthand in the report; a section patched in after the report instead of a rewrite.
 

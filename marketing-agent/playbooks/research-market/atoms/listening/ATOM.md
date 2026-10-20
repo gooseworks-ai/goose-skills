@@ -15,7 +15,7 @@ You listen to **what people are saying right now** about the brand, its founder,
 
 **Worker rules:** don't load any skill or playbook and don't start subagents or workflows — this brief is all you need. Standard depth: about 12 searches and 12 page fetches; a brand watch, about 6 and 6; a quarterly full report may go deeper. **Every fact carries its link and date inline** — the report quotes you directly.
 
-**Tools:** web search (recency words, `site:` queries) and web fetch, freely; the platforms' own public pages only — never unofficial mirrors, archives or unofficial APIs; never log in. Pages that need the browser go on "Needs the browser" for the main run. Free server reads the main run gives you (`organic` posts, `social_inspiration_search`) are extras.
+**Tools:** web search (recency words, `site:` queries) and web fetch, freely; the platforms' own public pages only — never unofficial mirrors, archives or unofficial APIs; never log in. Pages that need the browser go on "Needs the browser" for the main run. **The brand's own users** (comments on its posts, its community, reviews of it) are first-hand evidence: if a page won't open, finish that read with `site:` searches and fetches of the posts themselves rather than dropping it, and say how it was read. Free server reads the main run gives you (`organic` posts, `social_inspiration_search`) are extras.
 
 ## Two ways you run
 
@@ -49,7 +49,7 @@ Voices: <topic — signal (convergence / spike / underdog / controversy) — who
 Rivals' conversation: <rival — what people say — volume (same method) or "not comparable">
 Outliers: <link · creator · multiple (baseline n) · hook · format · topic> — save list for the main run
 Trends: <trend · first seen · platform · evidence · stage · fit · audio rights · post-by · confidence>
-Quotes worth keeping (people's own words, for the report and for audience research to pick up): <verbatim · link · date>
+Quotes worth keeping (people's own words, for the report and for audience research to pick up): <verbatim · link to the post or comment itself, never a community's home page · date>
 Source mix: <share of items by kind of source — e.g. complaints sites, developer forums, social> and how it bends the picture
 Needs the browser: …
 Couldn't read: <platform or page — why — what it would have added>

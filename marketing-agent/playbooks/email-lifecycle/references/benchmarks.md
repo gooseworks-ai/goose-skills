@@ -1,6 +1,6 @@
 # Benchmarks (honest ranges)
 
-Load when judging an audit or a performance read. Ranges move; always say the source and its date when quoting one to the human, and judge a flow on revenue or conversion per recipient, never opens.
+Load when judging an audit or a performance read. Ranges move; always say the source and its date when quoting one to the marketer, and judge a flow on revenue or conversion per recipient, never opens.
 
 | Metric | Range | Source / date |
 |---|---|---|

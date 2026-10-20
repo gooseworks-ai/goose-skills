@@ -25,7 +25,7 @@ Inputs: the account audit, the voice cards, references/calendar-craft.md, and th
    - seasonal and cultural moments for the brand's region. Look each date up with your web tool when you have one; otherwise list the moments and ask the human to confirm dates. Never assume a date from memory.
    - silent days
    - known trends with expiries
-4. **Format-test slots:** place the 1–2 tests (references/calendar-craft.md, Format tests): the missing posts of open tests carried from the last run record first, under their first ids, then new ones. At least 2 slots on each side; write each in the calendar header with its record id.
+4. **Format-test slots:** place the 1–2 tests (references/calendar-craft.md, Format tests): the missing posts of open tests carried from the last run record first, under their first ids, then new ones. Aim for 4 slots on each side (a test may span two calendars); write each in the calendar header with its record id.
 5. **Series slots next:** each account's 1–2 named series on their days.
 6. **Fill the mix:** the remaining slots by the account's bucket ratios, reweighted by the last run's per-format scorecard (more of what beat its baseline, less of what fell below), pulling make-content's cuts first (they're finished thinking), then voice-of-customer questions, then pillar ideas.
 7. **Flex slots:** 1–2 per week, marked "trend: swap within 48h if one lands". Each also gets an evergreen fallback draft, so the slot is never empty.

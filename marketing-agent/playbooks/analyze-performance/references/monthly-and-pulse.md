@@ -8,16 +8,16 @@ Feeds plan-campaign's monthly replan. Saved as `reports/performance/monthly/<YYY
 - **nCAC trend** vs allowable; **payback**: months of contribution to recover nCAC (B2B: CAC payback in months).
 - **Cohort repeat** (DTC): of last month's and the month before's new customers, the share that bought again within 30/60/90 days, from the store export — judge customers by what they do over time, not day one.
 - **Channel scorecard**: each channel vs its target from the brief, over the month, on blended/store-joined numbers; channels missing target two months running are named for plan-campaign.
-- **Tests ended this month** and their calls; **learnings due for review** (REVIEW BY passed) — proposed in the decisions block to re-confirm, downgrade or retire (they need the human's words).
+- **Tests ended this month** and their calls; **learnings due for review** (REVIEW BY passed) — proposed in the decisions block to re-confirm, downgrade or retire (they need the marketer's words).
 - **Brand signals**, only if a sibling has written them: research-market's sentiment counts from "What people are saying" (share of voice only if the section has it), improve-search-visibility's last check and citation movement. This playbook does not measure them.
 
 ## Daily pulse (interim, exception-only)
 
-Interim until a watch-and-alert layer exists. Runs only when the human asks ("anything on fire?") or on a schedule they explicitly approved. **Says nothing unless a threshold breaks** — a pulse that reports every wobble trains over-reaction.
+Interim until a watch-and-alert layer exists. Runs only when the marketer asks ("anything on fire?") or on a schedule they explicitly approved. **Says nothing unless a threshold breaks** — a pulse that reports every wobble trains over-reaction.
 
 **It opens with what it can see** ("I can see Goose ads on Meta (31% of Meta spend); nothing else"), and never gives an all-clear on spend it can't see — instead: "Paste today's numbers from <platform> if you want those checked." Push ids come from run-paid-campaigns' `state.md`.
 
-Checks (2 minutes, from `meta_read` performance over the last 1–3 days, `push_status` for the push ids in `state.md`, and anything the human pastes):
+Checks (2 minutes, from `meta_read` performance over the last 1–3 days, `push_status` for the push ids in `state.md`, and anything the marketer pastes):
 - Pacing: month-to-date spend more than ~15% off plan.
 - Spend anomaly: a Goose ad set with zero delivery, or a day's spend > ~1.5× its normal.
 - Rejections / failed creatives on a recent push.

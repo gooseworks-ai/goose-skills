@@ -15,7 +15,7 @@ First comment: … (link or context, if the platform buries links)
 CTA: …
 Hashtags / search keywords: … (platform counts from platform-native.md)
 Alt text: …
-Asset line: <what visual it needs> — from <the human's phone or camera roll | a clip at mm:ss–mm:ss of <source> | rendered slides or card with goose-graphics (references/graphics.md; slide copy only where the host can't render) | make-video-ads (only a produced video they asked for) | UGC repost (rights asked: draft below)>
+Asset line: <what visual it needs> — from <the human's phone or camera roll | a clip at mm:ss–mm:ss of <source> | rendered slides or card with goose-graphics (references/graphics.md; slide copy only where the host can't render) | a produced video the marketer's team makes (we don't produce video yet) | UGC repost (rights asked: draft below)>
 Who shoots / makes it: <name> · time needed: <~min>
 Engagement plan: comment prompt in the post · first comment · people or accounts to tag (only ones the human named) · "be online 30–60 min after posting to reply"
 Reply plan (small accounts): the 3–5 named accounts from the strategy to reply to today, and what to add to their conversation
@@ -59,7 +59,7 @@ Alongside the table:
 - the cover-frame text
 - the caption with its search phrase
 
-If a brand learning says spoken lines should flow (no choppy fragments), follow it. Production goes to make-video-ads or the human's phone.
+If a brand learning says spoken lines should flow (no choppy fragments), follow it. Production goes to the human's phone (or their own video team; we don't produce video yet).
 
 **Stories:** 3–7 frames, one line each, plus the sticker (poll, question, link) and its exact wording.
 

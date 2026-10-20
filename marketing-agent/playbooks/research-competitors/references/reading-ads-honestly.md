@@ -41,6 +41,8 @@ Never report from the sample alone: "stopped", "killed", "tested and lost", acti
 - **TikTok / X:** EU-delivered ads only, with first and last shown dates and reach.
 Days running = last seen − first seen in every library. Say which country or region each library was read for.
 
+**Counts are not comparable across libraries.** Meta's count is ads active now; Google's is every ad shown in the date range the page is set to (often all time); others differ again. Never put them side by side as one measure, in a table or a sentence: label every count with what it counts ("Meta: 14 active now", "Google: 220 shown since 2023"). And an ad count is creative volume, never spend or reach — say so wherever counts are compared.
+
 ## Inference rules (full-library reads, or clearly labelled sample observations)
 
 | Signal | What it suggests | Discount it when |

@@ -1,10 +1,10 @@
-<!-- Hidden atom (analyze-performance-intake): Hidden atom of analyze-performance. Gathers the week's inputs from tools, the human's connectors, exports and pasted numbers; applies data hygiene and maturity rules; writes the coverage line or switches to claims-only mode. -->
+<!-- Hidden atom (analyze-performance-intake): Hidden atom of analyze-performance. Gathers the week's inputs from tools, the marketer's connectors, exports and pasted numbers; applies data hygiene and maturity rules; writes the coverage line or switches to claims-only mode. -->
 
 # Intake, hygiene and coverage (atom)
 
 **Load:** `../../references/measurement-contract.md`.
 
-**Inputs:** the measurement contract (company type, referee, channel roster); tool reads (`meta_read performance`, `social_analytics_get`, `ads_creative_read`, `video_read`, `campaign_read`); the human's connectors / exports / screenshots / pastes from the one input message.
+**Inputs:** the measurement contract (company type, referee, channel roster); tool reads (`meta_read performance`, `social_analytics_get`, `ads_creative_read`, `video_read`, `campaign_read`); the marketer's connectors / exports / screenshots / pastes from the one input message.
 
 **Do:**
 1. Start from the minimum useful read (contract §4) and tick the rest against the roster; big pasted exports are totalled in code when a code tool exists; with none, never totalled by eye — ask for the summary report and mark the referee not measured until it arrives (contract §4); never echoed. Then: what arrived, what didn't ("not checked this week" — no mid-run asks).

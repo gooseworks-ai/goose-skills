@@ -1,6 +1,6 @@
 # Rival content map (free)
 
-Load in the free pass (step 1). It answers the content-strategy question a single page fix can't: **what kinds of pages do the rivals have that we don't?** ("They have 12 comparison pages and 40 integration pages; you have none.") Everything here is free: sitemaps and the host's own fetch (AGENTS §8 public pages; `foundation/data-access` lists sitemaps as a free source).
+Load in the free pass (step 1). It answers the content-strategy question a single page fix can't: **what kinds of pages do the rivals have that we don't?** ("They have 12 comparison pages and 40 integration pages; you have none.") Everything here is free: sitemaps and the host's own fetch (guide §3, "Public data"; `foundation/data-access` lists sitemaps as a free source).
 
 ## Who to map
 The brand plus 3–5 rivals: the tracked roster (`competitor_read`) first, then any rival the engines named most often in this run. Never more than five — the point is the pattern, not a census.

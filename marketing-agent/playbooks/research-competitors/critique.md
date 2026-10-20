@@ -396,3 +396,47 @@ Sources as in research-market's Round 6. Old skills were read as reference only.
 - the atom's saved-line wording "so next week starts from here" is wrong for quarterly and ad hoc jobs.
 
 - **19 Oct, Codex review 2 of the run-memory PR:** not-yet-due recommendations now use the shared atom's `open` status instead of `unknown`, so they never reach "Decisions for you" before their review date.
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+- **The frame swung silently between runs** (18 Oct compared us with Jasper/Copy.ai; 20 Oct called Creatify "the rival most like us"). → Step 1 now states any change of frame or main rivals since the last run in one line with the reason; Done-when checks it.
+- **Top angle failed on our own page** ("see the cost before anything is made" while our page doesn't say what a video costs). → `angles-and-gaps.md`: an own-page test before an angle ranks; if we don't deliver it on our pages, the first step is fixing them. "Gap" now requires it.
+- **Profiles were complaints only, all Trustpilot.** → rival-pass item 7 and rival-craft §10: a praise and a complaint from more than one source where they exist, sites named, one-site skew said; SKILL step 5 and Done-when check every profile has both.
+- **A new entrant called "closest to our buyer" got no profile** (Holo). → Step 2: such an entrant counts as a main rival and gets its own worker; step 5: one surfacing late gets a short rival pass before the report.
+- **Meta "active" and Google "all-time" counts sat side by side.** → `reading-ads-honestly.md`: counts aren't comparable across libraries; label each with what it counts; ad count is creative volume, never spend. rival-pass return shape and run-memory Numbers row carry the label. The baselines table in `report-format.md` (writer 1's file) should split the row per library — flagged.
+- **Juicebox buying Fetcher's assets was called a "switch campaign".** → research-spec §3.1 "Name the event exactly" (an inherited-customer migration offer + owning "<rival> alternative" searches; our race is for the customers it doesn't keep); rival-pass news item asks who bought what and who now serves the old customers.
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| "230 live Meta ads" beside "paying to say works inside Claude" when only a few were Claude ads | The format's check names this case; the In short template asks for "how sure" per finding |
+| Ad counts compared across libraries (coordinator, from writer 4) | Baselines split per library, each labelled with what it counts; never added up or compared across libraries; a count is not spend |
+| Same-day sibling reports gave different first moves and lead buyers | write-report: read same-brand reports from the last 14 days; name a different first move or lead buyer in one line and merge or say why this one wins |
+| Test | test-by-hand item 5 checks the new top; a fail line for the 20 Oct case |
+| Rival record, landscape and angle-bank line 2 ("Do this first, because…") | Kept: they are working records planners read, not reports |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| Stale report-top wording: research-spec §1 and §7 ("Do this first" with 3–5 moves, half a page) and the description | research-spec now points at the write-report §1 shape and `report-format.md`; ranked moves (at most six) sit in What to do. Description: "the findings and the first move they support". "Ad and video briefs" → ad briefs. |
+| write-report's new top rules copied into Done when, report-format's check and test item 5 | Each now points at write-report §3 and keeps only this playbook's own checks (not table stakes, baselines, inline links, roles and dates on moves, the extra banned words, no Fact/Inferred tags). |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Copied setup (server choice, connection line, get_started, `client`, brand pick, brain_* read) | One "Setup first" line to guide §1–2, plus what is unique: create a missing brand from its site, no unrelated menu, the fallback brand_read sections, and the files this job reads |
+| "AGENTS §8 research pattern" (builder doc at runtime) | "guide §3 **Research pattern**" |
+| Run-memory start restated the atom | Pointer: the two job names and `references/run-memory.md` |
+| "Do not ask the founder anything yet" repeated the top rule | Removed; the host-settings and no-memory-seeding rules kept |
+| Step 5 restated report-format and research-spec rules (You vs them, six moves, sibling disagreement, positioning, For you, praise and complaint, events, source skew, baselines) | Step 5: write in the shape of report-format.md, the new-entrant rival pass, and the trace check |
+| Step 6 restated write-report's delivery (local file, link, artifact, file_url) | Deliver through write-report with this job's topic and brand path; the extra records stay |
+| Step 8 restated the schedule rule and spend-gate's no-history rule | Pointer to guide §3 **Schedules**; the no-browser note for scheduled runs stays |
+| Output table repeated guide §4's row (save modes are in report-format.md) | Pointer line |
+| Done when was one long sentence; no run record | Split into bullets; added "run record saved before the closing message" |
+| "Founder" and "marketer" both named the user | "Marketer" in SKILL.md. References still say "founder" in places (later pass) |
+| Description 1,010 characters, opened "Use when a founder or marketer asks" | 647 characters, leading with "Competitor research". Routing cases R06, R32 and R68 still match |

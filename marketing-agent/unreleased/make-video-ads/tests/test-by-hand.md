@@ -3,7 +3,7 @@
 ## Setup
 
 1. Connect GooseWorks **staging**. Test once in a shell host (Claude Code) and once in a chat host with no shell (Claude.ai).
-2. Link: `ln -s "$PWD/marketing-agent/playbooks/make-video-ads" ~/.claude/skills/make-video-ads`
+2. Link: `ln -s "$PWD/marketing-agent/unreleased/make-video-ads" ~/.claude/skills/make-video-ads`
 3. Video spends hundreds to thousands of credits. Pick the cheapest suitable style for paid tests.
 
 ## Test 1 — the core ask (DTC, regulated-ish category)

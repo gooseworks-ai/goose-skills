@@ -24,7 +24,7 @@ When two seem tied, choose the one upstream: fit before demand, blindness before
 
 Place the constraint from evidence the founder gave (or the brain holds), and say which evidence in one clause. The constraint is about customers or the business. A missing setup step (claims not signed off, an ad account not connected, a list not exported) is never the constraint; it is something to bring. A plan saved on the brand by an earlier session is evidence of what someone once intended, not of what is in the way. The founder's own guess ("where do you think it's stuck?") is a lead, not a verdict: it is often a symptom.
 
-If the constraint is not a marketing problem (the product doesn't work yet, pricing is broken, the business needs a salesperson), say so. That is a valid and valuable answer.
+If the constraint is not a marketing problem (the product doesn't work yet, pricing is broken, the business needs a salesperson), say so. That is a valid and valuable answer. Product-scope calls (who the product is for, which users to stop serving) belong to the founders: show them as a decision with what each choice costs.
 
 ## 2. Match the stage
 
@@ -49,7 +49,7 @@ Recommend one playbook. Recommend a second only when it is sequential (the first
 
 An existing audience, email list, network, community, press angle or partner beats any cold channel. Ask about it and use it first.
 
-Weigh the founder's real hours. A move that needs ten hours a week of posting is wrong for someone with two. A move that needs a budget is wrong for someone with none.
+Weigh the founder's real hours. A move that needs ten hours a week of posting is wrong for someone with two. A move that needs a budget is wrong for someone with none. **Sequence, don't stack:** one founding engineer can't run social at 5 hours a week, 50 cold emails and a creator wave at once. Add up the hours, pick the order, and give each later move the trigger that starts it.
 
 ## 5. Fix the basics before spending
 
@@ -64,7 +64,7 @@ A broken basic is the first move even when the fix is off the map and done by th
 
 A playbook whose inputs the founder cannot supply this week is not a first move. Check each pick's "must bring" line in playbook-map.md. Common dependencies:
 - plan-campaign needs a budget number and a date.
-- make-static-ads, make-video-ads, email-lifecycle and make-content need signed-off claims and a confirmed voice (learn-my-brand) to write anything that states a fact.
+- make-static-ads, email-lifecycle and make-content need signed-off claims to write anything that states a fact: signed-off lines on file, or 3–5 lines the founder OKs inside that job.
 - run-paid-campaigns needs a live ad account and an agreed cost per customer.
 - analyze-performance needs something live that produces numbers.
 - research-audience needs roughly who they sell to (it firms up the definition with them), and the founder's own tool to send from and verify addresses.
@@ -93,7 +93,7 @@ Don't apply DTC logic to everyone.
 - **Sales motion:** self-serve, sales-led, retail or wholesale, walk-in, app store. It decides whether ads, outbound or listings are even the lever.
 - **Where it is sold:** own site, marketplace, retail shelves, a local storefront. Off-site sales mean many on-site levers don't apply.
 - **Repeat purchase:** consumables and subscriptions make email and retention worth far more than for a once-in-a-lifetime purchase.
-- **Regulated claims:** health, beauty, supplements, finance, food, kids. Claims must be signed off (learn-my-brand) before any playbook writes copy that states facts.
+- **Regulated claims:** health, beauty, supplements, finance, food, kids. Claims must be signed off (inside the job, through its claims check) before any playbook writes copy that states facts.
 - **Who does the work:** the founder alone, a junior, an agency. A playbook that ends in "the human posts / sends / loads it" needs someone who will.
 
 ## 10. Ad bias is a known risk

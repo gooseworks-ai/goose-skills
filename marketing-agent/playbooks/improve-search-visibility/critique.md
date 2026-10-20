@@ -305,3 +305,30 @@ Not re-run (per orchestrator: no evals or re-runs this round).
 **Pushback (§2b).** "Each monthly run compares question-by-question citations" can't hold on a scheduled server run today: it has no browser, so it can't ask ChatGPT or Google's AI. The run checks every fix's ship status, web search, news and sitemaps free. It marks the AI answers "not checked" with the last value carried, and offers the paste set or a check together. The real fix is the goose-aeo engine on the server (server-needs §1).
 
 Not re-run (per orchestrator: no evals).
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+- **noindex was recommended for old pages "kept live for ads" that still made a false claim.** → gap-to-fix: retiring or merging a page defaults to a 301 redirect to the matching page plus updated internal links; noindex only when no equivalent exists; check live ads, emails and profiles first. finished-fix-examples (g) shows the finished fix.
+- **All five fixes were on-site while the engines cited round-ups and rival comparison pages; round-ups pushed to Q1 2027.** → prioritising: when citations lean on third-party pages, at least one of the five is off-site, and it starts this week.
+- **Reviews were not used as a lever** (low volume, filed under an old domain). → gap-to-fix review row: the review ask (post-purchase or post-install with the direct link; Google Business Profile reviews where the business has one) and claiming or merging an old-domain profile.
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| "Google already ranks you 2nd" in In short from one browser read in India | "What we looked at" states where from and the limit; one ask / one browser / one country is "first look", never a rank fact. Examples in the template made fictional (they named GooseWorks and real rivals); page-map line points to "So, do this first" |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Step 1 restated references/free-pass.md (~460 words) | Step 1 is the pointer plus the two rules only SKILL had (rank the draft five; every number traces to a source). The details free-pass.md lacked (battlegrounds, atom names, 12–15 questions per audience, positioning examples, templated-set warning, demand sources, gap rows to roadmap) moved into free-pass.md. |
+| Setup copied from the guide | Before you start #1 is the setup line (with the loose brand-name match kept); #2 keeps the chapters, fallback sections, sibling files, run memory and claims contract read. |
+| Step 2 described claims-gate internals (marker paths) | "A claim the claims gate can't use yet". |
+| "AGENTS §8" ×2, "pillar 11"; "AGENTS §8" in references/free-pass.md and rival-content-map.md | Pointers now to guide §3 ("Research pattern", "Schedules", "Public data"); pillar 11 removed. |
+| Step 5 listed the working-file saves that the Output table also lists, and restated write-report §2 delivery | Step 5 points to write-report §2 and to the Output table; save modes moved into the table rows. |
+| Done when mixed bars with test oracles | Done when: first message leads with k-of-N counts; report has the per-question table, roadmap and exactly five fixes (or fewer, stated); banned-word scan clean; saved with a link. The re-ask oracle is test item 5; "start one fix that week" added to test item 6. |
+| "Human" for the person | "Marketer" throughout. |
+| Description did not say what the skill is | Now starts "Search and AI-answer visibility (SEO, AEO, GEO). Use when…"; 891 → 694 characters. |

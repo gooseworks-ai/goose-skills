@@ -576,3 +576,45 @@ Sonnet, web search and page fetch only (no browser, no GooseWorks calls), Person
 **Still weak:** a fetch-only host can't read Reddit, TikTok, YouTube or X, so the listening free pass there is mostly coverage gaps plus the paid top-up. server-needs #17 (GooseWorks web search and page fetch) is the fix.
 
 - **19 Oct, Codex review 2 of the run-memory PR:** not-yet-due recommendations now use the shared atom's `open` status instead of `unknown`, so they never reach "Decisions for you" before their review date.
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+- **A sign-up conversion benchmark (3–5%) was applied to a whole market** ("$4.6M–$14M realistic year one" for a brand with 0 reviews and 0 ads; "300K–450K solo founders" unsourced). → market-pass §2: reachable value first, then a separate sourced "share we could realistically win" line; never a conversion rate on a market count; flag when the largest input is an assumption; no year-one revenue figure for a brand with no sales, reviews or ads. Return shape has both lines.
+- **"Which market" contradicted the brand's positioning and was due "by Wed 21 Oct".** → SKILL step 5: say plainly when the recommendation contradicts stated positioning, list what wasn't tested, frame it as the founders' decision, no deadline under a week unless something outside forces it. market-pass §1 asks the worker to flag it.
+- **Buyer-voice links went to community home pages; borrowed quotes weren't re-checked.** → SKILL step 5 and the listening return shape: link to the post itself; quotes from an earlier report re-opened or labelled "not re-checked".
+- **Price norms averaged unlike purchases** ($999 service with $29 tools into a "$39 middle entry price"). → market-pass §5: group the table by what the price buys, a norm per group, never a cross-group average; §9 baseline uses the brand's group.
+- **The own-users pass was dropped when browser permissions got tiresome.** → edge-cases: finish the same reads with search and fetch; listening: the brand's own users are first-hand evidence, finished another way, never dropped.
+- Not edited here: the report format's "Matters by" column (writer 1's file) — the under-a-week rule lives in SKILL step 5.
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| "It is growing" in In short when the body said "likely" | Template note: a "growing" or "lead buyer" in In short must be as sure in the body |
+| Decision deadlines under a week with nothing forcing them (coordinator, from writer 4) | "Matters by" never under a week unless something outside forces it, named |
+| Idea validation, brand watch and the monthly pulse prompt | Same order: what we looked at → verdict or findings with how sure → "So, do this first" |
+| Test | test-by-hand item 5 checks the new top; a fail line for the 20 Oct case |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| write-report's new top rules copied into Done when, report-format's check and test item 5 | Each now points at write-report §3 and keeps only this playbook's own checks (baselines table, inline links, roles and dates on moves, the extra banned words, For you only where it matters). |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Copied setup (server choice, connection line, get_started, `client`, brand pick, brain_* read) | One "Setup first" line to guide §1–2, plus what is unique: `wants: "more"`, create a missing brand, no unrelated menu, the fallback brand_read sections, the files this job reads, the brain-vs-site conflict rule |
+| "AGENTS §8 research pattern" | "guide §3 **Research pattern**" |
+| Run-memory start restated the atom | Pointer: the three job names and `references/run-memory.md` |
+| Step 5 restated report-format (lead order, sibling disagreement, positioning, For you, source skew, baselines) and market-pass §2 | Kept only the provisional-groups rule, a pointer to the share rule, the contradiction-with-positioning rule, the quote rules and the trace check |
+| Step 6 restated write-report's delivery | Deliver through write-report with this job's topic and brand path; `demand.md`, `watchlist.md` and outliers stay |
+| Step 8 restated the default cadences and spend-gate branch C | Pointer to guide §3 **Schedules** |
+| Brand watch repeated the out-of-scope reply-drafts line | Removed from the brand-watch section |
+| Output table repeated guide §4's rows | Pointer line |
+| Done when had no run record and no quote bar | Added the run record and "3–5 buyers quoted word for word, linked to the post" |
+| "Founder" and "marketer" both named the user | "Marketer" in SKILL.md; "the founders' decision" kept as a role |
+| Description 1,009 characters, opened "Use when a founder or marketer asks" | 713 characters, leading with "Market research and brand watch". Routing cases R17, R34, R61 and R63 still match; R50 (a complaint spreading) rests on "tell me if something blows up" |

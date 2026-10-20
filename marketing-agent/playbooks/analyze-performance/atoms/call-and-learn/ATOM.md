@@ -1,4 +1,4 @@
-<!-- Hidden atom (analyze-performance-call-and-learn): Hidden atom of analyze-performance. Calls ended tests against the brief's success criteria, scores last week's calls, writes this week's kill/scale/hold calls with confidence, and drafts and (after the human has seen them) writes learnings to the brand brain. -->
+<!-- Hidden atom (analyze-performance-call-and-learn): Hidden atom of analyze-performance. Calls ended tests against the brief's success criteria, scores last week's calls, writes this week's kill/scale/hold calls with confidence, and drafts and (after the marketer has seen them) writes learnings to the brand brain. -->
 
 # Test calls, calls and learnings (atom)
 
@@ -13,6 +13,6 @@
 4. Check fired replan triggers against the brief's thresholds.
 5. Draft ≤ 3 learnings as one-line rules (template in the reference); only ended tests, 2+ week patterns that clear the test n floors on the referee-joined number, confirmed surprises or failures; each shows what it would retire.
 6. Readouts: each Win / Loss → kind 23 `experiment_readout.<campaign-slug>-t<n>` through save-learning's readout path, only with the marketer present; scheduled runs mark it `readout to save`.
-7. After the human's reply to the decisions block: write the kept learnings through `../../../../atoms/save-learning/ATOM.md` — one idea per learning, `[learning YYYY-MM-DD]` (+ ` A-NN`), their exact words as the statement, own superseded facts retired in the same call; read back, compare, report which landed. Without their words, write nothing.
+7. After the marketer's reply to the decisions block: write the kept learnings through `../../../../atoms/save-learning/ATOM.md` — one idea per learning, `[learning YYYY-MM-DD]` (+ ` A-NN`), their exact words as the statement, own superseded facts retired in the same call; read back, compare, report which landed. Without their words, write nothing.
 
-**Output:** the report's Tests, Calls, Learnings-proposed sections; the learnings rows written after the human has seen them.
+**Output:** the report's Tests, Calls, Learnings-proposed sections; the learnings rows written after the marketer has seen them.

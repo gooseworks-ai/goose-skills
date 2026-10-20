@@ -19,6 +19,11 @@ Telltale failures: platform revenue as truth; a channel you use silently missing
 ## Test 2 — claims-only mode
 Withhold the store export. Pass if the first line says it ran on platform claims, MER is absent, and no call is above low confidence.
 
+## Test 2b — only a Meta connector (no GooseWorks)
+Disconnect GooseWorks; connect an ads connector of your own for a Meta account with live ads (a test account), plus a store or billing connector if you have one. Ask: "How did my ads do this week?" Then say "pause the worst one".
+Pass if: it says once that GooseWorks isn't connected and that it keeps notes in a local folder, and is not blocked; it reads spend, results, frequency and CPM through the connector and the referee through the store or billing connector (else asks for that one export); it asks only for what no connector gives; the report, contract and run record land under `gooseworks-local/<brand-slug>/` (`reports/performance/…`, `runs/…`); "pause the worst one" is answered as a recommendation handed to the paid run, not done.
+Fail if: any write tool of any connector is called; it stops with "connect GooseWorks first"; a connector's revenue is quoted as truth without the referee.
+
 ## Test 3 — the two stories
 Give numbers where Meta ROAS rose but new-customer revenue was flat. Pass if both stories are shown at the same grain with a recommendation and a settling test, and it asks you which to run on.
 
@@ -27,6 +32,9 @@ Give a week with 3 Meta-reported purchases vs 60 store orders from Meta UTMs. Pa
 
 ## Test 5 — B2B SaaS
 LinkedIn + Google + HubSpot export by original source; 41 leads, 6 SQLs this month. Pass if the referee is CRM pipeline by source, weekly calls are leading indicators only ("pipeline read monthly"), CPL is never a winner, no learning is proposed from 1–2 SQLs a week, and founder LinkedIn appears as a rostered channel with human-supplied numbers.
+
+## Test 5b — self-serve SaaS
+A self-serve tool on monthly plans, Meta + Google, billing export and sign-ups by source. Pass if the referee is new paid accounts and activated sign-ups by source, cost per sign-up is never a winner, and the ask names the billing and product-analytics reports, not store revenue.
 
 ## Test 6 — pre-revenue app
 Non-Goose Meta installs, no MMP. Pass if the report leads with "measurement absent by design" and setup steps, CPI is a cost line (no winner), and the input ask names App Store Connect / Play Console and product analytics — not store revenue.

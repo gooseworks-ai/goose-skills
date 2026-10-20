@@ -1,12 +1,12 @@
 ---
 name: ad-policy-check
 description: >-
-  Shared atom (owner make-static-ads). Checks paid ads — words, on-image or on-screen text, pictures and people — against the platform's ad rules (Meta, TikTok, Google, LinkedIn and others) and the brand's category rules; fixes what can be fixed honestly and flags what needs a human or legal review. Organic posts, email and creator content use disclosure.md in this folder.
+  Shared atom. Checks paid ads — words, on-image or on-screen text, pictures and people — against the platform's ad rules (Meta, TikTok, Google, LinkedIn and others) and the brand's category rules; fixes what can be fixed honestly and flags what needs a human or legal review. Organic posts, email and creator content use disclosure.md in this folder.
 ---
 
 # ad-policy-check
 
-Used by: make-static-ads, make-video-ads (paid ads). Organic, email and creator content: load `disclosure.md` instead (or as well, when a paid ad uses a creator).
+Used by: make-static-ads (paid ads; make-video-ads too, once it is released). Organic, email and creator content: load `disclosure.md` instead (or as well, when a paid ad uses a creator).
 
 Craft knowledge, not legal advice. Policies change: when a rule decides whether an ad ships, tell the human to confirm it on the platform's live policy page. Claims are a separate check (`../claims-gate/ATOM.md`); run that first — a line cut there is not reworded here.
 

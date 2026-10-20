@@ -12,7 +12,7 @@ Load at step 5 (budget, tests, forecast). Rules of thumb are labelled; the brand
 | Held reserve | 10–20% of media, released on a test win (scale), to cover a miss, or — when everything is a test — committed to the best-reading test by a named date; never left idle by default |
 | Production | Credit-made assets (statics, video, photos) as **counts** — priced in credits at make time by the maker playbooks, never converted to dollars here; dollars only for freelancers, shoots, samples |
 | Creators | Fees, product seeded (at cost), shipping, usage rights / whitelisting |
-| Offer cost | Margin given away by an offer **the founder named** (discount × forecast orders × AOV); none if no offer — never invent one |
+| Offer cost | Margin given away by an offer **the marketer named** (discount × forecast orders × AOV); none if no offer — never invent one |
 | Tools | Any new tool the plan needs |
 
 Default media shape (rule of thumb): **~70% proven / ~20% promising / ~10% experiments**, plus the reserve. A brand with no proven channel has no 70% bucket: the plan is tests plus a reserve that follows the best-reading test, and says so. Avoid locking the whole budget into one unproven bet.
@@ -28,7 +28,7 @@ Meta's learning floor, as a worked example: ~50 optimisation events per ad set p
 Any leg aimed at a known list or site visitors (past users, lapsed customers, retargeting) states its **audience size** and **expected weekly frequency** before it gets a budget:
 
 ```
-matched people ≈ list size × match rate (often 40–60% for an uploaded email list — rule of thumb)
+matched people ≈ list size × match rate (often 40–60% for an uploaded consumer email list, ~30–60% for business emails — rule of thumb)
 weekly impressions = weekly spend ÷ CPM × 1,000
 weekly frequency ≈ weekly impressions ÷ matched people
 ```
@@ -61,7 +61,7 @@ Rules of craft:
 
 For each paid leg write one line: objective/optimisation event, number of campaigns/ad sets, audience approach (broad / interest / retargeting / lookalike), budget type and amount, creative count at launch, destination, and how it will be applied — **product levers** (Meta via GooseWorks) or **written instructions** (every other platform, and any Meta object GooseWorks did not create). Example:
 
-> Meta — one duplicate of the founder's purchase-optimised "Sales – Broad" ad set per angle (written instruction; $90/day each), then one GooseWorks push of 3 ads into each (after a sync) → /new-serum?utm_source=meta&utm_medium=paid_social&utm_campaign=serum-launch&utm_content=<angle>-<src id>. Applied: Goose creatives pushed into that ad set (GooseWorks levers); its daily budget change is a written instruction.
+> Meta — one duplicate of the marketer's purchase-optimised "Sales – Broad" ad set per angle (written instruction; $90/day each), then one GooseWorks push of 3 ads into each (after a sync) → /new-serum?utm_source=meta&utm_medium=paid_social&utm_campaign=serum-launch&utm_content=<angle>-<src id>. Applied: Goose creatives pushed into that ad set (GooseWorks levers); its daily budget change is a written instruction.
 > Meta (angle test, when no conversion ad set exists) — one GooseWorks Traffic-objective campaign **per cell** when $/cell must hold (a single campaign's 2–3 ads share one budget), lifetime $300 each over 10 days, broad US, Facebook placements only, read on cost per landing-page view and store conversion of its UTM traffic — a different, cheaper test than T1; the winner graduates into a conversion ad set.
 > Google Search — 1 campaign, problem and competitor terms, $40/day, maximise conversions → /serum (written instructions).
 

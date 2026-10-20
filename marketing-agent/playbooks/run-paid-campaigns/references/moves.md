@@ -9,14 +9,14 @@ In the **low-volume regime** a normal week is fixes plus "no moves; next decisio
 | Move | When (rules of thumb) | How |
 |---|---|---|
 | **Scale** | Past learning, CPA (or store-joined CPA) within allowable on mature data, enough conversions to read; **blended read agrees** (no scale while new-customer MER is below break-even, whatever the platform CPA) | +20–30% per weekly run while CPA holds (a second step mid-week only via a scheduled check on an ad set past learning); never more than 2× in one step; never overnight doubling. Horizontal (duplicate into a new ad set) when vertical scaling stalls — written instruction. |
-| **Pause / kill** — note: pausing one ad inside an ad set moves its spend to the sibling ads; it only saves money if the ad set budget is cut too (a separate move) | 0 conversions after 2–3× allowable CPA spent; or CPA > 1.5–2× allowable after 3–5× allowable spent; or broken (destination 404, out-of-stock SKU, ended offer still in the copy, disapproved) | Goose ad: pause with the human's sentence. Anything else: written instruction. Kill = pause, never revert. |
+| **Pause / kill** — note: pausing one ad inside an ad set moves its spend to the sibling ads; it only saves money if the ad set budget is cut too (a separate move) | 0 conversions after 2–3× allowable CPA spent; or CPA > 1.5–2× allowable after 3–5× allowable spent; or broken (destination 404, out-of-stock SKU, ended offer still in the copy, disapproved) | Goose ad: pause with the marketer's sentence. Anything else: written instruction. Kill = pause, never revert. |
 | **Hold** | Inside learning; under ~1× allowable spend; 1.0–1.5× allowable on modest spend (1.3–1.5× after 3–5× allowable spent is a near-threshold call — both readings); data immature; within a week of another significant edit | No action; **always** a re-decide date and a trip-wire. |
-| **Rotate** | Fatigue proxy (CTR/CVR sliding 2–3 weeks at flat spend) or frequency past threshold; or a winner ageing toward its usual lifespan (Meta/TikTok prospecting 2–4 weeks, TikTok often 7–14 days, LinkedIn 4–6 weeks) | Swap in an approved finished render (`propose_meta_creative_replacement`) **before** decay; if none exists, a rotation request to make-static-ads / make-video-ads (see below). Keep 2–3 new concepts in test at meaningful spend at all times. |
+| **Rotate** | Fatigue proxy (CTR/CVR sliding 2–3 weeks at flat spend) or frequency past threshold; or a winner ageing toward its usual lifespan (Meta/TikTok prospecting 2–4 weeks, TikTok often 7–14 days, LinkedIn 4–6 weeks) | Swap in an approved finished render (`propose_meta_creative_replacement`) **before** decay; if none exists, a rotation request to make-static-ads for image ads (see below), or a brief for the marketer for video ads (we don't make video ads yet). Keep 2–3 new concepts in test at meaningful spend at all times. |
 | **Launch / test** | The brief's test plan calls for it, new approved creative exists | See `launch-and-graduate.md`. |
-| **Graduate** | A Goose Traffic test's angle wins on cost per LPV and UTM store conversion | Push the winning ads into the founder's conversion-optimised ad set (EXISTING_AD_SET); scaling that ad set is a written instruction. |
+| **Graduate** | A Goose Traffic test's angle wins on cost per LPV and UTM store conversion | Push the winning ads into the marketer's conversion-optimised ad set (EXISTING_AD_SET); scaling that ad set is a written instruction. |
 | **Consolidate** | Several ad sets each under the learning floor | Written instruction: merge into one ad set / one campaign, broad targeting. |
 | **Fix / setup** | Tracking, exclusions (purchasers out of prospecting), Advantage+ creative-enhancement toggles altering approved claims, account spending limit, offline conversion upload | Written instruction. |
-| **Google / TikTok / LinkedIn moves** | Same logic on the human's export | Written instructions; Google search-terms negatives from analyze-performance's wasted-spend list. Google Smart Bidding: change tCPA/tROAS by ≤15–20% at a time, ~7 days to re-learn. |
+| **Google / TikTok / LinkedIn moves** | Same logic on the marketer's export | Written instructions; Google search-terms negatives from analyze-performance's wasted-spend list. Google Smart Bidding: change tCPA/tROAS by ≤15–20% at a time, ~7 days to re-learn. |
 
 ## Lifetime budgets (Goose launches)
 
@@ -24,26 +24,26 @@ A lifetime increase is not a daily-rate increase. Implied daily pace = (lifetime
 
 ## Pacing and the ceiling
 
-Header of every proposal: month-to-date spend vs plan (tolerance ±10%), and projected month-end **if every move is approved**, vs the budget ceiling. Approved moves must sum within the ceiling; if they don't, cut the lowest-confidence scale first. Kill-switches can't be scheduled, so risky items get a **trip-wire** the human can fire: *"If this ad's CPA passes $60 by Thursday, say 'pause Founder story'."* Recommend an account spending limit (written instruction) when none is set.
+Header of every proposal: month-to-date spend vs plan (tolerance ±10%), and projected month-end **if every move is approved**, vs the budget ceiling. Approved moves must sum within the ceiling; if they don't, cut the lowest-confidence scale first. Kill-switches can't be scheduled, so risky items get a **trip-wire** the marketer can fire: *"If this ad's CPA passes $60 by Thursday, say 'pause Founder story'."* Recommend an account spending limit (written instruction) when none is set.
 
 ## Near-threshold calls — both readings, never silently decided
 
 When a call sits inside the noise (roughly 0.8–1.3× allowable, or under ~15 conversions), present:
 - **Reading A (kill/scale):** the case, with numbers.
 - **Reading B (hold):** the case, with the noise range (±1/√n), maturity and any mitigating signal (AOV, upstream metrics).
-- **Recommendation** + a trip-wire + a re-decide date. The human picks.
+- **Recommendation** + a trip-wire + a re-decide date. The marketer picks.
 
 ## Expected effect — never invented
 
 Write it as a direction plus a range from **this account's own history** ("spend +$15/day; cost/LPV may rise 10–20% as marginal cost climbs, as it did on R3"), or direction-only, or "unknown — first scale step on this ad set". Never a precise predicted number with no basis.
 
-## Rotation request — a request line in `ads/campaigns/<slug>/rotation-requests.md`: `Rotation needed: for make-static-ads | make-video-ads · <what> · return to: ads/campaigns/<slug>/rotation-requests.md`; the maker answers under it with `Rotation ready: <ids> · <hand-off file (ads/batches/… or ads/videos/…)> · <date>`; de-duplicate against the weekly read's "What to make next"
+## Rotation request — a request line in `ads/campaigns/<slug>/rotation-requests.md`: `Rotation needed: for make-static-ads · <what> · return to: ads/campaigns/<slug>/rotation-requests.md`; the maker answers under it with `Rotation ready: <ids> · <hand-off file (ads/batches/…)> · <date>`; de-duplicate against the weekly read's "What to make next"
 
 > **Rotation request — <campaign>, <date>.** Angle "<winning angle>" is fatiguing (CTR 1.4% → 0.9% over 3 weeks at flat spend). What won: hook "<hook>", format <UGC 15s>, proof <claim id>. Make: 4 new hooks on the same angle (2 × 9:16 video, 2 × 4:5 static), keep the proof, vary the first 2 seconds. Needed live by <date> (before the current winners decay). Retire: "<losing angle>".
 
 ## Failure modes (check each before presenting)
 
-1. Any change before the yes. 2. A pause without the human's words this turn. 3. "Done" before the approval page and `change_status` confirm. 4. Overnight doubling, or stacking edits on one ad set in a week. 5. Treating Goose ads as the whole account. 6. Judging Traffic tests on purchase CPA. 7. Winner calls on < ~10–15 conversions. 8. ROAS ranking led by tiny-spend ads. 9. Platform ROAS quoted as truth. 10. Scaling into an out-of-stock SKU or an ended offer. 11. A lifetime raise in a flight's last days. 12. Re-proposing on resume instead of reading `push_status`/`change_status`. 13. Retrying a refused budget proposal. 14. Invented expected effects. 15. A hold with no date or trip-wire. 16. A near-threshold call decided silently. 17. Retargeting or brand-search ROAS presented as the scale case. 18. A money move staged without its baseline recipe, or a new step on an ad set whose last move hasn't been read.
+1. Any change before the yes. 2. A pause without the marketer's words this turn. 3. "Done" before the approval page and `change_status` confirm. 4. Overnight doubling, or stacking edits on one ad set in a week. 5. Treating Goose ads as the whole account. 6. Judging Traffic tests on purchase CPA. 7. Winner calls on < ~10–15 conversions. 8. ROAS ranking led by tiny-spend ads. 9. Platform ROAS quoted as truth. 10. Scaling into an out-of-stock SKU or an ended offer. 11. A lifetime raise in a flight's last days. 12. Re-proposing on resume instead of reading `push_status`/`change_status`. 13. Retrying a refused budget proposal. 14. Invented expected effects. 15. A hold with no date or trip-wire. 16. A near-threshold call decided silently. 17. Retargeting or brand-search ROAS presented as the scale case. 18. A money move staged without its baseline recipe, or a new step on an ad set whose last move hasn't been read.
 
 ## Pause vs swap on the same ad
 

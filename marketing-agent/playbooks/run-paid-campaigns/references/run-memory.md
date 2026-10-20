@@ -12,7 +12,7 @@ What this playbook hands `../../../atoms/run-memory/ATOM.md` at the start and en
 | `cadence` | `weekly` (the low-volume regime is still weekly; its decisions are monthly) |
 | `outcome_sources` | `gooseworks:meta_read` `change_status` (each `change_id`) and `push_status` (each `push_id`); the `### YYYY-MM-DD — …` blocks of `decisions.md`; `## Open recommendations` and `## Checks due` in `state.md`; `gooseworks:meta_read` `performance`; the marketer's export; analyze-performance's newest report and run record (store-joined numbers); the marketer's words for instruction cards |
 
-File: `runs/run-paid-campaigns/weekly-ads-check/<slug>/<YYYY-MM-DD>.md`. Title: `Run record — weekly ads check — <slug> — <Brand> — <YYYY-MM-DD>`.
+File: `runs/run-paid-campaigns/weekly-ads-check/<slug>/<YYYY-MM-DD>.md`. Title: `Run record — weekly ads check — <slug> — <Brand> — <YYYY-MM-DD>`. Local mode: the same path under `gooseworks-local/<brand-slug>/`.
 
 **Ids** (run-memory's one rule: a stable source id, when it exists, *is* the record's id). Every move here has the harness id `R<n>` in `state.md`, so `R<n>` is its record id; its `change_id` / `push_id` go in `evidence`. A dated `<YYYYMMDD>-<n>` id is minted only for something with no `R<n>` (rare here: a question to the marketer, a note that isn't a move). Never give one move two ids. An analyze-performance call this playbook adopts becomes an `R<n>`, with the call's record id in `evidence`.
 
@@ -89,7 +89,7 @@ The atom's scheduled rules apply in full, plus:
 
 The scheduled worker runs on the server with **no skills folder and no browser**, so it can't open this playbook. On the marketer's yes (`../../../atoms/spend-gate/ATOM.md` branch C; needs a coworker workspace — without one, say so and keep running on ask):
 
-1. **Copy the method** into `ads/method/` with `gooseworks:file_write`, each file headed `Method version: <skill.meta.json version>, copied <date>`, re-copied whenever the schedule is changed or switched on: `playbook.md` (this SKILL.md), `references/` (every file in this playbook's `references/`), `atoms/` (each local atom's ATOM.md, same folder names), and `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md` (a link such as `../../atoms/run-memory/ATOM.md` inside them means `shared/run-memory.md`).
+1. **Copy the method** into `ads/method/` with `gooseworks:file_write`, each file headed `Method version: <skill.meta.json version>, copied <date>`, re-copied whenever the schedule is changed or switched on: `playbook.md` (this SKILL.md), `references/` (every file in this playbook's `references/`), `atoms/` (each local atom's ATOM.md, same folder names), and `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md` (a link such as `../../../atoms/run-memory/ATOM.md` inside them means `shared/run-memory.md`).
 2. **Create the automation** with `gooseworks:automation_upsert`: `execution_mode: "agent"`, `enabled: false`, a weekly cron in the marketer's timezone a few hours after the performance read's, and this `agent_prompt` (one per campaign):
 
 ```text

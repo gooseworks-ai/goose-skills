@@ -165,3 +165,40 @@ Confirmed: Round 9's four fixes. Two new majors, both fixed:
 |---|---|---|
 | 1 MAJOR | The scheduled prompt copied files to `ads/method/references/…` but told the worker to read `references/…` from the workspace root. | Every path in the prompt is now a full workspace path (`ads/method/references/run-memory.md`, `ads/campaigns/<slug>/state.md` …), plus one line mapping the copied files' relative links (`references/`, `atoms/`, `../../atoms/…` → `ads/method/shared/`) and saying links to other playbooks aren't copied. |
 | 2 MAJOR | `proposal-and-log.md` let a found or waiting target be "used" as the yardstick, against SKILL step 4. | Found or waiting targets, caps and stops appear only under "Decisions for you" and never compute a verdict, scale step, pacing or ceiling, or stage a move until confirmed. A pending stop or a pending lower cap may only block increases and launches; it never authorises a change. SKILL step 4 and the scheduled prompt say the same. |
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+### Works without GooseWorks (Akhil's ask, validated by a marketer reviewer)
+
+| Finding | Fix |
+|---|---|
+| Step 1 stopped with "Connect GooseWorks first" although Meta has its own connector; session 9617ba6d treated "Meta not connected" as a blocker even though step 3 says Meta can run as instructions (Akhil: right) | Step 1 picks a mode: GooseWorks (a connector, if present, fills the reads GooseWorks lacks and changes what it has no lever for) · ads connector only (local mode, guide §5) · neither (local mode on exports, cards). A missing connection is never a blocker. |
+| The agent overclaimed "I can build the campaign, ad sets and ads in your account directly" while meta-levers.md says new GooseWorks campaigns are Traffic-only, Facebook placements | Step 3: three lever types (GooseWorks · connector · written instructions); never claim a lever the run lacks; on a conversion goal the first message states the Traffic / Facebook-only limit and the alternatives (existing conversion ad set, a paused conversion campaign through their connector, or set up by them). Test 1 telltale added. |
+| No safe way to change an account through a connector | Guide §3 rule (one card and one named yes per change, a bare "yes" never counts, one call, read back, created paused, ≤ +30% per step, no deletes, list uploads or spending-limit changes, weaker than the approval page said once); `meta-levers.md` § With an ads connector; `apply-and-log` steps 9–11 (re-read before the call, read back, log in `decisions.md`); health gate reads tracking and disapprovals from the connector. Test 4b added. |
+| Memory without GooseWorks | Local folder `gooseworks-local/<brand-slug>/` on the same paths; the agent writes every `decisions.md` block; the approved local plan is the brief; host scheduler only, scheduled runs only stage. |
+| `references/run-memory.md` linked `../../atoms/run-memory/ATOM.md` (broken from `references/`) | Now `../../../atoms/…`. |
+| Consistency pass: where run records go without GooseWorks | `references/run-memory.md`: one local-mode line (same path under `gooseworks-local/<brand-slug>/`). |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| HIGH: video ads could launch with no claims check — make-video-ads (held back) used to check video claims, so "Claims were checked there", meta-levers' creative line, the approval gate and Test 7 were false for videos and the marketer's own files | Step 5 and `launch-and-graduate.md` § Health gate item 3: creative no released maker checked (GooseWorks videos via `video_read` with their scenes, the marketer's own files, a reused ad) goes through the claims gate (copy, spoken lines, on-screen text, end card) and ad-policy check before staging, plus one question on AI-made people or voices (the label goes on the card); unreadable script or text → "not claim-checked", no launch until the marketer confirms the lines. False sentences fixed (health gate, meta-levers creative line, approval gate). Test 7 rewritten (an end-card claim cut, the own file held). `shared_atoms` + claims-gate, ad-policy-check. |
+| The connector rule was written out ~7 times and drifted (the guide made the connector's confirm step mandatory and lacked "switching on is its own yes" and "never an object GooseWorks has a lever for"; the description said connector changes were Meta-only while written-instructions and plan-campaign allowed any platform) | Decided: any ads platform's connector, same protocol. One canonical text: `references/meta-levers.md` § With an ads-platform connector (any platform) — account check, never-list, card, named yes, re-read, one call + the connector's own confirm step if it has one, ≤ 30% steps, created paused, switching on its own yes, read-back, log. `apply-and-log` 9–11 now hold only the bookkeeping; the guide §3, data-access, SKILL steps 1, 3, 8, the description, written-instructions and plan-campaign's channel-decision / unit-economics point to it. Test 4b: the same pass lines with another platform's connector. |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Description 1,020 chars (at the limit), mechanics inside | 656 chars: identity, one trigger per branch (adds "the account got restricted" for routing case R58), the two Not-fors. |
+| Step 4 restated `atoms/draft-moves`; steps 7–8 restated `atoms/apply-and-log` | Each step names its atom section plus a completion check. |
+| Step 2 restated the outcome-check mechanics held in `references/run-memory.md` and `proposal-and-log.md` | Keeps the four verdict words and the "since last time" lines; points to run-memory § Start. |
+| Step 10 (save the run) happened inside step 7 | Folded into step 7; step 10 deleted. No other file referenced step 10. |
+| Before you start 3 restated Meta limits (Traffic objective, Facebook placements) | Points to `references/meta-levers.md` only. |
+| Copied setup, workspace clause, brain-read preamble, plain-words line | Guide setup line (job line "run your ads"); kept the mode picks, the "can't log Meta outcomes without a workspace" line, chapters 20/15/23 and the operating plan, and budgets in the marketer's currency. |
+| Approval gates restated apply-and-log's approval mechanics | One pointer bullet to apply-and-log + meta-levers; the gates unique here kept (graduation, claim-checked creative, both readings). |
+| Scheduling copy | "Set it up by guide §3 Schedules"; local-mode scheduler line dropped (guide §5 holds it). |
+| Done when was one long sentence | Four checkable bullets ("every approval link shown was returned by the server", baseline recipe and check date per move). |
+| One name for the person | "the human"/"founder" → "marketer" in atoms and references (incl. log examples "Decided: marketer …"); "Founder story" ad name kept. |
+
+Reactive branches not moved (item 3, later).

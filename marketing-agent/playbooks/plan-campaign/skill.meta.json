@@ -15,7 +15,7 @@
   ],
   "reads": [
     "brand brain: summary, kit, products, learnings log, onboarding, competitors (brand_read)",
-    "claims through the shared claims-gate atom (learn-my-brand's sign-off contract); server scope check for concept proof (knowledge_search claim + product_id)",
+    "claims through the shared claims-gate atom (the sign-off contract: its scoped sign-off, or earlier records by learn-my-brand, unreleased); server scope check for concept proof (knowledge_search claim + product_id)",
     "voice-of-customer bank and buyer groups (research/audience/voc-bank.md, buyer-groups.md or brand documents) — research-audience; demand read and market report (research/market/demand.md, <date>-read.md) — research-market",
     "angle bank, landscape, competitor files (research/competitors/*.md or documents) and competitor roster (competitor_read) — research-competitors",
     "send calendar lifecycle/calendar/<YYYY-MM>.md — email-lifecycle",
@@ -31,15 +31,18 @@
   "writes": [
     "readable campaign plan gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md (local file, via write-report) — the marketer",
     "brand copy plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md + document 'Campaign plan — <Brand> — <date> v<N>' (save-to-brain, supersede) — the marketer, any host",
-    "campaign record (campaign_upsert): brief_md with fixed headings — economics box, goal chain, channel decisions, budget split, paid structure, test plan, angles, calendar, asset list, measurement plan, hand-offs, replan triggers; read by run-paid-campaigns, analyze-performance, make-static-ads, make-video-ads, make-product-photos, make-content, email-lifecycle, run-organic-social, work-with-creators",
-    "campaign concepts (add_campaign_concept / update_campaign_concept) — read by make-static-ads and make-video-ads",
+    "campaign record (campaign_upsert): brief_md with fixed headings — economics box, goal chain, channel decisions, budget split, paid structure, test plan, angles, calendar, asset list, measurement plan, hand-offs, replan triggers; read by run-paid-campaigns, analyze-performance, make-static-ads, make-content, email-lifecycle, run-organic-social, work-with-creators",
+    "campaign concepts (add_campaign_concept / update_campaign_concept) — read by make-static-ads (and make-video-ads, unreleased)",
     "optional monthly replan schedule (automation_upsert) — only on the human's explicit yes",
     "draft brief for an approved live campaign: plans/<slug>/draft-v<N>.md (workspace) until the human's yes",
     "run record runs/plan-campaign/campaign-plan/<slug>/<date>.md + brand document (keep-history) — the plan's bets with owner, read date and test — read by its next replan",
     "on approval only: kind 20 target_cpa / target_roas, experiment.<slug>-t<n>, decision.<slug>-<yyyy-mm>-<n> via save-learning's fact path — wait for the marketer's yes",
-    "plans/method/ (copied method for the scheduled worker) — read by the monthly replan automation"
+    "plans/method/ (copied method for the scheduled worker) — read by the monthly replan automation",
+    "local mode: the plan in plans/<slug>/ (in place of the campaign record), brand-notes.md and run records under gooseworks-local/<brand-slug>/ — read by its own next replan, run-paid-campaigns and analyze-performance in local mode"
   ],
   "needs": {
+    "gooseworks": "optional — without it, local mode (foundation/guide §5): the live site, the marketer's answers and connectors the marketer has (read-only)",
+    "connectors_optional": ["ads-platform, store, CRM, billing or product-analytics connector (read-only)"],
     "mcp": [
       "gooseworks:get_started",
       "gooseworks:brand_read",

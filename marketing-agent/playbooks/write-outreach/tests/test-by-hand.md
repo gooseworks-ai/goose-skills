@@ -20,6 +20,14 @@
 
 **C. Results mode:** paste a fictional batch — "120 sent: 3 interested, 9 'not relevant', 4 'talk to our head of growth', 2 unsubscribes, 1 bounce". Passes if it says the sample is directional (3 positive replies), names targeting as the first fix (many "not relevant"), proposes moving to the referred title, asks who unsubscribed and bounced (and when touch 1 went out) so it can suppress them in the ledger — never guessing names onto rows — and doesn't use open rates.
 
+**D. "Write my cold emails", no list on file** (buyer groups saved, no `list.csv`, nothing pasted — the 20 Oct hand test). Passes if:
+1. No question first; it still writes the sequences for the saved buyer groups (lead first), each with its default opener.
+2. The closing message opens "**Before you can send:** you don't have anyone to send these to yet", then offers (a) "say *build the list*" — about 50 companies and their buyer (name, title, LinkedIn), saying plainly it can't find or check emails yet and that the marketer runs a finder and a checker — and (b) "already have a list? paste it".
+3. Nowhere a "Send first: <segment>, N a day" line, and no daily volume for people who don't exist.
+4. The pack has the whole-path table (who does what, mailbox set-up from day 1, 300–500 accounts for a readable test).
+5. The sender is a decision, prices in the copy match the live pricing page, and a send that would land in the buyer's busiest weeks is flagged.
+Fails if the list offer is buried among other decisions, or the marketer has to ask "where do I get the people?".
+
 Edge tests:
 - "Write our welcome emails" → email-lifecycle, not this playbook.
 - "Send these for me" → it won't send; it says the marketer sends from their own tool, and why.

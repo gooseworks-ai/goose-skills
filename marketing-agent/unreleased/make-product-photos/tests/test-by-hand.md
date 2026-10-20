@@ -3,7 +3,7 @@
 ## Setup
 
 1. Connect GooseWorks **staging**.
-2. Link: `ln -s "$PWD/marketing-agent/playbooks/make-product-photos" ~/.claude/skills/make-product-photos`
+2. Link: `ln -s "$PWD/marketing-agent/unreleased/make-product-photos" ~/.claude/skills/make-product-photos`
 3. Each output costs credits (60 at high quality on staging). Keep paid tests to 2–4 outputs.
 
 ## Test 1 — core category (beauty / apparel)

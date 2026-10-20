@@ -2,6 +2,22 @@
 
 Load at steps 6–7. The playbook writes; the marketer sends from their own mailbox and tool. These rules are flags and the reason, not legal advice.
 
+## The whole path (in the pack, once, short)
+
+Print this table in the pack when there is no list or it is the brand's first pack, ticking what is already done. Steps 2 and 4 are the ones first-timers miss.
+
+| # | Step | I do | You do |
+|---|---|---|---|
+| 1 | Who, offer, proof | buyer groups, the angle per group, proof lines for your OK | approve the proof lines; pick the sender |
+| 2 | **Mailboxes — start on day 1** | the setup list (checklist point 2) | a separate sending domain close to your brand name, SPF, DKIM and DMARC set, each mailbox warmed 2–4 weeks before cold sends |
+| 3 | Accounts | right-fit companies, each with a dated reason | aim for **300–500 accounts** for a test you can read: at 2–4% positive replies, 41 people is about one reply |
+| 4 | **People and emails** | the buyer at each account (name, title, LinkedIn) | find work emails with an email finder (such as Apollo or Hunter), check every one with a checker (such as ZeroBounce or NeverBounce), paste the results back |
+| 5 | Copy | sequences, a first line per person, reply answers | correct the 3–5 sample first lines |
+| 6 | Load | the send file in the import shape below | import it, set stop-on-reply, start slow (checklist point 3) |
+| 7 | Replies | a draft answer for each reply; a results read after ~100 sends | send the answers |
+
+When the connector can find and check addresses (research-audience's contact routes), step 4's "you do" shrinks to approving the credit ceiling.
+
 ## The send file (`send.csv`)
 
 One row per person, plain UTF-8 CSV with a header, no merged cells — imports into common outreach tools and CRMs:
@@ -26,6 +42,13 @@ One row per person, plain UTF-8 CSV with a header, no merged cells — imports i
 - Before writing: drop rows that are suppressed (match each row's hashed keys against the ledger's `key_hash`) or in cool-down in the ledger, de-duplicate on email (keep the first), and report the counts ("42 rows; 6 left out: 3 unsubscribed, 2 contacted in the last 12 weeks, 1 duplicate").
 - **Gmail only, no tool:** the pack also lays out each touch per person in order, ready to paste, with the day to send it.
 - The send file holds people's data: it's saved in the workspace and locally, **never imported into the brand brain**.
+
+## Your sending tool (asked once, in the first pack's decisions)
+
+The guide's rule "The marketer's own tools" (`../../../foundation/guide/SKILL.md` §3), applied here; asked in the decisions box with the first draft, never before it. The send file is the same CSV for every tool.
+- **None yet** → two or three that fit, as their choice, never an endorsement: a founder sending a few hundred a month — a cold-email sending tool (such as Instantly, Smartlead or lemlist); a team with a CRM — its own sequences (such as HubSpot's). Gmail alone works for a small first batch ("Gmail only" above).
+- **Named, and its connector is listed in this session** → read it, read-only, instead of asking: sent list, replies, bounces and unsubscribes for the results read; sending domains and daily limits for the checklist. Never send, schedule, import or change anything through it.
+- **Named, not connected** → say once that connecting it would let you read sends and replies instead of asking for pastes; then work from pastes and exports.
 
 ## Before you send — the marketer's checklist (in the pack)
 

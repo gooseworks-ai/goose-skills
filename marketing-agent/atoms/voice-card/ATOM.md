@@ -1,7 +1,7 @@
 ---
 name: voice-card
 description: >-
-  Shared atom (owner: learn-my-brand session). Builds, reads and updates a voice card — how one account or one
+  Shared atom. Builds, reads and updates a voice card — how one account or one
   person actually writes, measured from their real posts — at brand/voices/<handle>.md. The brand's rules
   (claims, never-say, banned words, terminology, the confirmed brand voice) always beat a card's style. Loaded
   by any playbook that writes in a specific account's or person's voice; never listed.
@@ -9,7 +9,7 @@ description: >-
 
 # voice-card
 
-The brand voice (kit `voice` plus learn-my-brand's rules) says what the brand may say and how it sounds overall. A **voice card** says how one account or person actually writes: lowercase or not, how long, which emoji, how they open. Adjectives ("warm, playful") don't stop generic copy; a card measured from real posts does.
+The brand voice (kit `voice` plus the brand's rules: every `dont` and `must` in its learnings) says what the brand may say and how it sounds overall. A **voice card** says how one account or person actually writes: lowercase or not, how long, which emoji, how they open. Adjectives ("warm, playful") don't stop generic copy; a card measured from real posts does.
 
 ## Where it lives
 
@@ -19,7 +19,7 @@ The brand voice (kit `voice` plus learn-my-brand's rules) says what the brand ma
 
 ## Precedence (non-negotiable)
 
-1. learn-my-brand's rules win: every `dont` and `must` (never-say, banned words, terminology, not public), the claims contract (`atoms/claims-gate`), and the rules in the confirmed brand voice (what it never does, how it treats customers).
+1. The brand's rules win: every `dont` and `must` (never-say, banned words, terminology, not public), the claims contract (`atoms/claims-gate`), and the rules in the confirmed brand voice (what it never does, how it treats customers).
 2. A person's or account's card wins on **style**: mechanics, openings, lexicon, humour. The brand voice's style gives way to a founder's own card when writing as that founder.
 3. Real posts beat any description of the voice. Example lines in the kit voice are evidence of style only; a claim inside them is not proof.
 4. If the brand marker says `voice: provisional`, every card built on it is provisional too.

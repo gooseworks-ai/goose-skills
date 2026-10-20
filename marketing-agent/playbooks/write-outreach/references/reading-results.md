@@ -6,6 +6,12 @@ Load in results mode. The marketer pastes their tool's numbers and the replies (
 
 Sends, replies and bounces per touch and per segment (or per variant), unsubscribes, meetings booked, the reply texts, and **the sending tool's sent list or export** with when each person got touch 1 (so the ledger can mark them `contacted` with `first_touch_date` and `last_touch` — `sequence_id` was set at delivery — which anchors the rates and starts the 12-week cool-down). Opens are **not** used: Apple Mail and others pre-load images, so open rates are inflated and unreliable; judge on replies and meetings.
 
+With the sending tool connected (`handoff-and-compliance.md` § Your sending tool), read these from it, read-only, instead of asking.
+
+## Counts only
+
+When results come as counts only, the read's **closing decisions** ask once for who is behind every `stop`, `angry`, `bounce` and `not-interested`, and when touch 1 went out (it starts the 12-week cool-down and fills `sequence_id`, `last_touch`). Until answered, `results-working.md` carries `Hold needed: for research-audience · <accounts or "all accounts in <list>"> · return to: outreach/<D>-<slug>/results-working.md`, and research-audience excludes them.
+
 ## The numbers
 
 - **Reply rate per touch** = replies to that touch ÷ people who got it and hadn't replied yet. Touches 2–4 should bring a real share of replies (roughly a third); if touch 1 brings nearly all of them, the follow-ups add nothing — shorten or change them.
@@ -46,4 +52,4 @@ After about 100 sends or two weeks, whichever comes first; again at about four w
 
 ## The read, through write-report
 
-"In short" opens with the one fix the numbers support most ("Do this first: move the next 100 sends to the hiring segment — 4 positive replies from 60 vs 0 from 80"). Then the table by segment and touch, the reply categories with counts, what to fix (at most six moves, each with who, what and how we'll know), and what we couldn't read (opens, missing touches).
+"In short" (write-report §1 order): what we read (sends, replies, the window, what's missing), the 2–3 findings with sample sizes and how sure ("1. The hiring segment replies: 4 positive from 60 sends vs 0 from 80 — likely, small samples"), then the one fix they support most ("So, do this first (because of 1): move the next 100 sends to the hiring segment"). Then the table by segment and touch, the reply categories with counts, what to fix (at most six moves, each with who, what and how we'll know), and what we couldn't read (opens, missing touches).
