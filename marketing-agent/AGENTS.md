@@ -196,7 +196,8 @@ Title `<Artifact> — <Brand> — <YYYY-MM-DD>` (records add ` v<N>`); tags `[<p
 - Marker: a `must` fact starting `Claims sign-off (learn-my-brand,` with status token `signed-off`, `pending-client` or `not-signed`. Match `signed-off` exactly. This is the older path. When `brain_*` tools are listed, `claims-gate` reads the brain's claim statuses instead: only `confirmed` claims, opened and checked, are usable; no marker is needed; a line approved in chat waits as *found* until the human confirms it in the app. Playbooks do not change.
 - `signed-off` → usable claims are the `Claims you may use —` facts in `brand_read` learnings (a lean read returns every must/dont), one claim per learning, verbatim, in scope, before its review date, with its qualifier. Variants and proof: the Brand record the marker names, read with `file_read`, never through search snippets.
 - Not approved: search snippets, kit `approvedClaims` / `proofPoints` / `valueProps`, `["claim"]` search rows, the live site, a yes in chat that did not go through `claims-gate`.
-- No sign-off → run `claims-gate`'s scoped sign-off for the lines this job needs; if the human declines, plain product facts only (name, price, size, listed ingredients, how to use; never benefit wording).
+- Across the playbooks, "signed-off claims" means claims usable through `claims-gate` on either path; only the older path looks for the marker.
+- A line the job needs that isn't usable (older path: no `signed-off` marker or not on the list; brain path: not a confirmed brain claim) → run `claims-gate`'s scoped sign-off for those lines; if the human declines, plain product facts only (name, price, size, listed ingredients, how to use; never benefit wording).
 - Always apply every `dont` and `must`.
 
 ### Money and publishing

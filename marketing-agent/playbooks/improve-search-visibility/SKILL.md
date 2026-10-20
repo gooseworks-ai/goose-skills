@@ -49,7 +49,7 @@ Write and deliver the report first (step 5's writing and delivery rules) — in 
 - **Facts only the human knows**, only if a fix depends on them: who can change the site and how many pages a month; may pages name competitors; for local, the locations; optional, Search Console (plain click-by-click steps in `references/citation-protocol.md`).
 - **The question set**, shown for edits that apply to the top-up and the next runs — not a gate before the answer.
 - Hosts without a browser: offer the short paste set for the AI rows instead of running them.
-If the marker is not `signed-off` and a fix needs a claim nobody approved, the claims gate's scoped sign-off for those 3–5 lines goes in this same message.
+If a fix needs a claim the claims gate can't use yet (older path: no `signed-off` marker or not on the list; brain path: not a confirmed brain claim), the claims gate's scoped sign-off for those 3–5 lines goes in this same message.
 
 ### 3. Paid top-up (only on the yes)
 Run the Google lookups inside the ceiling (atom `atoms/citation-check`), log every charge, stop at the ceiling. Fold the results into the same report and re-deliver it; a declined top-up leaves the report standing and is named as a gap. The same goes for answers to the other decisions and pasted ChatGPT answers: update the report, don't start a new one.

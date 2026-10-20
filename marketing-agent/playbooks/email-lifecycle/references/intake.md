@@ -22,7 +22,7 @@ Load at "Before you start". Ask only what the brain, the program sheet and the h
 - Local: the booking tool; services and their natural rebook interval; the Google review link.
 - Services: the lead magnet or inquiry form; the booking link.
 - Everyone, when writing: sender name and reply-to; the email template in the tool; blackout dates; products never to discount. The footer address comes from the tool's own footer tag — don't ask.
-- If the claims marker is not `signed-off`: the claims gate's scoped sign-off for the 3–5 lines the chosen flows need, as its own block (not counted in the six).
+- If the claims gate finds no usable claim for lines the flows need (older path: the marker is not `signed-off`; brain path: no confirmed brain claim): the claims gate's scoped sign-off for the 3–5 lines the chosen flows need, as its own block (not counted in the six).
 - Pre-launch: waitlist size and age, how people joined, the launch date, beta/TestFlight availability, and whether a sign-up or install reaches the email tool (a form, an integration, a tag the app sets) — the launch reminders' exclusion uses it.
 
 ## Never guessed

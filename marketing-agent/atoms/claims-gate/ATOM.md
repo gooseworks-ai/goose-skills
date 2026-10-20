@@ -50,7 +50,7 @@ Give the result in one short line per asset in chat; the cut list goes in the ca
 
 ## 4. Scoped sign-off (when the job needs lines nobody has approved)
 
-Run it when the marker is not `signed-off`, or a line the job depends on is not on the list. It approves only what this job needs; the full audit stays with learn-my-brand.
+Run it when a line the job depends on is not usable under §1: on the older path, when the marker is not `signed-off` or the line is not on the list; on the brain path, when the line is not a confirmed brain claim (no marker is needed when it is). It approves only what this job needs; the full audit stays with learn-my-brand.
 
 1. **Pick the 3–5 load-bearing lines** — the benefit line, the hook's promise, the offer — not everything the job could say. Prefer the brain's own wording (value props, product descriptions) over new wording.
 2. **Check who may approve.** Read the marker's `approver:` (and, if there is no marker, ask once who approves claims). If it names a client, or the person says someone else approves claims, don't ask the person in the chat for these lines: use the claims already approved plus plain product facts, add the new lines to the Brand record's "Decisions needed" sheet for the approver (saved as §5 step 1), and rewrite the marker naming the new version by the status rule in §5 — an approved list stays `signed-off`; with nothing approved yet it becomes `pending-client`, `approver: client <name>`. `user_statement` is the person's words (e.g. "Dana approves claims").
