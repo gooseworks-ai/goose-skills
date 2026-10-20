@@ -1,0 +1,23 @@
+{
+  "slug": "email-lifecycle-offer-math",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.0",
+  "playbook": "email-lifecycle",
+  "tags": [
+    "content",
+    "outreach"
+  ],
+  "standalone": true,
+  "installation": {
+    "base_command": "npx goose-skills install email-lifecycle-offer-math",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "email-lifecycle"
+  ]
+}

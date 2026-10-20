@@ -5,7 +5,7 @@ description: Internal step of make-video-ads. Reviews a finished video against t
 
 # review-render
 
-How to review and report — what was perceived, findings to confirm, unseen items, remakes, records — is `../../../../atoms/honest-review/ATOM.md`. This atom adds the video specifics.
+How to review and report — what was perceived, findings to confirm, unseen items, remakes, records — is `../../../../skills/honest-review/SKILL.md`. This atom adds the video specifics.
 
 **Reads:** `gooseworks:video_read` `include: ["renders","recipe","scenes"]`; `gooseworks:media_analyze` `action: "read"` on the final render's `asset_id` with the `project_id`; the approved script and claim trace; `references/review-rubric.md`.
 **Writes:** the review note; fix proposals; fixes via `gooseworks:video_fix` after a yes.

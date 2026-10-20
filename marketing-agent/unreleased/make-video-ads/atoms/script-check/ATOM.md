@@ -5,7 +5,7 @@ description: Internal step of make-video-ads. Extracts every claim-bearing span 
 
 # script-check
 
-Claims verdicts (keep, rewrite, cut, the scoped sign-off when nothing is signed): `../../../../atoms/claims-gate/ATOM.md`. Platform and category rules: `../../../../atoms/ad-policy-check/ATOM.md`. This atom is the video extract step plus the checks only video needs.
+Claims verdicts (keep, rewrite, cut, the scoped sign-off when nothing is signed): `../../../../skills/claims-gate/SKILL.md`. Platform and category rules: `../../../../skills/ad-policy-check/SKILL.md`. This atom is the video extract step plus the checks only video needs.
 
 **Reads:** the candidates (write-script) and the plan's `answers`; the engine's `warnings`, `claims_note`, `product_facts`, `buyer_brief`; `gooseworks:media_analyze` / `media_search` visible text for every `image_asset_id`, clip and cast image; `references/claims-policy-and-people.md`.
 **Writes:** fixes to the candidates; the claim trace, source trace, cut list, people and disclosure notes for the gate.

@@ -19,19 +19,19 @@
 
 These are **data formats**, not hand-offs. Records written earlier (by a full brand pass, by the GooseWorks app's Brand Brain, or by the claims check's scoped sign-off) still exist, and every released playbook keeps reading them:
 
-- **The claims marker** — a `must` learning that starts `Claims sign-off (learn-my-brand, …`. The opening stays exactly as it is. `atoms/claims-gate` reads it and, through its scoped sign-off (§4–5), still writes it.
+- **The claims marker** — a `must` learning that starts `Claims sign-off (learn-my-brand, …`. The opening stays exactly as it is. the `claims-gate` skill reads it and, through its scoped sign-off (§4–5), still writes it.
 - **The `Claims you may use —`, `Never say —`, `Policy:`, `Banned words —` and `Not public —` learnings** — read by every playbook. Only the claims gate writes or retires the marker and the claims; nothing released writes the other openings.
 - **The Brand record** (`brand/records/<date>-v<N>.md`, tags `[learn-my-brand, brand-record]`) — the claims gate reads it for variants and proof and adds to it. The first tag is its fixed creator tag; keep it.
-- **`atoms/claims-gate/claim-types.md`** points to `learn-my-brand/references/claims-craft.md` here for the full claims craft. Reading it is fine.
-- **Reserved, unused for now:** the learning sources `video` and `photos` (`atoms/save-learning`), the `Product imagery` request kind, and the paths `ads/videos/<project_id>.md` and `brand/photo-style.md`.
+- **`skills/claims-gate/claim-types.md`** names learn-my-brand's `references/claims-craft.md` as the full claims craft (no link: published skills never link here).
+- **Reserved, unused for now:** the learning sources `video` and `photos` (the `save-learning` skill), the `Product imagery` request kind, and the paths `ads/videos/<project_id>.md` and `brand/photo-style.md`.
 
 ## How to release one
 
 1. **Check the blockers are fixed** on staging: the items above, against the playbook's `server-needs.md`.
-2. **Move it back:** `git mv marketing-agent/unreleased/<name> marketing-agent/playbooks/<name>`. Links inside need no change: `../../atoms/…` resolves the same from both folders. Change the `ln -s` line in its `tests/test-by-hand.md` back to `playbooks/`.
+2. **Move it into the published tree** (flat since 20 Oct): `git mv marketing-agent/unreleased/<name> marketing-agent/skills/<name>`, then each of its `atoms/<step>/ATOM.md` to `marketing-agent/skills/<name>-<step>/SKILL.md` with frontmatter (`name`, `description`, `version`) and a `skill.meta.json` (AGENTS.md §5). Rewrite its links to the `../<slug>/SKILL.md` form (the links to shared steps now read `../../skills/<slug>/SKILL.md` from here) and run `node scripts/build-index.js && node scripts/check-marketing-agent-links.js`, which lists what is left. Change the `ln -s` line in its `tests/test-by-hand.md`.
 3. **Put the hand-offs back.** The 20 Oct change replaced them with "not covered yet" or "the marketer does it"; `git log -S "held back" -- marketing-agent` finds that change, and its diff is the list to undo for this playbook. The main places:
-   - the router (`foundation/marketing-agent/SKILL.md`): its row, the "Not this" cells that pointed to it, the "Not covered yet" bullet, and the description line;
-   - the index in `foundation/guide/SKILL.md` (and the reserved paths above);
+   - the router (`../skills/marketing-agent/SKILL.md`): its row, the "Not this" cells that pointed to it, the "Not covered yet" bullet, and the description line;
+   - the index in `../skills/marketing-guide/SKILL.md` (and the reserved paths above);
    - where-to-start's `references/playbook-map.md` (the playbook's entry, the gaps table, the company-type table);
    - plan-campaign's brief roles and calendar, run-paid-campaigns' rotation and fix lines, analyze-performance's "what to make next", make-content, run-organic-social, work-with-creators;
    - the `reads`/`writes` lines in other playbooks' `skill.meta.json` marked "unreleased";

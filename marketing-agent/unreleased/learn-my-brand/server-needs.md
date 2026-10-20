@@ -6,7 +6,7 @@ What this playbook needs from the GooseWorks MCP that it does not have today (ch
 - **Need.** A tool to set a claim's status (candidate / approved / approved with qualifier / rejected / retired), add an owner-supplied claim, and edit its wording, with approver, the approver's words and the date. `brand_update` says "Claims, proof points and operating-plan fields are not writable here."
 - **Why it hurts.** Server research writes claims straight into `approvedClaims` as approved with no human review. On staging, Personal Day (acne skincare) has 7, including a star rating with a review count and four press quotes, and `valueProps` carry "100% free of acne-triggering ingredients" and "Dermatologist-developed & 6x award-winning". `knowledge_search` tells every agent that "proof is an approved claim … or a kit proof point as written", and the server's `next_step` repeats it. So every maker playbook will use unreviewed claims, and learn-my-brand cannot switch them off.
 - **Step.** 4 (sign-off) and 7 (write-back).
-- **Meanwhile.** The contract in `../../atoms/claims-gate/ATOM.md`: one `Claims you may use —` fact per approved claim and the marker with a status token (which itself says everything else is not approved); variants, proof and the not-approved list in the Brand record; `valueProps`, `description`, `audience` and `tagline` rewritten (owner-confirmed) so they hold only approved claims. Every playbook reads claims through the gate. **Ask:** until this ships, research should write claims as candidates, not approved.
+- **Meanwhile.** The contract in `../../skills/claims-gate/SKILL.md`: one `Claims you may use —` fact per approved claim and the marker with a status token (which itself says everything else is not approved); variants, proof and the not-approved list in the Brand record; `valueProps`, `description`, `audience` and `tagline` rewritten (owner-confirmed) so they hold only approved claims. Every playbook reads claims through the gate. **Ask:** until this ships, research should write claims as candidates, not approved.
 
 ## 2. Claim fields: proof, scope, qualifier, review date
 - **Need.** Per claim: evidence pointer and strength, products / markets / channels it is cleared for, required qualifier or disclaimer, review-by date, visibility. And `knowledge_search` claim results that return them, filtered by product, market and channel, hiding expired ones.
@@ -26,7 +26,7 @@ What this playbook needs from the GooseWorks MCP that it does not have today (ch
 ## 5. The operating plan (who approves, what the agent may do alone, spend caps)
 - **Need.** Read and write the Operating Plan over MCP. It exists in the app but is neither readable nor writable here.
 - **Step.** 3 (who approves claims and voice).
-- **Meanwhile.** The approver is recorded in the Brand record and as `approver:` in the sign-off marker, which `../../atoms/claims-gate/ATOM.md` checks before asking anyone to approve a line.
+- **Meanwhile.** The approver is recorded in the Brand record and as `approver:` in the sign-off marker, which `../../skills/claims-gate/SKILL.md` checks before asking anyone to approve a line.
 
 ## 6. Pending proposals: list and accept over MCP
 - **Need.** List a brand's pending `agent_proposal` changes and record the owner's acceptance from chat.
@@ -41,7 +41,7 @@ What this playbook needs from the GooseWorks MCP that it does not have today (ch
 ## 8. A structured voice home
 - **Need.** Voice as structure (rules with do/don't pairs, banned words, terminology, flex by channel and speaker, locale), not one 2,000-character prose field.
 - **Step.** 5 and 7.
-- **Meanwhile.** The whole confirmed guide in the kit's `voice` (the kit and knowledge both have a voice field; which one `brand_read` kit shows is unverified, and the playbook writes the kit one because siblings read the kit); banned words as one fact; voice status in the claims marker; per-account style in voice cards (`../../atoms/voice-card/ATOM.md`).
+- **Meanwhile.** The whole confirmed guide in the kit's `voice` (the kit and knowledge both have a voice field; which one `brand_read` kit shows is unverified, and the playbook writes the kit one because siblings read the kit); banned words as one fact; voice status in the claims marker; per-account style in voice cards (`../../skills/voice-card/SKILL.md`).
 
 ## 9. Confirm saved sources (and give them a no-cost confirm)
 - **Need.** Mark a saved source (`brand_read` sources, `confirmed: false`) as the brand's own or not, without starting a paid import.
@@ -63,18 +63,18 @@ What this playbook needs from the GooseWorks MCP that it does not have today (ch
 ## 13. Replace or retire an imported knowledge document
 - **Need.** Replace a document imported with `knowledge_import` in one step. `refresh` only rechecks the same source; a new upload is a new source.
 - **Step.** 7.
-- **Meanwhile.** Each save writes a new version (`brand/records/<date>-v<N>.md`, brand coworker scope) built from the previous one read in full, through `../../atoms/save-to-brain/ATOM.md` (`versioned: supersede`), which deletes the older versions' documents after the new import is ready; the server's ingest drops deleted media, so search stops returning stale rows. The marker names the current version; the `Claims you may use —` facts win over any record.
+- **Meanwhile.** Each save writes a new version (`brand/records/<date>-v<N>.md`, brand coworker scope) built from the previous one read in full, through `../../skills/save-to-brain/SKILL.md` (`versioned: supersede`), which deletes the older versions' documents after the new import is ready; the server's ingest drops deleted media, so search stops returning stale rows. The marker names the current version; the `Claims you may use —` facts win over any record.
 
 ## 14. The sign-off status should reach the claims path
 - **Need.** Siblings and the server's own generators read claims through `knowledge_search {source_types: ["claim"]}` and the kit, and the server's `next_step` calls kit proof points claim-grade. Return the owner's sign-off status with claim results, downgrade research claims once a sign-off exists, or (best) #1.
-- **Meanwhile.** `../../atoms/claims-gate/ATOM.md` is the only contract every playbook follows; its marker status token (`signed-off | pending-client | not-signed`) decides.
+- **Meanwhile.** `../../skills/claims-gate/SKILL.md` is the only contract every playbook follows; its marker status token (`signed-off | pending-client | not-signed`) decides.
 
 ## 15. Learnings: the 300-character cut and the 8-fact engine view
-- **Status.** Covered by the Brand Brain rebuild (PRs #2079/#2081): no silent cut, full context for the ad and video engines. Interim handling lives in ../../atoms/save-learning/ATOM.md.
+- **Status.** Covered by the Brand Brain rebuild (PRs #2079/#2081): no silent cut, full context for the ad and video engines. Interim handling lives in ../../skills/save-learning/SKILL.md.
 - **Step.** 7.
 
 ## 16. Hosted chats and file uploads
-- **Note, not a gap.** Text documents go through the workspace (`file_write` → `media_upload` source `workspace`), which works over MCP alone; `../../atoms/save-to-brain/ATOM.md` does this.
+- **Note, not a gap.** Text documents go through the workspace (`file_write` → `media_upload` source `workspace`), which works over MCP alone; `../../skills/save-to-brain/SKILL.md` does this.
 
 
 ## 17. Workspace files scoped to a brand

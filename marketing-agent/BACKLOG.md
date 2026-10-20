@@ -60,7 +60,7 @@ The old skills are being deleted; these keep what was worth having. Craft only �
   - where to use them (homepage, ads, sales deck, bios);
   - a "what we're not saying" list.
 
-  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". When built: proof goes through `atoms/claims-gate` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `atoms/write-report`.
+  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". When built: proof goes through `marketing-agent/skills/claims-gate/SKILL.md` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `skills/write-report/SKILL.md`.
 - **#7 Sales collateral — seed: `skills/competitive-intel/composites/battlecard-generator/SKILL.md` § "Phase 3: Output — Battlecard" (in git history).** Keep the one-page sheet a salesperson opens five minutes before a call:
   - a 30-second version;
   - questions that frame the deal;
@@ -70,7 +70,7 @@ The old skills are being deleted; these keep what was worth having. Craft only �
   - where we win (lead with these), where we lose (don't engage there) and where it's close;
   - short email replies for common moments.
 
-  When built: it reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `atoms/claims-gate`.
+  When built: it reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `marketing-agent/skills/claims-gate/SKILL.md`.
 
 ## Still skipped on purpose
 
@@ -93,5 +93,5 @@ These are not playbooks, but several cards above wait on them. Each playbook's `
 - A typed home in the brand brain for margins, stock, offers and email programs — cards #1, #7.
 - Reading the customer's own tools (email, Search Console, Seller Central) — cards #1, #7, #11.
 - A sending layer — card #6 (sending half), #18.
-- The lead-data routes on the connector (people search, email find, email check — they exist on the server's CLI proxy) — research-audience list mode, write-outreach (`playbooks/research-audience/server-needs.md`).
+- The lead-data routes on the connector (people search, email find, email check — they exist on the server's CLI proxy) — research-audience list mode, write-outreach (`skills/research-audience/server-needs.md`).
 - A watcher layer — cards #9, #10.

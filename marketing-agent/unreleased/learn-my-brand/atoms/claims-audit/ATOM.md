@@ -4,7 +4,7 @@ description: >-
   Internal step of learn-my-brand (hidden). Turns every claim-shaped line the brand brain holds into a
   classified candidate with a recommended verdict, and runs the owner's sign-off by risk tier. Used in full
   runs, update runs, one-claim checks the owner brings here, client sign-offs and expiry sweeps. The span checks
-  are the same as the shared ../../../../atoms/claims-gate/ATOM.md §2; this is the whole-brand version.
+  are the same as the shared ../../../../skills/claims-gate/SKILL.md §2; this is the whole-brand version.
 ---
 
 # claims-audit

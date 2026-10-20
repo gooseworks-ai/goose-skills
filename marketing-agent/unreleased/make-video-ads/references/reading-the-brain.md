@@ -6,7 +6,7 @@ Load at Step 1 of make-video-ads. Sibling playbooks never call this one; they le
 
 ## 1. Claims — the shared claims gate
 
-The contract and the checks are `../../../atoms/claims-gate/ATOM.md` (owner: learn-my-brand). In short:
+The contract and the checks are `../../../skills/claims-gate/SKILL.md` (owner: learn-my-brand). In short:
 - The marker is a `must` learning starting `Claims sign-off (learn-my-brand,` with status `signed-off`, `pending-client` or `not-signed`; a lean `brand_read` returns every `must` and `dont`.
 - `signed-off` → only the `Claims you may use —` facts, verbatim (or a variant listed in the Brand record the marker names, read with `file_read`), in scope, before the review date, with the qualifier.
 - Not approved: search snippets, kit `approvedClaims` / `proofPoints` / `valueProps`, `["claim"]` search rows, the live site, a yes in chat that did not go through the gate.
@@ -47,4 +47,4 @@ The contract and the checks are `../../../atoms/claims-gate/ATOM.md` (owner: lea
 - `ads/videos/<project_id>.md` (`gooseworks:file_write`), **one per video** (each kept hook variant gets its own): the video's name, angle (`A-NN` / angle type), hook family, the approved script, claim trace and cut list (with any lines for the human to take to learn-my-brand), people and disclosures, the **launch copy** the marketer chose (primary text, headline, description, CTA, destination — script-checked; replaced with the reason on a text-caused rejection), and **launch notes** — AI label to switch on, music to add in-platform, which hook is which. Read by run-paid-campaigns (launch) and analyze-performance (attribution).
 - The video's `name`: `<product>_<a-nn or angle_type>_<hook_family>_<ratio>_<yyyy-mm-dd>` (lower-case) set on `video_create` or `video_change` (batch videos: `video_change` per project).
 - `video_review` keep/reject with reasons and the human's note.
-- Brand learnings only through `../../../atoms/save-learning/ATOM.md` (the human's own words; text starting `[video YYYY-MM-DD]`). Not a learning per video.
+- Brand learnings only through `../../../skills/save-learning/SKILL.md` (the human's own words; text starting `[video YYYY-MM-DD]`). Not a learning per video.

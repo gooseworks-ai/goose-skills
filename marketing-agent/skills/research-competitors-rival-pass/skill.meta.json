@@ -1,0 +1,21 @@
+{
+  "slug": "research-competitors-rival-pass",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.0",
+  "playbook": "research-competitors",
+  "tags": [
+    "competitive-intel",
+    "research"
+  ],
+  "standalone": false,
+  "installation": {
+    "base_command": "npx goose-skills install research-competitors-rival-pass",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": []
+}
