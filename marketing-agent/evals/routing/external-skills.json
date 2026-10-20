@@ -1,0 +1,13 @@
+{
+  "$comment": "GooseWorks entry skills that the playbooks hand video and photo work to. They ship with the gooseworks CLI (installed beside the playbooks) and the hosted connector, not from this repo, so the routing picker sees them as well. Descriptions copied from gooseworks-ai/gooseworks skills/<slug>/SKILL.md on 2026-10-20.",
+  "skills": [
+    {
+      "name": "goose-video",
+      "description": "Make a video ad in this chat from a real reference ad, found or theirs; styles are the fallback. Follow every answer's next_step."
+    },
+    {
+      "name": "goose-product-photos",
+      "description": "Make product photos (studio, lifestyle or on a model) of a brand's real products with GooseWorks in this chat. Start brand work with brain_map and follow the next_step in every answer."
+    }
+  ]
+}

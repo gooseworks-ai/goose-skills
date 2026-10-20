@@ -1,0 +1,21 @@
+{
+  "slug": "make-static-ads-find-references",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.4.2",
+  "playbook": "make-static-ads",
+  "tags": [
+    "ads",
+    "design"
+  ],
+  "standalone": false,
+  "installation": {
+    "base_command": "npx goose-skills install make-static-ads-find-references",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": []
+}

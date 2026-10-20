@@ -32,12 +32,13 @@ test('Brand Growth has first-class, non-installable collection metadata', () => 
   );
 });
 
-test('new Brand Growth workflows are indexed in the intended stages', () => {
+test('the marketing playbooks are indexed in the intended stages', () => {
   const expected = {
-    'audience-research': 'research',
-    'creator-profile-teardown': 'analyze',
-    'content-repurposing': 'create',
-    'transcript-intelligence': 'analyze',
+    'research-market': 'research',
+    'research-audience': 'research',
+    'analyze-performance': 'analyze',
+    'make-content': 'create',
+    'write-outreach': 'create',
   };
 
   for (const [slug, stage] of Object.entries(expected)) {

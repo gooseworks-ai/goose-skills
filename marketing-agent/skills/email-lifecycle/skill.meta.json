@@ -1,0 +1,104 @@
+{
+  "slug": "email-lifecycle",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "tags": [
+    "content",
+    "outreach"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "create",
+  "installation": {
+    "base_command": "npx goose-skills install email-lifecycle",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "ad-policy-check",
+    "claims-gate",
+    "email-lifecycle-broadcast-planner",
+    "email-lifecycle-flow-writer",
+    "email-lifecycle-lifecycle-audit",
+    "email-lifecycle-offer-math",
+    "email-lifecycle-send-check",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "voice-card",
+    "write-report"
+  ],
+  "pillar": "7 — Email, SMS and lifecycle (with the lifecycle bullets of 21 messaging and 22 growth loops)",
+  "intents": [
+    "set up my welcome and abandoned-cart emails",
+    "my email list just sits there",
+    "write my email flows",
+    "plan this week's emails and texts",
+    "win back lapsed customers",
+    "post-purchase, review request and referral emails",
+    "trial onboarding emails for my SaaS",
+    "push notifications and in-app messages for my app",
+    "why are my emails going to spam",
+    "launch emails for my waitlist",
+    "plan our Black Friday sends",
+    "a send went wrong, help me fix it"
+  ],
+  "reads": [
+    "brand brain — brain_map core and required reads, then chapters 2, 5, 11, 15, 17, 18, 20, brain_open and brain_search for gaps when brain_* tools are listed; else brand_read summary, kit, products (price, offers, notes), learnings (server research and the app; learn-my-brand, unreleased)",
+    "claims — the shared claims-gate atom over the sign-off contract (signed-off marker → 'Claims you may use' facts; written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
+    "standing offer and brand-wide policies — the shared Standing offer: fact, any Policy: facts (written earlier by learn-my-brand, unreleased) and earlier [lifecycle] rules, else the Brand record",
+    "voice and banned words — brand learnings (server research and the app; learn-my-brand, unreleased); voice cards brand/voices/<handle>.md via the shared voice-card atom (make-content, run-organic-social)",
+    "weekly performance read — reports/performance/<date>.md (analyze-performance)",
+    "campaign brief with an email/SMS leg — campaign_read (plan-campaign)",
+    "review-request brief — 'For your email program — review requests' section of search/fixes/<date>.md (improve-search-visibility)",
+    "newsletter issue — content/newsletter/<date>.md (make-content)",
+    "program sheet from earlier runs — lifecycle/program.md (this playbook)",
+    "email tool exports, a recent campaign's 'original' text, spam-rate screenshot, margins, stock — human-provided",
+    "'Graphic ready:' answers under its own header-art request lines in lifecycle/flows/ (make-static-ads)",
+    "last run record — newest of runs/email-lifecycle/<job>/<date>.md via the shared run-memory atom (this playbook's earlier runs)"
+  ],
+  "writes": [
+    "the email program pack — local file gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-email-program.md (or an artifact in hosted chat) through the shared write-report atom, plus a saved copy with a link (read by the marketer)",
+    "lifecycle/program.md + brand document 'Lifecycle program — <Brand> — <date>' (supersede) — program sheet with each flow's hypothesis, target and last result (read by the next run's read-back and the human; others through knowledge_search)",
+    "lifecycle/flows/<flow-slug>.md — flow pack with ready / not-ready status, tracking plan when events are missing (read by the human; header-art request lines for make-static-ads)",
+    "lifecycle/calendar/<YYYY-MM>.md — send calendar, interim home for offers (read by the human, the next run and plan-campaign)",
+    "lifecycle/broadcasts/<YYYY-MM-DD>.md — this week's broadcasts (read by the human)",
+    "lifecycle/deliverability/<YYYY-MM-DD>.md — deliverability report (read by the next run)",
+    "optional weekly automation, created paused — automation_upsert (enabled by the human)",
+    "brand learnings via the shared save-learning atom, once per run: the shared Standing offer: fact and [lifecycle YYYY-MM-DD] rules, confirmed policies included (human-confirmed; never Policy: facts, a fixed opening no released playbook writes; read by every playbook)",
+    "scoped claims sign-off when needed, through the shared claims-gate atom: a Brand record version, 'Claims you may use' facts and the marker (read by every copy-writing playbook)",
+    "run record — runs/email-lifecycle/<job-slug>/<YYYY-MM-DD>.md + brand document 'Run record — <job> — <Brand> — <date>' (keep-history) via the shared run-memory atom (read by the next run of any email job)"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:tools_load",
+      "gooseworks:brand_read",
+      "gooseworks:brand_update",
+      "gooseworks:campaign_read",
+      "gooseworks:file_read",
+      "gooseworks:file_list",
+      "gooseworks:file_write",
+      "gooseworks:automation_upsert",
+      "gooseworks:file_url",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:knowledge_search",
+      "gooseworks:automation_list",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
+    ]
+  }
+}

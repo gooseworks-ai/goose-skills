@@ -147,6 +147,86 @@ for (const domain of domains) {
   }
 }
 
+// The marketing agent's skills (marketing-agent/skills/<slug>/, see build-index.js).
+// Same rules as above, plus: the frontmatter name is the slug, the version in SKILL.md
+// matches skill.meta.json (the catalog reads SKILL.md), the description fits the
+// 1,024-character Agent Skills limit, and every requires_skills slug exists.
+const MA_ROOT = path.join(ROOT, 'marketing-agent', 'skills');
+const MA_TIERS = new Set(['playbook', 'atom', 'foundation']);
+const maPublished = [];
+function blockFrontmatter(text) {
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  if (!m) return null;
+  const lines = m[1].split('\n');
+  const out = {};
+  for (let i = 0; i < lines.length; i++) {
+    const kv = lines[i].match(/^(\w[\w-]*):\s*(.*)$/);
+    if (!kv) continue;
+    if (/^[>|][-+]?$/.test(kv[2].trim())) {
+      const block = [];
+      while (i + 1 < lines.length && (/^\s+/.test(lines[i + 1]) || lines[i + 1] === '')) block.push(lines[++i].trim());
+      out[kv[1]] = block.join(' ').replace(/\s+/g, ' ').trim();
+    } else {
+      out[kv[1]] = kv[2].trim().replace(/^['"]|['"]$/g, '');
+    }
+  }
+  return out;
+}
+if (isDir(MA_ROOT)) {
+  for (const slug of fs.readdirSync(MA_ROOT).sort()) {
+    const skillDir = path.join(MA_ROOT, slug);
+    if (!isDir(skillDir)) continue;
+    const where = `marketing-agent/skills/${slug}`;
+    const skillMd = path.join(skillDir, 'SKILL.md');
+    const metaPath = path.join(skillDir, 'skill.meta.json');
+    if (!fs.existsSync(skillMd)) { errors.push(`Missing SKILL.md for ${where}`); continue; }
+    if (!fs.existsSync(metaPath)) { errors.push(`Missing skill.meta.json for ${where}`); continue; }
+    let meta;
+    try {
+      meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    } catch (err) {
+      errors.push(`Invalid JSON in ${where}/skill.meta.json`);
+      continue;
+    }
+    const fm = blockFrontmatter(fs.readFileSync(skillMd, 'utf8'));
+    if (!fm) { errors.push(`${where}/SKILL.md has no frontmatter`); continue; }
+    if (!isValidSlug(slug)) errors.push(`Directory slug has invalid format: ${where}`);
+    if (meta.slug !== slug) errors.push(`Slug mismatch in ${where}: meta.slug=${meta.slug}`);
+    if (fm.name !== slug) errors.push(`Frontmatter name must be the slug in ${where}: name=${fm.name}`);
+    if (!MA_TIERS.has(meta.tier)) errors.push(`tier must be one of ${[...MA_TIERS].join(', ')} in ${where}`);
+    if (meta.catalog === false) continue; // kept for evals, never published
+    if (!fm.description) errors.push(`description required in ${where}/SKILL.md`);
+    else if (fm.description.length > 1024) errors.push(`description over 1,024 characters (${fm.description.length}) in ${where}`);
+    if (!LEVELS.includes(meta.category)) errors.push(`category must be one of ${LEVELS.join(', ')} in ${where}: ${meta.category}`);
+    if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(String(meta.version))) {
+      errors.push(`version must be a semver string (x.y.z) in ${where}: ${JSON.stringify(meta.version)}`);
+    } else if (fm.version !== meta.version) {
+      errors.push(`version in SKILL.md (${fm.version}) and skill.meta.json (${meta.version}) differ in ${where}`);
+    }
+    if (!Array.isArray(meta.tags) || meta.tags.length === 0) {
+      errors.push(`tags must be a non-empty array in ${where}`);
+    } else {
+      const invalidTags = meta.tags.filter((t) => !allowedTags.has(t));
+      if (invalidTags.length) errors.push(`invalid tag(s) in ${where}: ${invalidTags.join(', ')}`);
+    }
+    if (!meta.installation || typeof meta.installation.base_command !== 'string' || !meta.installation.base_command.trim()) {
+      errors.push(`installation.base_command required in ${where}`);
+    }
+    if (!meta.installation || !Array.isArray(meta.installation.supports) || meta.installation.supports.length === 0) {
+      errors.push(`installation.supports required in ${where}`);
+    }
+    if (!Array.isArray(meta.requires_skills)) errors.push(`requires_skills must be an array in ${where}`);
+    if (slugs.has(slug)) errors.push(`Duplicate slug: ${slug}`);
+    slugs.add(slug);
+    maPublished.push({ slug, where, meta });
+  }
+  for (const { where, meta } of maPublished) {
+    for (const dep of meta.requires_skills || []) {
+      if (!slugs.has(dep)) errors.push(`${where} requires unknown skill "${dep}"`);
+    }
+  }
+}
+
 // Tree ⊆ index check — every SKILL.md on disk must be representable in the
 // index that build-index.js produces. Catches the class of bugs where skills
 // exist on disk but the build script drops them (e.g., pack sub-skills missing
@@ -171,7 +251,10 @@ if (fs.existsSync(indexPath)) {
       if (s.path) topLevelPaths.add(s.path);
     }
 
-    const missing = allSkillMdDirs.filter((d) => !topLevelPaths.has(d));
+    const missing = [
+      ...allSkillMdDirs,
+      ...maPublished.map(({ where }) => where),
+    ].filter((d) => !topLevelPaths.has(d));
     if (missing.length) {
       errors.push(
         `${missing.length} SKILL.md file(s) are missing from top-level idx.skills[]. ` +

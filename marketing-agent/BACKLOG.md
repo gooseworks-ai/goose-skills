@@ -1,10 +1,11 @@
 # Playbooks to build later
 
 **In short**
-- These are marketing jobs the current 17 playbooks do not cover. Each one is written down on purpose, with who needs it and what should make us build it.
-- **Decision (Akhil, 16 Oct 2026): build none of these now.** Building and testing 17 playbooks well comes first; a bigger surface now would make that harder.
+- These are marketing jobs the 14 released playbooks do not cover. Each one is written down on purpose, with who needs it and what should make us build it.
+- **Decision (Akhil, 16 Oct 2026): build none of these now.** Building and testing the playbooks we have well comes first; a bigger surface now would make that harder.
 - The list comes from the plan's backlog plus the 16 Oct coverage review (`reviews/2026-10-16-coverage.md`), which ran five company types through a full quarter using only these playbooks.
 - Until a card is built, playbooks say plainly "this isn't covered yet" and never fake the work.
+- **Held back (Akhil, 20 Oct 2026):** learn-my-brand, make-video-ads and make-product-photos are built but wait for server work; see the section below.
 
 ## How to read a card
 
@@ -12,6 +13,16 @@
 - **Who hits it:** the company type and the moment.
 - **Build when:** a trigger we can check. "Someday" is not a trigger.
 - **Shape:** a new playbook, or a mode added to an existing one.
+
+## Held back from the first release (decided 20 Oct 2026, Akhil)
+
+Three playbooks are built but not released, because they need server work before they can run or be tested properly. They live in [`unreleased/`](unreleased/README.md), which says what blocks each and how to bring one back. Until then the router and every released playbook say plainly "not covered yet".
+
+| Playbook | The job users can't get yet | Build when |
+|---|---|---|
+| learn-my-brand | Learning the brand in one pass: a full claims audit and sign-off, a confirmed voice, a brand book read, a price or product change recorded. (The claim lines a job needs are still approved inside that job, through the claims check.) | The Brand Brain can approve, reject and retire claims and edit proof points over MCP, and pending proposals can be listed and accepted from chat (its `server-needs.md` #1–#7) |
+| make-video-ads | Video ads made with AI: Reels, TikTok and Shorts ads, AI UGC-style video, product demos, fixing a rejected video ad | The video engine fixes its `server-needs.md` High items: no generated customer testimonials, money-only approval buffer, claims scoped to the product, a working chat-host route, every rendered text claim-checked |
+| make-product-photos | Product photos without a shoot: packshots, lifestyle and on-model shots, redoing photos after a packaging change | The photo engine fixes its `server-needs.md` High items: a dry run that validates, reference control, archiving without a brand-wide rule, a real-vs-generated filter |
 
 ## Ranked by how soon a customer gets stuck
 
@@ -49,7 +60,7 @@ The old skills are being deleted; these keep what was worth having. Craft only �
   - where to use them (homepage, ads, sales deck, bios);
   - a "what we're not saying" list.
 
-  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". When built: proof goes through `atoms/claims-gate` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `atoms/write-report`.
+  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". When built: proof goes through `marketing-agent/skills/claims-gate/SKILL.md` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `skills/write-report/SKILL.md`.
 - **#7 Sales collateral — seed: `skills/competitive-intel/composites/battlecard-generator/SKILL.md` § "Phase 3: Output — Battlecard" (in git history).** Keep the one-page sheet a salesperson opens five minutes before a call:
   - a 30-second version;
   - questions that frame the deal;
@@ -59,7 +70,7 @@ The old skills are being deleted; these keep what was worth having. Craft only �
   - where we win (lead with these), where we lose (don't engage there) and where it's close;
   - short email replies for common moments.
 
-  When built: it reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `atoms/claims-gate`.
+  When built: it reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `marketing-agent/skills/claims-gate/SKILL.md`.
 
 ## Still skipped on purpose
 
@@ -82,5 +93,5 @@ These are not playbooks, but several cards above wait on them. Each playbook's `
 - A typed home in the brand brain for margins, stock, offers and email programs — cards #1, #7.
 - Reading the customer's own tools (email, Search Console, Seller Central) — cards #1, #7, #11.
 - A sending layer — card #6 (sending half), #18.
-- The lead-data routes on the connector (people search, email find, email check — they exist on the server's CLI proxy) — research-audience list mode, write-outreach (`playbooks/research-audience/server-needs.md`).
+- The lead-data routes on the connector (people search, email find, email check — they exist on the server's CLI proxy) — research-audience list mode, write-outreach (`skills/research-audience/server-needs.md`).
 - A watcher layer — cards #9, #10.

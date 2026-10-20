@@ -8,7 +8,10 @@ import { EVALS_DIR, listSkills, readJsonl, today } from './files.mjs';
 const SYSTEM = fs.readFileSync(path.join(EVALS_DIR, 'prompts', 'routing.md'), 'utf8');
 
 export async function runRouting({ model = 'haiku', limit, ids, concurrency = 4, outRoot }) {
-  const skills = listSkills();
+  // What a marketer's agent sees: every published marketing skill (playbooks and their steps) plus the
+  // GooseWorks entry skills the playbooks hand video and photo work to.
+  const external = JSON.parse(fs.readFileSync(path.join(EVALS_DIR, 'routing', 'external-skills.json'), 'utf8')).skills;
+  const skills = [...listSkills(), ...external];
   const names = new Set(skills.map((s) => s.name));
   let cases = readJsonl(path.join(EVALS_DIR, 'routing', 'cases.jsonl'));
   if (ids?.length) cases = cases.filter((c) => ids.includes(c.id));

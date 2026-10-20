@@ -283,3 +283,40 @@ test('throws when a skill references an undefined collection', () => {
 
   fs.rmSync(root, { recursive: true, force: true });
 });
+
+test('marketing-agent/skills: flat skills are indexed with folded descriptions, builder files and catalog:false folders left out', () => {
+  const root = makeFixtureRoot();
+  const ma = path.join(root, 'marketing-agent', 'skills');
+  const write = (slug, meta, extra = {}) => {
+    const dir = path.join(ma, slug);
+    fs.mkdirSync(path.join(dir, 'references'), { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'SKILL.md'),
+      `---\nname: ${slug}\ndescription: >-\n  First line of the\n  description.\nversion: 0.2.0\n---\n\n# ${slug}\nUse the \`claims-gate\` skill (\`../claims-gate/SKILL.md\`).\n`,
+    );
+    fs.writeFileSync(path.join(dir, 'skill.meta.json'), JSON.stringify(meta));
+    for (const [f, body] of Object.entries(extra)) fs.writeFileSync(path.join(dir, f), body);
+  };
+  write('research-market', {
+    slug: 'research-market', category: 'playbooks', tier: 'playbook', version: '0.2.0', tags: ['research'],
+    installation: { base_command: 'npx goose-skills install research-market', supports: ['claude'] },
+    requires_skills: ['claims-gate'],
+  }, { 'critique.md': 'builder notes', 'references/report-format.md': 'shape' });
+  write('marketing-agent', { slug: 'marketing-agent', tier: 'foundation', catalog: false });
+  runBuild(root);
+  const idx = readIndex(root);
+  const entry = idx.skills.find((s) => s.slug === 'research-market');
+  assert.ok(entry, 'the playbook is indexed');
+  assert.equal(entry.domain, 'marketing-agent');
+  assert.equal(entry.category, 'playbooks');
+  assert.equal(entry.path, 'marketing-agent/skills/research-market');
+  assert.equal(entry.version, '0.2.0');
+  assert.equal(entry.description, 'First line of the description.');
+  assert.deepEqual(entry.metadata.requires_skills, ['claims-gate']);
+  assert.deepEqual(entry.files.sort(), [
+    'marketing-agent/skills/research-market/SKILL.md',
+    'marketing-agent/skills/research-market/references/report-format.md',
+    'marketing-agent/skills/research-market/skill.meta.json',
+  ]);
+  assert.equal(idx.skills.some((s) => s.slug === 'marketing-agent'), false, 'catalog:false is not published');
+});

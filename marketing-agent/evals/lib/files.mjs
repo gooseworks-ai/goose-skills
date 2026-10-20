@@ -6,20 +6,32 @@ import { fileURLToPath } from 'node:url';
 export const EVALS_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const MA_DIR = path.resolve(EVALS_DIR, '..'); // marketing-agent/
 
-/** Every skill a marketer's agent would see: 16 playbooks + 3 foundation skills. */
-export function listSkills() {
+export const SKILLS_DIR = path.join(MA_DIR, 'skills');
+
+/**
+ * Every skill the catalog publishes (marketing-agent/skills/<slug>/, flat by slug): the 14 playbooks,
+ * their steps, the shared steps and the two foundation skills. A folder whose skill.meta.json says
+ * "catalog": false (the marketing-agent router) and unreleased/ are never listed.
+ * Each entry: { slug, tier ('playbook' | 'atom' | 'foundation'), dir, name, description }.
+ */
+export function listSkills({ tiers } = {}) {
   const out = [];
-  for (const group of ['playbooks', 'foundation']) {
-    const dir = path.join(MA_DIR, group);
-    for (const slug of fs.readdirSync(dir).sort()) {
-      const file = path.join(dir, slug, 'SKILL.md');
-      if (!fs.existsSync(file)) continue;
-      const fm = readFrontmatter(fs.readFileSync(file, 'utf8'));
-      out.push({ group, slug, dir: path.join(dir, slug), name: fm.name || slug, description: fm.description || '' });
-    }
+  for (const slug of fs.readdirSync(SKILLS_DIR).sort()) {
+    const dir = path.join(SKILLS_DIR, slug);
+    const file = path.join(dir, 'SKILL.md');
+    const metaFile = path.join(dir, 'skill.meta.json');
+    if (!fs.existsSync(file) || !fs.existsSync(metaFile)) continue;
+    const meta = JSON.parse(fs.readFileSync(metaFile, 'utf8'));
+    if (meta.catalog === false) continue;
+    if (tiers && !tiers.includes(meta.tier)) continue;
+    const fm = readFrontmatter(fs.readFileSync(file, 'utf8'));
+    out.push({ slug, tier: meta.tier, dir, name: fm.name || slug, description: fm.description || '' });
   }
   return out;
 }
+
+/** Kept in a skill folder for its builders and not published (scripts/build-index.js). */
+export const BUILDER_FILES = new Set(['critique.md']);
 
 /** Minimal frontmatter reader: `key: value` and folded `key: >-` blocks. Enough for our SKILL.md files. */
 export function readFrontmatter(text) {

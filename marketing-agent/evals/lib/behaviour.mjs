@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { ask, parseJsonLoose, runClaude } from './claude.mjs';
-import { EVALS_DIR, MA_DIR, listSkills, loadScenario, loadRubric, today } from './files.mjs';
+import { BUILDER_FILES, EVALS_DIR, listSkills, loadScenario, loadRubric, today } from './files.mjs';
 import { judgeArmSafe, writePlaybookSummary } from './judge.mjs';
 import { installLegacy, keyFailures } from './legacy.mjs';
 import { connectBrand, snapshot, planReset, applyPlan, attributeToArm } from './brandstate.mjs';
@@ -70,7 +70,8 @@ function sandboxHome(root) {
 
 /**
  * A fresh temp copy of the hand-test folder plus a sandbox home.
- * with-skill links the 16 playbooks + 3 foundation skills; legacy copies the old skills from legacy/mapping.json; baseline adds nothing.
+ * with-skill copies every published marketing skill flat by slug into .claude/skills/<slug>/ (what the catalog ships: no
+ * builder files, no router, nothing from unreleased/); legacy copies the old skills from legacy/mapping.json; baseline adds nothing.
  */
 function prepareWorkspace(slug, mode) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), `goose-eval-${slug}-${mode}-`));
@@ -86,11 +87,12 @@ function prepareWorkspace(slug, mode) {
   if (mode === 'with-skill') {
     const skillsDir = path.join(dir, '.claude', 'skills');
     fs.mkdirSync(skillsDir);
-    for (const s of listSkills()) fs.symlinkSync(s.dir, path.join(skillsDir, s.slug));
-    // Mirrors the hand-test folder: playbooks reach shared atoms as ../../atoms from .claude/skills/<slug>/.
-    for (const name of ['atoms', 'foundation', 'BACKLOG.md']) {
-      const target = path.join(MA_DIR, name);
-      if (fs.existsSync(target)) fs.symlinkSync(target, path.join(dir, '.claude', name));
+    // Side by side, as a terminal install lays them out: skills reach each other as ../<slug>/.
+    for (const s of listSkills()) {
+      fs.cpSync(s.dir, path.join(skillsDir, s.slug), {
+        recursive: true,
+        filter: (src) => !(path.dirname(src) === s.dir && BUILDER_FILES.has(path.basename(src))),
+      });
     }
   }
   const legacy = mode === 'legacy' ? installLegacy(slug, dir) : null;
