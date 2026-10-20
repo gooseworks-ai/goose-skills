@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads ("ten fresh ads this week", "make me some ads", "ads for our sale"); "my ads all look the same"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).
-version: 0.4.2
+version: 0.4.3
 ---
 
 # make-static-ads
@@ -101,7 +101,7 @@ Load `references/handoff-format.md`; re-read the product record. Writes: lower-c
 
 1. **Spend** — nothing renders before the marketer's yes to the quotes as GooseWorks gives them (the `spend-gate` skill (`../spend-gate/SKILL.md`), branch A), never your own sum. That yes covers one retry per image at the same price, said up front. Paid ad-library reads: branch B, one yes to a ceiling. Layer splits and copy variants: each its own yes.
 2. **Questions and templates** — the Step 2 form is answered before any quote; the marketer picks from the gallery or sees the agent's picks.
-3. **Claims** — every cut line is listed with what would confirm it. A claim the marketer confirms in this chat is saved in their words as a learning before it is used.
+3. **Claims** — every cut line is listed with what would confirm it. A claim the marketer confirms in this chat is saved in their words as a learning before it is used; a proof-required type needs its proof, never just an OK (`references/claims-and-policy.md` §2).
 4. **The run decision** — the human picks what runs; this playbook never launches or spends ad budget. Record a pick only on the human's words: feedback `rating: "happy"` on the chosen render, `picked` in its tags, and the pick in the batch file.
 
 ## Output and write-back

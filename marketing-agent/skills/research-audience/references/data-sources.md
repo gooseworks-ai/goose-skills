@@ -70,7 +70,7 @@ The routes, paths and prices are in [../server-needs.md](../server-needs.md). Un
 
 ## Credits
 
-Spending follows the `spend-gate` skill (`../../spend-gate/SKILL.md`) (proxy branch): one yes to a ceiling "up to N credits", estimated from the credits log (or, with no history, from one small probe run inside that same ceiling), labelled an estimate; stop at it. `gooseworks:data_price_provider` does not price these lookups (server-needs #1). Every charge is logged in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`) — the kind of query, never a prospect's name. Never retry a failed paid call blindly; a resubmit pays again. The counts below are for a list built mostly from paid reads; a top-up that only fills gaps in a free result needs far fewer — count the rows it touches.
+Spending follows the `spend-gate` skill (`../../spend-gate/SKILL.md`) (proxy branch), which holds the ceiling and probe rules; stop at the ceiling. `gooseworks:data_price_provider` does not price these lookups (server-needs #1). Every charge is logged in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`) — the kind of query, never a prospect's name. Never retry a failed paid call blindly; a resubmit pays again. The counts below are for a list built mostly from paid reads; a top-up that only fills gaps in a free result needs far fewer — count the rows it touches.
 
 ## Yield (approximate, from outbound practice — use it to size the lookup counts you show)
 

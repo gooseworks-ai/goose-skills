@@ -7,7 +7,7 @@ Load at step 4 (writing) and step 7 (checking). The edge in 2026 inboxes is spec
 - **The subject decides the open; the first screen decides the click.** Subjects ≤ ~45 characters, concrete, in the reader's words. The preview adds information; it never repeats the subject and is never empty (an empty preview shows "View in browser").
 - **Vary shape on purpose.** A 40-word reminder, a 150-word explainer, a plain-text note from a person. Same-length hero-three-paragraphs-button emails read as automated.
 - **Decide for the reader.** "Start with the cream" beats "explore our range".
-- **Proof is specific and approved.** Real reviews (including a critical one), approved claims in their exact words, product facts from the product record. No invented counts, percentages, studies or endorsements.
+- **Proof is specific and approved.** Real reviews (including a critical one), approved claims in their exact words, plain product facts as the `claims-gate` skill (`../../claims-gate/SKILL.md`) §1.7 allows (the live product page, not the product record alone). No invented counts, percentages, studies or endorsements.
 - **Urgency only from a real date or real stock.** A code's actual expiry, a sale's actual end, live inventory.
 - **Plain text from a person** usually wins for B2B, services, high-consideration purchases and any message whose job is a reply.
 - **Write the voice from the brain.** Use the brand's voice guide and banned words; match the sentence length and register of its best existing copy.

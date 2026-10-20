@@ -315,3 +315,10 @@ Wired run-memory (`references/run-memory.md`): jobs `creator research` and `crea
 | B5 AI-made video was "not covered yet" (Before you start 3 and the description) while Out of scope and the router send it to goose-video | Both now route AI-made video to the goose-video skill; real people filming stay here. Description changed, so the routing eval was re-run: 81/87 (93%). |
 | B9 Audience fit was turned into how sure | Fit is stated on its own (`audience_fit`, in words); how sure comes from `audience_confidence` and the sources (`vetting.md` §8). The example shows both. |
 | B10 `skill.meta.json` named `atoms/ad-policy-check/disclosure.md` | Now `../ad-policy-check/disclosure.md`. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #1 (shared, spend-gate) restated the probe | SKILL.md step 7 and `references/data-sources.md` now point to spend-gate branch B only. |
+| #3 (shared, claims-gate) briefs took product facts from product records and policies from `must` facts | `references/creator-brief.md`: product facts from the live product page or a confirmed public record (claims-gate §1.7, §1.9); none found → ask which page lists them; policies only as §1.9 allows. |

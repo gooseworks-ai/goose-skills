@@ -399,7 +399,7 @@
       "description": "Weekly performance read across every channel we run: what worked, why, and what to make next, judged on the business's real number (store revenue, qualified pipeline, retained users), not platform claims. Use when: write my Monday report; how are my ads doing — which ad won?; are my ads actually making money (Meta says 4x ROAS but revenue is flat); why did sales drop this week; did the test win; is my tracking working; monthly numbers for the replan; anything on fire today. Not for acting on the recommendations (pausing, scaling, launching) — use run-paid-campaigns; not for replanning the budget — use plan-campaign.",
       "tags": "ads, monitoring",
       "path": "marketing-agent/skills/analyze-performance",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "marketing-agent/skills/analyze-performance/SKILL.md",
         "marketing-agent/skills/analyze-performance/references/creative-and-channels.md",
@@ -419,7 +419,7 @@
         "slug": "analyze-performance",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "tags": [
           "ads",
           "monitoring"
@@ -1304,7 +1304,7 @@
       "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 to 5 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
       "tags": "brand",
       "path": "marketing-agent/skills/claims-gate",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "marketing-agent/skills/claims-gate/SKILL.md",
         "marketing-agent/skills/claims-gate/claim-types.md",
@@ -1316,7 +1316,7 @@
         "slug": "claims-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -3174,7 +3174,7 @@
       "description": "Lifecycle email, SMS and push: audits the list and deliverability, then writes the flows this kind of business needs first, loadable as-is in your own tool, plus segments, cadence and this week's broadcasts. Never sends anything. Use when: set up my welcome and abandoned-cart emails; trial onboarding or waitlist launch emails; win back lapsed customers; plan this week's emails and texts; push notifications for my app; why are my emails going to spam; plan our Black Friday email and SMS sends; a send went wrong. Not for cold outreach to prospects — use write-outreach; not the editorial newsletter issue — use make-content; not the whole cross-channel Black Friday plan — use plan-campaign.",
       "tags": "content, outreach",
       "path": "marketing-agent/skills/email-lifecycle",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "marketing-agent/skills/email-lifecycle/SKILL.md",
         "marketing-agent/skills/email-lifecycle/references/benchmarks.md",
@@ -3196,7 +3196,7 @@
         "slug": "email-lifecycle",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "tags": [
           "content",
           "outreach"
@@ -4588,7 +4588,7 @@
       "description": "Search and AI-answer visibility (SEO, AEO, GEO). Use when the marketer asks \"am I in the answer when people ask ChatGPT or Google for products like mine?\", \"improve my SEO\", \"why does ChatGPT recommend my competitor\", \"are we in AI Overviews\", \"organic traffic is flat\", \"ChatGPT says something wrong about us\", \"fix my app store listing\" or \"my Google Business Profile and local search\". Shows, question by question, where the brand is named and who wins instead, with a search roadmap and five fixes to apply this week. Never edits anything live. Not for writing the full page — use make-content; not Amazon or marketplace listings (not covered yet); not paid search — use run-paid-campaigns.",
       "tags": "seo",
       "path": "marketing-agent/skills/improve-search-visibility",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "marketing-agent/skills/improve-search-visibility/SKILL.md",
         "marketing-agent/skills/improve-search-visibility/references/app-store-listing.md",
@@ -4613,7 +4613,7 @@
         "slug": "improve-search-visibility",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "tags": [
           "seo"
         ],
@@ -4797,7 +4797,7 @@
       "description": "Step of the improve-search-visibility playbook: turns one ranked fix into paste-ready site copy or code with owner, risk and undo, and writes page briefs. Run improve-search-visibility instead; not for direct use.",
       "tags": "seo",
       "path": "marketing-agent/skills/improve-search-visibility-fix-writer",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "marketing-agent/skills/improve-search-visibility-fix-writer/SKILL.md",
         "marketing-agent/skills/improve-search-visibility-fix-writer/skill.meta.json"
@@ -4806,7 +4806,7 @@
         "slug": "improve-search-visibility-fix-writer",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "improve-search-visibility",
         "tags": [
           "seo"
@@ -4840,7 +4840,7 @@
       "description": "Step of the improve-search-visibility playbook: checks AI-crawler access, indexing and the pages behind lost questions, comparing each with the winning page. Run improve-search-visibility instead; not for direct use.",
       "tags": "seo",
       "path": "marketing-agent/skills/improve-search-visibility-page-and-foundation-check",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "marketing-agent/skills/improve-search-visibility-page-and-foundation-check/SKILL.md",
         "marketing-agent/skills/improve-search-visibility-page-and-foundation-check/skill.meta.json"
@@ -4849,7 +4849,7 @@
         "slug": "improve-search-visibility-page-and-foundation-check",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "improve-search-visibility",
         "tags": [
           "seo"
@@ -5933,7 +5933,7 @@
       "description": "Writes marketing content: articles, single posts, newsletters, scripts and repurposed cuts, each with an edit note and a claims check. Use when a marketer says \"write a blog post / case study\", \"write a LinkedIn or X post / thread / X article\", \"carousel copy\", \"draft this week's newsletter\", \"turn this webinar into posts\" or \"repurpose this\", \"write a TikTok or YouTube script\", \"refresh this old post\", or \"write the page from this SEO brief\". Words only; nothing is invented or published. Not for a dated posting calendar — use run-organic-social; not ad copy (make-static-ads) or promo emails (email-lifecycle). Press releases, landing and product pages, and sales decks are not covered.",
       "tags": "content",
       "path": "marketing-agent/skills/make-content",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "marketing-agent/skills/make-content/SKILL.md",
         "marketing-agent/skills/make-content/references/editing.md",
@@ -5949,7 +5949,7 @@
         "slug": "make-content",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "tags": [
           "content"
         ],
@@ -6058,7 +6058,7 @@
       "description": "Writes a one-page content brief before any draft: audience, intent, the one arguable point, what top results already say and what this piece adds, an outline, a proof inventory with gaps marked, voice, CTA and banned words, checked against six gates. Use alone when you already have the topic, format, audience and destination and want only the brief; otherwise run make-content.",
       "tags": "content",
       "path": "marketing-agent/skills/make-content-content-brief",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "marketing-agent/skills/make-content-content-brief/SKILL.md",
         "marketing-agent/skills/make-content-content-brief/skill.meta.json"
@@ -6067,7 +6067,7 @@
         "slug": "make-content-content-brief",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "make-content",
         "tags": [
           "content"
@@ -6181,7 +6181,7 @@
       "description": "Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads (\"ten fresh ads this week\", \"make me some ads\", \"ads for our sale\"); \"my ads all look the same\"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "files": [
         "marketing-agent/skills/make-static-ads/SKILL.md",
         "marketing-agent/skills/make-static-ads/references/angles-and-hooks.md",
@@ -6208,7 +6208,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.4.2",
+        "version": "0.4.3",
         "tags": [
           "ads",
           "design"
@@ -6819,7 +6819,7 @@
       "description": "How every GooseWorks marketing playbook runs: connecting, picking the brand, where files go, the shared claims, money, research and schedule rules, and the index of what each playbook saves and who reads it. Load at the start of any playbook run. Not a marketer ask: for \"what should I do first?\" use where-to-start.",
       "tags": "brand",
       "path": "marketing-agent/skills/marketing-guide",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "marketing-agent/skills/marketing-guide/SKILL.md",
         "marketing-agent/skills/marketing-guide/research-pattern.md",
@@ -6829,7 +6829,7 @@
         "slug": "marketing-guide",
         "category": "capabilities",
         "tier": "foundation",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "tags": [
           "brand"
         ],
@@ -10114,7 +10114,7 @@
       "description": "Audience research: who the buyers are, in their own words, where they gather and how to reach them — plus named prospect lists when asked. Use when the marketer says \"research our audience\", \"who should we target\", \"mine our reviews\", \"why do people buy us or leave\", \"where does our audience hang out\"; or for lists: \"find 50 right-fit leads with emails\", \"find retailers or accounts to pitch\", \"score these leads / who do we call first\", \"who's looking for an alternative to X\", \"tell me when a past champion changes jobs\". Reads the brand's own customer data first and delivers a readable report saved to the brand. Never contacts anyone. Not for market size or trends — use research-market; not for writing the messages — use write-outreach.",
       "tags": "research, lead-generation",
       "path": "marketing-agent/skills/research-audience",
-      "version": "0.8.1",
+      "version": "0.8.2",
       "files": [
         "marketing-agent/skills/research-audience/SKILL.md",
         "marketing-agent/skills/research-audience/references/audience-research.md",
@@ -10138,7 +10138,7 @@
         "slug": "research-audience",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.8.1",
+        "version": "0.8.2",
         "tags": [
           "research",
           "lead-generation"
@@ -10481,7 +10481,7 @@
       "description": "Competitor research: what every main rival is running, launching, charging and saying now, what works for them, and what that means for you. Use when the marketer asks for competitor research or a teardown, \"what ads are my competitors running\", \"how do they price\", \"find gaps and angles\", \"what changed this week\" (a weekly watch), or \"X just launched / shut down / cut prices\" (react now). Delivers a readable report saved to the brand, so the next run reports what changed. Never copies their words or disparages them. Not for what people say about you or your market — use research-market; not for who your buyers are — use research-audience.",
       "tags": "competitive-intel, research",
       "path": "marketing-agent/skills/research-competitors",
-      "version": "0.4.1",
+      "version": "0.4.2",
       "files": [
         "marketing-agent/skills/research-competitors/SKILL.md",
         "marketing-agent/skills/research-competitors/references/angles-and-gaps.md",
@@ -10499,7 +10499,7 @@
         "slug": "research-competitors",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.4.1",
+        "version": "0.4.2",
         "tags": [
           "competitive-intel",
           "research"
@@ -10715,7 +10715,7 @@
       "description": "Market research and brand watch: which market the brand is in, how big the reachable part is, what's changing, how buyers buy and what they pay, what people are saying now, and what it means for positioning. Use when the marketer asks for market research, \"how big is my market\", \"what's changing in my category\", \"what do others charge\", \"what are people saying about us\", \"is there demand for <idea>\", or \"watch my brand / tell me if something blows up\" (alerts only, risk first). Researches first, asks only decisions at the end, and delivers a readable report saved to the brand. Not for who the buyers are and their own words — use research-audience; not for a deep look at rivals — use research-competitors.",
       "tags": "research, monitoring",
       "path": "marketing-agent/skills/research-market",
-      "version": "0.4.1",
+      "version": "0.4.2",
       "files": [
         "marketing-agent/skills/research-market/SKILL.md",
         "marketing-agent/skills/research-market/references/idea-validation.md",
@@ -10730,7 +10730,7 @@
         "slug": "research-market",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.4.1",
+        "version": "0.4.2",
         "tags": [
           "research",
           "monitoring"
@@ -11334,7 +11334,7 @@
       "description": "Reviews a brand's own social accounts: what each is for, the last ~30 posts ranked against the account's own median with the likely reason for top and bottom posts, cadence actually kept, best posting times, and bio and pinned-post fixes. Use alone when you already know which accounts to review and can read their posts; otherwise run run-organic-social.",
       "tags": "social, content",
       "path": "marketing-agent/skills/run-organic-social-account-audit",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "marketing-agent/skills/run-organic-social-account-audit/SKILL.md",
         "marketing-agent/skills/run-organic-social-account-audit/skill.meta.json"
@@ -11343,7 +11343,7 @@
         "slug": "run-organic-social-account-audit",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "run-organic-social",
         "tags": [
           "social",
@@ -11515,7 +11515,7 @@
       "description": "Runs the paid leg of an approved plan: checks tracking, pages and stock before money moves, then stages one weekly proposal of kills, scales, pauses, swaps and launches, each with its reason and a check date. Nothing changes without your yes. Use when: launch these ads; it's Monday — kill, scale or pause?; swap this fatiguing ad; we sold out or the sale ended — pause the ads now; an ad got rejected or the account got restricted; we're in a brand crisis — hold the ads; give me the Google, TikTok or LinkedIn changes to make. Not for how the ads did or which ad won — use analyze-performance; not for rewriting a rejected image ad — use make-static-ads.",
       "tags": "ads",
       "path": "marketing-agent/skills/run-paid-campaigns",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "marketing-agent/skills/run-paid-campaigns/SKILL.md",
         "marketing-agent/skills/run-paid-campaigns/references/baseline-audit.md",
@@ -11535,7 +11535,7 @@
         "slug": "run-paid-campaigns",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "tags": [
           "ads"
         ],
@@ -12568,7 +12568,7 @@
       "description": "Shared step of the marketing playbooks (make-static-ads, research-market, run-paid-campaigns, work-with-creators): gets the human's yes before any credits are spent. Shows the price exactly as quoted, or asks for one yes to a credit ceiling for paid data reads, stays under it and logs each charge. Also covers scheduled runs. Loaded by those playbooks; not for direct use.",
       "tags": "research-tools",
       "path": "marketing-agent/skills/spend-gate",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "marketing-agent/skills/spend-gate/SKILL.md",
         "marketing-agent/skills/spend-gate/proxy-endpoints.md",
@@ -12578,7 +12578,7 @@
         "slug": "spend-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -14167,7 +14167,7 @@
       "description": "Real creators and influencers, researched, priced and briefed. Use when the marketer says \"find influencers\", \"which creators are worth paying, at what price?\", \"find real UGC creators to film for our ads\", \"who should we seed product to\", \"is this creator's engagement real\", \"what should I pay this creator\" or \"write a creator brief\". Free research first; one credit yes only to vet deeper. Drafts only: contacts nobody, agrees nothing, moves no money. Not for AI-made UGC-style video — use goose-video; if unsure, ask: a real person filming, or AI-made?",
       "tags": "social, outreach",
       "path": "marketing-agent/skills/work-with-creators",
-      "version": "0.4.1",
+      "version": "0.4.2",
       "files": [
         "marketing-agent/skills/work-with-creators/SKILL.md",
         "marketing-agent/skills/work-with-creators/references/creator-brief.md",
@@ -14188,7 +14188,7 @@
         "slug": "work-with-creators",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.4.1",
+        "version": "0.4.2",
         "tags": [
           "social",
           "outreach"
@@ -14671,7 +14671,7 @@
       "description": "Turns findings you already have into a report a marketer can read in 30 seconds. It has a short summary with key findings and how sure each one is, the first move, decisions needed, at most six next moves, what was not checked, and dated sources. It checks length and wording before handing over, then saves the report to the brand. Use alone when you already have the findings and their sources; otherwise run the playbook for the job (e.g. research-market, research-competitors, plan-campaign).",
       "tags": "research, content",
       "path": "marketing-agent/skills/write-report",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "marketing-agent/skills/write-report/SKILL.md",
         "marketing-agent/skills/write-report/example-top.md",
@@ -14681,7 +14681,7 @@
         "slug": "write-report",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",

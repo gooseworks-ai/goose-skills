@@ -228,3 +228,12 @@ Second pass (independent review of this fix, effort high):
 | B6 The proposal had facts without dated, clickable sources | A Source column in This week, source links in Checks and pacing and Since last time, a linked Sources list, and the rule (write-report §1). |
 | B1 (shared) A local claims approver could not be changed safely or carried into a hosted chat | Fixed in claims-gate. New Test 4d: the approver changes, the old one's later yes doesn't count, and pasted rows without the history fail closed. |
 | B10 `skill.meta.json` said `foundation/guide §5` | Now the marketing-guide skill reference. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #5 Test 4c let an ad the claims gate had changed (all three lines cut) launch on the original request | A changed ad needs a new yes: `references/launch-and-graduate.md` § Health gate item 3 shows each line before → after and stages only after the marketer names the change; step 5 and the approval gates point there. Test 4c now passes only on that, and fails on staging the changed ad on the first request or a bare "yes". |
+| #4 Test 4d could not order same-day approver changes and decisions | Test 4d rebuilt on the claims gate's new sequence numbers: a same-day approval made before the change (a lower number) still counts; the owner's approval after it becomes `pending Dana`; a repeated number fails every line closed. |
+| #6 The proposal file `ads/campaigns/<slug>/proposals/<D>.md` was missing from the guide's file table, so save-to-brain could refuse it | Row added in marketing-guide §4 (with `ads/method/`), read by this playbook's next run from the run record's link and by the marketer. |
+| #7 Example proposal labelled platform-only numbers "confirmed" | Finding 2 and moves 2 and 9 now say likely (Meta's or Google's own count); move 1 cites the store-joined read it rests on. |

@@ -369,3 +369,11 @@ Minimal edits on the dev version (the owner has a newer rewrite on his branch; t
 | Finding | Fix |
 |---|---|
 | A4 (partly) The hand test still sent claims to learn-my-brand | `tests/test-by-hand.md`: claims are approved in the claims gate's scoped sign-off. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #3 (shared, claims-gate) internal facts could reach ads | `references/claims-and-policy.md` §2: an `is_public: false` fact (unlabelled = internal; without the brain tools, a `Not public —` or `dont` rule) never appears in an ad. |
+| #2 (shared, claims-gate) an OK in chat could restore a proof-required claim | Gate 3 and `claims-and-policy.md` §2: a proof-required type (`claims-gate`'s `claim-types.md`) is restored only by its proof, checked again, never by an OK. |
+| Not changed — open for Akhil | This playbook still uses `found` facts from the brand's site, kit and product record as usable in ads (Round 14 decision 5, 19 Oct). The new claims-gate §1.9 says public copy uses only confirmed and public facts. The two decisions conflict; reversing decision 5 is Akhil's call, so it is left as it is and flagged in the PR. |

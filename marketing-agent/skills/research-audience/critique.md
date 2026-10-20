@@ -462,3 +462,9 @@ From the cold-outreach hand test (session 8571396a): the paid list run delivered
 | Finding | Fix |
 |---|---|
 | B10 `server-needs.md` named `atoms/spend-gate` | "the spend-gate skill". |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #1 (shared, spend-gate) restated the probe | `references/data-sources.md` and `server-needs.md` point to spend-gate branch B; the hand test now asks for a numeric ceiling (or a lone probe with its maximum charge). |

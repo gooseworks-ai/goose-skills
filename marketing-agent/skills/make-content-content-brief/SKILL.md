@@ -5,7 +5,7 @@ description: >-
   results already say and what this piece adds, an outline, a proof inventory with gaps marked, voice,
   CTA and banned words, checked against six gates. Use alone when you already have the topic, format,
   audience and destination and want only the brief; otherwise run make-content.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Content brief
@@ -22,7 +22,7 @@ No fresh draft starts without a brief. Write it, check it against the six gates 
   - **plan-campaign asset list:** `gooseworks:campaign_read` `campaign_id` gives the brief, the concepts and the asset row.
   - **analyze-performance "what to make next":** the latest `reports/performance/<date>.md` (`gooseworks:file_list` `reports/performance/`), its "what to make next" section.
 - When it is a comparison: `gooseworks:competitor_read` for dated competitor facts.
-- **Top search results** (search-intent pieces only, when no page brief already carries them): use the host's own web search when it has one (free). Otherwise make one `/v1/google/search` read through the proxy (the `marketing-data-access` skill, `../marketing-data-access/SKILL.md`), under the spend gate (the `spend-gate` skill (`../spend-gate/SKILL.md`), proxy branch: a probe with the yes asked in SKILL.md's #5 message). Open the top 3 pieces and log URL and date; with no fetch, judge from titles and snippets and label it "snippets only". This feeds "information gain".
+- **Top search results** (search-intent pieces only, when no page brief already carries them): use the host's own web search when it has one (free). Otherwise make one `/v1/google/search` read through the proxy (the `marketing-data-access` skill, `../marketing-data-access/SKILL.md`), under the spend gate (the `spend-gate` skill (`../spend-gate/SKILL.md`), proxy branch, its yes asked in SKILL.md's #5 message). Open the top 3 pieces and log URL and date; with no fetch, judge from titles and snippets and label it "snippets only". This feeds "information gain".
 - **Public sources.** When your host has web search or fetch, open 2–5 primary sources for the world facts the outline needs (platform help docs, standards bodies, original studies, official statistics). Log each URL and the date opened in the proof inventory. Never cite from memory. With no web tool, list them in "what unlocks this draft".
 - `gooseworks:file_list` `content/` in the brand workspace: existing briefs and drafts, to avoid duplicating a piece and to find internal-link candidates.
 

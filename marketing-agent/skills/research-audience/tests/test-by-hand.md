@@ -61,6 +61,6 @@ Stopped here: Gate 1 needs the operator's yes; the next call would be paid.
 
 First paid calls it would make after Gate 1 and Gate 2 (not run):
 - `data_call_provider` scrapecreators `/v1/facebook/adLibrary/search/companies` and `/v1/facebook/adLibrary/company/ads` for consumer-brand advertisers in the chosen categories (the "running Meta ads now" signal), and `/v1/google/search` for "Head of Growth" + DTC brand queries.
-- Gate 1 would ask one yes for a single probe read (no charges logged yet), then — next message, from its per-call charge — "up to N credits" for the five-account sample (about 50–70 lookups), labelled an estimate. (Round 2, 2026-10-16: gate rewritten to the shared spend-gate; not re-run on staging — the gates are unchanged in what they call.)
+- Gate 1 would ask you to name a ceiling, as a number, for the five-account sample (about 50–70 lookups; no charges logged yet, so the first read shows the price), or, if you want the price first, one yes to a single probe read with its maximum charge, then the ceiling. (Round 2, 2026-10-16: gate rewritten to the shared spend-gate; not re-run on staging — the gates are unchanged in what they call.)
 
 Findings from this run, fixed in the playbook: workspace files are per user, not per brand → files now go to the brand coworker workspace (the sibling convention); the competitor set can be mis-resolved → exclusions by root domain only (score-segment-qa / fit-definition).

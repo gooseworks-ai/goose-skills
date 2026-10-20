@@ -624,3 +624,9 @@ Sonnet, web search and page fetch only (no browser, no GooseWorks calls), Person
 | Finding | Fix |
 |---|---|
 | B10 "The worker briefs are in `atoms/`" | "its step skills (`research-market-<step>`)". |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #1 (shared, spend-gate) restated the probe | `server-needs.md` #3 points to spend-gate branch B; the hand test's first paid step asks for a numeric ceiling, or a lone probe with its maximum charge. |

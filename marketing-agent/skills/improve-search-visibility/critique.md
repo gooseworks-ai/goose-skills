@@ -332,3 +332,10 @@ Not re-run (per orchestrator: no evals).
 | Done when mixed bars with test oracles | Done when: first message leads with k-of-N counts; report has the per-question table, roadmap and exactly five fixes (or fewer, stated); banned-word scan clean; saved with a link. The re-ask oracle is test item 5; "start one fix that week" added to test item 6. |
 | "Human" for the person | "Marketer" throughout. |
 | Description did not say what the skill is | Now starts "Search and AI-answer visibility (SEO, AEO, GEO). Use when…"; 891 → 694 characters. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #1 (shared, spend-gate) the credit flow restated the probe, and the hand test forbade the probe-then-ceiling path the gate now allows | SKILL.md, `references/citation-protocol.md`, `server-needs.md` and the page check point to spend-gate branch B; the hand test asks for one numeric ceiling, with a separate one-lookup probe yes (its maximum charge named) only if the marketer wants the price first. |
+| #3 (shared, claims-gate) "a product record field" counted as a source for public fix copy | The fix-writer step, `finished-fix-examples.md` and `page-map.md` name a plain product fact from the live page instead (claims-gate §1.7). |
