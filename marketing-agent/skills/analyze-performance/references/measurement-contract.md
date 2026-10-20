@@ -8,8 +8,8 @@ The referee is the business number the platforms are judged against. It is not a
 
 | Type | Referee (truth) | Where it comes from | Ranking metric for creative and calls |
 |---|---|---|---|
-| **DTC** | Net revenue and **new-customer** orders/revenue, own site; retail/marketplace sell-through separately | Store (Shopify etc.) — connector, export or paste; retailer reports | Purchase CPA within each platform (claimed, verdicts capped at medium); high only when store new-customer orders moved with it |
-| **DTC + retail** | Same, plus sell-through by retailer (or "unmeasured — halo") | Store + retailer portal | Same; Meta cuts capped at medium confidence while retail is unmeasured |
+| **DTC** | Net revenue and **new-customer** orders/revenue, own site; retail/marketplace sell-through separately | Store (Shopify etc.) — connector, export or paste; retailer reports | Purchase CPA within each platform (claimed, verdicts capped at likely); confirmed only when store new-customer orders moved with it |
+| **DTC + retail** | Same, plus sell-through by retailer (or "unmeasured — halo") | Store + retailer portal | Same; Meta cuts capped at likely while retail is unmeasured |
 | **B2B SaaS (sales-led) / services** | Leads → qualified (SQL) → opportunities → won, **by original source**, plus the self-reported "how did you hear" field | CRM (HubSpot etc.) | Cost per qualified lead / per opportunity; CPL is a leading signal only |
 | **Self-serve SaaS** | New paid accounts and activated sign-ups (the product's "aha" event), **by source**; trial → paid when there is a trial | Billing (Stripe etc.) for paid accounts; product analytics for activation; sign-up source from tagged links or a "how did you hear" field | Cost per activated sign-up and per new paid account; cost per sign-up is a leading signal only |
 | **Consumer app** | First-time downloads by source (App Store Connect / Play Console), activation and D7 retention (product analytics), trials/payers (RevenueCat etc. when live) | Store consoles + analytics | Cost per activated / retained user; CPI is a cost line, never a winner |
@@ -75,7 +75,7 @@ Save what was provided as `reports/performance/inputs/<YYYY-MM-DD>.md` (a summar
 
 ## 5. Claims-only mode
 
-If the type's referee is missing, the report still runs, but every outcome number is labelled **claimed (platform)**, there is no MER / CAC / overclaim ratio, no call above **low** confidence, and the first line says: "<Referee> not provided — these are the platforms' claims, which overcount. Send <the export> and I'll restate." A scheduled (automated) run cannot collect exports, so it will run in this mode unless a connector exists — say so before anyone schedules it.
+If the type's referee is missing, the report still runs, but every outcome number is labelled **claimed (platform)**, there is no MER / CAC / overclaim ratio, no call above **first look**, and the first line says: "<Referee> not provided — these are the platforms' claims, which overcount. Send <the export> and I'll restate." A scheduled (automated) run cannot collect exports, so it will run in this mode unless a connector exists — say so before anyone schedules it.
 
 ## 6. Hygiene and maturity
 

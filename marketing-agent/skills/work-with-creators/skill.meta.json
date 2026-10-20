@@ -2,7 +2,7 @@
   "slug": "work-with-creators",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "tags": [
     "social",
     "outreach"
@@ -54,7 +54,7 @@
     "Inspiration library: saved outlier posts and the creators behind them (research-market)",
     "persona — who a creator's followers must match (research-market)",
     "campaign record: a campaign brief that calls for a creator leg (plan-campaign)",
-    "shared disclosure rules atoms/ad-policy-check/disclosure.md (make-static-ads)",
+    "shared disclosure rules ../ad-policy-check/disclosure.md (the ad-policy-check skill)",
     "workspace creators/roster.csv via outcomes-ledger, earlier wave-1.md and briefs (this playbook); research/credits-log/<YYYY-MM>.md (spend-gate)",
     "human: goal, budget, creators in talks, target CAC / CPA / planned media, cost per demo or install, roster status and wave results",
     "run records runs/work-with-creators/creator-programme/wave-<n>/… (run-memory) and the roster for wave results"

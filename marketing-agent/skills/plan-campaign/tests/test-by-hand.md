@@ -33,6 +33,11 @@ After a month of weekly reads exist: "Replan next month." Pass if it reads the r
 ## Test 4b — monthly replan with run memory
 With a plan record (its bets), four weekly performance records, a monthly record and run-paid records holding one raise that worked, one that was too early and one leg that never ran: "Replan next month." Pass if it scores every bet from a source (the never-run leg is neither credited nor blamed; the paid verdict is labelled claimed unless the store check confirms it), moves money only with from → to, amount, the verdict and what would reverse it, keeps the too-early leg's money with its read date, saves a new plan record with next month's bets, and proposes the target and tests to the brain only after the marketer approves.
 
+## Test 4c — no GooseWorks: approve and save locally
+Disconnect GooseWorks. Ask for a plan for one product with a budget and a date, then approve it, then accept a monthly replan.
+Pass if: it says once that it keeps notes in this folder; no `gooseworks:` tool is called from setup to write-back; the plan opens from a local link and the chat says "saved in this folder", never "saved to your brand"; after the yes, `gooseworks-local/<brand-slug>/plans/<slug>/` holds a new version whose Status line reads "Approved <date> by <name>", and the run record is re-saved; the replan is created with the host's scheduler (off until you say so), or it says scheduling isn't available here.
+Fail if: any campaign record, concept, server link or automation call; any "saved to your brand".
+
 ## Staging run — 2026-10-16 (brand: Personal Day, DTC acne-safe skincare)
 
 Ask simulated: "We're launching a new serum on March 1st with $8,000 — what should we run, and where?" (goal number withheld).

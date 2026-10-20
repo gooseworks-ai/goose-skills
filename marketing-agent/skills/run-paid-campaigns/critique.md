@@ -202,3 +202,29 @@ Confirmed: Round 9's four fixes. Two new majors, both fixed:
 | One name for the person | "the human"/"founder" → "marketer" in atoms and references (incl. log examples "Decided: marketer …"); "Founder story" ad name kept. |
 
 Reactive branches not moved (item 3, later).
+
+## 2026-10-20 — Codex review round 1
+
+| Finding | Fix |
+|---|---|
+| #8 Step 7 pointed to apply-and-log's Stage, which was the GooseWorks path only, so a connector-only run would try to create approval pages | apply-and-log now picks steps by each move's lever: GooseWorks levers 1–8; connector levers 1, 2, 4 then 9–11; written instructions 1, 2, 4 (no tool call) then 7 on "done". Local mode has only the last two and calls no `gooseworks:` tool (no ids in a local `state.md`). Step 7 and Before you start 2 and 7 say so. |
+| #10 An accepted weekly schedule always led to `automation_upsert` | Recurring: created by marketing-guide §3 Schedules (local mode: the host's scheduler, or "not available"); `references/run-memory.md` § Setting up the schedule marked GooseWorks-only. |
+| #14 The proposal had its own shape (High / Medium / Low, no decisions, exclusions, gaps or sources), scheduled runs sent it through write-report and interactive runs didn't | One template in `references/proposal-and-log.md`, in write-report's shape: In short; Decisions for you (near-threshold calls, graduation options, waiting targets, unknown statuses); The story (Checks and pacing, Since last time, This week, Your top ads); What to do (the approval bundles); What we're not doing; What we couldn't check; Sources with source skew; how sure as confirmed / likely / first look. New § Delivery used by both apply-and-log step 4 and the scheduled run; the scheduled prompt asks for the same shape. `moves.md` uses the same certainty words. |
+| #1–3, #11 (shared, claims-gate) local claims could be reused when declined, could not be withdrawn or narrowed, lost their proof, and had no separate-approver path | Fixed in claims-gate (`local-claims.md`). New Test 4c: a declined, an out-of-scope and a proof-gone row are all cut across runs; a "yes" in chat when Dana approves writes pending rows only. |
+
+Second pass (independent review of this fix, effort high):
+
+| Finding | Fix |
+|---|---|
+| The baseline audit's "Account at a glance" block sat on top of the first proposal, ahead of In short; What you get and `moves.md` still described a proposal "header" | The block is the first section of the story (`### Account at a glance`), its main finding in In short; What you get, "What to do: approve in three bundles" and `moves.md` ("Checks and pacing") match the new template. |
+| Step 7's Done-when needed server approval links, which local mode never has | "(GooseWorks levers)". |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B3 Local mode still reached `meta_read`, `push_status`, `video_read` and GooseWorks pushes in step 0, the baseline audit, reading results, run memory and launch | New `references/local-mode.md`: one table of what replaces each GooseWorks read and lever (connector date-range reads or exports, local `decisions.md` blocks and connector read-backs, route 3 or paused connector launches, the marketer's own creative). Pointers in SKILL.md (Before you start 1, step 0, step 5, Output), `baseline-audit.md`, `reading-results.md`, `run-memory.md`, `launch-and-graduate.md` (routes 1–2 marked GooseWorks only) and the health-gate and weekly-read steps. |
+| B5 Tired or rejected video ads went to "whoever makes their videos"; metadata named make-video-ads | Offered as the next job with the goose-video skill (without GooseWorks: whoever makes them), in SKILL.md and `moves.md`; unreleased producer gone from `skill.meta.json`. |
+| B6 The proposal had facts without dated, clickable sources | A Source column in This week, source links in Checks and pacing and Since last time, a linked Sources list, and the rule (write-report §1). |
+| B1 (shared) A local claims approver could not be changed safely or carried into a hosted chat | Fixed in claims-gate. New Test 4d: the approver changes, the old one's later yes doesn't count, and pasted rows without the history fail closed. |
+| B10 `skill.meta.json` said `foundation/guide §5` | Now the marketing-guide skill reference. |

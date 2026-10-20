@@ -5,9 +5,9 @@ description: >-
   influencers", "which creators are worth paying, at what price?", "find real UGC creators to film for
   our ads", "who should we seed product to", "is this creator's engagement real", "what should I pay
   this creator" or "write a creator brief". Free research first; one credit yes only to vet deeper.
-  Drafts only: contacts nobody, agrees nothing, moves no money. Not for AI-made UGC-style video (not
-  covered yet); if unsure, ask: a real person filming, or AI-made?
-version: 0.4.0
+  Drafts only: contacts nobody, agrees nothing, moves no money. Not for AI-made UGC-style video —
+  use goose-video; if unsure, ask: a real person filming, or AI-made?
+version: 0.4.1
 ---
 
 # work-with-creators
@@ -18,7 +18,7 @@ Creator research answers three things for the marketer: who is worth paying, at 
 
 ## What you get
 
-1. **A readable report** (`creators/<YYYY-MM-DD>/report.md`, opened on request): "In short" (write-report §1) — timely openings (a creator already posting about the category this week, a rival's creator deal ending), the shortlist — each pick with public numbers read from real posts, dated and linked, labelled fact or inference, a price range with the math, a deal call, and **For you** ("this creator's format fits your <product> because…; what they'd make; the approved claim behind it, or 'you'd need proof of X first'") — **You vs them** (rivals' creator programmes vs yours), wave 1 and how it will be judged, near-misses, and "what we could not read". Shape: [references/roster-format.md](references/roster-format.md).
+1. **A readable report** (`creators/<YYYY-MM-DD>/report.md`, opened on request): "In short" (write-report §1) — timely openings (a creator already posting about the category this week, a rival's creator deal ending), the shortlist — each pick with public numbers read from real posts, dated and linked, and how sure (confirmed / likely / first look), a price range with the math, a deal call, and **For you** ("this creator's format fits your <product> because…; what they'd make; the approved claim behind it, or 'you'd need proof of X first'") — **You vs them** (rivals' creator programmes vs yours), wave 1 and how it will be judged, near-misses, Decisions for you (budget, names, claims, a deeper vet), and "what we could not read". Shape: [references/roster-format.md](references/roster-format.md).
 2. **The roster** (`creators/roster.csv`, kept with the outcomes ledger) and **a brief and a first message per top pick** (`creators/<D>/briefs/<handle>.md`) — claims-safe, disclosure-ready, for the marketer to send: [references/creator-brief.md](references/creator-brief.md), [references/first-message.md](references/first-message.md), [references/wave-criteria.md](references/wave-criteria.md).
 
 ## Before you start
@@ -27,7 +27,7 @@ Creator research answers three things for the marketer: who is worth paying, at 
    - Brain path: the chapters the map points to for products, audience and rivals, plus 14 (rules — every `[creators …]` one), 22 and 23; `gooseworks:brain_search` for creators in talks, past deals and rates, the persona.
    - Fallback path: `gooseworks:brand_read` (summary, kit, products with prices, competitors, organic — the brand's and rivals' recent posts, where collabs show — accounts, learnings) and `gooseworks:knowledge_search` for the same.
 2. **Read the roster and siblings — free.** `gooseworks:social_inspiration_library` / `gooseworks:social_inspiration_search`; `gooseworks:campaign_read` if a campaign has a creator leg; workspace: `creators/roster.csv`, the newest report and `lessons/*.md`, `research/audience/buyer-groups.md`, `research/competitors/` records. Run [the `outcomes-ledger` skill](../outcomes-ledger/SKILL.md) (`entity: creator`) for declines, never-agains and stale picks — its updates question waits for step 7. Then **since last time:** the Start steps of [the `run-memory` skill](../run-memory/SKILL.md) ([references/run-memory.md](references/run-memory.md), job `creator programme`, subject `wave-<n>` — the wave this run plans or reads): wave results by role and tier from the roster, last run's picks and price bands checked against what came back — 3–5 lines that open the report and steer this run. Claims: only the read step of [the `claims-gate` skill](../claims-gate/SKILL.md) now.
-3. **Ask nothing before the report.** The only question allowed first: "UGC" or "content for ads" with no word on who films → "A real person filming, or AI-made?" (AI-made video isn't covered yet: say so plainly). Everything else — goal, budget, platforms — is assumed from the brand and the ask, stated in the report, and corrected in step 7.
+3. **Ask nothing before the report.** The only question allowed first: "UGC" or "content for ads" with no word on who films → "A real person filming, or AI-made?" (AI-made video goes to the goose-video skill: offer it as the next job; real people filming stay here). Everything else — goal, budget, platforms — is assumed from the brand and the ask, stated in the report, and corrected in step 7.
 
 ## Steps
 

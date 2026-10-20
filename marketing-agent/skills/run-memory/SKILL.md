@@ -5,7 +5,7 @@ description: >-
   research-competitors, email-lifecycle): reads the last run's record, checks whether its
   recommendations were done and whether they worked, and saves a short record of this run for the next
   one. Loaded by those playbooks; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # run-memory
@@ -14,7 +14,7 @@ A playbook that runs again (often as a weekly or monthly automation) must know w
 
 **Who loads it:** every playbook that can run more than once for the same brand: research, analysis, ads, social, email, search, creators. Not one-off makers (a single post, one photo set). It runs twice per run: **Start** before the playbook's own work, **End** after its report.
 
-**What it does not replace.** Where a playbook already keeps a working log, that log stays the source of truth: run-paid-campaigns' `ads/campaigns/<slug>/state.md` + `decisions.md` (the server's campaign-harness grammar, `R<n>` ids, `## Checks due`), `atoms/outcomes-ledger` ledgers, analyze-performance's `definitions.md`. The run record copies their ids and adds only what they lack (the baseline recipe and the result numbers). It never keeps a second, different copy of their state, and when the playbook has its own scoring rule (run-paid-campaigns' "Score last week"), step 3 below *is* that step. Use its rule and add only what is missing.
+**What it does not replace.** Where a playbook already keeps a working log, that log stays the source of truth: run-paid-campaigns' `ads/campaigns/<slug>/state.md` + `decisions.md` (the server's campaign-harness grammar, `R<n>` ids, `## Checks due`), the `outcomes-ledger` skill's ledgers, analyze-performance's `definitions.md`. The run record copies their ids and adds only what they lack (the baseline recipe and the result numbers). It never keeps a second, different copy of their state, and when the playbook has its own scoring rule (run-paid-campaigns' "Score last week"), step 3 below *is* that step. Use its rule and add only what is missing.
 
 ## Inputs (the calling playbook supplies them)
 
@@ -30,7 +30,11 @@ Brand inputs (`brand_id`, `brand_slug`, `coworker_agent_id`, scope) come from th
 
 **File:** `runs/<playbook>/<job-slug>/[<subject>/]<YYYY-MM-DD>.md`. A second run on the same day is `<YYYY-MM-DD>-2.md`.
 **Title:** `Run record — <job>[ — <subject>] — <Brand> — <YYYY-MM-DD>`, with ` (2)` added for a second run that day (save-to-brain's never-overwrite rule, its step 1). The subject sits in the title because brain search cannot filter by tag.
-**Local mode** (the `marketing-guide` skill (`../marketing-guide/SKILL.md`) §5): the same file under `gooseworks-local/<brand-slug>/`; step 1 reads only that folder, save-to-brain writes only the file, and step 7's line says "in this folder", not "to your brand".
+**Local mode** (the `marketing-guide` skill (`../marketing-guide/SKILL.md`) §5) calls no `gooseworks:` tool and no brain or knowledge search:
+- **Step 1:** with the host's file tools, list `gooseworks-local/<brand-slug>/runs/<playbook>/<job-slug>/[<subject>/]` and read the newest record whole. Empty → no earlier run (step 1's rule).
+- **Step 2:** the sources are the local files (the playbook's own log and reports in that folder), the marketer's connectors (read-only), their exports and their words.
+- **Step 7:** the record through save-to-brain's local branch; rules learned through save-learning (it writes `brand-notes.md`); no readout fact (it stays in the record). The line says "Saved this run's notes in this folder", never "to your brand".
+- **Hosted chat without files:** ask once for last time's notes ("paste last time's notes if you kept them"); none → no earlier run. At the end, give the record in chat to paste back next time.
 
 ## Start of run
 

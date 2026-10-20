@@ -456,3 +456,9 @@ From the cold-outreach hand test (session 8571396a): the paid list run delivered
 | Step 9 restated the default cadence and spend-gate §C | Pointer to guide §3 **Schedules** |
 | Done when pointed at a "step 3 budget" that is not in step 3 | Now "the Standard depth caps above" |
 | Description 1,016 characters, opened with a definition, not a leading word | 745 characters, leading with "Audience research". All expected routing cases still have a matching phrase; R76 (developers using a rival's open-source repo) rests on "find accounts to pitch" |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B10 `server-needs.md` named `atoms/spend-gate` | "the spend-gate skill". |

@@ -5,14 +5,16 @@ description: >-
   analyze-performance): saves a finished file to the brand and makes it searchable. It either replaces
   older versions or keeps dated history, then checks that the file can be found. Loaded by those
   playbooks; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # save-to-brain
 
 Every durable artifact goes through this atom. Never keep the only copy in chat or on the local disk, and never tell the marketer about workspaces, documents or imports — say "saved to your brand" or what failed in plain words.
 
-**Local mode** (no GooseWorks, [the `marketing-guide` skill](../marketing-guide/SKILL.md) §5) is the one exception: write the file under `gooseworks-local/<brand-slug>/` on the same path (step 1's read-and-merge applies), skip steps 3–6, and say "saved in this folder" — not "saved to your brand". No files (hosted chat): hand it over in chat to paste back.
+**Local mode** (no GooseWorks, [the `marketing-guide` skill](../marketing-guide/SKILL.md) §5) is the one exception. It calls no `gooseworks:` tool, and `brand_id` and `coworker_agent_id` are not needed:
+- **Host with files:** with the host's own file tools, read `gooseworks-local/<brand-slug>/<path>` if it exists, merge by step 1's rules (never-overwrite included), write it, and read it back. Skip steps 2–6. Say "saved in this folder", never "saved to your brand".
+- **Hosted chat without files:** nothing can be saved. Give the whole file in chat under its path and say "This isn't saved anywhere: paste it back next time and I'll pick up from it." Skip steps 1–6.
 
 ## Inputs (the calling playbook supplies them)
 

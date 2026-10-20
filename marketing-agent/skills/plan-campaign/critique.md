@@ -260,3 +260,25 @@ Findings touching this playbook: none of its own (the reviewer found its paths, 
 | Description 944 chars, deliverables list | 653 chars: what it is, one trigger per branch, the three Not-fors kept. |
 | One name for the person | "founder"/"the human" → "marketer" in SKILL, atoms and references where it means the approver; kept as a role (founder outreach, founder hours, owner column, `human` hand-off role). Source label "human" → "marketer". |
 | `intake.md` opened with a dated hand-test story | Cut to the positive rule (read first, then 3–4 plain questions). |
+
+## 2026-10-20 — Codex review round 1
+
+| Finding | Fix |
+|---|---|
+| #7 No complete local branch: setup loaded GooseWorks groups, and after the yes the playbook always checked server creatives, called `campaign_upsert`, wrote concepts and returned a server link | Before you start 1: local mode skips every `gooseworks:` call through write-back (tool groups only with GooseWorks). `references/brief-template.md` § Write-back has a local branch: the approved plan saved as the next version with its Approved Status line (the file run-paid-campaigns and analyze-performance read), the run record re-saved, one "Approved and saved in this folder" line; no creative check, campaign record, concepts or server link. New Test 4c. |
+| #9 The chat line always said "also saved to your brand" | Step 9's line depends on the mode ("saved in this folder" locally; hosted chat without files says it isn't saved). Done-when has the local version. |
+| #10 An accepted replan schedule always led to `automation_upsert` | Created by marketing-guide §3 Schedules (local mode: the host's scheduler, or "not available"); `references/run-memory.md` § Setting up the schedule marked GooseWorks-only. |
+
+Second pass (independent review of this fix, effort high):
+
+| Finding | Fix |
+|---|---|
+| Local mode said what it skips but not what it reads instead | Before you start 1 points to `references/intake.md` § 1's local look-first pass, which now lists `claims.md` (through the claims gate) and the local `plans/<slug>/` for step 1's existing-plan check. |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B5 Video ads and photos were "human-executed / we don't make these yet" | Hand-offs, the closing offer, the brief-and-assets step and the calendar's lead times route them to the goose-video and goose-product-photos skills (offered as the next job); without GooseWorks the same rows go to whoever makes them; real creators filming stay with creators. Unreleased producer removed from `skill.meta.json`. |
+| B7 The brief claimed write-report's shape but had no The story and Sources was not last | Working sections are `###` under `## The story` and `## Appendix — working detail`; Sources is last; the Status line sits under the title. Heading names are unchanged (the step skills' output lines now say `###`). |
+| B10 `skill.meta.json` said `foundation/guide §5` | Now the marketing-guide skill reference. |

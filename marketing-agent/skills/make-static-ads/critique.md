@@ -355,3 +355,17 @@ Findings fed back into the playbook: the claim status fields (`claims-and-policy
 - No sign-off on file → the scoped sign-off happens inside this run (3–5 lines), not a hand-off elsewhere.
 - Tags are written lower-case (`angle:a-07`, `picked`) and the picks are also in the batch file.
 - **Tag round-trip (F5a), not yet verified:** on a staging creative, write `tags: ["angle:A-07","picked"]` with `ads_creative_update`, then read it back with `ads_creative_read` `tags: ["angle:a-07"]`. Expected: saved lower-case and found. The write was blocked by this session's permission guard on 2026-10-16, so it still needs a human-run check (server-needs #21).
+
+## 2026-10-20 — Codex review round 1
+
+Minimal edits on the dev version (the owner has a newer rewrite on his branch; these are listed in the PR so he can carry them over).
+
+| Finding | Fix |
+|---|---|
+| #4 Hand-offs still named unreleased playbooks (claims approval through learn-my-brand; kept photos from make-product-photos; a `Product imagery needed: for make-product-photos` request line no released playbook answers) | Claims approval → the claims gate's scoped sign-off (SKILL.md approval gate 2 and Out of scope, `claims-and-policy.md`, `handoff-format.md` examples, `reading-the-brain.md` §1). Product photos → the brand's own or ones made with the goose-product-photos skill, offered as the next job (SKILL.md Step 2 imagery line, `formats-and-placements.md`). The request line is gone: the batch file holds the brief and a `Waiting for: real product photos` line, and the next run starts once photos exist (`reading-the-brain.md` §7). `skill.meta.json` reads/writes updated; the stale writes row removed. Video was already goose-video. |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| A4 (partly) The hand test still sent claims to learn-my-brand | `tests/test-by-hand.md`: claims are approved in the claims gate's scoped sign-off. |

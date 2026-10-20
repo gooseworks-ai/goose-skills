@@ -7,7 +7,7 @@ description: >-
   draft against the card. The brand's rules always beat the card. Use alone when you already have the
   account's posts or the person on hand; otherwise run the playbook for the job (e.g.
   run-organic-social, write-outreach, email-lifecycle).
-version: 0.1.0
+version: 0.1.1
 ---
 
 # voice-card
@@ -18,11 +18,11 @@ The brand voice (kit `voice` plus the brand's rules: every `dont` and `must` in 
 
 - One file per account or person: `brand/voices/<handle>.md`, brand coworker scope (`coworker_agent_id` from the `gooseworks:brand_read` list; no coworker → default workspace, path prefixed `brands/<brand-slug>/`).
 - **Handle:** lower-case, hyphens, no `@`: `brand` (the brand's own voice across its accounts), `ig-<account>`, `tiktok-<account>`, `linkedin-<first-last>`, `founder-<first-last>`. One card per account where mechanics differ; accounts that write the same way share `brand`.
-- Read before you write (`gooseworks:file_read`; `file_write` replaces the file). Save with `atoms/save-to-brain` (`versioned: supersede`, title `Voice card <handle> — <Brand> — <YYYY-MM-DD>`, tags `[voice-card, voice-<handle>]`) so it is findable from any host. The tags name this atom, not the playbook that ran it: for save-to-brain's supersede rule, the creator is the first tag (`voice-card`), so any writer's newer card supersedes an older one.
+- Read before you write (`gooseworks:file_read`; `file_write` replaces the file). Save with the `save-to-brain` skill (`../save-to-brain/SKILL.md`) (`versioned: supersede`, title `Voice card <handle> — <Brand> — <YYYY-MM-DD>`, tags `[voice-card, voice-<handle>]`) so it is findable from any host. The tags name this atom, not the playbook that ran it: for save-to-brain's supersede rule, the creator is the first tag (`voice-card`), so any writer's newer card supersedes an older one.
 
 ## Precedence (non-negotiable)
 
-1. The brand's rules win: every `dont` and `must` (never-say, banned words, terminology, not public), the claims contract (`atoms/claims-gate`), and the rules in the confirmed brand voice (what it never does, how it treats customers).
+1. The brand's rules win: every `dont` and `must` (never-say, banned words, terminology, not public), the claims contract (the `claims-gate` skill (`../claims-gate/SKILL.md`)), and the rules in the confirmed brand voice (what it never does, how it treats customers).
 2. A person's or account's card wins on **style**: mechanics, openings, lexicon, humour. The brand voice's style gives way to a founder's own card when writing as that founder.
 3. Real posts beat any description of the voice. Example lines in the kit voice are evidence of style only; a claim inside them is not proof.
 4. If the brand marker says `voice: provisional`, every card built on it is provisional too.
@@ -66,7 +66,7 @@ Append new posts, re-measure when at least 8 new ones exist, keep the stance led
 2. **Swap test:** put a competitor's name in. If the draft still reads true, add the detail only this brand or person could say.
 3. **Read aloud:** would they say it?
 4. **Line-up:** mix the draft with three real posts; if someone holding only the card can pick out the draft, rewrite it.
-5. Then `atoms/claims-gate` on the draft.
+5. Then the `claims-gate` skill (`../claims-gate/SKILL.md`) on the draft.
 
 ## Named people
 

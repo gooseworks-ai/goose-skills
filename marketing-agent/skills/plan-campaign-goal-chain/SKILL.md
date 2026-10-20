@@ -6,7 +6,7 @@ description: >-
   labelled base rates, and flags when the goal needs renegotiating. Use alone when you already have
   the goal (metric, number, date), budget, order value, margin and baseline; otherwise run
   plan-campaign.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Goal chain and economics (atom)
@@ -24,6 +24,6 @@ version: 0.1.0
 5. Check the forecast against stock (days of cover, inbound) or capacity (open slots).
 6. If the expected scenario misses: write the renegotiation case (gap in numbers; what more budget, more time, a smaller goal or a different goal metric each buys; one recommendation). Return it to the playbook to show the marketer before planning further.
 
-**Output:** the plan's `## Goal chain`, `## Economics`, `## If the goal needs changing` sections, and the assumptions list.
+**Output:** the plan's `### Goal chain`, `### Economics`, `### If the goal needs changing` sections, and the assumptions list.
 
 **Never:** invent the goal, a margin or a conversion rate and present it as the brand's; pick the renegotiation lever for the marketer.

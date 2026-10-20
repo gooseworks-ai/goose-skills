@@ -6,14 +6,14 @@ description: >-
   and no account or payment stop. Marks each pass, fail or unknown and turns fails into fixes. Use
   alone when you already have the live or planned ads and their landing pages; otherwise run
   run-paid-campaigns.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Health gate (atom)
 
 **Load:** `../run-paid-campaigns/references/launch-and-graduate.md` (health gate section).
 
-**Inputs:** the chosen platforms (from the brief); the latest analyze-performance read (`reports/performance/`) — its data-quality flags and the platform-claims ÷ store-orders ratio; `meta_read` push status for each id in `state.md`'s `meta_push_ids` (per-creative failures, destinations); destination URLs of other live ads (the marketer's export); stock on promoted SKUs (marketer or product record); live offers and their end dates (brief's Offer section, the marketer); the marketer's ads connector, when there is one (disapprovals, delivery status, whether the conversion event is recording).
+**Inputs:** the chosen platforms (from the brief); the latest analyze-performance read (`reports/performance/`) — its data-quality flags and the platform-claims ÷ store-orders ratio; with GooseWorks, `meta_read` push status for each id in `state.md`'s `meta_push_ids` (per-creative failures, destinations; local mode: the connector's delivery and disapproval reads, `../run-paid-campaigns/references/local-mode.md`); destination URLs of other live ads (the marketer's export); stock on promoted SKUs (marketer or product record); live offers and their end dates (brief's Offer section, the marketer); the marketer's ads connector, when there is one (disapprovals, delivery status, whether the conversion event is recording).
 
 **Do — in order, one line each, ✓ / ✗ / unknown:**
 1. Tracking: conversions tracking store orders at a steady ratio (from analyze-performance), the connector showing the conversion event recording, or the marketer confirms it fires. Lead-gen: lead source captured in the CRM. Apps: SDK/MMP postbacks, SKAN/AEM set up. Unknown on a launch → ask; do not launch blind.

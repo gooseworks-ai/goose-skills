@@ -64,7 +64,7 @@ Reads: the state note, the kit. Writes: the brief and the answers. Use the host'
 5. **How many ads and where** — suggested: 3 ads, Meta feed 4:5. Skip it when the ask already says. This is the playbook's only default count.
 
 Also ask, only when it applies: a claim the concepts need that is not a usable fact ("can the ads say this?" — a yes is saved in the marketer's words through the `save-learning` skill (`../save-learning/SKILL.md`)); a sale price or offer on the product record ("show the $60 price?"); two sources that disagree on price or stock.
-A physical product with no usable photos → stop: real product photos come first, so write a `Product imagery needed:` line (`reading-the-brain.md` §7). Software → the kit's screenshots or real ones the marketer gives.
+A physical product with no usable photos → stop: real product photos come first. Ask the marketer for them, or offer the **goose-product-photos** skill to make product shots first. Software → the kit's screenshots or real ones the marketer gives.
 Done when every question has an answer.
 
 ### 3. Build the concept grid
@@ -126,4 +126,4 @@ Load `references/handoff-format.md`; re-read the product record. Writes: lower-c
 - Which ad won — **analyze-performance**. Video ads — **goose-video**. Product photography — **goose-product-photos** (GooseWorks skills, not playbooks).
 - A full competitor teardown and the angle bank — **research-competitors** (this playbook reads live ads only to find templates and reasons to buy); customer language — **research-market**.
 - Landing pages — analyze-performance's page audit (this playbook flags a destination that does not match).
-- Approving claims — **learn-my-brand**. Retail-media creative for marketplaces; decks, print, packaging, multi-page layouts.
+- Approving claims in bulk — not covered yet; the lines this batch needs go through the **claims-gate** skill. Retail-media creative for marketplaces; decks, print, packaging, multi-page layouts.

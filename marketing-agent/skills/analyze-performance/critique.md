@@ -197,3 +197,33 @@ Status: all majors in this playbook fixed; not re-reviewed by a second critic.
 | Done when opened by restating the description | Opener deleted; the check kept. |
 | Description 963 chars, deliverables list | 623 chars; one trigger per branch; Not-fors kept. |
 | One name for the person | "the human"/"founder" → "marketer" in SKILL, atoms and references. |
+
+## 2026-10-20 — Codex review round 1
+
+Codex (round 1) reviewed the released set after the hand-test fixes. Findings for this playbook, and the shared fixes it relies on:
+
+| Finding | Fix |
+|---|---|
+| #6 Local mode went straight into GooseWorks-only reads (brain, campaign record, workspace, creative tags, video reads), so a connector-only marketer could not get past setup | New `references/local-mode.md`: the local folder (brand notes, claims, the approved local plan, the contract and reports, the paid run's `state.md`/`decisions.md` and run records), then connectors and exports; every `gooseworks:` call skipped. Before you start 2, the GooseWorks reads line ("connected only") and Output point to it. Test 2b now checks "saved in this folder" and no `gooseworks:` call. |
+| #10 An accepted schedule always led to `automation_upsert` | Approval gates: created by marketing-guide §3 Schedules (now mode-aware: GooseWorks automation, else the host's scheduler, else "not available"); `references/run-memory.md` § Setting up the schedule marked GooseWorks-only. |
+| #12 The Monday report bypassed write-report: missing sections and sources, high/medium/low, internal ids (C1, T2, A-07) | Step 6 delivers through the write-report skill. `references/monday-report.md` rewritten in its shape (In short with what we looked at, numbered findings with confirmed / likely / first look and "So, do this first"; Decisions for you as the decisions block; the performance tables inside The story; What to do with at most six calls; What we're not doing; What we couldn't check; Sources with source skew). Headings other skills look up kept (Business truth, Two stories, What to make next, Learnings proposed, Replan triggers fired, `## Decisions`). `tests-and-learnings.md` § How sure now uses write-report's three words; the references and atoms that said medium / low follow it. The scheduled prompt asks for the same shape. Test 1 checks the shape and no ids. |
+| #15 Step 2 required `ads/videos/<project_id>.md`, which only the unreleased make-video-ads writes | Removed from the required reads; `video_read` gives videos' angle and hook names, a video without them is unannotated, and the older note is read only if it exists. |
+| #5, #9 (shared) run-memory, save-to-brain and write-report still called GooseWorks in local mode | Fixed in those skills (local branches that call no `gooseworks:` tool; "saved in this folder", never `file_url`). |
+
+Second pass (independent review of this fix, effort high):
+
+| Finding | Fix |
+|---|---|
+| "Who takes what" and `creative-and-channels.md` still said "we don't make video ads yet", against Out of scope's goose-video | Both now offer video items as the next job with the goose-video skill. |
+| The example In short was within 3 words of the 150-word cap | Trimmed to about 120. |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| A15 (partly) `skill.meta.json` still named make-video-ads as the writer of `ads/videos/<project_id>.md` | Reads: `video_read`, a video without names is unannotated; the unreleased producer is gone from reads and writes. |
+| B4 The pulse and its schedule were GooseWorks-only (`meta_read`, `push_status`, `automation_upsert`) | `monthly-and-pulse.md`: inputs by mode (local: the ads connector over 1–3 days, else today's export; nothing to check without either), the monthly read saved by the local branch, and scheduling by marketing-guide §3 (local: the host's scheduler, or not available). `creative-and-channels.md`'s data line points to `local-mode.md`. |
+| B5 Video routing still said "we don't make video ads yet" | Done in round 1's second pass; metadata now matches. |
+| B6 The Monday template had facts without dated, clickable sources | Source links beside each material fact (section source lines, a Source column, inline in calls and make-next), linked Sources list; the rule points to write-report §1, which now says an export links to the marketer's own file under a readable name. |
+| B8 "Learnings proposed (saved to your brand…)" was wrong in local mode | "kept only after you've seen them". |
+| B10 Meta descriptions said `foundation/guide §5` | Now the marketing-guide skill (`../marketing-guide/SKILL.md`) §5. |

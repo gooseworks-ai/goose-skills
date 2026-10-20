@@ -1,6 +1,6 @@
 # Disclosure — organic posts, email and creator content
 
-Shared reference in `atoms/ad-policy-check/` (owner make-static-ads). Load it for content that is not a paid ad: organic social posts, newsletters and other email, creator briefs and creator posts, replies. Paid ads use `SKILL.md` in this folder. Craft knowledge, not legal advice; rules differ by market, so when one decides whether something ships, tell the human to confirm it.
+Shared reference in the `ad-policy-check` skill, next to its SKILL.md (owner make-static-ads). Load it for content that is not a paid ad: organic social posts, newsletters and other email, creator briefs and creator posts, replies. Paid ads use `SKILL.md` in this folder. Craft knowledge, not legal advice; rules differ by market, so when one decides whether something ships, tell the human to confirm it.
 
 ## 1. Material connections (creators, affiliates, employees, gifted product)
 

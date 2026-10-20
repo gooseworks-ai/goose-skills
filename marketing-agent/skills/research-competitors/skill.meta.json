@@ -2,7 +2,7 @@
   "slug": "research-competitors",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "tags": [
     "competitive-intel",
     "research"
@@ -61,8 +61,8 @@
     "competitor report ('In short' with 'Do this first', timely openings, rivals one by one, how they compare, You vs them, formats worth borrowing, angles, what to do): local gooseworks-reports/<brand-slug>/<date>-competitor-research.md + workspace research/competitors/<date>-report.md + brand document (keep-history) — read by the founder and team, the next run",
     "rival records with snapshots: workspace research/competitors/<slug>.md (supersede) — read by the weekly watch, plan-campaign, make-content",
     "landscape: workspace research/competitors/landscape.md (supersede) — read by plan-campaign",
-    "angle bank keyed A-NN (makers tag angle:a-nn): workspace research/competitors/angle-bank.md (supersede) — read by make-static-ads, plan-campaign (and make-video-ads, unreleased)",
-    "swipe-file items: inspiration library via social_inspiration_save — read by make-static-ads, make-content (and make-video-ads, unreleased)",
+    "angle bank keyed A-NN (makers tag angle:a-nn): workspace research/competitors/angle-bank.md (supersede) — read by make-static-ads, plan-campaign",
+    "swipe-file items: inspiration library via social_inspiration_save — read by make-static-ads, make-content",
     "weekly watch notes: workspace research/competitors/watch/<date>.md (keep-history; line 2 'Week of …') — read by the founder, analyze-performance",
     "new rivals on the roster via competitor_save, on the founder's yes",
     "rules for top angles through the save-learning shared atom, on the founder's words",

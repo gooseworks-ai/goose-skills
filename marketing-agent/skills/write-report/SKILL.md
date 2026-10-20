@@ -7,7 +7,7 @@ description: >-
   over, then saves the report to the brand. Use alone when you already have the findings and their
   sources; otherwise run the playbook for the job (e.g. research-market, research-competitors,
   plan-campaign).
-version: 0.1.0
+version: 0.1.1
 ---
 
 # write-report
@@ -34,11 +34,11 @@ Every playbook that hands over research, a plan, a strategy or a report writes i
 
 **Length:** the body (everything after "In short") stays under **3,000 words**. Cut repetition and detail no decision needs. An appendix may hold specialist tables; the report must work without it.
 
-**Agree with the sibling reports, or say why not.** Before writing, read every same-brand report from the last 14 days whose job overlaps (market, competitors, audience, a campaign or social plan, outreach) — saved documents (`brain_search` where listed, else `knowledge_search`) and the local `gooseworks-reports/<brand-slug>/` folder. Compare lead buyer, first move, positioning and prices. A different lead buyer or first move is named in "In short" (anything else, in the story) and settled: merge the two first moves, or say why this one wins.
+**Agree with the sibling reports, or say why not.** Before writing, read every same-brand report from the last 14 days whose job overlaps (market, competitors, audience, a campaign or social plan, outreach) — saved documents (`brain_search` where listed, else `knowledge_search`; local mode: `gooseworks-local/<brand-slug>/` instead) and the local `gooseworks-reports/<brand-slug>/` folder. Compare lead buyer, first move, positioning and prices. A different lead buyer or first move is named in "In short" (anything else, in the story) and settled: merge the two first moves, or say why this one wins.
 
 **A worked example of the top:** [`example-top.md`](example-top.md), next to this file (a fictional brand — never reuse its names, numbers or findings). Read it before writing your first In short.
 
-**Language:** plain words, short sentences, active voice; one idea per paragraph; bullets, tables for comparisons, **bold** on what matters. Every fact carries a date and a link, inline: "Loxo starts at $149/user/month ([pricing](https://…), 17 Oct)". Say how sure with the three words above — confirmed, likely, first look (anything weaker, "provisional" or "a guess", is a first look, with why) — the same word in "In short" as in the body; never scores or made-up percentages.
+**Language:** plain words, short sentences, active voice; one idea per paragraph; bullets, tables for comparisons, **bold** on what matters. Every fact carries a date and a link, inline: "Loxo starts at $149/user/month ([pricing](https://…), 17 Oct)". A fact from a file the marketer gave (an export, a screenshot) links to that file in their folder under a readable name ("[your Shopify export, 6–12 Oct](<file>)"); the path sits only inside the link. In a hosted chat with an uploaded file, name the file and its date. Say how sure with the three words above — confirmed, likely, first look (anything weaker, "provisional" or "a guess", is a first look, with why) — the same word in "In short" as in the body; never scores or made-up percentages.
 
 **Never in a report:** the banned words in §3; field dumps, JSON or raw lists of everything collected; hedging filler, empty headings. **One exception:** two or three outside tools the marketer must run themselves (an email finder, an email platform), named as examples, never an endorsement — the guide's rule ([the `marketing-guide` skill](../marketing-guide/SKILL.md) §3, "Talking to the marketer").
 
@@ -49,7 +49,8 @@ Do all that apply. Never leave a report only on the GooseWorks server.
 1. **Host with files (Claude Code, Codex, Cursor):** write it as Markdown in the marketer's current folder at `gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-<topic>.md`, give a clickable link, `[<title>](gooseworks-reports/…)`, and offer to open it. If the host can render a page or artifact, use that too.
    **Never overwrite a report:** suffix the local file, the brand copy's path and its title by save-to-brain's never-overwrite rule (the `save-to-brain` skill (`../save-to-brain/SKILL.md`) step 1).
 2. **Hosted chat (Claude.ai, ChatGPT):** an artifact or document if the host can; otherwise the full report in the chat, with its headings, not a summary.
-3. **Always** save it to the brand through the `save-to-brain` skill (`../save-to-brain/SKILL.md`), then get a link with `gooseworks:file_url`: "Saved to your brand: [open](<link>)".
+3. **With GooseWorks connected, always** save it to the brand through the `save-to-brain` skill (`../save-to-brain/SKILL.md`), then get a link with `gooseworks:file_url`: "Saved to your brand: [open](<link>)".
+   **Local mode** (the marketing-guide §5): save-to-brain's local branch keeps the copy the next run reads; give the step 1 link and say "saved in this folder". Never call `gooseworks:file_url` and never say it is saved to the brand. Hosted chat without files: step 2, and say it isn't saved anywhere, so they should keep a copy.
 
 In the chat, after delivering, at most 3 lines: the first move with the findings it rests on (a few words), the link, the decisions you need. Never re-paste the report as a summary.
 
@@ -57,7 +58,7 @@ In the chat, after delivering, at most 3 lines: the first move with the findings
 
 **A failed check blocks delivery.** Fix, re-check, then hand over. Never ship over budget or with a known miss, or with a note that it is over.
 
-- **Banned words:** id-like codes (`A-07`, `R14`, `G1`, `T1`, `S1`, `D2`…), local or workspace paths (`research/market/…`, `*.md`, `*.json`, `gooseworks-reports/`; web links in Sources are fine), tool or skill names (`gooseworks:`, `brand_read`, `knowledge_search`, `research-market`, `playbook`, `atom`, `MCP`), model or vendor names (Claude, Sonnet, Opus, GPT, ScrapeCreators, fal, ElevenLabs — outside tools allowed by §1's one exception), process words ("I called", "per the checklist", "Step 4"), made-up precision ("confidence 0.7", "82% likely"). Scan the text and fix every hit.
+- **Banned words:** id-like codes (`A-07`, `R14`, `G1`, `T1`, `S1`, `D2`…), local or workspace paths shown as text (`research/market/…`, `*.md`, `*.json`, `gooseworks-reports/`; link targets are fine: web links, and the marketer's own files under a readable name), tool or skill names (`gooseworks:`, `brand_read`, `knowledge_search`, `research-market`, `playbook`, `atom`, `MCP`), model or vendor names (Claude, Sonnet, Opus, GPT, ScrapeCreators, fal, ElevenLabs — outside tools allowed by §1's one exception), process words ("I called", "per the checklist", "Step 4"), made-up precision ("confidence 0.7", "82% likely"). Scan the text and fix every hit.
 - **Budget:** "In short" ≤ 150 words; body ≤ 3,000; ≤ 6 moves. Count with a tool or by hand, never estimate. Over → cut repetition, then detail no decision needs, then move tables to the appendix; count again.
 - **Sections present:** In short (what we looked at, numbered findings, "So, do this first"), Decisions for you, What we're not doing, What we couldn't check, Sources with a source-skew line.
 - **In short is never stronger than the body.** Each sentence carries the certainty word of the body passage it comes from: a body "likely" or "first look" is never an In short fact; "It is growing" needs a body that says confirmed. A first-look read (one browser, country, sample or day) says so ("first look, from one browser in India").

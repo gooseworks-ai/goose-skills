@@ -2,7 +2,7 @@
   "slug": "where-to-start",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "tags": [
     "brand",
     "research"
@@ -52,7 +52,7 @@
   ],
   "writes": [
     "brand onboarding profile: role, ad-spend band, goals, platforms, only clear matches to what the founder said (read by where-to-start and the server's own setup; learn-my-brand, unreleased)",
-    "workspace brand/situation.md (brand coworker scope), imported as the brand document 'Situation — <Brand> — <date>' through atoms/save-to-brain: the founder's answers, what the site showed, and the agreed recommendation (read by the next where-to-start visit and any playbook that searches the brand's documents for goal, budget or date)",
+    "workspace brand/situation.md (brand coworker scope), imported as the brand document 'Situation — <Brand> — <date>' through the save-to-brain skill (../save-to-brain/SKILL.md): the founder's answers, what the site showed, and the agreed recommendation (read by the next where-to-start visit and any playbook that searches the brand's documents for goal, budget or date)",
     "the first-move recommendation (to the human only; spec 01: no playbook consumes it as an artifact)"
   ],
   "needs": {

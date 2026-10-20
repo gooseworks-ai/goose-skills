@@ -6,25 +6,26 @@ Load at step 5 and at step 7 (write-back). This playbook is the one owner of the
 
 Read the test's row in the campaign brief's **Test plan** (hypothesis, variable, cells, readable threshold, end date, primary metric, win/lose/unclear actions). Call it only when it has ended or reached its readable threshold.
 
-| Test | Success criteria (from the brief) | Result | Call | Confidence | Action (from the brief's rule) |
+| Test | Success criteria (from the brief) | Result | Call | How sure | Action (from the brief's rule) |
 |---|---|---|---|---|---|
-| T1 hidden-cloggers vs award-proof hooks | CPA ≥ 20% lower, ≥ 40 purchases/arm | −34%; 94 vs 45 purchases; store new orders rose with it | **Win** | Medium (one SKU, Goose ads only) | Release reserve to the winning angle → run-paid-campaigns |
+| Hidden pore-cloggers vs award-proof hooks | CPA ≥ 20% lower, ≥ 40 purchases/arm | −34%; 94 vs 45 purchases; store new orders rose with it | **Win** | likely (one SKU, Goose ads only) | Release reserve to the winning angle → run-paid-campaigns |
 
 - **Win / Loss / Unclear** — against the written criteria only. Under ~30 conversions per arm, Unclear unless the gap exceeds ~50%; reliably detecting a ~20% lift needs ~100+ per arm (rules of thumb).
-- Use the primary metric the brief named, on store-joined data where available; a platform-only read caps confidence at medium.
+- Use the primary metric the brief named, on store-joined data where available; a platform-only read caps it at likely.
 - A messy result: say whether it is enough to act on or the test should run again (the brief's Unclear rule) — the marketer decides.
 - Negative results are learnings too.
 - A Win or Loss is a **measured result**: saved as a readout (kind 23 `experiment_readout.<campaign-slug>-t<n>`) through save-learning's readout path in a run with the marketer present (`run-memory.md` § Experiment readouts). Unclear is not.
 
 ## Calls carried forward (calibration)
 
-Every report opens its calls section with last week's calls and what happened — run-memory's outcome check (`run-memory.md`): status from a source (`done` / `not done` / `unknown` / `dropped`), then the result. *"Scale UGC-2 (we said, high) → done 7 Oct; the paid run's read: worked, $31 per extra order vs $40 (Meta's count); store new orders rose 9% over the same days — right." "Raise Sales – Broad 40% → done 14 Oct; too early, readable 28 Oct." "Kill award statics (med) → not done; still losing."* A money move run-paid-campaigns made is judged with its verdict and baseline recipe, plus this playbook's store-joined check over the same window; never re-measured here on platform numbers alone. Without this nobody can tell whether the calls are any good.
+Every report opens its calls section with last week's calls and what happened — run-memory's outcome check (`run-memory.md`): status from a source (`done` / `not done` / `unknown` / `dropped`), then the result. *"Scale the UGC unboxing ad (we said, confirmed) → done 7 Oct; the paid run's read: worked, $31 per extra order vs $40 (Meta's count); store new orders rose 9% over the same days — right." "Raise Sales – Broad 40% → done 14 Oct; too early, readable 28 Oct." "Kill award statics (likely) → not done; still losing."* A money move run-paid-campaigns made is judged with its verdict and baseline recipe, plus this playbook's store-joined check over the same window; never re-measured here on platform numbers alone. Without this nobody can tell whether the calls are any good.
 
-## Confidence labels (on every claim and call)
+## How sure (on every claim and call)
 
-- **High** — mature data, n large enough, store-joined, cause confirmed, no conflicting signal.
-- **Medium** — one of: platform-only, modest n, single segment, cause partly confirmed.
-- **Low** — immature, small n, claims-only mode, or conflicting stories. Low-confidence kill/scale calls are labelled "watch", not acted on.
+The three words of the `write-report` skill (`../../write-report/SKILL.md`) §1, in the report and in the run record; never high / medium / low or a score (older records that say high / medium / low mean confirmed / likely / first look).
+- **Confirmed** — mature data, n large enough, store-joined, cause confirmed, no conflicting signal.
+- **Likely** — one of: platform-only, modest n, single segment, cause partly confirmed.
+- **First look** — immature, small n, claims-only mode, or conflicting stories. First-look kill/scale calls are labelled "watch", not acted on.
 Each call also carries **"would change if"** — the evidence that would reverse it.
 
 ## The learnings log
@@ -34,12 +35,12 @@ Written through the shared atom the `save-learning` skill (`../../save-learning/
 **One fact = one line**, starting `[learning YYYY-MM-DD]` (plus ` A-NN` when it is about an angle-bank angle):
 
 ```
-[learning 2026-10-13 A-07] Open cold Meta hooks for Unplug strips (US) with hidden pore-cloggers, not awards · medium · review 2027-01-13
+[learning 2026-10-13 A-07] Open cold Meta hooks for Unplug strips (US) with hidden pore-cloggers, not awards · likely · review 2027-01-13
 ```
 
 The full evidence (test, dates, ads, spend, CPAs, scope, what it supersedes) stays in the weekly report's Tests section, which is the long-form record — the fact points back to it by date.
 
-**Kind:** `insight` by default; `do` / `dont` only for a rule the marketer states as a rule in their reply; low confidence is never written.
+**Kind:** `insight` by default; `do` / `dont` only for a rule the marketer states as a rule in their reply; a first-look finding is never written.
 
 **What qualifies** (anything else stays in the report, not the log):
 - an **ended test**, called; or a pattern holding **2+ weeks that clears the same n floors as a test call** (≥ ~30 conversions per arm, and for DTC with UTM-joined store orders or the account-level new-customer number moving with it; or a gap > ~50%) — B2B's one or two SQLs a week and app CPI never qualify; or a confirmed channel surprise; or a confirmed failure with its reason.

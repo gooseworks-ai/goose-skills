@@ -4,7 +4,7 @@ description: >-
   Step of the plan-campaign playbook: splits the budget across chosen channels, checks per-channel
   minimums, and writes the test plan and paid structure. Run plan-campaign instead; not for direct
   use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Budget split, test plan, paid structure (atom)
@@ -21,4 +21,4 @@ version: 0.1.0
 5. One paid-structure line per paid leg (objective/event, campaigns/ad sets, audience approach, budget type and amount, creative count, destination with UTMs, applied by GooseWorks levers or written instructions).
 6. Reconcile: lines sum to the budget; leg spend ÷ expected CPA = leg target in the goal chain.
 
-**Output:** the brief's `## Budget split`, `## Paid structure`, `## Test plan` sections.
+**Output:** the brief's `### Budget split`, `### Paid structure`, `### Test plan` sections.

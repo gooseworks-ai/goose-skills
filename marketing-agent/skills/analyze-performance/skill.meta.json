@@ -2,7 +2,7 @@
   "slug": "analyze-performance",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "tags": [
     "ads",
     "monitoring"
@@ -48,7 +48,7 @@
   "reads": [
     "campaign brief (campaign_read): economics, targets, test plan, measurement plan, replan triggers, change-log slug — plan-campaign",
     "ads/campaigns/<slug>/state.md (harness frontmatter, health line, open recommendations) and decisions.md (### dated blocks) — run-paid-campaigns and the server",
-    "statics' lower-case tags (ads_creative_read) and batch files ads/batches/<YYYY-MM-DD>-<slug>.md — make-static-ads; videos' angle and hook names (video_read; ads/videos/<project_id>.md once make-video-ads, unreleased, writes it)",
+    "statics' lower-case tags (ads_creative_read) and batch files ads/batches/<YYYY-MM-DD>-<slug>.md — make-static-ads; videos' angle and hook names (video_read; a video without them is unannotated)",
     "Goose ads' Meta results (meta_read performance) — cross-check only",
     "own TikTok/Instagram analytics (social_account_list, social_analytics_get)",
     "lifecycle/program.md — email-lifecycle; social calendar — run-organic-social; creator roster and wave results creators/roster.csv — work-with-creators (roster seeding, creators row)",
@@ -60,10 +60,10 @@
     "run-paid-campaigns' run records runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md (money moves, baseline recipes, verdicts, per-ad scorecard)",
     "Brand Brain (brain_map, brain_open, brain_search where listed): chapters 18, 20, 22, 23 (experiment_readout.*, worn_out_angle.*, lessons)",
     "connectors the marketer already has (ads platforms, store, CRM, billing, product analytics) — read-only, never their write tools",
-    "local mode: gooseworks-local/<brand-slug>/ (brand-notes.md, its own contract, reports and run records, the paid run's local state.md and decisions.md) — foundation/guide §5"
+    "local mode: gooseworks-local/<brand-slug>/ (brand-notes.md, its own contract, reports and run records, the paid run's local state.md and decisions.md) — the marketing-guide skill (../marketing-guide/SKILL.md) §5"
   ],
   "writes": [
-    "reports/performance/<YYYY-MM-DD>.md weekly read (with Decisions) — read by run-paid-campaigns, plan-campaign, make-static-ads, make-content, run-organic-social, email-lifecycle (and make-video-ads, unreleased)",
+    "reports/performance/<YYYY-MM-DD>.md weekly read (with Decisions) — read by run-paid-campaigns, plan-campaign, make-static-ads, make-content, run-organic-social, email-lifecycle",
     "reports/performance/monthly/<YYYY-MM>.md + brand document — read by plan-campaign",
     "reports/performance/inputs/<YYYY-MM-DD>.md — read by run-paid-campaigns (reuses exports)",
     "reports/performance/definitions.md + brand document (contract, roster, story pick) — its own, every week",
@@ -75,7 +75,7 @@
     "local mode: the same reports, contract and run records under gooseworks-local/<brand-slug>/; learnings appended to brand-notes.md — read by its own next run, run-paid-campaigns and plan-campaign in local mode"
   ],
   "needs": {
-    "gooseworks": "optional — without it, local mode (foundation/guide §5): connectors the marketer has (read-only), else exports and screenshots",
+    "gooseworks": "optional — without it, local mode (the marketing-guide skill, ../marketing-guide/SKILL.md §5): connectors the marketer has (read-only), else exports and screenshots",
     "connectors_optional": [
       "ads-platform, store, CRM, billing or product-analytics connector (read-only)"
     ],

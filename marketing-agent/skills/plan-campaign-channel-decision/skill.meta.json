@@ -2,7 +2,7 @@
   "slug": "plan-campaign-channel-decision",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "playbook": "plan-campaign",
   "tags": [
     "ads",

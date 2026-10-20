@@ -28,9 +28,9 @@ Load at step 3. A delta is not an explanation. For every metric that moved mater
 
 Without frequency or CPM data, fatigue and auction causes are **candidate, unconfirmed** — say so and ask for the export if the call depends on it.
 
-Write each cause as: *Cause (confidence): evidence.* Example:
-> 1. Creative fatigue on the top 2 ads (medium): CTR 1.1% → 0.7% over 14 days on steady spend; they carry 55% of Goose spend.
-> 2. Seasonal CPM (medium): same week last year CPA +22%.
+Write each cause as: *Cause (how sure — confirmed / likely / first look): evidence.* Example:
+> 1. Creative fatigue on the top 2 ads (likely): CTR 1.1% → 0.7% over 14 days on steady spend; they carry 55% of Goose spend.
+> 2. Seasonal CPM (likely): same week last year CPA +22%.
 > Ruled out — tracking break: Meta purchases ÷ store new orders held at 0.71 (vs 0.69).
 > Unconfirmed — competitor promo: competitor digest shows 30%-off from 6 Oct; no way to size its effect.
 

@@ -2,7 +2,7 @@
   "slug": "run-paid-campaigns-health-gate",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "playbook": "run-paid-campaigns",
   "tags": [
     "ads"

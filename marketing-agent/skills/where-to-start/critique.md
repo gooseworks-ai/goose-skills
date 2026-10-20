@@ -215,3 +215,10 @@ Scored worse than no skill in one eval (weak evidence; causes fixed).
 | Done when not checkable; "under about 250 words" here vs "about 200–250" in output-shape | Done when is now a checklist (≤ 5 asks, constraint with evidence, worked-if with number and date, ≤ 250 words, saved only after agreement or "not saved"); step 5, output-shape and test check 8 all say "at most 250 words" |
 | "Founder" and "marketer" both named the user | "Marketer" in SKILL.md; "the founders' decision" kept as a role. References and the atom still say "founder" (later pass) |
 | Description 898 characters, opened with a quote, listed deliverables | 562 characters: what it is first, one trigger per branch, "Not for" kept. Routing cases R15 and R28 still match |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B5 The gaps table said video ads and product photos "aren't covered yet" while the router sends them to goose-video and goose-product-photos | The two rows and the company-type table route them there (with a no-GooseWorks line). |
+| B10 `skill.meta.json` named `atoms/save-to-brain` | Now the save-to-brain skill reference. |

@@ -300,3 +300,18 @@ Wired run-memory (`references/run-memory.md`): jobs `creator research` and `crea
 | The person called founder, marketer and human | "Marketer" throughout the runtime text. |
 | Done when held a test oracle ("would pay at least half the shortlist…") | Removed; it is already in tests/test-by-hand.md ("Then:" paragraph). The checkable bars stay. |
 | Description 984 characters | 557 characters; real-vs-AI question kept for routing case R20. |
+
+## 2026-10-20 — Codex review round 1
+
+| Finding | Fix |
+|---|---|
+| #13 The creator report's fixed template could not pass write-report: fact / inference labels, working paths (`briefs/<handle>.md`, `wave-1.md`), no Decisions for you, no capped What to do, no What we're not doing, no Sources or source skew; a test that depended on an unconfirmed budget lived only in chat | `references/roster-format.md` § `report.md` rewritten in write-report's shape: In short (what we looked at, numbered findings with confirmed / likely / first look, a first move that doesn't assume the budget); Decisions for you (names, test size with the budget caveat, claims lines, the deeper vet) saved in the report; the playbook's sections inside The story; at most six moves; What we're not doing; What we couldn't check; Sources with source skew. No paths in the report: briefs are linked in the chat message and `brief_path` stays in the roster. Vetting's audience-fit high / medium / low is said in the three words. What you get and the hand test follow. |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B2 The report offered "approve non-comedogenic" for a line with no proof | A proof-needing line is never offered for approval: the decision is "send the proof, or leave it out", and arriving proof goes back through the claims gate. |
+| B5 AI-made video was "not covered yet" (Before you start 3 and the description) while Out of scope and the router send it to goose-video | Both now route AI-made video to the goose-video skill; real people filming stay here. Description changed, so the routing eval was re-run: 81/87 (93%). |
+| B9 Audience fit was turned into how sure | Fit is stated on its own (`audience_fit`, in words); how sure comes from `audience_confidence` and the sources (`vetting.md` §8). The example shows both. |
+| B10 `skill.meta.json` named `atoms/ad-policy-check/disclosure.md` | Now `../ad-policy-check/disclosure.md`. |

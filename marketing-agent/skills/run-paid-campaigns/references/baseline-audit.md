@@ -1,6 +1,6 @@
 # First-run account baseline
 
-Load at step 0, the first time this playbook runs on an account (and again when the structure changed a lot). A senior operator never moves money in a new account before knowing its shape. Use the marketer's exports (campaign / ad set / ad, last 30 days if they have it, else 14) plus `meta_read` performance for the ads GooseWorks made. Do this first, because every later move depends on whether the account can learn at all.
+Load at step 0, the first time this playbook runs on an account (and again when the structure changed a lot). A senior operator never moves money in a new account before knowing its shape. Use the marketer's exports (campaign / ad set / ad, last 30 days if they have it, else 14) plus, with GooseWorks, `meta_read` performance for the ads GooseWorks made (local mode: the connector's account-wide reads instead, `local-mode.md`). Do this first, because every later move depends on whether the account can learn at all.
 
 ## What to map
 
@@ -17,4 +17,4 @@ Load at step 0, the first time this playbook runs on an account (and again when 
 
 ## Output
 
-A short "Account at a glance" block at the top of the first proposal: 5–8 lines, each a finding with its number and the move it seeds ("4 of 6 ad sets get under 10 purchases a week — I propose merging them into one (move 3)"). Record the baseline date and the key counts in `state.md`'s header so later runs can see what changed. No moves are applied from the audit by itself — they go into the same proposal and the same approvals.
+A short "Account at a glance" block as the first section of the first proposal's story (`### Account at a glance`, before Checks and pacing; the main finding also goes in In short): 5–8 lines, each a finding with its number and the move it seeds ("4 of 6 ad sets get under 10 purchases a week — I propose merging them into one (move 3)"). Record the baseline date and the key counts in `state.md`'s header so later runs can see what changed. No moves are applied from the audit by itself — they go into the same proposal and the same approvals.

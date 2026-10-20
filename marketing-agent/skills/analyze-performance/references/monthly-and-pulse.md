@@ -2,7 +2,7 @@
 
 ## Monthly unit-economics read (first Monday of the month — its own file, summarised in that week's report)
 
-Feeds plan-campaign's monthly replan. Saved as `reports/performance/monthly/<YYYY-MM>.md` and registered as a brand document (the `save-to-brain` skill (`../../save-to-brain/SKILL.md`), keep-history — a period artifact). Needs a customer-level store export (orders by customer for the last ~120 days) for the cohort lines — ask for it in that week's one input message.
+Feeds plan-campaign's monthly replan. Saved as `reports/performance/monthly/<YYYY-MM>.md` and registered as a brand document (the `save-to-brain` skill (`../../save-to-brain/SKILL.md`), keep-history — a period artifact; local mode: its local branch, under `gooseworks-local/<brand-slug>/`). Delivered through the `write-report` skill (`../../write-report/SKILL.md`). Needs a customer-level store export (orders by customer for the last ~120 days) for the cohort lines — ask for it in that week's one input message.
 
 - **MER and new-customer MER trend** over the last 3 months, monthly, vs break-even.
 - **nCAC trend** vs allowable; **payback**: months of contribution to recover nCAC (B2B: CAC payback in months).
@@ -15,9 +15,13 @@ Feeds plan-campaign's monthly replan. Saved as `reports/performance/monthly/<YYY
 
 Interim until a watch-and-alert layer exists. Runs only when the marketer asks ("anything on fire?") or on a schedule they explicitly approved. **Says nothing unless a threshold breaks** — a pulse that reports every wobble trains over-reaction.
 
-**It opens with what it can see** ("I can see Goose ads on Meta (31% of Meta spend); nothing else"), and never gives an all-clear on spend it can't see — instead: "Paste today's numbers from <platform> if you want those checked." Push ids come from run-paid-campaigns' `state.md`.
+**It opens with what it can see** ("I can see Goose ads on Meta (31% of Meta spend); nothing else"), and never gives an all-clear on spend it can't see — instead: "Paste today's numbers from <platform> if you want those checked."
 
-Checks (2 minutes, from `meta_read` performance over the last 1–3 days, `push_status` for the push ids in `state.md`, and anything the marketer pastes):
+**Inputs, by mode** (2 minutes, plus anything the marketer pastes):
+- **GooseWorks connected:** `meta_read` performance over the last 1–3 days, and `push_status` for the push ids in run-paid-campaigns' `state.md`.
+- **Local mode** (`local-mode.md`): the marketer's ads connector over the last 1–3 days (account-wide, read-only), else today's export or screenshot; the paid run's local `state.md` for what was launched. No `gooseworks:` call. With neither a connector nor numbers pasted, there is nothing to check: say so in one line.
+
+Checks (on what the inputs show; "Goose ad" below means any ad the inputs cover):
 - Pacing: month-to-date spend more than ~15% off plan.
 - Spend anomaly: a Goose ad set with zero delivery, or a day's spend > ~1.5× its normal.
 - Rejections / failed creatives on a recent push.
@@ -30,4 +34,6 @@ After a launch, the first pulse (T+2) is the 48-hour read: pacing, rejections, e
 
 Output when something breaks: one line per issue — what, evidence, the proposed action and who takes it (almost always run-paid-campaigns, as a pause/swap proposal behind its gate). Otherwise: "Nothing needs you today in what I can see" — plus the coverage line.
 
-Scheduling either the Monday report or the pulse with `gooseworks:automation_upsert` is a standing configuration change: offer once, state that scheduled runs use credits, and create it only on an explicit yes — with the method copied into the workspace and the self-contained prompt in `run-memory.md` § Setting up the schedule.
+Scheduling either the Monday report or the pulse is a standing configuration change: offer once, and create it only on an explicit yes, by marketing-guide §3 Schedules:
+- **GooseWorks connected:** `gooseworks:automation_upsert`; say scheduled runs use credits; the method copied into the workspace and the self-contained prompt in `run-memory.md` § Setting up the schedule.
+- **Local mode:** the host's own scheduler, created off; its prompt names this playbook, the brand, local mode, the pulse or weekly job, and the scheduled rules in `run-memory.md` § Scheduled runs (read and report only; ask nothing). It reads the connector, or the exports the marketer left in the folder. No host scheduler → say it isn't available here. Never `gooseworks:automation_upsert`.
