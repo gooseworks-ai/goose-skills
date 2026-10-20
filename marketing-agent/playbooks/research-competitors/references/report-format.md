@@ -123,6 +123,6 @@ Line 1: the same marker. Line 2: "Do this first, because…". Then the latest re
 
 Line 1: the marker. Line 2: "Do this first, because… <brief A-NN now>". One row per angle in the shape of `angles-and-gaps.md`, ids stable across runs (`A-07`); makers tag ads `angle:a-07`. The ids live here for the makers, never in the report. Title `Angle bank — <Brand> — <date>`, tags `research-competitors`, `angle-bank`.
 
-## Watch notes — `research/competitors/watch/<YYYY-MM-DD>.md` (keep-history)
+## What-changed reports — `research/competitors/watch/<YYYY-MM-DD>.md` (keep-history)
 
-Line 1: `COMPETITOR RESEARCH — rivals' claims and prices, not ours. Weekly record; kept as history.` Line 2: `Week of <date> · <n> material changes · rivals watched: <…> · not re-read this run: <…>` (analyze-performance reads it). Line 3: "Do this first, because…". Title `Competitor watch — <Brand> — <date>`, tags `research-competitors`, `competitor-watch`. Shape in `watch-and-react.md`.
+The shape, including the fixed line 2 that analyze-performance reads (`Week of <date> · <n> changes that matter · rivals watched: <…> · not re-checked this time: <…>`), is in `watch-and-react.md` — one place, so the two never drift. Title `Competitor watch — <Brand> — <date>`, tags `research-competitors`, `competitor-watch`.

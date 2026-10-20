@@ -24,14 +24,21 @@ It should:
 - Every trend draft carries an expiry, a tone-risk tier with the specific risk, and a recommendation.
 - No line carries a claim that isn't on your approved list. On Personal Day, "100% free of acne-triggering ingredients" and "dermatologist-developed, 6x award-winning" must not appear as facts, because they are not approved claims.
 
-## Test 3: second run (weekly refill)
-Ask a week later: **"Refill the calendar."**
+## Test 3: second run (refill two weeks later)
+Ask two weeks later: **"Refill the calendar."** Then a third time, two weeks after that.
 
 It should:
+- open with "since last time": what went out, how each format did against your usual numbers per platform, each test's verdict, and whether last time's recommendations (bio, pinned post, reply routine, Premium) were done, each from a source or marked unknown
 - ask which posts went out and which were edited
 - keep your edited text as voice data
 - extend the calendar rather than restart it
-- give each named format test a verdict (win / lose / unclear) with the numbers, and reweight the mix from it
+- reconcile every due post across both overlapping calendars, including the last record's too-new rows; score posts 3+ days old against the frozen baselines; posts no source can see show as not read
+- give each format test a verdict (worked / didn't work / too early / can't tell), comparing the two sides; a test without a verdict keeps its first id, and only its missing posts are placed again
+- reweight the mix from the per-format scorecard, and not repeat a move that didn't work without saying what changed
+- save a new run record (per-post and per-format scorecard, tests, recommendations with review-by dates) and say so in one line
+- on the third run, read its baseline from the second run's record, not the first
+
+With no earlier record, it says this is the first plan and invents no "since last time".
 
 ## Test 4: single post
 Ask: **"Write a post on this trend"** or **"a Reel script to shoot on my phone"**. It writes that one post with its checks. It runs no audit, no full research and plan and no paid read, then offers the calendar in one line.

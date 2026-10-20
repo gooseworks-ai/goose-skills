@@ -7,6 +7,7 @@ Load at step 5. The report is written and delivered through `../../../atoms/writ
 
 ## In short
 - **Do this first:** <the one move> — because <why, in one sentence>.
+- <Repeat runs, only when it passed the noise rule in `run-memory.md`: the one change since last time that matters most: "ChatGPT now names you on 'best AI ad tool for DTC brands' 2 times out of 3, up from 0 on 18 Sep; your new homepage title went live in between." Otherwise the most useful fact about last month's fixes: "Two of last month's five fixes are live; the comparison page is written but not published yet.">
 - <Where you are named and where you aren't, as plain counts: "ChatGPT names you when people ask about you by name, but on none of the 8 questions buyers ask before they know you.">
 - <Who wins instead, and the one reason: "It names Canva, Creatify and AdCreative.ai, mostly from 'best AI ad tool' lists those vendors write themselves.">
 - <The biggest thing broken on your side, if any: "Your homepage calls you 'Goose', not 'Gooseworks', so engines don't connect the two.">
@@ -14,6 +15,9 @@ Load at step 5. The report is written and delivered through `../../../atoms/writ
 
 ## Decisions for you
 A short box, each with your recommendation and a date if it matters: which buyer to win (when the site shows more than one), the paid top-up, any structural change awaiting a yes.
+
+## Since last time (repeat runs only)
+3–5 lines from run memory, before anything else in the story: today's counts against the last check's, only over the questions asked both times the same way, saying how many ("on the 7 buying questions asked both times: named on 1 today, none on 18 Sep — a first look, not yet a trend"); which of last check's five fixes went live, which didn't, and which we couldn't confirm; what moved after the ones that did, and what the answers now cite; who moved in. Movement follows the noise rule in `run-memory.md`: one changed answer is "changed once", never a trend. A question reworded since last time has no comparison yet — say so. A scheduled run that couldn't re-ask ChatGPT says so here, and doesn't carry last month's answers as today's.
 
 ## Where you show up today
 One sentence of point, then one line on how it was checked (the date, where the browser was, signed out), then a short table whose every row carries its own "checked" note (date · signed out · tries, e.g. "19 Oct · signed out · 3 tries", or "not checked today — last checked 18 Oct") — the buyer's question in their words, ChatGPT (named / not named, "asked 3 times, named once"), Google (on page one or not), who's named instead. A question asked once is "a first look", never "won" or "stable"; an answer that never finished is "didn't finish", never "not named". Brand-name questions are a separate small table: every statement the engines make about you, checked against your live site, each marked right, wrong or unsupported.
@@ -47,5 +51,7 @@ Per fix: the finished copy, field values or code, and where exactly it goes in t
 ```
 
 Before delivering, run write-report's mechanical check with this playbook's additions to the banned list: "must-win", "key question" (say "your most important questions"), "probe", "proxy", "surface", "row", "runs·route", "0/1", "not scored", question ids (Q1, Q12), guessed editor field names. Budgets: In short ≤ 150 words, body ≤ 3,000 words (the developer section is an appendix), ≤ 6 moves.
+
+Never in this report either, from the run notes: "baseline", "route", "snapshot", "recipe", "noise rule", "review by", "cell", "derived", "claimed", recommendation ids. Say "compared with 18 Sep, asked the same way", "we'll know by <date>".
 
 Never in this report: "web search proxy" or any "proxy" wording (say "from a web search, not Google's exact page"), question ids (Q1, Q12), "must-win" or "key question" (say "your most important questions"), "runs·route", "0/1", "not scored", tool names, workspace paths, the words "probe", "proxy", "surface" or "row". Say "asked 3 times, named once", not "1/3". Name an exact place in the site's editor only if you know how the site is built; otherwise say "in your site editor" — never guess field names. Technical terms (robots.txt, schema, sitemap) appear only in the last section, each explained once in plain words where it first appears in the story ("the file that tells search bots what they may read").

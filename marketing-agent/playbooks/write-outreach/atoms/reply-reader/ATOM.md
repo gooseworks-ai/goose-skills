@@ -11,10 +11,10 @@ description: >-
 
 **Does:**
 1. For each reply: the category (`interested · send-info · question · timing · using-rival · price · wrong-person · not-interested · how-did-you-get-this · no-show · stop · angry · out-of-office · bounce`), which touch it answered, and the person's exact words that matter (an objection, a pain phrase, a named rival, a date).
-2. Match to the ledger row by email, then profile URL, then name + root domain (outcomes-ledger's keys). Unmatched replies are shown back, never guessed onto a row.
-3. The status it gives (replies-and-objections.md table): `replied`, `meeting`, `not-a-fit`, `unsubscribed`, `do-not-contact`, `bounced` — and a re-contact date for `timing`. `stop`, `angry` and `bounce` are permanent suppressions.
+2. Match to the ledger row by email, then profile URL, then name + root domain (outcomes-ledger's keys). Unmatched replies are shown back, never guessed onto a row — except `stop`, `angry` or `bounce` from an unknown address, which gets a new suppressed row (key, reason, date). The matched rows' `sequence_id` tells which pack the replies belong to.
+3. The status it gives (replies-and-objections.md table): `replied`, `meeting`, `not-a-fit`, `unsubscribed`, `do-not-contact`, `bounced` — and `recontact_after` for `timing`. `stop`, `angry` and `bounce` are permanent suppressions.
 4. One reply → hand back for the draft answer. A batch → counts by category, by touch and by segment for reading-results.md.
-5. Pain phrases worth keeping → a request line in this pack's `results.md` (`Quote needed: for research-audience · <phrase, segment, date> · return to: outreach/<D>-<slug>/results.md`), with no name or email. Unnamed referrals → `Find needed:` lines there too.
+5. Pain phrases worth keeping → a request line in this pack's `results-working.md` (`Quote needed: for research-audience · <phrase, segment, date> · return to: outreach/<D>-<slug>/results-working.md`), with no name or email. Unnamed referrals → `Find needed:` lines there too.
 
 **Writes:** the ledger through `../../../../atoms/outcomes-ledger/ATOM.md` (`entity: person`, statuses only from the replies the marketer gave — never inferred), and the category counts.
 

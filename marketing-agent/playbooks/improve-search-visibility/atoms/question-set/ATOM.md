@@ -1,6 +1,6 @@
 ---
 name: question-set
-description: Internal step of improve-search-visibility. Drafts the buyer-question set (category, problem, comparison, price, brand-accuracy, local) in AI and Google forms, scores value and winnability, and gets the human's yes. Not user-invoked.
+description: Internal step of improve-search-visibility. Drafts the buyer-question set (category, problem, comparison, price, brand-accuracy, local) in AI and Google forms, scores value and winnability, and shows it to the human for edits after the first answer. Not user-invoked.
 ---
 
 # question-set
@@ -9,7 +9,7 @@ description: Internal step of improve-search-visibility. Drafts the buyer-questi
 
 **Does:**
 0. **Cover every audience the site sells to.** If the site sells to more than one buyer or carries more than one positioning, include questions for each, so the decisions message can ask which buyer to win.
-1. Re-run: reuse the saved set, then **top it up to the mix** — at least 3 brand-accuracy questions and every audience the site sells to — before anything runs; propose at most 3 other additions or swaps with reasons; keep ids stable.
+1. Re-run: reuse the saved set, then **top it up to the mix** — at least 3 brand-accuracy questions and every audience the site sells to — before anything runs; propose at most 3 other additions or swaps with reasons; keep ids stable — the same id always means the same words: a reworded question gets a new id and the old one is marked `retired (reworded → Q<n>, v<N>)`, so the next run never compares different wordings.
 2. First run: draft 18–20 candidates across the stage mix in both forms, never with the brand name in non-brand questions; 3–6 brand-accuracy questions always; local variants per city for physical businesses.
 3. Score value (buying intent 1–5, `../../references/question-list.md`) × winnability (1–3) provisionally with a one-line reason each; drop to the best 12–15. A brand name that is a common word always carries the category in brand questions. Pre-launch: category questions plus one name-collision question only.
 4. **Cluster and weight.** Group the questions into clusters (one cluster = one page that should answer them); with a Search Console export, sum each cluster's impressions as its demand weight and add any high-impression query the list missed. These clusters are the page map's rows.

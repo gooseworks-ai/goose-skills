@@ -1,6 +1,6 @@
 # The weekly moves proposal and the change log
 
-Load at steps 7–8. Numbers below are illustrative. Two audiences: the **proposal** is for the marketer (plain words, no ids, no tool or playbook names); the **change log** is for the server and the sibling playbooks (exact grammar below — the server parses it).
+Load at steps 2, 7 and 8. Numbers below are illustrative. Two audiences: the **proposal** is for the marketer (plain words, no ids, no tool or playbook names); the **change log** is for the server and the sibling playbooks (exact grammar below — the server parses it).
 
 ## The proposal (what the marketer reads)
 
@@ -13,9 +13,10 @@ Pacing: $4,180 of $9,000 this month (46% at day 13 of 31 — slightly ahead). If
 What I can see: the ads GooseWorks made (31% of Meta spend) in detail; your export for the rest of Meta and Google. Not visible: frequency (I use the click-rate trend instead).
 Real sales this week: new-customer revenue per ad dollar 1.9, below the 2.5 that breaks even — so no scaling this week.
 
-## Last week
-- Moving the "Angle B" winners into your main sales ad set — worked: those ads cost $34 per order vs $36 for the ad set.
-- Pausing "Lifestyle static" — done 7 Oct; its spend moved to the other ads, cost per order steady.
+## Since last time
+- Raising "Sales – Broad" from $100 to $140 a day (you made that change on 30 Sep) — **worked**: over 7 settled days it brought about 2.1 more orders a day, at about $36 per extra order against your $40 limit (Meta's own counts; the rest of the account was flat).
+- Swapping the "Problem hook" static for its new version in "Retargeting – 30d" (applied 7 Oct) — **too early**: readable 21 Oct, so I'm leaving that ad set alone until then.
+- Pausing "Lifestyle static" — done 7 Oct — **can't tell**: the same ad set got new ads the same day, so the two changes can't be separated.
 - Google: excluding 6 wasted search terms — not confirmed yet. Did you make that change?
 
 ## This week
@@ -42,7 +43,13 @@ Move 3 — both readings
 Anything you don't approve stays as it is.
 ```
 
-Rules: every move has its evidence and a check; holds have dates and trip-wires; near-threshold calls show both readings; collisions are shown and resolved; the header shows pacing against the ceiling with everything approved; the first section scores last week; a pause never claims savings the budget doesn't produce; **no ids, no tool or playbook names** — moves are numbered for this proposal only.
+Rules: every move has its evidence and a check; holds have dates and trip-wires; near-threshold calls show both readings; collisions are shown and resolved; the header shows pacing against the ceiling with everything approved; the first section is "Since last time" from the run-memory outcome check (`run-memory.md`); a pause never claims savings the budget doesn't produce; **no ids, no tool or playbook names** — moves are numbered for this proposal only. The per-ad scorecard sits under the moves as "Your top ads" (the run record's table, plain names); the proposal is saved every run to `ads/campaigns/<slug>/proposals/<YYYY-MM-DD>.md`.
+
+**Verdicts on earlier moves** (the same words in the proposal, the run record and `decisions.md`'s Outcome line):
+- **worked** / **didn't work** — extra results per day and what each extra result cost against the allowable, before → after, both windows named, labelled Meta's counts (claimed) or store-joined (truth), netted against the rest of the account.
+- **too early** — with the date it becomes readable.
+- **can't tell** — with the reason: another change on the same ad set in either window, a tracking break, stale data, no ad-set view (ads GooseWorks didn't make in the ad set and no export), or too few results to separate from noise. Say what would make the next one readable.
+Never judge a raise on the new average cost per result, from unsettled days, or from a window shorter than its baseline.
 
 ## state.md — the server's campaign-harness contract
 
@@ -111,8 +118,24 @@ campaign: serum-launch
 - Evidence: user request — export 6–12 Oct, CPA $80 = 2× allowable, 14 conv / $1,120
 - Decided: human said "done" at 09:12
 - Outcome: applied; expected −$105/week; check 2026-10-20
+
+### 2026-10-14 — Sales – Broad raise read
+- Recommended: R5 — card — Sales – Broad daily $100 → $140 (applied by the human 2026-09-30)
+- Evidence: user request — your export, pre 23–29 Sep vs post 4–10 Oct, 7d click / 1d view
+- Decided: check rule from Checks due
+- Outcome: worked — +2.1 orders/day at $36 per extra order vs $40 allowable (claimed); rest of account flat
 ```
 
 After appending a card's or a hold's outcome, delete its `- R<n> (` bullet from `## Open recommendations` yourself (the server only closes moves made with `recommendation_ref`). **Launches and graduations** carry no `recommendation_ref` (`prepare_meta_ad_push` doesn't take one): once push status shows approved or declined, delete their bullet yourself and, if `decisions.md` has no block for that push, append one with `Evidence: push:<id>`. `Evidence` uses the server's forms: `change:<id>`, `push:<id>`, `report:<YYYY-MM-DD>` or `user request`.
 
-Never keep a second ledger anywhere else; analyze-performance and plan-campaign read the `### YYYY-MM-DD — <title>` blocks to trace results to decisions.
+Each **final** check result (worked / didn't work / can't tell) is appended as its own block (above) with the verdict word in the Outcome line, so the verdict lives in the log as well as in the run record. A `too early` appends nothing: it only rewrites the date on that move's `## Checks due` line, which stays until the final read.
+
+Never keep a second ledger anywhere else; analyze-performance and plan-campaign read the `### YYYY-MM-DD — <title>` blocks to trace results to decisions. The run record (`run-memory.md`) links these two files and adds only the baseline recipe, the result numbers and the scorecard.
+
+## The yardstick in the brain (targets and caps)
+
+When `brain_*` tools are listed, the yardstick is also read from — and changes are proposed to — the Brand Brain, so every playbook uses the same numbers:
+- **Read** at Before you start step 4: `gooseworks:brain_map` chapter 20 "Our plan" (`target_cpa`, `target_roas`, `decision.*`, `experiment.*`) and chapter 15 "How we work together", plus the operating plan (`brain_open` record type `operating_plan`): the daily spend cap and currency, protected campaigns and ad sets, approvers, and the emergency stop. **An emergency stop that is set → stage pauses and fixes only; no launch, scale or swap.** Protected entities are off-limits like the brief's.
+- **Precedence:** the approved brief → a confirmed brain target → `state.md` → derived or asked. A found (unconfirmed) or waiting target is used labelled "waiting for your yes". When the brief and a confirmed brain target differ, say both and use the brief for this campaign.
+- **Propose, never set.** When the marketer states or changes the allowable cost, a target return or a cap in this conversation: the target goes through `../../../atoms/save-learning/ATOM.md`'s fact path (kind 20, `target_cpa` or `target_roas`, their words as the statement; `applies_to` the hero product when the campaign sells one product and the brand has other campaigns with other targets); a **daily** cap they state goes to the operating plan with `gooseworks:brain_save` `operating_plan` (`daily_spend_cap_minor_units`, `spend_cap_currency`; this playbook owns those sections), source `you`, `is_public: false`. Both wait for their yes in the GooseWorks app — say so in one line. A monthly ceiling stays in the brief and `state.md` (the operating plan has no monthly money field; `server-needs.md`). Never from a scheduled run.
+- Without `brain_*` tools: the brief, `state.md` and the offer to update the brief's Economics section, as before.

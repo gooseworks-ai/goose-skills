@@ -6,6 +6,8 @@ Load in Before you start. The first hand test failed here: the agent asked a sev
 
 | Look at | It answers | Don't ask about it if found |
 |---|---|---|
+| `brain_map` (when `brain_*` tools are listed) and its chapters 2, 3, 5, 15, 18, 19, 20, 23; else `brand_read` and `knowledge_search` | rules, products, what sells, who buys, approvals and budget, how results are counted, what's coming, targets and past tests, what is working | anything the brain already holds — items waiting for a yes are used, labelled as waiting |
+| the last plan record and the run records since it (`references/run-memory.md`) | how last time's legs and tests did, money moves and their results | "how did last month go?" — say what the records show |
 | `brand_read` products (with prices for the hero products) | what's for sale, plans and prices | which product exists, what it costs |
 | `brand_read` onboarding | who makes the ads, who runs them, platforms used, spend band, stated goals | "who makes the ads?", "which platforms?" |
 | `brand_read` learnings (full) + `knowledge_search` for the task | past results, offers that ran, rules | "what worked before?" |

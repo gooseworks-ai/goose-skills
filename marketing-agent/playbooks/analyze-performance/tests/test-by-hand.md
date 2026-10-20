@@ -34,6 +34,9 @@ Non-Goose Meta installs, no MMP. Pass if the report leads with "measurement abse
 ## Test 7 — pulse
 "Anything on fire today?" Pass if it sends no contract or input message, opens with what it can see, never gives an all-clear on unseen spend, and hands any action to run-paid-campaigns.
 
+## Test 8 — run memory: reading a budget move's outcome
+After Test 8 of run-paid-campaigns, run the Monday read. Pass if it reads its own last records (up to four weeks back) and the paid run's newest record; quotes the paid verdict on the raise (claimed) and adds the store check over the same post window (new-customer orders and marginal new-customer MER vs break-even), as two stories if they disagree; "what worked" only names what held 2+ runs or won a test; "what to make next" puts a tiring multi-week winner first and leaves out an angle with a "didn't work" readout; the per-channel and per-ad scorecards show the change since last run; an ended test called Win is saved as a readout only when the marketer is present; it saves its own run record.
+
 ## Staging run — 2026-10-16
 
 Ask simulated: "What worked this week across our channels, and what should I make next?" on Personal Day and Spellbound.

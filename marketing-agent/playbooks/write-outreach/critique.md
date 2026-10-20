@@ -46,3 +46,24 @@ Every round: the finding, the fix, or why it was rejected. Critics are subagents
 ## Round 2 — final contract review across both playbooks, shared files and evals (2026-10-19, subagent, effort xhigh)
 
 16 findings, all agreed and fixed: unchecked addresses can no longer reach `email` (people-and-contacts writes `email_candidate`; the send file treats any unverified `email` as unchecked); the pack's brand copy holds no person's name, company or first line (same for score-a-list's report); `UK-ltd` and `US` flags handled on both sides; results mode delivers the read first and asks in its closing decisions; pasted rows are ledgered so replies can be suppressed; `Hold / Find / Quote` request lines live in `results.md` and research-audience reads all open ones; `segments.csv` and `catch-all.csv` documented; `account-to-find` row type skipped here; an inbound-replies mode for leads who asked (`consent_basis: asked-us`); daily volume and sample-size rules aligned; QA no longer narrates itself in the pack; the router's one exception for "find leads and write my emails" plus a routing case; small drifts (reply categories, one checker, `hook_date`, worker caps, LinkedIn message length, README count, guide paths). Not fixable here: AGENTS §8's folder list lacks `outreach/` and its learnings-prefix line names only research-audience for `[outreach …]` — flagged to the orchestrator.
+
+## Round 3 — run memory and the Brand Brain (2026-10-19)
+
+**Built:** run-memory wired in (`references/run-memory.md`): job `outreach`, subject = the pack, so a results read two weeks later finds the pack's record; "since last time" recounts reply and meeting rates **per segment and per opener** from the ledger; recommendations ("send first", proof sign-offs, fixes) carry ids, owners, review-by dates and a ledger-based test; the record holds counts and links only. Every row gets an `opener_id` and a `<pack-slug>:<shape>` `sequence_id` in the send file and the ledger at delivery. Reads go to `brain_map` first with the `brand_read` fallback.
+
+**Critique — a second run on 2 Nov after pasted outcomes (subagent, effort high):**
+
+| # | Finding | Verdict | Fix |
+|---|---|---|---|
+| 1 | Start recounted before the paste reached the ledger → "nothing since" | Agree | Results mode writes the paste to the ledger first, then recounts |
+| 2 | Rates per segment impossible when only repliers can be matched | Agree | Unattributable totals recorded as `reported, not in ledger`; counts without rates; the sent list asked for in the closing decisions |
+| 3 | No first-touch date in the ledger (status_date is overwritten) | Agree | `first_touch_date` column, never overwritten — anchors rates and the cool-down |
+| 4 | A proof line counted as signed off from chat or a claim search hit | Agree | The recommendation can be `done (marketer's words)`, but the line is used only after claims-gate records it or the brain shows it confirmed |
+| 5 | run-memory allows "the row keys of the playbook's own ledger" — person keys are emails | Agree, not my atom | Our run-memory files forbid ledger keys; flagged to the orchestrator for the atom |
+| 6 | The imported results read had no personal-data rule | Agree | Brand copy holds counts, rates and fixes only; per-reply notes and request lines in `results-working.md` (not imported) |
+| 7 | Three sample-size rules | Agree | One rule: under 50 contacted → counts only; under ~10 positive → directional (reading-results, the ledger, both run-memory files) |
+| 8 | `sequence_id` reused across packs, and written twice | Agree | `<pack-slug>:<shape>`, written once at delivery |
+| 9 | `[outreach]` prefix had two writers | Agree | write-outreach uses `[outreach-copy …]`; save-learning and AGENTS need the new source — flagged |
+| 10 | A "take me off" from an unknown address was never suppressed | Agree | It gets a new suppressed row (key, reason, date) |
+| 11 | "Try in Q1" replies weren't excluded | Agree | `recontact_after` column, honoured by the exclusion step |
+| 12 | Rates stored three times; wrong lessons path; titles without the slug | Agree | Record links the read and lessons; lessons path fixed; pack and results titles carry the slug |

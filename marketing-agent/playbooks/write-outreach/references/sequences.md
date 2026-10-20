@@ -54,4 +54,4 @@ Load at step 2. A sequence is a small set of touches across email and LinkedIn, 
 
 ## Calibration
 
-Write the first touch for 3–5 rows across different signals and show them at the top of the pack as "the shape for every row", then write the rest. Corrections the marketer makes to those samples apply to every row (and, if they state a rule, become an `[outreach …]` learning).
+Write the first touch for 3–5 rows across different signals and show them at the top of the pack as "the shape for every row", then write the rest. Corrections the marketer makes to those samples apply to every row (and, if they state a rule, become an `[outreach-copy …]` learning).

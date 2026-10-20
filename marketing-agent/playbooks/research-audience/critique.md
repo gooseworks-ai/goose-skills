@@ -399,3 +399,7 @@ All agreed and fixed: 70% recent in every group's report quotes (older rows stay
 | A3 | Angles didn't reach write-outreach | Agree | `segments.csv` written next to `list.csv` |
 | A4 | "…then write the emails" still got an offer | Agree | When the ask includes the messages, list mode goes straight on to write-outreach |
 | A5 | write-outreach results never read here | Agree | Step 2 reads the newest `outreach/*/results.md` for referrals and lessons |
+
+## Run memory and the Brand Brain (2026-10-19)
+
+Wired run-memory (`references/run-memory.md`): jobs `audience research`, `prospect list` (subject = the list), `lead scoring`, and one per watch. "Since last time" recounts what earlier lists and alerts led to from the outcomes ledger (per list, segment, source and signal), checks last run's moves, and steers this run (weight what replied, demote what didn't, with the sample-size rule). Records hold counts and links only — **no ledger keys**, since person keys are emails or profile URLs. Reads go to `brain_map` first (with the waiting-for-yes items) and fall back to `brand_read`; the buyer-group proposal becomes one `brain_save` `audience` item per group when the brain is listed (waits for the marketer's yes), else the `brand_update` proposal. The outcomes-ledger atom gained a "With run-memory" section (ledger = per-row truth, record = summary + link, recount don't carry, restate on change) and the `first_touch_date` and `recontact_after` columns from the write-outreach critique (logged there).

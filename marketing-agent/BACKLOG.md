@@ -65,6 +65,16 @@ The old skills are being deleted; these keep what was worth having. Craft only â
 
 Retail and trade marketing, offline and experiential, martech operations, and cross-functional work stay skipped, for the reasons on the plan's map (tab 5): off the current buyers, relationship-driven, or human work. The coverage review flagged one of these as doubtful: pillar 20 (local and field) for multi-location businesses. That is card #14 above.
 
+## Brand Brain gaps found while adding run memory (19 Oct)
+
+- **No way to save a document or report through the brain.** Run records and reports still go through upload and import. They need a document type, filed under chapter 18 and filterable, and kept out of the makers' default searches.
+- **`brain_search` can't filter by tag or open a document by its workspace path.** It reports "Still indexing N of M" where "indexed through <time>" would help.
+- **`brain_save` can't retire a learning.**
+- **The id format for `experiment_readout.<item>` isn't documented.**
+- **Meta reads are too coarse to judge a budget move.** They need since/until dates, a daily series, ad-set level including ads GooseWorks didn't make, the attribution setting echoed back, and learning status.
+- **Nothing records when a change actually took effect**, as opposed to when it was approved.
+- **Ideally the server takes the before/after readout itself** whenever it applies a change that names a recommendation.
+
 ## Server work that unblocks several cards
 
 These are not playbooks, but several cards above wait on them. Each playbook's `server-needs.md` has the detail.

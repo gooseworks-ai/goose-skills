@@ -40,6 +40,7 @@ Every post is checked for claims, voice and disclosure. Posts that speak for a n
 3. **"Tear down this one account"?** Run atoms/platform-research §3b on that account only and deliver it as a report through write-report: why it works, what to adapt, and five tests for this brand. Then offer the full plan in one line.
    **One post, not a plan?** If the ask is a single post or script, use the brand read and the voice card only. Write that one post to the platform's research card if a fresh one exists (`social/research/`, under 30 days). Otherwise do one quick web check of how that platform treats that format now. Run atoms/post-check, then offer the full plan in one line.
 4. **Ask nothing yet,** with one exception: a single blocking question is allowed up front when one fact changes everything and no public source can answer it (e.g. the person's handle, when the plan is for their own account). Do the free pass (step 1) first. Never ask a fact the free pass could find.
+5. **Load the last run** (full plans and refills; not #3's one-offs). Run the Start steps of `../../atoms/run-memory/ATOM.md` with the inputs in references/run-record.md. It finds the last social calendar's run record, checks last time's recommendations and format tests against what went out and how it did, and writes the "since last time" lines that open the report. No record means a first run: say so, invent nothing, and freeze the baselines from this run's audit. **A record exists and a calendar is running → this is a refill: go to step 7.**
 
 ## Steps
 
@@ -49,8 +50,12 @@ Every post is checked for claims, voice and disclosure. Posts that speak for a n
   - how it works right now (web search, dated sources);
   - what's working in the niche (the free routes that work per platform, plus examples);
   - the brand's and the person's own accounts.
-- **Brand read.** `gooseworks:brand_read` lean, with `sections: ["summary","kit","learnings","accounts","sources","organic","products"]`, then `product_ids` for the products in play. **Never pass `detail: "full"` here.** On a settled brand it returns 100k+ characters that no host can read; the lean read already carries every rule and claim.
-- **Rules and saved files.** `gooseworks:knowledge_search` for operating rules, disclosure and off-limits topics. Saved files, all with the scope from #2:
+- **Brand read.**
+  - **When `brain_*` tools are listed:** `gooseworks:brain_map` first. Its core gives the rules, the never-list and what's waiting for the marketer's yes. Open the map's `required_reads`, then the chapters this job needs with `gooseworks:brain_map` `kind`: 11 how we sound, 14 rules, 15 how we work together (who approves a person's posts), 17 accounts and tools, 19 this week and what's coming, 20 our plan, 23 what is working. Chapter 12 (look and files) only for designed slots. Use `gooseworks:brain_search` for gaps: disclosure, off-limits topics, buyer language. Then `gooseworks:brand_read` lean with only `sections: ["accounts","sources","organic"]`, because the brain doesn't hold the own posts or the saved sources.
+  - **Otherwise:** `gooseworks:brand_read` lean, with `sections: ["summary","kit","learnings","accounts","sources","organic","products"]`, then `product_ids` for the products in play, then `gooseworks:knowledge_search` for operating rules, disclosure and off-limits topics.
+  - **Never pass `detail: "full"`.** On a settled brand it returns 100k+ characters that no host can read; the lean read already carries every rule and claim.
+  - Items waiting for a yes may shape drafts, labelled as waiting, never as confirmed facts in a post. Claims still come only through the claims gate.
+- **Saved files,** all with the scope from #2:
   - `social/` (the last calendar, `social/accounts.md`, `social/research/`). A saved research card under 30 days old is reused only if it still meets this step's bar (8+ examples with numbers, at least 3 from accounts under 10k followers, a platform or sized-study source). Otherwise top it up. Files from other people's tests or drafts are not history.
   - `brand/voices/`
   - `content/repurposed/`, `content/channels.md`, `content/pov/`
@@ -113,16 +118,26 @@ Also save:
 
 Name posts by day ("Monday's post"); the one allowed fill-in reads "fill in: <what>".
 
-In chat, at most 3 lines (the first move, the link) plus the decisions left, at most 5 short items.
+In chat, at most 3 lines (on a refill, the one "since last time" result that matters most; the first move; the link) plus the decisions left, at most 5 short items.
+
+**Save the run record** (full plans and refills): the End steps of `../../atoms/run-memory/ATOM.md`, shaped by references/run-record.md. It holds the per-post and per-format scorecard, each format test with its verdict or carried forward, and every recommendation with a review-by date. Add "Saved this run's notes to your brand, so the next refill starts from here." to the link line, not as a line of its own. In a scheduled run, say nothing about it unless the save failed.
 
 **Revisions** ("rewrite them in my voice"): edit the report file and the workspace copy in place. Then reply in at most 3 lines: what changed, the link, and anything still open. Show a post in chat only when the marketer asks to see that post. Never re-paste the set.
 
-**7. Next run (refill).** Reconcile what went out and read the format tests against the account's own numbers (references/slot-anatomy.md, Reconciliation). Read the last 7 days of the voices the buyer follows (atoms/platform-research §3c): convergence, spikes, early topics and controversies feed the flex slots. Refresh any platform research card older than 30 days. Then write the next week.
+**7. Refill (every two weeks, or on request).** A refill is not a first plan: skip step 1's full free pass and step 2's draft. In order:
+1. **Brain and last run:** the brain read from step 1 (the core, plus what changed since the last record's date), and #5's Start steps.
+2. **One message up front, with the marketer present, only if needed:** a tick-list of the due posts to mark posted, edited or skipped, and one yes to "up to N credits" for the X and LinkedIn own-post reads (spend-gate branch B) when the plan has them. This is the refill's one allowed question; everything else goes in "Decisions for you". A scheduled refill asks nothing.
+3. **Reconcile and score** every due post (references/slot-anatomy.md, Reconciliation; references/run-record.md): settled posts against their format's frozen baseline, every open test given a verdict or carried with its first id.
+4. **Reweight the mix:** more of what beat its baseline, less of what fell below. Never repeat a move that didn't work without a new reason, and name the reason.
+5. **Read the voices** the buyer follows, last 7 days (atoms/platform-research §3c). Convergence, spikes, early topics and controversies feed the flex slots.
+6. **Refresh only the platform cards older than 30 days.** The step-1 hard gate applies only to a card you refresh.
+7. **Write the next two weeks** (steps 4–5), carried tests first, then deliver the report (step 6) and save the new run record.
 
 **8. Offer the repeat (judge first).** At the end of a full plan, judge whether a repeat would help this brand. It usually does when the marketer means to keep posting.
 - If it would, offer it in one line, with the reason and a cadence: "Want me to refill this every two weeks? Each time I'd re-check what's working on X, read how your posts did, and write the next two weeks."
-- On a yes, create it with `gooseworks:automation_upsert` as an agent job: every two weeks, running this playbook's refill (step 7). It re-reads each platform's research card and the niche examples, reconciles and judges the tests, then writes the next two weeks, with a new report through write-report that opens with what changed since the last one.
+- On a yes, create it with `gooseworks:automation_upsert` as an agent job: every two weeks, running this playbook's refill (step 7). It loads the last run record, re-reads each platform's research card and the niche examples, reconciles and judges the tests, then writes the next two weeks. The new report through write-report opens with "since last time", and the run saves its own record (references/run-record.md, scheduled refills).
 - Create it **paused**, per `../../atoms/spend-gate/ATOM.md` branch C. Switch it on only on the marketer's yes, and name any per-run data ceiling in that yes; without one, scheduled runs use free sources only.
+- **When the plan has X or LinkedIn,** the offer names the per-run ceiling their own-post reads need (from the credits log) and says plainly that without it the scheduled refills can't score those platforms.
 - Never offer a repeat for a single post or a one-off script.
 
 ## Approval gates
@@ -145,9 +160,10 @@ In chat, at most 3 lines (the first move, the link) plus the decisions left, at 
   - `content/pov/` (person answers)
   - voice cards via the voice-card atom
   - `research/credits-log/<YYYY-MM>.md` (spend-gate)
+  - `runs/run-organic-social/social-calendar/<YYYY-MM-DD>.md`: the run record, through run-memory (also saved to the brand, keep-history)
 - **Learnings** only through `../../atoms/save-learning/ATOM.md`, with the marketer's own words, prefix `[social YYYY-MM-DD]`.
 - **Managed TikTok/IG accounts:** strategy via `social_strategy_upsert` after a yes; the posted status as a record via `social_post_update` `patch.status`.
-- **Read downstream by:** analyze-performance (what went out, and the tests).
+- **Read downstream by:** analyze-performance (what went out, and the tests); the next refill (the run record).
 
 ## Done when
 

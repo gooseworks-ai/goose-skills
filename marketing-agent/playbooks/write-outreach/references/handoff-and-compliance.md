@@ -6,7 +6,7 @@ Load at steps 6–7. The playbook writes; the marketer sends from their own mail
 
 One row per person, plain UTF-8 CSV with a header, no merged cells — imports into common outreach tools and CRMs:
 
-`row_type, account_id, first_name, last_name, email, email_to_check, email_status, company, domain, title, linkedin_url (from list.csv's profile_url), other_contact_route, region_flag, timezone, start_day, segment, sequence_id, first_line, subject_1, body_1, day_1, subject_2, body_2, day_2, subject_3, body_3, day_3, subject_4, body_4, day_4, connection_note, li_message_1, letter_body, notes`
+`row_type, account_id, first_name, last_name, email, email_to_check, email_status, company, domain, title, linkedin_url (from list.csv's profile_url), other_contact_route, region_flag, timezone, start_day, segment, sequence_id, opener_id, first_line, subject_1, body_1, day_1, subject_2, body_2, day_2, subject_3, body_3, day_3, subject_4, body_4, day_4, connection_note, li_message_1, letter_body, notes`
 
 - `row_type` `account` (a shop, a chain's buying office) has no first name — the greeting is to the shop or team. `start_day` staggers people at the same `account_id` a few days apart. `letter_body` is filled for `UK-soletrader` rows (the postal address is in `other_contact_route`).
 

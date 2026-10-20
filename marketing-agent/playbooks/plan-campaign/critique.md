@@ -190,3 +190,15 @@ Pushback (with reasons):
 - **E7 "cap if frequency exceeds about 5 per week":** kept as default, with up to ~8 allowed when several fresh creatives rotate (logged Round 10).
 - **M6/E12 "chat did not re-paste":** right for hosts with files; in a hosted chat with no files write-report requires the full plan in the chat. The playbook says so; a judge should not fail a hosted-chat run for that.
 - **S3 approval respected / contamination:** a run that finds an approved plan and refreshes it is behaving like a real marketer, not "duplicating" — the criterion should reward a refresh with re-checked numbers, not a copy.
+
+## Round 12 — run memory and the Brand Brain (2026-10-19)
+
+Ask (orchestrator, for Akhil): wire `atoms/run-memory` in, read `brain_map` first where the brain tools are listed (fallback kept), and keep the money-move results flowing run to run. Checked on staging first: `brain_map` on Personal Day (23 chapters; chapter 20 holds only onboarding answers so far; operating-plan sections as listed in `brain_save`).
+
+What changed:
+- `references/run-memory.md` (new): job `campaign plan`, subject = campaign slug (plans, refreshes and replans share it). The record holds the plan's **bets** — each leg and test with owner, read date and how we'll know on the business number. Start scores every bet from analyze-performance's and run-paid-campaigns' records (a leg that never ran is neither credited nor blamed; paid verdicts stay labelled claimed unless the store check confirms). On approval only: `target_cpa` / `target_roas`, `experiment.<slug>-t<n>` and approved reallocations as `decision.*` proposed to chapter 20 through save-learning's fact path.
+- SKILL.md look-first: `brain_map` first with the chapters a plan needs (fallback kept); the last plan and how its bets did; step 3 and the refresh use the scored bets; the run record in Output. replan.md reads the run records and scores bets with the four verdicts. intake.md rows; Test 4b.
+
+**Adversarial critique (subagent, effort high):** a scheduled weekly run of run-paid-campaigns with nobody present checks last week's 40% raise; analyze-performance then reads the outcome; 26 Oct and 2 Nov follow. Verdict before fixes: MAJOR REMAINING 9 (6 here and in run-paid, 3 in analyze), plus 3 in the shared run-memory atom (sent to its owner).
+
+Findings touching this playbook: none of its own (the reviewer found its paths, job slugs and titles line up with both writers). Its chain depended on analyze-performance's findings 10–11 and the atom's finding 1 — fixed or mitigated there.

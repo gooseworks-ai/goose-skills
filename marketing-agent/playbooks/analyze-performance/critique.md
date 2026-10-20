@@ -125,3 +125,25 @@ Verdict after fixes: no MAJOR open in plan-campaign, run-paid-campaigns or analy
 2026-10-16 final contract check: listen-social's report read as the newest `social/listening/<D>-report.md` (D = counting week's Monday), matching its writer (SKILL.md, skill.meta.json).
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; shared atoms moved to `shared_atoms` as plain slugs.
 2026-10-16 orchestrator ruling: bare `atoms/<shared>` path in server-needs.md converted to file-relative form.
+
+## Round 8 — run memory and the Brand Brain (2026-10-19)
+
+Ask (orchestrator, for Akhil): wire `atoms/run-memory` in, read `brain_map` first where the brain tools are listed (fallback kept), and keep the money-move results flowing run to run. Checked on staging first: `brain_map` on Personal Day (23 chapters; chapter 20 holds only onboarding answers so far; operating-plan sections as listed in `brain_save`).
+
+What changed:
+- `references/run-memory.md` (new): jobs `weekly performance read`, `monthly read`, `daily pulse`. Numbers: business truth, overclaim ratio, a **per-channel scorecard** and a **per-ad scorecard** (same keys and settled window as the paid run's), an angle history line, each vs last run. Start reads up to four weekly records back. **What worked** = held 2+ runs or won a test; **what to make next** = tiring multi-week winners first, nothing that already failed, unmade items carried. Experiment readouts (kind 23 `experiment_readout.<slug>-t<n>`) for Win/Loss only, never from a scheduled run; worn-out angles on the marketer's yes.
+- A money move's result: the paid run's verdict (claimed) plus this playbook's **store check over the move's own windows** (truth), side by side; the store number decides.
+- SKILL.md: brain-first read (chapters 18, 20, 22, 23); Load the last runs; steps 4–5 use the history; step 8 saves the run. Monday report opens with "Since last time"; creative ranking shows weeks won; calls carried forward use the four verdicts. skill.meta.json, Test 8.
+
+**Adversarial critique (subagent, effort high):** a scheduled weekly run of run-paid-campaigns with nobody present checks last week's 40% raise; analyze-performance then reads the outcome; 26 Oct and 2 Nov follow. Verdict before fixes: MAJOR REMAINING 9 (6 here and in run-paid, 3 in analyze), plus 3 in the shared run-memory atom (sent to its owner).
+
+| # | Finding | Fix |
+|---|---|---|
+| 10 MAJOR | The store check had no data path: the input message asked only this week and last, never the move's windows. | The one input message asks for daily store totals over every open money move's windows (named from the paid record); missing → `can't tell (store data for <dates>)`, carried; the report says which paid record it used (it usually runs first). |
+| 11 MAJOR | The one run with the marketer present didn't pick up the paid run's asks or pending readout. | It asks the paid run's named exports, saves them to `reports/performance/inputs/` for the paid run, and saves the paid run's `readout to save` rows as stated. |
+| 16 MINOR | It could mark a move done from the approval block. | Status and applied date only from the paid record; else "approved, applied date unknown". |
+| 17 MINOR | Scorecard window differed from the paid run's. | Same settled `days: 14` minus `days: 3`; 7/28-day reads only for the fatigue trend. |
+| 18 MINOR | Older-path calls (`knowledge_intent`, `active: false`) used with the brain listed. | Defers to save-learning's two paths. |
+| 19 MINOR | The `-store` readout had no verdict condition. | Only when the store check gives worked / didn't work; not when the paid verdict is `can't tell (no ad-set view)`. |
+
+Status: all majors in this playbook fixed; not re-reviewed by a second critic.

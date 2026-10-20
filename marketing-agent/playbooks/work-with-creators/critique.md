@@ -256,3 +256,7 @@ research-audience's hand test showed two bugs this playbook shared: (1) the repo
 ## Schedules rule (AGENTS §8, updated 18 Oct)
 
 The run judges whether a repeat helps: a monthly roster refresh only when a creator programme is running or about to (waves out, rates being quoted, a seeding list to fill), with the reason; never after a one-off shortlist, a single brief or a one-time vet. Step 9 in SKILL.md; edge test added.
+
+## Run memory and the Brand Brain (2026-10-19)
+
+Wired run-memory (`references/run-memory.md`): jobs `creator research` and `creator wave` (subject `wave-<n>`). "Since last time" recounts wave results (`win / partial / miss / no-data` against each wave's criterion, by role, tier and deal structure), quotes against the recommended range and creator content now running as ads (brain chapter 22) from the roster and the brain; last run's picks and price bands are checked against what came back. Records hold counts and links only — no creator names, handles or quoted rates. Reads go to `brain_map` first, with the `brand_read` fallback. The cross-playbook critique (on write-outreach's second run) found no creator-specific issue; the shared fixes (one sample-size rule per entity, recount-from-ledger, no ledger keys in records) apply here through outcomes-ledger.

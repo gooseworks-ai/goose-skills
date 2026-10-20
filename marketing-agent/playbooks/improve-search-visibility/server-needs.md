@@ -14,6 +14,7 @@ What the playbook needs that the GooseWorks MCP does not have today (staging too
 - **Need:** a typed brain section "search terms we compete on" (source map §8): brand terms, priority questions per surface (Google, AI answers, app stores), negatives, the competitor-name stance, and dated visibility snapshots (question × engine × cited/named/absent).
 - **Step:** 1 (question set), 5 (write-back); every re-run compares against it.
 - **Meanwhile:** workspace files `search/questions.md`, `search/page-map.md` and `search/visibility/<date>.md`, saved to the brain through the shared save-to-brain atom (stops on any price; verbatim runs kept out with `import: no`); only human-stated rules go through the shared save-learning atom.
+- **Brand Brain (staging, 19 Oct):** the brain now has chapter 8 "Search terms", but `brain_save` has no target for it, so the question set stays a workspace file plus brand document. A typed search-terms target would let other playbooks read the buyer questions directly.
 
 ## 2b. A home for the page map — MEDIUM
 

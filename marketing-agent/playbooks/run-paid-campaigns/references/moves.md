@@ -43,11 +43,15 @@ Write it as a direction plus a range from **this account's own history** ("spend
 
 ## Failure modes (check each before presenting)
 
-1. Any change before the yes. 2. A pause without the human's words this turn. 3. "Done" before the approval page and `change_status` confirm. 4. Overnight doubling, or stacking edits on one ad set in a week. 5. Treating Goose ads as the whole account. 6. Judging Traffic tests on purchase CPA. 7. Winner calls on < ~10–15 conversions. 8. ROAS ranking led by tiny-spend ads. 9. Platform ROAS quoted as truth. 10. Scaling into an out-of-stock SKU or an ended offer. 11. A lifetime raise in a flight's last days. 12. Re-proposing on resume instead of reading `push_status`/`change_status`. 13. Retrying a refused budget proposal. 14. Invented expected effects. 15. A hold with no date or trip-wire. 16. A near-threshold call decided silently. 17. Retargeting or brand-search ROAS presented as the scale case.
+1. Any change before the yes. 2. A pause without the human's words this turn. 3. "Done" before the approval page and `change_status` confirm. 4. Overnight doubling, or stacking edits on one ad set in a week. 5. Treating Goose ads as the whole account. 6. Judging Traffic tests on purchase CPA. 7. Winner calls on < ~10–15 conversions. 8. ROAS ranking led by tiny-spend ads. 9. Platform ROAS quoted as truth. 10. Scaling into an out-of-stock SKU or an ended offer. 11. A lifetime raise in a flight's last days. 12. Re-proposing on resume instead of reading `push_status`/`change_status`. 13. Retrying a refused budget proposal. 14. Invented expected effects. 15. A hold with no date or trip-wire. 16. A near-threshold call decided silently. 17. Retargeting or brand-search ROAS presented as the scale case. 18. A money move staged without its baseline recipe, or a new step on an ad set whose last move hasn't been read.
 
 ## Pause vs swap on the same ad
 
 An ad with a pending swap never goes in the pause sentence — the swap turns the new ad on first only if the old one is live.
+
+## Freeze until read
+
+A money move (budget step, pause, swap, launch or graduation into an ad set) holds that ad set still until its readout date (`run-memory.md` § The baseline recipe): no second step, swap or launch there in between, or the next run can only say "can't tell". Fatigue in a frozen ad set → a hold with a click-rate trip-wire, not a swap; no fatigue call in the week after a step of 30% or more. A health failure or a tripped trip-wire overrides the freeze; the proposal then says the earlier move will read as "can't tell" and why. A raise that didn't work is not repeated on that ad set without a new reason, named.
 
 ## Collisions (one significant edit per ad set per week)
 

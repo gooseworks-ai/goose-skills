@@ -23,7 +23,10 @@
     "weekly and monthly performance reads (reports/performance/) — analyze-performance, replan mode",
     "change log (ads/campaigns/<slug>/decisions.md ### dated blocks, incl. the server's Meta outcomes) and fired triggers (state.md) — run-paid-campaigns, replan mode",
     "human: goal, budget, date, baseline, margin/ARPA, repeat, stock or capacity, list size, creative capacity, founder hours, tracking state, type-specific items",
-    "creator roster creators/roster.csv (wave results) — work-with-creators, when a creator leg is Run/Test"
+    "creator roster creators/roster.csv (wave results) — work-with-creators, when a creator leg is Run/Test",
+    "its own last run record runs/plan-campaign/campaign-plan/<slug>/<date>.md (the plan's bets) — run-memory",
+    "analyze-performance's run records (runs/analyze-performance/weekly-performance-read/, monthly-read/) and run-paid-campaigns' run records (runs/run-paid-campaigns/weekly-ads-check/<slug>/) — scorecards, money moves, verdicts",
+    "Brand Brain (brain_map, brain_open, brain_search where listed): chapters 2, 3, 5, 15, 18, 19, 20 (target_cpa, target_roas, decision.*, experiment.*), 23 (experiment_readout.*, worn_out_angle.*)"
   ],
   "writes": [
     "readable campaign plan gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md (local file, via write-report) — the marketer",
@@ -31,7 +34,9 @@
     "campaign record (campaign_upsert): brief_md with fixed headings — economics box, goal chain, channel decisions, budget split, paid structure, test plan, angles, calendar, asset list, measurement plan, hand-offs, replan triggers; read by run-paid-campaigns, analyze-performance, make-static-ads, make-video-ads, make-product-photos, make-content, email-lifecycle, run-organic-social, work-with-creators",
     "campaign concepts (add_campaign_concept / update_campaign_concept) — read by make-static-ads and make-video-ads",
     "optional monthly replan schedule (automation_upsert) — only on the human's explicit yes",
-    "draft brief for an approved live campaign: plans/<slug>/draft-v<N>.md (workspace) until the human's yes"
+    "draft brief for an approved live campaign: plans/<slug>/draft-v<N>.md (workspace) until the human's yes",
+    "run record runs/plan-campaign/campaign-plan/<slug>/<date>.md + brand document (keep-history) — the plan's bets with owner, read date and test — read by its next replan",
+    "on approval only: kind 20 target_cpa / target_roas, experiment.<slug>-t<n>, decision.<slug>-<yyyy-mm>-<n> via save-learning's fact path — wait for the marketer's yes"
   ],
   "needs": {
     "mcp": [
@@ -55,7 +60,10 @@
       "gooseworks:file_url",
       "gooseworks:media_upload",
       "gooseworks:knowledge_import",
-      "gooseworks:job_get"
+      "gooseworks:job_get",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
     ]
   },
   "atoms": [
@@ -68,6 +76,8 @@
     "claims-gate",
     "write-report",
     "save-to-brain",
-    "spend-gate"
+    "spend-gate",
+    "run-memory",
+    "save-learning"
   ]
 }

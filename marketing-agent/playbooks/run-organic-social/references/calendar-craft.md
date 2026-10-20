@@ -73,16 +73,17 @@ Plan 75–85% evergreen. Leave 1–2 **flex slots** a week marked "trend: swap w
 
 Every calendar names **1–2 format or hook tests**, so the next refill learns something instead of just recording what went out.
 
-- **Shape:** `T1 · <hypothesis> · slots: <ids> vs <comparison slots> · judged on: <metric> vs the account's median · read at: <refill date>`. Example: "T1 · POV hooks beat product-first hooks on TikTok · slots S3, S7, S11 vs S5, S9 · judged on views and shares vs median · read 2 Nov".
+- **Shape:** `T1 (<record id>) · <hypothesis> · slots: <ids> vs <comparison slots> · judged on: <metric>, side vs side · read at: <the first refill after the last slot is 3 days old>`. Example: "T1 (20261019-2) · POV hooks beat product-first hooks on TikTok · slots S3, S7, S11 vs S5, S9 · judged on median views, side vs side · read 2 Nov". The record id comes from the run record (references/run-record.md) and stays with the test for life.
 - **One variable per test:** hook style, format (carousel vs Reel), series, posting time or length. Put at least 2 slots on each side. Keep everything else as close as you can.
-- **Pick tests from real doubt:** the audit's mixed results, analyze-performance's "what overperformed", or a format the marketer wants to try.
-- **At refill, read each test:**
-  - Pull each posted slot's numbers: `brand_read organic`, `social_analytics_get` for managed accounts, a proxy read under the spend gate, or numbers the marketer pastes.
-  - Give a verdict: **win**, **lose** or **unclear (too few posts or too close)**, with the numbers.
+- **Pick tests from real doubt:** an open test carried from the last run record comes first. Then the audit's mixed results, analyze-performance's "what overperformed", or a format the marketer wants to try.
+- **At refill, read each test** (references/run-record.md has the settled-age rule, the baseline recipe and the verdicts):
+  - Pull each posted slot's numbers: `brand_read organic`, `social_analytics_get` for managed accounts, a proxy read under the spend gate, or numbers the marketer pastes. Score only settled posts.
+  - Give a verdict in run-memory's words: **worked**, **didn't work**, **too early (fewer than 2 scored posts a side)** or **can't tell (something else changed)**, with the numbers. Compare the two sides with each other, not with the account's median.
   - Reweight the mix: more of the winner, retire the loser.
   - A result becomes a learning only when the marketer agrees it is a rule (save-learning atom).
-- **New account:** there is no median yet. The baseline is the window's own median, and first-cycle verdicts default to "unclear" unless the gap is more than 2×.
-- **Never call a test from one post.** With fewer than 2 posted slots a side, the verdict is "unclear", and the test carries over.
+- **A test carries forward until it has a verdict,** with its first id. Only its missing posts (skipped or unread) are placed again, ahead of new tests; posts still waiting to go out are not duplicated. Two refills past its review-by with still no verdict → ask the marketer once to keep or drop it.
+- **New account or no baseline:** call a test only on a gap of more than 2×; otherwise `too early`.
+- **Never call a test from one post.** With fewer than 2 scored posts a side, the verdict is `too early`, and the test carries over.
 
 ## Launches and campaigns
 
@@ -119,7 +120,7 @@ For the two-week window, list the dated moments for the brand's region and audie
 | Mode | When | What changes |
 |---|---|---|
 | Fill two weeks | First run, or the calendar ran out | The full plan |
-| Weekly refill | A calendar exists | Reconcile what went out, read the format tests and reweight, keep what's queued, add the next week with new tests |
+| Refill (every two weeks, or sooner on request) | A calendar exists | Load the last run record, reconcile what went out, score it and read the format tests, reweight, keep what's queued, add the next two weeks with carried tests first, save a new run record |
 | Mid-cycle insert | A trend or news moment (research-market's report, the platform research, or the marketer) | One flex slot filled (or the lowest-priority post bumped), with expiry and tone risk |
 | Launch | A plan-campaign brief with an organic leg | The launch window overrides the mix |
 | Crisis pause | A crisis surfaces (research-market posts a serious risk in chat with a hold list naming scheduled posts, or its report's risks, or the human says so) | A hold list: which queued drafts read badly now and should be pulled. Holding lines and replies are the marketer's (reply drafting is in the backlog) |

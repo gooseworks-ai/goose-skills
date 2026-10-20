@@ -65,7 +65,7 @@ At most 8 names: the main rivals and the main alternatives buyers name, one line
 
 ## 9. Baselines for next time
 
-The few numbers the next run will compare, each with date and source: the brand's mentions in the window (from the listening worker), whether AI answers name the brand for the 3–4 category questions, the brand's review count and rating on each review site, its rank for "<main rival> alternative" searches, and its main social account's typical engagement. "Couldn't read" where a number wasn't reachable.
+The few numbers the next run will compare, each with date and source: the size top-down and bottom-up (with inputs), the price norm (median entry price and unit across the pricing table), Google Trends for the 1–2 main terms (region, period), whether AI answers name the brand for the 3–4 category questions, the brand's review count and rating on each review site, its rank for "<main rival> alternative" searches, and its main social account's typical engagement. Mentions come from the listening worker. "Couldn't read" where a number wasn't reachable.
 
 ## Return this, in this shape
 

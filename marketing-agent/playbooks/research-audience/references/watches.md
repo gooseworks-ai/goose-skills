@@ -26,6 +26,7 @@ State: the saved queries in `research/audience/watch/queries.md` and what was al
 
 - Offer it only when it would help this brand, with the reason, a cadence and the **cost per run** (champion watch: about one paid profile read per champion; account hiring: about 2 web searches per account, free but run time; switch intent: about 18 searches): champions monthly; account hiring weekly or every two weeks; switch intent weekly.
 - **Created paused**, through `automation_upsert`, per `../../../atoms/spend-gate/ATOM.md` § C (scheduled runs): the marketer's yes names a **standing per-run credit ceiling** (champion watch: about one profile read per champion per run, from the credits log), and says the run itself uses credits. Free watches still need the yes; they cost only the run.
+- Each run starts and ends with run-memory ([run-memory.md](run-memory.md), job `champion watch` / `account hiring watch` / `switch-intent watch`): the last record tells it what was already alerted and what each alert led to (from the ledger); the new record holds the counts (checked, moves or posts found, alerts, credits) — never names or profile URLs. A quiet run still writes its record.
 - Each run writes `research/audience/watch/<D>.md` — what changed, nothing else — and delivers it through write-report only when something fired ("No moves among 42 champions this month" is one line in chat, not a report).
 - Every alert row is ledgered (outcomes-ledger); the same person at the same employer is never alerted twice; suppressed people are never watched.
 

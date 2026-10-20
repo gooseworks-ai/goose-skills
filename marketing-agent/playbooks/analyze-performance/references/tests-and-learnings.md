@@ -14,10 +14,11 @@ Read the test's row in the campaign brief's **Test plan** (hypothesis, variable,
 - Use the primary metric the brief named, on store-joined data where available; a platform-only read caps confidence at medium.
 - A messy result: say whether it is enough to act on or the test should run again (the brief's Unclear rule) — the human decides.
 - Negative results are learnings too.
+- A Win or Loss is a **measured result**: saved as a readout (kind 23 `experiment_readout.<campaign-slug>-t<n>`) through save-learning's readout path in a run with the marketer present (`run-memory.md` § Experiment readouts). Unclear is not.
 
 ## Calls carried forward (calibration)
 
-Every report opens its calls section with last week's calls and what happened: *"Scale UGC-2 (we said, high) → done 7 Oct, CPA held at $31 — right." "Kill award statics (med) → not done; still losing."* Without this nobody can tell whether the calls are any good.
+Every report opens its calls section with last week's calls and what happened — run-memory's outcome check (`run-memory.md`): status from a source (`done` / `not done` / `unknown` / `dropped`), then the result. *"Scale UGC-2 (we said, high) → done 7 Oct; the paid run's read: worked, $31 per extra order vs $40 (Meta's count); store new orders rose 9% over the same days — right." "Raise Sales – Broad 40% → done 14 Oct; too early, readable 28 Oct." "Kill award statics (med) → not done; still losing."* A money move run-paid-campaigns made is judged with its verdict and baseline recipe, plus this playbook's store-joined check over the same window; never re-measured here on platform numbers alone. Without this nobody can tell whether the calls are any good.
 
 ## Confidence labels (on every claim and call)
 
@@ -28,7 +29,7 @@ Each call also carries **"would change if"** — the evidence that would reverse
 
 ## The learnings log
 
-Written through the shared atom `../../../atoms/save-learning/ATOM.md`: the human's own words as `user_statement` with `knowledge_intent: "user_correction"`, one idea per learning, read back to confirm, own superseded learnings retired in the same call.
+Written through the shared atom `../../../atoms/save-learning/ATOM.md`, which picks the Brand Brain path or the older path and holds their mechanics: the human's own words as the statement, one idea per learning, read back to confirm, own superseded learnings retired.
 
 **One fact = one line**, starting `[learning YYYY-MM-DD]` (plus ` A-NN` when it is about an angle-bank angle):
 
@@ -49,7 +50,7 @@ The full evidence (test, dates, ads, spend, CPAs, scope, what it supersedes) sta
 **Show what it would retire.** Each proposed learning carries "retires: <old fact>" when it supersedes one, so a yes to it is a yes to the retirement too.
 
 **Hygiene:**
-- Before writing, `knowledge_search` with `source_types: ["learning"]` for the same claim: replicate or update the existing entry (edit by `id`) rather than add a near-duplicate.
-- When a new learning contradicts an old one, retire the old one (`active: false`) in the same call.
+- Before writing, look for the same claim (the atom's read step: `brain_search` / `brain_map` kind 23 where listed, else `knowledge_search` `["learning"]`): update the existing entry rather than add a near-duplicate.
+- When a new learning contradicts an old one of ours, retire the old one as the atom says.
 - When a fact's review date has passed, propose re-confirm / retire in the next decisions block.
 - Promote `insight` → `do`/`dont` only when the human states it as a rule.

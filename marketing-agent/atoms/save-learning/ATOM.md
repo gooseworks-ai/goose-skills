@@ -3,20 +3,27 @@ name: save-learning
 description: >-
   Shared atom (owner: learn-my-brand session). The single seam for writing brand learnings (short rules and
   findings the brand's engines read) by the AGENTS §8 rules — the human's own words, one idea per learning, a
-  fixed opening, retire your own superseded learnings, read back to confirm. Holds the only interim handling of
-  today's server. Loaded by any playbook that saves a learning; never listed.
+  fixed opening, retire your own superseded learnings, read back to confirm. Uses the Brand Brain's brain_save when
+  it is listed, the older brand_update otherwise, and holds the only interim handling of either server. Loaded by any
+  playbook that saves a learning; never listed.
 ---
 
 # save-learning
 
-Learnings are the brand's short rules: today `brand_update` `patch.facts`. Every playbook writes them through this atom and nowhere else. When the rebuilt Brand Brain ships (gooseworks-app PRs #2079 / #2081: typed facts, statuses, `brain_*` tools), only this atom switches to the new tools; the playbooks do not change.
+Learnings are the brand's short rules. Every playbook writes them through this atom and nowhere else. There are two server paths, and this atom picks between them:
+- **Brain path:** when `brain_*` tools are listed (the rebuilt Brand Brain, live on staging since 19 Oct). Save with `gooseworks:brain_save`, read back with `gooseworks:brain_open` / `gooseworks:brain_search`.
+- **Older path:** otherwise (production today). Save with `gooseworks:brand_update` `patch.facts`, read back with `gooseworks:brand_read`.
+
+The playbooks do not change between the two.
 
 Long evidence, tables and reports belong in a brand document (`atoms/save-to-brain`); a learning is the rule or finding itself, in the human's words.
 
 ## When you may write one
 
-- Only with the human's own words: `knowledge_intent: "user_correction"` and `user_statement` holding what they typed (an explicit approval such as "yes, save that rule" counts; your draft never goes there). Without their words, don't write it: put the finding in your document instead.
+- Only with the human's own words in `user_statement`: what they typed. An explicit approval such as "yes, save that rule" counts; your draft never goes there. On the older path also send `knowledge_intent: "user_correction"`; on the brain path, source `you`. Without their words, don't write it: put the finding in your document instead.
 - `must` and `dont` only for rules the human stated or approved. Findings are `insight`; style guidance is `do`.
+- **One exception, brain path only:** a numbers-only **measured readout** of our own work (a budget move's before → after, a test result) may be saved as a fact without the human's words. It comes from `atoms/run-memory` and goes to kind 23, field `experiment_readout.<id>`, with source `our_work`. Only a `worked` or `didn't work` verdict, labelled truth or claimed, and never from a scheduled run. It states numbers and dates, never a rule.
+- **Found, not confirmed.** Everything an agent saves is *found*. Rules, positioning, audience, voice, pricing, offers and plan changes wait for the human's yes in the GooseWorks app, even when they are the human's own words. Never call a save confirmed or approved, and never accept a proposal unless the human said so in this conversation. Even then, the app may require them to accept it there; relay the link the refusal gives.
 
 ## The text
 
@@ -26,21 +33,39 @@ Long evidence, tables and reports belong in a brand document (`atoms/save-to-bra
   - **shared:** `Standing offer: <offer> until <date | ongoing> [owner, <date>]` only. email-lifecycle writes it, and learn-my-brand may retire or rewrite it when the owner changes the offer. Either writer may retire the other's `Standing offer:` fact.
   - everyone else: `[<source> YYYY-MM-DD]`, source = `learning` (analyze-performance; add ` A-NN` for an angle) · `market` (research-market) · `angle A-NN` · `listening` (research-market's listening) · `search` (improve-search-visibility) · `lifecycle` (email-lifecycle) · `content` (make-content) · `social` (run-organic-social) · `ads` (make-static-ads) · `video` (make-video-ads) · `photos` (make-product-photos) · `outreach` (research-audience) · `creators` (work-with-creators). One source per playbook, so "retire your own" never reaches another playbook's facts.
 - Example: `[lifecycle 2026-10-16] Never send a promo email the day after a shipping delay email.`
+- A **typed fact** (brain path, step 2) carries the value only, without the opening. Its kind and field say what it is, and `request_key` starts with the playbook slug.
 
-## Steps (one `brand_update` call per save)
+## Steps: brain path (`brain_*` tools listed)
 
-1. **Read** `gooseworks:brand_read` `sections: ["learnings"]` — lean returns every `must`/`dont`; use `detail: "full"` when you also need `do`/`insight`/`template_hint` rows and their ids. Look for a learning that already says the same thing.
-2. **Retire your own superseded learnings** in the same call: `{id, active: false}` for each of your playbook's learnings (same opening) the new one replaces or contradicts. Never retire another playbook's learning; if yours contradicts it, tell the human. Exceptions: `atoms/claims-gate` §5 retires and rewrites learn-my-brand's marker; `Standing offer:` (above).
+1. **Read** the brain's rules and what is working. Use `gooseworks:brain_map` (the core already lists every rule and the never-list) with `kind: 14` for the full rules and `kind: 23` for learnings, or `gooseworks:brain_search` `source_types: ["learning"]` for the topic. Look for a learning that already says the same thing, and check `waiting_for_yes` too: the same rule may already be waiting for the human's yes. Don't save it twice.
+2. **Pick the target.**
+   - If the rule fits a **registered fact field**, save it as that fact (`brain_save` `fact`: kind + field). Engines read typed fields directly. Fields checked on staging, 19 Oct:
+     - 15 "How we work together": `agent_may_do_alone.<item>`, `alert_on.<item>`, `reply_rule.<item>`, `reporting_rhythm`.
+     - 18 "How we count results": `winning_number`, `conversion.<item>`, `attribution_window`, `lead_definition`, `naming_convention`.
+     - 20 "Our plan": `no_go_list`, `target_cpa`, `target_roas`, `priority_products`, `decision.<item>`, `experiment.<item>`.
+     - 23 "What is working": `worn_out_angle.<item>`, `experiment_readout.<item>`, `lesson`.
+     
+     An unknown field is refused with the allowed list. Pick from that list, or fall back to a learning. Never invent a field. The `operating_plan.*` fields (budget caps, approvers, goals) belong to the playbooks whose spec owns them, not to this atom.
+   - Otherwise, save a **learning** (`brain_save` target `learning`, with the kind and the text).
+3. **Save** with the human's words in `user_statement`, source `you` (`our_work` for a readout), and `is_public: false` unless the human says the rule is public-facing. Use a stable `request_key` such as `<playbook>.<YYYYMMDD>.<n>`, so a retried call never duplicates. Use `expected_version: 0` for a new item. For an existing one, pass its `revision` from `brain_open` as `expected_revision`, and on a version conflict re-open it and retry once.
+   - **The text limit is explicit: 300 characters.** A longer learning is refused, not cut. See "Long learnings" below.
+4. **Retire your own superseded learning.** Save the replacement on the old learning's `id` (the old text becomes history), or close a dropped one with `valid_until` = today. Never touch another playbook's learning; if yours contradicts it, tell the human. *Not yet tested on staging: no test writes were made.* If both are refused, retire it on the older path (`brand_update` `{id, active: false}`) and note it in the run's hand-over.
+5. **Read back.** `gooseworks:brain_open` the saved record, or check `brain_save` `proposal` `list` when the answer says it waits for a yes. Compare the stored text with what you sent. A missing one is reported as not saved.
+6. **Tell the human in one line** what was saved, and whether it waits for their yes: "I've saved that rule. It's waiting for your yes in GooseWorks before ads follow it."
+
+## Steps: older path (no `brain_*` tools; one `brand_update` call per save)
+
+1. **Read** `gooseworks:brand_read` `sections: ["learnings"]`. Lean returns every `must`/`dont`; use `detail: "full"` when you also need `do`/`insight`/`template_hint` rows and their ids. Look for a learning that already says the same thing.
+2. **Retire your own superseded learnings** in the same call: `{id, active: false}` for each of your playbook's learnings (same opening) that the new one replaces or contradicts. Never retire another playbook's learning; if yours contradicts it, tell the human. Exceptions: `atoms/claims-gate` §5 retires and rewrites learn-my-brand's marker; `Standing offer:` (above).
 3. **Add** every learning the human gave you, one idea each.
-4. **Read back** the learnings and compare each stored text with what you sent. A missing one is reported as not saved. Whether reads hide retired (`active: false`) rows is checked here too; a retired learning that still shows is deleted (`delete: true`).
-5. **Tell the human in one line** what was saved, in plain words ("I've saved that as a rule for future ads").
+4. **Read back** the learnings and compare each stored text with what you sent. A missing one is reported as not saved. Check here too whether reads hide retired (`active: false`) rows; a retired learning that still shows is deleted (`delete: true`).
+5. **Tell the human in one line** what was saved, in plain words: "I've saved that as a rule for future ads."
 
-## Today's server (interim)
+## Long learnings (both paths)
 
-Remove this section when the rebuilt Brand Brain ships; this atom then switches to its tools.
-
-- Today the server cuts learning text over 300 characters without an error. If a learning is longer, still write it as one learning (the stored copy will be cut), keep the **full text** in the related brand document (through `atoms/save-to-brain`; for learn-my-brand, the Brand record), and tell the human in one line where the full text lives. Never split one idea into several learnings or reword it just to fit.
-- In step 4, a stored text that matches the first 300 characters of a longer learning counts as saved, provided the full text is in that document.
+- **Brain path:** the 300-character limit is explicit, and longer text is refused. Show the human a version of 300 characters or fewer that keeps their meaning, and save it on their yes; their yes makes it their words. Keep the full original in the related brand document (through `atoms/save-to-brain`; for learn-my-brand, the Brand record). In a scheduled run with no human, don't save it. Put it in the report's "Decisions for you".
+- **Older path (interim, remove when production has `brain_*` tools):** the server cuts learning text over 300 characters without an error. Still write it as one learning (the stored copy will be cut), keep the full text in the related brand document, and tell the human in one line where the full text lives. In read-back, a stored text that matches the first 300 characters of a longer learning counts as saved, provided the full text is in that document.
+- On either path, never split one idea into several learnings, and never quietly reword it to fit.
 
 ## Never
 
@@ -48,4 +73,5 @@ Remove this section when the rebuilt Brand Brain ships; this atom then switches 
 - Never pack several rules or several claims into one learning.
 - Never use learnings as storage for reports, lists or evidence.
 - Never write `must`/`dont` from your own inference.
-- Never ration, shorten or reorder learnings to fit a server limit. Any interim handling lives in the section above, nowhere else.
+- Never ration, shorten or reorder learnings to fit a server limit. Any limit handling lives in "Long learnings" above, nowhere else.
+- Never present an agent save as confirmed.

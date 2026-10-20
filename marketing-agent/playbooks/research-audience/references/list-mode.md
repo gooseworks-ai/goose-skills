@@ -12,7 +12,7 @@ Load when the marketer asks for named people or accounts ("find me 50 right-fit 
 
 ## Build a list — fast
 
-**Don't run the audience research first.** Use the saved buyer groups (`research/audience/buyer-groups.md`) when they exist — the lead group, or the one the ask names. With none, draft the fit definition straight from the ask, the brand's site and the brain ([atoms/fit-definition](../atoms/fit-definition/ATOM.md)); offer the audience report afterwards as a decision. **No question before the first rows.** The customer list for exclusions, the outcomes of earlier lists and any open fit line are asked **in the closing decisions** — the rows come first (when the marketer has already given a customer export, use it).
+**Start with "since last time"** ([run-memory.md](run-memory.md)): what happened to the earlier lists, from the ledger — which segments, sources and signals replied — and use it in this list's sources and weights. **Don't run the audience research first.** Use the saved buyer groups (`research/audience/buyer-groups.md`) when they exist — the lead group, or the one the ask names. With none, draft the fit definition straight from the ask, the brand's site and the brain ([atoms/fit-definition](../atoms/fit-definition/ATOM.md)); offer the audience report afterwards as a decision. **No question before the first rows.** The customer list for exclusions, the outcomes of earlier lists and any open fit line are asked **in the closing decisions** — the rows come first (when the marketer has already given a customer export, use it).
 
 ### Order of work
 1. **Fit definition** — [atoms/fit-definition](../atoms/fit-definition/ATOM.md) with [fit-and-scoring.md](fit-and-scoring.md) and [list-by-company-type.md](list-by-company-type.md): every line sourced or assumed; for hiring-led lists, the role map ([list-sources.md](list-sources.md) § Hiring).
@@ -23,6 +23,7 @@ Load when the marketer asks for named people or accounts ("find me 50 right-fit 
 5b. **Hooks** — signals-and-hooks again, one hook per person (or "none found").
 6. **Score, segment, QA** — [atoms/score-segment-qa](../atoms/score-segment-qa/ATOM.md).
 7. **Ledger** — `../../../atoms/outcomes-ledger/ATOM.md`, `entity: person`: suppression loaded before sourcing; every row shown is ledgered.
+8. **Run record** — run-memory's End steps for the `prospect list` (or `lead scoring`) job ([run-memory.md](run-memory.md)): the counts, the "send first" call as a recommendation with its test, links to the list folder and the ledger — no person's data.
 
 ### Speed and cost — proportional to the ask
 - **What the free pass delivers — say it in "In short", right after who to contact first:** a free pass costs about 13–20 lookups per fully built person ([data-sources.md](data-sources.md) § Yield), so within its budget it builds **the full account list asked for (with gates and signals) and people with routes for the top 10–15 accounts**; the other accounts carry "people to find". With the database and email routes on the connector, the same run builds every row. Never imply a full people list the budget couldn't build.

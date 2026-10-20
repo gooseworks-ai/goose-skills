@@ -20,7 +20,7 @@ You listen to **what people are saying right now** about the brand, its founder,
 ## Two ways you run
 
 - **Inside a market report:** all steps below; return the full shape.
-- **Brand watch (alone, on a schedule or on ask):** steps 1–2 only, plus a quick re-read of the brand's mentions since the last watch — risk first, alerts only. Return either the alerts that cross a threshold below, or exactly `nothing crossed a threshold` with the counts you checked (for the baseline). No themes, outliers or trends.
+- **Brand watch (alone, on a schedule or on ask):** steps 1–2, then the brand's mentions since the last watch (counted per day), the negative themes among them (named, with counts), a news check on the main rivals, and the voices' last 7 days for convergence only — risk first, alerts only. Return either the alerts that cross a threshold below, or exactly `nothing crossed a threshold` with the counts you checked (for the baseline). No positive themes, outliers or trends.
 
 **Brand-watch thresholds** (alert when any is crossed): a serious or rising risk (craft file § Risk); brand mentions at ≥2× the last watch's count on the same method; a new negative theme raised by 3+ separate people; a post about the brand from an account with ≥100k followers or ≥50k views; misinformation about the brand; a rival's shutdown, price change or launch aimed at the brand's buyers.
 

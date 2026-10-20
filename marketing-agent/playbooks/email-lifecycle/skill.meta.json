@@ -18,7 +18,7 @@
     "a send went wrong, help me fix it"
   ],
   "reads": [
-    "brand brain: summary, kit, products (price, offers, notes), learnings — brand_read (learn-my-brand)",
+    "brand brain — brain_map core and required reads, then chapters 2, 5, 11, 15, 17, 18, 20, brain_open and brain_search for gaps when brain_* tools are listed; else brand_read summary, kit, products (price, offers, notes), learnings (learn-my-brand)",
     "claims — the shared claims-gate atom over learn-my-brand's contract (signed-off marker → 'Claims you may use' facts) (learn-my-brand)",
     "standing offer and brand-wide policies — the shared Standing offer: fact, learn-my-brand's Policy: facts and earlier [lifecycle] rules, else the Brand record (learn-my-brand)",
     "voice and banned words — brand learnings (learn-my-brand); voice cards brand/voices/<handle>.md via the shared voice-card atom (make-content, run-organic-social)",
@@ -28,7 +28,8 @@
     "newsletter issue — content/newsletter/<date>.md (make-content)",
     "program sheet from earlier runs — lifecycle/program.md (this playbook)",
     "email tool exports, a recent campaign's 'original' text, spam-rate screenshot, margins, stock — human-provided",
-    "'Graphic ready:' answers under its own header-art request lines in lifecycle/flows/ (make-static-ads)"
+    "'Graphic ready:' answers under its own header-art request lines in lifecycle/flows/ (make-static-ads)",
+    "last run record — newest of runs/email-lifecycle/<job>/<date>.md via the shared run-memory atom (this playbook's earlier runs)"
   ],
   "writes": [
     "the email program pack — local file gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-email-program.md (or an artifact in hosted chat) through the shared write-report atom, plus a saved copy with a link (read by the marketer)",
@@ -39,7 +40,8 @@
     "lifecycle/deliverability/<YYYY-MM-DD>.md — deliverability report (read by the next run)",
     "optional weekly automation, created paused — automation_upsert (enabled by the human)",
     "brand learnings via the shared save-learning atom, once per run: the shared Standing offer: fact and [lifecycle YYYY-MM-DD] rules, confirmed policies included (human-confirmed; never Policy: facts, which are learn-my-brand's; read by every playbook)",
-    "scoped claims sign-off when needed, through the shared claims-gate atom: a Brand record version, 'Claims you may use' facts and the marker (read by every copy-writing playbook)"
+    "scoped claims sign-off when needed, through the shared claims-gate atom: a Brand record version, 'Claims you may use' facts and the marker (read by every copy-writing playbook)",
+    "run record — runs/email-lifecycle/<job-slug>/<YYYY-MM-DD>.md + brand document 'Run record — <job> — <Brand> — <date>' (keep-history) via the shared run-memory atom (read by the next run of any email job)"
   ],
   "needs": {
     "mcp": [
@@ -59,7 +61,10 @@
       "gooseworks:media_list",
       "gooseworks:media_update",
       "gooseworks:knowledge_search",
-      "gooseworks:automation_list"
+      "gooseworks:automation_list",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
     ]
   },
   "atoms": [
@@ -70,12 +75,13 @@
     "send-check"
   ],
   "shared_atoms": [
+    "ad-policy-check",
     "claims-gate",
+    "run-memory",
     "save-learning",
     "save-to-brain",
     "spend-gate",
     "voice-card",
-    "ad-policy-check",
     "write-report"
   ]
 }
