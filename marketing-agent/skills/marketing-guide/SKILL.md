@@ -5,7 +5,7 @@ description: >-
   shared claims, money, research and schedule rules, and the index of what each playbook saves and who
   reads it. Load at the start of any playbook run. Not a marketer ask: for "what should I do first?"
   use where-to-start.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # marketing-guide
@@ -48,7 +48,9 @@ Every playbook does the same setup and follows the same rules. They live here on
 
 **Research pattern.** research-market, research-competitors, research-audience, work-with-creators and improve-search-visibility: read [`research-pattern.md`](research-pattern.md) (next to this file) before the first search — free pass first, one message, one credit yes, a report.
 
-**Schedules.** At the end of a repeatable run, offer a schedule only when repeating would help this brand, with the reason and a cadence. Defaults: market, a monthly pulse plus a quarterly full report; competitors, weekly (silent below its threshold) plus a quarterly teardown; audience, twice a year or on a trigger (new product or market, a win/loss shift); brand watch, weekly, daily in a launch or crisis, alerts only; social calendar, every two weeks; search visibility, monthly; performance, weekly. Never for one-off jobs. Created paused, under the `spend-gate` skill (`../spend-gate/SKILL.md`) §C. The scheduled worker has no skills folder: copy the method into the workspace and give it a self-contained prompt. Each run saves its run record, and sends a report opening with what changed only when something crosses the job's threshold or a question is due.
+**Schedules.** At the end of a repeatable run, offer a schedule only when repeating would help this brand, with the reason and a cadence. Defaults: market, a monthly pulse plus a quarterly full report; competitors, weekly (silent below its threshold) plus a quarterly teardown; audience, twice a year or on a trigger (new product or market, a win/loss shift); brand watch, weekly, daily in a launch or crisis, alerts only; social calendar, every two weeks; search visibility, monthly; performance, weekly. Never for one-off jobs. Each run saves its run record, and sends a report opening with what changed only when something crosses the job's threshold or a question is due. How to create it depends on the connection:
+- **GooseWorks connected:** `gooseworks:automation_upsert`, created paused, under the `spend-gate` skill (`../spend-gate/SKILL.md`) §C. The scheduled worker has no skills folder: copy the method into the workspace and give it a self-contained prompt (the playbook's own setup section, where it has one).
+- **Local mode (§5):** only through the host's own scheduler, when the host has one (a scheduled task or routine you can create). Create it switched off and switch it on only on the marketer's yes. Its prompt names the playbook, the brand, local mode, and that playbook's scheduled-run rules (read and stage only; never apply, publish, pause or spend; ask nothing). No host scheduler → say once "I can't schedule this here; ask me again when you want the next one." Never call `gooseworks:automation_upsert` without GooseWorks.
 
 ## 4. What each playbook saves, and who reads it
 
@@ -86,7 +88,7 @@ Request lines: `<Kind> needed: for <the playbook that answers> · <what> · retu
 ## 5. Local mode (no GooseWorks)
 
 Only plan-campaign, run-paid-campaigns and analyze-performance offer it. It runs on the marketer's words, the live site, their connectors (§3), exports and screenshots; nothing paid. The brand is the one the marketer names (ask if none).
-- **Notes:** `gooseworks-local/<brand-slug>/` in the working folder, on §4's paths, plus `brand-notes.md` (facts and rules the marketer stated: their words, dated) and `claims.md` (lines approved here through the claims gate: their words, date). Only the agent writes; read first. No files (hosted chat): notes stay in chat, handed over to paste back.
-- **Atoms:** save-to-brain and run-memory write the local file only; save-learning → `brand-notes.md`; claims-gate → `claims.md` (and who approves claims → `brand-notes.md`).
+- **Notes:** `gooseworks-local/<brand-slug>/` in the working folder, on §4's paths, plus `brand-notes.md` (facts and rules the marketer stated: their words, dated) and `claims.md` (every claims decision made here, written by the claims gate: approved, declined, waiting or retired, with the approver's words and the proof). Only the agent writes; read first. No files (hosted chat): notes stay in chat, handed over to paste back.
+- **Atoms** each have a local branch that calls no `gooseworks:` tool: save-to-brain and run-memory read and write the local files only; write-report links the local file and says "saved in this folder"; save-learning → `brand-notes.md`; claims-gate → `claims.md` (and who approves claims → `brand-notes.md`). The playbook skips every other `gooseworks:` read and write.
 - **No personal data** in `gooseworks-local/`: totals and counts only. Exports with people's details (customer or lead lists) are read where they are and stay in the marketer's own files and tools.
-- **Say once what's missing:** approval pages (changes are approved here, in words), GooseWorks' outcome log, team-visible brand memory and run records, claims confirmed in the app, tags on GooseWorks-made ads, schedules (host scheduler only; scheduled runs only stage).
+- **Say once what's missing:** approval pages (changes are approved here, in words), GooseWorks' outcome log, team-visible brand memory and run records, claims confirmed in the app, tags on GooseWorks-made ads, schedules (the host's scheduler only, §3 Schedules; scheduled runs only stage).

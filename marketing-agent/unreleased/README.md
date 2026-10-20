@@ -4,7 +4,7 @@
 - Three playbooks are built but **held back from the first release**: learn-my-brand, make-video-ads and make-product-photos.
 - **Why:** each one needs server work before it can run safely or be tested properly. The details are in each folder's `server-needs.md`; the blockers are summarised below.
 - **Decision:** Akhil, 20 Oct 2026. They come back when the server work exists.
-- **What users see meanwhile:** the router and every released playbook say plainly "not covered yet" for video ads, product photos and brand setup as its own job. Nothing hands off to these three.
+- **What users see meanwhile:** video ads go to the goose-video skill and product photos to goose-product-photos (GooseWorks skills, not playbooks); brand setup as its own job is "not covered yet", and claims are approved through the claims gate's scoped sign-off. Nothing hands off to these three.
 - The folders are kept whole (SKILL.md, atoms, references, tests, critique), so nothing is lost. Hosts never list them, because nothing links or installs from `unreleased/`.
 
 ## The three, and what blocks each
@@ -39,4 +39,4 @@ These are **data formats**, not hand-offs. Records written earlier (by a full br
 4. **Routing eval:** restore the expected playbook in `evals/routing/cases.jsonl` for the cases whose note says "held back" (R02, R08, R09, R20, R37, R51, R52, R60; add the alternatives back on R19, R30, R39).
 5. **Test** with its `tests/test-by-hand.md` on staging, then run the routing eval.
 
-For **make-static-ads** (being reworked on its own branch): its description and references still point to make-video-ads and make-product-photos. That work replaces those pointers with "not covered yet" before it merges.
+For **make-static-ads** (being reworked on its own branch): the Codex round-1 fixes (20 Oct) repointed its video, photo and claims hand-offs to goose-video, goose-product-photos and the claims gate, and dropped its `Product imagery needed` request line. The rewrite carries those over before it merges.

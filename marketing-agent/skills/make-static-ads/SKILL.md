@@ -11,7 +11,7 @@ description: >-
   ready to launch from. Never invents an angle, offer, claim or review; never launches or spends ad
   budget. Not for video ads — goose-video; not for clean product photos — goose-product-photos; not
   for search text ads (not covered yet); not for launching — run-paid-campaigns.
-version: 0.2.0
+version: 0.2.1
 ---
 
 # make-static-ads
@@ -53,7 +53,7 @@ The brief: product (and variant), objective and funnel stage, persona, platforms
 - **Stock** for the flight, **price with currency**, offer terms — two sources that disagree → ask, never pick one.
 - **Budget:** a small stated ad budget → 3–4 concepts on one or two angles; write the budget into the batch file's test-structure section for run-paid-campaigns.
 - **Pre-launch:** objective (waitlist, pre-order); no ratings or store badges.
-**Imagery by company type:** physical product without usable photos → stop, tell the marketer in plain words that real product photos come first, and create `ads/batches/<YYYY-MM-DD>-<slug>.md` with the brief and a `Product imagery needed:` request line (`reading-the-brain.md` §7). Software or app → the kit's `screenshotUrls` (full kit) or real screenshots the marketer gives, as reference images, or text-native archetypes with `allow_without_product_image`, labelled "product not shown". Never a mascot or a generated product as the product.
+**Imagery by company type:** physical product without usable photos → stop, tell the marketer in plain words that real product photos come first (their own, or product photos made with the goose-product-photos skill, offered as the next job), and save the brief in `ads/batches/<YYYY-MM-DD>-<slug>.md` so the set starts once they exist (`reading-the-brain.md` §7). Software or app → the kit's `screenshotUrls` (full kit) or real screenshots the marketer gives, as reference images, or text-native archetypes with `allow_without_product_image`, labelled "product not shown". Never a mascot or a generated product as the product.
 
 ### 3. Build the angle grid
 Reads: the brief, `references/angles-and-hooks.md`. Writes: the grid. Run the `make-static-ads-angle-grid` skill (`../make-static-ads-angle-grid/SKILL.md`): 3–5 angles (fewer when the budget, the mode or the signed claims say so — say why), each "they buy because…" with its source (`A-NN`, voice-of-customer row ids, a signed claim, a current winner, the marketer's words). Fewer than three grounded → say so and offer research first, the marketer's own reasons, or a smaller set. One variable per cell.
@@ -86,7 +86,7 @@ Reads: `references/handoff-format.md`; the product record again (price, offer, e
 ## Approval gates
 
 1. **Spend** — the yes to the engine's quotes as given; every remake, resize or extra placement asked separately.
-2. **Claims** — any line not covered by the signed-off claims or a plain product fact is cut before the set is shown and listed with the proof that would restore it. Approving a claim is the human's call through learn-my-brand's claims gate — no exceptions.
+2. **Claims** — any line not covered by the signed-off claims or a plain product fact is cut before the set is shown and listed with the proof that would restore it. Approving a claim is the human's call through the claims gate's scoped sign-off (the `claims-gate` skill) — no exceptions.
 3. **The run decision** — record a pick only on the human's words: feedback `rating: "happy"` on the chosen render of each picked creative, `picked` added to its merged tags, and the pick written in the batch file. Brand-fit vetoes are theirs.
 
 ## Output and write-back
@@ -109,4 +109,4 @@ Reads: `references/handoff-format.md`; the product record again (price, offer, e
 - Which ad won — **analyze-performance**. Video ads — **goose-video**. Product photography — **goose-product-photos** (GooseWorks skills, not playbooks).
 - Finding angles and competitor ads — **research-competitors**; customer language — **research-market**.
 - Landing pages — analyze-performance's page audit (this playbook flags a destination that does not match).
-- Approving claims — **learn-my-brand**. Retail-media creative for marketplaces; decks, print, packaging, multi-page layouts.
+- Approving claims — the claims gate's scoped sign-off, inside this job (Hard rule 1); a full claims audit is not covered yet. Retail-media creative for marketplaces; decks, print, packaging, multi-page layouts.

@@ -26,7 +26,7 @@ On the `brand_read` path, read lean first, then `product_ids` for the hero produ
 
 When sources disagree (e.g. saved notes vs the live pricing page), use the live site and say which you used in one line. If the host has no way to read web pages, say so in the first message and label prices "from saved notes, unconfirmed".
 
-**Local mode** (no GooseWorks, marketing-guide §5): the look-first pass is the live site, the local folder (`brand-notes.md`, the last plan in `plans/<slug>/`, run records) and any connectors the marketer has (read-only). Everything the brain would have answered becomes a question or a labelled assumption.
+**Local mode** (no GooseWorks, marketing-guide §5): the look-first pass is the live site, the local folder (`brand-notes.md`, `claims.md` through the claims gate, the last plan in `plans/<slug>/` — step 1's existing-plan check — and run records) and any connectors the marketer has (read-only). Everything the brain would have answered becomes a question or a labelled assumption.
 
 Margin is looked up (the measurement contract, the last plan); if it's not there, it is a labelled assumption marked "confirm first" in the plan — ask it only when the whole plan turns on it.
 

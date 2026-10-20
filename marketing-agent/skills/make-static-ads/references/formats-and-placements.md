@@ -8,7 +8,7 @@ A set rotates through archetypes, because format often matters more than polish 
 
 | Archetype | Works for | Needs | `ads_template_read` static_library query hint |
 |---|---|---|---|
-| Product hero | Product-aware, retargeting, clear category | Real product imagery (kept photos from make-product-photos) | "clean product hero on brand colour" |
+| Product hero | Product-aware, retargeting, clear category | Real product imagery (the brand's own photos, or ones made with goose-product-photos) | "clean product hero on brand colour" |
 | Benefit stack / listicle ("3 reasons…") | Solution-aware; complex products | 3 traceable benefits | "benefit list with product" |
 | Review / testimonial card | Product-aware; risk reduction | A real review, verbatim, with source | "customer review quote card" |
 | Us vs them / old way vs new | Solution-aware; trade-off angles | Contrast with the old way (a habit, a routine), not with other products — "most X are greasy" is a comparative and needs a signed comparative claim, as does any named rival | "two-column comparison" |
@@ -28,7 +28,7 @@ If the template library has nothing that fits an archetype, say so and use the n
 
 ## 2. By company type
 
-**DTC (beauty, apparel, food, home).** Product imagery is the anchor; kept photos from make-product-photos first. Offers and the promo calendar drive volume (BFCM, Mother's Day, Diwali, launches). Stock and price must be current.
+**DTC (beauty, apparel, food, home).** Product imagery is the anchor; the brand's kept product photos first (its own, or made with goose-product-photos). Offers and the promo calendar drive volume (BFCM, Mother's Day, Diwali, launches). Stock and price must be current.
 
 **B2B SaaS.** There is no product to photograph: "product visible" becomes "the product or the proof is visible". Archetypes: POV / contrarian text ad, gated-asset cover (guide, webinar, demo), stat card, logo wall, and UI screenshot with callouts — the engine **redraws** a screenshot passed as a reference image, so a UI ad ships only if the render matches the real screenshot letter by letter (otherwise it shows fabricated product UI; drop it); never invent UI. Integration names may appear as plain words when true ("works with Slack"), never their logos without permission; stat card (approved customer result with the customer named only if permission is recorded), logo wall (only logos with permission), contrarian/POV text ad, gated-asset cover (guide, webinar, demo — the "offer"). Platforms: LinkedIn single image (1:1 or 1.91:1), document/carousel ads, Meta. CTA: Learn more / Sign up / Download / Request demo / lead-gen form. Copy is read more but skimmed the same way.
 

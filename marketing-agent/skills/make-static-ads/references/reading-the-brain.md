@@ -6,7 +6,7 @@ Load at Step 1. Sibling playbooks never call this one; they leave written artifa
 
 ## 1. Claims — the shared claims gate
 
-The contract and the checks are the `claims-gate` skill (`../../claims-gate/SKILL.md`) (owner: learn-my-brand). In short:
+The contract and the checks are the `claims-gate` skill (`../../claims-gate/SKILL.md`). In short:
 - The marker is a `must` learning starting `Claims sign-off (learn-my-brand,` with status `signed-off`, `pending-client` or `not-signed`; a lean `brand_read` returns every `must` and `dont`.
 - `signed-off` → only the `Claims you may use —` facts, verbatim (or a variant listed in the Brand record the marker names, read with `file_read`), in scope, before the review date, with the qualifier.
 - Not approved: search snippets, kit `approvedClaims` / `proofPoints` / `valueProps`, `["claim"]` search rows, the live site, a yes in chat that did not go through the gate.
@@ -52,6 +52,6 @@ Answer under the request (re-read the file, insert, write it all back): `Graphic
 ## 7. What this playbook writes for others
 
 - `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`). Per ad: creative id and render id per ratio, placements, on-image text, primary text A and B, headline, description, CTA, destination, angle (`A-NN`) and type, archetype, hook source, stage, claims line, policy line, special-ad-category flag, and `picked` once the human chooses. Then: the test question, the recommended test structure with the stated budget, the cut list with restore-proof, flags. The launch takes its copy from here verbatim (the server stores no copy on creatives).
-- Product imagery request, when a physical product has no usable photos: `Product imagery needed: for make-product-photos · <product> · <slot / ratio / composition> · <why> · return to: ads/batches/<file>` in the batch file; read the `Product imagery ready:` answer on the next run.
+- No usable product photos (a physical product): the batch file holds the brief and a `Waiting for: real product photos · <product> · <slots / ratios>` line, with no request line (no released playbook makes photos). The next run starts the set once the marketer has photos: their own, or ones made with the goose-product-photos skill.
 - Lower-case creative tags and the human's picks in GooseWorks (`handoff-format.md` §2).
 - Brand learnings only through the `save-learning` skill (`../../save-learning/SKILL.md`).

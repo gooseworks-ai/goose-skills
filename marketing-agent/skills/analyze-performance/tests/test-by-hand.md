@@ -9,7 +9,7 @@ Ask: "What worked this week across our channels, and what should I make next?"
 Pass if:
 1. First run: it drafts the measurement contract and asks you to confirm it — once.
 2. It asks **once** for exactly the exports it can't fetch, naming each.
-3. One report in the fixed shape: coverage and maturity header, plumbing, three-line headline, business truth from **your store** (MER, new-customer MER, nCAC, contribution vs break-even), channel table covering every channel you use (unused stated, future rows named), the two stories side by side if they disagree, named causes with evidence and ruled-out causes, creative ranking by angle and hook, email/organic blocks, test calls against the brief's criteria, calls with confidence, what to make next with producers.
+3. One report in write-report's shape (In short with what we looked at, coverage and maturity, numbered findings and "So, do this first"; Decisions for you; What to do with at most six calls; What we're not doing; What we couldn't check; Sources with source skew), with the story inside: plumbing, business truth from **your store** (MER, new-customer MER, nCAC, contribution vs break-even), channel table covering every channel you use (unused stated, future rows named), the two stories side by side if they disagree, named causes with evidence and ruled-out causes, creative ranking by angle and hook, email/organic blocks, test calls against the brief's criteria, calls saying how sure (confirmed / likely / first look, never high / medium / low), what to make next with producers. No internal ids (no test or call numbers like T2 or C1, no angle codes) and no paths.
 4. Platform revenue is never quoted as truth; the overclaim ratio is shown.
 5. It changes nothing in any account.
 6. It asks before writing learnings, and only writes what you saw and didn't strike.
@@ -17,11 +17,11 @@ Pass if:
 Telltale failures: platform revenue as truth; a channel you use silently missing; a winner named on 6 conversions; a learning written that wasn't in the report.
 
 ## Test 2 — claims-only mode
-Withhold the store export. Pass if the first line says it ran on platform claims, MER is absent, and no call is above low confidence.
+Withhold the store export. Pass if the first line says it ran on platform claims, MER is absent, and no call is above first look.
 
 ## Test 2b — only a Meta connector (no GooseWorks)
 Disconnect GooseWorks; connect an ads connector of your own for a Meta account with live ads (a test account), plus a store or billing connector if you have one. Ask: "How did my ads do this week?" Then say "pause the worst one".
-Pass if: it says once that GooseWorks isn't connected and that it keeps notes in a local folder, and is not blocked; it reads spend, results, frequency and CPM through the connector and the referee through the store or billing connector (else asks for that one export); it asks only for what no connector gives; the report, contract and run record land under `gooseworks-local/<brand-slug>/` (`reports/performance/…`, `runs/…`); "pause the worst one" is answered as a recommendation handed to the paid run, not done.
+Pass if: it says once that GooseWorks isn't connected and that it keeps notes in a local folder, and is not blocked; it reads spend, results, frequency and CPM through the connector and the referee through the store or billing connector (else asks for that one export); it asks only for what no connector gives; the report, contract and run record land under `gooseworks-local/<brand-slug>/` (`reports/performance/…`, `runs/…`), the chat says "saved in this folder" and no `gooseworks:` tool is called; "pause the worst one" is answered as a recommendation handed to the paid run, not done.
 Fail if: any write tool of any connector is called; it stops with "connect GooseWorks first"; a connector's revenue is quoted as truth without the referee.
 
 ## Test 3 — the two stories

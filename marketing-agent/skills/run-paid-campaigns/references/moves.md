@@ -1,6 +1,6 @@
 # Drafting the moves
 
-Load at step 4. Each move is a recommendation `R<n>` in `state.md` (cards too) — an internal id the marketer never sees; the proposal numbers moves 1, 2, 3 — with: object · move · evidence (window, spend, results vs allowable) · confidence · expected effect · how it will be applied · check date and decision rule at the check. Rules of thumb are labelled; judgment stays with you.
+Load at step 4. Each move is a recommendation `R<n>` in `state.md` (cards too) — an internal id the marketer never sees; the proposal numbers moves 1, 2, 3 — with: object · move · evidence (window, spend, results vs allowable) · how sure (confirmed / likely / first look) · expected effect · how it will be applied · check date and decision rule at the check. Rules of thumb are labelled; judgment stays with you.
 
 In the **low-volume regime** a normal week is fixes plus "no moves; next decision <date>"; scale/pause decisions are monthly on matured 14–28-day windows. In the **app regime** never point a Goose Traffic campaign at an app-store URL as a stand-in for an install campaign.
 
@@ -24,7 +24,7 @@ A lifetime increase is not a daily-rate increase. Implied daily pace = (lifetime
 
 ## Pacing and the ceiling
 
-Header of every proposal: month-to-date spend vs plan (tolerance ±10%), and projected month-end **if every move is approved**, vs the budget ceiling. Approved moves must sum within the ceiling; if they don't, cut the lowest-confidence scale first. Kill-switches can't be scheduled, so risky items get a **trip-wire** the marketer can fire: *"If this ad's CPA passes $60 by Thursday, say 'pause Founder story'."* Recommend an account spending limit (written instruction) when none is set.
+Checks and pacing, in every proposal: month-to-date spend vs plan (tolerance ±10%), and projected month-end **if every move is approved**, vs the budget ceiling. Approved moves must sum within the ceiling; if they don't, cut the lowest-confidence scale first. Kill-switches can't be scheduled, so risky items get a **trip-wire** the marketer can fire: *"If this ad's CPA passes $60 by Thursday, say 'pause Founder story'."* Recommend an account spending limit (written instruction) when none is set.
 
 ## Near-threshold calls — both readings, never silently decided
 

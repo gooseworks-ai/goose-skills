@@ -2,7 +2,7 @@
   "slug": "make-static-ads",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "tags": [
     "ads",
     "design"
@@ -47,8 +47,8 @@
     "a header image or social graphic in our brand style"
   ],
   "reads": [
-    "brand brain: kit, products, learnings incl. do/dont/must rules — learn-my-brand / server research",
-    "claims sign-off marker and 'Claims you may use' facts (via the shared claims-gate atom) — learn-my-brand",
+    "brand brain: kit, products, learnings incl. do/dont/must rules — GooseWorks brand research and the app",
+    "claims sign-off marker and 'Claims you may use' facts — claims-gate (scoped sign-off) and earlier brand passes",
     "voice-of-customer bank: research/market/voc-bank.jsonl / .md — research-market",
     "angle bank: research/competitors/angle-bank.md (A-NN) — research-competitors",
     "approved campaign record: brief (Status: Approved), concepts — plan-campaign (campaign_read)",
@@ -57,14 +57,13 @@
     "Goose-made creative performance — meta_read performance",
     "own and competitor scraped ads — ads_template_read mine / competitor (server research)",
     "saved inspiration outliers — research-market, research-competitors (social_inspiration_library)",
-    "kept product photos and 'Product imagery ready:' answers — make-product-photos",
+    "kept product photos (photos_read) — the brand's own, or made with goose-product-photos",
     "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)"
   ],
   "writes": [
     "lower-case creative tags (angle:a-nn, type, archetype, hook, stage, batch, test, offer-ends, claims, src, picked) — read by analyze-performance (angle ranking) and research-competitors (angle test status)",
     "the human's picks: feedback rating happy + 'picked' tag + the batch file — read by run-paid-campaigns",
     "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, angle/type, claims and policy lines, special-category flag, picks, test question, test structure with the stated budget, cut list, flags — run-paid-campaigns launches from it verbatim",
-    "'Product imagery needed: for make-product-photos · …' request lines in the batch file — answered by make-product-photos",
     "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run",
     "'Graphic ready:' answer lines under sibling request lines — read by email-lifecycle, run-organic-social, make-content on their next run",
     "render feedback with reason codes — read by the ad engine's quality loop",

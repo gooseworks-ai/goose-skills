@@ -7,7 +7,7 @@ description: >-
   this creator" or "write a creator brief". Free research first; one credit yes only to vet deeper.
   Drafts only: contacts nobody, agrees nothing, moves no money. Not for AI-made UGC-style video (not
   covered yet); if unsure, ask: a real person filming, or AI-made?
-version: 0.4.0
+version: 0.4.1
 ---
 
 # work-with-creators
@@ -18,7 +18,7 @@ Creator research answers three things for the marketer: who is worth paying, at 
 
 ## What you get
 
-1. **A readable report** (`creators/<YYYY-MM-DD>/report.md`, opened on request): "In short" (write-report §1) — timely openings (a creator already posting about the category this week, a rival's creator deal ending), the shortlist — each pick with public numbers read from real posts, dated and linked, labelled fact or inference, a price range with the math, a deal call, and **For you** ("this creator's format fits your <product> because…; what they'd make; the approved claim behind it, or 'you'd need proof of X first'") — **You vs them** (rivals' creator programmes vs yours), wave 1 and how it will be judged, near-misses, and "what we could not read". Shape: [references/roster-format.md](references/roster-format.md).
+1. **A readable report** (`creators/<YYYY-MM-DD>/report.md`, opened on request): "In short" (write-report §1) — timely openings (a creator already posting about the category this week, a rival's creator deal ending), the shortlist — each pick with public numbers read from real posts, dated and linked, and how sure (confirmed / likely / first look), a price range with the math, a deal call, and **For you** ("this creator's format fits your <product> because…; what they'd make; the approved claim behind it, or 'you'd need proof of X first'") — **You vs them** (rivals' creator programmes vs yours), wave 1 and how it will be judged, near-misses, Decisions for you (budget, names, claims, a deeper vet), and "what we could not read". Shape: [references/roster-format.md](references/roster-format.md).
 2. **The roster** (`creators/roster.csv`, kept with the outcomes ledger) and **a brief and a first message per top pick** (`creators/<D>/briefs/<handle>.md`) — claims-safe, disclosure-ready, for the marketer to send: [references/creator-brief.md](references/creator-brief.md), [references/first-message.md](references/first-message.md), [references/wave-criteria.md](references/wave-criteria.md).
 
 ## Before you start

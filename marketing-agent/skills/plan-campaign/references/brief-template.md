@@ -140,3 +140,9 @@ Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-D
 3. Concepts for paid static/video angles: `update_campaign_concept` for existing ones (it discards that concept's un-started plans — check first), `add_campaign_concept` for new ones; proof only from a claim that is both signed off and server-accepted for that product.
 4. Re-save the readable file and the brand copy (`save-to-brain`, `versioned: supersede`) with the approved status, and give the marketer the link.
 5. Business facts the marketer stated (margin, list size, capacity, founder hours) stay in the brief's Economics and Status sections — there is no brain field for them yet.
+
+**Local mode** (no GooseWorks, marketing-guide §5): steps 1–4 are replaced by the three below (no creative check, campaign record, concepts or server link); step 5 holds.
+1. Save the approved plan as the next version, `plans/<slug>/<YYYY-MM-DD>-plan-v<N+1>.md`, with the Status line set to "Approved <date> by <name>" and the marketer's words for the yes, through save-to-brain's local branch. Earlier versions stay; the newest file with an Approved Status line is the plan run-paid-campaigns and analyze-performance read.
+2. Re-save the run record with the approval (run-memory's local branch).
+3. Tell the marketer in one line: "Approved and saved in this folder." Never "saved to your brand", and no link but the local file.
+In a hosted chat with no files, give the approved plan in chat to paste back, and say it isn't saved anywhere.

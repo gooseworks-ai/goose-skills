@@ -63,7 +63,7 @@ Numbers (%, hours, counts, ratings, "2 years", "3×") · superlatives and absolu
 
 Offers, prices and stock are checked against the **product record and the marketer's words**, not the claims list: price and currency exact, terms not narrowed ("first order" ≠ "first jar"), end date shown, no "was" price without a real prior price, no "limited" without a real limit. Re-read the product record just before handing over.
 
-Anything that fails: **cut it before the human sees the ad**, and list it in the hand-off as `cut line → the proof that would restore it` (e.g. "'clears breakouts in 7 days' → a study or approved claim stating the 7-day result for this product"). Approving a new claim is the human's call through learn-my-brand.
+Anything that fails: **cut it before the human sees the ad**, and list it in the hand-off as `cut line → the proof that would restore it` (e.g. "'clears breakouts in 7 days' → a study or approved claim stating the 7-day result for this product"). Approving a new claim is the human's call through the claims gate's scoped sign-off.
 
 ## 3. Platform, category and disclosure rules
 

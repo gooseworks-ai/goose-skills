@@ -4,46 +4,88 @@ Load at steps 2, 7 and 8. Numbers below are illustrative. Two audiences: the **p
 
 ## The proposal (what the marketer reads)
 
+One template for every run, with the marketer present or scheduled. It is a report in the `write-report` skill's shape (`../../write-report/SKILL.md` §1), with this playbook's tables inside "The story", and it passes that skill's §3 checks before anyone sees it.
+
 ```markdown
-# Paid moves — week of 13 Oct · <brand> · <campaign>
+# <Brand> — paid moves, <campaign>, week of 13 Oct 2026
 
-What a customer may cost: $40 (from the plan, 2 Oct) · Data 6–12 Oct, settled through 10 Oct
-Checks: tracking ✓ · landing page ✓ · stock: Clear Serum ~6 days left ✗ (restock 24 Oct) · 1 ad rejected (see 6)
+## In short
+**What we looked at:** 6–12 Oct, settled through 10 Oct: the ads GooseWorks made (31% of Meta spend), your Meta and Google exports, store sales from Monday's read. Not visible: frequency. A customer may cost $40 (the plan).
+Since last time: raising "Sales – Broad" worked; the "Problem hook" swap can't be read until 21 Oct.
+1. Real sales are below break-even: $1.90 of new-customer revenue per ad dollar, under the $2.50 you need (**confirmed**, store-joined).
+2. "UGC unboxing" spent $128, over 3× your limit, with no orders (**confirmed**).
+3. Clear Serum runs out in about 6 days; restock 24 Oct (**likely**, from your stock note).
+**So, do this first (because of 2 and 3):** pause "UGC unboxing" and the Clear Serum ads today (What to do, 2); no scaling (finding 1).
+
+## Decisions for you
+1. **"Founder story": hold 7 days (recommended) or pause?** Both readings under This week, move 3. By 20 Oct.
+2. **Graduating the "Angle B" winners:** option A, one approval link (recommended), or B or C, instructions for you — This week, move 1.
+3. **Google: did you exclude the 6 wasted search terms?** Reply "done" or "not yet" (asked 13 Oct).
+4. A $35 target is waiting for your yes in GooseWorks; I've kept using $40 from the plan.
+
+## The story
+
+### Checks and pacing
+Checks: tracking ✓ · landing page ✓ · stock: Clear Serum ~6 days left ✗ (restock 24 Oct) · 1 ad rejected (move 6)
 Pacing: $4,180 of $9,000 this month (46% at day 13 of 31 — slightly ahead). If you approve everything below: about $8,850 by month-end, inside $9,000.
-What I can see: the ads GooseWorks made (31% of Meta spend) in detail; your export for the rest of Meta and Google. Not visible: frequency (I use the click-rate trend instead).
-Real sales this week: new-customer revenue per ad dollar 1.9, below the 2.5 that breaks even — so no scaling this week.
 
-## Since last time
+### Since last time
 - Raising "Sales – Broad" from $100 to $140 a day (you made that change on 30 Sep) — **worked**: over 7 settled days it brought about 2.1 more orders a day, at about $36 per extra order against your $40 limit (Meta's own counts; the rest of the account was flat).
 - Swapping the "Problem hook" static for its new version in "Retargeting – 30d" (applied 7 Oct) — **too early**: readable 21 Oct, so I'm leaving that ad set alone until then.
 - Pausing "Lifestyle static" — done 7 Oct — **can't tell**: the same ad set got new ads the same day, so the two changes can't be separated.
-- Google: excluding 6 wasted search terms — not confirmed yet. Did you make that change?
+- Google: excluding 6 wasted search terms — not confirmed yet (Decisions for you, 3).
 
-## This week
-| # | Move | Ad / ad set | Why (window, spend, results vs $40) | Confidence | What should happen | How | Check |
-| 1 | Graduate — your pick A, B or C | "Angle B" test winners → main sales ad set | $0.58 per page view vs $1.04 for the other angles; 2.6% of its visitors bought (1,410 visits, ~$22/order); 37 orders | High | the new ads take budget inside the main ad set; it may re-learn for ~3 days (A) | A: approval link · B/C: instructions for you | 20 Oct: cost per order on the new ads ≤ $40 |
-| 2 | Pause | "UGC unboxing" | $128 spent (3.2× the $40 limit), 0 orders, click rate 0.41% vs 1.3% | High | its spend moves to the other ads; it saves money only if the ad set budget is also cut | Say: "pause the UGC unboxing ad" | 15 Oct: shows paused |
-| 3 | **Your call** | "Founder story" | $410, 8 orders, $51 per order (1.28×), click rate 1.6% → 1.1% over 3 weeks | Low | see both readings | Kill = say it; hold = nothing | 20 Oct |
-| 4 | Swap the creative | "3 benefits static" → "Benefits v2" | click rate down 38% over 3 weeks at the same spend | Medium | click rate back toward 1.2%; ~3 days re-learning | Approval link (type GO LIVE) | 21 Oct |
+### This week
+| # | Move | Ad / ad set | Why (window, spend, results vs $40) | How sure | What should happen | How | Check |
+| 1 | Graduate — your pick A, B or C | "Angle B" test winners → main sales ad set | $0.58 per page view vs $1.04 for the other angles; 2.6% of its visitors bought (1,410 visits, ~$22/order); 37 orders | confirmed | the new ads take budget inside the main ad set; it may re-learn for ~3 days (A) | A: approval link · B/C: instructions for you | 20 Oct: cost per order on the new ads ≤ $40 |
+| 2 | Pause | "UGC unboxing" | $128 spent (3.2× the $40 limit), 0 orders, click rate 0.41% vs 1.3% | confirmed | its spend moves to the other ads; it saves money only if the ad set budget is also cut | Say: "pause the UGC unboxing ad" | 15 Oct: shows paused |
+| 3 | **Your call** | "Founder story" | $410, 8 orders, $51 per order (1.28×), click rate 1.6% → 1.1% over 3 weeks | first look | see both readings | Kill = say it; hold = nothing | 20 Oct |
+| 4 | Swap the creative | "3 benefits static" → "Benefits v2" | click rate down 38% over 3 weeks at the same spend | likely | click rate back toward 1.2%; ~3 days re-learning | Approval link (type GO LIVE) | 21 Oct |
 | 5 | Hold | 3 ads launched 10 Oct | 4 days, $96, still learning | — | — | nothing | 17 Oct · trip-wire: any of them past $120 with no order → say "pause <name>" |
 | 6 | Fix | rejected ad "Skin check" (reason: speaks to the viewer's skin condition) | — | — | a reworded version from the static-ad maker, then a swap | I've sent the reason to the ad maker | when the new version is picked |
-| 7 | Hold (no scale) | main sales ad set ($200/day) | $34 per order on 71 orders, steady 3 weeks — but real sales are below break-even | Medium | — | nothing | 20 Oct: scale only if store-joined cost ≤ $40 or real sales clear break-even |
-| 8 | Pause before stock-out | ads selling "Clear Serum" | ~6 days of stock left at current sales | High | no paid clicks to an out-of-stock page | Say: "pause the Clear Serum ads" | on restock: instructions to switch them back on |
-| 9 | Lower budget (instructions) | Google "Search – Non-brand", $80 → $65/day | your export: $1,120, 14 conversions, $80 each (2× the limit) | High | ~$105/week less spend; 1–3 fewer conversions | Instructions below | 20 Oct |
+| 7 | Hold (no scale) | main sales ad set ($200/day) | $34 per order on 71 orders, steady 3 weeks — but real sales are below break-even | likely | — | nothing | 20 Oct: scale only if store-joined cost ≤ $40 or real sales clear break-even |
+| 8 | Pause before stock-out | ads selling "Clear Serum" | ~6 days of stock left at current sales | likely | no paid clicks to an out-of-stock page | Say: "pause the Clear Serum ads" | on restock: instructions to switch them back on |
+| 9 | Lower budget (instructions) | Google "Search – Non-brand", $80 → $65/day | your export: $1,120, 14 conversions, $80 each (2× the limit) | confirmed | ~$105/week less spend; 1–3 fewer conversions | Instructions below | 20 Oct |
 
 Move 3 — both readings
 - Kill: 28% over the limit and the click rate has slid three weeks running — a fatigue curve; about $90 a week above the limit.
 - Hold: 8 orders is noise (the true cost could be anywhere from ~$33 to ~$70); the last 3 days haven't settled; this ad brings the highest order value ($74 vs $58), so it's near break-even.
 - My recommendation: hold 7 days. If it passes $60 per order by $800 spent, or the click rate drops below 0.9%, say "pause Founder story".
 
-## To approve
-1. Approval links (one approval each; type GO LIVE for increases and live swaps): move 1-A <link> · move 4 <link>
-2. To pause, say it in your own words, for example: "pause the UGC unboxing ad and the Clear Serum ads". A plain "yes" won't pause anything.
-3. Instructions for you (move 9) are below — reply "done" when applied.
+### Your top ads
+<the run record's per-ad scorecard, with plain ad names>
+
+## What to do
+1. **Approve two links** (one approval each; type GO LIVE for increases and live swaps): move 1-A <link> · move 4 <link>. How we'll know: the checks on 20 and 21 Oct.
+2. **Say the pauses in your own words**, for example: "pause the UGC unboxing ad and the Clear Serum ads". A plain "yes" won't pause anything. How we'll know: both show paused tomorrow.
+3. **Make the Google change** (move 9, card below) and reply "done". How we'll know: its cost per conversion by 20 Oct.
 Anything you don't approve stays as it is.
+
+<one card per change, in written-instructions.md's format; with the marketer's ads connector, one card per change, each applied on its own named yes>
+
+## What we're not doing, and why
+- No scaling: real sales are below break-even (finding 1), even though the main ad set holds $34 per order.
+- Nothing new in "Retargeting – 30d": its swap is still being read, so the ad set stays still until 21 Oct.
+
+## What we couldn't check
+- Meta frequency: not visible, so I used the click-rate trend.
+
+## Sources
+- The ads GooseWorks made (synced 13 Oct) · your Meta and Google exports, 6–12 Oct (received 13 Oct) · Monday's performance read (13 Oct) · the plan (v2, approved 2 Oct) · your stock note (12 Oct).
+- Source skew: these are Meta's and Google's own counts, except where the performance read joined them to store orders; 69% of Meta spend is seen only through your export.
 ```
 
-Rules: every move has its evidence and a check; holds have dates and trip-wires; near-threshold calls show both readings; collisions are shown and resolved; the header shows pacing against the ceiling with everything approved; the first section is "Since last time" from the run-memory outcome check (`run-memory.md`); a pause never claims savings the budget doesn't produce; **no ids, no tool or playbook names** — moves are numbered for this proposal only. The per-ad scorecard sits under the moves as "Your top ads" (the run record's table, plain names); the proposal is saved every run to `ads/campaigns/<slug>/proposals/<YYYY-MM-DD>.md`.
+Rules:
+- **The shape is write-report's**; its §3 checks block delivery (In short within 150 words, at most six items in What to do). The story opens with Checks and pacing (pacing against the ceiling with everything approved), then Since last time from the run-memory outcome check (`run-memory.md`), then This week, then Your top ads (the run record's table, plain names).
+- **Decisions for you** holds the calls only the marketer can make: near-threshold kill-or-hold, graduation options, waiting targets and caps (§ The yardstick in the brain), unknown statuses and asks (once each, with the date asked). **What to do** holds the approval bundles (`meta-levers.md` § What "one-tap yes" really is today): the links, the pause sentence, the cards.
+- Every move has its evidence and a check; holds have dates and trip-wires; near-threshold calls show both readings; collisions are shown and resolved; a pause never claims savings the budget doesn't produce.
+- **How sure** in write-report's words — confirmed, likely, first look — never High / Medium / Low.
+- **No ids, no tool or playbook names, no paths:** moves are numbered for this proposal only.
+- **Keep these headings as written** (this playbook's steps and the scheduled prompt look them up): Since last time, This week, Your top ads, Decisions for you, What to do.
+
+## Delivery (every run)
+
+Deliver it through the `write-report` skill (`../../write-report/SKILL.md`) §2: topic `paid-moves`; brand copy `ads/campaigns/<slug>/proposals/<YYYY-MM-DD>.md`, title `Paid moves — <slug> — <Brand> — <YYYY-MM-DD>`, tags `[run-paid-campaigns, paid-moves]`, `keep-history`; local mode by its local branch. A scheduled run sends it to the operating plan's report destination when one is set. In chat, write-report's three lines: the first move with the findings it rests on, the link, and the decisions — the approval links and the pause sentence count as decisions.
 
 **Verdicts on earlier moves** (the same words in the proposal, the run record and `decisions.md`'s Outcome line):
 - **worked** / **didn't work** — extra results per day and what each extra result cost against the allowable, before → after, both windows named, labelled Meta's counts (claimed) or store-joined (truth), netted against the rest of the account.

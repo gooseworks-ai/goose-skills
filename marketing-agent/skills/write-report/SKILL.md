@@ -7,7 +7,7 @@ description: >-
   over, then saves the report to the brand. Use alone when you already have the findings and their
   sources; otherwise run the playbook for the job (e.g. research-market, research-competitors,
   plan-campaign).
-version: 0.1.0
+version: 0.1.1
 ---
 
 # write-report
@@ -34,7 +34,7 @@ Every playbook that hands over research, a plan, a strategy or a report writes i
 
 **Length:** the body (everything after "In short") stays under **3,000 words**. Cut repetition and detail no decision needs. An appendix may hold specialist tables; the report must work without it.
 
-**Agree with the sibling reports, or say why not.** Before writing, read every same-brand report from the last 14 days whose job overlaps (market, competitors, audience, a campaign or social plan, outreach) — saved documents (`brain_search` where listed, else `knowledge_search`) and the local `gooseworks-reports/<brand-slug>/` folder. Compare lead buyer, first move, positioning and prices. A different lead buyer or first move is named in "In short" (anything else, in the story) and settled: merge the two first moves, or say why this one wins.
+**Agree with the sibling reports, or say why not.** Before writing, read every same-brand report from the last 14 days whose job overlaps (market, competitors, audience, a campaign or social plan, outreach) — saved documents (`brain_search` where listed, else `knowledge_search`; local mode: `gooseworks-local/<brand-slug>/` instead) and the local `gooseworks-reports/<brand-slug>/` folder. Compare lead buyer, first move, positioning and prices. A different lead buyer or first move is named in "In short" (anything else, in the story) and settled: merge the two first moves, or say why this one wins.
 
 **A worked example of the top:** [`example-top.md`](example-top.md), next to this file (a fictional brand — never reuse its names, numbers or findings). Read it before writing your first In short.
 
@@ -49,7 +49,8 @@ Do all that apply. Never leave a report only on the GooseWorks server.
 1. **Host with files (Claude Code, Codex, Cursor):** write it as Markdown in the marketer's current folder at `gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-<topic>.md`, give a clickable link, `[<title>](gooseworks-reports/…)`, and offer to open it. If the host can render a page or artifact, use that too.
    **Never overwrite a report:** suffix the local file, the brand copy's path and its title by save-to-brain's never-overwrite rule (the `save-to-brain` skill (`../save-to-brain/SKILL.md`) step 1).
 2. **Hosted chat (Claude.ai, ChatGPT):** an artifact or document if the host can; otherwise the full report in the chat, with its headings, not a summary.
-3. **Always** save it to the brand through the `save-to-brain` skill (`../save-to-brain/SKILL.md`), then get a link with `gooseworks:file_url`: "Saved to your brand: [open](<link>)".
+3. **With GooseWorks connected, always** save it to the brand through the `save-to-brain` skill (`../save-to-brain/SKILL.md`), then get a link with `gooseworks:file_url`: "Saved to your brand: [open](<link>)".
+   **Local mode** (the marketing-guide §5): save-to-brain's local branch keeps the copy the next run reads; give the step 1 link and say "saved in this folder". Never call `gooseworks:file_url` and never say it is saved to the brand. Hosted chat without files: step 2, and say it isn't saved anywhere, so they should keep a copy.
 
 In the chat, after delivering, at most 3 lines: the first move with the findings it rests on (a few words), the link, the decisions you need. Never re-paste the report as a summary.
 
