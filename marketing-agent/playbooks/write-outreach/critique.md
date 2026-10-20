@@ -67,3 +67,12 @@ Every round: the finding, the fix, or why it was rejected. Critics are subagents
 | 10 | A "take me off" from an unknown address was never suppressed | Agree | It gets a new suppressed row (key, reason, date) |
 | 11 | "Try in Q1" replies weren't excluded | Agree | `recontact_after` column, honoured by the exclusion step |
 | 12 | Rates stored three times; wrong lessons path; titles without the slug | Agree | Record links the read and lessons; lessons path fixed; pack and results titles carry the slug |
+
+## Round 4 — Codex review of PR #322 (2026-10-20)
+
+| Finding | Verdict | Fix |
+|---|---|---|
+| run-memory let a claim be used because the brain shows it `confirmed`, bypassing claims-gate (MAJOR) | Agree | Proof comes only through claims-gate (its §1.5 checks confirmed brain claims against the full record); no direct use of brain statuses or search hits; the "since last time" example says the line is used only if the check passes |
+| Unmatched stop/bounce created a row holding the raw address, kept forever (MAJOR, outcomes-ledger) | Agree | reply-reader writes a suppression-only row with a one-way `key_hash`; the raw address only on the marketer's yes; the send file matches hashed keys |
+| run-memory read the request lines from `results.md` | Agree | Reads and links `results-working.md` for per-reply state and request lines; `results.md` stays aggregate |
+| `outreach-copy` source | Checked | Registered centrally; this playbook writes `[outreach-copy …]` and reads both `[outreach …]` and `[outreach-copy …]` |

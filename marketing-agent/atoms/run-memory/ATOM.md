@@ -39,7 +39,7 @@ Look in the workspace first, because it is the canonical copy and the exact chec
 - **Workspace.** Call `gooseworks:file_list` on `runs/<playbook>/<job-slug>/` (or the subject folder) in the brand's scope. If the coworker scope has no record, also list `brands/<brand_slug>/runs/…` in the default workspace. Records saved before the brand had a coworker live there.
 - **Brain.** If `brain_*` tools are listed, call `gooseworks:brain_search` with query `Run record <job> <Brand>`, `source_types: ["document"]`, `since` = today minus 180 days, and `limit: 5`. Otherwise call `gooseworks:knowledge_search` with the same query and `source_types`. Keep only hits whose title matches this job's title up to the date, subject included. An empty search proves nothing: the brain may still be indexing ("Still indexing: 65 of 204…"), or the import may not have finished.
 
-The newest dated record wins. **Read the whole record:** use `gooseworks:file_read` on the workspace file, or, if the brain is the only place it exists, `gooseworks:brain_open` on the document hit, following its continuations. Never work from a search snippet.
+The newest dated record wins. **Read the whole record:** use `gooseworks:file_read` on the workspace file, or, if the brain is the only place it exists, `gooseworks:brain_open` on the document hit, following its continuations. **Without `brain_*` tools** (production today) a hit that exists only in the brain can't be opened in full: say "I found an earlier record I can't open here", treat this as a run with no readable record, and continue. Never work from a search snippet.
 
 **The baseline is the newest record that has Numbers.** A `Not run` record (see Scheduled runs) only adds gaps and carried items. Keep reading back until you find one with Numbers.
 
@@ -124,7 +124,7 @@ Report: <workspace path of this run's report, or "none">
 |---|---|---|---|---|
 ```
 
-- **Ids.** A new recommendation is `<YYYYMMDD>-<n>` (the run date). A second run on the same day continues that day's numbering. A carried recommendation keeps its first id. When a log already has an id for it (the harness's `R<n>`, a `change_id`, a `push_id`), put that in `evidence`. Never mint a second id for the same thing.
+- **Ids.** One rule: **when a stable source id already exists** (the campaign harness's `R<n>`, a `change_id`, a `push_id`), **that is the record's id**. Mint `<YYYYMMDD>-<n>` (the run date) only when none exists; a second run on the same day continues that day's numbering. A carried recommendation keeps its first id. Never give one thing two ids.
 - **Owner** is who has to act: `marketer`; `agent` (this job's next run); `approval page` (waiting for a person's yes in GooseWorks); or another playbook that carries it out (`run-paid-campaigns`, with its `R<n>` or `decisions.md` block as evidence once it adopts the move).
 - **"How we'll know"** names the metric, the threshold and the **baseline recipe**: the object (ad set, page, list, account), the metric, the window length, the attribution or data setting, and for ads, the ad ids in it and the share GooseWorks made. Store the recipe, not just a number, so the next run can re-pull both windows. A recommendation you can't test says `judgement call`, with what would show it was wrong.
 - **Ads playbooks:**

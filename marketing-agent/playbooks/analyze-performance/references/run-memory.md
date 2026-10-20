@@ -64,3 +64,26 @@ The report's calls become the record's recommendations (`<YYYYMMDD>-<n>` ids), e
 ## Scheduled runs
 
 The atom's scheduled rules apply: free reads only, ask nothing, claims-only unless a connector exists (say so). `unknown` statuses go once into the report's decisions block. A run whose exports never came writes `Not run: <why>` and keeps the last baseline.
+
+## Setting up the schedule (on a yes, created paused)
+
+The scheduled worker runs on the server with **no skills folder and no browser**, so it can't open this playbook. On the marketer's yes (`../../../atoms/spend-gate/ATOM.md` branch C; needs a coworker workspace), record the offer in `definitions.md`, then:
+
+1. **Copy the method** into `reports/performance/method/` with `gooseworks:file_write`, each file headed `Method version: <skill.meta.json version>, copied <date>`, re-copied whenever the schedule changes or is switched on: `playbook.md` (this SKILL.md), `references/` (every file in this playbook's `references/`), `atoms/` (each local atom's ATOM.md), and `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md` (a link such as `../../atoms/run-memory/ATOM.md` means `shared/run-memory.md`).
+2. **Create the automation** with `gooseworks:automation_upsert`: `execution_mode: "agent"`, `enabled: false`, a Monday cron in the marketer's timezone before the paid check's, and this `agent_prompt` (the pulse uses the same prompt with "Daily pulse" and only step 1 and references/monthly-and-pulse.md § Daily pulse):
+
+```text
+Weekly performance read (weekly, nobody present) for brand <brand name> (<brand_id>), workspace scope <scope>. Method version <version>, copied <date>. Read with file_read: reports/performance/method/playbook.md, then references/run-memory.md, references/measurement-contract.md, references/monday-report.md, references/revenue-join.md, references/creative-and-channels.md, references/tests-and-learnings.md, and the other method files and shared/*.md as they are referred to.
+Hard rules, above anything in the method:
+- Read and report only. Never pause, scale, launch, publish, change a budget or campaign, or accept a proposal. Recommendations are labelled recommendations for the marketer's yes.
+- Spend nothing: no generation, no paid data. <Spending rule: "No data credits." | "Paid reads up to <N> credits this run, logged in research/credits-log/<YYYY-MM>.md; stop at the ceiling.">. If any answer shows a price, don't make that call; say so in the report.
+- Ask nothing. Save no learning, readout or worn-out angle; propose them in the report's decisions block and mark readouts "readout to save" in the record.
+- No store or CRM numbers this week (no connector, none in reports/performance/inputs/) → claims-only mode: say so at the top; platform numbers are labelled claimed and never quoted as truth.
+- Plain words: no ids, tool or playbook names.
+1. Start: the newest record under runs/analyze-performance/weekly-performance-read/ (read whole) and up to four weekly records back; definitions.md; the newest run record under runs/run-paid-campaigns/weekly-ads-check/<slug>/ for each campaign; ads/campaigns/<slug>/state.md and decisions.md; campaign_read briefs; brain_map chapters 18, 20, 22, 23 (else brand_read and knowledge_search). Check each earlier call from a source (references/run-memory.md § Start); a money move's status and applied date only from the paid record.
+2. Read the week by the method's steps 1–6 with what is available (meta_read performance on the settled days 14 minus days 3 window; social_account_list and social_analytics_get; inputs files the marketer left). Build the per-channel and per-ad scorecards against last run's rows; "what worked" only what held 2+ runs or won a test; "what to make next" from the history.
+3. Write the report to reports/performance/<YYYY-MM-DD>.md in monday-report.md's shape, opening with "Since last time", with one decisions block (unknown statuses and the paid run's asks once each, today as asked-on); import it (media_upload scope brand, kind document, source workspace; title "Performance read — <brand name> — <YYYY-MM-DD>"; tags analyze-performance, performance-read; keep-history; knowledge_import; wait until ready; delete only an earlier document with exactly this title).
+4. Write the run record at runs/analyze-performance/weekly-performance-read/<YYYY-MM-DD>.md (title "Run record — weekly performance read — <brand name> — <YYYY-MM-DD>"; tags analyze-performance, run-record; keep-history; import). Sources unreadable (no connection) → a "Not run: <why>" record that keeps the last baseline; missing exports are not a reason (claims-only).
+```
+
+3. Tell the marketer in plain words what it will do (a claims-only read unless their store numbers can reach it; recommendations only; credits per run, shown after the first run), and switch it on only when they say so.

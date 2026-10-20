@@ -148,3 +148,12 @@ What changed:
 **Pushed back — finding 7** (`evidence` should be `report:<id>`, not `report:<YYYY-MM-DD>`): the Round 6 contract check read the server's harness code and found `report:<YYYY-MM-DD>`; the tool description says `<id>`. Not changed on one reviewer's reading; logged as server-needs #29 to confirm.
 **Not fixed (pre-existing example hygiene):** the proposal example still says "week of 13 Oct" (a Tuesday in 2026); harmless to the logic.
 Status: all majors in this playbook fixed; not re-reviewed by a second critic (no evals, as asked).
+
+## Round 9 — Codex review of PR #322 (2026-10-20)
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 MAJOR | `references/run-memory.md` assumed applied = approval + 1 day when only the approval date was known, against run-memory's source-only rule; both windows could shift into a false verdict. (Round 8's fix 6 introduced it.) | Without a sourced time for when the budget changed: `can't tell (applied date unknown)`, ask for Meta's change history or a by-day export, carry the move; windows are never built from an assumed date. server-needs #27 and Test 8 updated. |
+| 2 MAJOR | The weekly schedule pointed the server's worker at skill files it doesn't have. | `references/run-memory.md` § Setting up the schedule: method copied to `ads/method/` (SKILL, references, atoms, shared atoms, versioned), automation created paused with a self-contained prompt: paths, reads and writes, approval gates, the spending rule, caps and emergency stop, and "never pause, apply, publish, launch or accept; stage proposals only". SKILL Output line and skill.meta.json updated. |
+| 3 | Direct `brain_save` operating-plan write. | Now allowed by AGENTS §8 (20 Oct ruling) for the owning playbook; the text cites it, says the save is found, never confirmed, waits for the marketer's yes in the app, and the brief's number stays in use until confirmed. |
+| 4 | Ids. | Matches the shared rule (a stable source id is the record id): `R<n>` is the id; a dated id only where no `R<n>` exists. Wording aligned. |

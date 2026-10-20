@@ -414,3 +414,29 @@ Took the craft, not the structure, the vendor wrappers or the keys. make-content
 **For the orchestrator (#12, not fixed here):** run-memory's cadence has no two-week value. The playbook passes `weekly` and overrides "old" to mean over 6 weeks in run-record.md. Suggest adding `two-weekly` (old = 6 weeks) to the atom.
 
 **Pushback (§2b):** none. All of the findings held up against the text.
+
+## Round 19: Codex review of PR #322, the scheduled refill had no method (20 Oct)
+
+**MAJOR (adopted).** SKILL step 8 told the two-weekly automation to "run this playbook's refill (step 7)". The server's scheduled worker has no skills folder, so it could not load the playbook or its shared atoms.
+
+**Fix, following research-market and research-competitors:**
+- A new references/scheduled-refill.md. On the marketer's yes it copies the method into `social/method/`, each file headed with the method version and copy date, and copies it again whenever the automation changes or is switched on. It copies:
+  - `refill.md`: step 7, steps 4–6, the approval gates and write-back;
+  - the run-record, slot, calendar, post-check, report, platform and voice references;
+  - the plan-calendar, post-check and platform-research atoms;
+  - the shared atoms: run-memory, write-report, save-to-brain, spend-gate, claims-gate with claim-types, voice-card, disclosure, and the proxy-endpoints list;
+  - `brand.md`: platforms, accounts, time zone, posting windows, approvers and the ceiling;
+  - a note on how links map to the copies.
+- **The automation** is `execution_mode: "agent"`, created paused, with a self-contained prompt that covers:
+  - paths and read order;
+  - run-memory's Start (the last record, checks from sources only, unknowns asked once) and End (the record path, title, tags, keep-history; `Not run` when blocked);
+  - reconciling across overlapping calendars;
+  - brain reads with the fallback;
+  - the claims and person gates (no new sign-off without the marketer);
+  - slide copy only, since there is no renderer;
+  - the report path and import;
+  - the spending rule (free only, so X and LinkedIn go unscored, or a logged per-run ceiling).
+- **The prompt says explicitly:** "Never post, schedule, publish, approve or spend beyond the spending rule: drafts in files and proposals only. Never accept a proposal." It also never saves learnings or readouts ("readout pending"), never changes a managed strategy, never creates or updates posts in the product, and never contacts anyone.
+- SKILL step 8, run-record.md and skill.meta.json now point to it.
+
+**For the orchestrator:** foundation/guide's file index lists the research playbooks' `method/` folders. Add `social/method/` (run-organic-social's scheduled refill). I didn't edit the shared guide.

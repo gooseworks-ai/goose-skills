@@ -147,3 +147,9 @@ What changed:
 | 19 MINOR | The `-store` readout had no verdict condition. | Only when the store check gives worked / didn't work; not when the paid verdict is `can't tell (no ad-set view)`. |
 
 Status: all majors in this playbook fixed; not re-reviewed by a second critic.
+
+## Round 9 — Codex review of PR #322 (2026-10-20)
+
+| # | Finding | Fix |
+|---|---|---|
+| 2 MAJOR | The Monday report / pulse schedule pointed the server's worker at skill files it doesn't have. | `references/run-memory.md` § Setting up the schedule: method copied to `reports/performance/method/`, automation created paused with a self-contained prompt (paths, reads and writes, claims-only rule, the spending rule, "read and report only; never apply, publish or spend; save no learning or readout"). SKILL approval-gates line, monthly-and-pulse and skill.meta.json updated. |

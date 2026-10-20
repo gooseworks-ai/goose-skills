@@ -52,7 +52,7 @@ Nothing here is irreversible: this playbook reads and recommends; it never moves
 - Whether a messy test result is enough to act on, or the test runs again.
 - Learnings are written only from the human's own words after they have seen them.
 - Kill/scale recommendations become real only when run-paid-campaigns decides on them, behind its money gate.
-- Scheduling the report or pulse (`gooseworks:automation_upsert`) is offered once — a scheduled run uses credits, runs claims-only unless a connector exists, and should run before the paid run — and follows `../../atoms/spend-gate/ATOM.md`'s automation rule (created paused, switched on by the marketer); the offer is recorded in `definitions.md` so it isn't repeated.
+- Scheduling the report or pulse (`gooseworks:automation_upsert`) is offered once — a scheduled run uses credits, runs claims-only unless a connector exists, and should run before the paid run — and follows `../../atoms/spend-gate/ATOM.md`'s automation rule (created paused, switched on by the marketer); the offer is recorded in `definitions.md` so it isn't repeated. The server's worker has no skills folder: on a yes, copy the method into `reports/performance/method/` and give the automation the self-contained prompt in `references/run-memory.md` § Setting up the schedule (read and report only; never apply, publish or spend).
 
 ## Output and write-back
 

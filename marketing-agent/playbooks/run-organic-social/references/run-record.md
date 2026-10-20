@@ -74,7 +74,7 @@ Each has a review-by date and how we'll know, pointing at a Baselines row rather
 
 ## Scheduled refills (no human present)
 
-Follow run-memory's scheduled-run rules:
+The worker runs from the method copy and prompt in references/scheduled-refill.md. Follow run-memory's scheduled-run rules:
 - Reconcile from the sources above only, and don't ask. A post no source shows is `not read`, and one question goes into "Decisions for you".
 - **X and LinkedIn need paid reads.** With no standing per-run ceiling in the automation's yes, they go unscored: their posts are `not read`, and profile checks (bio, Premium) are `unknown`. Step 8's offer says this before the yes.
 - No readout is saved, and there is no "saved" line in chat unless the save failed.

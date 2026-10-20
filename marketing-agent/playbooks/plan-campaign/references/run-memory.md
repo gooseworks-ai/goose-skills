@@ -54,3 +54,26 @@ Then score **every bet** from the last record — status from a source (did the 
 ## Scheduled replan (nobody present)
 
 The atom's scheduled rules apply: free reads only, ask nothing, deliver the draft plan through write-report opening with "since last time" and the scored bets; the decisions it needs go in "Decisions for you". The live brief is never overwritten by a scheduled run.
+
+## Setting up the schedule (on a yes, created paused)
+
+The scheduled worker runs on the server with **no skills folder and no browser**, so it can't open this playbook. On the marketer's yes to a monthly replan (`../../../atoms/spend-gate/ATOM.md` branch C; needs a coworker workspace):
+
+1. **Copy the method** into `plans/method/` with `gooseworks:file_write`, each file headed `Method version: <skill.meta.json version>, copied <date>`, re-copied whenever the schedule changes or is switched on: `playbook.md` (this SKILL.md), `references/` (every file in this playbook's `references/`), `atoms/` (each local atom's ATOM.md), and `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md`, `shared/claims-gate.md` (a link such as `../../atoms/write-report/ATOM.md` means `shared/write-report.md`).
+2. **Create the automation** with `gooseworks:automation_upsert`: `execution_mode: "agent"`, `enabled: false`, a cron for the first week of each month in the marketer's timezone, after that week's performance read, and this `agent_prompt` (one per campaign):
+
+```text
+Monthly replan (monthly, nobody present) for brand <brand name> (<brand_id>), campaign <slug>, workspace scope <scope>. Method version <version>, copied <date>. Read with file_read: plans/method/playbook.md, then references/run-memory.md, references/replan.md, references/budget-and-tests.md, references/unit-economics.md, references/channel-decision.md, references/brief-template.md, and the other method files and shared/*.md as they are referred to.
+Hard rules, above anything in the method:
+- Draft only. Never overwrite or approve the live brief (no campaign_upsert on an approved brief), never move money, launch, publish or schedule anything, never accept a proposal. Every reallocation is a recommendation for the marketer's yes.
+- Spend nothing: no generation, no paid data, no ad quotes. If any answer shows a price, don't make that call; say so in the plan.
+- Ask nothing. Save no learning, target, experiment or decision to the brain; they are proposed in the plan's Decisions for you and saved only after the marketer approves in a conversation.
+- Claims: only the signed-off "Claims you may use —" facts (shared/claims-gate.md read step); nothing else is approved.
+- Plain words: no ids, codes, tool or playbook names.
+1. Start: the newest record under runs/plan-campaign/campaign-plan/<slug>/ (read whole) and the brief it points to (campaign_read); analyze-performance's records under runs/analyze-performance/monthly-read/ and weekly-performance-read/ since that date; run-paid-campaigns' records under runs/run-paid-campaigns/weekly-ads-check/<slug>/ since then; ads/campaigns/<slug>/decisions.md; brain_map chapters 20 and 23 (else brand_read and knowledge_search). Score every bet from a source (references/run-memory.md § Start): done or not, then worked / didn't work / too early (readable <date>) / can't tell (why), on the business number; a leg that never ran is neither credited nor blamed.
+2. Replan by references/replan.md: re-check the money math against the newest numbers on file (no browser: prices "from saved notes, unconfirmed"), revised split with from → to, amount, the verdict it rests on and what would reverse it; next month's tests, one change each.
+3. Write the draft plan to plans/<slug>/draft-v<N>.md and the readable copy per shared/write-report.md, In short first ("Do this first", then "Since <last plan date>"), with Decisions for you; import it (title "Campaign plan draft — <brand name> — <YYYY-MM-DD> v<N>"; tags plan-campaign, campaign-plan-draft; knowledge_import; wait until ready).
+4. Write the run record at runs/plan-campaign/campaign-plan/<slug>/<YYYY-MM-DD>.md (title "Run record — campaign plan — <slug> — <brand name> — <YYYY-MM-DD>"; tags plan-campaign, run-record; keep-history; import) with the scored bets and next month's bets marked "proposal, waiting for yes". No readable records or brief → "Not run: <why>".
+```
+
+3. Tell the marketer in plain words what it will do (a draft replan each month for their approval; nothing changes until they approve; credits per run, shown after the first run), and switch it on only when they say so.

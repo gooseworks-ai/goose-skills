@@ -403,3 +403,10 @@ All agreed and fixed: 70% recent in every group's report quotes (older rows stay
 ## Run memory and the Brand Brain (2026-10-19)
 
 Wired run-memory (`references/run-memory.md`): jobs `audience research`, `prospect list` (subject = the list), `lead scoring`, and one per watch. "Since last time" recounts what earlier lists and alerts led to from the outcomes ledger (per list, segment, source and signal), checks last run's moves, and steers this run (weight what replied, demote what didn't, with the sample-size rule). Records hold counts and links only — **no ledger keys**, since person keys are emails or profile URLs. Reads go to `brain_map` first (with the waiting-for-yes items) and fall back to `brand_read`; the buyer-group proposal becomes one `brain_save` `audience` item per group when the brain is listed (waits for the marketer's yes), else the `brand_update` proposal. The outcomes-ledger atom gained a "With run-memory" section (ledger = per-row truth, record = summary + link, recount don't carry, restate on change) and the `first_touch_date` and `recontact_after` columns from the write-outreach critique (logged there).
+
+### Codex review of PR #322 (2026-10-20)
+
+| Finding | Verdict | Fix |
+|---|---|---|
+| outcomes-ledger (owned here) kept raw addresses forever for suppressions, and created rows for unmatched stops/bounces (MAJOR) | Agree | New § Suppression without personal data: `key_hash` (SHA-256 of the normalised key); a suppressed row keeps only the hash, reason, date and list id; unmatched stops get a hash-only row; a host that can't hash stores nothing and asks once before keeping a raw address; people-and-contacts drops candidates whose hashed keys match before any paid lookup |
+| Direct `brain_save` for audience records | Allowed (AGENTS §8, 20 Oct ruling) — checked | The save is `status: found`, `is_public: false`, and each item waits for the marketer's yes in the app; never called confirmed |

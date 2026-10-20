@@ -6,8 +6,9 @@ How this playbook uses [`../../../atoms/run-memory/ATOM.md`](../../../atoms/run-
 
 | `job` | `subject` | `cadence` | Runs when |
 |---|---|---|---|
-| `creator research` | — | `ad hoc`, or `monthly` when a roster refresh was set up | A shortlist, a roster refresh, a re-vet |
-| `creator wave` | `wave-<n>` | `ad hoc` | Reading a wave's results after its read window |
+| `creator programme` | `wave-<n>` — the wave this run plans or reads | `ad hoc`, or `monthly` when a roster refresh was set up | The shortlist that proposes wave *n*, a refresh or re-vet while wave *n* is open, and the read of wave *n*'s results — all under the same subject |
+
+**One job, one subject per wave, from proposal to results.** The shortlist run that recommends wave 1 saves its record under `creator programme` / `wave-1`; the results read of wave 1 runs under the same job and subject, finds that record directly, and judges the wave-1 recommendation **by its original id**. A run that proposes the next wave opens `wave-2` (and first reads the newest `wave-1` record to carry its open recommendations forward with their ids). A first run with no wave yet uses `wave-1`.
 
 ## Start: "since last time"
 

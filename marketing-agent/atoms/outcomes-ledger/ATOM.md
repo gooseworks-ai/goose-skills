@@ -28,7 +28,7 @@ Every list a playbook hands over gets acted on outside GooseWorks: the human ema
 - Brand coworker workspace (`file_*` scope agent = the brand's `coworker_agent_id` from the `brand_read` list). No coworker → the default workspace with every path prefixed `brands/<brand-slug>/`, and tell the human teammates won't see it.
 - **Read before write**: `file_write` replaces the whole file. Read the ledger, change rows, write it back complete.
 - Every row a playbook *shows* the human is ledgered at the moment it is shown — sample rows included — not only at handover. Rows from a sample whose definition the human then rejected get status `listed-sample-rejected` and are **not** excluded later (the person was never handed over for outreach).
-- Required columns, first and in this order (both entities): `row_type, key, name_or_handle, account_or_platform, date_listed, list_id, status, status_date, suppressed, suppressed_reason, suppressed_date, recheck_by|revet_by, outcome, notes`. `key` is the first available match key (person: email, else profile URL, else name + root domain; creator: `platform:handle`). Then the entity columns above, then the loading playbook's own columns. Never drop a column on write-back; unknown columns are kept as they are.
+- Required columns, first and in this order (both entities): `row_type, key, key_hash, name_or_handle, account_or_platform, date_listed, list_id, status, status_date, suppressed, suppressed_reason, suppressed_date, recheck_by|revet_by, outcome, notes`. `key` is the first available match key (person: email, else profile URL, else name + root domain; creator: `platform:handle`). Then the entity columns above, then the loading playbook's own columns. Never drop a column on write-back; unknown columns are kept as they are.
 - A new entity (another playbook wanting a ledger) needs its row in the tables above, added by this atom's owner — ask before loading it.
 
 ## On every run (before any new sourcing)
@@ -36,9 +36,9 @@ Every list a playbook hands over gets acted on outside GooseWorks: the human ema
 1. Read the ledger. If it does not exist, create it with the header; carry on.
 2. **Flag stale rows for free**: rows past `recheck_by` / `revet_by` that are not yet contacted. Tell the human in one line ("12 people from the 2026-09-10 list haven't been contacted and are past their re-check date"). Re-checking them is paid → the loading playbook's spend step (`atoms/spend-gate/ATOM.md`).
 3. **Ask for outcomes once, never require them — in the run's closing decisions, never before the first result**: "Anything to report since <last list date> — replies, meetings, bounces, unsubscribes, declines, quotes? Paste, upload, or tell me in a sentence." Creators past a wave's read window (in `creators/<date>/wave-1.md`): also ask for each creator's views, orders on their code or link, and whether they posted. No answer → skip to step 6.
-4. **Match** each reported outcome to a row by the match keys in order. Unmatched lines are shown back, never guessed onto a row — except a `stop`, unsubscribe, complaint or bounce from an address not in the ledger: that address gets a new row, suppressed at once (the key, the reason and the date only).
-5. **Update** `status`, `status_date`, `outcome` — and for people, `first_touch_date` when the first send is reported (never overwritten afterwards; it anchors rates and the cool-down), `last_touch`, `reply_category`, and `recontact_after` for a "not now, try in <month>" reply (and for creators `quoted_rate` when reported). Creators with wave results: score each against its `wave_criterion` → `wave_result` = `win · partial · miss · no-data`. A suppressing status sets `suppressed` with reason and date; a timed exclusion sets `outcome` and the date it lapses. **Suppression is permanent**: a suppressed row is excluded from every later run, of every list, and is never un-suppressed except by the human's own words.
-6. **Exclude**: hand the loading playbook the full exclusion set — every suppressed key, every live timed exclusion (including rows whose `recontact_after` date hasn't come), plus every key already listed and not yet resolved (so the next batch never repeats a person) — but not `listed-sample-rejected` rows.
+4. **Match** each reported outcome to a row by the match keys in order. Unmatched lines are shown back, never guessed onto a row. A `stop`, unsubscribe, complaint or bounce from an address not in the ledger gets a **suppression-only row: the `key_hash`, the reason and the date — never the address** (§ Suppression without personal data). Keeping the raw address needs the human's yes, asked once in the closing decisions.
+5. **Update** `status`, `status_date`, `outcome` — and for people, `first_touch_date` when the first send is reported (never overwritten afterwards; it anchors rates and the cool-down), `last_touch`, `reply_category`, and `recontact_after` for a "not now, try in <month>" reply (and for creators `quoted_rate` when reported). Creators with wave results: score each against its `wave_criterion` → `wave_result` = `win · partial · miss · no-data`. A suppressing status sets `suppressed` with reason and date, and reduces the row to its suppression form (below); a timed exclusion sets `outcome` and the date it lapses. **Suppression is permanent**: a suppressed row is excluded from every later run, of every list, and is never un-suppressed except by the human's own words.
+6. **Exclude**: hand the loading playbook the full exclusion set — every suppressed `key_hash` (the playbook hashes each candidate's keys the same way and drops any match), every live timed exclusion (including rows whose `recontact_after` date hasn't come), plus every key already listed and not yet resolved (so the next batch never repeats a person) — but not `listed-sample-rejected` rows.
 
 ## Lessons (only when outcomes came back)
 
@@ -57,9 +57,17 @@ The ledger and the run records hold different things and must agree:
 - **Lessons and records:** a lessons file is the analysis of outcomes (dated, keep-history); the run record links it and lists its proposed changes as recommendations with ids, so the next run can check whether they were adopted and what they did.
 - Statuses a run record cites are only the ones the marketer reported into the ledger — never inferred.
 
+## Suppression without personal data
+
+A suppression must last forever, but the person's details must not. So:
+- **`key_hash`** = SHA-256 (hex, prefixed `sha256:`) of the normalised key: email lower-cased and trimmed; profile URL lower-cased with no protocol, `www.`, query or trailing slash; name + root domain lower-cased, single-spaced, joined by `@`; creators `platform:handle` lower-cased. The same rule hashes every new candidate, so a suppressed person is blocked from every later list without the ledger keeping who they are.
+- **When a row is suppressed** (bounced, unsubscribed, do-not-contact, never-again): keep `key_hash`, `suppressed`, `suppressed_reason`, `suppressed_date`, `list_id`; blank every other personal field (`key`, name, email, email_candidate, profile URL, route, notes). Counts by segment stay countable from `list_id` and the reason.
+- **Compute the hash with the host's code tool** (shell or code execution). A host that can't compute one: don't store the address at all — tell the human to add it to their own sending tool's suppression list, and ask once whether to keep the raw address here so it stays blocked; store it only on their yes, labelled `raw, kept on your yes (<date>)`.
+- Rows the human pastes or uploads for scoring follow the same rule when they become suppressed.
+
 ## Retention
 
-Rows never contacted 12 months after `date_listed` are deleted from the ledger (keep suppressed keys forever — a suppression keeps only the key, the reason and the date). Say how many were removed.
+Rows never contacted 12 months after `date_listed` are deleted from the ledger. Suppression rows are kept forever, in their hashed form only. Say how many were removed.
 
 ## Never
 

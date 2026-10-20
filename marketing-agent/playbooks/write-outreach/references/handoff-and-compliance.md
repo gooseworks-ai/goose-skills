@@ -23,7 +23,7 @@ One row per person, plain UTF-8 CSV with a header, no merged cells — imports i
 - A filled `email` whose status isn't `verified-by-tool` is treated as unchecked: it moves to `email_to_check`.
 - `row_type` `account-to-find` (accounts with no named person yet) get no sequence — they're listed in the pack as "people to find first".
 - Fields with line breaks are quoted (standard CSV). In the tool, build each step from the columns (`{{subject_1}}`, `{{body_1}}`, delay `day_2 − day_1`); `timezone` lets it send in their working hours.
-- Before writing: drop rows that are suppressed or in cool-down in the ledger, de-duplicate on email (keep the first), and report the counts ("42 rows; 6 left out: 3 unsubscribed, 2 contacted in the last 12 weeks, 1 duplicate").
+- Before writing: drop rows that are suppressed (match each row's hashed keys against the ledger's `key_hash`) or in cool-down in the ledger, de-duplicate on email (keep the first), and report the counts ("42 rows; 6 left out: 3 unsubscribed, 2 contacted in the last 12 weeks, 1 duplicate").
 - **Gmail only, no tool:** the pack also lays out each touch per person in order, ready to paste, with the day to send it.
 - The send file holds people's data: it's saved in the workspace and locally, **never imported into the brand brain**.
 

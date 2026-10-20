@@ -30,4 +30,4 @@ After a launch, the first pulse (T+2) is the 48-hour read: pacing, rejections, e
 
 Output when something breaks: one line per issue — what, evidence, the proposed action and who takes it (almost always run-paid-campaigns, as a pause/swap proposal behind its gate). Otherwise: "Nothing needs you today in what I can see" — plus the coverage line.
 
-Scheduling either the Monday report or the pulse with `gooseworks:automation_upsert` is a standing configuration change: offer once, state that scheduled runs use credits, and create it only on an explicit yes.
+Scheduling either the Monday report or the pulse with `gooseworks:automation_upsert` is a standing configuration change: offer once, state that scheduled runs use credits, and create it only on an explicit yes — with the method copied into the workspace and the self-contained prompt in `run-memory.md` § Setting up the schedule.

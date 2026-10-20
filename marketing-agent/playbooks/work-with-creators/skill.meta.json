@@ -24,7 +24,7 @@
     "shared disclosure rules atoms/ad-policy-check/disclosure.md (make-static-ads)",
     "workspace creators/roster.csv via outcomes-ledger, earlier wave-1.md and briefs (this playbook); research/credits-log/<YYYY-MM>.md (spend-gate)",
     "human: goal, budget, creators in talks, target CAC / CPA / planned media, cost per demo or install, roster status and wave results",
-    "run records runs/work-with-creators/<job-slug>/… (run-memory) and the roster for wave results"
+    "run records runs/work-with-creators/creator-programme/wave-<n>/… (run-memory) and the roster for wave results"
   ],
   "writes": [
     "workspace creators/roster.csv (living roster in the outcomes-ledger schema: status, suppression, wave, wave result, quoted rate) — read by the human and every later run; analyze-performance reads it for roster seeding (creators are a future row there); plan-campaign when a creator leg is Run/Test",
@@ -32,7 +32,7 @@
     "workspace creators/roster-summary.md → brand document 'Creator roster — <Brand> — <date>' (supersede; no contact details) — read by later runs and plan-campaign",
     "workspace creators/lessons/<date>.md → brand document 'Creator lessons — <Brand> — <date>' (keep-history; numbers only) via outcomes-ledger — read by later runs",
     "research/credits-log/<YYYY-MM>.md rows — read by every playbook's spend estimates",
-    "run records runs/work-with-creators/<job-slug>/[wave-<n>/]<date>.md (keep-history) via run-memory — counts and links only, read by the next run"
+    "run records runs/work-with-creators/creator-programme/wave-<n>/<date>.md (keep-history) via run-memory — counts and links only, read by the next run"
   ],
   "needs": {
     "mcp": [

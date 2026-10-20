@@ -36,7 +36,8 @@
     "learnings rows (brand_update patch.facts, user_correction) — read by every planner and maker; angle ids for research-competitors",
     "daily pulse (chat, exception-only) — interim until watch-and-alert",
     "run records runs/analyze-performance/<job-slug>/<date>.md + brand documents (keep-history) — per-channel and per-ad scorecards, calls with owner / review-by / test, outcomes — read by its own next run and plan-campaign",
-    "measured readouts kind 23 experiment_readout.<slug>-t<n> and <slug>-r<n>-store (worked / didn't work, never from a scheduled run), and worn_out_angle.<id> on the marketer's yes — via save-learning"
+    "measured readouts kind 23 experiment_readout.<slug>-t<n> and <slug>-r<n>-store (worked / didn't work, never from a scheduled run), and worn_out_angle.<id> on the marketer's yes — via save-learning",
+    "reports/performance/method/ (copied method for the scheduled worker) — read by the weekly automation"
   ],
   "needs": {
     "mcp": [
@@ -63,7 +64,8 @@
       "gooseworks:tools_load",
       "gooseworks:brain_map",
       "gooseworks:brain_open",
-      "gooseworks:brain_search"
+      "gooseworks:brain_search",
+      "gooseworks:automation_list"
     ]
   },
   "atoms": [

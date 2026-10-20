@@ -37,7 +37,8 @@
     "run record runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md + brand document (keep-history) — per-ad scorecard, money moves with baseline recipes and verdicts, open moves — read by its own next run, analyze-performance and plan-campaign",
     "proposal file ads/campaigns/<slug>/proposals/<date>.md (the weekly proposal, saved every run)",
     "measured readouts (kind 23 experiment_readout.<slug>-r<n>, worked / didn't work only, never from a scheduled run) via save-learning",
-    "proposed targets (kind 20 target_cpa / target_roas via save-learning, the marketer's words) and a stated daily cap (operating_plan daily_spend_cap_minor_units / spend_cap_currency via brain_save) — wait for the marketer's yes"
+    "proposed targets (kind 20 target_cpa / target_roas via save-learning, the marketer's words) and a stated daily cap (operating_plan daily_spend_cap_minor_units / spend_cap_currency via brain_save) — wait for the marketer's yes",
+    "ads/method/ (copied method for the scheduled worker: SKILL, references, atoms, shared atoms) — read by the weekly automation"
   ],
   "needs": {
     "mcp": [
@@ -67,7 +68,8 @@
       "gooseworks:knowledge_search",
       "gooseworks:media_upload",
       "gooseworks:knowledge_import",
-      "gooseworks:job_get"
+      "gooseworks:job_get",
+      "gooseworks:automation_list"
     ]
   },
   "atoms": [

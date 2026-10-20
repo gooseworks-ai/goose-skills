@@ -50,7 +50,7 @@
     "workspace research/credits-log/<YYYY-MM>.md: one line per paid proxy read (spend-gate; shared price history)",
     "the social plan report via write-report: a local file with a link (or an artifact in hosted chat) plus a brand document via save-to-brain, 'Social plan — <Brand> — <date>' (the marketer; analyze-performance)",
     "workspace social/research/<date>-<platform>.md: platform card, niche examples and patterns, own-account read (the next run)",
-    "a paused automation (automation_upsert) for the two-week refill, only after the marketer's yes (the coworker's scheduled runs)",
+    "a paused automation (automation_upsert, execution_mode agent, self-contained prompt) for the two-week refill, only after the marketer's yes, plus the method copy in workspace social/method/ (refill.md, brand.md, references, atoms, shared/ atoms) that the server's worker reads (the coworker's scheduled runs)",
     "rendered slide PNGs and LinkedIn document PDFs, uploaded with media_upload to the brand (the marketer, from the report's links)",
     "run record via the shared run-memory atom: runs/run-organic-social/social-calendar/<YYYY-MM-DD>.md with the per-post and per-format scorecard, format tests (verdict or carried), recommendations with review-by dates; also a keep-history brand document (the next refill)"
   ],
