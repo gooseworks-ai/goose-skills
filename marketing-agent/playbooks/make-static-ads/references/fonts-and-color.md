@@ -5,18 +5,16 @@
 - **One improvement:** when the brand font resolves to a plain system face (Inter, Arial, Helvetica, Roboto, a generic sans) for a designed headline, offer 2–3 pairings from §2 at Step 2, one suggested; the chosen pairing goes into the composer's `Typography:` line and the specimen (`atoms/compose/ATOM.md`).
 - The same pairings are the font options for copy variants (`atoms/copy-variants/ATOM.md`). Every font here is free on Google Fonts, so the specimen and the layers method can set it exactly.
 
-Load at Step 2 (the look questions), Step 6 (compose, only for the improvement) and in the copy-variants atom.
 
 ## 1. The font question (Step 2) and what each answer does
 
 | Answer | What the composer gets (`composer.md` §6.3, `font-specimen.md`) |
 |---|---|
-| **Brand font** — offered only when the agent can actually use it: a Google Font, or a font file in the brand kit | The family in the `Typography:` line and a font specimen rendered in it |
-| **Upload your font file** | `gooseworks:media_upload` the file; the specimen is rendered from it; the family goes in the `Typography:` line |
+| **Brand font** — offered only when it is on Google Fonts or has a metric clone (`font-specimen.md` §3), the only faces the specimen can set | The family in the `Typography:` line and a font specimen rendered in it |
 | **Pick one of 2–3 fonts** that suit the brand (§2, one suggested) | The pairing in the `Typography:` line and a specimen rendered in it (all are Google Fonts) |
 | **No specific font** | No family named and no specimen: replace the composer's TYPOGRAPHY instruction with "set all text in a clean, legible typeface that suits the brand and the layout" |
 
-A brand font that is not a Google Font and has no file in the kit is never named to the image model — it cannot draw a font it doesn't know, and naming it produces a lookalike. Offer upload, a pairing or no font instead. Never Inter, Arial, Helvetica or Roboto as a designed headline unless the marketer chose it; never more than two families; no light weights for the hook.
+A brand font with no Google Fonts match or metric clone is never named to the image model: it cannot draw a font it doesn't know, and naming it produces a lookalike. Offer a pairing or no specific font instead. Never Inter, Arial, Helvetica or Roboto as a designed headline unless the marketer chose it; never more than two families; no light weights for the hook.
 
 ## 2. Pairings by brand type (headline / body)
 

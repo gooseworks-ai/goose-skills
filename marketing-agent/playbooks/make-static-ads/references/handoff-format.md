@@ -1,6 +1,5 @@
 # Hand-off format — what the human and the sibling playbooks receive
 
-Load at Step 8 (plan table) and Step 12 (finished set).
 
 ## 1. Definitions
 
@@ -14,7 +13,7 @@ Write with `gooseworks:ads_creative_update` `patch.tags`. **Everything lower-cas
 
 `concept:<c1, c2, …>` (the concept the ad executes — results are read per concept) · `angle:<a-nn from the angle bank (e.g. angle:a-07), else a short slug>` · `persona:<slug>` · `emotion:<slug>` · `style:<lofi|hifi|graphic|illustrated|lifestyle>` · `type:<angle type, e.g. problem_fix>` · `archetype:<slug>` · `hook:<n>` · `stage:<unaware|problem|solution|product|most>` · `batch:<yyyy-mm-dd>` · `mode:<fresh|iterate|rotation|fix>` · `test:<short-slug>` · `offer-ends:<yyyymmdd>` (e.g. `offer-ends:20261031`) (promo ads) · `claims:<pass|cuts|facts-only>` · `src:<first 8 characters of the template or creative id>` · `structure-only` (templates the brand doesn't own) · the judge's tags `judge:<pass|needs-review|unjudged>`, `try:<1|2>`, `superseded` (`judge.md` §8) · `picked` (only on the human's run decision)
 
-**Tags replace the whole set.** Read the creative's current tags, merge, and write the full set once; add `picked` later the same way. Tags save to the creative's `user_tags` (gooseworks-app PR #2105); picks are also written in the batch file, which stays the record of truth.
+**Tags replace the whole set.** Read the creative's current tags, merge, and write the full set once; add `picked` later the same way. Tags save to the creative's `user_tags`; picks are also written in the batch file, which stays the record of truth.
 
 Readable name for the human and the ad account: `brand_product_angle_stage_hook#_archetype_ratio_yyyy-mm-dd` (lower-case).
 

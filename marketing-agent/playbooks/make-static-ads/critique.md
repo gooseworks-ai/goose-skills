@@ -271,3 +271,87 @@ Akhil ran the skill on Juicebox (three Meta feed ads, his template picks: three 
 3. **No memory of past GooseWorks ads.** The search-bar ad reused the same Loxo template and the same example search as an ad made earlier that day. Fix: a "made before" list from batch files and creatives (§2a), never suggested again, new example content if picked (§3.6, render-review "not a repeat").
 
 Open, asked of Akhil: whether every set must carry customer proof (agent's view: each concept needs a visible proof; customer proof at least once per set when the brand has it, not on every ad).
+
+## Round 16 — writing-for-agents review (20 Oct 2026, v0.4.2)
+
+A fresh subagent (effort xhigh) reviewed every file against the "writing for agents" guide (aihero.dev): pointers, information hierarchy, completion criteria, duplication, negation, sediment. Akhil asked for the fixes. Findings and what changed:
+
+| # | Finding | Severity | Done |
+|---|---|---|---|
+| 1 | Description lost to goose-ads: 1,000 chars, dead opening, five triggers for one branch, never named goose-ads (Akhil hit it: "make static ads" ran goose-ads) | must | Rewritten, 706 chars, leads with "Static image ads", names goose-ads; routing cases R01/R19/R39/R57 still covered |
+| 2 | Setup never checked `ads_render` exists (prod/staging lack it until gooseworks-app #2105 merges) | must | Setup 1: done when `ads_render` is listed, else stop; hard rule 4: every image through `ads_render` |
+| 3 | Default count contradicted itself (ten vs 3) | must | Step 2 Q5 is the only default (3 ads, Meta feed 4:5); concept-grid shapes by the chosen count |
+| 4 | Ownership override not where compose reads it; §2.2 table puts `upload` on the normal path | must | compose row 2 states structure-only follows ownership; Step 6 done line checks no other brand's image in `image_urls` |
+| 5 | Judge brief incomplete (no §3 values, unreduced blueprint for direct competitors, accent-headline rule unseen) | should | render-review step 1 assembles §3 from the compose record with the reduced blueprint; judge departures J1 (facts) and J2 (accent text) |
+| 6 | Pointers to ported files fired at intro / Step 3 / Step 4 | should | Removed; Variant brief now written at compose, not concept-grid |
+| 7 | SKILL.md sprawl, steps restating atoms, hard rules duplicating gates | should | Steps = action + atom + done line; hard rules 2, 5, 6 folded into gates or cut; 18.5K → 14.7K chars |
+| 8 | Modes scattered; stock mode undefined; 7b inside Step 7 | should | One Modes table; 7b → `atoms/fix-rejected`; stock/price mode defined with a done line |
+| 9 | Claims rule in ~9 places, drifting | should | Leading word *usable fact*, defined once in `claims-and-policy.md` §2 |
+| 10 | "do not say …" put the cut claim into the composer input | should | Brief rewritten around usable facts only; compose input is a closed set |
+| 11 | Three source orders for reasons to buy | should | concept-grid step 1 is the one order; taxonomy §5 and angles §4 point to it |
+| 12 | Python copied out of markdown by hand | should | `scripts/schemes.py`, `scripts/specimen.py`, byte-identical to the ported blocks (checked) |
+| 13 | Font "upload" and "file in the kit" paths don't exist | should | Brand font offered only on Google Fonts or a metric clone; upload dropped |
+| 14 | Fix lists grouped by date, not topic | should | compose fixes → departures ledger; render-review's 8 checks → rubric 22, 24–29 |
+| 15 | Runtime pointers into server-needs / critique; PR status lines | should | Pointers and status lines cut; both files kept (AGENTS.md §3 requires them) |
+| 16 | engine-notes duplicated; research check buried | should | Research check → Setup 3; engine-notes cut to unique notes; all "Load at Step N" lines removed from references |
+| 17 | Template question had two readings | should | "you pick from a gallery / I pick and show you" |
+| 18 | Done-when not checkable ("money behind half") | nice | Kept in tests only |
+| 19–20 | copy-variants one-line procedure; historic logs in tests; hard rule 6 a no-op | nice | Layers split into numbered sub-steps with a pixel-match done line; logs moved to this file's appendix; rule cut |
+
+Not changed: the verbatim server text inside `composer.md`, `judge.md`, `structure-blueprint.md`, `font-specimen.md` (parity, Test 9). Departure 6 (content-policy re-compose instead of the server's engine fallback) is kept from Round 14, now marked in the compose ledger.
+Outside this skill (follow-ups): goose-ads should route static requests here; the server's MCP instruction "static ads: ads_template_read … then ads_generate" should point at this flow.
+
+## Appendix — build-time test logs (moved from tests/test-by-hand.md, 20 Oct 2026)
+
+### Free and cheap reads — 2026-10-19 (no generation)
+
+| Step | Call | What came back |
+|---|---|---|
+| Category leader page id | Meta Ad Library search box, "AG1 by Athletic Greens" under Advertisers (host browser, free) | page id 183869772601, ~510 active ads; default order by impressions |
+| Category leader ads | proxy `/v1/facebook/adLibrary/company/ads` `{pageId, status: ACTIVE, media_type: all, trim}` | 29 ads, 1 credit, 172 KB; statics as DCO / IMAGE / CAROUSEL with `original_image_url`; 7 distinct static concepts (taxonomy §1). `media_type: IMAGE` returned 0 (server-needs N9) |
+| Page search | proxy `/v1/facebook/adLibrary/search/companies` `{query: "AG1"}` | 1 credit; AG1 not in the results (celebrities named "Ag…") — find page ids in the library's own search box instead |
+| Keyword search | proxy `/v1/facebook/adLibrary/search/ads` `{query: "greens powder", media_type: image}` | 30 ads, 1 credit, 724 KB; mostly one long story ad from look-alike pages — keyword search is a last resort (references §2d) |
+
+### v0.3 staging run — 2026-10-19 (adversarial reviewer, free calls only) — historic, pre-0.4 (ads_generate era)
+
+| Brand | What came back |
+|---|---|
+| Graza (DTC) | Kit font Bebas Neue (`mapped` = guessed); no proof points, 0 learnings, no sign-off; 304 own Meta ads; 5 imported competitors (~90 static templates, layouts asking for starburst badges). `mine` (image, 30 rows) = 10 distinct texts → concept inventory buildable (seed-oil and avocado-oil swaps, a pomace myth ad, 35% off subscription, chips, mayo, "details matter"). Organic: 12 posts, captions + counts only; most-commented are giveaways. Conflicting offers in knowledge (free shipping over $55; 20% off Starter Kit). **Dry runs:** a 2,470-character brief as `prompt` on library template b4353eb3, 4:5 + 9:16, `no_logo` → 2 images × 60 = **120 credits**; competitor template d13e41c0 at medium → **45 credits**. `apply_brand_font: false` accepted silently but is forced on for these sources by the server. |
+| Gooseworks (B2B SaaS) | Kit font Space Grotesk (user-set); 10 learnings incl. `must` wordmark and CTA pill; `mine` = 3 uploads (two are other brands' references) → filter to rows imported from Meta; competitor Smartly statics last imported 14 Sep. Dry run 1:1 + 16:9 without product image → **120 credits**. |
+| Greener Closet (near-empty) | Kit font Inter (`mapped`); no learnings; no own ads; competitors with 0 ads; organic posts from 2025. Stops at Step 3 with no grounded reasons until the scoped sign-off; references from the library only. |
+
+Not run (would spend or write): import refreshes, paid ad-library reads, generation.
+
+---
+
+### Staging run — 2026-10-16 (stopped before the first paid call) — historic, pre-0.4 (ads_generate era)
+
+Brand Personal Day (`0e5b2fb0…`), product Dive Deep Mevalonic Moisturizer (`241a7303…`), ask: "I need ten fresh ads for the Dive Deep moisturiser this week."
+
+| Step | Call | What came back |
+|---|---|---|
+| Server start | `get_started` `wants: "image"` | Set up; "go straight on with their request" |
+| Brand read | `brand_read` summary/kit/products/learnings/competitors | Voice, value props, 6 proof points, `messagingAngles: []` (the server's own research angles — empty; the real angle bank is research-competitors' `angle-bank.md`, not written for this brand yet), 5 tracked competitors with scraped ads, 1 video learning; product: price 16.00, 4 photos, no stock field, `ad_eligibility: eligible` |
+| Claims | `knowledge_search` `["claim"]` without product | 7 claims, `approved_ad_claim: true` — all auto-created from the site and press (Free Returns, Free Shipping $45+, 4.9★/234 reviews, Allure/Byrdie/NewBeauty quotes) |
+| Claims for the product | same, with `product_id` | The same 7, now `approved_ad_claim: false`, `claim_status: "approved_scope_unknown"` → **no claim is usable for the moisturiser until learn-my-brand records that scope**; the Byrdie quote is about a mist, an Allure quote about a toner |
+| Customer words | `knowledge_search` `["evidence"]` (secondary source) | Only press quotes and one site metric — research-market's voice-of-customer bank does not exist for this brand yet |
+| Angles | `knowledge_search` `["learning","document","creative"]` | Empty |
+| Account | `campaign_read` | No campaigns |
+| | `meta_read` `performance` | `not_connected` |
+| Own past ads | `ads_template_read` `mode: "mine"` | 8 own Meta ads with copy, CTA, destination, run dates (e.g. bundle "save up to 25%", ran Jul–Oct) — copy includes unapproved lines ("daily defense against bacteria & breakouts") |
+| Sources | `ads_template_read` `static_library` "customer review quote card for an acne-safe moisturizer" | 5 ranked beauty templates (review card, UGC serum-in-hand, editorial triptych…) |
+| **Quote (stop)** | `ads_generate` `dry_run: true`, 1 template × 2 variants × 4:5 + 9:16, prompt fence with exact on-image text | **4 images × 60 credits = 240 credits** (rates: low 30, medium 45, high 60). |
+
+**What the playbook would say next:** "You have no angle bank or customer reviews on file and none of the saved claims is confirmed for the moisturiser. I can build three angles from plain product facts (ingredient story, lightweight texture, price) with no claims on the images; or approve the claims you want for Dive Deep in learn-my-brand first and come back; or run research first. Each concept gets its own quote. This first one came back at 240 credits (4 images; lower quality is cheaper). I'll show each quote exactly as it comes back before asking for your yes." — **stopped here; no generation call was made.**
+
+Findings fed back into the playbook: the claim status fields (`claims-and-policy.md` §2), own past ads as an account signal (Step 1), cost per image for planning the quote.
+
+**Round 2 (adversarial run, same day) added:** one prompt per `ads_generate` call (a 2-template dry run shared one prompt: 6 images, 360 credits); no learn-my-brand sign-off marker on Personal Day yet → no claims usable; a brand with `research_status: "none"` still gets a dry-run quote (submit would fail); unfiltered `ads_creative_read` returned 2.1 MB for 17 creatives.
+
+---
+
+### Round 2 fix pass (2026-10-16) — what to re-check by hand — historic, pre-0.4 (ads_generate era)
+
+- No sign-off on file → the scoped sign-off happens inside this run (3–5 lines), not a hand-off elsewhere.
+- Tags are written lower-case (`angle:a-07`, `picked`) and the picks are also in the batch file.
+- **Tag round-trip (F5a), not yet verified:** on a staging creative, write `tags: ["angle:A-07","picked"]` with `ads_creative_update`, then read it back with `ads_creative_read` `tags: ["angle:a-07"]`. Expected: saved lower-case and found. The write was blocked by this session's permission guard on 2026-10-16, so it still needs a human-run check (server-needs #21).

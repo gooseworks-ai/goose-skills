@@ -1,6 +1,6 @@
 # Review rubric — every render, every ratio
 
-Load at Step 10, after the server's judge (`judge.md`) has run on the render and its one retry. These are the playbook's extra checks. Severity decides what happens: **BLOCK** — never ships (fixed by the render's one retry, or dropped); **REMAKE** — fixed by the one retry, else dropped or, for a taste call, shown as a NOTE; **NOTE** — label for the human. Feedback reason codes in brackets are for the **human's** verdicts only (see "Record every verdict" below).
+The playbook's extra checks, run after the server's judge (`judge.md`) on every render. Severity decides what happens: **BLOCK** — never ships (fixed by the render's one retry, or dropped); **REMAKE** — fixed by the one retry, else dropped or, for a taste call, shown as a NOTE; **NOTE** — label for the human. Feedback reason codes in brackets are for the **human's** verdicts only (see "Record every verdict" below).
 
 | # | Check | How a senior checks | Severity |
 |---|---|---|---|
@@ -25,8 +25,14 @@ Load at Step 10, after the server's judge (`judge.md`) has run on the render and
 | 19 | Set diversity | `creative-taxonomy.md` §4 still holds after retries and drops: cover the text — no two ads look alike; no two share reason to buy + framework + visual style | REMAKE set |
 | 20 | Rights | No celebrity or lookalike, no third-party trademark, competitor ads used for structure only, creator/model permission on file | BLOCK |
 | 21 | Destination match | The destination shows the product, offer and promise of the ad | NOTE (flag to analyze-performance's page audit) |
-| 22 | Template followed, not copied | Layout and signature mechanic of the template are there; none of its words, product, logo, people or colours | REMAKE / BLOCK if copied |
+| 22 | Template followed, not copied | Layout and signature mechanic of the template are there; none of its words, product, logo, people or colours. For a direct competitor's template ("layout only"), the main agent — never the judge — puts the render beside the template image with both logos covered: could a buyer take ours for theirs? (`references-and-remix.md` §5) | REMAKE / BLOCK if copied |
 | 23 | Composed prompt followed | Every on-image word in the composed prompt is drawn, and nothing else; type, colours and logo / no logo as the prompt says | REMAKE |
+| 24 | Logo matches the kit | Same shape, letters and colours as the kit logo file; recoloured or redrawn = fail | REMAKE |
+| 25 | Bodies and products in use | Feet and shoes face the right way, garments are worn correctly, hands look natural; a floating product has a believable shadow or is clearly a cut-out graphic | REMAKE |
+| 26 | Product used for what it is for | A casual shoe is not shown sprinting; a mug is not a vase | REMAKE |
+| 27 | Text inside its panel | No line crosses a band or card edge; nothing is cut off at the canvas edge | REMAKE |
+| 28 | Concept intact | The image still speaks to the grid row's persona and reason to buy. A proof missing from the image moves into the primary text first (free, no retry); only a picture or headline that speaks to someone else uses the retry | REMAKE |
+| 29 | Not a repeat | No example content (search query, names, on-screen numbers) copied from an ad on the made-before list | REMAKE |
 
 ## The server's judge comes first
 

@@ -6,7 +6,7 @@
 - Meta's delivery system (Andromeda, 2025) groups ads that look or open alike and lets only one of them compete. A set is diverse only when its ads differ in **message and look at the same time**.
 - Use the grid in §3 before composing any ad, and the diversity checks and the **concept gate** in §4 before showing the plan. Difference is not enough — every concept must also be good.
 
-Load at Step 3 (concept grid), Step 4 (templates) and Step 10 (set diversity check after retries). The angle families, awareness stages and hook formulas live in `angles-and-hooks.md`; the archetype table and company types live in `formats-and-placements.md` §1–2. This file is the frame that ties them together.
+The angle families, awareness stages and hook formulas live in `angles-and-hooks.md`; the archetype table and company types live in `formats-and-placements.md` §1–2. This file is the frame that ties them together.
 
 ## 1. What "different concepts" means — AG1's live ads (US Ad Library, 19 Oct 2026)
 
@@ -104,11 +104,6 @@ One row per ad. The agent fills every column; "same as #N" is allowed only for t
 
 ## 5. Where concepts come from, for this brand
 
-Read these before inventing anything (paths in `reading-the-brain.md`):
-1. **What the brand already runs** — its own Meta Ad Library ads (`references/references-and-remix.md` §2): what each running ad says, how long it has run (long runs suggest winners), which levers it uses. The new set should cover reasons the brand has **not** tried yet, plus fresh executions of its proven ones.
-2. **What the brand says on social** — its recent organic posts: topics that drew the most replies (captions and counts only; skip giveaways and posts older than six months).
-3. **What customers say** — the voice-of-customer bank and reviews.
-4. **What competitors run long** — reasons to buy that keep running are likely working; borrow the reason and structure, never their words, claims or look.
-5. **The brand's facts** — products, usable brain facts, offers, founder story.
+The source order is `atoms/concept-grid/ATOM.md` step 1. The new set covers reasons the brand has **not** tried yet, plus fresh executions of its proven ones.
 
 Write the set's coverage in one line in the plan: "Already running: discount, celebrity, product hero. New here: problem→solution for commuters, founder note, myth-buster."

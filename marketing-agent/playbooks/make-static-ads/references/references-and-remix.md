@@ -6,7 +6,7 @@
 - **The marketer picks; if they don't, the agent picks** — templates likely to work (long-running, or run in several versions) that the brand **has not already tried**.
 - **The template's pixels follow the server's rule:** a template the brand doesn't own is turned into a written layout blueprint and never shown to the image model (`structure-blueprint.md`); the brand's own ads are shown as images.
 
-Load at Step 1 (the brand's own ads — the concept inventory) and Step 4 (templates). Taxonomy terms: `creative-taxonomy.md`.
+Taxonomy terms: `creative-taxonomy.md`.
 
 ## 1. What makes a good template
 

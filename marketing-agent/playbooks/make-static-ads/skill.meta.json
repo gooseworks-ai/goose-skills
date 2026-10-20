@@ -1,7 +1,7 @@
 {
   "slug": "make-static-ads",
   "tier": "playbook",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "pillar": "6 — Paid media / performance marketing (creative production with pillar 15)",
   "intents": [
     "I need ten fresh ads this week and I have no designer",
@@ -11,6 +11,7 @@
     "more like my winning ad — new hooks",
     "same image with different text or another font",
     "my image ad got rejected — fix it",
+    "the price or stock changed on ads already running",
     "ads for our sale / launch",
     "a header image or social graphic in our brand style"
   ],
@@ -81,6 +82,7 @@
     "claims-extract",
     "render-review",
     "copy-variants",
+    "fix-rejected",
     "graphic-request"
   ],
   "shared_atoms": [

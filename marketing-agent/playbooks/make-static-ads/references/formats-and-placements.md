@@ -1,6 +1,6 @@
 # Formats and placements — archetypes, company types, specs
 
-Load at Step 3 (frameworks in the concept grid), Step 4 (templates), Step 6 (ratios) and when writing the copy for a non-DTC brand. Specs below are conventions as of 2026; platforms change them — when a number decides whether an ad works, say "check the live ads guide". Never state performance numbers (CTR, CPA, ROAS) as facts.
+Specs below are conventions as of 2026; platforms change them — when a number decides whether an ad works, say "check the live ads guide". Never state performance numbers (CTR, CPA, ROAS) as facts.
 
 ## 1. Static ad archetypes
 
@@ -24,7 +24,7 @@ A set rotates through archetypes, because format often matters more than polish 
 | Meme / native post | Cold, younger audiences, playful brands | Brand voice permits humour | "meme format" |
 | Feature callout / annotated product | Considered purchases, gadgets, SaaS | Real features, real UI | "annotated product callouts" |
 
-If no template fits an archetype, look for more (Meta, the library) before using the nearest; note the gap for server-needs if it recurs.
+If no template fits an archetype, look for more (Meta, the library) before using the nearest, and say so in the hand-off.
 
 ## 2. By company type
 

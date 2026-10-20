@@ -1,6 +1,6 @@
 # Angles and hooks — how a senior creative strategist builds a set that actually tests something
 
-Load at Step 3 (reasons to buy, inside the concept grid — `creative-taxonomy.md`) and Step 5 (hook direction and copy). The on-image words are the composer's (`composer.md`); the hooks here steer it through each ad's Variant brief.
+The on-image words are the composer's (`composer.md`); the hooks here steer it through each ad's Variant brief.
 
 ## 1. Angle ≠ execution
 
@@ -49,19 +49,11 @@ Prospecting (cold) sets lean on problem-aware and solution-aware. Retargeting se
 11. **Gift / occasion.** Seasonal moments, gifting, events.
 12. **Listicle / reasons-why.** "3 things in every jar" — a stack of benefits, each traceable.
 
-A good default for a ten-ad weekly set: 3–5 concepts × 2–3 looks each (`creative-taxonomy.md` §3) — looks differ in framework, style or composition, never only in words; an offer concept only if an offer is live.
+For a ten-ad set: 3–5 concepts × 2–3 looks each (`creative-taxonomy.md` §3) — looks differ in framework, style or composition, never only in words; an offer concept only if an offer is live.
 
-## 4. Where angles come from (in order) — never from thin air
+## 4. Where angles come from
 
-Paths and tools: `reading-the-brain.md` §2–5.
-1. The **campaign concepts** (`gooseworks:campaign_read`): person, moment, message and proof are already the angle.
-2. The **angle bank** (research-competitors, `research/competitors/angle-bank.md`, ids `A-NN`), each with its evidence and the proof it needs.
-3. The **weekly performance read** and rotation requests: what is winning (iterate: same angle, new hook) and what is fatiguing (rest it).
-4. The **voice-of-customer bank** (research-market): the jobs, pains and objections customers name, with row ids.
-5. **Brand facts:** value props, positioning, audience, usable brain facts (`claims-and-policy.md` §2) — and reasons to buy the marketer states in this chat (quote them). An angle built from these is grounded, not invented. `kit.messagingAngles` is the server's own research — a labelled fallback.
-6. **Competitor ads and saved inspiration** (`ads_template_read` `mode: "competitor"`, `social_inspiration_library`): angles competitors run long are likely working — run the same reason to buy, never their words or claims.
-
-Fewer than two grounded angles → say how many exist and what each rests on, and offer: research first, the marketer's reasons, or a smaller set. Never pad.
+The source order is `atoms/concept-grid/ATOM.md` step 1; paths and tools are `reading-the-brain.md` §2–5.
 
 Every angle carries its **source line** ("A-07, CLEARSTEM runs it 90+ days" / "VoC rows 12, 31" / "founder, in this chat").
 

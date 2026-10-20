@@ -1,6 +1,6 @@
 # Reading the brain and the sibling artifacts — where things live
 
-Load at Step 1. Sibling playbooks never call this one; they leave written artifacts, and this playbook reads them. Paths below are the conventions the sibling playbooks publish (2026-10-16); if a file is missing, say which input is missing and carry on without it.
+Sibling playbooks never call this one; they leave written artifacts, and this playbook reads them. Paths below are the conventions the sibling playbooks publish (2026-10-16); if a file is missing, say which input is missing and carry on without it.
 
 **Workspace:** the brand's coworker workspace — `gooseworks:file_list` / `file_read` / `file_write` with `scope: {type: "agent", agent_id: <the brand's coworker_agent_id from the brand_read list>}`. No coworker → the default workspace with every path prefixed `brands/<brand-slug>/`, and tell the human. Read before write (`file_write` replaces the file); in another playbook's file, only append under your own request lines. Many artifacts are also imported into brand knowledge as documents, so `knowledge_search` `["document"]` finds them on hosts that never open the workspace.
 

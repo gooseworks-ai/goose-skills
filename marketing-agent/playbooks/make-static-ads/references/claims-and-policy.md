@@ -1,6 +1,6 @@
 # Claims and policy — what counts in a static ad, where claims hide
 
-Load at Step 1 (the brain read, §2), Step 7 (Pass A, on the copy rows and each composed prompt) and Step 10 (Pass B on renders). Claims are decided by the rule in §2 (hard rule 1); platform and category rules by the shared `../../../atoms/ad-policy-check/ATOM.md`. This file is the static-ad craft — what counts, where claims hide in an image ad. Craft knowledge, not legal advice; when a category is regulated and the brand has nothing on file for something, the answer is "cut it and show the human", never "rephrase until it sounds safe".
+Claims are decided by the rule in §2 (hard rule 1); platform and category rules by the shared `../../../atoms/ad-policy-check/ATOM.md`. This file is the static-ad craft — what counts, where claims hide in an image ad. Craft knowledge, not legal advice; when a category is regulated and the brand has nothing on file for something, the answer is "cut it and show the human", never "rephrase until it sounds safe".
 
 ## 1. What counts as a claim
 
@@ -23,9 +23,9 @@ Treat each of these as a claim that must trace to a usable brain fact or a plain
 
 **Puffery** — vague, unmeasurable praise ("you'll love it", "a little luxury", "rethink your ritual") — is not a claim and may stay. The test: could someone prove it false? If yes, it is a claim.
 
-## 2. Where proof may come from (operator decision, Akhil, 19 Oct 2026)
+## 2. Usable facts — where proof may come from
 
-This playbook follows the **server composer's claims rule** ("any factual claim may appear ONLY if it is present in the brand context — proof points, value props, brand facts, product details; never invent, round up or embellish"), checked against the **brand brain's status** for each fact:
+A **usable fact** is a fact the table below allows, worded as recorded. Every factual line in an ad — copy, on-image text, badge, implied by the picture — is a usable fact or is cut. This playbook follows the **server composer's claims rule** ("any factual claim may appear ONLY if it is present in the brand context — proof points, value props, brand facts, product details; never invent, round up or embellish"), checked against the **brand brain's status** for each fact:
 
 | Brain status (`gooseworks:brain_search` `statuses`) | Source | Use it? |
 |---|---|---|
@@ -75,7 +75,7 @@ Anything that fails: **cut it before the human sees the ad**, and list it in the
 
 ## 3. Platform, category and disclosure rules
 
-Moved to the shared `../../../atoms/ad-policy-check/ATOM.md` (paid ads: Meta, TikTok, Google, LinkedIn and others; category rules; on-asset disclosures; reporting). Organic use of a graphic → `../../../atoms/ad-policy-check/disclosure.md`.
+`../../../atoms/ad-policy-check/ATOM.md` (paid ads: Meta, TikTok, Google, LinkedIn and others; category rules; on-asset disclosures; reporting). Organic use of a graphic → `../../../atoms/ad-policy-check/disclosure.md`.
 
 ## 4. How to report the checks
 
