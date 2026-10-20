@@ -7,12 +7,12 @@ description: >-
   legal review, with one pass, fixed or flag line per ad and platform. Use alone when you already have
   the ad text or images and know where they will run; otherwise run the playbook for the job (e.g.
   make-static-ads, make-content, email-lifecycle).
-version: 0.1.0
+version: 0.1.1
 ---
 
 # ad-policy-check
 
-Used by: make-static-ads (paid ads; make-video-ads too, once it is released). Organic, email and creator content: load `disclosure.md` instead (or as well, when a paid ad uses a creator).
+Used by: make-static-ads (paid ads) and run-paid-campaigns (creative it checks at launch). Organic, email and creator content: load `disclosure.md` instead (or as well, when a paid ad uses a creator).
 
 Craft knowledge, not legal advice. Policies change: when a rule decides whether an ad ships, tell the human to confirm it on the platform's live policy page. Claims are a separate check (the `claims-gate` skill, `../claims-gate/SKILL.md`); run that first — a line cut there is not reworded here.
 

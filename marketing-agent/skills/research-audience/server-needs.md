@@ -24,7 +24,7 @@ The server already proxies people search, email finding and email checking for t
 
 ### Approval and cost rules the playbook will follow when these exist
 
-- **One yes to a ceiling**, per `atoms/spend-gate` (proxy branch): "up to N credits for <what>", estimated from the credits log or a probe inside the ceiling; stop at it; log every charge.
+- **One yes to a ceiling**, per the `spend-gate` skill (proxy branch): "up to N credits for <what>", estimated from the credits log or a probe inside the ceiling; stop at it; log every charge.
 - **Search before reveal:** people search returns a count and a sample first; the marketer sees "≈4,800 match; here are 10" before any per-person spend.
 - **Cheapest route first, stop early:** for each account, the cheapest finder first; stop at three good people per account and at the first found address the checker passes; one checker by default, a second only on `unknown`. Verify every address before it is called sendable.
 - **Verify status meanings** (hunter): `valid` → sendable; `accept_all` → catch-all, small batches only; `unknown` → not proof of invalid, re-check later; `invalid` → drop. Disposable or webmail flags → drop for person rows at companies with their own domain. Two checkers agree → high confidence.

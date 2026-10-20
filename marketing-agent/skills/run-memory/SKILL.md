@@ -14,7 +14,7 @@ A playbook that runs again (often as a weekly or monthly automation) must know w
 
 **Who loads it:** every playbook that can run more than once for the same brand: research, analysis, ads, social, email, search, creators. Not one-off makers (a single post, one photo set). It runs twice per run: **Start** before the playbook's own work, **End** after its report.
 
-**What it does not replace.** Where a playbook already keeps a working log, that log stays the source of truth: run-paid-campaigns' `ads/campaigns/<slug>/state.md` + `decisions.md` (the server's campaign-harness grammar, `R<n>` ids, `## Checks due`), `atoms/outcomes-ledger` ledgers, analyze-performance's `definitions.md`. The run record copies their ids and adds only what they lack (the baseline recipe and the result numbers). It never keeps a second, different copy of their state, and when the playbook has its own scoring rule (run-paid-campaigns' "Score last week"), step 3 below *is* that step. Use its rule and add only what is missing.
+**What it does not replace.** Where a playbook already keeps a working log, that log stays the source of truth: run-paid-campaigns' `ads/campaigns/<slug>/state.md` + `decisions.md` (the server's campaign-harness grammar, `R<n>` ids, `## Checks due`), the `outcomes-ledger` skill's ledgers, analyze-performance's `definitions.md`. The run record copies their ids and adds only what they lack (the baseline recipe and the result numbers). It never keeps a second, different copy of their state, and when the playbook has its own scoring rule (run-paid-campaigns' "Score last week"), step 3 below *is* that step. Use its rule and add only what is missing.
 
 ## Inputs (the calling playbook supplies them)
 

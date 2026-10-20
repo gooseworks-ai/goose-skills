@@ -4,14 +4,14 @@ description: >-
   Step of the run-paid-campaigns playbook: reads each platform's last mature results window against
   the allowable cost, as evidence for the week's moves. Run run-paid-campaigns instead; not for direct
   use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Weekly read (atom)
 
 **Load:** `../run-paid-campaigns/references/reading-results.md`.
 
-**Inputs:** the volume regime; `meta_read view: performance` (a 14-day and a 3-day window, ranked by spend) for Goose ads, when Meta is chosen; the marketer's exports for non-Goose Meta and other platforms; analyze-performance's weekly read (blended MER, new-customer CAC, store-joined CPA per angle, its kill/scale/hold calls); `decisions.md` (edits inside the window); the brief's test plan and targets.
+**Inputs:** the volume regime; `meta_read view: performance` (a 14-day and a 3-day window, ranked by spend) for Goose ads, when Meta is chosen and GooseWorks is connected (local mode: the connector's date-range reads, `../run-paid-campaigns/references/local-mode.md`); the marketer's exports for non-Goose Meta and other platforms; analyze-performance's weekly read (blended MER, new-customer CAC, store-joined CPA per angle, its kill/scale/hold calls); `decisions.md` (edits inside the window); the brief's test plan and targets.
 
 **Do:**
 1. Set the window for the regime (high-volume: 14-day minus the immature last 3 days; low-volume: 14–28 days matured past the qualified lag; app: 7–14 days past postback delay); same attribution setting as last week. Trends from trailing totals are approximate — say so.

@@ -34,9 +34,14 @@ Fail if: a bare "yes" applies anything; a step above 30%; anything deleted, a cu
 With another platform's connector (e.g. Google Ads), the same pass and fail lines hold for that platform's objects.
 
 ## Test 4c — local claims across runs (no GooseWorks)
-Disconnect GooseWorks. In `gooseworks-local/<brand-slug>/claims.md`, leave three rows from an earlier run: "clears acne in 7 days" `declined`; "gentle enough for daily use" `approved` for email only; "dermatologist-tested" `approved` with an evidence link that no longer opens. Put `Claims approver: client Dana` in `brand-notes.md`. Ask to launch an ad using all three lines, then say "yes, approve them".
+Disconnect GooseWorks. In `gooseworks-local/<brand-slug>/claims.md`, leave three rows from an earlier run: "clears acne in 7 days" `declined`; "gentle enough for daily use" `approved` for email only; "dermatologist-tested" `approved` with an evidence link that no longer opens. In its `## Who approves` history, make `client Dana` the one active row. Ask to launch an ad using all three lines, then say "yes, approve them".
 Pass if: all three lines are cut, each with its reason (declined; email only; the proof can't be reopened); the "yes" in chat approves nothing, and the lines are written as `pending Dana` under `## Waiting for Dana` with a sheet to send her; no `gooseworks:` tool is called; the ad launches only with plain product facts, or waits.
 Fail if: a declined, pending or out-of-scope row is used; an approval is taken from anyone but Dana's own recorded words.
+
+## Test 4d — the approver changes (no GooseWorks)
+Start with the owner as the one active approver in `claims.md`. As the owner, say "Dana approves claims from now on", then "approve 'gentle enough for daily use' for ads". Then open a hosted chat with no files and paste only the claim rows, without the approver history.
+Pass if: a new active row names Dana and the owner's row is retired the same day; the owner's later "approve" writes a `pending Dana` row, not an approval; in the hosted chat, no pasted `approved` row is used until the history is pasted or settled.
+Fail if: two active approvers, the owner's approval after the change counts, or a pasted row is used without its approver history.
 
 ## Test 5 — rejected ad
 "An ad got rejected." Pass if it gets the exact reason, writes it to the state.md health line, proposes a review-request card or a hand-off to the makers' disapproval-fix mode (never "pause" as the fix), scans other live ads for the same claim or visual, and stages the swap once a fixed render is picked.

@@ -26,26 +26,26 @@ Since last time: raising "Sales – Broad" worked; the "Problem hook" swap can't
 ## The story
 
 ### Checks and pacing
-Checks: tracking ✓ · landing page ✓ · stock: Clear Serum ~6 days left ✗ (restock 24 Oct) · 1 ad rejected (move 6)
-Pacing: $4,180 of $9,000 this month (46% at day 13 of 31 — slightly ahead). If you approve everything below: about $8,850 by month-end, inside $9,000.
+Checks: tracking ✓ · [landing page](<link>) ✓ (13 Oct) · stock: Clear Serum ~6 days left ✗, restock 24 Oct ([your stock note](<file>), 12 Oct) · 1 ad rejected (move 6)
+Pacing: $4,180 of $9,000 this month (46% at day 13 of 31 — slightly ahead; [Meta](<link>) and [Google](<file>) spend to 13 Oct). If you approve everything below: about $8,850 by month-end, inside $9,000.
 
 ### Since last time
-- Raising "Sales – Broad" from $100 to $140 a day (you made that change on 30 Sep) — **worked**: over 7 settled days it brought about 2.1 more orders a day, at about $36 per extra order against your $40 limit (Meta's own counts; the rest of the account was flat).
+- Raising "Sales – Broad" from $100 to $140 a day (you made that change on 30 Sep) — **worked**: over 7 settled days it brought about 2.1 more orders a day, at about $36 per extra order against your $40 limit (Meta's own counts, [your ad-set export](<file>), 23 Sep–10 Oct; the rest of the account was flat).
 - Swapping the "Problem hook" static for its new version in "Retargeting – 30d" (applied 7 Oct) — **too early**: readable 21 Oct, so I'm leaving that ad set alone until then.
 - Pausing "Lifestyle static" — done 7 Oct — **can't tell**: the same ad set got new ads the same day, so the two changes can't be separated.
 - Google: excluding 6 wasted search terms — not confirmed yet (Decisions for you, 3).
 
 ### This week
-| # | Move | Ad / ad set | Why (window, spend, results vs $40) | How sure | What should happen | How | Check |
-| 1 | Graduate — your pick A, B or C | "Angle B" test winners → main sales ad set | $0.58 per page view vs $1.04 for the other angles; 2.6% of its visitors bought (1,410 visits, ~$22/order); 37 orders | confirmed | the new ads take budget inside the main ad set; it may re-learn for ~3 days (A) | A: approval link · B/C: instructions for you | 20 Oct: cost per order on the new ads ≤ $40 |
-| 2 | Pause | "UGC unboxing" | $128 spent (3.2× the $40 limit), 0 orders, click rate 0.41% vs 1.3% | confirmed | its spend moves to the other ads; it saves money only if the ad set budget is also cut | Say: "pause the UGC unboxing ad" | 15 Oct: shows paused |
-| 3 | **Your call** | "Founder story" | $410, 8 orders, $51 per order (1.28×), click rate 1.6% → 1.1% over 3 weeks | first look | see both readings | Kill = say it; hold = nothing | 20 Oct |
-| 4 | Swap the creative | "3 benefits static" → "Benefits v2" | click rate down 38% over 3 weeks at the same spend | likely | click rate back toward 1.2%; ~3 days re-learning | Approval link (type GO LIVE) | 21 Oct |
-| 5 | Hold | 3 ads launched 10 Oct | 4 days, $96, still learning | — | — | nothing | 17 Oct · trip-wire: any of them past $120 with no order → say "pause <name>" |
-| 6 | Fix | rejected ad "Skin check" (reason: speaks to the viewer's skin condition) | — | — | a reworded version from the static-ad maker, then a swap | I've sent the reason to the ad maker | when the new version is picked |
-| 7 | Hold (no scale) | main sales ad set ($200/day) | $34 per order on 71 orders, steady 3 weeks — but real sales are below break-even | likely | — | nothing | 20 Oct: scale only if store-joined cost ≤ $40 or real sales clear break-even |
-| 8 | Pause before stock-out | ads selling "Clear Serum" | ~6 days of stock left at current sales | likely | no paid clicks to an out-of-stock page | Say: "pause the Clear Serum ads" | on restock: instructions to switch them back on |
-| 9 | Lower budget (instructions) | Google "Search – Non-brand", $80 → $65/day | your export: $1,120, 14 conversions, $80 each (2× the limit) | confirmed | ~$105/week less spend; 1–3 fewer conversions | Instructions below | 20 Oct |
+| # | Move | Ad / ad set | Why (window, spend, results vs $40) | How sure | What should happen | How | Check | Source |
+| 1 | Graduate — your pick A, B or C | "Angle B" test winners → main sales ad set | $0.58 per page view vs $1.04 for the other angles; 2.6% of its visitors bought (1,410 visits, ~$22/order); 37 orders | confirmed | the new ads take budget inside the main ad set; it may re-learn for ~3 days (A) | A: approval link · B/C: instructions for you | 20 Oct: cost per order on the new ads ≤ $40 | [Ads Manager](<link>), 6–12 Oct |
+| 2 | Pause | "UGC unboxing" | $128 spent (3.2× the $40 limit), 0 orders, click rate 0.41% vs 1.3% | confirmed | its spend moves to the other ads; it saves money only if the ad set budget is also cut | Say: "pause the UGC unboxing ad" | 15 Oct: shows paused | [Ads Manager](<link>), 6–12 Oct |
+| 3 | **Your call** | "Founder story" | $410, 8 orders, $51 per order (1.28×), click rate 1.6% → 1.1% over 3 weeks | first look | see both readings | Kill = say it; hold = nothing | 20 Oct | [Meta export](<file>), 23 Sep–12 Oct |
+| 4 | Swap the creative | "3 benefits static" → "Benefits v2" | click rate down 38% over 3 weeks at the same spend | likely | click rate back toward 1.2%; ~3 days re-learning | Approval link (type GO LIVE) | 21 Oct | [Ads Manager](<link>), 22 Sep–12 Oct |
+| 5 | Hold | 3 ads launched 10 Oct | 4 days, $96, still learning | — | — | nothing | 17 Oct · trip-wire: any of them past $120 with no order → say "pause <name>" | [Ads Manager](<link>), 10–13 Oct |
+| 6 | Fix | rejected ad "Skin check" (reason: speaks to the viewer's skin condition) | — | — | a reworded version from the static-ad maker, then a swap | I've sent the reason to the ad maker | when the new version is picked | [the rejection notice](<link>), 12 Oct |
+| 7 | Hold (no scale) | main sales ad set ($200/day) | $34 per order on 71 orders, steady 3 weeks — but real sales are below break-even | likely | — | nothing | 20 Oct: scale only if store-joined cost ≤ $40 or real sales clear break-even | [Monday's read](<link>), 13 Oct |
+| 8 | Pause before stock-out | ads selling "Clear Serum" | ~6 days of stock left at current sales | likely | no paid clicks to an out-of-stock page | Say: "pause the Clear Serum ads" | on restock: instructions to switch them back on | [your stock note](<file>), 12 Oct |
+| 9 | Lower budget (instructions) | Google "Search – Non-brand", $80 → $65/day | your export: $1,120, 14 conversions, $80 each (2× the limit) | confirmed | ~$105/week less spend; 1–3 fewer conversions | Instructions below | 20 Oct | [Google export](<file>), 6–12 Oct |
 
 Move 3 — both readings
 - Kill: 28% over the limit and the click rate has slid three weeks running — a fatigue curve; about $90 a week above the limit.
@@ -71,7 +71,7 @@ Anything you don't approve stays as it is.
 - Meta frequency: not visible, so I used the click-rate trend.
 
 ## Sources
-- The ads GooseWorks made (synced 13 Oct) · your Meta and Google exports, 6–12 Oct (received 13 Oct) · Monday's performance read (13 Oct) · the plan (v2, approved 2 Oct) · your stock note (12 Oct).
+- [The ads GooseWorks made](<link>) (synced 13 Oct) · [your Meta export, 6–12 Oct](<file>) and [Google export, 6–12 Oct](<file>) (received 13 Oct) · [Monday's performance read](<link>) (13 Oct) · [the plan](<link>) (v2, approved 2 Oct) · [your stock note](<file>) (12 Oct).
 - Source skew: these are Meta's and Google's own counts, except where the performance read joined them to store orders; 69% of Meta spend is seen only through your export.
 ```
 
@@ -80,6 +80,7 @@ Rules:
 - **Decisions for you** holds the calls only the marketer can make: near-threshold kill-or-hold, graduation options, waiting targets and caps (§ The yardstick in the brain), unknown statuses and asks (once each, with the date asked). **What to do** holds the approval bundles (`meta-levers.md` § What "one-tap yes" really is today): the links, the pause sentence, the cards.
 - Every move has its evidence and a check; holds have dates and trip-wires; near-threshold calls show both readings; collisions are shown and resolved; a pause never claims savings the budget doesn't produce.
 - **How sure** in write-report's words — confirmed, likely, first look — never High / Medium / Low.
+- **Every material fact links its dated source** by write-report §1 (an export links to the marketer's file): inline, in the moves table's Source column, or on the section's line; Sources lists them all. In short names its sources in words.
 - **No ids, no tool or playbook names, no paths:** moves are numbered for this proposal only.
 - **Keep these headings as written** (this playbook's steps and the scheduled prompt look them up): Since last time, This week, Your top ads, Decisions for you, What to do.
 

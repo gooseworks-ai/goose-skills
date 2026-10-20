@@ -274,3 +274,11 @@ Second pass (independent review of this fix, effort high):
 | Finding | Fix |
 |---|---|
 | Local mode said what it skips but not what it reads instead | Before you start 1 points to `references/intake.md` § 1's local look-first pass, which now lists `claims.md` (through the claims gate) and the local `plans/<slug>/` for step 1's existing-plan check. |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B5 Video ads and photos were "human-executed / we don't make these yet" | Hand-offs, the closing offer, the brief-and-assets step and the calendar's lead times route them to the goose-video and goose-product-photos skills (offered as the next job); without GooseWorks the same rows go to whoever makes them; real creators filming stay with creators. Unreleased producer removed from `skill.meta.json`. |
+| B7 The brief claimed write-report's shape but had no The story and Sources was not last | Working sections are `###` under `## The story` and `## Appendix — working detail`; Sources is last; the Status line sits under the title. Heading names are unchanged (the step skills' output lines now say `###`). |
+| B10 `skill.meta.json` said `foundation/guide §5` | Now the marketing-guide skill reference. |

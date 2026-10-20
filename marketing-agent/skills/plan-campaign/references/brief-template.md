@@ -1,9 +1,11 @@
 # The campaign plan — fixed shape
 
-Load at step 7; the Write-back section at the end is used after the marketer's yes. One text, three homes (versions continue from the campaign record's brief version — the first replan of an approved v2 is v3): the readable file (`gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md`), the brand copy (`plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md`) and the campaign record's `brief_md`. It follows the `write-report` skill (`../../write-report/SKILL.md`) §1 — title, In short (≤ 150 words), Decisions for you, the story, What to do (≤ 6 moves), What we're not doing, What we couldn't check, Sources with a source-skew line; body under 3,000 words, the long working tables in an appendix — while keeping the **section headings below exactly**, because the paid run, the weekly analysis, the ad makers and the email sends find their section by heading. Each section opens with its point in one plain sentence, then the detail. No internal ids, codes, file paths, tool or playbook names anywhere; rows are numbered 1, 2, 3.
+Load at step 7; the Write-back section at the end is used after the marketer's yes. One text, three homes (versions continue from the campaign record's brief version — the first replan of an approved v2 is v3): the readable file (`gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md`), the brand copy (`plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md`) and the campaign record's `brief_md`. It follows the `write-report` skill (`../../write-report/SKILL.md`) §1 — title, In short (≤ 150 words), Decisions for you, the story, What to do (≤ 6 moves), What we're not doing, What we couldn't check, Sources with a source-skew line; body under 3,000 words, the long working tables in an appendix — while keeping the **section headings below exactly**, because the paid run, the weekly analysis, the ad makers and the email sends find their section by heading. The working sections sit as `###` under The story and the Appendix, Sources comes last, and the Status line sits under the title. Each section opens with its point in one plain sentence, then the detail. No internal ids, codes, file paths, tool or playbook names anywhere; rows are numbered 1, 2, 3.
 
 ```markdown
 # <Brand> — campaign plan: <campaign name>, <D Mon YYYY>
+Status: Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-DD
+<!-- mode: launch | goal push | always-on | replan | trigger replan · change-log slug: <campaign-slug> -->
 
 ## In short
 (At most 150 words, in write-report §1's order; nothing stronger than the plan's own sections.)
@@ -17,43 +19,46 @@ Load at step 7; the Write-back section at the end is used after the marketer's y
 | Decision | My recommendation | Needed by |
 (goal and forecast · channels · split · asset list · tier and headline message · anything else)
 
-## Audience and message
+## The story
+(The plan's reasoning, each section opening with its point in one sentence.)
+
+### Audience and message
 <Point sentence: who this is for and the one thing every piece says.> **Who:** new people, people who already know you (past customers, free or lapsed users, the list), or both — with how many we can reach (the number assumed if unknown). **Is this the buyer?** One line on whether the people these channels reach are the ones who buy. Primary group (from the customer research) · who it's not for · the headline message (you approve it).
 
-## Goal chain
+### Goal chain
 <Point sentence: whether the money gets there, in the business result (signups, paid accounts, orders, bookings).>
 The goal: <number, metric, date> — agreed by <marketer>. Without the campaign: … · What the campaign must add: …
 | Channel | Target | Where the number comes from | Readable by |
 Cautious / expected / hopeful → <outcome each>. <If only the hopeful case hits the goal, say so here.>
 
-## Economics
+### Economics
 <Point sentence: what one new customer may cost and still make money.>
 | Line | Value | Where it comes from |
 Most a customer may cost: $X · aim: $Y · break-even: Z
 
-## If the goal needs changing
+### If the goal needs changing
 none — the expected case meets the goal.   OR   the gap / what each lever buys / what I recommend
 
-## Channel decisions
+### Channel decisions
 <Point sentence: where we run, where we don't.>
 | Channel | Keep? | Why (the deciding reason, with a brand fact) | Evidence | How sure | What would change it |
 Not relevant: <channel (reason)>, <channel (reason)>, …
 Your hours this plan needs: ~N h/week (by channel).
 
-## Budget split
+### Budget split
 <Point sentence.>
 | Line | Before launch | Launch week | After | Total | % | Smallest amount that teaches us anything | Enough? |
 Reserve: $X — released when <a test wins / a miss>.
 Any leg aimed at a known list or retargeting: audience size, expected weekly frequency, and the cap that keeps it near ~5 a week (`budget-and-tests.md` §2b).
 
-## Test plan
+### Test plan
 <Point sentence: what we'll learn first.>
 | # | What we think | What changes | Versions | $ each | Readable when | Ends | Judged on | If it wins / loses / unclear |
 
-## Angles per channel
+### Angles per channel
 | Channel | Angle | The customer words it rests on | Approved claim (exact words) or "needs proof" | Opening idea | Ad-rule risk |
 
-## Offer
+### Offer
 none / <the offer you named> / needs an offer designed (not covered yet). What it costs in margin: … Clashes: …
 
 ## What to do
@@ -65,36 +70,32 @@ One line each: the tempting moves the plan decided against (e.g. cold ads at a g
 ## What we couldn't check
 One line each, with why: assumptions to confirm, unknowns, risks.
 
-## Sources
-Dated links for every outside fact (benchmarks, competitor ads, prices). One line on source skew (e.g. "benchmarks are mostly from DTC brands, not SaaS").
-
 ## Appendix — working detail
 (The plan reads without these; makers, the paid run and the weekly read use them.)
 
-## Paid structure
+### Paid structure
 One line per paid channel: what it optimises for, how it's set up, who it reaches, budget, how many ads, where the ads link (with link tags), and whether GooseWorks makes the change or you do from written steps.
 
-## Calendar
+### Calendar
 <Point sentence: the date everything works back from, and the buyer's busy moments in the window.>
 | Date | What | Who (role) |
 
-## Asset list
+### Asset list
 <Point sentence: how many pieces, and the first due date.>
 | # | Channel | Placement | Format, size, length | Angle | Message / opening | Claim (exact) or "needs proof" | Button → page it links to (plain, e.g. "pricing page") | Made by (role) | Due | Needs first |
 (Link tags are not pasted into rows — one rule in the Measurement plan covers every link.)
 
-## Measurement plan
+### Measurement plan
 <Point sentence: how we'll know it worked.> Per channel: what counts as a result, the real number it's judged on (store / CRM, not the platform's claim), any code, and the "how did you hear about us?" question. Link tags, one rule for every link (for whoever builds the ads; the piece number is the asset-list row): `utm_source=<platform>&utm_medium=<paid_social|cpc|email|organic|creator>&utm_campaign=<campaign-slug>&utm_content=<angle>-<row>`.
 
-## Hand-offs
+### Hand-offs
 | Channel | Who takes it (role) | What they take | Done by you? |
 
-## Replan triggers
+### Replan triggers
 | If this happens | Threshold | Then |
 
-## Status
-Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-DD
-<!-- mode: launch | goal push | always-on | replan | trigger replan · change-log slug: <campaign-slug> -->
+## Sources
+Dated links for every outside fact (benchmarks, competitor ads, prices). One line on source skew (e.g. "benchmarks are mostly from DTC brands, not SaaS").
 ```
 
 ## Writing each section well
@@ -107,8 +108,8 @@ Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-D
 - **Asset list** is complete enough that a designer could start today: every row has format and ratio, the message, the claim, the destination, a producer and a due date. Count check: creative volume per paid leg matches the channel's need (e.g. Meta at ~$10k/month ≈ 8–15 net-new creatives a month).
 - **Hand-offs**: one row per channel, no silent legs. The plan names **roles**, never playbooks (the marketer reads it): `static ads` · `video ads` · `photos` · `content` · `paid` · `email` · `organic social` · `creators` · `claims` · `human`. Behind each role (for the agent):
   - static ads → make-static-ads (from the asset list and campaign concepts)
-  - video ads → **human-executed** for now (no maker covers them yet): the asset row carries the angle, the hook, the spec and the exact signed-off claims, so the marketer can hand it to whoever makes their video
-  - photos → **human-executed** for now (no maker covers them yet): the row lists the shots needed (hero, angles, in use, lifestyle) for the marketer's photographer; static ads use the brand's existing product photos
+  - video ads → the goose-video skill (a GooseWorks skill, offered as the next job, never started from here): the asset row carries the angle, the hook, the spec and the exact signed-off claims. Real creators filming → creators. Without GooseWorks (local mode) the same row goes to whoever makes the brand's video
+  - photos → the goose-product-photos skill (made from the brand's real product photos, offered the same way): the row lists the shots needed (hero, angles, in use, lifestyle). Without GooseWorks, the row goes to the marketer's photographer; static ads use the brand's existing product photos
   - paid → run-paid-campaigns (launches from this campaign record)
   - email → email-lifecycle (this calendar drives its broadcasts)
   - content → make-content (articles and long-form)
@@ -139,7 +140,7 @@ Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-D
 2. `campaign_upsert` with `campaign_id` (the draft saved at step 9, or the matching campaign): `brief_md` = the approved plan with the Status line set to "Approved <date> by <name>" and the version bumped; `status: "planned"` only when the campaign was `draft` (an `active` campaign stays `active`); `name`; `goal` (the closest allowed value — the real metric is in the brief); `budget_cents` = the total budget; `starts_on` / `ends_on`; `hero_product_ids`; `channels: ["paid_social"]` only when a paid-social leg is Run/Test; `intake` fields in the marketer's own words (about, audience, core_message, offer, situation, constraints, objective) — show drafted audience/core message to the marketer as part of the approval.
 3. Concepts for paid static/video angles: `update_campaign_concept` for existing ones (it discards that concept's un-started plans — check first), `add_campaign_concept` for new ones; proof only from a claim that is both signed off and server-accepted for that product.
 4. Re-save the readable file and the brand copy (`save-to-brain`, `versioned: supersede`) with the approved status, and give the marketer the link.
-5. Business facts the marketer stated (margin, list size, capacity, founder hours) stay in the brief's Economics and Status sections — there is no brain field for them yet.
+5. Business facts the marketer stated (margin, list size, capacity, founder hours) stay in the brief's Economics section and Status line — there is no brain field for them yet.
 
 **Local mode** (no GooseWorks, marketing-guide §5): steps 1–4 are replaced by the three below (no creative check, campaign record, concepts or server link); step 5 holds.
 1. Save the approved plan as the next version, `plans/<slug>/<YYYY-MM-DD>-plan-v<N+1>.md`, with the Status line set to "Approved <date> by <name>" and the marketer's words for the yes, through save-to-brain's local branch. Earlier versions stay; the newest file with an Approved Status line is the plan run-paid-campaigns and analyze-performance read.

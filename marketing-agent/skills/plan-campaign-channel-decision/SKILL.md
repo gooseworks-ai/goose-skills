@@ -3,7 +3,7 @@ name: plan-campaign-channel-decision
 description: >-
   Step of the plan-campaign playbook: marks each candidate channel Run, Test, Later or No with a
   brand-fact reason and founder hours. Run plan-campaign instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Channel decision (atom)
@@ -19,6 +19,6 @@ version: 0.1.0
 4. Mark execution per leg: GooseWorks levers (Meta objects it creates or pushes into) or written instructions / human hands. Add founder hours per leg; if the total exceeds what the founder has, cut a leg and say which.
 5. Zero paid is allowed: state it in the paid rows with the numbers.
 
-**Output:** the brief's `## Channel decisions` section and founder-hours line.
+**Output:** the brief's `### Channel decisions` section and founder-hours line.
 
 **Never:** a row without a brand-fact reason; "doesn't fit our audience" without saying who the audience is and where they are.

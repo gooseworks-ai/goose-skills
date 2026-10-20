@@ -440,3 +440,10 @@ Sources as in research-market's Round 6. Old skills were read as reference only.
 | Done when was one long sentence; no run record | Split into bullets; added "run record saved before the closing message" |
 | "Founder" and "marketer" both named the user | "Marketer" in SKILL.md. References still say "founder" in places (later pass) |
 | Description 1,010 characters, opened "Use when a founder or marketer asks" | 647 characters, leading with "Competitor research". Routing cases R06, R32 and R68 still match |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B5 "We don't make video ads yet" in the report's For-you rule; metadata named make-video-ads | A video idea is offered as the next job with the goose-video skill; unreleased producer removed. |
+| B10 "worker briefs: `atoms/`" | "its step skills (`research-competitors-<step>`)". |

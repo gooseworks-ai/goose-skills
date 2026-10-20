@@ -63,7 +63,7 @@
     "readable campaign plan gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md (local file, via write-report) — the marketer",
     "brand copy plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md + document 'Campaign plan — <Brand> — <date> v<N>' (save-to-brain, supersede) — the marketer, any host",
     "campaign record (campaign_upsert): brief_md with fixed headings — economics box, goal chain, channel decisions, budget split, paid structure, test plan, angles, calendar, asset list, measurement plan, hand-offs, replan triggers; read by run-paid-campaigns, analyze-performance, make-static-ads, make-content, email-lifecycle, run-organic-social, work-with-creators",
-    "campaign concepts (add_campaign_concept / update_campaign_concept) — read by make-static-ads (and make-video-ads, unreleased)",
+    "campaign concepts (add_campaign_concept / update_campaign_concept) — read by make-static-ads",
     "optional monthly replan schedule (automation_upsert) — only on the human's explicit yes",
     "draft brief for an approved live campaign: plans/<slug>/draft-v<N>.md (workspace) until the human's yes",
     "run record runs/plan-campaign/campaign-plan/<slug>/<date>.md + brand document (keep-history) — the plan's bets with owner, read date and test — read by its next replan",
@@ -72,7 +72,7 @@
     "local mode: the plan in plans/<slug>/ (in place of the campaign record), brand-notes.md and run records under gooseworks-local/<brand-slug>/ — read by its own next replan, run-paid-campaigns and analyze-performance in local mode"
   ],
   "needs": {
-    "gooseworks": "optional — without it, local mode (foundation/guide §5): the live site, the marketer's answers and connectors the marketer has (read-only)",
+    "gooseworks": "optional — without it, local mode (the marketing-guide skill, ../marketing-guide/SKILL.md §5): the live site, the marketer's answers and connectors the marketer has (read-only)",
     "connectors_optional": [
       "ads-platform, store, CRM, billing or product-analytics connector (read-only)"
     ],

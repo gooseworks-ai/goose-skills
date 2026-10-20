@@ -24,29 +24,29 @@ Since last time: the "Sales – Broad" raise (1 Oct) can't be read until 15 Oct.
 <3–5 lines from the run-memory outcome check: each earlier recommendation, done or not, and what it did.>
 
 ### Plumbing
-No breaks found: Meta claims 1.26 purchases for every store order (4-week range 1.22–1.30).   OR   <the break, its symptom, where it likely is, the check, the fix, what it blocks>
+No breaks found: Meta claims 1.26 purchases for every store order (4-week range 1.22–1.30; [Meta export](<file>) and [store export](<file>), 6–12 Oct).   OR   <the break, its symptom, where it likely is, the check, the fix, what it blocks>
 
-### Business truth   (truth)
+### Business truth   (truth; source: [your Shopify orders export, 6–12 Oct](<file>), received 13 Oct)
 | | This wk | Last wk | 4-wk avg | Same wk LY |  ← revenue-join.md table
 Overclaim: claimed purchases ÷ store orders = 1.26 (4-wk 1.22–1.30) — a floor: email isn't in the exports. Pacing: $6.1k of $12k at day 12 of 31 (51%), ahead of plan.
 
 ### Channels   (claimed; one row per rostered channel)
 | Channel | Spend | Claimed conversions / revenue | Claimed ROAS or CPA | vs target | Source | How sure |
-| Meta | … | … | … | … | your export | likely |
-| Google | … | … | … | … | your export | likely |
+| Meta | … | … | … | … | [Meta export, 6–12 Oct](<file>) | likely |
+| Google | … | … | … | … | [Google export, 6–12 Oct](<file>) | likely |
 | Email/SMS | — | used — not measured (send the Klaviyo flow and campaign files) | | | | |
-| Organic Instagram/TikTok | — | top post 4.1× your usual | | | your accounts | first look |
+| Organic Instagram/TikTok | — | top post 4.1× your usual | | | [the post](<link>), 9 Oct | first look |
 Not used: apps, local · Future rows: creator codes, outreach, WhatsApp
 
 ### Two stories   (only when they disagree)
 The platform story … · The blended story … · My recommendation … · What would settle it … · Your call (Decisions for you, 1).
 
 ### Why it moved
-1. <cause> (<how sure>): <evidence>.  …  Ruled out: …  Unconfirmed: …
+1. <cause> (<how sure>): <evidence> ([source](<link>), <date>).  …  Ruled out: …  Unconfirmed: …
 
 ### Creative ranking   (claimed)
 | Angle | Hook | Format | Ads | Spend | Purchases | CPA | Click rate (trend) | Weeks won (of last 4) | Verdict (how sure) |
-Coverage: …
+Coverage: … · Source: [Meta export, 6–12 Oct](<file>) and the ads GooseWorks made ([Ads Manager](<link>), synced 13 Oct)
 
 ### Email & SMS · Organic · Google · Apps · Local
 One short block each, or "not measured" / "not used".
@@ -57,18 +57,18 @@ One short block each, or "not measured" / "not used".
 
 ### What to make next
 | What | Why | Who makes it | By |
-| 4 new hooks on "hidden pore-cloggers" (2 video, 2 static) | won 3 of the last 4 weeks; click rate 1.6% → 1.1% since 29 Sep | video and static ads | 20 Oct |
-| Turn the post "<…>" into a paid test | 4.1× your usual engagement | static ads | 17 Oct |
+| 4 new hooks on "hidden pore-cloggers" (2 video, 2 static) | won 3 of the last 4 weeks ([last 4 reads](<link>)); click rate 1.6% → 1.1% since 29 Sep | video and static ads | 20 Oct |
+| Turn [the post "<…>"](<link>) into a paid test | 4.1× your usual engagement (9 Oct) | static ads | 17 Oct |
 
-### Learnings proposed   (saved to your brand only after you've seen them; strike any)
+### Learnings proposed   (kept only after you've seen them; strike any)
 1. Open cold Meta hooks for Unplug strips (US) with hidden pore-cloggers, not awards · likely · review 13 Jan 2027 (evidence: Tests above)
 
 Replan triggers fired: none | <each in plain words — "stock on the serum runs out before the sale ends: this is worth replanning">
 
 ## What to do   (recommendations — the paid run acts on them only after your yes)
 1. **Hold the Meta budget** (whole account) — the paid run, Thursday. Why: the last extra dollars brought almost no new revenue. How sure: likely. Would change if: a step down loses under 15% of new revenue.
-2. **Turn off the 3 award statics** — the paid run. Why: 2.4× the cost you can afford after $2.1k spent. How sure: confirmed.
-3. **Exclude 6 wasted Google search terms** — the paid run. Why: $347 on terms with no sales. How sure: confirmed.
+2. **Turn off the 3 award statics** — the paid run. Why: 2.4× the cost you can afford after $2.1k spent ([Meta export](<file>), 6–12 Oct). How sure: confirmed.
+3. **Exclude 6 wasted Google search terms** — the paid run. Why: $347 on terms with no sales ([Google search terms export](<file>), 6–12 Oct). How sure: confirmed.
 4. **Make 4 new hooks on "hidden pore-cloggers"** — the ad makers, by 20 Oct (see What to make next).
 
 ## What we're not doing, and why
@@ -81,7 +81,7 @@ Replan triggers fired: none | <each in plain words — "stock on the serum runs 
 - Meta frequency: not in the export.
 
 ## Sources
-- Shopify orders export, 6–12 Oct (received 13 Oct) · Meta Ads export, 6–12 Oct · Google Ads export, 6–12 Oct · the ads GooseWorks made, synced 13 Oct · the campaign plan (v2, approved 2 Oct) · last week's read (6 Oct).
+- [Shopify orders export, 6–12 Oct](<file>) (received 13 Oct) · [Meta Ads export, 6–12 Oct](<file>) · [Google Ads export, 6–12 Oct](<file>) · [the ads GooseWorks made](<link>) (synced 13 Oct) · [the campaign plan](<link>) (v2, approved 2 Oct) · [last week's read](<link>) (6 Oct).
 - Source skew: everything but the store export is the platforms' own counting, which overcounts; email is missing, so the overclaim figure is a floor.
 ```
 
@@ -97,4 +97,5 @@ On the reply: re-save the report with a `## Decisions` section (their words), re
 - **No internal ids.** Findings, calls and decisions are numbered for this report only; tests and angles go by their plain names. The angle-bank id and the brief's test number stay in the run record and in a learning's stored opening (SKILL.md Output), never in the report. No paths, tool or playbook names.
 - Platform revenue is never quoted as truth; the two stories are never averaged.
 - "What to make next" is in angle-and-hook terms with a maker and a date, and rests on the history (`run-memory.md`); "what worked" means it held 2+ runs or won a test.
+- **Every material fact links its dated source** by write-report §1 (an export links to the marketer's file): inline, in its table's Source column, or on the section's source line; Sources lists them all. In short names its sources in words, as write-report's example does.
 - If a replan trigger from the campaign brief fired (CAC breach, stock-out, tracking break…), say so in plain words ("this is worth replanning") on the Replan triggers fired line, and in In short when it changes the first move.

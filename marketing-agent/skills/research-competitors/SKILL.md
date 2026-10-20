@@ -8,12 +8,12 @@ description: >-
   Delivers a readable report saved to the brand, so the next run reports what changed. Never copies
   their words or disparages them. Not for what people say about you or your market — use
   research-market; not for who your buyers are — use research-audience.
-version: 0.4.0
+version: 0.4.1
 ---
 
 # research-competitors
 
-Competitor research tells the marketer what to do next; it is not a list of ads. Craft: `references/research-spec.md`; worker briefs: `atoms/`; the report: `references/report-format.md` — next to this file.
+Competitor research tells the marketer what to do next; it is not a list of ads. Craft: `references/research-spec.md`; worker briefs: its step skills (`research-competitors-<step>`); the report: `references/report-format.md` — next to this file.
 
 **The rule that matters most: free pass first, ask nothing, report once** (`../marketing-guide/research-pattern.md` (in the `marketing-guide` skill) — read it before the first search). Research every dimension for every main rival, browser-only sources included, before the first message; never ask permission for free work or offer to pay for what a free read could get. An ask that names an area ("what ads are they running?") gets that area covered completely, news and launches first.
 

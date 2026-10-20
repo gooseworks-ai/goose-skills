@@ -27,8 +27,8 @@ Always-on (non-launch) campaigns skip 1–3 and run as monthly cycles of sustain
 | Asset / leg | Lead time |
 |---|---|
 | Static ads | 2–5 days (make-static-ads) |
-| Video ads | 5–10 days (made outside GooseWorks for now: the marketer's own team or a freelancer) |
-| Product photos | 1–2 weeks for a shoot (made outside GooseWorks for now) |
+| Video ads | a few days with the goose-video skill (priced and approved there); 5–10 days made outside GooseWorks (the marketer's team or a freelancer; the only route in local mode) |
+| Product photos | a few days with the goose-product-photos skill, from real product photos; 1–2 weeks for a shoot |
 | Creators | 3–6 weeks to find, vet, brief, ship product, post |
 | PR / long-lead press | 4–8 weeks (gift guides: 3–5 months) |
 | SEO content | 3–6 months to rank — supporting pages only for a near launch |
@@ -48,7 +48,7 @@ Example (T = 1 Mar):
 |---|---|---|
 | T-35 (25 Jan) | Creator briefs out; product shipped · new product's record + photos in GooseWorks (if not in the catalog) | work-with-creators → human · human |
 | T-30 | New product's claims signed off (if none approved yet), through the claims check in the first maker job | founder |
-| T-28 | Static briefs to the maker; video briefs to whoever makes the video | make-static-ads · human |
+| T-28 | Static briefs to the maker; video briefs to the goose-video skill or whoever makes the video | make-static-ads · video ads |
 | T-21 | Creative locked; claims checked | makers |
 | T-14 | Launch email sequence built | email-lifecycle |
 | T-10 | Tease email + waitlist post | email-lifecycle, run-organic-social |

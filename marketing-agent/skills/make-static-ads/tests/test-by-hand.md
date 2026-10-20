@@ -53,7 +53,7 @@ Brand Personal Day (`0e5b2fb0…`), product Dive Deep Mevalonic Moisturizer (`24
 | Server start | `get_started` `wants: "image"` | Set up; "go straight on with their request" |
 | Brand read | `brand_read` summary/kit/products/learnings/competitors | Voice, value props, 6 proof points, `messagingAngles: []` (the server's own research angles — empty; the real angle bank is research-competitors' `angle-bank.md`, not written for this brand yet), 5 tracked competitors with scraped ads, 1 video learning; product: price 16.00, 4 photos, no stock field, `ad_eligibility: eligible` |
 | Claims | `knowledge_search` `["claim"]` without product | 7 claims, `approved_ad_claim: true` — all auto-created from the site and press (Free Returns, Free Shipping $45+, 4.9★/234 reviews, Allure/Byrdie/NewBeauty quotes) |
-| Claims for the product | same, with `product_id` | The same 7, now `approved_ad_claim: false`, `claim_status: "approved_scope_unknown"` → **no claim is usable for the moisturiser until learn-my-brand records that scope**; the Byrdie quote is about a mist, an Allure quote about a toner |
+| Claims for the product | same, with `product_id` | The same 7, now `approved_ad_claim: false`, `claim_status: "approved_scope_unknown"` → **no claim is usable for the moisturiser until the claims gate's scoped sign-off records that scope**; the Byrdie quote is about a mist, an Allure quote about a toner |
 | Customer words | `knowledge_search` `["evidence"]` (secondary source) | Only press quotes and one site metric — research-market's voice-of-customer bank does not exist for this brand yet |
 | Angles | `knowledge_search` `["learning","document","creative"]` | Empty |
 | Account | `campaign_read` | No campaigns |
@@ -62,11 +62,11 @@ Brand Personal Day (`0e5b2fb0…`), product Dive Deep Mevalonic Moisturizer (`24
 | Sources | `ads_template_read` `static_library` "customer review quote card for an acne-safe moisturizer" | 5 ranked beauty templates (review card, UGC serum-in-hand, editorial triptych…) |
 | **Quote (stop)** | `ads_generate` `dry_run: true`, 1 template × 2 variants × 4:5 + 9:16, prompt fence with exact on-image text | **4 images × 60 credits = 240 credits** (rates: low 30, medium 45, high 60). |
 
-**What the playbook would say next:** "You have no angle bank or customer reviews on file and none of the saved claims is confirmed for the moisturiser. I can build three angles from plain product facts (ingredient story, lightweight texture, price) with no claims on the images; or approve the claims you want for Dive Deep in learn-my-brand first and come back; or run research first. Each concept gets its own quote. This first one came back at 240 credits (4 images; lower quality is cheaper). I'll show each quote exactly as it comes back before asking for your yes." — **stopped here; no generation call was made.**
+**What the playbook would say next:** "You have no angle bank or customer reviews on file and none of the saved claims is confirmed for the moisturiser. I can build three angles from plain product facts (ingredient story, lightweight texture, price) with no claims on the images; or approve the 3–5 claims the angles need for Dive Deep right here, in a short sign-off (with proof for any that need it); or run research first. Each concept gets its own quote. This first one came back at 240 credits (4 images; lower quality is cheaper). I'll show each quote exactly as it comes back before asking for your yes." — **stopped here; no generation call was made.**
 
 Findings fed back into the playbook: the claim status fields (`claims-and-policy.md` §2), own past ads as an account signal (Step 1), cost per image for planning the quote.
 
-**Round 2 (adversarial run, same day) added:** one prompt per `ads_generate` call (a 2-template dry run shared one prompt: 6 images, 360 credits); no learn-my-brand sign-off marker on Personal Day yet → no claims usable; a brand with `research_status: "none"` still gets a dry-run quote (submit would fail); unfiltered `ads_creative_read` returned 2.1 MB for 17 creatives.
+**Round 2 (adversarial run, same day) added:** one prompt per `ads_generate` call (a 2-template dry run shared one prompt: 6 images, 360 credits); no claims sign-off marker on Personal Day yet → no claims usable until the claims gate's scoped sign-off; a brand with `research_status: "none"` still gets a dry-run quote (submit would fail); unfiltered `ads_creative_read` returned 2.1 MB for 17 creatives.
 
 ---
 

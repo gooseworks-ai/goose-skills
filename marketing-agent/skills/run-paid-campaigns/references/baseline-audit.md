@@ -1,6 +1,6 @@
 # First-run account baseline
 
-Load at step 0, the first time this playbook runs on an account (and again when the structure changed a lot). A senior operator never moves money in a new account before knowing its shape. Use the marketer's exports (campaign / ad set / ad, last 30 days if they have it, else 14) plus `meta_read` performance for the ads GooseWorks made. Do this first, because every later move depends on whether the account can learn at all.
+Load at step 0, the first time this playbook runs on an account (and again when the structure changed a lot). A senior operator never moves money in a new account before knowing its shape. Use the marketer's exports (campaign / ad set / ad, last 30 days if they have it, else 14) plus, with GooseWorks, `meta_read` performance for the ads GooseWorks made (local mode: the connector's account-wide reads instead, `local-mode.md`). Do this first, because every later move depends on whether the account can learn at all.
 
 ## What to map
 

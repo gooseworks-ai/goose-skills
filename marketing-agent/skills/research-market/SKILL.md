@@ -9,12 +9,12 @@ description: >-
   Researches first, asks only decisions at the end, and delivers a readable report saved to the brand.
   Not for who the buyers are and their own words — use research-audience; not for a deep look at
   rivals — use research-competitors.
-version: 0.4.0
+version: 0.4.1
 ---
 
 # research-market
 
-Market research decides **which market the brand is in, how big the reachable part is, and what's changing in it** — then what that means for the brand. It reads the buyer groups research-audience owns and sizes them; it doesn't build its own. Rivals get one short section that points to competitor research. It also runs a light **brand watch**: risk first, alerts only. The worker briefs are in `atoms/` and the craft in `references/`, next to this file.
+Market research decides **which market the brand is in, how big the reachable part is, and what's changing in it** — then what that means for the brand. It reads the buyer groups research-audience owns and sizes them; it doesn't build its own. Rivals get one short section that points to competitor research. It also runs a light **brand watch**: risk first, alerts only. The worker briefs are its step skills (`research-market-<step>`) and the craft is in `references/`, next to this file.
 
 **The rule that matters most: free pass first, ask nothing, report once** (`../marketing-guide/research-pattern.md` (in the `marketing-guide` skill) — read it before the first search). Do every dimension before the first message to the marketer; never stop to ask "go deeper?"; never ask for free work. A broad ask gets everything; an ask that names an area — **the market** · **what people are saying** — gets that area covered completely, with news first.
 

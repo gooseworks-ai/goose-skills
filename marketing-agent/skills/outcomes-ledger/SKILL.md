@@ -5,7 +5,7 @@ description: >-
   keeps the brand's record of the prospects or creators that were handed over. Tracks a status for
   each person, permanent opt-outs, re-check dates and dated lessons, which the next run reads. Loaded
   by those playbooks; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # outcomes-ledger
@@ -52,7 +52,7 @@ Every list a playbook hands over gets acted on outside GooseWorks: the human ema
 4. Save the lessons to the entity's lessons file, then as a dated brand document through the `save-to-brain` skill (`../save-to-brain/SKILL.md`) (`versioned: keep-history`, tags `[<playbook>, lessons]`). It opens with "Do this first, because…" and the one change the numbers support most. **Numbers and groups only — no names, emails, handles of private people or contact data.** Named-creator operational notes ("missed the posting window twice") stay in the roster file's `notes`, never in the brain.
 5. A lesson becomes a brand learning only through the `save-learning` skill (`../save-learning/SKILL.md`): the human's own words, one idea each, retiring its own superseded ones, text starting `[outreach YYYY-MM-DD]` (research-audience), `[outreach-copy YYYY-MM-DD]` (write-outreach) or `[creators YYYY-MM-DD]` (work-with-creators).
 
-## With run-memory (`atoms/run-memory`)
+## With run-memory (the `run-memory` skill)
 
 The ledger and the run records hold different things and must agree:
 - **The ledger is the per-row truth** — every person's or creator's status, dates and outcome. Nothing else stores rows.

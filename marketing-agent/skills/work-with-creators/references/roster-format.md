@@ -17,7 +17,7 @@ Load at steps 5–6 (report, roster) and 8 (re-delivery).
 
 ## `report.md` — the deliverable (what the founder reads first)
 
-A report in the `write-report` skill's shape (`../../write-report/SKILL.md` §1), with this playbook's sections inside "The story"; it passes that skill's §3 checks before delivery. Every number has a date and a link to the post it came from ("public-page read 17 Oct"). Every finding says how sure in write-report's words — **confirmed**, **likely**, **first look** — never "fact" or "inference" (vetting's audience-fit high / medium / low is said as confirmed / likely / first look). No working paths, file names or ids in the report: the briefs are linked in the chat message, and `brief_path` stays in the roster. Fictional example — never reuse its values.
+A report in the `write-report` skill's shape (`../../write-report/SKILL.md` §1), with this playbook's sections inside "The story"; it passes that skill's §3 checks before delivery. Every number has a date and a link to the post it came from ("public-page read 17 Oct"). Every finding says how sure in write-report's words — **confirmed**, **likely**, **first look** — never "fact" or "inference". **Audience fit and how sure are two things:** say the fit in words (`audience_fit`, e.g. "fit: strong — 14 of 80 commenters describe acne-prone skin"); how sure comes from `audience_confidence` and the sources behind it (`vetting.md` §8): confirmed only when independent reads agree (audience countries plus on-persona comments), likely for consistent content plus comment signals, first look for content alone. A strong fit on thin evidence is "fit: strong, first look". **Claims:** a line that needs proof is never offered for approval: the decision is "send the proof, or leave it out", and proof that arrives goes back through the claims gate before any brief uses the line. No working paths, file names or ids in the report: the briefs are linked in the chat message, and `brief_path` stays in the roster. Fictional example — never reuse its values.
 
 ```
 # <Brand> — creator report, 17 Oct 2026
@@ -31,7 +31,7 @@ A report in the `write-report` skill's shape (`../../write-report/SKILL.md` §1)
 ## Decisions for you
 1. **Names:** approve @fictional_skinnotes and @fictional_acnediary, or strike either — see Shortlist.
 2. **Test size:** Small (~$600, recommended: it shows within 14 days whether paid creators beat your current ads), Medium (~$1,100) or Large (~$1,800) — see Wave 1. The prices stay rough until you confirm your budget and margin per order.
-3. **Claims:** approve "non-comedogenic" for the briefs, or leave it out; it needs a test report on file — see Shortlist, 1.
+3. **Claims:** "non-comedogenic" needs proof before any brief can use it. Send the test report and I'll check it, or I'll leave the line out (recommended until you have one) — see Shortlist, 1.
 4. **Deeper vetting:** up to <N> credits to read hidden views and audience countries for the top picks — see What we couldn't check.
 
 ## The story
@@ -49,7 +49,7 @@ Goal: reach + content you can run as ads (from your Meta spend) · Platforms: Ti
 ### Shortlist
 #### 1. @fictional_skinnotes — TikTok, 62k followers — reach + UGC
 - Public numbers (read 17 Oct): usual views 21k on the last 12 videos; 2 sponsored (#ad) at 17k (0.81× her usual); posts 3× a week; comments on 3 posts: people describing their own breakouts, "where do I get this?" ×9 · likely, links below.
-- For you: fits — her "what I put on angry skin" format is a 30-second routine demo, exactly how your serum is used; she'd make one routine video with your serum as the treatment step. Claim behind it: none approved yet — "you'd need proof that it's non-comedogenic first" (Decisions, 3).
+- Fit: strong — 14 of 80 commenters describe acne-prone skin (likely: comments on 3 posts, no audience countries). For you: her "what I put on angry skin" format is a 30-second routine demo, exactly how your serum is used; she'd make one routine video with your serum as the treatment step. Claim behind it: none approved yet — "you'd need proof that it's non-comedogenic first" (Decisions, 3).
 - Price: floor $275, target ~$500 for one video; 30-day ad usage +$70–140; walk-away ~$425 all-in (rough — needs your budget and target cost per order). Deal: paid + 30-day usage, or gift + 15% affiliate if you only want organic.
 - Brief and first message: ready (linked in my message).
 #### 2. …

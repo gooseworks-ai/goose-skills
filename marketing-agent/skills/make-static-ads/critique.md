@@ -195,3 +195,9 @@ Minimal edits on the dev version (the owner has a newer rewrite on his branch; t
 | Finding | Fix |
 |---|---|
 | #4 Hand-offs still named unreleased playbooks (claims approval through learn-my-brand; kept photos from make-product-photos; a `Product imagery needed: for make-product-photos` request line no released playbook answers) | Claims approval → the claims gate's scoped sign-off (SKILL.md approval gate 2 and Out of scope, `claims-and-policy.md`, `handoff-format.md` examples, `reading-the-brain.md` §1). Product photos → the brand's own or ones made with the goose-product-photos skill, offered as the next job (SKILL.md Step 2 imagery line, `formats-and-placements.md`). The request line is gone: the batch file holds the brief and a `Waiting for: real product photos` line, and the next run starts once photos exist (`reading-the-brain.md` §7). `skill.meta.json` reads/writes updated; the stale writes row removed. Video was already goose-video. |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| A4 (partly) The hand test still sent claims to learn-my-brand | `tests/test-by-hand.md`: claims are approved in the claims gate's scoped sign-off. |

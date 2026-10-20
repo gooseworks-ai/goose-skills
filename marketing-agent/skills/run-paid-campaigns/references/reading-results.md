@@ -20,13 +20,13 @@ Very low volume (a handful of qualified leads a month): make the monthly call at
 
 ## Getting windows from the tools
 
-`meta_read view: performance` returns trailing totals, not daily series. Call it with `days: 14` and `days: 3` and subtract to get the matured 11-day window; call `days: 7` / `14` / `28` to approximate a trend. Trends from these are approximate — say so. Subtract counts (spend, results, clicks), never ratios; recompute cost per result from the subtracted counts. A past money move is read with its stored baseline recipe and two windows pulled the same way today (`run-memory.md`), never against last week's recorded numbers alone.
+**Local mode** (`local-mode.md`): the connector's own date-range reads give exact windows (no subtraction), else the marketer's export; skip the rest of this paragraph. With GooseWorks: `meta_read view: performance` returns trailing totals, not daily series. Call it with `days: 14` and `days: 3` and subtract to get the matured 11-day window; call `days: 7` / `14` / `28` to approximate a trend. Trends from these are approximate — say so. Subtract counts (spend, results, clicks), never ratios; recompute cost per result from the subtracted counts. A past money move is read with its stored baseline recipe and two windows pulled the same way today (`run-memory.md`), never against last week's recorded numbers alone.
 
 ## Before any number is used
 
 1. **Maturity.** Exclude the last ~72 hours (late-reported conversions); for B2B leads, the stage lag (2–6 weeks to qualified). Compare equal-maturity windows.
 2. **Same attribution setting and window** (Meta default 7-day click / 1-day view). Comparisons across an attribution-setting change are void. Treat view-through credit with suspicion.
-3. **Coverage.** `meta_read` sees Goose creatives only. State what share of spend the read covers; never treat the Goose subset as the account. Non-Goose numbers come from the marketer's export or analyze-performance.
+3. **Coverage.** With GooseWorks, `meta_read` sees Goose creatives only (local mode: say what share of spend the connector or export shows). State what share of spend the read covers; never treat the Goose subset as the account. Non-Goose numbers come from the marketer's export or analyze-performance.
 4. **Change log first.** Read `decisions.md`: a budget edit, swap or launch inside the window explains a spike or dip. A promo, stock-out, price change or CPM season (Q4/BFCM CPMs commonly +30–80%; early January cheap) changes the denominator regardless of the ads.
 5. **Objective.** A Goose NEW_CAMPAIGN is Traffic-optimised: Meta finds cheap clickers. Judge it on CTR, cost per landing-page view and the **store conversion rate of its UTM traffic** — never on purchase CPA against a purchase-optimised benchmark.
 

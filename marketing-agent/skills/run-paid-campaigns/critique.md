@@ -218,3 +218,13 @@ Second pass (independent review of this fix, effort high):
 |---|---|
 | The baseline audit's "Account at a glance" block sat on top of the first proposal, ahead of In short; What you get and `moves.md` still described a proposal "header" | The block is the first section of the story (`### Account at a glance`), its main finding in In short; What you get, "What to do: approve in three bundles" and `moves.md` ("Checks and pacing") match the new template. |
 | Step 7's Done-when needed server approval links, which local mode never has | "(GooseWorks levers)". |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B3 Local mode still reached `meta_read`, `push_status`, `video_read` and GooseWorks pushes in step 0, the baseline audit, reading results, run memory and launch | New `references/local-mode.md`: one table of what replaces each GooseWorks read and lever (connector date-range reads or exports, local `decisions.md` blocks and connector read-backs, route 3 or paused connector launches, the marketer's own creative). Pointers in SKILL.md (Before you start 1, step 0, step 5, Output), `baseline-audit.md`, `reading-results.md`, `run-memory.md`, `launch-and-graduate.md` (routes 1–2 marked GooseWorks only) and the health-gate and weekly-read steps. |
+| B5 Tired or rejected video ads went to "whoever makes their videos"; metadata named make-video-ads | Offered as the next job with the goose-video skill (without GooseWorks: whoever makes them), in SKILL.md and `moves.md`; unreleased producer gone from `skill.meta.json`. |
+| B6 The proposal had facts without dated, clickable sources | A Source column in This week, source links in Checks and pacing and Since last time, a linked Sources list, and the rule (write-report §1). |
+| B1 (shared) A local claims approver could not be changed safely or carried into a hosted chat | Fixed in claims-gate. New Test 4d: the approver changes, the old one's later yes doesn't count, and pasted rows without the history fail closed. |
+| B10 `skill.meta.json` said `foundation/guide §5` | Now the marketing-guide skill reference. |

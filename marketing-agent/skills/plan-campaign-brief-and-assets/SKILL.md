@@ -4,7 +4,7 @@ description: >-
   Step of the plan-campaign playbook: writes angles per channel, the asset list, measurement plan,
   hand-offs and replan triggers, then assembles the plan. Run plan-campaign instead; not for direct
   use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Brief and asset list (atom)
@@ -15,7 +15,7 @@ version: 0.1.0
 
 **Do:**
 1. Angles per Run/Test channel: one reason to buy each, resting on a named customer line and an exact approved claim (with id) whose `applicability` covers it (`brand`, or `product` for that product). `unknown` applicability is not brand-wide proof — the server refuses it on a concept; mark **needs proof (scope unconfirmed)**. Adapt the expression per channel. No approved proof → **needs proof**, never invented. Press quotes and the brand's own site copy are not customer words; if research-market's voice-of-customer bank is empty, say so.
-2. Asset list: one numbered row per asset — leg, placement, spec (format, ratio, length), angle, message/hook, claim (verbatim), CTA → destination (with UTMs), producer role (static ads, video ads, photos, content, human; video ads and photos are human-executed for now), due date (from the backwards calendar), dependency. Check the count against each paid leg's creative-volume need.
+2. Asset list: one numbered row per asset — leg, placement, spec (format, ratio, length), angle, message/hook, claim (verbatim), CTA → destination (with UTMs), producer role (static ads, video ads, photos, content, human; video ads and photos are made with the goose-video and goose-product-photos skills, or by a person in local mode — the hand-off roles in `../plan-campaign/references/brief-template.md`), due date (from the backwards calendar), dependency. Check the count against each paid leg's creative-volume need.
 3. Measurement plan per leg: conversion event, UTM convention, promo code, attribution window, the store/CRM number it is judged on, blended MER target, "how did you hear" question.
 4. Hand-offs: one row per leg, no silent legs; legs with no playbook are marked human-executed.
 5. Replan triggers with thresholds and the action each starts.

@@ -618,3 +618,9 @@ Sonnet, web search and page fetch only (no browser, no GooseWorks calls), Person
 | Done when had no run record and no quote bar | Added the run record and "3–5 buyers quoted word for word, linked to the post" |
 | "Founder" and "marketer" both named the user | "Marketer" in SKILL.md; "the founders' decision" kept as a role |
 | Description 1,009 characters, opened "Use when a founder or marketer asks" | 713 characters, leading with "Market research and brand watch". Routing cases R17, R34, R61 and R63 still match; R50 (a complaint spreading) rests on "tell me if something blows up" |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| B10 "The worker briefs are in `atoms/`" | "its step skills (`research-market-<step>`)". |

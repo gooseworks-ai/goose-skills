@@ -216,3 +216,14 @@ Second pass (independent review of this fix, effort high):
 |---|---|
 | "Who takes what" and `creative-and-channels.md` still said "we don't make video ads yet", against Out of scope's goose-video | Both now offer video items as the next job with the goose-video skill. |
 | The example In short was within 3 words of the 150-word cap | Trimmed to about 120. |
+
+## 2026-10-20 — Codex review round 2
+
+| Finding | Fix |
+|---|---|
+| A15 (partly) `skill.meta.json` still named make-video-ads as the writer of `ads/videos/<project_id>.md` | Reads: `video_read`, a video without names is unannotated; the unreleased producer is gone from reads and writes. |
+| B4 The pulse and its schedule were GooseWorks-only (`meta_read`, `push_status`, `automation_upsert`) | `monthly-and-pulse.md`: inputs by mode (local: the ads connector over 1–3 days, else today's export; nothing to check without either), the monthly read saved by the local branch, and scheduling by marketing-guide §3 (local: the host's scheduler, or not available). `creative-and-channels.md`'s data line points to `local-mode.md`. |
+| B5 Video routing still said "we don't make video ads yet" | Done in round 1's second pass; metadata now matches. |
+| B6 The Monday template had facts without dated, clickable sources | Source links beside each material fact (section source lines, a Source column, inline in calls and make-next), linked Sources list; the rule points to write-report §1, which now says an export links to the marketer's own file under a readable name. |
+| B8 "Learnings proposed (saved to your brand…)" was wrong in local mode | "kept only after you've seen them". |
+| B10 Meta descriptions said `foundation/guide §5` | Now the marketing-guide skill (`../marketing-guide/SKILL.md`) §5. |
