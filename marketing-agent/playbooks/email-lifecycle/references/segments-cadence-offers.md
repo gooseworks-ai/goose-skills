@@ -24,7 +24,7 @@ Opens may appear only as a secondary OR condition with machine opens excluded wh
 ## Flow priority map and frequency cap
 Highest intent wins: checkout > cart > browse; any transactional or booking message > marketing. Write which flow suppresses which and for how long, and one global cap (e.g. ≤ 1 marketing email per 16h, ≤ [3–5] per week per person across flows and broadcasts). Exclude recent purchasers (last [3–7] days) from promotional broadcasts, open support tickets from promos, and active subscribers from acquisition offers.
 
-## Cadence (a proposal; the human approves)
+## Cadence (a proposal; the marketer approves)
 - Default starting point for a store: engaged-30 2–3 sends a week; engaged-90 1 a week; 90–180 two or three a month, best content only; lapsed only via re-permission.
 - B2B and services: a newsletter weekly to monthly, plus flows. Creators: the publishing schedule is the cadence.
 - Non-sale weeks: roughly 60–70% useful (education, stories, new things, how-to) to 30–40% promotional. Every promotional send still carries something useful.
@@ -34,7 +34,7 @@ Highest intent wins: checkout > cart > browse; any transactional or booking mess
 ## Offers
 
 ### The ladder
-Offers come only from the standing first-order offer or a ladder the human approved. Defaults until then:
+Offers come only from the standing first-order offer or a ladder the marketer approved. Defaults until then:
 - Welcome: never deeper than the standing first-order offer.
 - Cart / checkout: the first reminder never discounts; first-timers may see their existing welcome code again; returning full-price customers get none.
 - Win-back: one step at most, approved, ideally a non-discount value first (free shipping, a gift with purchase, early access).

@@ -41,7 +41,7 @@ When the platform story and the blended story point different ways, present both
 > **Recommendation:** run on blended this week — hold. **What would settle it:** a 2-week −30% prospecting step-down (or a geo holdout in 3 regions), or a post-purchase "how did you hear about us?" survey to triangulate.
 > **Your call** — I'll log which story we run on so it doesn't flip each week.
 
-Log the human's pick in the report and use it next week unless new evidence (a test) changes it.
+Log the marketer's pick in the report and use it next week unless new evidence (a test) changes it.
 
 ## Incrementality — recommend the cheapest test that settles the disagreement
 

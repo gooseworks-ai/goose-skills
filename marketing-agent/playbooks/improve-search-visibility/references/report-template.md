@@ -1,17 +1,18 @@
 # Report template
 
-Load at step 5. The report is written and delivered through `../../../atoms/write-report/ATOM.md` — follow its shape, language, "never in a report" list and delivery rules exactly. This file only says what goes in each part for a search-visibility report. A busy founder must get the answer from the top five lines.
+Load at step 5. The report is written and delivered through `../../../atoms/write-report/ATOM.md` — follow its shape, language, "never in a report" list and delivery rules exactly. This file only says what goes in each part for a search-visibility report. A busy founder must get the answer from the top: what we checked, what we found and how sure, then the first move.
 
 ```
 # <Brand> — where you show up in ChatGPT and Google, <D Mon YYYY>
 
 ## In short
-- **Do this first:** <the one move> — because <why, in one sentence>.
-- <Repeat runs, only when it passed the noise rule in `run-memory.md`: the one change since last time that matters most: "ChatGPT now names you on 'best AI ad tool for DTC brands' 2 times out of 3, up from 0 on 18 Sep; your new homepage title went live in between." Otherwise the most useful fact about last month's fixes: "Two of last month's five fixes are live; the comparison page is written but not published yet.">
-- <Where you are named and where you aren't, as plain counts: "ChatGPT names you when people ask about you by name, but on none of the 8 questions buyers ask before they know you.">
-- <Who wins instead, and the one reason: "It names Canva, Creatify and AdCreative.ai, mostly from 'best AI ad tool' lists those vendors write themselves.">
-- <The biggest thing broken on your side, if any: "Your homepage calls you 'Goose', not 'Gooseworks', so engines don't connect the two.">
-(At most 150 words; nothing unverified — a single-run or browser-location-limited finding moves down to the story with its doubt stated.)
+**What we looked at:** <the questions asked, which engines, the date, where from, and the main limit — e.g. "ChatGPT and Google, 8 buying questions, asked 20 Oct from one browser in one country; Google results differ by country, so ranks are a first look">.
+<Repeat runs, only when it passed the noise rule in `run-memory.md`: one line on the change since last time that matters most — e.g. "ChatGPT now names you on 'best inventory app for cafés' 2 times out of 3, up from 0 on 18 Sep; your new homepage title went live in between." Otherwise the most useful fact about last month's fixes: "Two of last month's five fixes are live.">
+1. <Where you are named and where you aren't, as plain counts, with how sure — e.g. "ChatGPT names you when asked about you by name, but on none of the 8 questions buyers ask before they know you (confirmed, each asked 3 times).">
+2. <Who wins instead, and the one reason — e.g. "It names two rivals, mostly from 'best of' lists those rivals write themselves (likely).">
+3. <The biggest thing broken on your side, if any — e.g. "Your homepage uses a nickname, not your full name, so engines don't connect the two (confirmed).">
+**So, do this first (because of <1 and 3>):** <the one move, who, by when>.
+(At most 150 words. Examples are fictional — never reuse them. How sure: confirmed = seen on repeat asks or in Search Console; likely; first look = one ask, one browser, one country — never "Google ranks you 2nd" from a single browser read. Nothing stronger than the body.)
 
 ## Decisions for you
 A short box, each with your recommendation and a date if it matters: which buyer to win (when the site shows more than one), the paid top-up, any structural change awaiting a yes.

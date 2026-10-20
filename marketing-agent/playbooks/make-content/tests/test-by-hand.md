@@ -30,7 +30,7 @@ It should:
 **Fail** if it contains an opinion, story, customer, number or statistic you never gave or approved.
 
 ## Test 3: a gate path (pick one)
-- **Case study:** give a customer interview transcript. It should be delivered **blocked**, with `[CUSTOMER APPROVAL NEEDED]` on the name, numbers and quotes, and say these go to learn-my-brand.
+- **Case study:** give a customer interview transcript. It should be delivered **blocked**, with `[CUSTOMER APPROVAL NEEDED]` on the name, numbers and quotes, and put them to the human through the claims gate's scoped sign-off.
 - **Comparison page:** every competitor fact should be dated and sourced. Every comparative line about you should be on the approved list or marked for approval.
 
 ## Test 4: newsletter
@@ -59,7 +59,7 @@ Brand: **Personal Day** (`0e5b2fb0-…`, DTC acne-safe skincare). Ask: "Turn our
 | 1 | `brand_read` (list) | 8 brands, each with `coworker_agent_id` (Personal Day → `9d554b73-…`) | Workspace scope for every file |
 | 2 | `brand_read` sections summary, kit, learnings, sources, organic | Kit voice (description, 3 site lines, Do/Don't); 1 learning: `dont` choppy script lines; own IG @personalday and TikTok @personaldayskin as `relationship: self` sources; 12 own posts (Oct 5–12) with metrics and `media_asset_id` | Platforms = IG + TikTok (from sources); the script learning applies to every video version |
 | 3 | `brand_read` learnings (full) | No "Claims sign-off (learn-my-brand" marker | **Before sign-off: plain product facts only.** Positioning note sent before drafting ("'acne-safe' isn't signed off yet…") |
-| 4 | `knowledge_search` claim | 7 rows `claim_status: approved`, all research-created (4 press quotes, free returns, free shipping $45+, 4.9/234 reviews) | Treated as candidates per learn-my-brand's contract, not proof |
+| 4 | `knowledge_search` claim | 7 rows `claim_status: approved`, all research-created (4 press quotes, free returns, free shipping $45+, 4.9/234 reviews) | Treated as candidates under the claims gate's contract, not proof |
 | 5 | `knowledge_search` document "Brand record approved claims" | empty | Confirms no sign-off has run |
 | 6 | `knowledge_search` evidence | Only the 4 press quotes, no buyer words | Says "no buyer evidence on file"; press quotes are not VoC |
 | 7 | `file_read research/audience/voc-bank.md` | not_found (research-market has not run on staging) | Falls back to the evidence search (step 6) |
@@ -70,7 +70,7 @@ Brand: **Personal Day** (`0e5b2fb0-…`, DTC acne-safe skincare). Ask: "Turn our
 
 **Stopped before:** nothing on this path costs credits. `knowledge_import url` (for a published piece) was not run: the brand has no published piece from this run.
 
-**Sample output** (from the round-2 adversarial run on the same data, then re-checked against the fixed claims rules): an IG carousel led by the "where it lives" unit. Slides: "where lili keeps her spray (not the bathroom)" / slide 2 has its own hook / one location per slide / a save prompt in the brand's voice. The press quote is dropped until sign-off. Cut: "kills acne-causing bacteria", "soothes redness", "clear skin" (all needing learn-my-brand sign-off). Kept: "alcohol-free", "fine mist", "$12" (product record spec fields).
+**Sample output** (from the round-2 adversarial run on the same data, then re-checked against the fixed claims rules): an IG carousel led by the "where it lives" unit. Slides: "where lili keeps her spray (not the bathroom)" / slide 2 has its own hook / one location per slide / a save prompt in the brand's voice. The press quote is dropped until sign-off. Cut: "kills acne-causing bacteria", "soothes redness", "clear skin" (all needing sign-off). Kept: "alcohol-free", "fine mist", "$12" (product record spec fields).
 
 **Not verified on staging:** `knowledge_import url` pricing (expected free; the playbook stops if it quotes a price); importing voice cards as documents (no confirmed card yet).
 

@@ -4,7 +4,7 @@ Load at step 3 (the weekly read). The platforms automate targeting and bidding; 
 
 ## The yardstick
 
-- **Allowable CPA** (or cost per qualified lead / per retained user) comes from the campaign brief's economics box. If absent, derive it from margin and the goal (`../../plan-campaign/references/unit-economics.md` logic: contribution per first order, plus repeat contribution in the window the founder accepts), or ask. Write it in `state.md`'s header; every call keys off it.
+- **Allowable CPA** (or cost per qualified lead / per retained user) comes from the campaign brief's economics box. If absent, derive it from margin and the goal (`../../plan-campaign/references/unit-economics.md` logic: contribution per first order, plus repeat contribution in the window the marketer accepts), or ask. Write it in `state.md`'s header; every call keys off it.
 - **Break-even ROAS** = 1 ÷ contribution margin %. A "3.0 ROAS" ad is losing money at a 30% contribution margin.
 - **Blended is the referee.** analyze-performance's store-joined read (MER, new-customer CAC) outranks any platform's claim. If platform ROAS rose but new customers or blended MER did not, the "win" is harvested demand — say so.
 
@@ -26,7 +26,7 @@ Very low volume (a handful of qualified leads a month): make the monthly call at
 
 1. **Maturity.** Exclude the last ~72 hours (late-reported conversions); for B2B leads, the stage lag (2–6 weeks to qualified). Compare equal-maturity windows.
 2. **Same attribution setting and window** (Meta default 7-day click / 1-day view). Comparisons across an attribution-setting change are void. Treat view-through credit with suspicion.
-3. **Coverage.** `meta_read` sees Goose creatives only. State what share of spend the read covers; never treat the Goose subset as the account. Non-Goose numbers come from the human's export or analyze-performance.
+3. **Coverage.** `meta_read` sees Goose creatives only. State what share of spend the read covers; never treat the Goose subset as the account. Non-Goose numbers come from the marketer's export or analyze-performance.
 4. **Change log first.** Read `decisions.md`: a budget edit, swap or launch inside the window explains a spike or dip. A promo, stock-out, price change or CPM season (Q4/BFCM CPMs commonly +30–80%; early January cheap) changes the denominator regardless of the ads.
 5. **Objective.** A Goose NEW_CAMPAIGN is Traffic-optimised: Meta finds cheap clickers. Judge it on CTR, cost per landing-page view and the **store conversion rate of its UTM traffic** — never on purchase CPA against a purchase-optimised benchmark.
 
@@ -55,7 +55,7 @@ Without frequency data, use the proxy: CTR (and/or conversion rate) falling over
 
 ## Quality (lead-gen)
 
-CPL means nothing without the qualified rate. Key B2B/services calls to cost per SQL / opportunity / booked call from the CRM numbers the human or analyze-performance provides. A lead-form spam surge looks like a winner.
+CPL means nothing without the qualified rate. Key B2B/services calls to cost per SQL / opportunity / booked call from the CRM numbers the marketer or analyze-performance provides. A lead-form spam surge looks like a winner.
 
 ## Company types
 

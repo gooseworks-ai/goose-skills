@@ -1,7 +1,7 @@
 ---
 name: run-memory
 description: >-
-  Shared atom (owner: orchestrator). Gives every repeatable playbook a memory of its own runs. At the start it
+  Shared atom. Gives every repeatable playbook a memory of its own runs. At the start it
   finds this job's last run record for the brand, checks each earlier recommendation (done, not done, unknown,
   and its result where it can be measured) and writes 3–5 lines of "since last time". At the end it saves a
   short run record (what was checked, the numbers, decisions, recommendations with review dates, outcomes of
@@ -29,7 +29,8 @@ A playbook that runs again (often as a weekly or monthly automation) must know w
 Brand inputs (`brand_id`, `brand_slug`, `coworker_agent_id`, scope) come from `../../foundation/guide/SKILL.md` §1–2.
 
 **File:** `runs/<playbook>/<job-slug>/[<subject>/]<YYYY-MM-DD>.md`. A second run on the same day is `<YYYY-MM-DD>-2.md`.
-**Title:** `Run record — <job>[ — <subject>] — <Brand> — <YYYY-MM-DD>`, with ` (2)` added for a second run that day. The subject and the run number sit in the title because brain search cannot filter by tag, and because save-to-brain's keep-history step deletes a copy only when its title matches exactly.
+**Title:** `Run record — <job>[ — <subject>] — <Brand> — <YYYY-MM-DD>`, with ` (2)` added for a second run that day (save-to-brain's never-overwrite rule, its step 1). The subject sits in the title because brain search cannot filter by tag.
+**Local mode** (`../../foundation/guide/SKILL.md` §5): the same file under `gooseworks-local/<brand-slug>/`; step 1 reads only that folder, save-to-brain writes only the file, and step 7's line says "in this folder", not "to your brand".
 
 ## Start of run
 
@@ -66,7 +67,7 @@ For each recommendation the last record left open (carried-forward ones included
 | `dropped` | The human dropped it, or a newer recommendation replaced it (name which one). |
 | `open` | Not due yet: its review-by date is still ahead. Carry it forward unchanged; don't question it. |
 
-**Result, for `done` ones past their review-by date.** Re-run the record's "how we'll know" test with its **baseline recipe** (step 6). Pull both windows today, with the same lag and settings. A number recorded last week was still filling in, so use it only as a sanity check. Give one verdict:
+**Result, for `done` ones past their review-by date.** Re-run the record's "how we'll know" test with its **baseline recipe** (step 6). Pull both windows today, with the same lag and settings; never judge from a shorter window than the baseline, from unsettled days or from a single day. A number recorded last week was still filling in, so use it only as a sanity check. Give one verdict:
 - `worked` or `didn't work`: the numbers before → after, with their windows and their truth/claimed label. Say what got worse, if anything did.
 - `too early`: give the date it becomes readable. Carry it forward with that date as the new review-by.
 - `can't tell`: say why. Other changes landed on the same thing in either window, tracking broke, the data is stale, there is no view at the right level, or the volume is too low to separate from noise.
@@ -78,7 +79,7 @@ For each recommendation the last record left open (carried-forward ones included
 - **Judge a budget raise on the extra results** per day, and what those extra results cost against the allowable cost. Never on average CPA. Net it against the rest of the account's change over the same windows.
 - **Under about 30 results per window**, or with any other change logged in `decisions.md` for that object in either window (a swap, a launch, a promo, stock) → `can't tell` or `too early`, with a date.
 - **`gooseworks:meta_read` view `performance`** returns trailing totals per Goose-made creative, with no date range. Totals for a past window can be built by subtracting two trailing reads (`days: 21` minus `days: 12`); ratios cannot. If the ad set holds ads GooseWorks didn't make, or its ads changed between the windows, the readout needs the marketer's Ads Manager export at ad-set level. Without one, the verdict is `can't tell (no ad-set view)`.
-- **Label the numbers** `claimed` (platform-reported) unless they are joined to the brand's own store or CRM data (`truth`).
+- **Label the numbers** `claimed` (platform-reported) unless they are joined to the brand's own store or CRM data (`truth`). Never compare a `truth` number with a `claimed` one as if they were alike.
 
 ### 4. Write "since last time" (3–5 lines)
 
@@ -136,7 +137,7 @@ Report: <workspace path of this run's report, or "none">
 ### 7. Save it
 
 - **The record:** through `../save-to-brain/ATOM.md`, with `path` = the file above, `artifact` = `Run record — <job>[ — <subject>]`, `title` = the title above, `tags` = `[<playbook>, run-record]` (plus `subject:<slug>`), `versioned: keep-history`, `import: yes`. Earlier records are history and are never deleted.
-- **Rules learned** ("never discount the hero product") go through `../save-learning/ATOM.md`, and only in the human's own words (AGENTS §8). A pattern you noticed yourself stays in the record and the report as a finding.
+- **Rules learned** ("never discount the hero product") go through `../save-learning/ATOM.md`, and only in the human's own words. A pattern you noticed yourself stays in the record and the report as a finding.
 - **A measured readout** may also be saved as a numbers-only fact through save-learning's fact path (kind 23, field `experiment_readout.<id>`), when `brain_*` tools are listed. That means only a `worked` or `didn't work` verdict, with its truth/claimed label, and never from a scheduled run: it waits for a run with the marketer present. Tell the marketer it is saved as found, not confirmed.
 - **Tell the marketer in one line:** "Saved this run's notes to your brand, so the next check starts from here." (Name the next check when one is scheduled: "next Monday's check", "next month's pulse".) If the save failed, say so plainly and put the record in the chat. In a scheduled run, there is no line unless the save failed; then the report says so in "What we couldn't check".
 
@@ -147,12 +148,3 @@ Report: <workspace path of this run's report, or "none">
 - **Ask nothing.** `unknown` statuses and keep-or-drop questions go into the report's "Decisions for you", once each (`asked on`). **A quiet run that sends no report** (a watch below its threshold) keeps those questions in the run record, with the date they were first raised, and the next run that does send a report asks them.
 - **Anything that needs a yes waits as a proposal.** For example, a budget change through `gooseworks:propose_meta_budget_change` (its approval page), or a `brain_save` change that waits in the app. Record each one with owner `approval page`. Never accept a proposal yourself.
 - **A run that stopped early** still writes its record, headed `Not run: <why>` (the data is stale, a connection is missing). It keeps the sources checked and carries every open recommendation forward unchanged, so the next run knows the gap and reads its baseline from the record before.
-
-## Never
-
-- Never mark a recommendation `done`, or a budget as changed, without a source that shows it.
-- Never judge a result from a shorter window than its baseline, from unsettled days, or from a single day.
-- Never compare a `truth` number with a `claimed` one as if they were the same thing.
-- Never put the report in the record, or the record in place of the report.
-- Never keep a second copy of a log the playbook already owns. Link it.
-- Never put personal data in a run record.

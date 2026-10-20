@@ -84,7 +84,7 @@ Category-specific fit: beauty needs the skin or hair concern the creator **state
 
 ## 10. Competitor conflicts
 
-Competitor partnership ads live in the Meta ad library; competitors' recent posts tagging the creator (the brand's own competitor organic feed is free); the creator's own posts tagging competitors in the last ~3–6 months. A recent competitor deal is either a conflict (possible exclusivity — the human asks) or evidence of category fit; say which and why.
+Competitor partnership ads live in the Meta ad library; competitors' recent posts tagging the creator (the brand's own competitor organic feed is free); the creator's own posts tagging competitors in the last ~3–6 months. A recent competitor deal is either a conflict (possible exclusivity — the human asks) or evidence of category fit; say which and why. **Working for a rival or adjacent tool** (employee, founder, evangelist, ambassador — check the bio, LinkedIn headline and pinned post) is not a deal to ask about: it's a near-miss, with that reason.
 
 ## 11. Regulated categories and minors
 

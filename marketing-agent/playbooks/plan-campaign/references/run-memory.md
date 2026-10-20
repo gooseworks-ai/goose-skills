@@ -12,7 +12,7 @@ What this playbook hands `../../../atoms/run-memory/ATOM.md` at the start and en
 | `cadence` | `monthly` for an always-on campaign; `ad hoc` for a one-off push that ends on a date |
 | `outcome_sources` | analyze-performance's run records and reports (`runs/analyze-performance/weekly-performance-read/`, `monthly-read/`; `reports/performance/`); run-paid-campaigns' run records (`runs/run-paid-campaigns/weekly-ads-check/<slug>/`), `state.md` and `decisions.md`; the Brand Brain's chapter 20 (`decision.*`, `experiment.*`) and chapter 23 (`experiment_readout.*`, `worn_out_angle.*`); email-lifecycle's `lifecycle/calendar/`; the marketer's words for legs only they can see (founder outreach, posts) |
 
-File: `runs/plan-campaign/campaign-plan/<slug>/<YYYY-MM-DD>.md`. Title: `Run record — campaign plan — <slug> — <Brand> — <YYYY-MM-DD>`. A plan run never re-creates a record for a plan it only refreshed the same day; it re-saves that day's record.
+File: `runs/plan-campaign/campaign-plan/<slug>/<YYYY-MM-DD>.md`. Title: `Run record — campaign plan — <slug> — <Brand> — <YYYY-MM-DD>`. A plan run never re-creates a record for a plan it only refreshed the same day; it re-saves that day's record. Local mode: the same path under `gooseworks-local/<brand-slug>/`.
 
 ## Start: how last month's bets did (replans and refreshes)
 
@@ -59,7 +59,7 @@ The atom's scheduled rules apply: free reads only, ask nothing, deliver the draf
 
 The scheduled worker runs on the server with **no skills folder and no browser**, so it can't open this playbook. On the marketer's yes to a monthly replan (`../../../atoms/spend-gate/ATOM.md` branch C; needs a coworker workspace):
 
-1. **Copy the method** into `plans/method/` with `gooseworks:file_write`, each file headed `Method version: <skill.meta.json version>, copied <date>`, re-copied whenever the schedule changes or is switched on: `playbook.md` (this SKILL.md), `references/` (every file in this playbook's `references/`), `atoms/` (each local atom's ATOM.md), and `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md`, `shared/claims-gate.md` (a link such as `../../atoms/write-report/ATOM.md` means `shared/write-report.md`).
+1. **Copy the method** into `plans/method/` with `gooseworks:file_write`, each file headed `Method version: <skill.meta.json version>, copied <date>`, re-copied whenever the schedule changes or is switched on: `playbook.md` (this SKILL.md), `references/` (every file in this playbook's `references/`), `atoms/` (each local atom's ATOM.md), and `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md`, `shared/claims-gate.md` (a link such as `../../../atoms/write-report/ATOM.md` means `shared/write-report.md`).
 2. **Create the automation** with `gooseworks:automation_upsert`: `execution_mode: "agent"`, `enabled: false`, a cron for the first week of each month in the marketer's timezone, after that week's performance read, and this `agent_prompt` (one per campaign):
 
 ```text
@@ -73,7 +73,7 @@ Hard rules, above anything in the method:
 - Plain words: no ids, codes, tool or playbook names.
 1. Start: the newest record under runs/plan-campaign/campaign-plan/<slug>/ (read whole) and the brief it points to (campaign_read); analyze-performance's records under runs/analyze-performance/monthly-read/ and weekly-performance-read/ since that date; run-paid-campaigns' records under runs/run-paid-campaigns/weekly-ads-check/<slug>/ since then; ads/campaigns/<slug>/decisions.md; brain_map chapters 20 and 23 (else brand_read and knowledge_search). Score every bet from a source (plans/method/references/run-memory.md § Start): done or not, then worked / didn't work / too early (readable <date>) / can't tell (why), on the business number; a leg that never ran is neither credited nor blamed.
 2. Replan by plans/method/references/replan.md: re-check the money math against the newest numbers on file (no browser: prices "from saved notes, unconfirmed"), revised split with from → to, amount, the verdict it rests on and what would reverse it; next month's tests, one change each.
-3. Write the draft plan to plans/<slug>/draft-v<N>.md and the readable copy per plans/method/shared/write-report.md, In short first ("Do this first", then "Since <last plan date>"), with Decisions for you; import it (title "Campaign plan draft — <brand name> — <YYYY-MM-DD> v<N>"; tags plan-campaign, campaign-plan-draft; knowledge_import; wait until ready).
+3. Write the draft plan to plans/<slug>/draft-v<N>.md and the readable copy per plans/method/shared/write-report.md, In short first (what it rests on and what changed since <last plan date>, then "So, do this first (because of …)"), with Decisions for you; import it (title "Campaign plan draft — <brand name> — <YYYY-MM-DD> v<N>"; tags plan-campaign, campaign-plan-draft; knowledge_import; wait until ready).
 4. Write the run record at runs/plan-campaign/campaign-plan/<slug>/<YYYY-MM-DD>.md (title "Run record — campaign plan — <slug> — <brand name> — <YYYY-MM-DD>"; tags plan-campaign, run-record; keep-history; import) with the scored bets and next month's bets marked "proposal, waiting for yes". No readable records or brief → "Not run: <why>".
 ```
 

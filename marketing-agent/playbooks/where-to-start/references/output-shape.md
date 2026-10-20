@@ -1,6 +1,6 @@
 # The first-move recommendation: shape and examples
 
-Load at step 5. Every recommendation has the same parts, in this order, and fits on one screen (about 200–250 words).
+Load at step 5. Every recommendation has the same parts, in this order, and fits on one screen (at most 250 words).
 
 1. **The read** — two sentences on the situation, citing at least two facts the founder gave.
 2. **The constraint** — one sentence naming the one thing in the way, and the evidence that points there.

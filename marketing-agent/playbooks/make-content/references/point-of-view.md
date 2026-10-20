@@ -5,6 +5,8 @@ Load when a piece needs a real opinion, a war story or a named person's voice. E
 ## When a piece needs a POV
 
 Needs one: thought leadership, POV essays, founder or exec bylines, newsletter lead essays, LinkedIn posts in a person's voice, "our take on <news>", contrarian comparison verdicts.
+
+**A piece that grades the category** ("what every tool gets wrong", built on rivals' complaints) needs the brand's own answer on the same test settled before drafting (references/fact-rules.md, the grading row). Ask it in the POV interview: "How do we do on this exact test? Where would a customer catch us out?"
 Does not need one: how-tos, explainers, release notes, show notes, a roundup of approved proof, page drafts from a search brief.
 
 ## Check before asking
@@ -32,7 +34,7 @@ Rules:
 
 ## Author voice (bylined pieces)
 
-The brand voice is in the kit. A founder's or exec's voice is different, and lives in a **voice card** built by the shared voice-card atom (`../../../atoms/voice-card/ATOM.md`). That atom owns how a card is built, read and updated; the slug is the person's handle. learn-my-brand's rules beat a card's style.
+The brand voice is in the kit. A founder's or exec's voice is different, and lives in a **voice card** built by the shared voice-card atom (`../../../atoms/voice-card/ATOM.md`). That atom owns how a card is built, read and updated; the slug is the person's handle. The brand's rules beat a card's style.
 
 The voice-card atom also owns where the person's posts come from: the brand's own posts free, other platforms through the proxy under the spend gate, or pasted. Use only the verified endpoints in `../../../atoms/spend-gate/proxy-endpoints.md`. LinkedIn and Threads reads there are keyword searches, so keep only posts whose author matches the person. With fewer than 8 left, ask for a paste. X has no verified own-feed read today, so X posts are pasted. Interview transcripts and emails they share count too.
 

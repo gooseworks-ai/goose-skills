@@ -1,10 +1,11 @@
 # Playbooks to build later
 
 **In short**
-- These are marketing jobs the current 17 playbooks do not cover. Each one is written down on purpose, with who needs it and what should make us build it.
-- **Decision (Akhil, 16 Oct 2026): build none of these now.** Building and testing 17 playbooks well comes first; a bigger surface now would make that harder.
+- These are marketing jobs the 14 released playbooks do not cover. Each one is written down on purpose, with who needs it and what should make us build it.
+- **Decision (Akhil, 16 Oct 2026): build none of these now.** Building and testing the playbooks we have well comes first; a bigger surface now would make that harder.
 - The list comes from the plan's backlog plus the 16 Oct coverage review (`reviews/2026-10-16-coverage.md`), which ran five company types through a full quarter using only these playbooks.
 - Until a card is built, playbooks say plainly "this isn't covered yet" and never fake the work.
+- **Held back (Akhil, 20 Oct 2026):** learn-my-brand, make-video-ads and make-product-photos are built but wait for server work; see the section below.
 
 ## How to read a card
 
@@ -12,6 +13,16 @@
 - **Who hits it:** the company type and the moment.
 - **Build when:** a trigger we can check. "Someday" is not a trigger.
 - **Shape:** a new playbook, or a mode added to an existing one.
+
+## Held back from the first release (decided 20 Oct 2026, Akhil)
+
+Three playbooks are built but not released, because they need server work before they can run or be tested properly. They live in [`unreleased/`](unreleased/README.md), which says what blocks each and how to bring one back. Until then the router and every released playbook say plainly "not covered yet".
+
+| Playbook | The job users can't get yet | Build when |
+|---|---|---|
+| learn-my-brand | Learning the brand in one pass: a full claims audit and sign-off, a confirmed voice, a brand book read, a price or product change recorded. (The claim lines a job needs are still approved inside that job, through the claims check.) | The Brand Brain can approve, reject and retire claims and edit proof points over MCP, and pending proposals can be listed and accepted from chat (its `server-needs.md` #1–#7) |
+| make-video-ads | Video ads made with AI: Reels, TikTok and Shorts ads, AI UGC-style video, product demos, fixing a rejected video ad | The video engine fixes its `server-needs.md` High items: no generated customer testimonials, money-only approval buffer, claims scoped to the product, a working chat-host route, every rendered text claim-checked |
+| make-product-photos | Product photos without a shoot: packshots, lifestyle and on-model shots, redoing photos after a packaging change | The photo engine fixes its `server-needs.md` High items: a dry run that validates, reference control, archiving without a brand-wide rule, a real-vs-generated filter |
 
 ## Ranked by how soon a customer gets stuck
 

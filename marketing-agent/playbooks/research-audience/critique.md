@@ -410,3 +410,49 @@ Wired run-memory (`references/run-memory.md`): jobs `audience research`, `prospe
 |---|---|---|
 | outcomes-ledger (owned here) kept raw addresses forever for suppressions, and created rows for unmatched stops/bounces (MAJOR) | Agree | New § Suppression without personal data: `key_hash` (SHA-256 of the normalised key); a suppressed row keeps only the hash, reason, date and list id; unmatched stops get a hash-only row; a host that can't hash stores nothing and asks once before keeping a raw address; people-and-contacts drops candidates whose hashed keys match before any paid lookup |
 | Direct `brain_save` for audience records | Allowed (AGENTS §8, 20 Oct ruling) — checked | The save is `status: found`, `is_public: false`, and each item waits for the marketer's yes in the app; never called confirmed |
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+From the cold-outreach hand test (session 8571396a): the paid list run delivered 41 people and 0 email addresses for an email sequence; the list was built for the group ranked #3 with 0 confirmed members, passed in from a stale pack; the lead group rested on 6 reviewers, 5 of them Trustpilot complaints about rivals.
+
+| Finding | Fix |
+|---|---|
+| The email gap (no finder or checker on the connector) was only said after the paid run | list-mode § Before building: the first lines of the first message say it, before any top-up is offered; SKILL step 6 points there |
+| A stale group name from an older pack drove the build | Re-read the **current** buyer groups at run time; if the asked group isn't the lead, one line before building; a group carried only from an old file → build the current lead |
+| Accounts came from the model's memory of well-known brands | account-sourcing step 0: every account from a named, dated search; marketers → ad-library keyword or category search, page by page, never scripted paging |
+| "Most ads wins" picked enterprises for a low-price tool | list-by-company-type: an ad-count band (≈5–60 live ads, creatives > 30 days) for low-price self-serve tools |
+| A lead rested on rival reviews only | Evidence bar: one kind of source must not be rival reviews |
+| Groups shown without any size | An order of magnitude whenever any proxy exists, labelled rough |
+| The paid forum read was one decision among several when Reddit/G2/LinkedIn were blocked | Step 8: it is always the first decision then, worded as what it settles |
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| "Your most likely paying group" in In short while the lead was provisional | In short names a provisional lead as provisional, and the first move closes the evidence gap; example rewritten in the new shape (146 words) |
+| List report top | "What we looked at" (sources, asked group, what the free pass covered) before who to contact first |
+| Test | test-by-hand item 5 checks the new top; a fail line for the 20 Oct case |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| skill.meta.json said buyer groups and the quote bank are read by "the ad and video makers"; video ads are held back | Now "the static-ad maker (make-static-ads)", in the meta and the SKILL's write-back table. |
+| write-report's new top rules copied into Done when and test item 5 | Both point at write-report §3; the playbook's own checks stay (provisional lead, agreement with sibling reports, saved groups and bank). |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Copied setup (get_started, tools_load groups, connection line, `client`, brain_* and brand_read reads, found vs confirmed, coworker scope) | One "Setup first" line to guide §1–2, plus what is unique: the chapters to open, the fallback brand_read sections, the files this job reads, the outreach request lines |
+| One-time import of an older market quote bank, already in quote-bank.md | Removed from SKILL.md |
+| "AGENTS §8 research pattern", "AGENTS §8 Schedules", "(D3)", "See server-needs.md" | Guide §3 **Research pattern** and **Schedules**; the other two removed |
+| "Aim for a few dollars a run" (the marketer sees credits, never dollars) | "Keep to these call caps; paid reads are credits, only after the one credit yes" |
+| Step 3's 70% recency rule copied quote-bank.md § Sampling | Pointer; Done when checks "the quote bank's recency rule" |
+| Step 6 copied list-mode.md § Before building, delivery and connector notes | Pointer to list-mode.md (list mode stays in SKILL.md; moving it is item 3) |
+| Step 7 restated write-report's checks and delivery | Deliver through write-report with this job's topic and brand path; the brain_save field list stays |
+| Step 9 restated the default cadence and spend-gate §C | Pointer to guide §3 **Schedules** |
+| Done when pointed at a "step 3 budget" that is not in step 3 | Now "the Standard depth caps above" |
+| Description 1,016 characters, opened with a definition, not a leading word | 745 characters, leading with "Audience research". All expected routing cases still have a matching phrase; R76 (developers using a rival's open-source repo) rests on "find accounts to pitch" |

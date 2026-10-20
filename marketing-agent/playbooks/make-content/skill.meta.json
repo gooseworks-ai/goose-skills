@@ -17,9 +17,9 @@
     "Make the content pieces for this campaign"
   ],
   "reads": [
-    "brand brain: kit voice, audience, value props, proof points, reference examples (learn-my-brand)",
-    "brand brain: claims sign-off marker in learnings + 'Claims you may use' must facts, with proof in the 'Brand record — <brand>' document (learn-my-brand); before sign-off, plain product facts only",
-    "brand brain: learnings must/do/dont, never-say, qualifiers (learn-my-brand, analyze-performance)",
+    "brand brain: kit voice, audience, value props, proof points, reference examples (server research and the app; learn-my-brand, unreleased)",
+    "brand brain: claims sign-off marker in learnings + 'Claims you may use' must facts, with proof in the 'Brand record — <brand>' document (claims-gate's scoped sign-off, or earlier records by learn-my-brand, unreleased); before sign-off, plain product facts only",
+    "brand brain: learnings must/do/dont, never-say, qualifiers (server research and the app, analyze-performance; learn-my-brand, unreleased)",
     "workspace research/audience/voc-bank.md, or the 'Voice-of-customer bank' brand document (research-audience)",
     "inspiration library via social_inspiration_search (research-market, research-competitors)",
     "workspace search/briefs/<page-slug>.md page briefs (improve-search-visibility)",

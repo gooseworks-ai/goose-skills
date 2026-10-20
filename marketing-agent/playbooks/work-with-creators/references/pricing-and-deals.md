@@ -48,9 +48,11 @@ In this order: (a) the brand's own past deals and quoted rates (brain learnings,
 
 - **Gift-first**: nano/micro under ~50k, a gift worth ≥ ~$30–50 retail with a margin that survives it, goal = awareness or content volume. Low-price catalogues: gift a routine bundle, costed as bundle unit cost + shipping. Expect ~20–40% of creators who accept a gift to post — size the seeding list for it. Gifted posts still need disclosure.
 - **Paid**: mid tier and above; a guaranteed deliverable, date or usage rights is needed; regulated claims are involved (paid gives approval control); creators with a manager or agency (they rarely accept gift-only); most B2B (a free account is not payment).
-- **Affiliate / commission**: the creator already runs codes, affiliate storefronts or links; the goal is tracked sales. Norms: ~10–20% DTC (~20–30% for high-margin), ~20–30% recurring for ~12 months for SaaS. The playbook recommends; programme setup and codes are out of scope.
+- **Affiliate / commission**: **only** for a creator who already runs codes, affiliate storefronts or links; the goal is tracked sales. For a brand buyers don't know yet (a new SaaS, an unknown DTC brand), mid-tier creators and up get **paid or hybrid**, never commission-only: 25% of a $59 plan is ~$15 a month per sale, which no 87k–150k creator takes from a brand their audience hasn't heard of. Norms: ~10–20% DTC (~20–30% for high-margin), ~20–30% recurring for ~12 months for SaaS. The playbook recommends; programme setup and codes are out of scope.
 - **Hybrid**: ~50–70% of the benchmark fee plus commission, for mid-tier creators — or micro creators with proven category conversion (partnership ads, codes) — who have already converted for the category.
 - **UGC-for-ads creators** (content, not reach): price **per asset** (~$150–500 covers one concept, one finished cut and 30-day paid usage, approximate US); extra hook variants ~$50–150 each; raw footage +15–30%; 90-day and perpetual usage priced with the modifiers table — never on their audience size or a CPM.
+
+**Near-misses, not deals:** an employee, founder, "evangelist" or ambassador of a rival or adjacent tool (their bio, LinkedIn headline or pinned post says so). Their audience trusts them for that tool; list them under near-misses with the reason — never "ask about exclusivity".
 
 ## 6. Money rules — the ceiling
 

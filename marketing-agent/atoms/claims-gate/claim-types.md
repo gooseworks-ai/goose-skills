@@ -1,6 +1,6 @@
 # Claim types, risk and the proof each needs
 
-Loaded by `ATOM.md` §2 and §4. The full craft (with law and platform references) is learn-my-brand's `../../playbooks/learn-my-brand/references/claims-craft.md`; this is the short version every job needs. Not legal advice.
+Loaded by `ATOM.md` §2 and §4. The full craft (with law and platform references) is in `../../unreleased/learn-my-brand/references/claims-craft.md`, held back with that playbook but still readable; this is the short version every job needs. Not legal advice.
 
 | Type | Examples | Risk | Proof that makes it usable |
 |---|---|---|---|
@@ -10,7 +10,8 @@ Loaded by `ATOM.md` §2 and §4. The full craft (with law and platform reference
 | Clinical / expert | "clinically proven", "dermatologist-tested", "non-comedogenic", "hypoallergenic" | high | "proven": a controlled study; "tested": only with the result stated; "recommended": a survey of the experts; "developed": a named expert |
 | Consumer-perception stat | "94% saw smoother skin" | medium–high | the survey; say it was self-reported, with sample and duration |
 | Comparative / superiority / "the only" | "#1", "better than X", "first" | high | a like-for-like test, or current ranking data with source and period |
-| Testimonial / review / named customer | a quote, a case study, a logo | medium–high | the source and date, permission to use, any connection disclosed; must not imply typical results |
+| Testimonial / review / named customer | a quote, a case study, a logo | medium–high | the brand's confirmation that it is a real customer, the source and date, permission to use, any connection disclosed; must not imply typical results; a name matching another brand in the same account is a likely test brand, never offered before the human says it is a real customer that agreed to be named (ATOM §2.5) |
+| Backer / investor | "backed by Y Combinator", "funded by …" | medium | a dated public source (press release, the investor's portfolio page) |
 | Rating or review count | "4.9 stars from 234 reviews" | medium | platform, count, date captured; recheck within 90 days |
 | Press quote / endorsement | "as seen in Allure" | medium | the article and date; the claim inside the quote passes for its own type |
 | Award | "6× award-winning" | medium | each award's body, year, category; stale after ~2 years unless dated |

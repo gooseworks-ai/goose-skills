@@ -1,6 +1,6 @@
 # Voice cards on social: what this playbook adds to the shared atom
 
-The shared voice-card atom (`../../../atoms/voice-card/ATOM.md`) owns how a card is built, read and updated at `brand/voices/<handle>.md`, the slug rule (the account's or person's handle), retiring the old card document, and precedence (learn-my-brand's rules beat a card's style). Use it for every card. This file adds only what social needs on top.
+The shared voice-card atom (`../../../atoms/voice-card/ATOM.md`) owns how a card is built, read and updated at `brand/voices/<handle>.md`, the slug rule (the account's or person's handle), retiring the old card document, and precedence (the brand's rules beat a card's style). Use it for every card. This file adds only what social needs on top.
 
 The telltale failure is "posts that sound like anyone's brand but yours", so a card is built from **measured real posts, not adjectives**.
 

@@ -10,16 +10,18 @@ Brand copy `research/market/<YYYY-MM-DD>-read.md` (title `Market research — <B
 # <Brand> — market research, <D Month YYYY>
 
 ## In short
-- **Do this first:** <one move, who does it, and why — nothing unverified>.
-- <which market we're in, and how big the reachable part is>
-- <the change that matters most — and so what>
-- <what people are saying — and so what>
-(≤ 150 words. A repeat run opens with what changed since the last report.)
+**What we looked at:** <the market, the sources (news, prices, reviews, communities, search demand), the date, and the main limit — e.g. "most buyer voice is about rivals, not us", "search data from one country">.
+1. **<Which market we're in, and how big the reachable part is>** — <so what> (<confirmed / likely / first look>).
+2. **<The change that matters most>** — <so what> (<how sure>).
+3. <Optional: what people are saying — so what (how sure).>
+**So, do this first (because of <1 and 2>):** <one move, who, by when — resting on the findings above; if they are only a first look, or it needs an asset we haven't confirmed, the move is the one that confirms it>.
+(≤ 150 words. A "growing" or "your lead buyer" here must be as sure in the body. A repeat run adds one line on what changed; a sibling report with a different first move or lead buyer gets one line, settled.)
 
 ## Decisions for you
 | Decision | My recommendation | Matters by |
 |---|---|---|
 | Which market to compete in | <one, and why> | <date or "before the next campaign"> |
+"Matters by" is never under a week from today unless something outside forces it (a rival's launch, a season, a price change) — then name it ("by 24 Oct — their offer ends then"). Each decision also points to the section it rests on.
 
 ## Which market we're in
 <One sentence with the decision.> The 2–3 categories we could be filed under, what buyers call each (with evidence), who else sits in each, and the one we recommend — with what changes if you pick another.
@@ -85,7 +87,7 @@ Three lines: who we're for, what we're up against, why we win — as this resear
 Source skew: <e.g. "Most buyer quotes come from Trustpilot, which over-represents complaints, so the anger at billing is likely overstated.">
 ```
 
-**"For you" only where a finding matters,** as a plain sentence: does it fit us and why (from our facts), what to make or do, the claim it rests on (approved, "needs your OK", or "you'd need proof of X first"), and who does it in plain words. "Nothing to do here" is a fine answer; never invent a move to fill the line. Facts-only asks leave it out; with an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
+**"For you" only where a finding matters,** as a plain sentence: does it fit us and why (from our facts), what to make or do, the claim it rests on (approved, "needs your OK", or "you'd need proof of X first"), and who does it in plain words. "Nothing to do here" is a fine answer; never invent a move to fill the line. Facts-only asks leave it out; with an empty brand brain: "I can't tell what fits you yet — tell me what you sell, to whom, and why people pick you, and I'll mark what fits."
 
 **When most of the buyer voice is about rivals,** say "this is the category's voice, not yet your buyers'".
 
@@ -93,17 +95,15 @@ Source skew: <e.g. "Most buyer quotes come from Trustpilot, which over-represent
 
 ## Before you deliver — the check
 
-Count, don't estimate, and fix every miss:
-- **"In short":** at most 5 bullets and **150 words** (count them); the first is "Do this first:" with one action, who does it and why; nothing in it that the body calls unconfirmed, second-hand or needing sign-off.
+Run write-report §3 (`../../../atoms/write-report/ATOM.md`): a miss blocks delivery. This playbook adds:
 - **Every fact has its link and date inline**, next to the fact — not only in the sources list; the named source matches the link's site; a computed number shows its inputs.
-- **Body under 3,000 words** (count it, excluding sources); cut detail no decision needs.
-- **"What to do":** at most 6 moves, each naming **who does it** (a role: the founder, whoever runs the website, the ad maker), what it needs, a success check you can count or see, and a realistic date.
-- None of: ids or codes, file paths, tool, skill or playbook names, "worker", "maker", "free pass", process narration.
+- **"What to do":** each move names **who does it** as a role (the founder, whoever runs the website, the ad maker), a success check you can count or see, and a realistic date.
+- Also banned: "worker", "maker", "free pass".
 
 ## The closing message (in chat, after the link)
 
 ```text
-Do this first: <one line>.
+Do this first (because <the findings it rests on, in a few words>): <the move, who, by when>.
 Report: [<title>](<local path>) · saved to your brand: [open](<link>)
 Decide: 1. <one line, with my recommendation> 2. … (at most five, one line each)
 <Repeat: one line with the reason and cadence — only if it would help>
@@ -119,8 +119,8 @@ Only when something crossed a threshold; otherwise the file holds just the count
 Window: <since the last watch> · Checked: <platforms> · Mentions (sample): <n> (last watch: <n>)
 
 ## In short
-- **Do this first:** <the action, who, by when>.
-- <what crossed the threshold>
+1. <What crossed the threshold — how sure (confirmed / likely / first look)>.
+**So, do this first (because of 1):** <the action, who, by when>.
 
 ## What happened
 <quoted, linked, dated; reach; how many separate people; what we know and don't; who handles it>

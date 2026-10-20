@@ -2,6 +2,8 @@
 
 Load at step 6. A creator programme without a yardstick never learns: every creator "did fine". Before anyone is contacted, write down per role what a win is, when it is judged, and what happens next. The human reports results; the outcomes ledger compares them with these criteria and the next run reweights the roster (roles, tiers, price bands, vetting weights).
 
+**Time the wave to the buyer's calendar, not to our launch.** Posts land when buyers are deciding: B2B tool buyers plan in January (Q1 budgets) and are heads-down through Black Friday to year-end, so a 1–10 December wave for ad-tool buyers is the worst window — move it to January. DTC gifting lands before the buying season (weeks before a holiday, not on it). Write the reason next to the dates in `wave-1.md`.
+
 ## Per role (approximate starting points — set them from the brand's own numbers when it has them)
 
 | Role | Win metric | Read window | Renew / cut |

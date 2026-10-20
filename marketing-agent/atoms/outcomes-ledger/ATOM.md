@@ -1,7 +1,7 @@
 ---
 name: outcomes-ledger
 description: >-
-  Shared atom (owner: research-audience). Keeps one human-filled ledger per brand for the people or creators a playbook hands over: status per row, permanent suppression, a re-check date, and dated lessons read back into the next run. Parametrised by entity: person (prospect lists) or creator (creator rosters).
+  Shared atom. Keeps one human-filled ledger per brand for the people or creators a playbook hands over: status per row, permanent suppression, a re-check date, and dated lessons read back into the next run. Parametrised by entity: person (prospect lists) or creator (creator rosters).
 ---
 
 # outcomes-ledger

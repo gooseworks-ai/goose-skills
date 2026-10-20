@@ -82,3 +82,49 @@ Every round: the finding, the fix, or why it was rejected. Critics are subagents
 | Finding | Verdict | Fix |
 |---|---|---|
 | Positives counted twice: "interested + meetings", while a booked row keeps `reply_category: interested` (MAJOR) | Agree | Positive = distinct rows where `reply_category` is `interested` or `status` is `meeting`; meetings reported separately as a subset — in reading-results.md and both run-memory files (write-outreach, research-audience) |
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+Akhil: "it created the audience, then didn't point me to how I find the leads I have to email." Validated as right by the reviewer (session trace).
+
+| Finding | Fix |
+|---|---|
+| Step 4 only handled "no list **and** no buyer groups"; with groups saved, it silently wrote templates | Step 4 now keys on "no list on file", groups or not: still writes the sequences, then the no-list closing |
+| Step 8 forced "**Send first:** <segment, N a day>" with zero people ("in-house growth leads, 10–15 a day") | No-list closing opens "**Before you can send:** you don't have anyone to send these to yet", offers (a) *build the list* — about 50 companies and their buyer, saying plainly it can't find or check emails and that the marketer runs a finder and checker (example tools named, as the marketer's own step) — and (b) paste a list. Never a send volume without people |
+| The list offer was the 5th bullet under Decisions | It is now the opening block |
+| No end-to-end picture of who does what | `references/handoff-and-compliance.md` § The whole path: offer → mailboxes from day 1 → 300–500 accounts (41 people ≈ 1 reply) → people and emails → copy → load → replies, agent vs marketer; in the pack when there's no list or it's the first pack |
+| Prices in copy came from the brain, not live | Step 6: every price or offer re-read live (guide: live facts before copy) |
+| Sender assumed silently | A decision: the person who runs the buyer calls may sign better |
+| Sequence would land in BFCM for DTC targets | Step 1 timing check against the buyer's calendar: LinkedIn now with a January angle, or hold |
+| Routing: demo-request replies and reconnects | Description triggers added; automated list emails stay with email-lifecycle |
+
+Test D added to `tests/test-by-hand.md`.
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| Another session overwrote 2026-10-20-outreach.md | write-report §2: never overwrite a report — add the job slug, then -2; same for the brand copy's workspace path (except supersede records) |
+| Pack and results In short | What we read and the findings (with sample sizes and how sure) before who to send to first or the fix; outreach-qa check updated |
+| Consistency pass: step 6 cited "live facts before copy", a rule name the guide doesn't use | Now cites the guide's "Live facts" rule, §3. |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| write-report bans vendor names and its check now blocks delivery, but the pack's whole-path table names Apollo/Hunter/ZeroBounce/NeverBounce | write-report §1 and AGENTS.md §5 carry one exception pointing at the guide §3 rule: two or three outside tools the marketer runs themselves, as examples, never an endorsement. outreach-qa's pack check now points at write-report §3 and states the exception. |
+| The no-list closing offered "about 50 right-fit companies" while handoff-and-compliance says a readable test needs 300–500 accounts | Step 8 offers a first batch of about 50 and says plainly a readable test needs 300–500 accounts, built in batches. |
+| Two versions of the live-facts rule (here: always re-read today; guide: only when > 14 days old) | The guide's rule is now: prices, plans, free offers and credit amounts in copy, a plan or a forecast are always re-read live in the same run; other facts when > 14 days old or sources disagree. Step 6 points to it without restating. |
+| Owner (Akhil): never asks which sending tool the marketer uses | Step 5: the sending tool is one decision, asked once in the first pack's decisions (the guide's "The marketer's own tools"); `references/handoff-and-compliance.md` § Your sending tool: none → two or three options that fit, as their choice; connected → read sends, replies, bounces, sending domains (read-only, never sends or changes anything); not connected → one line on connecting, then pastes. `reading-results.md` reads results from a connected tool. |
+| SKILL.md +15.7% vs origin/dev | The counts-only and `Hold needed` detail moved to `references/reading-results.md` § Counts only; In short now points at write-report §1; a duplicate lessons path dropped. 2,179 → 2,503 words (+14.9%). |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Setup copied from the guide (connect, `get_started`, `tools_load`, `client`, scope, brain_map core, "waiting items never proof") | Before you start #1 is the guide's setup line; #2 keeps only the outreach reads: chapters 14, 22, 23 and products, the brain_search focus, the fallback `brand_read` sections, the claims read step and the workspace files. |
+| What you get #1 restated write-report's shape (3,000-word body, In short, not-doing, couldn't-check, source skew) | One line pointing at write-report, then only the outreach additions. |
+| Two win-back triggers in the description ("win back accounts that churned", "reconnect with accounts that went quiet") | Merged into one; description 1,007 → 680 characters. Consumer win-back still routes to email-lifecycle. |
+| Not changed (item 3, later) | The no-list closing and the results branch stay where they are. |

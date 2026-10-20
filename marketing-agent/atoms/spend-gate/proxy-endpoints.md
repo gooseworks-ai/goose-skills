@@ -1,6 +1,6 @@
 # Proxy endpoints (companion to the spend-gate atom)
 
-Shared reference for every playbook that reads public data through the GooseWorks proxy. Every call here is **paid** and goes through `atoms/spend-gate/ATOM.md` branch B. Reading a single public web page with the host's own browser or fetch needs no proxy (AGENTS §8). Call shape: `gooseworks:data_call_provider` with `provider: "scrapecreators"`, `path` and a `query` object. Never put credentials in `query`; never use a vendor key.
+Shared reference for every playbook that reads public data through the GooseWorks proxy. Every call here is **paid** and goes through `atoms/spend-gate/ATOM.md` branch B. Reading a single public web page with the host's own browser or fetch needs no proxy ([`../../foundation/guide/SKILL.md`](../../foundation/guide/SKILL.md) §3, "Public data"). Call shape: `gooseworks:data_call_provider` with `provider: "scrapecreators"`, `path` and a `query` object. Never put credentials in `query`; never use a vendor key.
 
 Paths and query keys below were checked against the vendor's published OpenAPI spec on 2026-10-16 (`*` = required). If the proxy rejects a path or a key, log it in the credits log and the gaps — never retry with guessed keys or another path.
 

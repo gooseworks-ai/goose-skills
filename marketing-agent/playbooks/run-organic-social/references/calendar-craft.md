@@ -74,16 +74,16 @@ Plan 75–85% evergreen. Leave 1–2 **flex slots** a week marked "trend: swap w
 Every calendar names **1–2 format or hook tests**, so the next refill learns something instead of just recording what went out.
 
 - **Shape:** `T1 (<record id>) · <hypothesis> · slots: <ids> vs <comparison slots> · judged on: <metric>, side vs side · read at: <the first refill after the last slot is 3 days old>`. Example: "T1 (20261019-2) · POV hooks beat product-first hooks on TikTok · slots S3, S7, S11 vs S5, S9 · judged on median views, side vs side · read 2 Nov". The record id comes from the run record (references/run-record.md) and stays with the test for life.
-- **One variable per test:** hook style, format (carousel vs Reel), series, posting time or length. Put at least 2 slots on each side. Keep everything else as close as you can.
+- **One variable per test:** hook style, format (carousel vs Reel), series, posting time or length. Aim for **at least 4 slots on each side**; when the cadence can't hold that in two weeks, the test runs across two calendars. Keep everything else as close as you can.
 - **Pick tests from real doubt:** an open test carried from the last run record comes first. Then the audit's mixed results, analyze-performance's "what overperformed", or a format the marketer wants to try.
 - **At refill, read each test** (references/run-record.md has the settled-age rule, the baseline recipe and the verdicts):
   - Pull each posted slot's numbers: `brand_read organic`, `social_analytics_get` for managed accounts, a proxy read under the spend gate, or numbers the marketer pastes. Score only settled posts.
-  - Give a verdict in run-memory's words: **worked**, **didn't work**, **too early (fewer than 2 scored posts a side)** or **can't tell (something else changed)**, with the numbers. Compare the two sides with each other, not with the account's median.
+  - Give a verdict in run-memory's words: **worked**, **didn't work**, **too early (fewer than 4 scored posts a side; with 2–3 a side, add the direction labelled "a first look, not a verdict")** or **can't tell (something else changed)**, with the numbers. Compare the two sides with each other, not with the account's median.
   - Reweight the mix: more of the winner, retire the loser.
   - A result becomes a learning only when the marketer agrees it is a rule (save-learning atom).
 - **A test carries forward until it has a verdict,** with its first id. Only its missing posts (skipped or unread) are placed again, ahead of new tests; posts still waiting to go out are not duplicated. Two refills past its review-by with still no verdict → ask the marketer once to keep or drop it.
 - **New account or no baseline:** call a test only on a gap of more than 2×; otherwise `too early`.
-- **Never call a test from one post.** With fewer than 2 scored posts a side, the verdict is `too early`, and the test carries over.
+- **Never call a test from a handful of posts.** With fewer than 4 scored posts a side, the verdict is `too early` and the test carries over; at 2–3 a side the report may give the direction, labelled "a first look, not a verdict".
 
 ## Launches and campaigns
 

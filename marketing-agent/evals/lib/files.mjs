@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 export const EVALS_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const MA_DIR = path.resolve(EVALS_DIR, '..'); // marketing-agent/
 
-/** Every skill a marketer's agent would see: 16 playbooks + 3 foundation skills. */
+/** Every skill a marketer's agent would see: the released playbooks + 3 foundation skills (unreleased/ is never listed). */
 export function listSkills() {
   const out = [];
   for (const group of ['playbooks', 'foundation']) {

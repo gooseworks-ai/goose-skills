@@ -41,7 +41,7 @@ Each deliverable leads with a **different** unit. The set must not all open on t
 
 ## 4. Platform rules for the cut (undated; run-organic-social dates and slots them)
 
-Write only for the platforms the brand actually uses. That list comes from SKILL.md, Before you start #3 (`content/channels.md`, then `social/accounts.md`, then the brand's own organic sources), or from the human once, saved per #5. Where a figure is marked (?), treat it as a soft default and say so if it matters.
+Write only for the platforms the brand actually uses. That list comes from SKILL.md, Before you start #3 (`content/channels.md`, then `social/accounts.md`, then the brand's own organic sources), or from the human once, saved per #5. Where a figure is marked (?), treat it as a soft default and say so if it matters. When a dated platform card under 30 days old exists in `social/research/`, its ranking facts win over these defaults; never state a ranking signal differently from it (one shared view).
 
 - **X post / thread.** The first post is a standalone claim: no "🧵", no "A thread:". One idea per post, each survives alone. ≤280 characters each. 5–10 posts, or a single strong post when one idea carries it. The link goes in a reply, not the first post. 0–1 hashtags.
 - **LinkedIn post.** On a person's profile: first-person, a story or an earned lesson, and only from that person's own words (PERSON YES NEEDED). On a company page: the "we" voice, no first-person story. The first ~2 lines (~140–210 characters before "see more") must make someone expand. Short paragraphs, but not one sentence per line throughout. 900–1,800 characters. The link goes in the first comment, or is dropped. 0–3 hashtags.

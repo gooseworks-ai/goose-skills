@@ -10,11 +10,12 @@ Brand copy `research/competitors/<YYYY-MM-DD>-report.md` (title `Competitor rese
 # <Brand> — competitor research, <D Month YYYY>
 
 ## In short
-- **Do this first:** <one move, who does it, and why — never something this report calls table stakes, never unverified>.
-- <the biggest thing a rival did — and so what>
-- <where we're ahead or behind — and so what>
-- <a timely opening or a threat, with its end date>
-(≤ 150 words. A repeat run opens with what changed since the last report.)
+**What we looked at:** <the rivals, the sources (ads, prices, reviews, news), the date, and the main limit — e.g. "buyer quotes mostly from one review site", "ad libraries read from one country", "LinkedIn ads couldn't be opened">.
+1. **<The biggest thing a rival did>** — <so what for us> (<confirmed / likely / first look>).
+2. **<Where we're ahead or behind>** — <so what> (<how sure>).
+3. <Optional: a timely opening or a threat, with its end date.>
+**So, do this first (because of <1 and 2>):** <one move, who, by when — never something this report calls table stakes; never resting on an asset we haven't confirmed (named customers, budget, a live offer) — then the move is "confirm X">.
+(≤ 150 words. A repeat run adds one line on what changed since the last report; a sibling report with a different first move or lead buyer gets one line, settled.)
 
 ## Decisions for you
 | Decision | My recommendation | Matters by |
@@ -78,7 +79,11 @@ What the next run checks, and what makes us tell you sooner.
 | Rank for "<rival> alternative" searches | | | |
 | AI answers that name us (of the questions asked) | | | |
 | Review count and rating | | | |
-| Active ads per library (where read) | | | |
+| Ads in the Meta library (where read) — <what this library counts, as its page says> | | | |
+| Ads in the LinkedIn library (where read) — <what it counts> | | | |
+| Ads in the Google library (where read) — <what it counts> | | | |
+| Ads in the TikTok library (where read) — <what it counts> | | | |
+Each library counts something different (`reading-ads-honestly.md`): never add them up or compare one library's count with another's, and an ad count is never spend.
 
 ## What we couldn't check
 - <source — why — what it would change>
@@ -88,23 +93,21 @@ What the next run checks, and what makes us tell you sooner.
 Source skew: <e.g. "Buyer quotes are mostly Trustpilot, which over-represents complaints.">
 ```
 
-**"For you" only where a finding matters,** as a plain sentence, never shorthand ("nothing to do here" is fine): does it fit us and why (from our facts); what to make or do; the claim it rests on — approved, "needs your OK", or "you'd need proof of X first"; and who does it in plain words (static ads, video ads, organic posts, creators, landing page, email, the founder, the campaign plan). When every rival does the same thing, that is a reason to weigh something else; what buyers say outweighs what rivals do. Facts-only asks leave it out. With an empty brand brain: "I can't tell what fits you yet — I can learn your brand first."
+**"For you" only where a finding matters,** as a plain sentence, never shorthand ("nothing to do here" is fine): does it fit us and why (from our facts); what to make or do; the claim it rests on — approved, "needs your OK", or "you'd need proof of X first"; and who does it in plain words (static ads, video ads, organic posts, creators, landing page, email, the founder, the campaign plan; we don't make video ads yet, so a video idea goes to whoever makes the brand's video). When every rival does the same thing, that is a reason to weigh something else; what buyers say outweighs what rivals do. Facts-only asks leave it out. With an empty brand brain: "I can't tell what fits you yet — tell me what you sell, to whom, and why people pick you, and I'll mark what fits."
 
 **Never in the report** (write-report §1): angle or quote ids, file paths, tool or playbook names, "Fact / Inferred" tags (say "confirmed", "likely", "a guess, because…"), symbols instead of words, "jobs served" lines, links to local working files, process narration. When a dimension couldn't be read for every rival, say it once in plain words in "In short" and under "What we couldn't check" — never a column of question marks.
 
 ## Before you deliver — the check
 
-Count, don't estimate, and fix every miss:
-- **"In short":** at most 5 bullets and **150 words** (count them); the first is "Do this first:" with one action, who does it and why; nothing in it that the body calls unconfirmed, second-hand or needing sign-off.
+Run write-report §3 (`../../../atoms/write-report/ATOM.md`): a miss blocks delivery. This playbook adds:
 - **Every fact has its link and date inline**, next to the fact — not only in the sources list; the named source matches the link's site; a computed number shows its inputs.
-- **Body under 3,000 words** (count it, excluding sources); cut detail no decision needs.
-- **"What to do":** at most 6 moves, each naming **who does it** (a role: the founder, whoever runs the website, the ad maker), what it needs, a success check you can count or see, and a realistic date.
-- None of: ids or codes, file paths, tool, skill or playbook names, "worker", "maker", "free pass", process narration.
+- **"What to do":** each move names **who does it** as a role (the founder, whoever runs the website, the ad maker), a success check you can count or see, and a realistic date.
+- Also banned: "worker", "maker", "free pass".
 
 ## The closing message (in chat, after the link)
 
 ```text
-Do this first: <one line>.
+Do this first (because <the findings it rests on, in a few words>): <the move, who, by when>.
 Report: [<title>](<local path>) · saved to your brand: [open](<link>)
 Decide: 1. <one line, with my recommendation> 2. … (at most five, one line each)
 <Repeat: one line with the reason and cadence — only if it would help>

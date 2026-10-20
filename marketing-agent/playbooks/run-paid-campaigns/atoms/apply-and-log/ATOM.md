@@ -2,7 +2,7 @@
 
 # Stage, apply and log (atom)
 
-**Load:** `../../references/meta-levers.md`, `../../references/proposal-and-log.md` (exact grammar).
+**Load:** `../../references/meta-levers.md`, `../../references/proposal-and-log.md` (exact grammar). Steps 1–8 are the GooseWorks path; 9–11 log changes made through the marketer's ads-platform connector.
 
 ## Stage (step 7)
 1. Re-read `ads/campaigns/<slug>/state.md`. If it doesn't exist, create it with the frontmatter (`campaign`, `stage`, `goose_campaign_id`, `meta_push_ids: []`, `meta_campaign_id`, `updated_at`, `updated_by`), the header lines, `## Open recommendations` and `## Meta objects`.
@@ -17,4 +17,10 @@
 
 8. Save the proposal to `ads/campaigns/<slug>/proposals/<YYYY-MM-DD>.md` and the run record (`../../references/run-memory.md`), each change id and push id copied into its money-move row.
 
-**Never:** approve on the marketer's behalf; pause on your own judgement or a schedule; revert for a kill; keep a ledger anywhere but these two files (the run record links them and adds only recipes, results and the scorecard).
+## Apply through a connector (any ads platform)
+The rule is `../../references/meta-levers.md` § With an ads-platform connector; follow it exactly. Here only the bookkeeping:
+9. Stage: each change is an open `R<n>` bullet and its card. No connector call yet.
+10. Apply each one only on its named yes, by that rule.
+11. Log after the read-back: re-read `decisions.md`, append a `### YYYY-MM-DD — <title>` block (Recommended and Evidence as usual; Decided: the marketer's words; Outcome: applied <time>, read back <value> — the applied time the outcome check uses, or the failure) and delete the bullet from `state.md`. In local mode nothing else writes these files, so every block is yours.
+
+**Never:** approve on the marketer's behalf; pause on your own judgement or a schedule; revert for a kill; break the connector rule; keep a ledger anywhere but these two files (the run record links them and adds only recipes, results and the scorecard).

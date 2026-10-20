@@ -21,7 +21,7 @@ You research **the market** a brand sells into — not its rivals one by one (co
 
 ## 1. Which market are we in — a decision, not a description
 
-List the 2–3 categories the brand could be filed under (from its own site and brand record, how press and directories file it, what its rivals call themselves — e.g. "AI ad-creative tool" vs "AI coworkers for go-to-market teams"). For each: what buyers call it (search phrasings, review-site categories, subreddit names), who else sits in it, and the evidence that buyers actually use that name. **Recommend one**, with the reason, and say what changes if the brand picks another (different rivals, different buyers, different price norms). The choice is one of three kinds:
+List the 2–3 categories the brand could be filed under (from its own site and brand record, how press and directories file it, what its rivals call themselves — e.g. "AI ad-creative tool" vs "AI coworkers for go-to-market teams"). For each: what buyers call it (search phrasings, review-site categories, subreddit names), who else sits in it, and the evidence that buyers actually use that name. **Recommend one**, with the reason, and say what changes if the brand picks another (different rivals, different buyers, different price norms). If it isn't the market the brand says it's in (its site, brand record, founder's words), say so and name what you couldn't test. The choice is one of three kinds:
 
 | Kind | When | Example |
 |---|---|---|
@@ -35,6 +35,7 @@ Rules: if buyers already search for the category, use it or a sub-category of it
 
 - **Top-down:** two or three analyst estimates for the recommended category, each with publisher, year, figure and what it counts; say why they differ.
 - **Bottom-up — the reachable market:** for each buyer group: **how many likely buyers × what they'd pay a year**. The counts come from research-audience's `buyer-groups.md` (it counts buyers or companies per group); you add the price and the value, use your own market figures as context, and say plainly where you dispute a count and why. No buyer groups yet → the groups this run can see, counted the same way and marked provisional. Count buyers in the right unit — companies or people who could buy, from directories, registries, platform counts, job-post counts, industry reports — never community member counts. Price from the category's pricing norms (§5). Every input is sourced or labelled "an assumption, because…". Show the arithmetic in one line per group, and the total. If a bottom-up count isn't possible, say why.
+- **Reachable value ≠ what we'll win.** Never multiply a market count by a conversion benchmark (a free-to-paid or trial rate is for people who already signed up, not for a whole market). Give the full reachable value, then a **separate line: the share we could realistically win** in a year, sourced (comparable companies' first-year revenue, the brand's own sign-ups and conversion, its sales capacity) or labelled "an assumption, because…". When the largest input in either line is an assumption, say so next to the total ("the biggest input is a guess — treat this as an order of magnitude"). A brand with no sales, reviews or ads yet gets no year-one revenue figure, only the reachable value and what would size the share.
 - **Momentum:** funding into the category in the last 12 months, the number of companies selling it, job postings for the roles that buy it, search interest over time (Google Trends where it opens; relative, with region). Verdict in one line: growing, flat or shrinking — with how sure you are.
 
 ## 3. What's changing — last 12 months, newest first
@@ -49,7 +50,7 @@ The path from need to purchase for this company type: where buyers first hear of
 
 ## 5. What buyers pay — pricing norms
 
-Across 8–15 products in the category (not only the brand's main rivals): the price points, the unit (per seat, per use, per month, per item), free tiers and trials, annual discounts, what sits behind "contact sales", and how prices moved in the last year. A short table and the norm in one line ("most charge per seat at <range>; usage-based is spreading"). Pages where prices aren't public say so.
+Across 8–15 products in the category (not only the brand's main rivals): the price points, the unit (per seat, per use, per month, per item), free tiers and trials, annual discounts, what sits behind "contact sales", and how prices moved in the last year. A short table and the norm in one line ("most charge per seat at <range>; usage-based is spreading"). Pages where prices aren't public say so. **Compare like with like:** group the table by what the price buys (a self-serve tool for one user, a team plan, a done-for-you service, a content library) and give a norm per group; never average or take the middle across groups (a $999 service and a $29 tool make no "middle entry price").
 
 ## 6. Where attention is — channels
 
@@ -65,7 +66,7 @@ At most 8 names: the main rivals and the main alternatives buyers name, one line
 
 ## 9. Baselines for next time
 
-The few numbers the next run will compare, each with date and source: the size top-down and bottom-up (with inputs), the price norm (median entry price and unit across the pricing table), Google Trends for the 1–2 main terms (region, period), whether AI answers name the brand for the 3–4 category questions, the brand's review count and rating on each review site, its rank for "<main rival> alternative" searches, and its main social account's typical engagement. Mentions come from the listening worker. "Couldn't read" where a number wasn't reachable.
+The few numbers the next run will compare, each with date and source: the size top-down and bottom-up (with inputs), the price norm (median entry price and unit within the group the brand sits in), Google Trends for the 1–2 main terms (region, period), whether AI answers name the brand for the 3–4 category questions, the brand's review count and rating on each review site, its rank for "<main rival> alternative" searches, and its main social account's typical engagement. Mentions come from the listening worker. "Couldn't read" where a number wasn't reachable.
 
 ## Return this, in this shape
 
@@ -73,11 +74,12 @@ The few numbers the next run will compare, each with date and source: the size t
 ## Market — <category> — as of <date>
 Which market: <2–3 candidates — what buyers call each — evidence> · recommended: <one, why> · if you picked another: <what changes>
 Size, top-down: <publisher, year, figure, what it counts>
-Size, bottom-up: <group — likely buyers (source or assumption) × yearly price (source) = total> · total
+Size, bottom-up: <group — likely buyers (source or assumption) × yearly price (source) = total> · total · largest input: <sourced | an assumption>
+Share we could win: <figure and its source, or "an assumption, because…", or "not sizable yet — would need …">
 Momentum: … — verdict: growing / flat / shrinking, how sure
 What's changing: <dated items, newest first, each with "what it means">
 How and where they buy: …
-Pricing norms: <table> · the norm in one line
+Pricing norms: <table, grouped by what the price buys> · the norm per group
 Where attention is: …
 Demand and seasonality: … (each line labelled)
 Competition in brief: …

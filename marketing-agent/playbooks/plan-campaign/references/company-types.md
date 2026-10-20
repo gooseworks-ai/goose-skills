@@ -38,7 +38,7 @@ Load at step 1, after the look-first pass (`intake.md`). The lists below are **w
 ## Consumer app
 - **Needed (look first):** live in which stores; ratings count and score; the activation event; D1/D7/D30 retention; trial → paid, price; analytics or attribution tool (MMP, RevenueCat, Firebase); iOS tracking opt-in rate if known; waitlist size and how it was built.
 - **Goal chain:** install → activation → D7/D30 retained → trial → paid. Cost per retained user or per payer, never cost per install.
-- **Pre-revenue:** no allowable CAC exists. The founder sets a provisional cap per activated user (labelled provisional), and the brief says plainly that unit economics cannot yet justify paid; **zero paid is the default** unless the founder chooses a capped learning budget. The goal is usually what the next milestone (e.g. a fundraise) needs: activated or retained users, not installs.
+- **Pre-revenue:** no allowable CAC exists. The marketer sets a provisional cap per activated user (labelled provisional), and the brief says plainly that unit economics cannot yet justify paid; **zero paid is the default** unless the marketer chooses a capped learning budget. The goal is usually what the next milestone (e.g. a fundraise) needs: activated or retained users, not installs.
 - **Binding constraints:** measurement (SKAN/AdAttributionKit delays and aggregation; no MMP = installs optimised blind); store-page readiness (screenshots, ratings) before paid; event optimisation needs volume.
 - **Live channels:** waitlist email, Apple Search Ads, Google App campaigns, Meta and TikTok app campaigns (written instructions — no install levers in GooseWorks), creators, organic short video, referral loops, Product Hunt.
 

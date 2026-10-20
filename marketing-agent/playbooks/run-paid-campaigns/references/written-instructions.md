@@ -1,6 +1,6 @@
 # Written-instruction mode
 
-The accepted interim for every platform without GooseWorks levers (Google, TikTok, LinkedIn, Pinterest, Apple Search Ads, Amazon…) **and** every Meta object GooseWorks did not create. Same proposal shape, same change log, the human's hands. Never silently substitute Meta for a channel the brief chose.
+The accepted interim for every platform without GooseWorks levers (Google, TikTok, LinkedIn, Pinterest, Apple Search Ads, Amazon…) **and** every Meta object GooseWorks did not create — unless the marketer's own ads connector can make the change (`meta-levers.md` § With an ads-platform connector). With no GooseWorks and no connector, the whole run is cards. Same proposal shape, same change log, the marketer's hands. Never silently substitute Meta for a channel the brief chose.
 
 ## First, the current state
 
@@ -43,4 +43,4 @@ Rules: each card has a plain title (platform — what changes); internally it is
 
 ## Logging
 
-Each card is an open recommendation `- R<n> (YYYY-MM-DD): …` in `state.md` (status awaiting the human) and, once the human replies "done", a `### YYYY-MM-DD — <title>` block in `decisions.md` with the confirmed time applied (grammar in `proposal-and-log.md`); then its bullet is removed. Results are measured from the confirmed time only. If a card is unconfirmed after ~48 hours, ask once. A card the human declines is logged as declined with their reason.
+Each card is an open recommendation `- R<n> (YYYY-MM-DD): …` in `state.md` (status awaiting the marketer) and, once the marketer replies "done", a `### YYYY-MM-DD — <title>` block in `decisions.md` with the confirmed time applied (grammar in `proposal-and-log.md`); then its bullet is removed. Results are measured from the confirmed time only. If a card is unconfirmed after ~48 hours, ask once. A card the marketer declines is logged as declined with their reason.

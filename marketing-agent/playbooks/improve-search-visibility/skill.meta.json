@@ -16,8 +16,8 @@
     "my Google Business Profile and local search"
   ],
   "reads": [
-    "brand brain — brain_map core and required reads, then chapters 2, 5, 7, 8, 9, 17 and brain_search for gaps when brain_* tools are listed; else brand_read summary, products, onboarding, competitors, learnings, sources (learn-my-brand)",
-    "claims — the shared claims-gate atom over learn-my-brand's contract (signed-off marker → 'Claims you may use' facts) (learn-my-brand)",
+    "brand brain — brain_map core and required reads, then chapters 2, 5, 7, 8, 9, 17 and brain_search for gaps when brain_* tools are listed; else brand_read summary, products, onboarding, competitors, learnings, sources (server research and the app; learn-my-brand, unreleased)",
+    "claims — the shared claims-gate atom over the sign-off contract (signed-off marker → 'Claims you may use' facts; written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
     "voice-of-customer bank and demand read — research/audience/voc-bank.md (research-audience), research/market/demand.md (research-market); knowledge_search document/evidence",
     "tracked competitors — competitor_read (research-competitors)",
     "page drafts answering our briefs — content/drafts/* naming search/briefs/<slug>.md on line one (make-content)",
@@ -26,7 +26,7 @@
     "price history for proxy lookups — research/credits-log/<YYYY-MM>.md via the shared spend-gate atom (all proxy users)",
     "is there an app — Apple's public search lookup and the Google Play store page, via the host's fetch (public web)",
     "rivals' sitemaps and robots.txt for the page-type map; page source of the brand's homepage and one money page for analytics and ad tags — via the host's fetch (public web)",
-    "pronunciation facts ('Pronounce \"<term>\" as \"<spoken form>\"') — brand_read learnings, if recorded (learn-my-brand); read only, never written here",
+    "pronunciation facts ('Pronounce \"<term>\" as \"<spoken form>\"') — brand_read learnings, if recorded (earlier by learn-my-brand, unreleased); read only, never written here",
     "last run record — runs/improve-search-visibility/search-visibility-check/<date>.md via the shared run-memory atom (this playbook's earlier runs)"
   ],
   "writes": [

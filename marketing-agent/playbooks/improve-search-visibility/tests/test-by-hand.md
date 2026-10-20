@@ -10,7 +10,7 @@ It passes when, in order:
 3. **One report you open with one click**: a local file link on a computer host (an artifact or the full report in a hosted chat), plus a "saved to your brand" link that opens. Never a list of workspace paths.
 4. **It reads like a good marketer wrote it** (write-report §3): the top five lines tell you what to do first and why; a non-marketer can follow it; no question ids, codes, tool names, file paths or jargon in the story — technical detail only in the closing "for whoever edits your site" section.
 5. You re-ask two or three questions yourself in a private window and the read holds.
-6. The roadmap maps each topic to the page that should answer it, and the five fixes are finished: you could hand each to whoever edits the site today.
+6. The roadmap maps each topic to the page that should answer it, and the five fixes are finished: you could hand each to whoever edits the site today, and you start at least one that week.
 7. Nothing live was touched; nothing was sent; no fact appears that you never approved.
 
 Telltale failures (the 18 Oct hand test hit the first four; the 19 Oct evals hit the next five): a first turn that ends "say the word and I'll write the report"; yesterday's answers counted as today's; a number with no source opened this run; the brand's own marketing lines or unread rival facts in fix copy; a bare file path instead of a link, or the report never saved to the brand; intake questions before any result; two credit yeses; reports left only in the workspace with paths shown as links; a report full of ids and "0/1" scoring; generic advice ("add an FAQ", "improve E-E-A-T"); one run reported as fact; a rank "in ChatGPT"; FAQ markup sold as a rich result; a fix on a page that can't be crawled; llms.txt in the five.
@@ -22,7 +22,7 @@ Telltale failures (the 18 Oct hand test hit the first four; the 19 Oct evals hit
 | Connection | `account_whoami`, `brand_read` (list) | staging, org gooseworks; 8 brands; Personal Day coworker agent `9d554b73-…` |
 | Brain read | `brand_read` sections summary, products, onboarding, learnings, sources | description (dermatologist-developed, acne-safe, created by Lili Reinhart), 20 products, 1 learning, onboarding profile fields empty, sources incl. own Google ads |
 | Competitors | `competitor_read` | 5 tracked: Paula's Choice, The Ordinary, CLEARSTEM, CeraVe, Prequel — profiles with positioning and proof points (useful for "named instead") |
-| Claims | `knowledge_search` `source_types: ["claim"]` | 7 "approved" claims created automatically from the site and press (Free Returns, Free Shipping on $45+, 4.9 stars / 234 reviews, Allure/NewBeauty/Byrdie quotes) — no human sign-off; treated as candidates per learn-my-brand's notice |
+| Claims | `knowledge_search` `source_types: ["claim"]` | 7 "approved" claims created automatically from the site and press (Free Returns, Free Shipping on $45+, 4.9 stars / 234 reviews, Allure/NewBeauty/Byrdie quotes) — no human sign-off; treated as candidates under the claims gate's contract |
 | Search knowledge | `knowledge_search` "search terms, buyer questions…" | empty (`no_match`) — no question set, no search terms in the brain → confirms server-needs §2 |
 | Last run | `file_list` `search/` in the coworker workspace | empty → first run |
 | Page list (free) | `knowledge_import` `website: {action: discover}` | 25 pages listed, `provider_requests: 0` (free): collections, product pages, About, FAQ. **Added to the page-and-foundation atom as the free way to find the pages behind the gaps.** |

@@ -13,13 +13,13 @@
     "Repeat my market research (monthly pulse, quarterly report)"
   ],
   "reads": [
-    "brand brain: summary, kit, products, competitors, learnings, sources, organic, accounts (brand_read); evidence and earlier documents (knowledge_search) — learn-my-brand / server research",
+    "brand brain: summary, kit, products, competitors, learnings, sources, organic, accounts (brand_read); evidence and earlier documents (knowledge_search) — server research and the app (learn-my-brand, unreleased)",
     "buyer groups and the customer-quote bank: workspace research/audience/buyer-groups.md (counts per group) and the latest research/audience/<date>-report.md — research-audience",
     "sibling reports: the latest research/competitors/<date>-report.md and plans/ — research-competitors, plan-campaign",
     "competitor roster (competitor_read) and rival records research/competitors/* — research-competitors",
     "public web: news, analyst estimates, funding, pricing pages, review sites, communities, social platforms' public pages, AI answers — host web search, page fetch and browser (free)",
     "previous run: workspace research/market/* incl. watchlist.md — research-market itself",
-    "claims through the claims-gate shared atom — learn-my-brand",
+    "claims through the claims-gate shared atom — its scoped sign-off, or earlier records (learn-my-brand, unreleased)",
     "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data"
   ],
   "writes": [

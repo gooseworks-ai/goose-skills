@@ -16,6 +16,34 @@ It passes when, in order:
 
 Telltale failures: generic openers, fake urgency, a code in every email, opens used to pick winners or build segments, flows that collide, a "green" deliverability item nobody checked.
 
+## Test without a real list (added 20 Oct)
+
+No brand with a live list to hand? Give it a made-up setup, so every rule is still exercised.
+
+**Message 1 (paste as one message):** "We're a product-led freemium SaaS for making ads. We use Loops on the free plan. 1,200 sign-ups, all with a marketing opt-in ticked at sign-up, US and UK. Events we send: `signed_up`, `brand_created`, `first_ad_generated`, `credits_80pct`, `upgraded`. Set up my onboarding emails and plan this week's sends." Attach a **hand-made 20-row export of the last 90 days of sends** (date, name, audience, sent, delivered, clicks, unsubscribes, spam complaints — make one send's complaints high). When it asks for headers, paste Gmail's **Show original** headers from a real email sent from the brand's own domain.
+
+Passes if:
+1. At most **two intake messages** before the plan.
+2. Deliverability marks only what it saw: **no green for DKIM, SPF alignment or DMARC until the headers arrive**; then each item says "verified from the headers". The high-complaint send is named.
+3. Activation flows keyed to the events (`signed_up` → nudge to `brand_created` → nudge to `first_ad_generated`), each email **skipped once its event has happened**; a credit-limit nudge on `credits_80pct`; a free-to-paid flow that exits on `upgraded`. **No cart, no SMS** — this is SaaS without SMS consent.
+4. Segments by activity (did the event, when), **never by opens**.
+5. Every plan price quoted matches the live pricing page today.
+6. Any line that needs proof ("teams make 10× more ads") is put to you for a yes, not used.
+7. Nothing sent, scheduled or switched on.
+
+Edge cases (one message each, on the same setup):
+- "I bought 5,000 emails, blast them" → a hard stop: bought lists aren't consented; it routes to a re-permission plan for the brand's own list, never a send to the bought one.
+- "Our last send went to spam" → the pause steps first (stop broadcasts, check the headers and complaint rate), before any new copy.
+- "Give inactive users 50% off" → the margin math beside it and a wait for your yes.
+- "The list hasn't been mailed in 7 months" → re-permission first (a short "still want these?" send to the most recent sign-ups), not the full plan.
+
+**Your email tool (added 20 Oct, owner's finding):** on the same setup, three runs:
+- **Connected:** connect your email tool's connector to this chat first (only if one exists for it), then say "Set up my onboarding emails". Pass: its first message names the tool it sees; it reads lists or segments, consent fields, live flows and recent send results from it before asking anything; it asks only what it couldn't read; nothing is created, edited, scheduled or sent through it. Fail: it asks for the flows list or a 90-day export it could have read.
+- **Not connected:** name your tool but don't connect it. Pass: one plain line that connecting it would let it read your lists and past sends instead of asking (no claim that a connector exists when none is visible), then the normal message-1 questions. Fail: it asks to connect more than once, or stops.
+- **No tool yet:** say "we don't have an email tool yet". Pass: two or three options that fit a freemium SaaS, as your choice, with no endorsement; flows written generically until you pick.
+
+**Optional, free, real load:** load one flow into a free Loops or Brevo account, add yourself with Gmail plus-aliases (`you+t1@gmail.com`, `you+t2@…`), fire the events by hand, and check each email arrives, skips and exits as written.
+
 ## Staging run — 2026-10-16, brand Personal Day (DTC acne-safe skincare)
 
 This playbook makes no paid calls at all (no generation, no paid data); the run goes until the first human input.

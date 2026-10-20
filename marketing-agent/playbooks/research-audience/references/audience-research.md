@@ -22,7 +22,7 @@ Reading it: cluster paying customers by the situation they're in (company type �
 - **2–5 groups.** More than five means you haven't merged; one means you haven't looked.
 - **How you'd recognise one** — the job title, company type, situation or behaviour that marks a person as in the group, specific enough to use as ad targeting or list criteria.
 - **Buying roles** — who uses it, who pays, who approves (B2B: champion, economic buyer, user, blocker; consumer: the buyer vs the user, the gift-giver).
-- **Size in buyers, not followers.** Count people or companies: directory and store counts, company counts by size band, job-post counts for the role, industry figures, the brand's own customer mix scaled up. Each input sourced or labelled an assumption, with the arithmetic shown in words ("~4,200 US Shopify stores in skincare with 10+ staff (source) × ~1 growth lead each"). A subreddit or community's member count is **reach**, never group size — most members of a big community aren't in the group.
+- **Size in buyers, not followers.** Count people or companies: directory and store counts, company counts by size band, job-post counts for the role, industry figures, the brand's own customer mix scaled up. Each input sourced or labelled an assumption, with the arithmetic shown in words ("~4,200 US Shopify stores in skincare with 10+ staff (source) × ~1 growth lead each"). A subreddit or community's member count is **reach**, never group size — most members of a big community aren't in the group. **Every group gets at least an order of magnitude** (~1,000 / ~10,000 / ~100,000 companies or buyers) whenever any proxy exists — a directory count, a job-post count, a category total — labelled "rough"; "size unknown" only when no proxy exists at all, and then that is a decision.
 - **Rank** on stated criteria: size, pain, fit with what we sell today, reachability. Price fit counts — a group whose budget matches our price is a fit, not a stretch.
 - **When the brand's own facts disagree** (the site sells one story, the saved brand text another): customer data decides; without it, rank on who actually talks about and buys this kind of product, say which story the research supports, and make the choice the first decision.
 - **B2B:** role × company type × situation. **Consumer:** life situation × trigger. **Marketplace:** both sides, separately. **Local:** radius × occasion.
@@ -31,7 +31,7 @@ Reading it: cluster paying customers by the situation they're in (company type �
 
 Name a lead group only when at least one holds:
 - the brand's own customer data shows it (the largest or best-retained paying group), **or**
-- first-hand evidence from **at least 5 distinct people in the group**, from **at least 2 kinds of source** (e.g. a review site and a community), mostly from the last 18 months — none of it vendor, agency, case-study or job-post text.
+- first-hand evidence from **at least 5 distinct people in the group**, from **at least 2 kinds of source** (e.g. a review site and a community), mostly from the last 18 months — none of it vendor, agency, case-study or job-post text. **At least one kind must not be reviews of a rival**: rival reviews show what people hate about a rival, not that this group would buy us, and five Trustpilot complaints about rivals plus one other reviewer is one kind of source, not two. The second kind is the brand's own customers or reviews, a community thread, interviews, or job-post counts that show the role exists in numbers.
 
 Otherwise the top-ranked group is still named as the lead, labelled **"provisional — <what's missing>"**; say what evidence would settle it (the customer export, a paid read of the forums they use, five interviews) and make that the first decision. A provisional lead never sits in "In short" as a settled finding. A lead that rests on two people and a company's own blog is a guess, and the report says so.
 
@@ -97,7 +97,7 @@ How rivals talk to this audience (their homepage words, ad hooks, the communitie
 Write through write-report (read it first). Body under **3,000 words** — budget it: lead group ~900, each other group ~350, everything else ~900. Cut detail no decision needs; long quote tables go to the saved quote bank, not the report.
 
 1. **Title** — "<Brand> — audience research, <D Mon YYYY>".
-2. **In short** — at most 5 bullets, 150 words. Bullet 1 is literally "**Do this first:** <move> — <who> — because <why, from a source this run read>". Then the lead group (with "provisional" if it is), the biggest surprise in their words, and one line on agreement with the market and competitor reports. Nothing here that the body calls unverified, provisional or second-hand stated as settled.
+2. **In short** — at most 150 words, in write-report §1's order. "**What we looked at:**" the sources (the brand's own data or not), the dates, and the main limit (forums that needed a login, one review site). Then 2–3 numbered findings, each with how sure in the body's own word: the lead group (with "provisional — <what's missing>" if it is; never "your most likely paying group" while provisional), the biggest surprise in their words. Then "**So, do this first (because of <1 and 2>):** <move> — <who> — <by when>", resting on sources this run read; with a provisional lead, the first move is the one that closes the evidence gap. Then one line on agreement with the market and competitor reports (a different lead group or first move: settled, per write-report). Nothing here stronger than the body.
 3. **Decisions for you** — 1–4 rows: decision, our recommendation, what it changes.
 4. **Who the audience is** — one table: group · how you'd recognise one · size in buyers (inline source link and date, or "assumption") · uses / pays / approves · evidence (people, kinds of source, customer data) · rank.
 5. **One section per group, lead first, each with the same five parts** — lower-ranked groups shorter, never missing a part:
@@ -116,7 +116,7 @@ Write through write-report (read it first). Body under **3,000 words** — budge
 
 **Naming other work:** "the market report (18 Oct)", "the competitor report", "your campaign plan" — never a playbook name, file path or folder. **Every fact** carries its own link and date inline; "via secondary sources" or a bare domain is not a source, and the source named must match the link's site.
 
-**Before handing over, count:** In short words and bullets; body words; quotes per group and the lead's share from the last 18 months; three moves per group, each with who, needs and a dated number; the banned list in write-report §3 plus "worker", "free pass", "corpus", "maker", "segment-pass", "quote bank file". Fix, then deliver.
+**Before handing over, count** (a miss blocks delivery — write-report §3): In short words, and each In short sentence against the body's certainty word; body words; quotes per group and the lead's share from the last 18 months; three moves per group, each with who, needs and a dated number; the banned list in write-report §3 plus "worker", "free pass", "corpus", "maker", "segment-pass", "quote bank file". Fix, then deliver.
 
 Fictional example of the top (never reuse its values):
 
@@ -124,11 +124,12 @@ Fictional example of the top (never reuse its values):
 # Acme Creative (fictional) — audience research, 18 Oct 2026
 
 ## In short
-- **Do this first:** answer three of this week's "creative fatigue" threads on the Meta ads forum we read ([12 Oct](…)) — you, 30 minutes — because in-house growth leads ask there every week and no tool seller answers in their words.
-- **Lead group:** in-house growth leads at consumer brands — 31 of your 52 paying customers ([your export, 17 Oct](…)), and the group that stays longest.
-- **Agencies leave after 2–3 months** — 9 of 14 cancel notes say no white-label output ([your export](…)).
-- **They don't say "AI creative".** They say "more variations", "fresh ads every week".
-- Agrees with the market report's lead group; moves the first step from ads to forum answers.
+**What we looked at:** your customer export and cancel notes ([17 Oct](…)), plus three public forums where growth leads talk, 12–18 Oct. Two forums needed a login and weren't read.
+1. **Lead group: in-house growth leads at consumer brands** — 31 of your 52 paying customers, and the group that stays longest (confirmed, your export).
+2. **Agencies leave after 2–3 months** — 9 of 14 cancel notes say no white-label output (confirmed). Don't aim at them yet.
+3. **They don't say "AI creative".** They say "more variations", "fresh ads every week" (likely; 11 people, one forum).
+**So, do this first (because of 1 and 3):** you answer three of this week's "creative fatigue" threads on the Meta ads forum we read ([12 Oct](…)), in their words — 30 minutes, by Friday.
+Agrees with the market report's lead group; moves its first step from ads to forum answers.
 
 ## Decisions for you
 | Decision | We recommend | What it changes |

@@ -14,7 +14,7 @@ Load at step 4. Candidates come from the top of the page map (`page-map.md`) plu
 3. Near-winner rewrites (pages ranking ~4–15, or already cited sometimes).
 4. Off-site fixes the pattern points to (inclusion requests, review profiles).
 5. Missing pages → briefs (listed under the five, never counted).
-Spread the five across at least two lever types when the pattern supports it, so one wrong bet does not sink the week. Five means five: if fewer than five real fixes exist, say so rather than padding.
+Spread the five across at least two lever types when the pattern supports it, so one wrong bet does not sink the week. **When the engines lean on third-party pages** (the pattern count shows round-ups, review sites or rivals' comparison pages among the cited sources), at least one of the five is off-site — a round-up inclusion request, an affiliate-list ask, more reviews. Off-site work is slow, so it starts this week; never push it to next quarter. Five means five: if fewer than five real fixes exist, say so rather than padding.
 
 ## Time to show (state on every fix)
 | Change | Typical time |

@@ -3,7 +3,7 @@ name: situation-save
 description: >-
   Internal step of where-to-start (hidden). Saves the founder's own answers to the situation questions, and
   the agreed recommendation, with the brand — a workspace file imported as a brand document, plus clear
-  matches in the onboarding profile — so learn-my-brand, other playbooks and the next visit read them instead
+  matches in the onboarding profile — so other playbooks and the next visit read them instead
   of asking again.
 ---
 
@@ -37,7 +37,8 @@ No real brand (none, or an empty placeholder): save nothing, and say so plainly 
 4. **Check the answers.** If a write failed, say in one line that it wasn't saved, and carry on.
 
 ## Rules
+- **Run only after the founder answered the recommendation in this conversation** (SKILL step 6), never before. A buyer, audience or strategy line is saved only once they agreed to it; `not agreed` keeps their own answers and marks the read as not agreed.
 - Save only what the founder said and what the pages showed; your read is labelled as yours.
 - Budget, revenue and margin are internal: they stay in this file, never in public-facing fields.
-- Never write claims, voice or positioning here; that is learn-my-brand.
+- Never write claims, voice or positioning here (claims go only through the claims gate in the job that needs them).
 - Never use `user_context` for brand facts.

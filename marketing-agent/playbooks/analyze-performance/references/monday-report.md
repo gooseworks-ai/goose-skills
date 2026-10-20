@@ -16,9 +16,10 @@ Missing this week: none | <list, with the one export that would fix it>
 ✓ No breaks detected (overclaim ratio 1.26×, 4-wk 1.22–1.30×).   OR   🔴 <break, symptom, likely location, check, fix, what it blocks>
 
 ## Headline
-- Do this first, because spend rose 30% without new revenue: hold Meta scaling and fix the fatiguing creative.
-- New-customer orders 412 vs 450/week target (−8%).
-- Blended MER 3.3 (4-wk 4.1); new-customer MER 1.9 vs break-even 2.5.
+(The lines above it say what we looked at and what's missing; the move comes after the numbers it rests on.)
+1. Spend rose 30% with no new revenue (store net, confirmed); the top two Meta ads are wearing out — click rate down 35% in two weeks (likely).
+2. New-customer orders 412 vs 450/week target (−8%); new-customer MER 1.9 vs break-even 2.5 (blended 3.3, 4-wk 4.1).
+So, do this first (because of 1 and 2): hold Meta scaling and fix the fatiguing creative — you, this week.
 
 ## Business truth
 | | This wk | Last wk | 4-wk avg | Same wk LY |  ← revenue-join.md table
@@ -78,7 +79,7 @@ On the reply: re-save the report with a `## Decisions` section (their words), re
 - Label per section or column — **truth** (referee), **claimed** (platform) or **derived** — not per number.
 - Every claim and call carries a confidence label; every call carries "would change if".
 - Platform revenue is never quoted as truth; the two stories are never averaged.
-- The headline is three lines a founder can act on before reading further.
+- The headline is three lines the marketer can act on before reading further.
 - "What to make next" is in angle-and-hook terms with a producer and a date, and rests on the history (`run-memory.md`); "what worked" means it held 2+ runs or won a test.
 - If a replan trigger from the campaign brief fired (CAC breach, stock-out, tracking break…), say so in plain words ("this is worth replanning").
 - Plain words for the marketer: no tool, playbook or internal ids; recommendations are labelled as such — acting on them is a separate, approved step.

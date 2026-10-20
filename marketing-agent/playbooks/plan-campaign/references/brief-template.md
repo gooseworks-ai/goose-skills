@@ -6,12 +6,12 @@ Load at step 7; the Write-back section at the end is used after the marketer's y
 # <Brand> — campaign plan: <campaign name>, <D Mon YYYY>
 
 ## In short
-(At most 150 words; nothing unverified.)
-- **Do this first:** <the one move this week> — because <the reason that matters most>.
-- **The goal:** <number, business result, date>. The expected case gets <n> (<hits / misses by n>); the cautious case gets <n>.
-- **Who it's for:** <new people / people who already know you / both — how many>. **When:** <the buyer's moment, if it differs from your date>.
-- **What this plan covers:** every channel that could work — kept: <list with budget each>; dropped: <the 2–3 that matter>.
-- **The money:** <proven / tests / reserve>. **First test:** <what we'll learn> — readable by <date>.
+(At most 150 words, in write-report §1's order; nothing stronger than the plan's own sections.)
+**What this plan rests on:** <the research and numbers it uses, with dates (audience research 18 Oct, today's prices, your last 90 days of results), and the main gap — e.g. "no conversion history, so the forecast uses base rates">.
+1. **The goal:** <number, business result, date>. The expected case gets <n> (<hits / misses by n>); the cautious case gets <n> (<how sure>).
+2. **Who it's for:** <new people / people who already know you / both — how many>. **When:** <the buyer's moment, if it differs from your date>. **What this plan covers:** kept: <channels with budget each>; dropped: <the 2–3 that matter>.
+3. **The money:** <proven / tests / reserve>. **First test:** <what we'll learn> — readable by <date>.
+**So, do this first (because of <1 and 3>):** <the one move this week, who, by when>. It assumes nothing unconfirmed — no budget, customer proof, offer or asset the marketer hasn't confirmed; if it needs one, the move is "confirm X".
 
 ## Decisions for you
 | Decision | My recommendation | Needed by |
@@ -22,7 +22,7 @@ Load at step 7; the Write-back section at the end is used after the marketer's y
 
 ## Goal chain
 <Point sentence: whether the money gets there, in the business result (signups, paid accounts, orders, bookings).>
-The goal: <number, metric, date> — agreed by <founder>. Without the campaign: … · What the campaign must add: …
+The goal: <number, metric, date> — agreed by <marketer>. Without the campaign: … · What the campaign must add: …
 | Channel | Target | Where the number comes from | Readable by |
 Cautious / expected / hopeful → <outcome each>. <If only the hopeful case hits the goal, say so here.>
 
@@ -101,24 +101,24 @@ Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-D
 
 - **No research codes or internal labels** in anything the marketer reads: theme, quote, angle or test ids from the research files (T-06, V-112, A-07, T1) are translated into words ("the complaint that every fix costs a full re-render, from about 40 reviews of rival tools"). Tests and assets are numbered 1, 2, 3.
 - **A refresh is a new plan, not a copy.** When a matching plan exists, every number is re-derived from today's facts (live prices first); In short carries one line "What changed since the last plan" (or "nothing material — the plan stands, prices re-checked").
-- **Goal chain** rows say where every number came from (own history / human / base rate / assumption).
-- **Angles** rest on the angle bank (research-competitors) and the customer's own words (research-market's voice-of-customer bank). Name the source line. Every claim used is one learn-my-brand signed off (the "Claims you may use" `must` facts named by the "Claims sign-off" marker and the dated Brand record), quoted exactly, within its scope and before its review date. With no sign-off on file every claim and proof point is a candidate: the message is marked **needs proof (sign-off)** — never filled in. A product with no approved claim gets a calendar row "claims signed off" (owner: claims) by T-30.
+- **Goal chain** rows say where every number came from (own history / marketer / base rate / assumption).
+- **Angles** rest on the angle bank (research-competitors) and the customer's own words (research-market's voice-of-customer bank). Name the source line. Every claim used is one that is usable through the claims gate (`../../../atoms/claims-gate/ATOM.md`: the "Claims you may use" `must` facts named by the "Claims sign-off" marker and the dated Brand record, or a confirmed brain claim), quoted exactly, within its scope and before its review date. With no sign-off on file every claim and proof point is a candidate: the message is marked **needs proof (sign-off)** — never filled in. A product with no approved claim gets a calendar row "claims signed off" (owner: claims) by T-30.
 - **Same angle, adapted per channel.** Meta: a scroll-stopping first 2 seconds; Google: the searcher's words; email: the story; LinkedIn: the business outcome with proof. Copy-pasting one line everywhere is a failure.
 - **Asset list** is complete enough that a designer could start today: every row has format and ratio, the message, the claim, the destination, a producer and a due date. Count check: creative volume per paid leg matches the channel's need (e.g. Meta at ~$10k/month ≈ 8–15 net-new creatives a month).
 - **Hand-offs**: one row per channel, no silent legs. The plan names **roles**, never playbooks (the marketer reads it): `static ads` · `video ads` · `photos` · `content` · `paid` · `email` · `organic social` · `creators` · `claims` · `human`. Behind each role (for the agent):
   - static ads → make-static-ads (from the asset list and campaign concepts)
-  - video ads → make-video-ads
-  - photos → make-product-photos
+  - video ads → **human-executed** for now (no maker covers them yet): the asset row carries the angle, the hook, the spec and the exact signed-off claims, so the marketer can hand it to whoever makes their video
+  - photos → **human-executed** for now (no maker covers them yet): the row lists the shots needed (hero, angles, in use, lifestyle) for the marketer's photographer; static ads use the brand's existing product photos
   - paid → run-paid-campaigns (launches from this campaign record)
   - email → email-lifecycle (this calendar drives its broadcasts)
   - content → make-content (articles and long-form)
-  - claims → learn-my-brand (sign-off for a new product)
+  - claims → the claims gate's scoped sign-off, run inside the maker job that needs the lines (the marketer approves them there; when the Brand Brain is on, they confirm them in the GooseWorks app)
   - **human** → landing / product-page copy, sales or retailer enablement (one-pager, battlecard, demo script), PR and press lists, outreach, events — no maker covers them yet
-  - **search ad copy, keyword lists, PDP / landing-page copy** → **human-executed** until a maker covers them: the asset row carries the angle, the searcher's words (voc-bank id) and the exact signed-off claims; run-paid-campaigns' Google launch card takes the copy from that row once the human confirms it, and may propose keywords from research-market's demand read (keywords are not claims)
-  - organic posts → run-organic-social (drafts; the human posts)
-  - creators → work-with-creators (research half; the human contacts and closes)
+  - **search ad copy, keyword lists, PDP / landing-page copy** → **human-executed** until a maker covers them: the asset row carries the angle, the searcher's words (voc-bank id) and the exact signed-off claims; run-paid-campaigns' Google launch card takes the copy from that row once the marketer confirms it, and may propose keywords from research-market's demand read (keywords are not claims)
+  - organic posts → run-organic-social (drafts; the marketer posts)
+  - creators → work-with-creators (research half; the marketer contacts and closes)
   - outreach, PR, events, retail, anything with no playbook → **human-executed**, measured as a row in analyze-performance's channel table
-- **Policy risk** per angle: personal-attributes wording ("your acne", "your debt"), before/after, health or financial outcomes, special ad categories — flag it; make-static-ads and make-video-ads run the full policy check.
+- **Policy risk** per angle: personal-attributes wording ("your acne", "your debt"), before/after, health or financial outcomes, special ad categories — flag it; make-static-ads runs the full policy check (for video made outside GooseWorks, the flag goes to the marketer).
 - **Replan triggers** (pre-committed, cheap): stock cover < ~3 weeks on a featured SKU; CAC > allowable +30% after the learning period; account restriction or a hero asset disapproved; a competitor launch or price cut on the date; a tracking break; the date slipping; a budget cut; an early clear winner (pull the reserve forward).
 
 ## Excellent vs. passable (the reviewer's eye)
@@ -133,10 +133,10 @@ Draft for approval | Approved <date> by <name> · version N · written YYYY-MM-D
 | Hits the goal. | Says which case hits the goal and hands over the case for changing it when it doesn't. |
 | A form-like brief full of codes. | Reads like a good marketer wrote it: In short first, plain words, every fact sourced and dated. |
 
-## Write-back (after the human's yes)
+## Write-back (after the marketer's yes)
 
 1. Re-check `ads_creative_read view: "approvals"` for plans waiting on this campaign; if any, ask before saving (saving discards them).
-2. `campaign_upsert` with `campaign_id` (the draft saved at step 9, or the matching campaign): `brief_md` = the approved plan with the Status line set to "Approved <date> by <name>" and the version bumped; `status: "planned"` only when the campaign was `draft` (an `active` campaign stays `active`); `name`; `goal` (the closest allowed value — the real metric is in the brief); `budget_cents` = the total budget; `starts_on` / `ends_on`; `hero_product_ids`; `channels: ["paid_social"]` only when a paid-social leg is Run/Test; `intake` fields in the human's own words (about, audience, core_message, offer, situation, constraints, objective) — show drafted audience/core message to the human as part of the approval.
+2. `campaign_upsert` with `campaign_id` (the draft saved at step 9, or the matching campaign): `brief_md` = the approved plan with the Status line set to "Approved <date> by <name>" and the version bumped; `status: "planned"` only when the campaign was `draft` (an `active` campaign stays `active`); `name`; `goal` (the closest allowed value — the real metric is in the brief); `budget_cents` = the total budget; `starts_on` / `ends_on`; `hero_product_ids`; `channels: ["paid_social"]` only when a paid-social leg is Run/Test; `intake` fields in the marketer's own words (about, audience, core_message, offer, situation, constraints, objective) — show drafted audience/core message to the marketer as part of the approval.
 3. Concepts for paid static/video angles: `update_campaign_concept` for existing ones (it discards that concept's un-started plans — check first), `add_campaign_concept` for new ones; proof only from a claim that is both signed off and server-accepted for that product.
 4. Re-save the readable file and the brand copy (`save-to-brain`, `versioned: supersede`) with the approved status, and give the marketer the link.
-5. Business facts the human stated (margin, list size, capacity, founder hours) stay in the brief's Economics and Status sections — there is no brain field for them yet.
+5. Business facts the marketer stated (margin, list size, capacity, founder hours) stay in the brief's Economics and Status sections — there is no brain field for them yet.

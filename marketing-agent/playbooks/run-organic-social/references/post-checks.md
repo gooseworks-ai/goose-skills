@@ -92,6 +92,8 @@ Trends come only from fresh evidence: this run's platform research (atoms/platfo
 - **Red, never draft:** tragedy, disaster, war, elections, religion, identity, health scares, layoffs, lawsuits, anything where someone got hurt.
 - **IP:** copyrighted audio, clips or characters on brand accounts.
 
+**News as the hook:** news more than 7 days old on the posting day is never the hook (it can be context inside the post). **Seasonal posts go out when the buyer plans, not on the day.** A post helping agencies with Black Friday creative goes out before they build it (weeks ahead), not on 6 November; a shopper-facing offer posts in the days before. Check the buyer's lead time and say it in the slot.
+
 **Expiry** = the report's post-by date when it gave one; otherwise the earlier of the platform half-life (below, counted from first seen) and the human's next free posting window. **Dated cultural moments** (Halloween, Diwali, Black Friday) are fixed slots, not trends: they carry the date as their expiry and a tone-risk tier, but no TREND flag. If it is past peak when drafted, drop it and say so. A stale trend post is worse than a skipped slot.
 
 | Platform | Half-life |

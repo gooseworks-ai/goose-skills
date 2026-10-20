@@ -266,3 +266,37 @@ Wired run-memory (`references/run-memory.md`): jobs `creator research` and `crea
 | Finding | Verdict | Fix |
 |---|---|---|
 | The shortlist recorded wave 1 under `creator research` (no subject) while the results run looked under `creator wave` / `wave-1` — the recommendation could never be found (MAJOR) | Agree | One job, `creator programme`, with subject `wave-<n>` from the shortlist that proposes wave *n* through its results read; the read judges the wave recommendation by its original id; a run proposing the next wave first carries the previous wave's open items forward |
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+- **25% of $59 (~$15/month) offered to 87k–150k creators for an unknown SaaS; one was a rival's Chief Evangelist marked "ask about exclusivity".** → pricing-and-deals §5: commission-only only for creators already running affiliate links; for an unknown brand mid-tier and up get paid or hybrid; rival or adjacent-tool employees and evangelists are near-misses. vetting §10 matches.
+- **B2B shortlist was YouTube-only.** → SKILL step 2: for B2B read X and LinkedIn in the browser first; if unreadable, the top pick is labelled weak.
+- **B2B row missed the founder as creator and a free-access wave.** → creators-by-company-type: founder/cofounder first; 20–30 practitioners get a free account with no ask before any paid pitch.
+- **Wave planned for 1–10 Dec.** → wave-criteria: time the wave to the buyer's calendar (January Q1 planning for B2B ad-tool buyers; DTC gifting before the season), with the reason in `wave-1.md`.
+- **For writer 1 (not edited here):** the report's first move rested on an assumed 60% margin, 3-month life and 1% click rate — the top section should label assumed inputs (roster-format.md is writer 1's).
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| Report opened "Do this first, because…" with no scope | "In short" with what we looked at, 2 findings (fact / inference), then the move; assumed inputs (budget, margin, ad cost per order) labelled as assumptions (coordinator, from writer 4); SKILL and test lines updated |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| write-report's new top rules copied into What you get, Done when and test item 4 | Each points at write-report §1 / §3; the creator-specific checks stay. |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| One-paragraph setup copied from the guide | Before you start #1: the setup line, then the creator-specific brain chapters and fallback sections; #2 keeps the roster, siblings, outcomes-ledger and run-memory reads. |
+| "Ask nothing first (except real vs AI)" written four times | One home: Before you start #3. The opening rule, Approval gates and Done when no longer restate it (Done when points to #3). |
+| Dead builder codes: "D4" ×3, "AGENTS §8 research pattern", "AGENTS §8 Schedules" | D4 removed; pointers now to guide §3, "Research pattern" and "Schedules". |
+| Step 6 restated write-report's delivery and §3 check | "Through write-report" plus the local path; the creator paths stay. |
+| The person called founder, marketer and human | "Marketer" throughout the runtime text. |
+| Done when held a test oracle ("would pay at least half the shortlist…") | Removed; it is already in tests/test-by-hand.md ("Then:" paragraph). The checkable bars stay. |
+| Description 984 characters | 557 characters; real-vs-AI question kept for routing case R20. |

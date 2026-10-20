@@ -3,27 +3,27 @@
 Load at step 1 and in the monthly mode. List hygiene is survival: inbox providers throttle or block senders whose complaints creep up.
 
 ## Every item carries a status
-**verified** (the agent saw it: a DNS lookup, an export, a screenshot) · **from you** (the human stated it) · **unknown** (not seen). A green is only ever verified or from you. Never infer green.
+**verified** (the agent saw it: a DNS lookup, an export, a screenshot) · **from you** (the marketer stated it) · **unknown** (not seen). A green is only ever verified or from you. Never infer green.
 
 ## The checklist
 
 | Item | Green when | How to check without paid tools |
 |---|---|---|
-| SPF | a marketing test email shows `spf=pass` (the tool's own return-path domain is fine; note whether it aligns — Mailchimp, and HubSpot without a dedicated IP, can't align SPF, and that is not a fix item) | primary: the full headers of one email sent through the email tool (a recent campaign from the list, else a test send), from the human (Gmail "Show original") — works in hosted chat; a personal or Workspace email's headers don't count and stay unknown; supporting: `dig TXT` on the tool's return-path domain. A root-domain SPF record alone (often the office mail provider) is "present — not verified for marketing mail" |
+| SPF | a marketing test email shows `spf=pass` (the tool's own return-path domain is fine; note whether it aligns — Mailchimp, and HubSpot without a dedicated IP, can't align SPF, and that is not a fix item) | primary: the full headers of one email sent through the email tool (a recent campaign from the list, else a test send), from the marketer (Gmail "Show original") — works in hosted chat; a personal or Workspace email's headers don't count and stay unknown; supporting: `dig TXT` on the tool's return-path domain. A root-domain SPF record alone (often the office mail provider) is "present — not verified for marketing mail" |
 | DKIM | the test email shows `dkim=pass` with `header.d=` the brand's domain or a subdomain of it (relaxed alignment with From) — DMARC needs only one aligned pass, and DKIM is the one to align | the same headers; the tool's authentication screen; `dig TXT <selector>._domainkey.<domain>` when the selector is known |
 | DMARC | a record exists (at least `p=none`) and the test email shows `dmarc=pass` | `dig TXT _dmarc.<domain>` + the headers |
 | Branded sending subdomain | marketing sent from e.g. `mail.brand.com`, separate from transactional where possible | tool settings |
 | One-click unsubscribe | List-Unsubscribe header (RFC 8058) on marketing mail; unsubscribes honoured within 2 days | the tool's setting; the headers of a real campaign from the list (a test send may lack the header: missing on a test send → unknown, not red) |
 | Visible unsubscribe + preference link | in every marketing email footer | test email |
 | Legal footer | legal name + physical postal address | test email |
-| Spam complaint rate | < 0.1% in Google Postmaster Tools; never ≥ 0.3% | Postmaster screenshot from the human; the tool's spam-complaint rate per send |
+| Spam complaint rate | < 0.1% in Google Postmaster Tools; never ≥ 0.3% | Postmaster screenshot from the marketer; the tool's spam-complaint rate per send |
 | Hard bounce rate | < 0.5% per send (> 2% = list-source problem) | the tool's campaign report |
 | Unsubscribe rate | < 0.3% per send | the tool's report |
 | Blocklists | domain and sending IP not listed (Spamhaus etc.) | public lookup pages |
-| Consent provenance | source, timestamp and form wording on record per channel and market; SMS consent separate from email; Canadian contacts' consent type known | the human; the tool's profile data |
+| Consent provenance | source, timestamp and form wording on record per channel and market; SMS consent separate from email; Canadian contacts' consent type known | the marketer; the tool's profile data |
 | Link-tracking domain | branded and aligned with the sending domain | tool settings |
-| Monitored reply-to | replies reach a person | the human |
-| Warm-up | needed for a new domain, IP, tool migration or a list not mailed in 6+ months (a waitlist: 3+) | the human's history |
+| Monitored reply-to | replies reach a person | the marketer |
+| Warm-up | needed for a new domain, IP, tool migration or a list not mailed in 6+ months (a waitlist: 3+) | the marketer's history |
 
 Volume matters: the bulk-sender rules below are hard requirements for senders of ≈ 5,000+ messages a day to Gmail (or Outlook); a list above ~5,000 with an unknown Gmail share is treated as bulk (Google's classification is permanent once reached). Below that they are best practice, reported amber, never a stop.
 

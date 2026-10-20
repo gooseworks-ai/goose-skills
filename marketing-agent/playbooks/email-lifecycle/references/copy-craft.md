@@ -31,4 +31,4 @@ Load at step 4 (writing) and step 7 (checking). The edge in 2026 inboxes is spec
 13. Promising what the business does not do: returns, shipping speed, guarantees not confirmed.
 14. SMS as email: long texts, no brand name, no STOP language, sent at night or without SMS consent.
 
-Anything the brain cannot settle stays a visible [placeholder] with its question to the human. Never ship a guess the marketer would have to find and edit.
+Anything the brain cannot settle stays a visible [placeholder] with its question to the marketer. Never ship a guess the marketer would have to find and edit.

@@ -4,13 +4,13 @@ Written and delivered through `../../../atoms/write-report/ATOM.md`. Follow its 
 
 **Title:** "<Brand> — social plan for <platforms>, <date>". Example: "Gooseworks — X plan, 18 Oct 2026".
 
-## In short (3–5 bullets)
-- **Do this first:** the one move, and why. Example: "Start replying to these 12 accounts every evening before you post: at zero followers, replies are where you get seen."
-- The biggest thing the platform research found, with its so-what. Example: "X is pushing native video harder than text right now, so half your posts are 30-second screen recordings."
-- What's working in your niche there, in one line.
-- What you'll post, how often, and how long it takes you a week.
+## In short (at most 150 words, write-report §1's order)
+- **What we looked at:** the platforms, the accounts and posts read, the date, and the main limit. Example (fictional): "X and LinkedIn on 20 Oct: 40 posts from 15 accounts in your niche, and platform notes from the last 90 days. Your own X feed needed a login, so we couldn't read it."
+- **2–3 numbered findings,** each with its so-what and how sure (confirmed / likely / first look). Example: "1. Replies drive reach for small accounts right now (likely; two platform notes, one study), so the plan leads with a reply routine." Then what's working in your niche, and what you'll post and how often.
+- **So, do this first (because of 1 …):** the one move, who, by when. Example: "Start replying to these 12 accounts every evening before you post, from Monday."
+- **Time a week:** one line, the total hours (posts plus the reply routine), checked against the hours the marketer gave, or "a guess until you tell me your hours".
 - On a refill, the one "since last time" result that matters most.
-- Keep "In short" under 150 words, with only confirmed points (write-report §1). A belief the research couldn't confirm goes lower, with its doubt stated.
+- Only points as sure as the body says. A belief the research couldn't confirm goes lower, with its doubt stated.
 
 ## Decisions for you (a short dated box)
 E.g. Premium (with today's price and the recommendation), the exact claim lines to approve, which account it's for if unknown, the paid top-up. Each has a recommendation.
@@ -50,7 +50,7 @@ Plain lines, one each, with why: "Couldn't read your X posts: X doesn't let us r
 Every link used, with its date, grouped per platform.
 
 ## Length
-The body stays under ~3,000 words (write-report). The "All posts" appendix sits outside that budget, but the report must work without it.
+The body (everything after "In short", before the "All posts" appendix and Sources) stays at or under **3,000 words**, and "In short" at or under **150**. Count both before delivering; over budget blocks delivery (write-report §3). Cut first: repeat explanations, extra examples per pattern, the model-account table to its top rows; then move posts beyond the next three days to the appendix. The appendix sits outside the budget, but the report must work without it.
 
 ## Never in this report
 - Slot ids, test codes, bucket names, file paths, check blocks or the internal flag syntax, including `[NAME: …]` brackets. Say "needs your yes" instead of "PERSON YES NEEDED", and "fill in: <what>" for the one allowed fill-in.

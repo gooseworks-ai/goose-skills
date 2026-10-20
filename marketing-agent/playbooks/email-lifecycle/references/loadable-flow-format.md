@@ -13,7 +13,7 @@ trigger_filters:      (Klaviyo list triggers take none — put "capture source =
 flow_filters:         Placed Order zero times since starting this flow; not in this flow in last 90 days   (re-checked at every step)
 exit:                 Placed Order → moves to Post-purchase
 re_entry:             90 days
-consent:              per market — US: subscribed (checkout starters only if the human opts in under CAN-SPAM); CA: express consent, or implied within 24 months of a purchase; SMS branch: SMS consent only
+consent:              per market — US: subscribed (checkout starters only if the marketer opts in under CAN-SPAM); CA: express consent, or implied within 24 months of a purchase; SMS branch: SMS consent only
 smart_sending:        off for message 1; on (16h) for the rest
 quiet_hours:          SMS 9:00–20:00 recipient local; fallback zone [brand HQ]
 priority:             rank 2 of 6; suppresses broadcasts for 3 days after entry; suppressed by Abandoned checkout
@@ -49,7 +49,7 @@ qa:              dark mode, HTML < 102 KB, single column ~600px, body text ≥ 1
 ## Real syntax only
 Worked examples and build sheets use the real template syntax of the tool they name — a tag that does not exist forces an edit and fails the done-when. When unsure of a tag, write the field as plain text the marketer selects in the tool's editor ("insert: unique coupon from pool WELCOME10") rather than guessing syntax. Footer address: use the tool's own footer/address tag (Klaviyo `{{ organization.full_address }}`, HubSpot's office-location footer) instead of typing it.
 
-## Tool vocabulary and plan reality (verify against the tool's current UI and pricing; ask the human when unsure)
+## Tool vocabulary and plan reality (verify against the tool's current UI and pricing; ask the marketer when unsure)
 
 | Tool | Trigger words | Merge syntax | Notes | Plan reality (check before writing) |
 |---|---|---|---|---|

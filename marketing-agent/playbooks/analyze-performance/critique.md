@@ -159,3 +159,41 @@ Status: all majors in this playbook fixed; not re-reviewed by a second critic.
 | # | Finding | Fix |
 |---|---|---|
 | 1 MAJOR | The scheduled prompt copied files to `reports/performance/method/references/…` but read `references/…` and `definitions.md` from the workspace root. | Full workspace paths throughout the prompt (`reports/performance/method/…`, `reports/performance/definitions.md`, `ads/campaigns/<slug>/decisions.md`), plus the mapping line for the copied files' relative links. |
+
+## 2026-10-20 — hand-test review (Akhil + marketer reviewers)
+
+### Report top (write-report shape)
+
+| Finding | Fix |
+|---|---|
+| Reports opened with "Do this first" before the reader knew what was researched, so the move couldn't be judged (Akhil; 4 marketer reviewers: keep the answer on screen one, but rest it on findings shown above it) | In short now: "What we looked at" (scope, sources, date, main limit) → 2–3 numbered findings with how sure (confirmed / likely / first look) → "So, do this first (because of 1 and 2)", naming the findings; a first-look base makes the first move the one that closes the gap (write-report §1) |
+| In short stated provisional or first-look things as fact; counts described a different thing than the claim beside them; first moves assumed unconfirmed assets | write-report §3 checks, now blocking: nothing stronger than the body, every number counts exactly its claim, no unconfirmed asset in the first move (→ "confirm X" or a decision) |
+| Monday report Headline led with the move | Headline: numbered findings with how sure, then "So, do this first (because of …)"; the lines above it already say what was read and what's missing |
+
+### Works without GooseWorks, and the self-serve referee
+
+| Finding | Fix |
+|---|---|
+| Step 1 stopped without GooseWorks although measurement-contract §4 already accepts the marketer's own connectors, read-only (Akhil, validated) | Step 1 offers local mode (guide §5); "tools that give data directly" now leads with connectors the marketer has (ads, store, CRM, billing, product analytics), read-only, never their write tools, each replacing its export in the one message. Test 2b added. |
+| No referee for self-serve SaaS (plan-campaign's company-types has one) | Measurement contract §1: a **Self-serve SaaS** row — new paid accounts and activated sign-ups by source, from billing + product analytics; cost per sign-up is a leading signal only. Minimum read and export cheat sheet updated; Test 5b added. |
+| `references/run-memory.md` linked `../../atoms/run-memory/ATOM.md` (broken) | Now `../../../atoms/…`. |
+
+### Review fixes on this change set (second pass)
+
+| Finding | Fix |
+|---|---|
+| Owner (Akhil, from email-lifecycle): playbooks that depend on the marketer's own tool never ask which one | Before you start, tools paragraph: the first run's one message asks which store, CRM, billing or analytics tool holds the referee unless known (the guide's "The marketer's own tools"): listed → read it; named, not listed → one line on connecting, then the export; none → two or three that fit, and that leg runs claims-only meanwhile. |
+
+## 2026-10-20 — Writing-for-Agents pass (items 1, 2, 4)
+
+| Finding | Change |
+|---|---|
+| Before you start 5 restated `measurement-contract.md` §4 (minimum read, history, hosted-chat exports) | Pointer + "one message, nothing asked mid-run"; kept only what §4 lacks (first-run contract draft and roster, which tool holds the referee, "Not checked" exports, the paid run's needs). |
+| The paragraph after step 5 re-explained the guide's own-tools and read-only connector rules | Kept only the GooseWorks read list; "no tool → that leg runs claims-only" folded into step 5. |
+| What you get spelled out the whole Monday report | One line + pointer to `references/monday-report.md`. |
+| Copied setup and brain-read preamble | Guide setup line (job line "read your results"); chapter numbers and every file path kept, plus the brand_read sections and knowledge_search tag. |
+| Scheduling copy | "Set it up by guide §3 Schedules". |
+| Out of scope named backlog playbooks (audit-my-pages, watch-and-alert) | "not covered yet". |
+| Done when opened by restating the description | Opener deleted; the check kept. |
+| Description 963 chars, deliverables list | 623 chars; one trigger per branch; Not-fors kept. |
+| One name for the person | "the human"/"founder" → "marketer" in SKILL, atoms and references. |

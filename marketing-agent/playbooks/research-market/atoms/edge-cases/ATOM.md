@@ -9,7 +9,7 @@ description: >-
 # edge-cases
 
 - **No browser at all** (hosted chat, a scheduled run): use search results, the pages fetch can read, and the free server reads (`brand_read` `organic`, `gooseworks:social_inspiration_search`). Say once, in the report's "In short", what couldn't be read and what it means for the answer; the paid top-up for it is a decision in the closing message, never a question before the report.
-- **The browser waits on the founder's approval:** tell them in one line what it is for, move on with what you have, and list the page as couldn't-read. Never sit silent.
+- **The browser waits on the founder's approval, or keeps asking:** tell them in one line what it is for, then finish the same reads with search and fetch (`site:` queries, each post's own link) — first-hand evidence such as the brand's own users is finished another way, never dropped. List only what still couldn't be read. Never sit silent.
 - **A worker stalls** for more than a few minutes: say so in one line. **A worker is stopped:** keep everything it returned or wrote; never throw read work away.
 - **Facts from earlier saved research** (dates, figures, launches): re-check them, or mark them "from earlier research, not re-checked".
 - **A saved rival that isn't one** (a person's account, a namesake, a dead company): drop it, and name it in the report so the founder can fix the list.
