@@ -1,0 +1,20 @@
+---
+name: make-static-ads-find-references
+description: >-
+  Step of the make-static-ads playbook: finds fresh, real static ads running on Meta — the brand's own, its competitors' and category leaders' — plus library templates that fit each ad's slot, shows them as a template gallery tagged with the concept each would carry, lets the marketer pick (or picks likely-working ones the brand hasn't tried), registers Meta ads that aren't templates yet, and records whether each ad runs structure-only. Run make-static-ads instead; not for direct use.
+version: 0.4.2
+---
+
+# find-references
+
+The how-to, endpoints and rules are `../make-static-ads/references/references-and-remix.md`; this atom is the order of work. Every ad gets a template — there is no "no template" slot.
+
+**Reads:** the concept grid; own and competitor ads already imported (`gooseworks:ads_template_read` `mode: "mine"` / `"competitor"`, `filters.format: "image"`); the brand's tracked competitors (`gooseworks:brand_read` `sections: ["competitors"]`); saved inspiration (`gooseworks:social_inspiration_library`); the template library (`mode: "static_library"`, `"community"`).
+**Writes:** the gallery (HTML page or artifact, else a table with image links); per ad, the template id, advertiser and Ad Library link, and structure-only yes/no, on the grid row and in the batch file.
+
+1. **Meta Ad Library first.** For the brand's tracked competitors and 3–5 leading brands in its category, read their live static ads: free in the host's browser (the advertiser's Ad Library page, default order = most spend first), else through the data proxy on one yes to a small ceiling (`references-and-remix.md` §2b; about 1 credit per brand). Keep statics that ran 14+ days, ran in several versions, or sit first on the page.
+2. **Then the rest:** imported competitor ads (`ads_template_read` `mode: "competitor"`), the brand's own ads and the ads already made for it in GooseWorks (concept inventory and its "made before" list — those templates are not suggested again), saved inspiration, the template library. Import or refresh a tracked competitor with `gooseworks:ads_library_scrape` (free) when it has nothing imported or the import is older than ~7 days.
+3. **Look at every candidate** against `references-and-remix.md` §1 (fits the slot, static, likely working — 14+ days, several versions, or among the first ads on a leader's page — new for this brand, real brand, buildable). Mark one suggestion per slot. Tag each direct competitor's ad "layout only" in the gallery (`references-and-remix.md` §5).
+4. **Show the gallery** (§3) in the same message as the concepts when the host allows: 8–12 templates (3–5 per slot), templates with a headline first (a template with no headline makes an ad with no words, so use one only when the marketer picks it), each tagged with the concept it would carry, the suggestion marked. **The marketer picks** (Step 2 "you pick"). Step 2 "I pick", or no pick → the agent's suggestions, spread across frameworks and looks, shown in the same gallery as the agent's choice. A pick that differs from the suggestion keeps the slot's concept (`references-and-remix.md` §3.5); a pick already used for this brand gets one line saying so, and new content inside the layout (§3.6). A slot where nothing fits → more candidates (another leader, the library, a keyword search on a yes) until it has one.
+5. **Register what isn't a template yet** (§4): a Meta ad found in §2b–d → re-host with `gooseworks:media_upload` (`source: {type: "fetch"}`) and register with `gooseworks:ads_template_create`; wait until its detail shows the remix fields. Read every picked template's detail (`template_id`) before compose.
+6. **Structure-only per ad:** a template of another brand — competitor, category leader, library or community, however it was registered — is structure-only; the brand's own ads take the normal path. Record the decision per ad. Looking at candidates to choose them is fine; the blueprint itself is written at compose (Step 6).
