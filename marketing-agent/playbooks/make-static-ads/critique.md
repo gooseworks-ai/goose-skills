@@ -187,3 +187,87 @@ Rejected: none this round. Still open: F5a tag round-trip unverified (staging wr
 
 2026-10-16 final contract check: references/reading-the-brain.md §6, skill.meta.json and tests: graphic requests read as `Graphic needed: for make-static-ads · …` lines in the three requesters' files (old `Header art needed:` / plain asset lines still accepted).
 2026-10-16 final contract check: atoms/honest-review (owned here): its users' rubric atoms are now linked by resolvable paths.
+
+
+## Round 12 — v0.3: concepts, references, agent-written briefs (2026-10-19)
+
+**Why:** operator ask (Akhil, with Shiv's meeting notes): bring the server's prompt-write → judge → retry pipeline into the skill; concept diversity from the brand's own ads and social; visual diversity from fresh Meta Ad Library references (like custom video's "remix this ad" cards); a taxonomy of what an ad is made of (Reddit "Creative Diversity Cheat Sheet for Meta Advertisers", AG1's live ads); layer split to change text on the same image; logo / colour / font questions; a curated font list instead of the Inter fallback.
+
+**Sources read:** gooseworks-app `origin/dev` static pipeline (`ad-remix-pipeline.service.ts` compose rules, judge schema, retry; template ranking; font library; layerize), the custom-video references flow (`video-references/*`), the Reddit post (via the data proxy — Reddit blocks the host's fetch), AG1's live US Ad Library (browser + proxy).
+
+**Built:** `references/creative-taxonomy.md` (nine levers, AG1 worked example, concept grid, diversity checks, concept gate), `references/references-and-remix.md`, `references/prompt-craft.md` (the server's prompt rules for an agent; text modes), `references/fonts-and-color.md`; atoms `concept-grid` (replaces `angle-grid`), `find-references`, `write-brief`, `copy-variants`; rubric checks 22–23 and the engine's own pass/fail list; Steps reordered so concepts and references are approved before copy (1 read · 2 brief and look questions · 3 concept grid · 4 references · 5 copy · 6 claims · 7 briefs · 8 quotes · 9 generate · 10 review · 11 copy variants · 12 hand-off).
+
+### Operator feedback, checked by an independent senior-marketer reviewer (AGENTS §2b, effort high)
+
+| Point | Verdict | What we did |
+|---|---|---|
+| A1 Agent writes the prompts (knows the brand) | Right, with a gap: brand material is the brand's own guesses; customer words sell | Agent writes every brief; customer words ranked first in concept-grid; reviews on the brand's own product page as a cited fallback when no voice-of-customer bank exists |
+| A2 Show 10–15 Meta ads as "remix this" cards | Partly: picking from a gallery by taste shrinks diversity | **Changed:** the agent assigns one reference per ad plus an alternate; the marketer approves or swaps |
+| A3 Concepts from the brand's own ads and social | Right; own ads are past bets, not proven winners | Concept inventory marks long runners; competitors and customer words added as sources |
+| A4 Layer split to change text on the same image | Half right: helps iteration and exact text, not diversity | Copy variants offered as a hook test on a winner, never counted as concepts; **added** a set-in-code text mode so words are exact (the reviewer's main point) |
+| A5 Ask logo / colours / fonts | Partly: "random colours" is bad advice | Brand colours by default; a fresh palette only when asked, anchored on a brand colour; variety from concept, layout and style first |
+| A6 Curated fonts, not Inter | Right, low impact | Pairings by brand type; a server-guessed font counts as none |
+| S1 Concept diversity is the biggest problem | Right | The taxonomy, grid and checks are the core of v0.3 |
+| S2 Split layers won't change much | Right for diversity | As A4 |
+| S3 Need a taxonomy of ad structure | Right; the Reddit list mixes message structures with formats | Frameworks (shape) kept apart from message levers |
+
+**Design findings from the same reviewer, applied:** numeric quotas (≥ 5 reasons, ≥ 3 personas…) would force small brands to invent concepts → replaced by two hard rules (no two ads share reason + framework + style; cover-the-text test) and spread targets scaled to what the brand has; optimising for difference, not quality → a five-check **concept gate** before any spend; spreading awareness stages hurts cold sets → awareness follows the brief; emotion is not a diversity lever unless the picture changes; 14-day run length is weak → 30+ days or several versions of one idea; show concepts in plain sentences, not a lever matrix; a few strong concepts × 2–3 executions as the default shape.
+
+### Adversarial staging run + contract check (effort xhigh)
+
+| # | Finding | Severity | Done |
+|---|---|---|---|
+| 1 | `ads_template_create` saves kind "upload"; the pipeline remixes uploads from pixels whatever `rights_attested` says — another brand's ad would be copied | major | Never register another brand's image; engine sources = imported competitor, library, community templates and the brand's own ads; category leaders' ads are layout models described in the brief; server-needs N0 |
+| 2 | `apply_brand_font/colors: false` ignored (forced on) for competitor and library templates | major | Flags left on; a new font goes into the kit on a yes or is set in code; server-needs N6 |
+| 3 | Kit always returns a font, often guessed (`mapped`) | major | A guessed font counts as none (Step 2, fonts §1) |
+| 4 | "Ad = concept" contradicted the concepts × executions shape; dry runs per concept vs per look; awareness spread rules | major | Concept and ad defined once (SKILL, handoff §1); one dry run per ad; angles-and-hooks and handoff §5 aligned |
+| 5 | Marketer saw concepts only after copy and claims were done | major | Steps reordered: references (and concept approval) before copy |
+| 6 | `mode: "mine"` mixes uploads (incl. other brands' references) and repeats versions | major | Keep `scraped_meta`, merge by primary text, small limit; server-needs N11 |
+| 7 | No v0.3 critique round; the builder ran paid data calls on staging (6 proxy calls, 6 test credits) against AGENTS §4 | major | This round; the calls are logged in the test file. **Noted:** they were test credits on staging, made to read the Reddit post (unreachable otherwise) and to verify the ad-library endpoints the playbook names |
+| 8–17 | Organic is captions/counts only; run dates stop at last import; chat hosts get library-only references; claims override in rule 7; brand `must` beats defaults; `media_confirm` missing; stale "prompt fence"; old test brand; no schedule judgement; code-set ads not launchable | minor | All applied (organic topics only; refresh imports > 7 days; say so on chat hosts; rule 7 covers claims; `must` wins; bytes upload only; wording fixed incl. shared honest-review; Graza / Gooseworks / Greener Closet; end-of-run schedule judgement; code-set ads flagged) |
+| 18 | A newer brand-brain server (`brain_*`) | minor | server-needs N12 |
+
+**Rejected:** none. **For the orchestrator (outside this folder):** `where-to-start/references/playbook-map.md` and `foundation/guide` may still describe make-static-ads as "picks templates and the engine writes the prompt"; make-video-ads shares the angle `type:` taxonomy (unchanged) and could adopt the concept grid.
+
+## Round 13 — closing check (2026-10-19, effort high)
+
+Verdict: **5 major**, all consistency leftovers from round 12, plus minors. Fixed:
+
+| # | Finding | Done |
+|---|---|---|
+| M1 | "One call / quote per concept" left in engine-notes, handoff §3, the test file and server-needs | "Per ad" everywhere |
+| M2 | Taxonomy defined a concept as message levers + framework (every look a new concept) | Concept = persona, reason to buy, proof; framework, style, composition, type and hook belong to the ad (taxonomy, prompt-craft, SKILL intro) |
+| M3 | Registering references via `ads_template_create` still in meta `writes`, server-needs N3 and the batch-file fields | Removed; batch file records the engine source template id and the layout model's link |
+| M4 | Small budget: SKILL said 3–4 concepts (6–12 ads), the atom said 3–4 ads | 3–4 ads on one or two concepts, in different looks |
+| M5 (strategist) | No concept id anywhere, so results can't be read per concept | `concept:<c1, c2, …>` tag; Concept and Proof columns in the plan table; concept id per ad in the grid and batch file |
+| minors | angles-and-hooks leftover quota and awareness rule; one too-few-reasons threshold (two); hook limit unified at ≤ 8 words with a verbatim-claim/quote exception; rubric 19 adds style; AG1 example notes looks inside concepts; worked example lists its concepts and persona; claims-extract cites §1–2; server-needs header and item 8 step; Test 1 rewritten for Graza; `card_wait` named in Setup | Applied |
+
+The rules and cross-references were confirmed clean in this round apart from the items above (step order, other brands' ads, font flags, agent-assigned references, AGENTS §2/§5).
+
+## Round 14 — operator corrections (Akhil, 19 Oct 2026)
+
+Akhil set eight decisions for v0.4. They are product decisions about how the playbook uses GooseWorks' own pipeline, not marketing craft, so they were applied as given. Every file now agrees with the new SKILL.md.
+
+| # | Decision | What changed |
+|---|---|---|
+| 1 | The skill **is** the server's static-ad pipeline run by the agent: read brand + template → compose like the server (`composer.md`) → `ads_render` → judge like the server (`judge.md`) → one retry with the server's note; plus concept diversity, fresh Meta templates and the brand brain for claims | New `atoms/compose`; `atoms/render-review` rewritten around `judge.md`; `engine-notes.md` rewritten (thin render tool and what the agent must supply). The four ported files keep their server text; only stale status lines were fixed (composer §11 status, a neutral wording in composer §10, judge §8 tag line) |
+| 2 | **One prompt.** The marketer's chat words are the composer's User instructions; each concept goes in the per-ad Variant brief; the composer writes the on-image words; `ad-copy` writes only the copy around the image and the hook direction | `references/prompt-craft.md` and `atoms/write-brief/` deleted; `ad-copy` no longer writes an on-image text block; `concept-grid` writes each ad's Variant brief; rubric check 23 renamed "Composed prompt followed" |
+| 3 | `ads_generate` and the campaign generation path are gone; campaign records are read as input only | Removed from every atom, reference, test expectation and `needs.mcp` (`ads_generate`, `request_campaign_generation`, `add_campaign_concept`, `update_campaign_concept`, `ads_approval_decide`); remakes, fixes, extra placements and copy variants go through compose + `ads_render` (copy variants may also use layerize) |
+| 4 | Every ad is a remix of a template; templates the brand doesn't own are structure-only; Meta ads that aren't templates yet are registered | `find-references` rewritten (gallery → marketer or agent picks, register, structure-only per ad); "layout model" path removed everywhere |
+| 5 | Claims: the composer's grounded-claims rule checked against brain statuses (`confirmed` / `found` on site, kit or product → use; `guess` / `unknown` → cut) | The learn-my-brand "signed-off / Claims you may use / scoped sign-off" contract removed from `reading-the-brain.md` §1, `claims-extract`, `ad-copy`, `concept-grid`, `angles-and-hooks.md`, `creative-taxonomy.md`, `formats-and-placements.md`, `claims-and-policy.md`, `handoff-format.md` (worked example wording), `review-rubric.md` and the tests; tier and trigger-word craft kept and re-based on statuses; `brain_map` / `brain_search` / `brain_open` added to `needs.mcp` |
+| 6 | Content-policy refusal → re-compose without the trigger and send once more (counts as the retry); judge results go to tags and the batch file, never render feedback | `render-review` steps 3 and 8; `review-rubric.md` record rules. Note: this differs from the server, which switches engine on a content-policy block (`composer.md` §11) — the playbook re-composes instead, because the trigger is usually a line or visual it can remove |
+| 7 | No text modes, nothing code-built, no "save the font in the kit"; `fonts-and-color.md` only for a plain-system-face headline and the copy-variants font option | `fonts-and-color.md` reframed; the typography improvement lives in `atoms/compose`; `brand_update` and `media_analyze` dropped from `needs.mcp` (no longer used); server-needs N10 dropped |
+| 8 | The 30-day rule is gone: likely working = 14+ days, several versions, or among a leader's first ads | `find-references` and Test 7 aligned with `references-and-remix.md` §1 |
+
+Also: SKILL.md's "Step 6b" corrected to Step 7b; `skill.meta.json` to 0.4.0 with atoms, reads, writes and tools matching the files; `server-needs.md` marks N1 and #21 done (PR #2105), N2 resolved by the Variant brief, and adds N13–N17 (server judge with a free retry, a blueprint tool, server font specimen or signed font access, live recurring-rejection rules, structure-only `ads_template_create` from another brand's ad); Test 9 (app UI vs skill, blind judge) added; historic staging logs marked "pre-0.4 (ads_generate era)".
+
+**For the orchestrator (outside this folder):** this playbook no longer loads the shared `atoms/claims-gate` and no longer uses learn-my-brand's claims sign-off contract (AGENTS §8 "Claims") — it reads brand-brain statuses directly, per the operator's decision. `claims-gate` is removed from `shared_atoms`; the shared atom itself was not edited. AGENTS §2 rule 7 and §8 "Claims" still describe the old contract and should be reconciled. `foundation/guide` and the playbook map may still describe make-static-ads as using `ads_generate`.
+
+## Round 15 — Juicebox retest (Akhil, 20 Oct 2026)
+
+Akhil ran the skill on Juicebox (three Meta feed ads, his template picks: three Loxo ads). Claims were all grounded. Three gaps, all agreed by him:
+1. **The template took over the concept.** Swapping "fishbowl" for Loxo's binoculars ad turned "Stop fishing the same pond, for staffing agencies, proof 500+ agencies" into Loxo's own idea with no persona or proof. Fix: the template gives the shape, the concept keeps the message (`references-and-remix.md` §3.5, compose atom, render-review "concept is intact").
+2. **Copying a direct competitor.** Same binoculars, same colour wash, and "For hard-to-fill reqs" echoing Loxo's "hard-to-reach talent". Fix: direct competitors lend layout only, plus the side-by-side test (`references-and-remix.md` §5, gallery tag "layout only", render-review check).
+3. **No memory of past GooseWorks ads.** The search-bar ad reused the same Loxo template and the same example search as an ad made earlier that day. Fix: a "made before" list from batch files and creatives (§2a), never suggested again, new example content if picked (§3.6, render-review "not a repeat").
+
+Open, asked of Akhil: whether every set must carry customer proof (agent's view: each concept needs a visible proof; customer proof at least once per set when the brand has it, not on every ad).
