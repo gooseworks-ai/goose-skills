@@ -1,0 +1,20 @@
+{
+  "slug": "run-paid-campaigns-apply-and-log",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "run-paid-campaigns",
+  "tags": [
+    "ads"
+  ],
+  "standalone": false,
+  "installation": {
+    "base_command": "npx goose-skills install run-paid-campaigns-apply-and-log",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": []
+}

@@ -3,8 +3,6 @@
   "category": "composites",
   "domain": "content",
   "tags": ["content", "social", "brand"],
-  "collections": ["brand-growth"],
-  "collection_stage": "create",
   "source": "scrapecreators",
   "installation": {
     "base_command": "npx goose-skills install content-repurposing",

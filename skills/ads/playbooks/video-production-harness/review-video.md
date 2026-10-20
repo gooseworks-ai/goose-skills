@@ -107,7 +107,7 @@ Run each with real frames, audio and FFmpeg. Save evidence with timecodes.
 
 **Plan promises (`ask`).** List every inset or overlay the plan promises (shot-plan `overlays`, the contract's on-screen notes) with the timestamp where it shows in the render, from that shot's own frames. A missing one is `ask`, usually a free re-assembly: fix it.
 
-**Lip-sync scope.** A lip-synced clip on a shot not marked `speaking_on_camera` is `ask`; a speaking shot without lip-sync is `must_fix`.
+**Lip-sync scope.** Lip-sync on a silent face is `ask`; a speaking shot without a qualified native or matched audio-driven performance is `must_fix`.
 
 **Identity and character.** Per scene, crop the largest face at 25/50/75% and tile the crops after the locked anchor (about 512 px per cell). Judge bone structure, eyes, skin tone and proportions (styling and makeup are not drift). List wardrobe, accessory, hair-colour and held-object changes.
 

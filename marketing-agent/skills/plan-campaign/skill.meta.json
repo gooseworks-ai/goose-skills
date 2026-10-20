@@ -1,0 +1,107 @@
+{
+  "slug": "plan-campaign",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.1.1",
+  "tags": [
+    "ads",
+    "brand"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "research",
+  "installation": {
+    "base_command": "npx goose-skills install plan-campaign",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "plan-campaign-brief-and-assets",
+    "plan-campaign-budget-and-tests",
+    "plan-campaign-channel-decision",
+    "plan-campaign-goal-chain",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "pillar": "1 — Strategy and planning (also 10 — launches, 18 — promo calendar read)",
+  "intents": [
+    "I have this budget and a launch date — what do I run, where?",
+    "plan a campaign",
+    "plan my launch / drop / Black Friday push",
+    "where should I advertise?",
+    "should we even run ads?",
+    "how should I split my budget?",
+    "plan next month / replan the budget",
+    "we sold out / CAC blew up — what do we change?"
+  ],
+  "reads": [
+    "brand brain: summary, kit, products, learnings log, onboarding, competitors (brand_read)",
+    "claims through the shared claims-gate atom (the sign-off contract: its scoped sign-off, or earlier records by learn-my-brand, unreleased); server scope check for concept proof (knowledge_search claim + product_id)",
+    "voice-of-customer bank and buyer groups (research/audience/voc-bank.md, buyer-groups.md or brand documents) — research-audience; demand read and market report (research/market/demand.md, <date>-read.md) — research-market",
+    "angle bank, landscape, competitor files (research/competitors/*.md or documents) and competitor roster (competitor_read) — research-competitors",
+    "send calendar lifecycle/calendar/<YYYY-MM>.md — email-lifecycle",
+    "existing campaigns, concepts and pending creative plans (campaign_read, ads_creative_read approvals)",
+    "weekly and monthly performance reads (reports/performance/) — analyze-performance, replan mode",
+    "change log (ads/campaigns/<slug>/decisions.md ### dated blocks, incl. the server's Meta outcomes) and fired triggers (state.md) — run-paid-campaigns, replan mode",
+    "human: goal, budget, date, baseline, margin/ARPA, repeat, stock or capacity, list size, creative capacity, founder hours, tracking state, type-specific items",
+    "creator roster creators/roster.csv (wave results) — work-with-creators, when a creator leg is Run/Test",
+    "its own last run record runs/plan-campaign/campaign-plan/<slug>/<date>.md (the plan's bets) — run-memory",
+    "analyze-performance's run records (runs/analyze-performance/weekly-performance-read/, monthly-read/) and run-paid-campaigns' run records (runs/run-paid-campaigns/weekly-ads-check/<slug>/) — scorecards, money moves, verdicts",
+    "Brand Brain (brain_map, brain_open, brain_search where listed): chapters 2, 3, 5, 15, 18, 19, 20 (target_cpa, target_roas, decision.*, experiment.*), 23 (experiment_readout.*, worn_out_angle.*)"
+  ],
+  "writes": [
+    "readable campaign plan gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md (local file, via write-report) — the marketer",
+    "brand copy plans/<slug>/<YYYY-MM-DD>-plan-v<N>.md + document 'Campaign plan — <Brand> — <date> v<N>' (save-to-brain, supersede) — the marketer, any host",
+    "campaign record (campaign_upsert): brief_md with fixed headings — economics box, goal chain, channel decisions, budget split, paid structure, test plan, angles, calendar, asset list, measurement plan, hand-offs, replan triggers; read by run-paid-campaigns, analyze-performance, make-static-ads, make-content, email-lifecycle, run-organic-social, work-with-creators",
+    "campaign concepts (add_campaign_concept / update_campaign_concept) — read by make-static-ads",
+    "optional monthly replan schedule (automation_upsert) — only on the human's explicit yes",
+    "draft brief for an approved live campaign: plans/<slug>/draft-v<N>.md (workspace) until the human's yes",
+    "run record runs/plan-campaign/campaign-plan/<slug>/<date>.md + brand document (keep-history) — the plan's bets with owner, read date and test — read by its next replan",
+    "on approval only: kind 20 target_cpa / target_roas, experiment.<slug>-t<n>, decision.<slug>-<yyyy-mm>-<n> via save-learning's fact path — wait for the marketer's yes",
+    "plans/method/ (copied method for the scheduled worker) — read by the monthly replan automation",
+    "local mode: the plan in plans/<slug>/ (in place of the campaign record), brand-notes.md and run records under gooseworks-local/<brand-slug>/ — read by its own next replan, run-paid-campaigns and analyze-performance in local mode"
+  ],
+  "needs": {
+    "gooseworks": "optional — without it, local mode (the marketing-guide skill, ../marketing-guide/SKILL.md §5): the live site, the marketer's answers and connectors the marketer has (read-only)",
+    "connectors_optional": [
+      "ads-platform, store, CRM, billing or product-analytics connector (read-only)"
+    ],
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:competitor_read",
+      "gooseworks:campaign_read",
+      "gooseworks:campaign_upsert",
+      "gooseworks:add_campaign_concept",
+      "gooseworks:update_campaign_concept",
+      "gooseworks:ads_creative_read",
+      "gooseworks:file_read",
+      "gooseworks:file_list",
+      "gooseworks:automation_upsert",
+      "gooseworks:file_write",
+      "gooseworks:tools_load",
+      "gooseworks:account_whoami",
+      "gooseworks:meta_read",
+      "gooseworks:social_account_list",
+      "gooseworks:file_url",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search",
+      "gooseworks:automation_list"
+    ]
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "slug": "analyze-performance",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.1.1",
+  "tags": [
+    "ads",
+    "monitoring"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "analyze",
+  "installation": {
+    "base_command": "npx goose-skills install analyze-performance",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "analyze-performance-call-and-learn",
+    "analyze-performance-diagnose",
+    "analyze-performance-intake",
+    "analyze-performance-rank-and-read",
+    "analyze-performance-revenue-join",
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "pillar": "13 — Analytics, measurement and experimentation",
+  "intents": [
+    "What worked this week across every channel we run — why, and what do I make next?",
+    "write my Monday report",
+    "which ad won?",
+    "are my ads actually making money?",
+    "Meta says 4x ROAS but revenue is flat",
+    "did the test win?",
+    "monthly numbers for the replan",
+    "anything on fire today?"
+  ],
+  "reads": [
+    "campaign brief (campaign_read): economics, targets, test plan, measurement plan, replan triggers, change-log slug — plan-campaign",
+    "ads/campaigns/<slug>/state.md (harness frontmatter, health line, open recommendations) and decisions.md (### dated blocks) — run-paid-campaigns and the server",
+    "statics' lower-case tags (ads_creative_read) and batch files ads/batches/<YYYY-MM-DD>-<slug>.md — make-static-ads; videos' angle and hook names (video_read; a video without them is unannotated)",
+    "Goose ads' Meta results (meta_read performance) — cross-check only",
+    "own TikTok/Instagram analytics (social_account_list, social_analytics_get)",
+    "lifecycle/program.md — email-lifecycle; social calendar — run-organic-social; creator roster and wave results creators/roster.csv — work-with-creators (roster seeding, creators row)",
+    "research/competitors/watch/<date>.md — research-competitors; research/market/<D>-read.md section 'What people are saying' (newest *-read.md; check its window line) — research-market; improve-search-visibility's last check, when they exist",
+    "learnings log (brand_read learnings, knowledge_search learning)",
+    "measurement contract, past reports and their Decisions (reports/performance/) — its own",
+    "human (one message): the type's referee (store, CRM, app consoles, bookings), exports per rostered channel, retailer sell-through, customer-level export monthly",
+    "its own last run records runs/analyze-performance/<job-slug>/<date>.md (up to four weekly back: scorecards, angle history, calls) — run-memory",
+    "run-paid-campaigns' run records runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md (money moves, baseline recipes, verdicts, per-ad scorecard)",
+    "Brand Brain (brain_map, brain_open, brain_search where listed): chapters 18, 20, 22, 23 (experiment_readout.*, worn_out_angle.*, lessons)",
+    "connectors the marketer already has (ads platforms, store, CRM, billing, product analytics) — read-only, never their write tools",
+    "local mode: gooseworks-local/<brand-slug>/ (brand-notes.md, its own contract, reports and run records, the paid run's local state.md and decisions.md) — the marketing-guide skill (../marketing-guide/SKILL.md) §5"
+  ],
+  "writes": [
+    "reports/performance/<YYYY-MM-DD>.md weekly read (with Decisions) — read by run-paid-campaigns, plan-campaign, make-static-ads, make-content, run-organic-social, email-lifecycle",
+    "reports/performance/monthly/<YYYY-MM>.md + brand document — read by plan-campaign",
+    "reports/performance/inputs/<YYYY-MM-DD>.md — read by run-paid-campaigns (reuses exports)",
+    "reports/performance/definitions.md + brand document (contract, roster, story pick) — its own, every week",
+    "learnings rows (brand_update patch.facts, user_correction) — read by every planner and maker; angle ids for research-competitors",
+    "daily pulse (chat, exception-only) — interim until watch-and-alert",
+    "run records runs/analyze-performance/<job-slug>/<date>.md + brand documents (keep-history) — per-channel and per-ad scorecards, calls with owner / review-by / test, outcomes — read by its own next run and plan-campaign",
+    "measured readouts kind 23 experiment_readout.<slug>-t<n> and <slug>-r<n>-store (worked / didn't work, never from a scheduled run), and worn_out_angle.<id> on the marketer's yes — via save-learning",
+    "reports/performance/method/ (copied method for the scheduled worker) — read by the weekly automation",
+    "local mode: the same reports, contract and run records under gooseworks-local/<brand-slug>/; learnings appended to brand-notes.md — read by its own next run, run-paid-campaigns and plan-campaign in local mode"
+  ],
+  "needs": {
+    "gooseworks": "optional — without it, local mode (the marketing-guide skill, ../marketing-guide/SKILL.md §5): connectors the marketer has (read-only), else exports and screenshots",
+    "connectors_optional": [
+      "ads-platform, store, CRM, billing or product-analytics connector (read-only)"
+    ],
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:brand_update",
+      "gooseworks:campaign_read",
+      "gooseworks:ads_creative_read",
+      "gooseworks:meta_read",
+      "gooseworks:social_account_list",
+      "gooseworks:social_analytics_get",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:automation_upsert",
+      "gooseworks:video_read",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:account_whoami",
+      "gooseworks:tools_load",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search",
+      "gooseworks:automation_list"
+    ]
+  }
+}

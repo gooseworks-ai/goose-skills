@@ -1,0 +1,114 @@
+{
+  "slug": "make-static-ads",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.4.2",
+  "tags": [
+    "ads",
+    "design"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "create",
+  "installation": {
+    "base_command": "npx goose-skills install make-static-ads",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "ad-policy-check",
+    "claims-gate",
+    "honest-review",
+    "make-static-ads-ad-copy",
+    "make-static-ads-claims-extract",
+    "make-static-ads-compose",
+    "make-static-ads-concept-grid",
+    "make-static-ads-copy-variants",
+    "make-static-ads-find-references",
+    "make-static-ads-fix-rejected",
+    "make-static-ads-graphic-request",
+    "make-static-ads-render-review",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "pillar": "6 — Paid media / performance marketing (creative production with pillar 15)",
+  "intents": [
+    "I need ten fresh ads this week and I have no designer",
+    "make me static / image ads for Meta, Instagram, TikTok or LinkedIn",
+    "my ads all look the same — I need different concepts",
+    "refresh my fatiguing ads",
+    "more like my winning ad — new hooks",
+    "same image with different text or another font",
+    "my image ad got rejected — fix it",
+    "the price or stock changed on ads already running",
+    "ads for our sale / launch",
+    "a header image or social graphic in our brand style"
+  ],
+  "reads": [
+    "brand brain: core rules and facts with their statuses (confirmed / found / guess / unknown) and sources — brain_map, brain_search, brain_open (server research and the claims-gate sign-off write them)",
+    "brand kit, learnings incl. do/dont/must rules, products and competitors — brand_read (server research)",
+    "the brand's recent organic posts and what drew replies — brand_read organic (server research)",
+    "voice-of-customer bank: research/audience/voc-bank.jsonl / .md — research-audience",
+    "angle bank: research/competitors/angle-bank.md (A-NN) — research-competitors",
+    "approved campaign record, read as input only: brief (Status: Approved), concepts — plan-campaign (campaign_read)",
+    "weekly performance read: reports/performance/<date>.md ('what to make next') — analyze-performance",
+    "request lines 'Rotation needed: for make-static-ads' / 'Fix needed: for make-static-ads' in ads/campaigns/<slug>/rotation-requests.md, and the health line of ads/campaigns/<slug>/state.md — run-paid-campaigns",
+    "Goose-made creative performance — meta_read performance",
+    "own and competitor Meta ads — ads_template_read mine / competitor, imported with ads_library_scrape (server research); category leaders' live Ad Library pages (host browser, or the data proxy on a yes); the template library and community templates",
+    "saved inspiration outliers — research-market, research-competitors (social_inspiration_library)",
+    "kept product photos — the marketer, or the goose-product-photos skill",
+    "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)"
+  ],
+  "writes": [
+    "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
+    "lower-case creative tags (concept:c-n, angle:a-nn, persona, emotion, style, type, archetype, hook, stage, batch, mode, test, offer-ends, claims, src, structure-only, judge:*, try:*, superseded, picked) — read by analyze-performance (angle and concept ranking) and research-competitors (angle test status)",
+    "the human's picks and verdicts: feedback in the human's words (rating happy only on their pick) + 'picked' tag + the batch file — read by run-paid-campaigns and the brand's learned rules",
+    "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, concept id and row (persona, reason to buy, proof with brain status, emotion, stage, framework, style), template id, advertiser and Ad Library link, structure-only yes/no, font, palette, logo, the User instructions and Variant brief, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, coverage note, test question, test structure with the stated budget, cut list, flags — run-paid-campaigns launches from it verbatim",
+    "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run",
+    "'Graphic ready:' answer lines under sibling request lines — read by email-lifecycle, run-organic-social, make-content on their next run",
+    "font specimen images (media_upload, kind image, tag font-specimen) — attached to this playbook's own renders",
+    "brand learnings through the shared save-learning atom, on the human's own words (incl. claims the marketer confirms in chat) — read by every creative playbook",
+    "ad-library charges in research/credits-log/<YYYY-MM>.md (spend-gate branch B) — read by every playbook that estimates proxy spend"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:tools_load",
+      "gooseworks:card_wait",
+      "gooseworks:brand_read",
+      "gooseworks:brain_map",
+      "gooseworks:brain_search",
+      "gooseworks:brain_open",
+      "gooseworks:knowledge_search",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:campaign_read",
+      "gooseworks:meta_read",
+      "gooseworks:social_inspiration_library",
+      "gooseworks:social_inspiration_search",
+      "gooseworks:photos_read",
+      "gooseworks:ads_template_read",
+      "gooseworks:ads_template_create",
+      "gooseworks:ads_library_scrape",
+      "gooseworks:media_upload",
+      "gooseworks:data_call_provider",
+      "gooseworks:ads_render",
+      "gooseworks:job_get",
+      "gooseworks:ads_creative_read",
+      "gooseworks:ads_creative_update",
+      "gooseworks:ads_creative_edit",
+      "gooseworks:automation_upsert",
+      "gooseworks:ads_save"
+    ]
+  }
+}

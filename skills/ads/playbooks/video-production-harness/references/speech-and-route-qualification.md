@@ -24,10 +24,10 @@ incomplete, and empty ASR output never proves silence.
 |---|---|---|---|
 | Usable authorized recorded speech exists | Preserve recording | same | Check source picture/audio timing and full performance |
 | Non-speaking picture needs explanation | External narration | same voice (ElevenLabs v4); picture per [shot routing](shot-routing.md) | Accept voice and measured speech before final scene timing |
-| Generated creator speaks across several clips (default) | Voice first: `exact_audio_lipsync`, final ElevenLabs line then one lip-sync per line, one line per clip | Fabric **480p** / **720p** | Accept every line before lip-sync; each clip within 0.5 s of its line |
+| Generated creator must use the exact approved audio across clips | Voice first: `exact_audio_lipsync`, final ElevenLabs line then one lip-sync per line, one line per clip | Fabric **480p** / **720p** | Accept every line before lip-sync; each clip within 0.5 s of its line |
 | Generated creator speaks in one take of 15 s or less | `qualified_native` H3 | not in a tier quote (it prices talking as Fabric): ask the owner first | At most 3.2 words/s; cut only between sentences; never retimed; review the take's face, voice and words |
 | Speaking creator must use exact supplied audio | Qualified audio-driven lip-sync | Fabric 480p / 720p | Lock the exact driver, verify documented task and matched result |
-| Speaking creator needs timbre/accent but no exact recording | Supported native voice-reference route, otherwise accepted external voice plus lip-sync | same as the route it lands on | Audition actual voice; timbre conditioning is not waveform reuse |
+| Realistic speaking creator needs timbre/accent but no exact recording | Prefer qualified joint voice-and-picture generation with the approved voice as reference; otherwise propose accepted external voice plus lip-sync | Quote the actual route; Fabric's tier price does not cover H3 | Play the audition; compare the generated voice, words and performance; timbre conditioning is not waveform reuse |
 | No speech wanted | Non-speaking picture | H3 768P / 768P; Seedance 720p (no face) or any 1080p only with the customer's new yes | Choose ambience/music/SFX or intentional silence independently |
 | Multiple speakers | Qualified dialogue/per-speaker route | not in a tier quote (it prices talking as Fabric): ask the owner first | Supported speaker control and correct voice-to-mouth assignment |
 
@@ -37,6 +37,8 @@ check at 480p is retried at 480p after a prompt or still fix; moving it to 720p 
 so it needs the customer's new yes to its price ([quality tier](quality-tier.md)). Record the
 one-line reason with the failed attempt. Choose the resolution before the first
 lip-sync or take: switching re-rolls it.
+
+For realistic on-camera speech, read [talking-actor production](talking-actor.md) before selecting either route. Its audition and first-take checks apply inside the existing gates. Longer mixed-format videos can contain several short qualified native takes; preserve voice consistency and linked clocks across them. The kit's unconditioned single-take H3 interface retains its limits below. Do not claim audio-reference support in a part that lacks those inputs.
 
 ## Lip-sync only for a speaking face
 
@@ -48,13 +50,12 @@ lip-sync or take: switching re-rolls it.
 2. Lip-sync runs only after the voice line is final (rate-checked and approved), once
    per line. Never re-sync after a picture edit; re-time the picture instead.
 3. At the script approval, in the same message (no new gate), ask the owner: "Do you
-   want an on-camera person speaking (lip-synced), or voiceover over footage?" Suggest
+   want an on-camera person speaking, or voiceover over footage?" Suggest
    what the reference does. Record the answer in `voice_plan.route`
-   (`exact_audio_lipsync` or `external_narration`); list it in `changes_from_reference`
+   (`exact_audio_lipsync`, `qualified_native` or `external_narration`); list it in `changes_from_reference`
    when it differs from the reference.
 4. The shot plan marks each shot `speaking_on_camera: true|false`. In review, a
-   lip-synced clip on a shot not marked speaking is `ask`; a speaking shot without
-   lip-sync is `must_fix` ([check severity](check-severity.md)).
+   lip-synced clip on a shot not marked speaking is `ask`; a speaking shot without a qualified native or matched audio-driven performance is `must_fix` ([check severity](check-severity.md)). Native speech does not need an additional lip-sync pass.
 
 An unrelated narrator over speaking-looking footage is not a fallback. Native speech
 continues under a cutaway; the face returns at the matching source position.
@@ -102,7 +103,7 @@ not qualify animated gaze or handling.
 
 Use creator-h3@1.8.0 fields only with that version or a compatible newer contract (1.7.0 added `quality_tier`, with takes at 768P by default; 1.8.0 accepts a measured take review).
 Carry creative_contract_revision and `reference_words_per_second` (from `../scripts/reference_rate.py`).
-Native speech has no voice pair: the person is made with `--no-voice-pair`, and the take's
+This kit interface is unconditioned. Native speech has no voice pair: the person is made with `--no-voice-pair`, and the take's
 own voice is accepted or rejected with the first take. A separate voice (voice-elevenlabs)
 uses `character.voice_pair` (from pair_voice.py, which make_character.py runs). Capture is
 phone_counter, also for two-hand actions (it has no phone_observer); focus is deep.

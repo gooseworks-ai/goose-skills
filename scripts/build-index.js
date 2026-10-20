@@ -154,6 +154,84 @@ function scanCategory(category) {
   return skills;
 }
 
+/**
+ * The marketing agent's skills: marketing-agent/skills/<slug>/, one flat folder per
+ * playbook, step ("atom") and foundation skill, so a reference to another skill is
+ * `../<slug>/SKILL.md` here, in a terminal install (~/.agents/skills/<slug>/) and in
+ * the catalog archive alike. category and tags come from skill.meta.json; version is
+ * in both SKILL.md (the catalog reads it) and skill.meta.json (validate-skills checks
+ * they match). A folder whose meta says "catalog": false (the marketing-agent router,
+ * kept for evals) is not published.
+ */
+const MARKETING_AGENT_SKILLS = 'marketing-agent/skills';
+const MARKETING_AGENT_DOMAIN = 'marketing-agent';
+// Kept in a skill folder for the people who build it; never shipped with the skill.
+const MARKETING_AGENT_BUILDER_FILES = new Set(['critique.md']);
+
+/** Frontmatter with folded/literal block scalars (`description: >-`), which parseFrontmatter reads as ">-". */
+function parseBlockFrontmatter(content) {
+  const match = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) return {};
+  const lines = match[1].split('\n');
+  const result = {};
+  for (let i = 0; i < lines.length; i++) {
+    const kv = lines[i].match(/^(\w[\w-]*):\s*(.*)$/);
+    if (!kv) continue;
+    const rest = kv[2].trim();
+    if (/^[>|][-+]?$/.test(rest)) {
+      const block = [];
+      while (i + 1 < lines.length && (/^\s+/.test(lines[i + 1]) || lines[i + 1] === '')) {
+        block.push(lines[++i].trim());
+      }
+      result[kv[1]] = rest.startsWith('|')
+        ? block.join('\n').trim()
+        : block.join(' ').replace(/\s+/g, ' ').trim();
+    } else {
+      result[kv[1]] = rest.replace(/^['"]|['"]$/g, '');
+    }
+  }
+  return result;
+}
+
+function scanMarketingAgent() {
+  const root = path.join(ROOT, MARKETING_AGENT_SKILLS);
+  if (!fs.existsSync(root)) return [];
+  const skills = [];
+  const slugs = fs
+    .readdirSync(root)
+    .filter((d) => fs.statSync(path.join(root, d)).isDirectory())
+    .sort();
+  for (const slug of slugs) {
+    const skillDir = path.join(root, slug);
+    const skillMd = path.join(skillDir, 'SKILL.md');
+    const metaPath = path.join(skillDir, 'skill.meta.json');
+    if (!fs.existsSync(skillMd)) continue;
+    if (!fs.existsSync(metaPath)) {
+      throw new Error(`Missing skill.meta.json for ${MARKETING_AGENT_SKILLS}/${slug}`);
+    }
+    const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    if (meta.catalog === false) continue;
+    const frontmatter = parseBlockFrontmatter(fs.readFileSync(skillMd, 'utf8'));
+    const relDir = `${MARKETING_AGENT_SKILLS}/${slug}`;
+    const files = collectFiles(skillDir)
+      .map((f) => relFromRoot(f))
+      .filter((f) => !MARKETING_AGENT_BUILDER_FILES.has(f.slice(relDir.length + 1)));
+    skills.push({
+      slug,
+      name: frontmatter.name || slug,
+      category: meta.category,
+      domain: MARKETING_AGENT_DOMAIN,
+      description: frontmatter.description || '',
+      tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
+      path: relDir,
+      ...(meta.version !== undefined ? { version: meta.version } : {}),
+      files,
+      metadata: meta,
+    });
+  }
+  return skills;
+}
+
 /** Scan packs across every domain (skills/<domain>/packs/<pack>). */
 function scanPacks(registrySkills) {
   const registryBySlug = {};
@@ -383,9 +461,20 @@ for (const pack of packs) {
   }
 }
 
+const marketingAgentSkills = scanMarketingAgent();
+const takenSlugs = new Set([...registrySlugs, ...promotedSlugs.keys()]);
+for (const s of marketingAgentSkills) {
+  if (takenSlugs.has(s.slug)) {
+    throw new Error(
+      `Marketing agent skill "${s.slug}" collides with an existing catalog skill slug — slugs must be unique across the catalog`,
+    );
+  }
+}
+
 const skills = [
   ...registrySkills,
   ...promotedFromPacks,
+  ...marketingAgentSkills,
 ].sort((a, b) => a.slug.localeCompare(b.slug));
 
 const collections = scanCollections(skills).sort((a, b) => a.slug.localeCompare(b.slug));

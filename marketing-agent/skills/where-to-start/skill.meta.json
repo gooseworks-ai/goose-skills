@@ -1,0 +1,76 @@
+{
+  "slug": "where-to-start",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.1.1",
+  "tags": [
+    "brand",
+    "research"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "research",
+  "installation": {
+    "base_command": "npx goose-skills install where-to-start",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "where-to-start-situation-save",
+    "write-report"
+  ],
+  "pillar": "1 — Strategy and planning",
+  "intents": [
+    "help me with marketing",
+    "where do I start",
+    "what should I do first",
+    "I don't have a marketing plan",
+    "we just launched and need customers",
+    "sales are flat and I don't know where to start",
+    "what should I focus on this month",
+    "I'm back, what's next"
+  ],
+  "reads": [
+    "brand list with ad_library_ad_count; brand summary, kit (lean), products, onboarding, learnings, accounts (written by the GooseWorks server's research and the app, analyze-performance; earlier by learn-my-brand, unreleased)",
+    "brand knowledge via knowledge_search: evidence, learnings, documents, creatives — what ran, offers, results (written by the server's research and imports, research-market, the makers; earlier by learn-my-brand, unreleased)",
+    "the 'Claims sign-off' learning, regulated categories only (written by claims-gate's scoped sign-off, or earlier by learn-my-brand, unreleased)",
+    "workspace brand/situation.md: the founder's situation and the last recommendation from an earlier visit (written by this playbook)",
+    "up to three of the brand's own public pages (homepage, pricing or store page, app-store or marketplace listing) through the host's fetch or browser",
+    "campaign records (written by plan-campaign)",
+    "the playbook map: the want, inputs, outputs, credit costs and out-of-scope of the other 16 playbooks (references/playbook-map.md, from the specs and the sibling SKILL.md files)"
+  ],
+  "writes": [
+    "brand onboarding profile: role, ad-spend band, goals, platforms, only clear matches to what the founder said (read by where-to-start and the server's own setup; learn-my-brand, unreleased)",
+    "workspace brand/situation.md (brand coworker scope), imported as the brand document 'Situation — <Brand> — <date>' through the save-to-brain skill (../save-to-brain/SKILL.md): the founder's answers, what the site showed, and the agreed recommendation (read by the next where-to-start visit and any playbook that searches the brand's documents for goal, budget or date)",
+    "the first-move recommendation (to the human only; spec 01: no playbook consumes it as an artifact)"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:brand_update",
+      "gooseworks:campaign_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:tools_load",
+      "gooseworks:file_write",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:media_list",
+      "gooseworks:media_update"
+    ]
+  }
+}

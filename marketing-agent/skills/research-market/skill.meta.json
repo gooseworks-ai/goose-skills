@@ -1,0 +1,97 @@
+{
+  "slug": "research-market",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.4.1",
+  "tags": [
+    "research",
+    "monitoring"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "research",
+  "installation": {
+    "base_command": "npx goose-skills install research-market",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "research-market-edge-cases",
+    "research-market-listening",
+    "research-market-market-pass",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "pillar": "1 — Strategy and planning",
+  "intents": [
+    "Do the market research for <brand>",
+    "Which market are we in, and how big is it?",
+    "Is my category growing / what's changing?",
+    "How do people buy in my category, and what do others charge?",
+    "What are people saying about me and my category?",
+    "Watch my brand / tell me if something blows up",
+    "Repeat my market research (monthly pulse, quarterly report)"
+  ],
+  "reads": [
+    "brand brain: summary, kit, products, competitors, learnings, sources, organic, accounts (brand_read); evidence and earlier documents (knowledge_search) — server research and the app (learn-my-brand, unreleased)",
+    "buyer groups and the customer-quote bank: workspace research/audience/buyer-groups.md (counts per group) and the latest research/audience/<date>-report.md — research-audience",
+    "sibling reports: the latest research/competitors/<date>-report.md and plans/ — research-competitors, plan-campaign",
+    "competitor roster (competitor_read) and rival records research/competitors/* — research-competitors",
+    "public web: news, analyst estimates, funding, pricing pages, review sites, communities, social platforms' public pages, AI answers — host web search, page fetch and browser (free)",
+    "previous run: workspace research/market/* incl. watchlist.md — research-market itself",
+    "claims through the claims-gate shared atom — its scoped sign-off, or earlier records (learn-my-brand, unreleased)",
+    "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data"
+  ],
+  "writes": [
+    "market report (In short, Decisions for you, which market, size top-down and bottom-up, change, buying, pricing, attention, demand, what people are saying, competition in brief, You vs them, disagreements with sibling reports, what it means for positioning, what to do, not doing, baselines, couldn't check, sources with skew): local gooseworks-reports/<brand-slug>/<date>-market-research.md + workspace research/market/<date>-read.md + brand document (keep-history) — read by the founder, plan-campaign, research-audience, research-competitors, analyze-performance, run-organic-social, the next run",
+    "brand-watch notes (alerts only, else counts): research/market/watch/<date>.md + document (keep-history) — read by the founder, the next watch, analyze-performance",
+    "demand read: research/market/demand.md + document (supersede) — plan-campaign",
+    "listening watchlist: research/market/watchlist.md + document (supersede) — this playbook",
+    "outlier posts: inspiration library via social_inspiration_save (tag research-market) — makers, work-with-creators, run-organic-social",
+    "on yes only: rivals via competitor_save; [market …] and [listening …] rules via save-learning; a monthly pulse / quarterly report or a weekly brand watch via automation_upsert (created paused)",
+    "run records: workspace runs/research-market/<job-slug>/<date>.md + brand document (keep-history) through the run-memory shared atom — read by this playbook's next run"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:ads_template_read",
+      "gooseworks:automation_list",
+      "gooseworks:automation_upsert",
+      "gooseworks:brand_read",
+      "gooseworks:brand_setup",
+      "gooseworks:competitor_read",
+      "gooseworks:competitor_save",
+      "gooseworks:data_call_provider",
+      "gooseworks:data_post_provider",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_url",
+      "gooseworks:file_write",
+      "gooseworks:get_started",
+      "gooseworks:job_get",
+      "gooseworks:knowledge_import",
+      "gooseworks:knowledge_search",
+      "gooseworks:knowledge_sync",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:media_upload",
+      "gooseworks:meta_read",
+      "gooseworks:social_inspiration_library",
+      "gooseworks:social_inspiration_save",
+      "gooseworks:social_inspiration_search",
+      "gooseworks:tools_load",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
+    ]
+  }
+}

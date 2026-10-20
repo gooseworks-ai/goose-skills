@@ -33,27 +33,28 @@ medium for use, close for a needed detail, as the brief needs. Inspect the deliv
 at phone size. Reject blurred proof, unreadable labels, accidental face cuts and
 distortion.
 
-**Realism default.** Capture is a phone (`phone_counter`, `phone_selfie` or
+**Format first.** Record capture, focus, lighting, texture and sound from the approved brief/reference before prompts. Phone, studio, cinematic and illustrated work have different targets; no phone grade, room or motion is universal. When the look is unresolved, propose it at the script review. Do not require a studio-shot reference to honor an explicit studio brief.
+
+**Phone-footage realism.** When phone footage is the approved look, capture is a phone (`phone_counter`, `phone_selfie` or
 `phone_observer`) with deep focus and no bokeh, in a lived-in, slightly cluttered real
 room, never a plain wall or a white void. Every person prompt says "no retouching, no
 skin smoothing, no beauty filter, no cinematic grade"; skin keeps pores and slight
 asymmetry. Wardrobe and setting fit the activity.
 
-**Light and realism block.** Every photoreal still prompt (people, products, B-roll)
+**Phone light and realism block.** A phone-footage still prompt (people, products, B-roll)
 ends with these words, verbatim:
 
 > One window or lamp lights the scene from one side, with a darker shadow side and
 > gentle falloff; normal phone exposure, highlights not clipped, no HDR; matte skin with
 > no added shine; no over-sharpening or halos.
 
-Every H3 or other video motion prompt, B-roll included, ends with: "Keep the first
+For that look, an H3 or other video motion prompt, B-roll included, ends with: "Keep the first
 frame's light and exposure, matte skin, no added shine or sharpening halos." (creator-h3
 1.6.0 and video-h3max 1.2.0 add it on the kit path.) Name the window or lamp in the
-scene. A shot with flat shadowless light, HDR contrast, gloss or halos is a repair. Studio light or shallow focus only when the approved style comes from a studio-shot
-reference, listed in `changes_from_reference` as `camera` when it differs. A phone on a
+scene. Judge unwanted flat light, HDR, gloss or halos against the approved look, not an unrelated phone benchmark. Studio light or shallow focus follow the approved brief/reference, listed in `changes_from_reference` as `camera` when they differ from a supplied reference. A phone on a
 counter can be steady. Record main light, contrast, exposure, white balance and the
 continuing set. Check skin, eyes, teeth, hands, contact, shadows and reflections, still
-and moving. Smooth skin, a blurred background or unmotivated light is a repair.
+and moving. Unwanted smoothing, lost proof detail or unmotivated light is a repair; deliberate animation texture or shallow focus is not itself a defect.
 
 Choose an accepted overlay style or explicit references before rendering, with
 typography, hierarchy, placement, density and motion. Keep speech captions apart from

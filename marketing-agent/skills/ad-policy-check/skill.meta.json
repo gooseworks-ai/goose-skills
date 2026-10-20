@@ -1,0 +1,37 @@
+{
+  "slug": "ad-policy-check",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "used_by": [
+    "email-lifecycle",
+    "make-content",
+    "make-static-ads",
+    "research-competitors",
+    "run-organic-social",
+    "run-paid-campaigns",
+    "work-with-creators"
+  ],
+  "tags": [
+    "ads"
+  ],
+  "standalone": true,
+  "installation": {
+    "base_command": "npx goose-skills install ad-policy-check",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

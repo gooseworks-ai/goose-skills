@@ -1,0 +1,43 @@
+{
+  "slug": "marketing-guide",
+  "category": "capabilities",
+  "tier": "foundation",
+  "version": "0.1.1",
+  "tags": [
+    "brand"
+  ],
+  "installation": {
+    "base_command": "npx goose-skills install marketing-guide",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "pillar": "all",
+  "intents": [],
+  "reads": [],
+  "writes": [],
+  "needs": {
+    "mcp": [
+      "gooseworks:tools_load",
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
+    ]
+  }
+}

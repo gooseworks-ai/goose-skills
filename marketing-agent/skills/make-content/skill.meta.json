@@ -1,0 +1,104 @@
+{
+  "slug": "make-content",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.1.0",
+  "tags": [
+    "content"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "create",
+  "installation": {
+    "base_command": "npx goose-skills install make-content",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "ad-policy-check",
+    "claims-gate",
+    "make-content-content-brief",
+    "make-content-source-to-units",
+    "make-content-two-pass-edit",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "voice-card",
+    "write-report"
+  ],
+  "pillar": "3 — Content marketing",
+  "intents": [
+    "Write a blog post / article / guide / case study / comparison page",
+    "Write one LinkedIn post / X post / thread",
+    "Draft this week's newsletter",
+    "Turn this webinar / video / blog into posts for every platform",
+    "Repurpose this",
+    "Write a YouTube / TikTok script from this",
+    "Write the launch post and release notes",
+    "Refresh this old post",
+    "Turn my rant / voice note into a post",
+    "Write the page from this SEO brief",
+    "Make the content pieces for this campaign"
+  ],
+  "reads": [
+    "brand brain: kit voice, audience, value props, proof points, reference examples (server research and the app; learn-my-brand, unreleased)",
+    "brand brain: claims sign-off marker in learnings + 'Claims you may use' must facts, with proof in the 'Brand record — <brand>' document (claims-gate's scoped sign-off, or earlier records by learn-my-brand, unreleased); before sign-off, plain product facts only",
+    "brand brain: learnings must/do/dont, never-say, qualifiers (server research and the app, analyze-performance; learn-my-brand, unreleased)",
+    "workspace research/audience/voc-bank.md, or the 'Voice-of-customer bank' brand document (research-audience)",
+    "inspiration library via social_inspiration_search (research-market, research-competitors)",
+    "workspace search/briefs/<page-slug>.md page briefs (improve-search-visibility)",
+    "campaign brief + asset list via campaign_read (plan-campaign)",
+    "workspace reports/performance/<date>.md 'what to make next' (analyze-performance)",
+    "competitor profiles via competitor_read and workspace research/competitors/<slug>.md (research-competitors), for comparison pages",
+    "brand's own TikTok/IG posts and their media via brand_read sections organic (server sync)",
+    "workspace brand/voices/<handle>.md voice cards (this playbook or run-organic-social)",
+    "workspace content/* from earlier runs (this playbook)",
+    "workspace content/channels.md (this playbook, earlier run)",
+    "workspace 'Graphic ready:' lines under make-content's request lines (make-static-ads)",
+    "top search results and the author's LinkedIn / Threads posts (author-matched) via data_call_provider, verified endpoints only (proxy, under spend-gate)"
+  ],
+  "writes": [
+    "workspace content/briefs/*.md: content briefs (read by the draft step, the next run, the human)",
+    "workspace content/drafts/*.md: first drafts with edit note + claims check (the human; page drafts carry their search/briefs path for improve-search-visibility)",
+    "workspace content/repurposed/<source>/*.md: undated platform cuts (run-organic-social slots them)",
+    "workspace content/refresh/*.md: refresh redlines (the human)",
+    "workspace content/newsletter/template.md and issues (the next newsletter run; template also imported as a brand document)",
+    "workspace content/pov/*.md: interview answers (the next run of this playbook and run-organic-social, so nothing is asked twice)",
+    "workspace brand/voices/<handle>.md: voice cards (run-organic-social and any copy playbook; imported as a brand document once confirmed)",
+    "workspace content/channels.md: the brand's platform list and house style (the next run of this playbook; run-organic-social may read the platform list)",
+    "brand learnings via the shared save-learning atom: writing rules the marketer stated or confirmed, prefix [content YYYY-MM-DD]",
+    "brand knowledge via knowledge_import url: the brand's own published pieces (content inventory for every sibling)",
+    "workspace 'Graphic needed:' request lines in content/repurposed and content/drafts (make-static-ads answers them)",
+    "workspace research/credits-log/<YYYY-MM>.md: one line per paid proxy read (spend-gate; shared price history)"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:brand_update",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:campaign_read",
+      "gooseworks:competitor_read",
+      "gooseworks:social_inspiration_search",
+      "gooseworks:media_upload",
+      "gooseworks:media_confirm",
+      "gooseworks:media_list",
+      "gooseworks:media_analyze",
+      "gooseworks:media_update",
+      "gooseworks:data_call_provider",
+      "gooseworks:file_write",
+      "gooseworks:file_read",
+      "gooseworks:file_list",
+      "gooseworks:tools_load"
+    ]
+  }
+}

@@ -7,7 +7,7 @@
     "raw_url": "https://raw.githubusercontent.com/gooseworks-ai/gooseworks/main/skills/routes.json"
   },
   "route_table_version": 1,
-  "captured": "2026-08-31",
+  "captured": "2026-10-20",
   "$comment_entry_skills": "Vendored by the CLI and installed to ~/.agents/skills/ — they are NOT members of this collection, they are the entry points into it.",
   "entry_skills": [
     "goose-ads",
@@ -16,120 +16,104 @@
   ],
   "brand_growth_routes": [
     {
-      "job": "Brand foundation",
+      "job": "Not sure what to do first",
       "skills": [
-        "brand-research"
+        "where-to-start"
       ]
     },
     {
-      "job": "Competitor ads",
+      "job": "Market size, trends, what people say, brand watch",
       "skills": [
-        "competitor-ad-intelligence"
+        "research-market"
       ]
     },
     {
-      "job": "Customer language and angles",
+      "job": "What rivals run and what works",
       "skills": [
-        "comment-mining",
-        "ad-angle-miner"
+        "research-competitors"
       ]
     },
     {
-      "job": "Competitor social content",
+      "job": "Who buys and why; lists of companies and people",
       "skills": [
-        "competitor-social-research"
+        "research-audience"
       ]
     },
     {
-      "job": "Audience definition",
+      "job": "Cold emails and LinkedIn messages",
       "skills": [
-        "audience-research"
+        "write-outreach"
       ]
     },
     {
-      "job": "Creator discovery and evaluation",
+      "job": "A campaign plan from a budget and a date",
       "skills": [
-        "influencer-prospecting",
-        "creator-profile-teardown"
+        "plan-campaign"
       ]
     },
     {
-      "job": "Trends and outlier posts",
+      "job": "New static image ads",
       "skills": [
-        "trend-discovery",
-        "outlier-post-finder"
+        "make-static-ads"
       ]
     },
     {
-      "job": "Social listening and product demand",
+      "job": "Launch, scale or pause paid ads",
       "skills": [
-        "social-listening-brief",
-        "product-demand-research"
+        "run-paid-campaigns"
       ]
     },
     {
-      "job": "Long-form source material (calls, podcasts, videos)",
+      "job": "What worked; performance reports",
       "skills": [
-        "transcript-intelligence"
+        "analyze-performance"
       ]
     },
     {
-      "job": "Meta performance, policy, and landing-page match",
+      "job": "Email flows and sends to subscribers",
       "skills": [
-        "meta-ads-analyzer",
-        "meta-ad-policy-checker",
-        "ad-to-landing-page-auditor"
+        "email-lifecycle"
       ]
     },
     {
-      "job": "Static ads",
+      "job": "SEO and AI-answer visibility",
       "skills": [
-        "goose-ads",
-        "remix-graphic-ad-from-reference"
+        "improve-search-visibility"
       ]
     },
     {
-      "job": "Product photos",
+      "job": "Influencers and UGC creators",
       "skills": [
-        "goose-product-photos",
-        "product-photoshoot"
+        "work-with-creators"
       ]
     },
     {
-      "job": "Written content and repurposing",
+      "job": "One post, article or newsletter",
       "skills": [
-        "content-repurposing"
+        "make-content"
       ]
     },
     {
-      "job": "Graphics and animation",
+      "job": "Posting calendar and social plan",
       "skills": [
-        "goose-graphics",
-        "animate-image"
+        "run-organic-social"
       ]
     }
   ],
   "brand_growth_skills": [
-    "ad-angle-miner",
-    "ad-to-landing-page-auditor",
-    "animate-image",
-    "audience-research",
-    "brand-research",
-    "comment-mining",
-    "competitor-ad-intelligence",
-    "competitor-social-research",
-    "content-repurposing",
-    "creator-profile-teardown",
-    "goose-graphics",
-    "influencer-prospecting",
-    "meta-ad-policy-checker",
-    "meta-ads-analyzer",
-    "outlier-post-finder",
-    "product-demand-research",
-    "product-photoshoot",
-    "remix-graphic-ad-from-reference",
-    "social-listening-brief",
-    "transcript-intelligence",
-    "trend-discovery"
+    "analyze-performance",
+    "email-lifecycle",
+    "improve-search-visibility",
+    "make-content",
+    "make-static-ads",
+    "plan-campaign",
+    "research-audience",
+    "research-competitors",
+    "research-market",
+    "run-organic-social",
+    "run-paid-campaigns",
+    "where-to-start",
+    "work-with-creators",
+    "write-outreach"
   ]
 }

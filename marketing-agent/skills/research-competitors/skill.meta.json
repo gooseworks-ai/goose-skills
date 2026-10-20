@@ -1,0 +1,104 @@
+{
+  "slug": "research-competitors",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.4.1",
+  "tags": [
+    "competitive-intel",
+    "research"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "research",
+  "installation": {
+    "base_command": "npx goose-skills install research-competitors",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "ad-policy-check",
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "research-competitors-category-pass",
+    "research-competitors-edge-cases",
+    "research-competitors-rival-pass",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "pillar": "1 — Strategy and planning",
+  "intents": [
+    "What are my competitors running right now, and what works for them?",
+    "Do a competitor teardown",
+    "What's new with my competitors?",
+    "What are my competitors' founders posting?",
+    "How do my competitors price?",
+    "Find the gaps and angles nobody covers",
+    "What changed with my competitors this week?",
+    "<Competitor> just launched / shut down / cut prices — what do we do?",
+    "Watch my competitors every week"
+  ],
+  "reads": [
+    "brand brain: summary, kit, products, competitors, organic, learnings (brand_read) — server research and the app (learn-my-brand, unreleased)",
+    "claims through the claims-gate shared atom — its scoped sign-off, or earlier records (learn-my-brand, unreleased)",
+    "competitor roster, dossiers and suggestions (competitor_read) — research-market / server research",
+    "public web: news, launches, pricing (and Wayback), ad libraries (LinkedIn, Google, Meta, TikTok), company and founder posts, reviews, community, jobs, events — host web search, fetch and browser (free)",
+    "Meta ad sample (ads_template_read mode competitor) and rival posts (brand_read organic) — server research, free",
+    "the newest market report research/market/<date>-read.md (which market) — research-market; buyer groups research/audience/buyer-groups.md and the latest audience report — research-audience; plans/ — plan-campaign",
+    "angle results: workspace reports/performance/<date>.md — analyze-performance; creatives tagged angle:a-nn — make-static-ads",
+    "previous report and rival records with snapshots: workspace research/competitors/* — research-competitors itself",
+    "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data",
+    "AI-answer and search visibility report: workspace search/visibility/<date>.md — improve-search-visibility (when no AI engine is reachable)"
+  ],
+  "writes": [
+    "competitor report ('In short' with 'Do this first', timely openings, rivals one by one, how they compare, You vs them, formats worth borrowing, angles, what to do): local gooseworks-reports/<brand-slug>/<date>-competitor-research.md + workspace research/competitors/<date>-report.md + brand document (keep-history) — read by the founder and team, the next run",
+    "rival records with snapshots: workspace research/competitors/<slug>.md (supersede) — read by the weekly watch, plan-campaign, make-content",
+    "landscape: workspace research/competitors/landscape.md (supersede) — read by plan-campaign",
+    "angle bank keyed A-NN (makers tag angle:a-nn): workspace research/competitors/angle-bank.md (supersede) — read by make-static-ads, plan-campaign",
+    "swipe-file items: inspiration library via social_inspiration_save — read by make-static-ads, make-content",
+    "weekly watch notes: workspace research/competitors/watch/<date>.md (keep-history; line 2 'Week of …') — read by the founder, analyze-performance",
+    "new rivals on the roster via competitor_save, on the founder's yes",
+    "rules for top angles through the save-learning shared atom, on the founder's words",
+    "scheduled watch (opt-in, created paused) via automation_upsert; method file research/competitors/method/watch.md",
+    "run records: workspace runs/research-competitors/<job-slug>/<date>.md + brand document (keep-history) through the run-memory shared atom — read by this playbook's next run"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:competitor_read",
+      "gooseworks:competitor_research",
+      "gooseworks:competitor_save",
+      "gooseworks:ads_template_read",
+      "gooseworks:ads_creative_read",
+      "gooseworks:social_inspiration_save",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:media_upload",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:knowledge_import",
+      "gooseworks:knowledge_search",
+      "gooseworks:job_get",
+      "gooseworks:automation_list",
+      "gooseworks:automation_upsert",
+      "gooseworks:data_call_provider",
+      "gooseworks:ads_library_scrape",
+      "gooseworks:media_analyze",
+      "gooseworks:file_url",
+      "gooseworks:tools_load",
+      "gooseworks:brand_setup",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
+    ]
+  }
+}

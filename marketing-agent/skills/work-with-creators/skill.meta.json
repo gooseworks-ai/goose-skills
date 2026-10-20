@@ -1,0 +1,100 @@
+{
+  "slug": "work-with-creators",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.4.1",
+  "tags": [
+    "social",
+    "outreach"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "create",
+  "installation": {
+    "base_command": "npx goose-skills install work-with-creators",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "ad-policy-check",
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "outcomes-ledger",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "work-with-creators-brief-writer",
+    "work-with-creators-creator-discovery",
+    "work-with-creators-creator-vetting",
+    "work-with-creators-rate-and-deal",
+    "write-report"
+  ],
+  "pillar": "12 — Partnerships, influencers, affiliates, community, events",
+  "intents": [
+    "Which creators are worth paying, at what price — and what should they make?",
+    "Find influencers for our brand",
+    "Find real UGC creators to film for our ads",
+    "Who should we seed product to?",
+    "Is this creator's engagement real?",
+    "What should I pay this creator?",
+    "Write a brief and a first message for this creator",
+    "Find LinkedIn, YouTube, newsletter or podcast creators for our B2B product"
+  ],
+  "reads": [
+    "Brand Brain when brain_* tools are listed: brain_map first (core rules, never-list, waiting items, products, audience, rivals, 14, 22, 23), brain_search for creators in talks and past deals; fallback brand_read + knowledge_search",
+    "claims: sign-off and 'Claims you may use' / dont / must facts via claims-gate (written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
+    "brand brain: products with price, brand kit and voice, learnings (GooseWorks brand research and the app; learn-my-brand, unreleased); gift unit cost and who approves spend are usually not on file — asked of the human",
+    "brand brain: the brand's and competitors' recent organic posts and the competitor set (research-competitors / server)",
+    "Inspiration library: saved outlier posts and the creators behind them (research-market)",
+    "persona — who a creator's followers must match (research-market)",
+    "campaign record: a campaign brief that calls for a creator leg (plan-campaign)",
+    "shared disclosure rules ../ad-policy-check/disclosure.md (the ad-policy-check skill)",
+    "workspace creators/roster.csv via outcomes-ledger, earlier wave-1.md and briefs (this playbook); research/credits-log/<YYYY-MM>.md (spend-gate)",
+    "human: goal, budget, creators in talks, target CAC / CPA / planned media, cost per demo or install, roster status and wave results",
+    "run records runs/work-with-creators/creator-programme/wave-<n>/… (run-memory) and the roster for wave results"
+  ],
+  "writes": [
+    "workspace creators/roster.csv (living roster in the outcomes-ledger schema: status, suppression, wave, wave result, quoted rate) — read by the human and every later run; analyze-performance reads it for roster seeding (creators are a future row there); plan-campaign when a creator leg is Run/Test",
+    "workspace creators/<date>/report.md (→ 'Creator report — <Brand> — <date>', keep-history), wave-1.md, near-misses.csv, briefs/<handle>.md (brief + first-message drafts) — read by the founder, who sends and negotiates; wave-1.md read back on the next run",
+    "workspace creators/roster-summary.md → brand document 'Creator roster — <Brand> — <date>' (supersede; no contact details) — read by later runs and plan-campaign",
+    "workspace creators/lessons/<date>.md → brand document 'Creator lessons — <Brand> — <date>' (keep-history; numbers only) via outcomes-ledger — read by later runs",
+    "research/credits-log/<YYYY-MM>.md rows — read by every playbook's spend estimates",
+    "run records runs/work-with-creators/creator-programme/wave-<n>/<date>.md (keep-history) via run-memory — counts and links only, read by the next run"
+  ],
+  "needs": {
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:tools_load",
+      "gooseworks:account_whoami",
+      "gooseworks:brand_read",
+      "gooseworks:knowledge_search",
+      "gooseworks:competitor_read",
+      "gooseworks:campaign_read",
+      "gooseworks:social_inspiration_library",
+      "gooseworks:social_inspiration_search",
+      "gooseworks:social_inspiration_watch",
+      "gooseworks:data_call_provider",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:file_url",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:brand_update",
+      "gooseworks:automation_upsert",
+      "gooseworks:media_list",
+      "gooseworks:media_update",
+      "gooseworks:automation_list",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
+    ]
+  }
+}

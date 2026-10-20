@@ -1,0 +1,21 @@
+{
+  "slug": "analyze-performance-revenue-join",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.0",
+  "playbook": "analyze-performance",
+  "tags": [
+    "ads",
+    "monitoring"
+  ],
+  "standalone": false,
+  "installation": {
+    "base_command": "npx goose-skills install analyze-performance-revenue-join",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": []
+}

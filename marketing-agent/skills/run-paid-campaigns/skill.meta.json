@@ -1,0 +1,117 @@
+{
+  "slug": "run-paid-campaigns",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "0.1.1",
+  "tags": [
+    "ads"
+  ],
+  "collections": [
+    "brand-growth"
+  ],
+  "collection_stage": "analyze",
+  "installation": {
+    "base_command": "npx goose-skills install run-paid-campaigns",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "ad-policy-check",
+    "analyze-performance",
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "plan-campaign",
+    "run-memory",
+    "run-paid-campaigns-apply-and-log",
+    "run-paid-campaigns-draft-moves",
+    "run-paid-campaigns-health-gate",
+    "run-paid-campaigns-weekly-read",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "pillar": "6 — Paid media / performance marketing",
+  "intents": [
+    "Take the winner, scale it, kill the loser — without me living in Ads Manager",
+    "It's Monday — what should we kill, scale or pause this week?",
+    "launch these ads",
+    "this ad is fatiguing — swap it",
+    "we sold out / the sale ended / an ad got rejected — fix the ads",
+    "give me the Google / TikTok / LinkedIn changes to make"
+  ],
+  "reads": [
+    "campaign brief (campaign_read): channel decisions, economics box, paid structure, test plan, targets — plan-campaign",
+    "picked statics: batch file ads/batches/<YYYY-MM-DD>-<slug>.md + lower-case tag picked (ads_creative_read) — make-static-ads",
+    "maker hand-off files: ads/batches/<YYYY-MM-DD>-<slug>.md (make-static-ads: copy, test structure, regulated flags); video copy comes from the marketer, and videos (goose-video, video_read) and the marketer's own files are claim- and policy-checked here at launch (claims-gate, ad-policy-check)",
+    "kept videos already made in GooseWorks (video_read with scenes for the script and on-screen text, video_share)",
+    "weekly performance read and data-quality flags (reports/performance/ in the brand coworker workspace) — analyze-performance",
+    "Meta account state for Goose objects (meta_read pages, performance, push_status, change_status)",
+    "change log ads/campaigns/<slug>/state.md (harness frontmatter, open recommendations) and decisions.md (### dated blocks) — its own plus the server's Meta outcomes",
+    "human: allowable cost if not derivable, budget ceiling, off-limits campaigns, exports from other platforms and non-Goose Meta, stock, offer changes",
+    "this week's input summary (reports/performance/inputs/<date>.md) — analyze-performance, to reuse exports",
+    "demand read research/market/demand.md — research-market (search keyword proposals)",
+    "its own last run record runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md (scorecard, money moves with baseline recipes) — run-memory",
+    "Brand Brain (brain_map, brain_open, brain_search where listed): chapter 20 target_cpa / target_roas / decision.* / experiment.*, chapter 15, chapter 23 readouts, the operating plan (daily cap, protected entities, emergency stop)",
+    "analyze-performance's newest run record and report (store-joined numbers for the scorecard's return column)",
+    "the marketer's own ads-platform connector, when they have one: account-wide results, frequency, CPM, learning and delivery status, disapprovals, ads GooseWorks didn't make; store, CRM and billing connectors read-only",
+    "local mode: gooseworks-local/<brand-slug>/ (the approved plan in plans/<slug>/, brand-notes.md, its own state.md, decisions.md and run records) — the marketing-guide skill (../marketing-guide/SKILL.md) §5"
+  ],
+  "writes": [
+    "weekly moves proposal (chat) — the human approves",
+    "Meta approval-gated proposals (prepare_meta_ad_push, propose_meta_budget_change, propose_meta_creative_replacement) and pauses (pause_meta_ad_push) — server records pushes and changes",
+    "ads/campaigns/<slug>/state.md and decisions.md in the server's campaign-harness grammar — read by the server, analyze-performance and plan-campaign's replan",
+    "written-instruction cards for non-lever platforms and non-Goose Meta objects",
+    "rotation requests ads/campaigns/<slug>/rotation-requests.md — read by make-static-ads",
+    "optional weekly schedule (automation_upsert) that only stages proposals — on explicit yes",
+    "request lines (Rotation needed / Fix needed) in ads/campaigns/<slug>/rotation-requests.md — answered by make-static-ads",
+    "run record runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md + brand document (keep-history) — per-ad scorecard, money moves with baseline recipes and verdicts, open moves — read by its own next run, analyze-performance and plan-campaign",
+    "proposal file ads/campaigns/<slug>/proposals/<date>.md (the weekly proposal, saved every run)",
+    "measured readouts (kind 23 experiment_readout.<slug>-r<n>, worked / didn't work only, never from a scheduled run) via save-learning",
+    "proposed targets (kind 20 target_cpa / target_roas via save-learning, the marketer's words) and a stated daily cap (operating_plan daily_spend_cap_minor_units / spend_cap_currency via brain_save) — wait for the marketer's yes",
+    "ads/method/ (copied method for the scheduled worker: SKILL, references, atoms, shared atoms) — read by the weekly automation",
+    "connector changes on the marketer's ads account, any platform (the connector rule in references/meta-levers.md: one card and one named yes each, read back, created paused, budget steps at most 30%) — logged in decisions.md",
+    "local mode: the same files under gooseworks-local/<brand-slug>/ — read by its own next run and analyze-performance in local mode"
+  ],
+  "needs": {
+    "gooseworks": "optional — without it, local mode (the marketing-guide skill, ../marketing-guide/SKILL.md §5): an ads-platform connector the marketer has, or exports and written instructions",
+    "connectors_optional": [
+      "ads-platform connector (reads; changes one named yes at a time)",
+      "store, CRM or billing connector (read-only)"
+    ],
+    "mcp": [
+      "gooseworks:get_started",
+      "gooseworks:brand_read",
+      "gooseworks:campaign_read",
+      "gooseworks:campaign_upsert",
+      "gooseworks:ads_creative_read",
+      "gooseworks:meta_read",
+      "gooseworks:refresh_meta_sync",
+      "gooseworks:prepare_meta_ad_push",
+      "gooseworks:propose_meta_budget_change",
+      "gooseworks:propose_meta_creative_replacement",
+      "gooseworks:pause_meta_ad_push",
+      "gooseworks:revert_meta_ad_push",
+      "gooseworks:file_list",
+      "gooseworks:file_read",
+      "gooseworks:file_write",
+      "gooseworks:automation_upsert",
+      "gooseworks:video_read",
+      "gooseworks:video_share",
+      "gooseworks:tools_load",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search",
+      "gooseworks:brain_save",
+      "gooseworks:knowledge_search",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:automation_list"
+    ]
+  }
+}

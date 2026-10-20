@@ -3,7 +3,7 @@ name: video-production-harness
 description: Full video production sequence with script review, actual ingredient choices, controlled generation, editing, evidence-based quality review, polish, captions and delivery. A host binding supplies project storage, authentic approvals, provider access and billing.
 owner: team
 status: active
-version: "3.0.0"
+version: "3.1.0"
 level: orchestrator
 category: video
 ---
@@ -15,7 +15,7 @@ category: video
 3. **People and demos stay people and demos.** Plan a person, hands or a live demonstration in the reference as one; never plan a text card, dots or a still in its place. One that ends up on screen anyway is an `ask` finding you recommend fixing.
 4. **The script comes from write-video-ad-script.** Fetch it with catalog_fetch; never write the script inline.
 5. **Use the real product.** Its real photos, its real size and its usage steps. A still packshot gets the real photo through `overlay`. A pack held or used on screen is made with `openai/gpt-image-2/edit`, the real product photo as reference image 1, front label facing the camera. A blank, unprinted or label-less brand pack is must_fix. Every use step and product state (dry contents, cooked dish, strip on the nose) comes from a real brand photo sent as a reference.
-6. **Look real.** Phone capture, deep focus, no bokeh, a lived-in room, no retouching or beauty filter, clothes that fit the activity. Every photoreal still and every motion prompt, B-roll included, carries the one light and realism block in [libraries, look and rubric](references/libraries-look-and-rubric.md): light from a window or lamp, normal exposure, no HDR, matte skin, no over-sharpening, the first frame's light kept.
+6. **Keep the approved look.** Camera, focus, lighting, texture, setting and finishing follow the brief/reference. Phone realism belongs to phone footage; studio, cinematic, stylized and animated formats keep their own look. Preserve product truth and plausible anatomy in every format. Use [libraries, look and rubric](references/libraries-look-and-rubric.md).
 7. **Review the final against the reference,** listened or measured, never claimed. `scripts/qc_evidence.py` must exit 0 on the exact final bytes (it fails only a broken file); then mark the video complete and read the host's final check.
 8. **Two owner approvals, both in this chat:** the script and the ingredients. In `review_mode: auto` one yes to the full total covers both (see [check severity](references/check-severity.md)). Agent checks add no other approval step.
 9. **Quality warns, never blocks.** Every finding is `must_fix` (always redone, never delivered), `ask` (shown with the price of the fix; in `review_mode: auto` you decide) or `fine` (kept). Only money, consent, safety and broken files stop the run. A redo is paid from the approved total when it fits, otherwise after a new yes to its price; never drop a scene. See [check severity](references/check-severity.md).
@@ -37,6 +37,8 @@ Read `capabilities.md`, the host binding and `orchestrator.md` before starting. 
 Before planning scenes, open [the shot-routing guide](references/shot-routing.md) and the genre card it names for the brief (AI creator UGC, narrator over a montage, motion graphics, hypermotion, chat UI or product demo). Open them again when making or re-rolling a clip. Use [Creator Grammar](references/creator-grammar.md) for cuts, pacing, captions and sound.
 
 Before reference study, handoff and final review, read [creative contract and review](references/creative-contract-and-review.md). Before choosing a voice or model, or editing speaking footage, read [speech and route qualification](references/speech-and-route-qualification.md). Read [product scale and world](references/product-scale-and-world.md) when product size, use or capacity matters, and [libraries, look and rubric](references/libraries-look-and-rubric.md) for people, sound, camera, light and overlays. Read [the editorial review guide](references/editorial-review.md) before reviewing or revising a cut. Read [check severity](references/check-severity.md) before acting on any check, review note or redo.
+
+For generated people speaking to camera, read [talking-actor production](references/talking-actor.md): three new actor options when needed, playable voice auditions before selection, and a qualified speaking route. Other scenes keep their own format and sound. Show ambiguous deliverable choices briefly before paid work; report one short status line per milestone.
 
 The portable scripts give local assembly and measured evidence. `scripts/qc_evidence.py` fails only a broken final and reports every other measurement as a graded finding; its pass never approves the creative.
 
