@@ -2,7 +2,7 @@
   "slug": "make-static-ads-ad-copy",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.0",
+  "version": "0.4.2",
   "playbook": "make-static-ads",
   "tags": [
     "ads",
@@ -17,5 +17,18 @@
       "codex"
     ]
   },
-  "requires_skills": []
+  "requires_skills": [
+    "claims-gate",
+    "honest-review",
+    "make-static-ads-claims-extract",
+    "make-static-ads-compose",
+    "make-static-ads-render-review",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
 }

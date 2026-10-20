@@ -1,112 +1,129 @@
 ---
 name: make-static-ads
 description: >-
-  Use when the marketer says: I need fresh ads this week, make me ten static or image ads, ads for
-  Meta / Instagram / TikTok / LinkedIn, refresh my fatiguing ads, more like my winning ad, my image ad
-  got rejected or disapproved — fix it, ads for our sale, I have no designer, a header image or social
-  graphic in our brand style. Delivers a finished, launch-ready static ad set: genuinely different
-  angles, hooks in customers' own words, every ad a complete unit (renders per placement, primary
-  text, headline, CTA, destination), every line checked against the brand's signed-off claims and the
-  platform's ad rules before and after rendering, weak renders remade only on a yes, and a batch file
-  ready to launch from. Never invents an angle, offer, claim or review; never launches or spends ad
-  budget. Not for video ads — goose-video; not for clean product photos — goose-product-photos; not
-  for search text ads (not covered yet); not for launching — run-paid-campaigns.
-version: 0.2.1
+  Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads ("ten fresh ads this week", "make me some ads", "ads for our sale"); "my ads all look the same"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).
+version: 0.4.2
 ---
 
 # make-static-ads
 
-The engine makes images; this playbook is the creative strategist around it: read what is already running, build angles that test different reasons to buy, write hooks in the buyer's words, check claims and policy before money is spent, review every render honestly, and package a set that can be launched and traced.
+The agent runs GooseWorks' static-ad pipeline itself. It plans truly different concepts, picks a template from real ads running on Meta, composes each image prompt with the server's own composer rules, renders through `gooseworks:ads_render`, and judges every render with the server's own judge. The server only renders and saves.
+
+**One prompt.** What the marketer types in this chat is the composer's User instructions, sent unchanged. Each ad's concept travels in its own Variant brief (Step 6). The agent never writes a second prompt on top.
+
+**The template is the shape; the concept is the message.** A template decides the layout. Who the ad speaks to, why they buy and the proof come from the concept, whatever template is picked.
 
 ## What you get
 
-A **static ad set** — default ten ads (an ad = one concept: one hook, one visual idea, one copy set, in every ratio its placements need), fewer for a small test budget. Each ad: renders per placement (Meta default 4:5 + 9:16; LinkedIn 1:1), two primary texts, headline, description, CTA, destination, its angle and source, archetype, stage, and a plain-words check line (safe to say · cut and what would restore it · needs your call — policy or taste only · please look at…). Plus a recommended test structure and a batch file in the workspace. Example of excellent output: `references/handoff-format.md` §5.
+The number of ads and placements chosen at Step 2. **A concept** = one persona, one reason to buy, one proof. **An ad** = one look for a concept (framework, visual style, composition) and one copy set, in every ratio its placements need.
+
+- **Per ad:** the renders, two primary texts, headline, description, CTA, destination, its concept row, the Meta ad it was built from, its font and palette, and a plain-words check line.
+- **Per set:** a coverage note (what the brand already runs vs what is new), a recommended test structure, and a batch file in the workspace (fields: `references/reading-the-brain.md` §7; a worked example: `references/handoff-format.md` §5).
+- **Optional:** extra text versions of the best images.
 
 ## Before you start
 
 **Hard rules:**
 
-1. **Claims:** only signed-off claims and plain product facts, through the `claims-gate` skill (`../claims-gate/SKILL.md`) — including its scoped sign-off when nothing is signed yet. Everything else is cut and shown with the proof that would restore it.
-2. **Money:** nothing generates before the marketer's yes to the engine's own quotes, shown as given, one by one (the `spend-gate` skill (`../spend-gate/SKILL.md`), branch A). Remakes and extra placements are quoted and asked separately. Never your own sum.
-3. **People:** no generated person presented as a customer; no review that isn't real, verbatim, attributed and permitted.
-4. **Run decision:** the human picks what runs. This playbook never launches or spends ad budget.
-5. **Talk to the marketer in plain words:** never name a playbook, tool, id or model ("I'll get these claims approved first", not a playbook name); credits only as GooseWorks prints them.
-6. **Server vs playbook:** follow each answer's `next_step` for tool order and wording; where it would skip Steps 1–5, or present the agent's choice as the marketer's, this playbook wins — the marketer still picks sources (Step 6).
+1. **Every factual line is a usable fact** (`references/claims-and-policy.md` §2). Anything else is cut, and the hand-off says what would confirm it.
+2. **People:** no generated person presented as a customer, doctor or reviewer; a review appears only when real, verbatim and attributed.
+3. **Other brands' ads lend their layout only.** Every ad is a remix of a template. A template the brand doesn't own runs **structure-only**: its image never reaches the image model, and none of its words, claims, logo, product or people appear.
+4. **Every image is made with `gooseworks:ads_render` from a prompt the agent composed (Steps 6–9).** Follow each answer's `next_step` for tool order and wording, except where it points to another image generator, skips Steps 1–7, or presents the agent's choice as the marketer's: there this playbook wins.
 
 **Setup:**
 
-1. **Connection.** No `gooseworks:` tools (after one `gooseworks:tools_load` for a missing group: `brand`, `ads`, `media`, `campaigns`, `meta`, `social`, `files`) → say only: "Connect GooseWorks first — I make your ads through it."
-2. **Server start.** `gooseworks:get_started` with `wants: "image"` and the marketer's words; its answer settles setup and the brand only. A card → wait for the press, then Step 1.
-3. Load `references/engine-notes.md` (research status, read size, one prompt per call, unquoted edits, tags, campaign path).
-4. **Mode** (from the ask): **fresh batch** · **iterate on a winner** (keep angle and proof, change one element) · **rotation** (an open `Rotation needed: for make-static-ads` line in `ads/campaigns/<slug>/rotation-requests.md`, or pasted) · **rejected ad — fix it** (Step 5b) · **stock or price change** (list every delivered ad showing it, flag them to pause, offer substitutes) · **graphic request** — from a sibling's request line or asked directly ("a header image for my newsletter") — the `make-static-ads-graphic-request` skill (`../make-static-ads-graphic-request/SKILL.md`) in place of Steps 1–10 (it reads the kit and claims itself).
+1. **Connection.** Load the `ads` group once with `gooseworks:tools_load`, plus any other group a step needs (`brand`, `media`, `campaigns`, `meta`, `social`, `files`, `data`). Done when `gooseworks:ads_render` is listed. No `gooseworks:` tools at all → say only: "Connect GooseWorks first — I make your ads through it." Tools but no `ads_render` → say: "Image ads can't be made on this connection yet." and stop.
+2. **Server start.** `gooseworks:get_started` with `wants: "image"` and the marketer's words; its answer settles setup and the brand only. A card → wait for the press (`gooseworks:card_wait`).
+3. **Research complete.** `gooseworks:brand_read` → `research_status` must be `complete`, or every render fails after the yes. `running` → wait (`gooseworks:job_get` `kind: "brand_research"`); `none` → say the brand isn't set up yet; no website or store link → images can't be made yet, so offer the concepts, templates and copy alone.
+4. Load `references/engine-notes.md`.
+5. Pick the **mode**:
+
+| Mode | Trigger | What runs |
+|---|---|---|
+| Fresh batch | new ads | Steps 1–12 |
+| Iterate on a winner | "more like this ad" | Steps 1–12; the grid keeps the winner's reason and proof and changes one named lever per ad |
+| Rotation | an open `Rotation needed: for make-static-ads` line in `ads/campaigns/<slug>/rotation-requests.md`, or pasted | Steps 1–12, the reason taken from the request (the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`) step 7) |
+| Copy variants | "same image, different text / font" on an approved image | read the creative (`gooseworks:ads_creative_read`), then Step 11 |
+| Rejected ad | "my ad got rejected", or an open `Fix needed: for make-static-ads` line in `ads/campaigns/<slug>/rotation-requests.md` | the `make-static-ads-fix-rejected` skill (`../make-static-ads-fix-rejected/SKILL.md`) |
+| Price or stock change | a price, offer or stock change on ads already delivered | list every delivered ad that shows the old fact (batch files; creatives by `offer-ends` and product tags) and flag each to pause; offer remakes with the new fact through Steps 6–10 on a new quote |
+| Graphic request | a header, social or blog image, asked or from a sibling's `Graphic needed:` line | the `make-static-ads-graphic-request` skill (`../make-static-ads-graphic-request/SKILL.md`) |
 
 ## Steps
 
-### 1. Read the brand and the account — before asking anything
-Load `references/reading-the-brain.md`. Reads: `gooseworks:brand_read` lean (summary, kit, products, competitors, learnings; `product_ids` for the featured product); the claims sign-off marker (§1); customer words from the voice-of-customer bank (§2); the angle bank (§3); the latest weekly performance read, rotation requests and campaign record (§4); `gooseworks:meta_read` `view: "performance"`; `gooseworks:ads_creative_read` `approved_only: true` (small `limit`); `gooseworks:ads_template_read` `mode: "mine"` (own past ads — `ad_ended_at` equal to the scrape date means still running; long runs suggest winners; their copy is not a claim).
-Writes: a five-line **state note** — winners, fatigue, angles tried, the product's price and eligibility, what may be claimed. A learning applies to the format it names (a video-script rule is not an eight-word-hook rule).
+### 1. Read the brand, the brain, the account and what was made before
+Load `references/reading-the-brain.md`. Reads: `gooseworks:brand_read` lean (summary, kit, products with `product_ids`, competitors, learnings; `sections: ["organic"]` for post topics from the last six months, giveaways skipped); the brand brain (`gooseworks:brain_map`, then `gooseworks:brain_search` for this product's claims and proof, §1); customer words, the angle bank, the performance read, rotation requests and campaign record (§2–5); `gooseworks:meta_read` `view: "performance"`; the brand's own Meta ads and its past GooseWorks ads (`references/references-and-remix.md` §2a).
+Writes: a **state note** (winners, fatigue, the product's price and eligibility, the usable facts) and the **concept inventory**: each running own static in one line (reason, persona, offer, framework), plus the **made-before list** (reason, template, hook, example content shown).
+Done when every source above is read or named as missing.
 
-### 2. Fill a one-screen brief — ask only for the gaps
-Reads: the state note, campaign record. Writes: the brief.
-The brief: product (and variant), objective and funnel stage, persona, platforms and placements, destination URL, offer (terms and end date, or none), mandatories, number of ads, deadline, one-line **test question**, category (regulated? special ad category?). Ask in **one message**, only what the brain cannot settle:
-- **Load-bearing claims:** no sign-off, or fewer than three signed lines for this product → run `claims-gate`'s **scoped sign-off** here: put the 3–5 lines the likely angles would lean on (from the angle bank and value props, verbatim, with their proof) to the human and record their answer through the claims contract. Declined → a product-facts-only set, said plainly.
-- **Stock** for the flight, **price with currency**, offer terms — two sources that disagree → ask, never pick one.
-- **Budget:** a small stated ad budget → 3–4 concepts on one or two angles; write the budget into the batch file's test-structure section for run-paid-campaigns.
-- **Pre-launch:** objective (waitlist, pre-order); no ratings or store badges.
-**Imagery by company type:** physical product without usable photos → stop, tell the marketer in plain words that real product photos come first (their own, or product photos made with the goose-product-photos skill, offered as the next job), and save the brief in `ads/batches/<YYYY-MM-DD>-<slug>.md` so the set starts once they exist (`reading-the-brain.md` §7). Software or app → the kit's `screenshotUrls` (full kit) or real screenshots the marketer gives, as reference images, or text-native archetypes with `allow_without_product_image`, labelled "product not shown". Never a mascot or a generated product as the product.
+### 2. Ask the questions in one form
+Reads: the state note, the kit. Writes: the brief and the answers. Use the host's question form (`AskUserQuestion` or its equivalent; in plain chat, one numbered message). Each question has a suggested answer first, so "use your suggestions" is a full reply. Ask:
+1. **Logo:** with the brand logo / no logo.
+2. **Colours:** brand colours / the template's colours / a fresh palette (different on every ad).
+3. **Font:** the brand font (offered only when it is on Google Fonts or has a metric clone, `references/fonts-and-color.md` §1) / one of 2–3 fonts that suit the brand (§2) / no specific font.
+4. **Templates:** you pick from a gallery of real ads running on Meta / I pick and show you what I chose.
+5. **How many ads and where** — suggested: 3 ads, Meta feed 4:5. Skip it when the ask already says. This is the playbook's only default count.
 
-### 3. Build the angle grid
-Reads: the brief, `references/angles-and-hooks.md`. Writes: the grid. Run the `make-static-ads-angle-grid` skill (`../make-static-ads-angle-grid/SKILL.md`): 3–5 angles (fewer when the budget, the mode or the signed claims say so — say why), each "they buy because…" with its source (`A-NN`, voice-of-customer row ids, a signed claim, a current winner, the marketer's words). Fewer than three grounded → say so and offer research first, the marketer's own reasons, or a smaller set. One variable per cell.
+Also ask, only when it applies: a claim the concepts need that is not a usable fact ("can the ads say this?" — a yes is saved in the marketer's words through the `save-learning` skill (`../save-learning/SKILL.md`)); a sale price or offer on the product record ("show the $60 price?"); two sources that disagree on price or stock.
+A physical product with no usable photos → stop: real product photos come first. Ask the marketer for them, or offer the **goose-product-photos** skill to make product shots first. Software → the kit's screenshots or real ones the marketer gives.
+Done when every question has an answer.
 
-### 4. Write the copy, in the customers' words
-Reads: grid, voice, banned words, voice-of-customer rows. Writes: a copy row per ad. Run the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`): on-image hook (≤ 8 words), optional proof line, two primary texts, headline, description, CTA, destination, and the **prompt fence** (exact on-image words in quotes; no other text, badges, ratings, seals, prices or logos). Customer words carry the pain; signed claims carry the benefit. A brand voice built on "your skin / your breakouts" trips Meta's personal-attribute rule — rewrite to situation framing.
+### 3. Build the concept grid
+Load `references/creative-taxonomy.md`. Reads: the brief, the concept inventory. Writes: the grid. Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). Done when every concept passed the concept gate and no two ads share reason + framework + style.
 
-### 5. Check claims and policy — before any money is spent
-Reads: `references/claims-and-policy.md`. Writes: check results and the cut list. the `make-static-ads-claims-extract` skill (`../make-static-ads-claims-extract/SKILL.md`) pulls every claim-bearing span from the planned lines, the prompt fence and what the planned visual implies (Pass A); the `claims-gate` skill (`../claims-gate/SKILL.md`) keeps, rewrites or cuts each; the `ad-policy-check` skill (`../ad-policy-check/SKILL.md`) checks the platform and category rules.
-**5b. Rejected ad — fix it** (this playbook owns the fix for image ads; the ads team only detects rejections; a rejected video ad is the video job — say so): (1) read the open `Fix needed: for make-static-ads` line and the health line of `ads/campaigns/<slug>/state.md`; otherwise ask for the ad (screenshot, copy or link) and the platform's exact reason; (2) find it (`ads_creative_read` by tag, or `ads_template_read` `mode: "mine"`); (3) map the reason to the line or element; (4) copy-only → deliver rewritten copy, free; image text → a quoted remix (Step 7); nothing actually violates → say so and suggest a review request in the ad platform; (5) re-run both checks; write the fixed copy or creative into the ad's batch file (the launch copies it verbatim) and answer `Fix ready:` under the request line; offer to save the lesson as a brand rule (the `save-learning` skill, `../save-learning/SKILL.md`). The human edits and resubmits in their ads manager. Steps 3–4 do not run.
+### 4. Show templates from the Meta Ad Library; the marketer picks
+Reads: the grid, the Step 2 answers. Writes: the gallery and one template per ad. Run the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`). Done when every ad has a registered template that the marketer picked (or the agent picked and showed), its concept unchanged, and structure-only yes/no recorded.
 
-### 6. Propose sources — the marketer picks
-Reads: `references/formats-and-placements.md`. Writes: a source per concept. Search `gooseworks:ads_template_read` `mode: "static_library"` (angle + archetype + look), `"mine"`, `"competitor"` (structure only — never their words, claims, logo or people), `"community"`, or the winner's creative for iterate mode. **Read each candidate's detail** (`template_id`): reject one whose `remix_spec` needs content you do not have or would import claims (a testimonial, a stat, a badge); a weak match (similarity below about 0.45) means "no template for this archetype" — say so. Show two or three options per concept with their preview images, mark one suggestion, and let the marketer swap. Product photos and screenshots go in as `reference_image_urls`; the engine **redraws** the frame, so UI and labels must pass the letter-by-letter check in Step 9.
+### 5. Write the copy around the image
+Reads: the grid, voice, customer words. Writes: a copy row per ad. Run the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`): primary texts, headline, description, CTA, destination, and the hook direction for the Variant brief. The on-image words are the composer's (Step 6). Done when every ad has a copy row.
 
-### 7. Show the plan and the quotes — the spend gate
-Reads: copy rows, check results, chosen sources. Writes: the plan table (ad #, angle, archetype, source, hook, safe-to-say status, ratios), cuts, flags, test question.
-- **No approved campaign for this ask:** one `gooseworks:ads_generate` `dry_run: true` per concept (`product_name`, the prompt fence as `prompt`). For exploratory tests offer a lower `quality`. Show each quote as returned, one by one; ask "Go ahead with these quotes?" Say that remakes are quoted and asked separately.
-- **An approved campaign for this ask exists** (its brief's Status line says "Approved" and names this product and moment): write the grid into its concepts (`gooseworks:update_campaign_concept` / `gooseworks:add_campaign_concept`: person, message, chosen `template_ids`, `ratios`, and `proof` = a signed claim the server accepts, else a plain product fact — never empty, because a concept without proof does not generate), then `gooseworks:request_campaign_generation` with those `concept_ids` and `count` = the number asked. Read the composed plans (`ads_creative_read` `view: "approvals"`, `batch_id`), run Pass A on each composed prompt, fix with `gooseworks:ads_approval_decide` `revise` / `edit_plan`, then show the `credits` as given.
-Wait for the marketer's explicit yes.
+### 6. Compose every ad as the server does
+Reads: the grid, copy rows, templates, Step 2 answers. Writes: per ad and ratio, the final prompt and ordered image list. Run the `make-static-ads-compose` skill (`../make-static-ads-compose/SKILL.md`). Done when every ad × ratio passes the placeholder check (`references/composer.md` §7) and no `image_urls` holds another brand's template image.
 
-### 8. Generate
-Reads: the quoted calls and the yes. Writes: jobs, creatives. Submit each call as quoted (or `ads_approval_decide` `approve` with their words as `user_quote`). Poll each `gooseworks:job_get` (`kind: "ads_batch"`) until nothing is pending; a failed job is reported, never resubmitted silently.
+### 7. Check claims and policy before any money is spent
+Reads: copy rows, composed prompts. Writes: check results and the cut list. Run Pass A of the `make-static-ads-claims-extract` skill (`../make-static-ads-claims-extract/SKILL.md`) and the `ad-policy-check` skill (`../ad-policy-check/SKILL.md`). A cut on-image line → re-compose that ad (Step 6) and check it again. Done when every span is a usable fact or cut, and every ad has a claims line and a policy line.
 
-### 9. Review every render; remake only on a yes
-Reads: renders (`ads_creative_read` `creative_id`, `include: ["renders","plan"]`), `references/review-rubric.md`. Writes: verdicts, feedback. Run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`), which follows the `honest-review` skill (`../honest-review/SKILL.md`): by eye where possible, Pass B of the claims check on what was drawn (invented "#1", stars, seals, prices, garbled words), the rubric for its archetype; a failing render → a quoted remix on a yes, two tries; unseen renders labelled with a checklist.
+### 8. Show the plan and the quotes
+Reads: composed ads, check results. Writes: the plan table (`references/handoff-format.md` §3). One `gooseworks:ads_render` `dry_run: true` per ad and ratio (`composer.md` §10–11). Show each quote as returned and say: "If an image fails my check I redo it once, at the same price." Ask "Go ahead with these quotes?" Done when the marketer says yes.
 
-### 10. Package and hand over
-Reads: `references/handoff-format.md`; the product record again (price, offer, eligibility — anything changed is fixed or flagged). Writes: lower-case tags on every creative (read, merge, write once); the batch file `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`) with **the full per-ad copy** the launch uses (`reading-the-brain.md` §7); a `Rotation ready:` answer under a served rotation request; the hand-off in chat in plain words — set table, cuts, flags, recommended test structure, what to look at yourself, each creative's link. Ask which to run.
+### 9. Generate
+Submit each call exactly as quoted. Poll `gooseworks:job_get` (`kind: "ads_batch"`) until every `pending` is 0. Report a failed job; resubmit only on a new quote and yes. Done when every job is complete or reported.
+
+### 10. Judge every render; retry the server's way
+Reads: each render, its compose record. Writes: verdicts, retries, the drop list. Run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): the **blind judge** on every render, one retry inside the yes, then the playbook's checks and the set-diversity check. Done when every render is passed, flagged `needs_review`, or dropped with its reason.
+
+### 11. Copy variants — offered
+For the one or two images the marketer likes most, offer the `make-static-ads-copy-variants` skill (`../make-static-ads-copy-variants/SKILL.md`): the same picture with other hooks or another font. They test copy, not concepts; each paid step gets its own yes.
+
+### 12. Package and hand over
+Load `references/handoff-format.md`; re-read the product record. Writes: lower-case tags on every creative (`gooseworks:ads_creative_update`, read-merge-write); the batch file `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`); a `Rotation ready:` answer under a served rotation request; the hand-off in chat in plain words, with each creative's link. Ask which to run. Offer a standing weekly refresh only when spend is steady and creative is fatiguing, created paused with `gooseworks:automation_upsert` (the `spend-gate` skill (`../spend-gate/SKILL.md`), automation rule).
 
 ## Approval gates
 
-1. **Spend** — the yes to the engine's quotes as given; every remake, resize or extra placement asked separately.
-2. **Claims** — any line not covered by the signed-off claims or a plain product fact is cut before the set is shown and listed with the proof that would restore it. Approving a claim is the human's call through the claims gate's scoped sign-off (the `claims-gate` skill) — no exceptions.
-3. **The run decision** — record a pick only on the human's words: feedback `rating: "happy"` on the chosen render of each picked creative, `picked` added to its merged tags, and the pick written in the batch file. Brand-fit vetoes are theirs.
+1. **Spend** — nothing renders before the marketer's yes to the quotes as GooseWorks gives them (the `spend-gate` skill (`../spend-gate/SKILL.md`), branch A), never your own sum. That yes covers one retry per image at the same price, said up front. Paid ad-library reads: branch B, one yes to a ceiling. Layer splits and copy variants: each its own yes.
+2. **Questions and templates** — the Step 2 form is answered before any quote; the marketer picks from the gallery or sees the agent's picks.
+3. **Claims** — every cut line is listed with what would confirm it. A claim the marketer confirms in this chat is saved in their words as a learning before it is used.
+4. **The run decision** — the human picks what runs; this playbook never launches or spends ad budget. Record a pick only on the human's words: feedback `rating: "happy"` on the chosen render, `picked` in its tags, and the pick in the batch file.
 
 ## Output and write-back
 
-- Tagged creatives in GooseWorks; the batch file in the workspace; the hand-off in chat.
-- Render feedback (`gooseworks:ads_creative_update`): negative ratings and reason codes only for engine faults; strategy notes in the comment.
-- **Brand learnings** only through the `save-learning` skill (`../save-learning/SKILL.md`) — the human's own words, one idea per learning, own superseded ones retired, text starting `[ads YYYY-MM-DD]` (disapproval lessons, template lessons, taste rules the marketer states). Reasons to buy the founder states stay in the batch file and the angle record. Claims are never written here.
+- Tagged creatives in GooseWorks, registered templates, the batch file in the workspace, the hand-off in chat.
+- Judge results go in the batch file and the creative's tags (`references/judge.md` §8). Render `feedback` carries only the marketer's own ratings and words, because it trains the brand's learned rules.
+- **Brand learnings** only through the `save-learning` skill (`../save-learning/SKILL.md`): the human's own words, one idea per learning, own superseded ones retired, text starting `[ads YYYY-MM-DD]` (disapproval lessons, template lessons, look rules the marketer states — "no lo-fi", "always our serif"). Reasons to buy the founder states go in the batch file and the angle record. A claim is saved only as gate 3 says.
 
 ## Done when
 
-- **Fresh batch:** the human would put money behind at least half; at least three distinct angles (fewer only when budget or signed claims justify it, said plainly) and as many archetypes as the library and inputs allow, unavailable ones named.
-- **Iterate / rotation:** the set changes one named variable per ad from the winner — the hook or execution, or, when the request says the angle is exhausted, the angle itself.
-- **Disapproval fix:** the violating line or element is gone and both checks pass.
-- **Always:** no line — including text drawn inside an image — outside the signed claims and plain product facts; every ad a complete unit, tagged, in the batch file.
+- **Fresh batch:** every concept passed the concept gate; no two ads share reason + framework + style, and with the text covered no two look alike; at least one concept the brand has not run before; every ad is built on a template the marketer saw or the agent picked and showed; the picks are recorded.
+- **Every ad:** composed with the marketer's words as the only User instructions; judged blind; at most one retry; passed, flagged or dropped with its reason; every line, including text drawn in the image, a usable fact; tagged and in the batch file.
+- **Iterate / rotation:** one named lever changed per ad from the winner; rotation answered under its request.
+- **Copy variants:** same picture, only the words or font changed, each line through the claims check.
+- **Rejected ad:** the violating line or element is gone, both checks pass, and `Fix ready:` is answered.
+- **Price or stock change:** every affected ad is listed with a pause flag; remakes only on a yes.
 
 ## Out of scope
 
 - Launching, audiences, budgets, kill/scale, scanning the account for rejections — **run-paid-campaigns** (this playbook recommends a test structure and fixes rejected image ads).
 - Search text ads (Google / Bing RSA headlines, keywords) — not covered yet.
 - Which ad won — **analyze-performance**. Video ads — **goose-video**. Product photography — **goose-product-photos** (GooseWorks skills, not playbooks).
-- Finding angles and competitor ads — **research-competitors**; customer language — **research-market**.
+- A full competitor teardown and the angle bank — **research-competitors** (this playbook reads live ads only to find templates and reasons to buy); customer language — **research-market**.
 - Landing pages — analyze-performance's page audit (this playbook flags a destination that does not match).
-- Approving claims — the claims gate's scoped sign-off, inside this job (Hard rule 1); a full claims audit is not covered yet. Retail-media creative for marketplaces; decks, print, packaging, multi-page layouts.
+- Approving claims in bulk — not covered yet; the lines this batch needs go through the **claims-gate** skill. Retail-media creative for marketplaces; decks, print, packaging, multi-page layouts.
