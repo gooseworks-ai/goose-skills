@@ -48,4 +48,4 @@ engines: chatgpt-search, google-organic, google-aio, google-ai-mode[, perplexity
 runs·route: chatgpt 1 (key questions 3) browser | 2 pasted · aio 1 | 1 pasted · ai-mode 1 | 1 pasted · organic 1 lookup (paid top-up only)
 | id | AI form | Google form | stage | value | winnable | key question | why |
 ```
-Changing the set bumps the version; diffs compare only questions present in both versions.
+Changing the set bumps the version; diffs compare only questions present in both versions with the same id (a reworded question gets a new id; the old one stays as `retired (reworded → Q<n>)`). Edits the human makes after the first message apply from the next questions asked, and the run record names the version actually asked.

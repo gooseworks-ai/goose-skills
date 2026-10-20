@@ -35,7 +35,8 @@
     "weekly watch notes: workspace research/competitors/watch/<date>.md (keep-history; line 2 'Week of …') — read by the founder, analyze-performance",
     "new rivals on the roster via competitor_save, on the founder's yes",
     "rules for top angles through the save-learning shared atom, on the founder's words",
-    "scheduled watch (opt-in, created paused) via automation_upsert; method file research/competitors/method/watch.md"
+    "scheduled watch (opt-in, created paused) via automation_upsert; method file research/competitors/method/watch.md",
+    "run records: workspace runs/research-competitors/<job-slug>/<date>.md + brand document (keep-history) through the run-memory shared atom — read by this playbook's next run"
   ],
   "needs": {
     "mcp": [
@@ -63,7 +64,10 @@
       "gooseworks:media_analyze",
       "gooseworks:file_url",
       "gooseworks:tools_load",
-      "gooseworks:brand_setup"
+      "gooseworks:brand_setup",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
     ]
   },
   "atoms": [
@@ -77,6 +81,7 @@
     "save-to-brain",
     "save-learning",
     "spend-gate",
-    "ad-policy-check"
+    "ad-policy-check",
+    "run-memory"
   ]
 }

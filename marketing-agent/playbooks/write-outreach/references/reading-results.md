@@ -4,15 +4,15 @@ Load in results mode. The marketer pastes their tool's numbers and the replies (
 
 ## What to ask for (once, all optional)
 
-Sends, replies and bounces per touch and per segment (or per variant), unsubscribes, meetings booked, the reply texts, and **when each person got touch 1** (so the ledger can mark them `contacted` with `sequence_id` and `last_touch`, which starts the 12-week cool-down). Opens are **not** used: Apple Mail and others pre-load images, so open rates are inflated and unreliable; judge on replies and meetings.
+Sends, replies and bounces per touch and per segment (or per variant), unsubscribes, meetings booked, the reply texts, and **the sending tool's sent list or export** with when each person got touch 1 (so the ledger can mark them `contacted` with `first_touch_date` and `last_touch` — `sequence_id` was set at delivery — which anchors the rates and starts the 12-week cool-down). Opens are **not** used: Apple Mail and others pre-load images, so open rates are inflated and unreliable; judge on replies and meetings.
 
 ## The numbers
 
 - **Reply rate per touch** = replies to that touch ÷ people who got it and hadn't replied yet. Touches 2–4 should bring a real share of replies (roughly a third); if touch 1 brings nearly all of them, the follow-ups add nothing — shorten or change them.
-- **Positive rate** = interested + meetings ÷ people contacted.
+- **Positive rate** = distinct rows where `reply_category` is `interested` **or** `status` is `meeting` ÷ people contacted — an interested reply that books a meeting is one positive, not two. **Meetings** are reported separately, as a subset of the positives.
 - **Bounce rate** per send (hard bounces): over 2% → stop and clean the list; aim under 1%.
 - **Unsubscribe and complaint rate:** complaints over 0.3% is the line inbox providers act on; aim under 0.1%.
-- **Sample size, said every time — judge on replies, not sends:** under ~10 positive replies per group or variant → directional only; under 50 sent → no read at all. Never kill a variant before about 100 sends. (The ledger's lessons use the same rule: replies, not sends.)
+- **Sample size, said every time — judge on replies, not sends:** under 50 contacted in a group → counts and what to watch only, no rates judged; 50+ but under ~10 positive replies per group or variant → directional only. Never kill a variant before about 100 sends. (The ledger's lessons use the same rule: replies, not sends.)
 - Under the sample-size line, the table below still names **what to watch**, but nothing is changed for good: one angry reply suppresses one person; a cluster of "not relevant" in 20 replies is a hint to check targeting, said as a hint.
 - Rough ranges to sanity-check against (outbound rules of thumb, not this brand's): cold B2B replies often land around 1–5%, positive replies around 0.5–2%; warm lists much higher. The brand's own past lessons replace these once they exist.
 
@@ -28,7 +28,7 @@ Sort every reply with reply-reader into the categories in replies-and-objections
 | What you see | Fix |
 |---|---|
 | Many `not-interested` saying "not relevant" (over ~20% of replies) | Targeting: tighten the fit definition (research-audience), add the pattern to the negative fit |
-| Many `wrong-person` | Titles: switch to the roles people referred you to; each unnamed referral ("talk to our CTO") becomes a request line in `results.md` — `Find needed: for research-audience · <role> at <account> · return to: outreach/<D>-<slug>/results.md` — never a guessed person |
+| Many `wrong-person` | Titles: switch to the roles people referred you to; each unnamed referral ("talk to our CTO") becomes a request line in `results-working.md` — `Find needed: for research-audience · <role> at <account> · return to: outreach/<D>-<slug>/results-working.md` — never a guessed person |
 | Many `using-rival` | Angle: lead with the difference that matters; or move these accounts to a rival-customer segment |
 | Many `timing` | Timing: re-contact at the dates given; weight signals that are fresher |
 | Replies fine on one segment, flat on another | Shift volume to the working segment; rewrite or drop the other |
@@ -42,7 +42,7 @@ Sort every reply with reply-reader into the categories in replies-and-objections
 
 ## When to read
 
-After about 100 sends or two weeks, whichever comes first; again at about four weeks. Each read updates the ledger (statuses from what the marketer reported) and writes lessons through outcomes-ledger, with sample sizes; a rule the marketer states becomes an `[outreach …]` learning.
+After about 100 sends or two weeks, whichever comes first; again at about four weeks. Each read updates the ledger (statuses from what the marketer reported) and writes lessons through outcomes-ledger, with sample sizes; a rule the marketer states becomes an `[outreach-copy …]` learning.
 
 ## The read, through write-report
 

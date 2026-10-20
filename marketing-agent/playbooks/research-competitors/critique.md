@@ -351,3 +351,48 @@ Sources as in research-market's Round 6. Old skills were read as reference only.
 | Battlecard (battlecard-generator Phase 3) | **Seeded, not built** | BACKLOG seed note on card #7, as agreed: the surface stays frozen. |
 | Objection map | **Not ported here** | Belongs to research-audience (review gap #6). research-competitors' "where we win, where we lose" stays its competitive half. |
 | Apify topic tracking, BuiltWith scraping, review scrapers | **Rejected** | Vendor keys or scraping vendor sites, against the free-pass rules. Methods are kept where they work on public pages. |
+
+
+## Round 18 — run memory and the Brand Brain (2026-10-19)
+
+**Wired in.**
+- `brain_map` comes first when `brain_*` tools are listed, with the fallback kept.
+- A new Before-you-start step 3 runs run-memory Start.
+- Step 7 saves the run record before the closing message; step 9 (watch and react) opens with what changed against the stored numbers.
+- New `references/run-memory.md`:
+  - jobs: `competitor research` (quarterly or on ask) and `competitor watch` (weekly);
+  - the numbers per rival and for us: active ads per library, longest-running ad, entry and typical-buyer price, launches in 90 days, reviews, open roles, our rank for "<rival> alternative", AI answers;
+  - rival snapshots stay the source of truth;
+  - tests and outcome sources;
+  - the founder's answers;
+  - scheduled rules.
+- Meta updated.
+
+**Critique (subagent, high effort): scheduled weekly watch with nobody present (4th watch, two open recommendations, one rival price rise) and a first run with no history.** Fixed:
+- **The what-changed report had no Decisions for you, What to do or What we're not doing**, though unknowns and recommendations were routed there. All three added, and "Since <last run>" sits in "In short" after "Do this first".
+- **Quiet-week questions had nowhere to go.** Now `to ask` in the record, asked in the next report or the next run with the founder present.
+- **Watch and teardown were separate record chains.** Every job now reads the newest record of either job.
+- **A recommendation not yet due** was forced into `not done` or `unknown`, which triggered a pointless question. Now it is carried as "not due until <date>" and never asked.
+- **The comparison page had no URL and the blog post had no source.** The planned title or slug is stored, and the check reads the brand's sitemap and blog feed (added to the prompt's sources).
+- **The copied method files pointed at files the server-side run doesn't have.** The setup now also copies `rival-craft.md` (news queries, price-change severity, Wayback), the category prompts from the last report, and the shared atoms under `method/shared/`, with a note on how their links map.
+- **An older report with no run record** gives "first tracked run; last report <date>", with its baselines and moves carried over.
+- **Founder decisions were lost** because the save came after the closing message. Reordered, and a same-day re-save records later answers.
+- **Prompt fixes:**
+  - rivals come from the last record's Numbers rows, not every file in the folder;
+  - rival-record re-imports carry `rival:<slug>` tags so old copies get cleaned;
+  - a partial snapshot read keeps the fields it didn't re-read, with their last-read date;
+  - a price shown during an import → skip that import and say so;
+  - brand name and scope are in the prompt, and every file is read with `file_read`;
+  - react-now in a scheduled run goes into "Act now" only, with no questions.
+- **Line 2 of the watch report differed between two files.** It's now defined once (in watch-and-react), and report-format points there.
+- **rival-pass's snapshot lacked the review rating and site.** Added, so its numbers match the run record's.
+
+**Flagged to the orchestrator, not edited here** (shared run-memory atom and AGENTS, owned elsewhere):
+- the atom has no `open` status for a recommendation not due yet — handled here as `unknown — not due until <date>`, never asked;
+- "asked on" exists only in the Outcomes table, not in Recommendations, so a carried question's date gets lost;
+- `daily` is missing from the cadence list (handled here as "old after 3 days");
+- open questions are routed to "the report's Decisions for you" even on quiet scheduled runs that send no report (handled here as `to ask` in the record);
+- AGENTS §8 Schedules says every scheduled run produces a report, which contradicts silent watches;
+- the atom's saved-line wording "so next week starts from here" is wrong for quarterly and ad hoc jobs.
+
+- **19 Oct, Codex review 2 of the run-memory PR:** not-yet-due recommendations now use the shared atom's `open` status instead of `unknown`, so they never reach "Decisions for you" before their review date.

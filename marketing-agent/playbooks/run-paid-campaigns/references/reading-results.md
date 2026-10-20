@@ -20,7 +20,7 @@ Very low volume (a handful of qualified leads a month): make the monthly call at
 
 ## Getting windows from the tools
 
-`meta_read view: performance` returns trailing totals, not daily series. Call it with `days: 14` and `days: 3` and subtract to get the matured 11-day window; call `days: 7` / `14` / `28` to approximate a trend. Trends from these are approximate — say so.
+`meta_read view: performance` returns trailing totals, not daily series. Call it with `days: 14` and `days: 3` and subtract to get the matured 11-day window; call `days: 7` / `14` / `28` to approximate a trend. Trends from these are approximate — say so. Subtract counts (spend, results, clicks), never ratios; recompute cost per result from the subtracted counts. A past money move is read with its stored baseline recipe and two windows pulled the same way today (`run-memory.md`), never against last week's recorded numbers alone.
 
 ## Before any number is used
 

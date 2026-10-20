@@ -264,3 +264,44 @@ Old skills read as reference only (skills/seo: site-content-catalog, programmati
 Also fixed while here: server-needs step numbers still pointed at the pre-research-pattern 11-step flow; one stale "must-win" left in server-needs §2.
 
 Not re-run (per orchestrator: no evals or re-runs this round).
+
+## Round 11 — run memory and the Brand Brain (19 Oct), critic on a second monthly run (effort high)
+
+**Wired.**
+- New `references/run-memory.md`: job `search visibility check` (monthly).
+  - A per-question snapshot is the baseline.
+  - Comparisons are like with like, with a noise rule.
+  - The five fixes are recommendations, checked for "did it go live" from the live page, sitemap or profile, and "what moved after it".
+  - Has a scheduled-run section and a self-contained automation prompt.
+- SKILL: brain_map first (core, required reads, chapters 2/5/7/8/9/17), with the brand_read fallback kept. Run-memory Start and End. "Since last time" opens the first message and the report's story; the template has a new section.
+- citation-check reads the baseline; meta and server-needs §2 (chapter 8 has no `brain_save` target) updated.
+
+**Critic scenario.** 18 Sep first run, then two 19 Oct variants: (A) a host with a browser, homepage title changed, comparison page drafted but not live, one question reworded and two added; (B) a scheduled server run with no browser. It found 9 major and 10 minor problems.
+
+| Finding | Verdict | Fix |
+|---|---|---|
+| A scheduled run with no browser loses the ChatGPT baseline: the newest record "with Numbers" has only web-search numbers | **Agree (major)** | The baseline is per cell: the newest record where that cell was checked the same way. Not-checked cells carry `last: <value, date>` |
+| Review-by needs a ship date nobody knows; the first record would fix a date too early | **Agree (major)** | Relative timings (`4 weeks after live`, `8 weeks after live`); the run that first sees it live records `live: first seen <date>` and fixes the date from then |
+| Multi-part fixes (title + opening; Search Console + Bing + AI-referral) marked done when one part shipped | **Agree (major)** | `done` only when every part is shown, else `not done (partly: …)` |
+| Carried open fixes plus five new ones means about 10 moves, or re-issued ids | **Agree (major)** | Still-open fixes come first in this run's five with their ids ("still open from <date>"); new ones fill the rest; anything else is parked on the roadmap |
+| A reworded question keeps its id, so different wordings get compared | **Agree (major)** | A rewording gets a new id and the old one is retired; the record names the set version actually asked (question-set atom, question-list) |
+| Totals of single tries ("3 of 8, was 0 of 8") read as movement, and the In short example implied cause | **Agree (major)** | Totals only over questions asked both times, with the count stated; "moved" only when a key question passes 2-of-3 or a second check agrees; template examples rewritten without causal wording |
+| The scheduled prompt leaves out brand and workspace, titles and saves, review timings, banned wording, `asked on`, the no-learnings rule, Not run, the per-cell baseline | **Agree (major)** | Prompt section rewritten to cover each |
+| Since-last-time due at Start, before today's answers exist | **Agree (major)** | Atom steps 1–2 before the free pass, steps 3–4 after it, from its answers; no double asking |
+| First message (with since-last-time) vs "at most three lines" in chat | **Agree (major)** | Step 2's message is the first-turn output; the three-line rule applies to later re-deliveries; the atom's "saved notes" line folds into the link line |
+| Record size with a method in every cell | Agree | The method is stated once in the record header; cells say only what differs |
+| Measurement check ignored free evidence | Agree | Verification and analytics tags in the page source are partial evidence, never proof |
+| Script-built markup gives a false "not done" | Agree | Missing in raw HTML on a script-built site with no rendered check → `unknown` |
+| A list request's review date isn't a date | Agree | The next scheduled or expected check |
+| Run-memory words leaking into the report | Agree | Template bans "baseline", "route", "snapshot", "recipe", "noise rule", "review by", "cell", "derived", "claimed" and recommendation ids |
+| An experiment readout needs a truth/claimed label; search verdicts are derived | Agree | Search saves no experiment readout |
+| meta missing `file_url`; review-request section named two ways | Agree | Added; one name: "For your email program — review requests" |
+| question-set description still said "gets the human's yes" | Agree | Now "shows it for edits after the first answer" |
+| The Search Console window ran past the review date | Agree | 28 days before vs 28 after, read once settled (about 31 days) |
+| The record was saved before the files it links | Agree | Saved after `questions.md` and `fixes/` |
+| The list author's name could enter the record | Agree | Publication and list only |
+| Shared files: write-report bans "GPT" (matches ChatGPT); the AGENTS claims bullets sit under "Run memory"; AGENTS line 179 "v<N>" reads as if it applies to run records; the atom's "next week starts from here" is wrong for monthly jobs; a brain-only record can't be read in full on production | **Agree, not mine to edit** | Passed to the orchestrator in the shared notes folder |
+
+**Pushback (§2b).** "Each monthly run compares question-by-question citations" can't hold on a scheduled server run today: it has no browser, so it can't ask ChatGPT or Google's AI. The run checks every fix's ship status, web search, news and sitemaps free. It marks the AI answers "not checked" with the last value carried, and offers the paste set or a check together. The real fix is the goose-aeo engine on the server (server-needs §1).
+
+Not re-run (per orchestrator: no evals).

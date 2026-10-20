@@ -120,3 +120,48 @@ Verdict after fixes: no MAJOR open in plan-campaign, run-paid-campaigns or analy
 2026-10-16 final contract check: references/moves.md: the `Rotation ready:` answer now carries the maker's hand-off file, as make-static-ads and make-video-ads write it.
 2026-10-16 final contract check: references/reading-results.md: plan-campaign unit-economics link made resolvable (`../../plan-campaign/references/unit-economics.md`).
 2026-10-16 final contract check: skill.meta.json `atoms` now lists only this folder's atoms; `spend-gate` moved to `shared_atoms`.
+
+## Round 8 — run memory and the Brand Brain (2026-10-19)
+
+Ask (orchestrator, for Akhil): wire `atoms/run-memory` in, read `brain_map` first where the brain tools are listed (fallback kept), and keep the money-move results flowing run to run. Checked on staging first: `brain_map` on Personal Day (23 chapters; chapter 20 holds only onboarding answers so far; operating-plan sections as listed in `brain_save`).
+
+What changed:
+- `references/run-memory.md` (new): job `weekly ads check`, subject = campaign slug, ids = the harness `R<n>` (never a second id). The **outcome check replaces "score last week"**: done from a source (approved ≠ applied), then worked / didn't work / too early (readable date) / can't tell (why). The **baseline recipe** is stored with every money move: object, ad ids and Goose share, metric (extra results per day, cost per extra result vs the allowable), pre/post windows (7 or 14 days by volume; learning skip after a 30%+ step; 72-hour settle), attribution, how to pull, control, readable-from date. **Per-ad scorecard** (top 10 + all others, settled window, return only truth or labelled claimed, vs last run, verdict) and **money-move table** in every record. Freeze an ad set until its move is read.
+- `proposal-and-log.md`: "Since last time" opens the proposal; the four verdicts defined; final verdicts appended to `decisions.md`; § The yardstick in the brain — chapter 20 `target_cpa` / `target_roas` and the operating plan (daily cap, protected entities, **emergency stop → pauses and fixes only**) read first, changes proposed for the marketer's yes (targets via save-learning's fact path; a stated daily cap via `brain_save` operating_plan), never from a scheduled run.
+- SKILL.md: brain-first read; Load the last run; step 2 is the outcome check; step 4 writes the recipe; step 10 saves the run; proposal file saved every run (`ads/campaigns/<slug>/proposals/`). Atoms, moves.md (freeze, failure mode 18), reading-results (subtract counts, never ratios), skill.meta.json, server-needs #11, #26–29, Test 8.
+
+**Adversarial critique (subagent, effort high):** a scheduled weekly run of run-paid-campaigns with nobody present checks last week's 40% raise; analyze-performance then reads the outcome; 26 Oct and 2 Nov follow. Verdict before fixes: MAJOR REMAINING 9 (6 here and in run-paid, 3 in analyze), plus 3 in the shared run-memory atom (sent to its owner).
+
+| # | Finding | Fix |
+|---|---|---|
+| 4 MAJOR | Freeze vs "rotate before decay" contradicted; a fatigue call the day after a 40% raise. | Fatigue in a frozen ad set → hold with a click-rate trip-wire; a trip overrides the freeze and declares the earlier move `can't tell`; no fatigue call in the week after a 30%+ step (run-memory.md, moves.md, draft-moves). |
+| 5 MAJOR | Recipe's "every ad id in the ad set" had no source (`meta_read` sees Goose ads only), so the brand's own ad would be missed. | Ad list from the marketer's export or words at staging; unknown → "mixed", export required. |
+| 6 MAJOR | Fallback used the approval date as the post-window start; claimed `change_status` returns an applied date (unconfirmed). | Applied date from a source showing the change; else assume approval + 1, skip one more day, label "applied date assumed"; recompute review-by once known (server-needs #27). |
+| 8 MAJOR | "An export that never came" → `Not run`, so every scheduled run would be Not run. | Not run only for a stale sync or missing connection; a missing export is a no-export run with Numbers and coverage. |
+| 9 MAJOR | The server deletes an approved move's bullet and a mid-week record could drop R5, losing its recipe. | Every unclosed money move is copied with its full recipe into every record until a final verdict. |
+| 1 (atom) MAJOR, mitigated here | A `readout to save` and an ask from a scheduled run had no return path. | The paid record carries the readout (field, value, request key) and asks with owner `marketer`; analyze-performance's Monday read, with the marketer present, asks them and saves the readout; answers land in `reports/performance/inputs/`. Atom fix requested from the owner. |
+| 12 MINOR | A `too early` appended a block and could delete the check line. | Only final verdicts append; `too early` moves the check date. |
+| 13 MINOR | Example raised a founder ad set by approval link, and reused `41c…`. | R5 is now a card the human applied; ids unique. |
+| 14 MINOR | Dates (21 Oct a Wednesday) and only the 7-day case. | Readable-from example gives both 7- and 14-day cases and the Monday run that reads each. |
+| 15 MINOR | Low-spend ads can drop from one of the two trailing reads. | Every stored ad id must be in both reads, else `can't tell`. |
+
+**Pushed back — finding 7** (`evidence` should be `report:<id>`, not `report:<YYYY-MM-DD>`): the Round 6 contract check read the server's harness code and found `report:<YYYY-MM-DD>`; the tool description says `<id>`. Not changed on one reviewer's reading; logged as server-needs #29 to confirm.
+**Not fixed (pre-existing example hygiene):** the proposal example still says "week of 13 Oct" (a Tuesday in 2026); harmless to the logic.
+Status: all majors in this playbook fixed; not re-reviewed by a second critic (no evals, as asked).
+
+## Round 9 — Codex review of PR #322 (2026-10-20)
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 MAJOR | `references/run-memory.md` assumed applied = approval + 1 day when only the approval date was known, against run-memory's source-only rule; both windows could shift into a false verdict. (Round 8's fix 6 introduced it.) | Without a sourced time for when the budget changed: `can't tell (applied date unknown)`, ask for Meta's change history or a by-day export, carry the move; windows are never built from an assumed date. server-needs #27 and Test 8 updated. |
+| 2 MAJOR | The weekly schedule pointed the server's worker at skill files it doesn't have. | `references/run-memory.md` § Setting up the schedule: method copied to `ads/method/` (SKILL, references, atoms, shared atoms, versioned), automation created paused with a self-contained prompt: paths, reads and writes, approval gates, the spending rule, caps and emergency stop, and "never pause, apply, publish, launch or accept; stage proposals only". SKILL Output line and skill.meta.json updated. |
+| 3 | Direct `brain_save` operating-plan write. | Now allowed by AGENTS §8 (20 Oct ruling) for the owning playbook; the text cites it, says the save is found, never confirmed, waits for the marketer's yes in the app, and the brief's number stays in use until confirmed. |
+| 4 | Ids. | Matches the shared rule (a stable source id is the record id): `R<n>` is the id; a dated id only where no `R<n>` exists. Wording aligned. |
+
+## Round 10 — second Codex review of PR #322 (2026-10-20)
+
+Confirmed: Round 9's four fixes. Two new majors, both fixed:
+| # | Finding | Fix |
+|---|---|---|
+| 1 MAJOR | The scheduled prompt copied files to `ads/method/references/…` but told the worker to read `references/…` from the workspace root. | Every path in the prompt is now a full workspace path (`ads/method/references/run-memory.md`, `ads/campaigns/<slug>/state.md` …), plus one line mapping the copied files' relative links (`references/`, `atoms/`, `../../atoms/…` → `ads/method/shared/`) and saying links to other playbooks aren't copied. |
+| 2 MAJOR | `proposal-and-log.md` let a found or waiting target be "used" as the yardstick, against SKILL step 4. | Found or waiting targets, caps and stops appear only under "Decisions for you" and never compute a verdict, scale step, pacing or ceiling, or stage a move until confirmed. A pending stop or a pending lower cap may only block increases and launches; it never authorises a change. SKILL step 4 and the scheduled prompt say the same. |

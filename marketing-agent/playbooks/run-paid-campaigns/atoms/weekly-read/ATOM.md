@@ -13,4 +13,6 @@
 4. Join to the blended read: does store-joined data agree with the platform? If not, the store-joined number decides and the disagreement is stated.
 5. Mark each object: readable winner · readable loser · near-threshold · too early · broken.
 
-**Output:** the evidence table the moves are drafted from, with confidence per row. No moves yet.
+6. Build the per-ad scorecard (`../../references/run-memory.md` § End): top 10 by spend plus all others, each row against its row in the last run record.
+
+**Output:** the evidence table the moves are drafted from, with confidence per row, and the scorecard. No moves yet.

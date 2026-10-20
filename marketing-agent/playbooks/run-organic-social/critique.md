@@ -380,3 +380,67 @@ Took the craft, not the structure, the vendor wrappers or the keys. make-content
 - **Comment mining is not a separate job.** The tags and intent scale are applied where comments are already read.
 - **Not ported (belongs elsewhere):** the launch kit, case-study pack, content-brief details and transcript-to-post repurposing belong to make-content (excluded this round) or other owners. The old vendor wrappers, env keys and the old "post via API" steps stay out: posting is by hand or a managed draft after a yes.
 - **Single-post proxy reads are not used until verified.** Guessing endpoint paths would spend credits on 404s.
+
+## Round 18: run memory and the Brand Brain (19 Oct)
+
+**What was wired in.**
+- **Run memory.** A new references/run-record.md sets the inputs for atoms/run-memory: job "social calendar", no subject, and what counts as an outcome source. SKILL "Before you start" #5 runs its Start steps on full plans and refills; step 6 runs its End steps. One-offs (a single post, a teardown) write no record.
+- **"Since last time"** gives, per platform: what went out, each format against its baseline, test verdicts, whether recommendations were done, and what couldn't be read. It is the top of the report's story (report-shape), and only its key line goes in "In short" and the chat.
+- **The record** holds a Baselines table, a per-post scorecard, a per-format scorecard, the tests and the recommendations, each with a review-by date.
+- **Format tests** are recommendation rows with a lifetime id, written into the calendar header. They carry forward until they have a verdict.
+- **Brand Brain reads.** Step 1 reads `brain_map` first (core, `required_reads`, chapters 11/14/15/17/19/20/23, `brain_search` for gaps), then a lean `brand_read` for the own posts, accounts and sources only, which the brain doesn't hold. The `brand_read` plus `knowledge_search` route stays as the fallback. plan-calendar reuses step 1's chapter reads. The meta is updated.
+
+**Critique: a subagent (high effort) simulated the second refill** (16 Nov: first plan 19 Oct, first refill 2 Nov), with and without the marketer, on staging (`brain_*` listed) and production (no brain tools). It found 18 issues; all were fixed except #12, which goes to the atom's owner.
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 | **Blocker.** A 7-day settled age never overlaps the free TikTok/IG read (about a week). A 30-day baseline "recipe" can't be re-pulled later. | Settled at 3 days on every platform. **Baselines are frozen numbers** from the first audit, replaced only from a fuller read, at most every 90 days. Posts no source can see are `not read`, carried once, then counted in "couldn't check". server-needs #13 now names refill scoring. |
+| 2 | **Blocker.** Calendars overlap (a refill adds two weeks while the last one's second week is still running). A whole-file `reconciled: yes` lost those posts, and `too new` rows had no pick-up rule. | Reconciliation is per slot (`reconciled: <date>`). Every unreconciled slot before today, from any calendar, plus the last record's `too new` and `not read` rows, is due. |
+| 3 | **Blocker.** A scheduled refill with no ceiling can't read X or LinkedIn at all. | Those platforms' posts are `not read` and profile checks are `unknown`. Step 8's offer names the per-run ceiling X and LinkedIn need, and says they go unscored without it. |
+| 4 | Tests were judged and placed again before their posts went out. | Review-by is a date: the first refill after the last test post is 3 days old. Before then it is `too early (not yet posted)` and is not placed again; only missing posts are re-placed. |
+| 5 | The verdict words differed between files (win/lose vs worked/didn't work). | run-memory's words everywhere. |
+| 6 | Tests were judged against the format baseline, which makes a carousel-vs-Reel test meaningless. The new-account rules were inconsistent. | The two sides are compared with each other on one metric. One new-account rule: call a test only on a gap over 2×. |
+| 7 | The calendar's T1 didn't link to the record's id. | The header carries `T1 (<record id>)`. |
+| 8 | The record ran over 1,500 words, and per-post status copied the calendar. | Baselines are stated once and the rows point at them. The status column is gone (the calendar is linked). At most 15 rows plus "all others". |
+| 9 | Reconciling at the start conflicted with "ask nothing first". | A refill with the marketer present has one up-front message: the tick-list of due posts plus the X/LinkedIn read ceiling. |
+| 10 | The refill sequence was undefined, so a literal agent re-ran the full first-run research. | Step 7 is an ordered list with no full free pass and no draft. The hard gate applies only to refreshed cards. |
+| 11 | The chat close could reach about 14 lines. | One "since last time" line inside the 3; the "saved" note rides on the link line, and is silent in scheduled runs. |
+| 13 | "Since last time" sat before "Decisions for you". | Moved to the top of the story. |
+| 14–15 | The meta still said knowledge_search only, and plan-calendar re-opened chapters. | Meta updated; plan-calendar reuses step 1's reads. |
+| 16 | Every reconciled calendar was imported as a brand document (slow, and a copy of the record). | Dropped. The calendar stays a workspace file; the record and report go to the brand. |
+| 17 | A readout from a scheduled run had nothing flagging it as unsaved. | The outcome row is marked `readout pending`. |
+| 18 | "First few words" of a post could carry a private name. | Day and format only. |
+
+**For the orchestrator (#12, not fixed here):** run-memory's cadence has no two-week value. The playbook passes `weekly` and overrides "old" to mean over 6 weeks in run-record.md. Suggest adding `two-weekly` (old = 6 weeks) to the atom.
+
+**Pushback (§2b):** none. All of the findings held up against the text.
+
+## Round 19: Codex review of PR #322, the scheduled refill had no method (20 Oct)
+
+**MAJOR (adopted).** SKILL step 8 told the two-weekly automation to "run this playbook's refill (step 7)". The server's scheduled worker has no skills folder, so it could not load the playbook or its shared atoms.
+
+**Fix, following research-market and research-competitors:**
+- A new references/scheduled-refill.md. On the marketer's yes it copies the method into `social/method/`, each file headed with the method version and copy date, and copies it again whenever the automation changes or is switched on. It copies:
+  - `refill.md`: step 7, steps 4–6, the approval gates and write-back;
+  - the run-record, slot, calendar, post-check, report, platform and voice references;
+  - the plan-calendar, post-check and platform-research atoms;
+  - the shared atoms: run-memory, write-report, save-to-brain, spend-gate, claims-gate with claim-types, voice-card, disclosure, and the proxy-endpoints list;
+  - `brand.md`: platforms, accounts, time zone, posting windows, approvers and the ceiling;
+  - a note on how links map to the copies.
+- **The automation** is `execution_mode: "agent"`, created paused, with a self-contained prompt that covers:
+  - paths and read order;
+  - run-memory's Start (the last record, checks from sources only, unknowns asked once) and End (the record path, title, tags, keep-history; `Not run` when blocked);
+  - reconciling across overlapping calendars;
+  - brain reads with the fallback;
+  - the claims and person gates (no new sign-off without the marketer);
+  - slide copy only, since there is no renderer;
+  - the report path and import;
+  - the spending rule (free only, so X and LinkedIn go unscored, or a logged per-run ceiling).
+- **The prompt says explicitly:** "Never post, schedule, publish, approve or spend beyond the spending rule: drafts in files and proposals only. Never accept a proposal." It also never saves learnings or readouts ("readout pending"), never changes a managed strategy, never creates or updates posts in the product, and never contacts anyone.
+- SKILL step 8, run-record.md and skill.meta.json now point to it.
+
+**For the orchestrator:** foundation/guide's file index lists the research playbooks' `method/` folders. Add `social/method/` (run-organic-social's scheduled refill). I didn't edit the shared guide.
+
+## Round 20: second Codex review of PR #322 (20 Oct)
+
+**Adopted.** The scheduled-refill prompt named method files bare (`brand.md`, `run-record.md`, `plan-calendar.md`, `shared/write-report.md`…), so the server's worker couldn't find them. Every method file in the prompt now has its full workspace path, `social/method/…` or `social/method/shared/…`, matching where the copy step writes it. Output paths (`social/calendar/`, `social/plans/`, `runs/…`) were already full.

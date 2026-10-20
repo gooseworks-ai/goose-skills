@@ -28,7 +28,8 @@
     "demand read: research/market/demand.md + document (supersede) — plan-campaign",
     "listening watchlist: research/market/watchlist.md + document (supersede) — this playbook",
     "outlier posts: inspiration library via social_inspiration_save (tag research-market) — makers, work-with-creators, run-organic-social",
-    "on yes only: rivals via competitor_save; [market …] and [listening …] rules via save-learning; a monthly pulse / quarterly report or a weekly brand watch via automation_upsert (created paused)"
+    "on yes only: rivals via competitor_save; [market …] and [listening …] rules via save-learning; a monthly pulse / quarterly report or a weekly brand watch via automation_upsert (created paused)",
+    "run records: workspace runs/research-market/<job-slug>/<date>.md + brand document (keep-history) through the run-memory shared atom — read by this playbook's next run"
   ],
   "needs": {
     "mcp": [
@@ -57,7 +58,10 @@
       "gooseworks:social_inspiration_library",
       "gooseworks:social_inspiration_save",
       "gooseworks:social_inspiration_search",
-      "gooseworks:tools_load"
+      "gooseworks:tools_load",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
     ]
   },
   "atoms": [
@@ -70,6 +74,7 @@
     "claims-gate",
     "save-to-brain",
     "spend-gate",
-    "save-learning"
+    "save-learning",
+    "run-memory"
   ]
 }

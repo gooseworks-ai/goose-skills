@@ -29,6 +29,9 @@ Say: "We're launching the new flavour on March 1st with $5,000 — what should w
 ## Test 4 — replan
 After a month of weekly reads exist: "Replan next month." Pass if it reads the reads, the change log and the learnings, scores the ended tests on store-joined numbers, stages each reallocation with from → to, $, evidence and what would reverse it, and versions the same campaign record.
 
+## Test 4b — monthly replan with run memory
+With a plan record (its bets), four weekly performance records, a monthly record and run-paid records holding one raise that worked, one that was too early and one leg that never ran: "Replan next month." Pass if it scores every bet from a source (the never-run leg is neither credited nor blamed; the paid verdict is labelled claimed unless the store check confirms it), moves money only with from → to, amount, the verdict and what would reverse it, keeps the too-early leg's money with its read date, saves a new plan record with next month's bets, and proposes the target and tests to the brain only after the marketer approves.
+
 ## Staging run — 2026-10-16 (brand: Personal Day, DTC acne-safe skincare)
 
 Ask simulated: "We're launching a new serum on March 1st with $8,000 — what should we run, and where?" (goal number withheld).

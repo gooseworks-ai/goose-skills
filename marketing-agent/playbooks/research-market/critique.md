@@ -330,6 +330,41 @@ Sources: `marketing-agent-test/results/old-vs-new/research-ci-brand-seo.md`, `so
 | Daily industry scan | **Rejected** | The review agrees: a daily cadence is noise. Monthly pulse plus brand watch instead. |
 | Old scripts (logo scraping, Apify fallbacks) | **Rejected as code** | Methods only, as URL recipes. Scripts need a terminal and some need vendor keys. |
 
+## Round 7 — run memory and the Brand Brain (2026-10-19)
+
+**Wired in.**
+- "Read the brain" now starts with `brain_map`, then `brain_open` and `brain_search`, when `brain_*` tools are listed, with `brand_read` and `knowledge_search` as the fallback.
+- A new Before-you-start step 3 runs run-memory Start. A new step 7 saves the run record **before** the closing message, and the one-line "saved" note is folded into that message.
+- New `references/run-memory.md`:
+  - jobs: `market research` (quarterly or on ask), `market pulse` (monthly), `brand watch` (weekly, daily during a launch or crisis);
+  - the numbers: the market chosen, size top-down and bottom-up with inputs, price norm, Google Trends, mentions, feeling, AI answers, reviews;
+  - the brand-watch record fields;
+  - tests and outcome sources for recommendations;
+  - how the founder's answers are recorded;
+  - method copies and agent prompts for the scheduled pulse and brand watch.
+- Brand watch runs Start and End as job `brand watch`.
+- Meta: `run-memory` in `shared_atoms`, the `brain_*` tools in needs, run records in writes.
+
+**Critique (subagent, high effort): a scheduled weekly watch with nobody present, and a first run with no history.** 11 major and 15 minor findings across both playbooks. Fixed here:
+- **A pulse after a quarterly report read only pulse records.** Now the last record is the newest of either job (report or pulse); brand watch stays separate.
+- **An older report with no run record made the run say "first run" and "what changed" at once.** Now it says "first tracked run; last report <date>", uses that report's baselines labelled with its date, and logs its moves as recommendations with new ids.
+- **The founder's decisions never reached the record**, because the closing message came before the save. Now the save comes first, and a same-day re-save records answers given afterwards.
+- **research-market had no scheduled prompt or method copy.** Both are added for the pulse and the brand watch, self-contained, because the server-side worker has no skills folder.
+- **Brand-watch thresholds couldn't be judged in brand-watch mode.** The mode now counts mentions per day and names negative themes; it also checks rivals' news and the voices' convergence. The record stores the window length and the watchlist date, and a changed watchlist means "not comparable".
+- **Market numbers didn't match what market-pass returns.** Both lists now hold the same numbers (adding price norm and Google Trends).
+- **"Write-report's short form" doesn't exist.** It now points to the brand-watch note shape.
+- **The guide said watch notes held "alerts, or counts only".** Now: alerts only when a threshold is crossed; counts live in the run record. Method files are listed.
+- **No owner mapping** between report roles and record owners: added.
+- **Planned pages had no URL to check.** "How we'll know" stores the planned title or slug, and the check reads the brand's sitemap and blog feed.
+
+**Flagged to the orchestrator, not edited here** (shared run-memory atom and AGENTS, owned elsewhere):
+- the atom has no `open` status for a recommendation not due yet — handled here as `unknown — not due until <date>`, never asked;
+- "asked on" exists only in the Outcomes table, not in Recommendations, so a carried question's date gets lost;
+- `daily` is missing from the cadence list (handled here as "old after 3 days");
+- open questions are routed to "the report's Decisions for you" even on quiet scheduled runs that send no report (handled here as `to ask` in the record);
+- AGENTS §8 Schedules says every scheduled run produces a report, which contradicts silent watches;
+- the atom's saved-line wording "so next week starts from here" is wrong for quarterly and ad hoc jobs.
+
 ## Appendix — listen-social critique history (playbook removed 18 Oct; its listening now lives here as atoms/listening)
 
 ## Critique log — listen-social
@@ -539,3 +574,5 @@ Sonnet, web search and page fetch only (no browser, no GooseWorks calls), Person
 - Share of voice stays "not comparable" unless the method matches.
 
 **Still weak:** a fetch-only host can't read Reddit, TikTok, YouTube or X, so the listening free pass there is mostly coverage gaps plus the paid top-up. server-needs #17 (GooseWorks web search and page fetch) is the fix.
+
+- **19 Oct, Codex review 2 of the run-memory PR:** not-yet-due recommendations now use the shared atom's `open` status instead of `unknown`, so they never reach "Decisions for you" before their review date.

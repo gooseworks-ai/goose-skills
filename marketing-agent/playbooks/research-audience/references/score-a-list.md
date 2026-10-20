@@ -54,4 +54,7 @@ Move a lead **up one** when the company fits, the title is a buyer persona, they
 
 ## 5. Deliver
 
+Start and end with run-memory (job `lead scoring`, [run-memory.md](run-memory.md)): the last record says whether the previous "answer first" leads were answered and what came of them, when the marketer reported it.
+
+
 The list section of the report (output-format.md) opens with "**Answer first:** the <n> 'now' leads" with why, then the calibration table, the counts by tier and urgency, what was dropped and why, and the rules used. `list.csv` gets the original columns plus `tier, fit_score, fit_reason, confidence, urgency, lead_age, overdue, action, is_free_email, region_flag, consent_basis` (`consent_basis`: `asked-us` for demo requests, sign-ups and form fills — they contacted the brand, so replying is not cold outreach; `event-list` for lists the marketer collected; `unknown`). Consumers (free-mail sign-ups with no company, waitlists of individuals) are scored for **who to talk to** — never enriched, never turned into an outreach list; replies go only to people who asked to hear from the brand, and only through its own channels. The rows are ledgered (`list_id` = the upload's name and date). Offer, as a decision: replies drafted for the "now" and "today" leads (write-outreach's inbound-replies mode, which reads `consent_basis`). The brand copy of the report holds counts, rules and the reasons in general terms — **no person's name or row**; the calibration table lives only in the local file and `list.csv`.

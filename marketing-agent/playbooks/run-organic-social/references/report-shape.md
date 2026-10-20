@@ -9,10 +9,14 @@ Written and delivered through `../../../atoms/write-report/ATOM.md`. Follow its 
 - The biggest thing the platform research found, with its so-what. Example: "X is pushing native video harder than text right now, so half your posts are 30-second screen recordings."
 - What's working in your niche there, in one line.
 - What you'll post, how often, and how long it takes you a week.
+- On a refill, the one "since last time" result that matters most.
 - Keep "In short" under 150 words, with only confirmed points (write-report §1). A belief the research couldn't confirm goes lower, with its doubt stated.
 
 ## Decisions for you (a short dated box)
 E.g. Premium (with today's price and the recommendation), the exact claim lines to approve, which account it's for if unknown, the paid top-up. Each has a recommendation.
+
+## Since last time (every run after the first; the top of the story)
+3–5 lines from the last run record: what went out, how each format did against the account's own usual numbers per platform, each format test's verdict (or why it carries on), and whether last time's recommendations were done. Then a short table per platform: format · posts · typical result · your usual · what we'll do. On a first run, one line: "This is the first plan, so these numbers become the baseline."
 
 ## Per platform (one section each)
 1. **How <platform> works right now:** 3–5 dated, linked facts that shape the plan, each with what it means for you. Say how sure we are.

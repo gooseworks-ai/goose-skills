@@ -20,6 +20,13 @@ Every durable artifact goes through this atom. Never keep the only copy in chat 
 | `versioned` | `supersede` — a record that is replaced by its newest version (a bank, a profile, a landscape, an angle bank, a watchlist). `keep-history` — a dated period artifact (a weekly report, a digest, a dated read); older ones are history and are never deleted. |
 | `import` | `yes` (default) or `no` — `no` for working files that must stay out of brand knowledge (unsent reply drafts, raw item lists, pasted private material). |
 
+## Brand Brain tools (checked on staging, 19 Oct)
+
+`brain_save` has **no document or report target**. Its targets are learning, fact, claim, audience, competitor, product, kit fields, operating-plan sections and proposals. So documents keep the route below (workspace file → `media_upload` → `knowledge_import`) on every server. What changes when `brain_*` tools are listed:
+- **Read-back** (step 6) uses `gooseworks:brain_search` with `source_types: ["document"]`, and `gooseworks:brain_open` on the hit to read it in full. Otherwise use `gooseworks:knowledge_search`.
+- **Status.** An imported document is our own work, saved as *found*. It is never *confirmed* and never an approved claim. Never describe it to the marketer as confirmed or approved.
+- **Indexing lags.** `brain_search` can answer "Still indexing: N of M". That means "saved, not yet searchable", not a failure. Do not re-import.
+
 ## Workspace scope
 
 - Scope = `{type: "agent", agent_id: <coworker_agent_id>}` on every file call and on the upload's workspace source.
@@ -35,7 +42,7 @@ Every durable artifact goes through this atom. Never keep the only copy in chat 
    - `versioned: supersede` — delete (`gooseworks:media_update` `delete`) those whose title matches this title apart from the date (and version).
    - `keep-history` — delete only a copy with exactly this title (a re-run of the same period); other periods are history and are never deleted.
    Deleting the upload also removes its knowledge, so search stops returning stale rows. The workspace file is never deleted.
-6. **Verify.** `gooseworks:knowledge_search` with a query that should hit the new content, `source_types: ["document"]`. If it does not come back, say "saved, not yet searchable" — never claim it is in the brain when it is not.
+6. **Verify.** Search with a query that should hit the new content, using `source_types: ["document"]`: `gooseworks:brain_search` when `brain_*` tools are listed, otherwise `gooseworks:knowledge_search`. If it does not come back (or the brain says it is still indexing), say "saved, not yet searchable". Never claim it is in the brain when it is not.
 
 ## If a tool is missing
 

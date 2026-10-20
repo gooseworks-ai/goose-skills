@@ -5,6 +5,7 @@ Load at step 6. Same report, same day, same shape every week: consistency is wha
 ```markdown
 # Performance read — week of 6–12 Oct · <brand>
 
+Since last time: <3–5 lines from the run-memory outcome check — what was done since the last read and what it did; e.g. "The 40% raise on Sales – Broad (applied 1 Oct) is too early to read until 15 Oct; store orders are flat so far.">
 Compared with: last week · trailing 4-week avg · same week last year
 Data maturity: Fri–Sun platform conversions still landing; restated next Monday.
 Referee (DTC): store net + new-customer revenue ✓ (Shopify export) · Ulta sell-through — not measured (send the weekly portal report)
@@ -37,7 +38,7 @@ Platform story … · Blended story … · Recommendation … · What would sett
 1. <cause> (<confidence>): <evidence>.  …  Ruled out: …  Unconfirmed: …
 
 ## Creative ranking
-| Angle | Hook | Format | Ads | Spend | Purch. | CPA | CTR (trend) | Verdict |
+| Angle | Hook | Format | Ads | Spend | Purch. | CPA | CTR (trend) | Weeks won (of last 4) | Verdict |
 Coverage: …
 
 ## Email & SMS · Organic · Google · Apps · Local   (one short block each, or "not measured / not used")
@@ -46,7 +47,7 @@ Coverage: …
 | Test | Criteria | Result | Call | Confidence | Action |
 
 ## Recommendations   (acted on only after your yes, in the paid run)
-Last week's recommendations → what was done (decision log) → what happened.
+Last week's recommendations → what was done (decision log) → what happened (worked / didn't work / too early / can't tell, with the paid run's numbers and the store check).
 | # | Call | Object | Why | Confidence | Would change if |
 | C1 | Hold Meta budget | account | marginal aMER 0.1 | med | step-down shows < 15% new-revenue loss |
 | C2 | Kill 3 award statics | ads … | 2.4× target CPA after $2.1k | high | — |
@@ -54,7 +55,7 @@ Last week's recommendations → what was done (decision log) → what happened.
 
 ## What to make next
 | What | Why | Producer | By |
-| 4 new hooks on "hidden pore-cloggers" (2 video, 2 static) | winning angle, fatiguing | video and static ads | 20 Oct |
+| 4 new hooks on "hidden pore-cloggers" (2 video, 2 static) | won 3 of the last 4 weeks; CTR 1.6% → 1.1% since 29 Sep | video and static ads | 20 Oct |
 | Turn post "<…>" into a paid test | 4.1× median engagement | static ads | 17 Oct |
 
 ## Learnings proposed (written to the brand brain after you've seen them — strike any you disagree with)
@@ -78,6 +79,6 @@ On the reply: re-save the report with a `## Decisions` section (their words), re
 - Every claim and call carries a confidence label; every call carries "would change if".
 - Platform revenue is never quoted as truth; the two stories are never averaged.
 - The headline is three lines a founder can act on before reading further.
-- "What to make next" is in angle-and-hook terms with a producer and a date.
+- "What to make next" is in angle-and-hook terms with a producer and a date, and rests on the history (`run-memory.md`); "what worked" means it held 2+ runs or won a test.
 - If a replan trigger from the campaign brief fired (CAC breach, stock-out, tracking break…), say so in plain words ("this is worth replanning").
 - Plain words for the marketer: no tool, playbook or internal ids; recommendations are labelled as such — acting on them is a separate, approved step.

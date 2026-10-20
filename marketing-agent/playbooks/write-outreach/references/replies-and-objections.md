@@ -9,7 +9,7 @@ Load at step 5 and in replies mode. A reply is the point of the whole sequence: 
 | `interested` | "sure, tell me more", "let's talk" | Two time options this week or a booking link, one line on what the call covers | `replied` → `meeting` when booked |
 | `send-info` | "send me something" | One short resource (not a deck), plus one question about their situation | `replied` |
 | `question` | "does it work with X?", "how much?" | Answer plainly (only true, signed-off facts), then one question back | `replied` |
-| `timing` | "not now", "next quarter", "after our launch" | Thank them, ask permission to follow up at the date they named, offer something useful meanwhile | `replied` + a re-contact date in `notes` |
+| `timing` | "not now", "next quarter", "after our launch" | Thank them, ask permission to follow up at the date they named, offer something useful meanwhile | `replied` + `recontact_after` = the date they named (excluded until then) |
 | `using-rival` | "we use X", "already have something" | Respect it; one specific difference that matters to their situation, or a question about what they'd change; graceful close if no opening | `replied`; `not-a-fit` only if they say so |
 | `price` | "too expensive", "no budget" | Ask what they compare against; offer the smallest way to start if one exists; never invent a discount | `replied` |
 | `wrong-person` | "not me", "talk to Sam" | Thank them, ask for an introduction (or confirm the name they gave), then write to that person referencing the referral | `replied`; new row for the referral |

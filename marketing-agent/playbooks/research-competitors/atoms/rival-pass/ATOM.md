@@ -52,10 +52,10 @@ Founder posts: <name, role — claims and teasers with links> or "couldn't read 
 Ads: Meta <…> · LinkedIn <…> · Google <…> · TikTok <…> — each read (top ads, start dates, days) or "couldn't open (reason)"
 Pricing: <plans, price, unit, trial> — <vendor page | third-hand>, <link, date> · a typical buyer pays: <$/month for the scenario> · tier for key features: <…> · hidden costs: <…>
 Headline (word for word): "<…>" · for whom · lead claims
-Buyers say: praise "<quote>" (<link, date>) · complaint "<quote>" (<link, date>) · n read
+Buyers say: praise "<quote>" (<link, date>) · complaint "<quote>" (<link, date>) · n read · main review site: count and rating
 Hiring: <roles by team> · Customers: <named, each confirmed / likely / a guess, linked> · likely lost: <logos gone since a year ago> · Search: <who ranks or advertises on "<rival> alternative">
 Where we win / where we lose: <points, each with how sure>
 Needs the browser: <exact URLs or searches>
 Couldn't read: <source — why — what it would change>
-Snapshot for next time: <ad ids + start dates, pricing text, headline, open roles, review count — last-checked date>
+Snapshot for next time: <active ads per library + ad ids and start dates, entry price and typical-buyer cost, headline, open roles, review site + count + rating, launches in 90 days — each with its last-read date>
 ```

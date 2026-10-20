@@ -22,7 +22,7 @@ Rules:
 | Award proof | "6× award-winning" | static | 5 | $2,100 | 45 | $47 | 0.9% (↓) | Loser vs $38 (med) |
 | Founder story | talking head | 30s | 2 | $400 | 6 | $67 | 0.8% | Too early (n=6) |
 
-**What to make next** follows directly: more hooks on the winning angle (it will fatigue), retire the loser, give the too-early one a fair test, and one organic overperformer to try as paid. Each item names the producer (make-static-ads, make-video-ads, make-content) and why.
+**What to make next** follows from the history, not this week alone (`run-memory.md` § What worked): more hooks on an angle that has won 2+ runs and is tiring across the records (it goes first), retire the loser, give the too-early one a fair test, and one organic overperformer to try as paid. Never an angle that already failed (a `didn't work` readout, a worn-out angle in the brain, a Loss call) without a new reason. Last run's make-next items that were never made are carried with their first date, not restated. Each item names the producer (make-static-ads, make-video-ads, make-content), why, and the records it rests on.
 
 ## Email & SMS (light)
 

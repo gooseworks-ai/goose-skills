@@ -13,7 +13,10 @@
       "gooseworks:brand_read",
       "gooseworks:knowledge_search",
       "gooseworks:file_read",
-      "gooseworks:file_write"
+      "gooseworks:file_write",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search"
     ]
   },
   "atoms": [],
@@ -21,6 +24,7 @@
     "claims-gate",
     "save-to-brain",
     "save-learning",
-    "spend-gate"
+    "spend-gate",
+    "run-memory"
   ]
 }

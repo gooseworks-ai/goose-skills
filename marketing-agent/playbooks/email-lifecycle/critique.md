@@ -224,3 +224,27 @@ Open: analyze-performance's email rows are "light", so the per-flow read-back le
 ## Round 9 — shared bug from the 18 Oct search hand test (minimal change)
 
 The search hand test showed documents left only in the workspace, with workspace paths offered as if they were links. email-lifecycle's step 8 did the same ("each other flow in one line with its file"). Fixed: the full pack (deliverability report, build order, flows, broadcasts, decisions) is one document through the shared `write-report` atom — a local file with a clickable link, an artifact in hosted chat, plus a saved-copy link; `lifecycle/` files are working copies only. `shared_atoms` and `writes` in the meta updated. Nothing else in this playbook changed.
+
+## Round 10 — run memory and the Brand Brain (19 Oct)
+
+**Wired.**
+- New `references/run-memory.md`: one job per mode (build, weekly, monthly, seasonal with a subject, incident).
+  - Recommendations carry across jobs; numbers compare only over windows of the same length.
+  - Numbers per flow, broadcasts, deliverability and list, each with its window, source, the tool's attribution setting and a claimed/truth label. Windows are settled.
+  - "Did it happen" only from the flows list, a test email's headers or the marketer's word; a written flow is "drafted, not live".
+  - "Did it work": re-pull both windows; too early under about 30 orders; can't tell when a sale, tentpole or stock-out falls in one window.
+- SKILL: brain_map first (core, required reads, chapters 2/5/11/15/17/18/20), with the brand_read fallback kept. Run-memory Start (steps 1–2 before intake, 3–4 inside the audit) and End at write-back. "Since last time" opens the staged chat and the pack. Output table row added.
+- The lifecycle-audit read-back and the weekly automation prompt (modes-and-incidents) now read and write the record; meta updated.
+
+**Critique.** One run, on the search playbook (per orchestrator). Its findings that apply here too were fixed in the same pass:
+- Start steps split around intake, so since-last-time is never written before the numbers exist.
+- Review timing counts from `live since <date>`, never from the date it was recommended.
+- Multi-part moves are `done` only when every part is shown.
+- Open recommendations keep their ids, marked "still open", never re-issued.
+- Run-memory words are kept out of the marketer's text.
+
+**Pushback (§2b).**
+- **"Read opens".** Apple Mail's privacy feature marks most messages opened, and the playbook already never judges on opens. So opens are not recorded as a flow result and never judge a recommendation. A sudden drop at one mailbox provider is kept only as a deliverability warning. Results are clicks, orders and revenue per recipient.
+- **Weekly scheduled runs** usually have no export. They still read the last record and write a new one, marked "no export this week". Only a record with numbers becomes a baseline.
+
+Not re-run (per orchestrator: no evals).

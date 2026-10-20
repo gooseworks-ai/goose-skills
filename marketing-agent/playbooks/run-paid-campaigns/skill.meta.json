@@ -21,7 +21,10 @@
     "change log ads/campaigns/<slug>/state.md (harness frontmatter, open recommendations) and decisions.md (### dated blocks) — its own plus the server's Meta outcomes",
     "human: allowable cost if not derivable, budget ceiling, off-limits campaigns, exports from other platforms and non-Goose Meta, stock, offer changes",
     "this week's input summary (reports/performance/inputs/<date>.md) — analyze-performance, to reuse exports",
-    "demand read research/market/demand.md — research-market (search keyword proposals)"
+    "demand read research/market/demand.md — research-market (search keyword proposals)",
+    "its own last run record runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md (scorecard, money moves with baseline recipes) — run-memory",
+    "Brand Brain (brain_map, brain_open, brain_search where listed): chapter 20 target_cpa / target_roas / decision.* / experiment.*, chapter 15, chapter 23 readouts, the operating plan (daily cap, protected entities, emergency stop)",
+    "analyze-performance's newest run record and report (store-joined numbers for the scorecard's return column)"
   ],
   "writes": [
     "weekly moves proposal (chat) — the human approves",
@@ -30,7 +33,12 @@
     "written-instruction cards for non-lever platforms and non-Goose Meta objects",
     "rotation requests ads/campaigns/<slug>/rotation-requests.md — read by make-static-ads and make-video-ads",
     "optional weekly schedule (automation_upsert) that only stages proposals — on explicit yes",
-    "request lines (Rotation needed / Fix needed) in ads/campaigns/<slug>/rotation-requests.md — answered by make-static-ads and make-video-ads"
+    "request lines (Rotation needed / Fix needed) in ads/campaigns/<slug>/rotation-requests.md — answered by make-static-ads and make-video-ads",
+    "run record runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md + brand document (keep-history) — per-ad scorecard, money moves with baseline recipes and verdicts, open moves — read by its own next run, analyze-performance and plan-campaign",
+    "proposal file ads/campaigns/<slug>/proposals/<date>.md (the weekly proposal, saved every run)",
+    "measured readouts (kind 23 experiment_readout.<slug>-r<n>, worked / didn't work only, never from a scheduled run) via save-learning",
+    "proposed targets (kind 20 target_cpa / target_roas via save-learning, the marketer's words) and a stated daily cap (operating_plan daily_spend_cap_minor_units / spend_cap_currency via brain_save) — wait for the marketer's yes",
+    "ads/method/ (copied method for the scheduled worker: SKILL, references, atoms, shared atoms) — read by the weekly automation"
   ],
   "needs": {
     "mcp": [
@@ -52,7 +60,16 @@
       "gooseworks:automation_upsert",
       "gooseworks:video_read",
       "gooseworks:video_share",
-      "gooseworks:tools_load"
+      "gooseworks:tools_load",
+      "gooseworks:brain_map",
+      "gooseworks:brain_open",
+      "gooseworks:brain_search",
+      "gooseworks:brain_save",
+      "gooseworks:knowledge_search",
+      "gooseworks:media_upload",
+      "gooseworks:knowledge_import",
+      "gooseworks:job_get",
+      "gooseworks:automation_list"
     ]
   },
   "atoms": [
@@ -62,6 +79,10 @@
     "apply-and-log"
   ],
   "shared_atoms": [
-    "spend-gate"
+    "spend-gate",
+    "run-memory",
+    "save-to-brain",
+    "save-learning",
+    "write-report"
   ]
 }

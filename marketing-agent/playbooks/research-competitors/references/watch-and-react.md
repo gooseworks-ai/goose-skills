@@ -41,15 +41,23 @@ Week of <date> · <n> changes that matter · rivals watched: <names> · not re-c
 
 ## In short
 - **Do this first:** <the one move that matters now — or "nothing needs action this week">.
-- <the 2–3 biggest changes, each with its so what>
+- **Since <last run date>:** <the 2–3 biggest changes against the stored numbers, each with its so what; how last time's recommendations stand>
+
+## Decisions for you
+| Decision | My recommendation | Matters by |
+|---|---|---|
 
 ## Act now (only if something can't wait)
 ## The changes that matter — what happened (linked) · what it means · who acts (the campaign plan, a new ad, an email to customers, a comparison page, the founder)
 ## By rival (changes only)
+## What to do
+(≤ 6, each with who does it, what it needs, how we'll know, by when — these become the run record's recommendations)
+## What we're not doing, and why
 ## Angles to add or retire
 ## Checked, no change
 ## What we couldn't check
 ## Sources
+(with a source-skew line)
 ```
 
 Then rewrite each rival's Snapshot block (keep the old one as `## Previous snapshot`), save each changed rival record through `../../../atoms/save-to-brain/ATOM.md` (`supersede`, its `Competitor file:` title and tags), and save the note through `../../../atoms/save-to-brain/ATOM.md` (`keep-history`, title `Competitor watch — <Brand> — <date>`, tags `research-competitors`, `competitor-watch`).
@@ -60,12 +68,19 @@ Weekly by default when rivals are active: a what-changed report only when someth
 
 Follow `../../../atoms/spend-gate/ATOM.md` branch C. Needs a coworker; without one, say so and keep running on ask. Before asking, say what the scheduled run can and cannot re-read: it uses free sources — the server's competitor research and samples, and web search and pages if the scheduled worker has them — and never spends on data unless the yes names a per-run ceiling. Its own run cost is unknown until the first run; show it afterwards from `gooseworks:automation_list`.
 
-On a yes: save this file's dimension list, thresholds and note shape to `research/competitors/method/watch.md` (headed `Method version: <skill.meta.json version>, copied <date>`; re-copied whenever the run is changed or switched on), then create the automation paused (`gooseworks:automation_upsert`, `execution_mode: "agent"`, the prompt below as `agent_prompt`, a weekly or monthly cron in the human's timezone, as they chose, `enabled: false`) and switch it on only when the human says so.
+On a yes: copy the method for the scheduled worker into `research/competitors/method/` with `gooseworks:file_write` (each file headed `Method version: <skill.meta.json version>, copied <date>`; re-copied whenever the run is changed or switched on). The worker runs on the server with no skills folder and no browser, so the method must be complete on its own:
+- `watch.md` — this file (dimensions, thresholds, the what-changed shape), plus the category's AI-answer and money-search prompts copied from the last report;
+- `rival-craft.md` — `rival-craft.md` (the §1 news queries, the §6 price-change severity, the Wayback recipe);
+- `run-memory.md` — this playbook's `references/run-memory.md`;
+- `shared/run-memory.md`, `shared/write-report.md`, `shared/save-to-brain.md`, `shared/spend-gate.md` — copies of those shared atoms (a link inside them such as ../write-report/ATOM.md means shared/write-report.md).
+Then create the automation paused (`gooseworks:automation_upsert`, `execution_mode: "agent"`, the prompt below as `agent_prompt`, a weekly cron in the human's timezone, `enabled: false`) and switch it on only when the human says so. The guide's file index lists these method files.
 
 ```text
-Competitor what-changed report (<weekly | monthly>) for brand <brand_id>. Method version <version>, copied <date>. Follow research/competitors/method/watch.md.
-For each main rival in research/competitors/<slug>.md: re-read every dimension in the method file you can reach, in its order for this company type (B2B: news, founder posts, LinkedIn and Google ad libraries, changelog, pricing and headline, hiring, reviews, events and partners; DTC: news, Meta and TikTok ads, organic, offers and email, reviews) — web search and pages if you have them; free server reads: competitor_research (no mentions), ads_template_read mode competitor, brand_read section organic, diff against the Snapshot block, and keep only changes that cross the thresholds. Dimensions you could not re-read go on line 2 as "not re-read", never as "no change".
-Write research/competitors/watch/<YYYY-MM-DD>.md in the what-changed report shape — plain words, no ids, opening with what changed; rewrite each Snapshot (keep the previous one) and re-import each changed rival record the same way under its "Competitor file: <Rival> — <Brand> — <date>" title, deleting only older documents with that rival's "Competitor file: <Rival> — <Brand>" title. Import the note (media_upload scope brand, kind document, source workspace, same scope; title "Competitor watch — <Brand> — <YYYY-MM-DD>"; tags research-competitors, competitor-watch; then knowledge_import and wait until ready). Delete only an earlier document with exactly this title; never another week's.
+Competitor watch (weekly, nobody present) for brand <brand name> (<brand_id>), workspace scope <scope>. Method version <version>, copied <date>. Read with file_read, in this order: research/competitors/method/watch.md, run-memory.md, rival-craft.md, and shared/*.md as they are referred to. Ask nothing; spend nothing beyond the spending rule; never accept a proposal.
+1. Start: the last record is the newest file under runs/research-competitors/competitor-watch/ OR runs/research-competitors/competitor-research/ (either job). None → this is the first tracked run: say so; an earlier report in research/competitors/ gives the before, labelled with its date. Read the record whole. Check each open recommendation: pages and posts from the brand's sitemap.xml and blog feed (new since the recommendation's date, matched by its planned title or slug), then fetch the page; also social_post_list, campaign_read, competitor_read. Mark done / not done only from a source; not due yet → keep open, don't ask; otherwise unknown.
+2. The rivals are the ones in the last record's Numbers rows (not every file in research/competitors/). For each: re-read what you can free — news (rival-craft §1 queries), blog and changelog feeds, Hacker News search, the sitemap, pricing and homepage text, careers page, review page; competitor_research (no mentions), ads_template_read mode competitor, brand_read section organic. Never the ad libraries: carry their counts forward marked "carried, not re-read". Diff against the record's numbers and the rival's Snapshot block; grade price changes by rival-craft §6; keep only changes over watch.md's thresholds. A react-now item goes into "Act now" only — no questions.
+3. Something crossed → write research/competitors/watch/<YYYY-MM-DD>.md in watch.md's what-changed shape (plain words, no ids; In short opens with "Do this first", then "Since <last run date>"; unknown statuses once in Decisions for you, with today as asked-on) and import it (media_upload scope brand, kind document, source workspace; title "Competitor watch — <brand name> — <YYYY-MM-DD>"; tags research-competitors, competitor-watch; knowledge_import; wait until ready; delete only an earlier document with exactly this title). Nothing crossed → no report; questions are marked "to ask" in the record.
+4. Either way: update each changed rival's Snapshot — fields you re-read get today's date, fields you didn't keep their value and last-read date; keep the previous block as "Previous snapshot" — and re-import that rival's record (title "Competitor file: <Rival> — <brand name> — <date>", tags research-competitors, competitor-file, rival:<slug>; delete only older documents with that rival's title). Then write the run record at runs/research-competitors/competitor-watch/<YYYY-MM-DD>.md (title "Run record — competitor watch — <brand name> — <YYYY-MM-DD>"; tags research-competitors, run-record; keep-history; import) with the numbers, what crossed or "nothing crossed a threshold", and every open recommendation carried forward with its id. If any import answer shows a price, skip that import, keep the files, and say so in the report or record. A run that could not read its sources writes "Not run: <why>" instead and keeps the previous baseline.
 <Spending rule: "Free sources only." | "Paid reads up to <N> credits this run, logged in research/credits-log/<YYYY-MM>.md; stop at the ceiling.">
 Never state a rival's spend or results; label inferences; never contact anyone; never add or remove rivals.
 ```
