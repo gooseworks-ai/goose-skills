@@ -67,7 +67,7 @@
     "saved inspiration outliers — research-market, research-competitors (social_inspiration_library)",
     "kept product photos — the marketer, or the goose-product-photos skill",
     "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)",
-    "the brand's own live ads in the Meta and LinkedIn Ad Libraries (host browser, or the data proxy on a yes)"
+    "the brand's own live ads in the Meta Ad Library and in the library of each other platform it advertises on (LinkedIn, TikTok, Google; host browser, or the data proxy on a yes)"
   ],
   "writes": [
     "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",

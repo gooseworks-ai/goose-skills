@@ -330,6 +330,8 @@ Also: `tests/test-by-hand.md` setup now links the flat layout; Test 10 covers th
 - Production renamed `brain_*` to `brand_knowledge_*` (old names still callable, hidden from discovery): the skill uses the new names and says so in Setup.
 - Still open: the server's reference selection reaches only the first three product screenshots, so later UI ads lack real screens; the kit's logo URL can be an SVG; runs on different servers still pick alike (made-before is per workspace).
 
+**Round 17c — real-entry retests (21 Oct).** Two fresh agents started from `/gooseworks create static ads for <brand>` on staging, never told to follow make-static-ads exactly, with the Juicebox session's scripted answers: Graza (consumer) and GooseWorks (B2B). Both read the brand, the brain (`brand_knowledge_*`), the live Meta library and the made-before list, built a concept grid, ran the claims check and reached the quote. LinkedIn: GooseWorks checked it, Graza correctly didn't (the platform rule now follows the platforms the brand advertises on, not every brand). Debriefs agree on why steps get cut: instructions from outside the skill (a stale local router sending static ads to goose-ads; server next_steps "one line and wait", "recommend one plan"); very large tool answers (kit 50–155K characters, creative lists 0.8–1.5 MB); composer.md's 712 lines re-typed per ad (both abbreviated it as "[verbatim]"); and Step 4's live category-leader search, the most expensive step and the one most often cut.
+
 ## Appendix — build-time test logs (moved from tests/test-by-hand.md, 20 Oct 2026)
 
 ### Free and cheap reads — 2026-10-19 (no generation)
