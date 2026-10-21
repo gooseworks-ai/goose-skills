@@ -2,7 +2,7 @@
 name: make-static-ads-compose
 description: >-
   Step of the make-static-ads playbook: composes every ad exactly as GooseWorks' server composer does — the marketer's chat words as the User instructions, the ad's concept as its Variant brief — and records the final prompt and ordered image list per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.
-version: 0.4.2
+version: 0.4.3
 ---
 
 # compose
@@ -20,7 +20,7 @@ Run `composer.md` §0's table, rows 1–10, in order. Row 11 (the quoted `ads_re
 |---|---|
 | 1 Inputs (§1) | Read the kit and learnings once per batch, the product record per featured product. Images the marketer attached in this chat → `gooseworks:media_upload`, then they are user uploads (§4). |
 | 2 Flags and path (§2) | From the Step 2 answers: logo → `no_logo`; colours → `../make-static-ads/references/fonts-and-color.md` §4 (brand / template / fresh palette); font → §1 (brand / a pairing / no specific font). §2.1 still forces colours and font on for `competitor_scrape` and `curated` sources — say so if the marketer asked for the template's look on one of those. **Structure-only follows ownership, not `source_kind`:** any template of another brand is structure-only, including one registered as `upload` with `ads_template_create`. §2.2's table covers only templates the server imports itself. Structure-only → run `structure-blueprint.md` first, in a fresh subagent where the host has one. |
-| 3 Colour (§3) | Brand colours → §3 as written, once per batch, seed = the batch file name (`../make-static-ads/scripts/schemes.py`). Fresh palette → the agent's palette per ad (`fonts-and-color.md` §4) as the assigned scheme. Logo colours are never changed (`fonts-and-color.md` §5). |
+| 3 Colour (§3) | Brand colours → §3 as written, once per batch, seed = the batch file name (`../make-static-ads/scripts/schemes.py`). Fresh palette → the agent's palette per ad (`fonts-and-color.md` §4) as the assigned scheme. Logo colours are never changed (`fonts-and-color.md` §5). Running-ads colours → that palette per ad (`../make-static-ads/references/fonts-and-color.md` §4) as the assigned scheme. |
 | 4 References (§4) | As written. A structure-only template's image is never in the list. |
 | 5 Blueprint | Structure-only ads only (`structure-blueprint.md`). A direct competitor's template ("layout only", `../make-static-ads/references/references-and-remix.md` §5) gets the reduced blueprint (departure 2). |
 | 6 Composer input (§5, §6) | **User instructions (§6.6):** the marketer's own chat words for this ask, trimmed, unchanged — never rewritten, summarised or added to. Words meant for one ad only ("make #3 darker") go to that ad only. **Variant brief (§6.7, the brief form):** below. Leave out §6.6's "Messaging angle for THIS ad" line; the Variant brief already carries the concept, so it is said once. **Proof points:** departure 1. **Typography (§6.3):** as written, except departures 3 and 4. |

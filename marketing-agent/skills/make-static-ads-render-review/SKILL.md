@@ -2,7 +2,7 @@
 name: make-static-ads-render-review
 description: >-
   Step of the make-static-ads playbook: judges every render exactly as GooseWorks' server judge does, retries once with the server's own retry note inside the yes already given, then runs the playbook's extra checks, drops what still fails and records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.
-version: 0.4.2
+version: 0.4.3
 ---
 
 # render-review
@@ -19,7 +19,7 @@ The judge is `../make-static-ads/references/judge.md`, the server's rubric copie
 5. **Set diversity.** After every render is judged, re-run rubric check 19 on the set.
 6. **Cannot see the image?** The render is unjudged (`judge.md` §6): no retry, flagged, and the ad is marked "not checked by eye" with a three-item checklist for the human (`review-rubric.md`, last section).
 7. **Extra placements** on an approved render: a new ratio is a new base prompt (compose row 10) and a quoted `gooseworks:ads_render` call, judged the same way.
-8. **Record** per `judge.md` §8: the full trace in the batch file; tags on the creative (`judge:pass`, `judge:needs-review`, `judge:unjudged`, `try:1`, `try:2`, `superseded`) merged into the set from `../make-static-ads/references/handoff-format.md` §2 with `gooseworks:ads_creative_update` — read the current tags, merge, write once, lower-case. Render `feedback` carries only the marketer's own ratings and words; the judge and the playbook's checks go to tags and the batch file.
+8. **Record** per `judge.md` §8: the full trace in the batch file, including `judged-by: fresh subagent` or `judged-by: same agent (no subagents)`; tags on the creative (`judge:pass`, `judge:needs-review`, `judge:unjudged`, `try:1`, `try:2`, `superseded`) merged into the set from `../make-static-ads/references/handoff-format.md` §2 with `gooseworks:ads_creative_update` — read the current tags, merge, write once, lower-case. Render `feedback` carries only the marketer's own ratings and words; the judge and the playbook's checks go to tags and the batch file.
 
 ## Judge departures from the server
 

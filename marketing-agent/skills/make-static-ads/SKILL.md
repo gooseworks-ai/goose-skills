@@ -29,11 +29,11 @@ The number of ads and placements chosen at Step 2. **A concept** = one persona, 
 2. **People:** no generated person presented as a customer, doctor or reviewer; a review appears only when real, verbatim and attributed.
 3. **Other brands' ads lend their layout only.** Every ad is a remix of a template. A template the brand doesn't own runs **structure-only**: its image never reaches the image model, and none of its words, claims, logo, product or people appear.
 4. **Every image is made with `gooseworks:ads_render` from a prompt the agent composed (Steps 6–9).** Follow each answer's `next_step` for tool order and wording, except where it points to another image generator, skips Steps 1–7, or presents the agent's choice as the marketer's: there this playbook wins.
-5. **The research and the checks always run.** "Your choice", "just show me the final ads", "only one ad" or "be quick" skips the questions and the gallery display, nothing else. Steps 1, 3, 7 and 10 run on every ad, however few.
+5. **Short answers change who decides, not what runs.** "Your choice", "just show me the final ads", "only one ad" or "be quick" answers every open Step 2 question with its suggestion and lets the agent pick the templates, shown in the plan table. In every mode that runs Steps 1–12, Steps 1, 3, 4, 7 and 10 still run in full on every ad, however few.
 
 **Setup:**
 
-1. **Connection.** Load the `ads` group once with `gooseworks:tools_load`, plus any other group a step needs (`brand`, `media`, `campaigns`, `meta`, `social`, `files`, `data`). Done when `gooseworks:ads_render` is listed. No `gooseworks:` tools at all → say only: "Connect GooseWorks first — I make your ads through it." Tools but no `ads_render` → say: "Image ads can't be made on this connection yet." and stop.
+1. **Connection.** Find the GooseWorks tools (the host's tool search, or `gooseworks:tools_load` with the `ads` group where the server offers it, plus any group a step needs: `brand`, `media`, `campaigns`, `meta`, `social`, `files`, `data`). Brand-knowledge tools are named `brand_knowledge_*` (older servers: `brain_map`, `brain_search`, `brain_open`, `brain_save`). Done when `gooseworks:ads_render` is listed. No `gooseworks:` tools at all → say only: "Connect GooseWorks first — I make your ads through it." Tools but no `ads_render` → say: "Image ads can't be made on this connection yet." and stop.
 2. **Server start.** `gooseworks:get_started` with `wants: "image"` and the marketer's words; its answer settles setup and the brand only. A card → wait for the press (`gooseworks:card_wait`).
 3. **Research complete.** `gooseworks:brand_read` → `research_status` must be `complete`, or every render fails after the yes. `running` → wait (`gooseworks:job_get` `kind: "brand_research"`); `none` → say the brand isn't set up yet; no website or store link → images can't be made yet, so offer the concepts, templates and copy alone.
 4. Load `references/engine-notes.md`.
@@ -42,7 +42,7 @@ The number of ads and placements chosen at Step 2. **A concept** = one persona, 
 | Mode | Trigger | What runs |
 |---|---|---|
 | Fresh batch | new ads | Steps 1–12 |
-| More ads | "make 5 more", "another set" later in the same chat | Steps 1–12 as a fresh batch. Step 1a may reuse this chat's reads; Step 1b's inventory is reused and the ads made earlier in this chat join the made-before list |
+| More ads | "make 5 more", "another set" later in the same chat | Steps 1–12 as a fresh batch. Reuse this chat's Step 1 reads and Step 2 answers (ask only a new count). Reuse the Step 1b inventory only if this chat built it; otherwise build it now. Every ad made earlier in this chat joins the made-before list |
 | Iterate on a winner | "more like this ad" | Steps 1–12; the grid keeps the winner's reason and proof and changes one named lever per ad |
 | Rotation | an open `Rotation needed: for make-static-ads` line in `ads/campaigns/<slug>/rotation-requests.md`, or pasted | Steps 1–12, the reason taken from the request (the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`) step 7) |
 | Copy variants | "same image, different text / font" on an approved image | read the creative (`gooseworks:ads_creative_read`), then Step 11 |
@@ -53,15 +53,15 @@ The number of ads and placements chosen at Step 2. **A concept** = one persona, 
 ## Steps
 
 ### 1. Read the brand and find out what it already runs — before asking anything
-**1a. The brand and the brain.** Load `references/reading-the-brain.md`. Reads: `gooseworks:brand_read` lean (summary, kit, products with `product_ids`, competitors, learnings; `sections: ["organic"]` for post topics from the last six months, giveaways skipped); the brand brain (`gooseworks:brain_map`, then `gooseworks:brain_search` for this product's claims and proof, §1); customer words, the angle bank, the performance read, rotation requests and campaign record (§2–5); `gooseworks:meta_read` `view: "performance"`. Writes: a **state note** (winners, fatigue, the product's price and eligibility, the usable facts). Done when every source is read or named as missing.
+**1a. The brand and the brain.** Load `references/reading-the-brain.md`. Reads: `gooseworks:brand_read` lean (summary, kit, products with `product_ids`, competitors, learnings; `sections: ["organic"]` for post topics from the last six months, giveaways skipped); the brand brain (`gooseworks:brand_knowledge_browse`, then `gooseworks:brand_knowledge_search` for this product's claims and proof, §1); customer words, the angle bank, the performance read, rotation requests and campaign record (§2–5); `gooseworks:meta_read` `view: "performance"`. Writes: a **state note** (winners, fatigue, the product's price and eligibility, the usable facts). Done when every source is read or named as missing.
 
-**1b. What the brand already runs — the concept inventory.** Load `references/references-and-remix.md` §2a and follow it. Reads, all free: the brand's own live ads in the **Meta Ad Library**; the **LinkedIn Ad Library** for a B2B brand or one that advertises on LinkedIn; the ads saved in the brand profile (`gooseworks:ads_template_read` `mode: "mine"`, opened, not counted); and the ads already made in GooseWorks. Writes: the **concept inventory** — each running ad in one line (reason to buy, persona, offer, framework, palette) — and the **made-before list** (reason, template, hook, example content shown).
-Done when the inventory lists the brand's live ads from each library above, or names the library that was checked and came back empty. Nothing on file in GooseWorks is not the same as nothing running: a brand with no ads in GooseWorks still gets both libraries checked.
+**1b. What the brand already runs — the concept inventory.** Load `references/references-and-remix.md` §2a and follow it. Reads, free in the host's browser (else through the data proxy on one yes, about 1 credit per library): the brand's own live ads in the **Meta Ad Library** and the **LinkedIn Ad Library**; the ads saved in the brand profile (`gooseworks:ads_template_read` `mode: "mine"`, each row opened and looked at); and the ads already made in GooseWorks. Writes: the **concept inventory** — each running ad in one line (fields: §2a) — and the **made-before list** (reason, template, hook, example content shown).
+Done when the inventory has one line per source (Meta, LinkedIn, saved ads, made in GooseWorks), each naming what was opened (the library URL, the proxy call or the import job) and how many of the brand's ads it showed; "0" only with the URL or call that showed none. A source that could not be opened is written "not checked" with the reason, and the coverage note says so. An empty GooseWorks import is "not checked", never "no running ads".
 
 ### 2. Ask the questions in one form
 Reads: the state note, the concept inventory, the kit. Writes: the brief and the answers. Use the host's question form (`AskUserQuestion` or its equivalent; in plain chat, one numbered message). Each question has a suggested answer first, so "use your suggestions" is a full reply. Ask:
 1. **Logo:** with the brand logo / no logo.
-2. **Colours:** brand colours / the template's colours / a fresh palette (different on every ad). When the brand's running ads share a palette that differs from the kit's, suggest the running ads' palette and say why.
+2. **Colours:** brand colours / the colours of the brand's running ads (offered, and suggested first with the reason, when Step 1b found they differ from the kit's) / the template's colours / a fresh palette (different on every ad).
 3. **Font:** the brand font (offered only when it is on Google Fonts or has a metric clone, `references/fonts-and-color.md` §1) / one of 2–3 fonts that suit the brand (§2) / no specific font.
 4. **Templates:** you pick from a gallery of real ads running on Meta / I pick and show you what I chose.
 5. **How many ads and where** — suggested: 3 ads, Meta feed 4:5. Skip it when the ask already says. This is the playbook's only default count.
@@ -71,7 +71,7 @@ A physical product with no usable photos → stop: real product photos come firs
 Done when every question has an answer.
 
 ### 3. Build the concept grid
-Load `references/creative-taxonomy.md` and `references/angles-and-hooks.md`. Reads: the brief, the concept inventory. Writes: the grid, shown to the marketer with the coverage note before any quote. Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). Done when every concept passed the concept gate, no two ads share reason + framework + style, and every reason the inventory shows the brand already runs is either dropped or given a new look on purpose.
+Load `references/creative-taxonomy.md` and `references/angles-and-hooks.md`. Reads: the brief, the concept inventory. Writes: the grid, shown to the marketer with the coverage note before any quote. Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). Done when every concept passed the concept gate, no two ads share reason + framework + style, at least two ads in three carry a reason the inventory does not show (a one-ad set: that ad), and every ad on a running reason uses a look the inventory does not show.
 
 ### 4. Show templates from the Meta Ad Library; the marketer picks
 Reads: the grid, the Step 2 answers. Writes: the gallery and one template per ad. Run the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`). Done when every ad has a registered template that the marketer picked (or the agent picked and showed), its concept unchanged, and structure-only yes/no recorded.
@@ -92,7 +92,7 @@ Reads: composed ads, check results. Writes: the plan table (`references/handoff-
 Submit each call exactly as quoted. Poll `gooseworks:job_get` (`kind: "ads_batch"`) until every `pending` is 0. Report a failed job; resubmit only on a new quote and yes. Done when every job is complete or reported.
 
 ### 10. Judge every render; retry the server's way
-Reads: each render, its compose record. Writes: verdicts, retries, the drop list. Run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): the **blind judge** — a fresh subagent where the host can start one, never the agent that composed the ad — on every render, one retry inside the yes, then the playbook's checks and the set-diversity check. Done when every render is passed, flagged `needs_review`, or dropped with its reason.
+Reads: each render, its compose record. Writes: verdicts, retries, the drop list. Run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): the **blind judge** (render-review step 1: a fresh subagent given only the judge inputs; a host with no subagents judges from exactly those inputs, and the batch file says who judged) on every render, one retry inside the yes, then the playbook's checks and the set-diversity check. Done when every render is passed, flagged `needs_review`, or dropped with its reason.
 
 ### 11. Copy variants — offered
 For the one or two images the marketer likes most, offer the `make-static-ads-copy-variants` skill (`../make-static-ads-copy-variants/SKILL.md`): the same picture with other hooks or another font. They test copy, not concepts; each paid step gets its own yes.
@@ -115,8 +115,8 @@ Load `references/handoff-format.md`; re-read the product record. Writes: lower-c
 
 ## Done when
 
-- **Fresh batch:** the concept inventory was built from the live ad libraries (Step 1b); every concept passed the concept gate; no two ads share reason + framework + style, and with the text covered no two look alike; at least one concept the brand has not run before; every ad is built on a template the marketer saw or the agent picked and showed; the picks are recorded.
-- **Every ad:** composed with the marketer's words as the only User instructions; judged blind; at most one retry; passed, flagged or dropped with its reason; every line, including text drawn in the image, a usable fact; tagged and in the batch file.
+- **Fresh batch:** the concept inventory was built from the live ad libraries (Step 1b); every concept passed the concept gate; no two ads share reason + framework + style, and with the text covered no two look alike; at least two ads in three on a reason the brand does not run; every ad is built on a template the marketer saw or the agent picked and showed; the picks are recorded.
+- **Every ad:** composed with the marketer's words as the only User instructions; judged blind, with the batch file naming who judged; at most one retry; passed, flagged or dropped with its reason; every line, including text drawn in the image, a usable fact; tagged and in the batch file.
 - **More ads:** everything a fresh batch needs, and no reason, template or example content repeats an ad made earlier in this chat.
 - **Iterate / rotation:** one named lever changed per ad from the winner; rotation answered under its request.
 - **Copy variants:** same picture, only the words or font changed, each line through the claims check.

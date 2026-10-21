@@ -319,6 +319,17 @@ Akhil ran 0.4.2 on production ("create static ads for juicebox brand", then "mak
 
 Also: `tests/test-by-hand.md` setup now links the flat layout; Test 10 covers this failure. Not changed: `requires_skills` keeps `claims-gate` because the shared steps it requires need it (the flat-list rule).
 
+**Round 17b — review and dry run before merge (21 Oct).** A reviewer (effort high) and a dry run on production Juicebox (both rounds up to the quote, nothing spent or written) checked 0.4.3. The dry run read Juicebox's live Meta (~59 ads) and LinkedIn (765) pages first, built the inventory, drafted 10 reasons, dropped the ones Juicebox already runs, showed the coverage note and ran the claims check (cut "100+ integrations"). Fixes from both:
+- Hard rule 5 reworded ("short answers change who decides, not what runs"); Step 4 added to the always-run list; no clash with modes that skip steps.
+- Step 1b done line needs evidence per source (URL or call, count); empty GooseWorks import = "not checked"; proxy fallback on one yes when there is no browser; LinkedIn for every brand, advertiser confirmed.
+- Saved ads of other brands stay out of the inventory.
+- Running-ads palette is a real colour answer (fonts-and-color §4 row, compose row 3).
+- Repeats capped: at least two ads in three on a reason the brand does not run.
+- Judge trace records who judged; More-ads mode builds the inventory if the first set didn't.
+- find-references: one floor (3+ advertisers incl. 3–5 non-competitor leaders); cap per advertiser = one per concept, a third of the set.
+- Production renamed `brain_*` to `brand_knowledge_*` (old names still callable, hidden from discovery): the skill uses the new names and says so in Setup.
+- Still open: the server's reference selection reaches only the first three product screenshots, so later UI ads lack real screens; the kit's logo URL can be an SVG; runs on different servers still pick alike (made-before is per workspace).
+
 ## Appendix — build-time test logs (moved from tests/test-by-hand.md, 20 Oct 2026)
 
 ### Free and cheap reads — 2026-10-19 (no generation)

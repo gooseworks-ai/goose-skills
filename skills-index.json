@@ -6260,7 +6260,7 @@
           "a header image or social graphic in our brand style"
         ],
         "reads": [
-          "brand brain: core rules and facts with their statuses (confirmed / found / guess / unknown) and sources — brain_map, brain_search, brain_open (server research and the claims-gate sign-off write them)",
+          "brand brain: core rules and facts with their statuses (confirmed / found / guess / unknown) and sources — brand_knowledge_browse, brand_knowledge_search, brand_knowledge_read (server research and the claims-gate sign-off write them)",
           "brand kit, learnings incl. do/dont/must rules, products and competitors — brand_read (server research)",
           "the brand's recent organic posts and what drew replies — brand_read organic (server research)",
           "voice-of-customer bank: research/audience/voc-bank.jsonl / .md — research-audience",
@@ -6272,7 +6272,8 @@
           "own and competitor Meta ads — ads_template_read mine / competitor, imported with ads_library_scrape (server research); category leaders' live Ad Library pages (host browser, or the data proxy on a yes); the template library and community templates",
           "saved inspiration outliers — research-market, research-competitors (social_inspiration_library)",
           "kept product photos — the marketer, or the goose-product-photos skill",
-          "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)"
+          "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)",
+          "the brand's own live ads in the Meta and LinkedIn Ad Libraries (host browser, or the data proxy on a yes)"
         ],
         "writes": [
           "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
@@ -6291,9 +6292,9 @@
             "gooseworks:tools_load",
             "gooseworks:card_wait",
             "gooseworks:brand_read",
-            "gooseworks:brain_map",
-            "gooseworks:brain_search",
-            "gooseworks:brain_open",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_search",
+            "gooseworks:brand_knowledge_read",
             "gooseworks:knowledge_search",
             "gooseworks:file_list",
             "gooseworks:file_read",
@@ -6423,7 +6424,7 @@
       "description": "Step of the make-static-ads playbook: composes every ad exactly as GooseWorks' server composer does — the marketer's chat words as the User instructions, the ad's concept as its Variant brief — and records the final prompt and ordered image list per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-compose",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "files": [
         "marketing-agent/skills/make-static-ads-compose/SKILL.md",
         "marketing-agent/skills/make-static-ads-compose/skill.meta.json"
@@ -6432,7 +6433,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.4.3",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6691,7 +6692,7 @@
       "description": "Step of the make-static-ads playbook: judges every render exactly as GooseWorks' server judge does, retries once with the server's own retry note inside the yes already given, then runs the playbook's extra checks, drops what still fails and records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-render-review",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "files": [
         "marketing-agent/skills/make-static-ads-render-review/SKILL.md",
         "marketing-agent/skills/make-static-ads-render-review/skill.meta.json"
@@ -6700,7 +6701,7 @@
         "slug": "make-static-ads-render-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.4.3",
         "playbook": "make-static-ads",
         "tags": [
           "ads",

@@ -7,9 +7,9 @@ Sibling playbooks never call this one; they leave written artifacts, and this pl
 ## 1. The brand brain — facts and their statuses
 
 The rule is `claims-and-policy.md` §2 (hard rule 1). Read once at Step 1, free:
-- `gooseworks:brain_map` (`brand_id`) first — the brand's core rules and the parts of its brain.
-- `gooseworks:brain_search` for this product's claims and proof (`product_id`, `source_types: ["claim","brand_kit","fact","product"]`), and again for offers, reviews and the founder story as the concepts need them. Each result carries a status: `confirmed`, `found`, `guess`, `unknown` (or `not_needed`) and its source.
-- `gooseworks:brain_open` on a record whose wording or source the search result cuts short — the claim is used as recorded, so read it whole.
+- `gooseworks:brand_knowledge_browse` (`brand_id`) first — the brand's core rules and the parts of its brain.
+- `gooseworks:brand_knowledge_search` for this product's claims and proof (`product_id`, `source_types: ["claim","brand_kit","fact","product"]`), and again for offers, reviews and the founder story as the concepts need them. Each result carries a status: `confirmed`, `found`, `guess`, `unknown` (or `not_needed`) and its source.
+- `gooseworks:brand_knowledge_read` on a record whose wording or source the search result cuts short — the claim is used as recorded, so read it whole.
 - Write the claims part of the state note: each fact, its status, its source (brand website, kit, product record, press, review) and its qualifier.
 - `confirmed` → usable; `found` on the brand's website, kit or product record → usable; `found` in press or reviews → only as a quoted, attributed line; `guess`, `unknown` → not usable, listed with what would confirm it.
 - A server without the brain tools: the kit's proof points and value props and the product record count as `found`; nothing else is a claim source.
@@ -53,7 +53,7 @@ Answer under the request (re-read the file, insert, write it all back): `Graphic
 
 ## 7. What this playbook writes for others
 
-- `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`). Per ad: creative id and render id per ratio, placements, on-image text as drawn, primary text A and B, headline, description, CTA, destination, angle (`A-NN`) and type, the concept id (`c1…`), the concept row (persona, reason to buy, proof with its brain status, emotion, framework, visual style), hook source, stage, the template (template id, advertiser and Ad Library link, structure-only yes/no), font, palette, logo choice, the User instructions and the Variant brief, the final prompt and image list per ratio, the judge result per try, copy variants under their parent, claims line, policy line, special-ad-category flag, and `picked` once the human chooses. Then: the test question, the recommended test structure with the stated budget, the cut list with restore-proof, flags. The launch takes its copy from here verbatim (the server stores no copy on creatives).
+- `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`). Per ad: creative id and render id per ratio, placements, on-image text as drawn, primary text A and B, headline, description, CTA, destination, angle (`A-NN`) and type, the concept id (`c1…`), the concept row (persona, reason to buy, proof with its brain status, emotion, framework, visual style), hook source, stage, the template (template id, advertiser and Ad Library link, structure-only yes/no), font, palette, logo choice, the User instructions and the Variant brief, the final prompt and image list per ratio, the inventory sources line (per library: URL or call, ads found, or "not checked" and why), the judge result per try and who judged, copy variants under their parent, claims line, policy line, special-ad-category flag, and `picked` once the human chooses. Then: the test question, the recommended test structure with the stated budget, the cut list with restore-proof, flags. The launch takes its copy from here verbatim (the server stores no copy on creatives).
 - No product imagery request line: when a physical product has no usable photos, the marketer gives real ones or the goose-product-photos skill makes them first (SKILL.md).
 - Lower-case creative tags and the human's picks in GooseWorks (`handoff-format.md` §2).
 - Brand learnings only through the `save-learning` skill (`../../save-learning/SKILL.md`).
