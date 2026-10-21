@@ -328,7 +328,7 @@ test('room_tone takes `source`; the old `from` key is refused before any work', 
   // The manifest: `source` is required inside room_tone, `from` is not a key, `speech` is optional.
   const rt = manifest.inputs.properties.room_tone;
   assert.deepEqual(rt.required, ['source']);
-  assert.deepEqual(Object.keys(rt.properties).sort(), ['gain_db', 'source']);
+  assert.deepEqual(Object.keys(rt.properties).sort(), ['gain_db', 'max_level_db', 'source']); // 1.0.3 adds max_level_db
   assert.ok(!manifest.inputs.required.includes('speech'));
 });
 
