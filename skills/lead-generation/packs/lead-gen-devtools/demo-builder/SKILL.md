@@ -4,7 +4,7 @@ description: Builds personalized demo assets for top prospects using the founder
 disable-model-invocation: true
 user-invocable: true
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, WebFetch, WebSearch
-argument-hint: [prospect-company-name]
+argument-hint: "[prospect-company-name]"
 ---
 
 # Demo Builder
