@@ -2,7 +2,7 @@
   "slug": "make-static-ads-find-references",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "playbook": "make-static-ads",
   "tags": [
     "ads",

@@ -301,6 +301,24 @@ A fresh subagent (effort xhigh) reviewed every file against the "writing for age
 Not changed: the verbatim server text inside `composer.md`, `judge.md`, `structure-blueprint.md`, `font-specimen.md` (parity, Test 9). Departure 6 (content-policy re-compose instead of the server's engine fallback) is kept from Round 14, now marked in the compose ledger.
 Outside this skill (follow-ups): goose-ads should route static requests here; the server's MCP instruction "static ads: ads_template_read … then ads_generate" should point at this flow.
 
+## Round 17 — production run skipped the research (Juicebox, 20–21 Oct, v0.4.3)
+
+Akhil ran 0.4.2 on production ("create static ads for juicebox brand", then "make 5 more"). The session loaded the skill and asked the Step 2 form, then skipped most of the research and checks. 4 of 6 ads repeated messages Juicebox already runs on LinkedIn, in the kit's blue instead of the brand's real purple; about 240 of 420 credits went to repeats. A separate check found that local and production runs pick the same three Loxo ads and the same website facts, so the same inputs give the same ads.
+
+| # | What happened | Why the skill allowed it | Done |
+|---|---|---|---|
+| 1 | Never read the brand's live ads; wrote "brand has no running ads" after finding nothing in GooseWorks. Never opened `references-and-remix.md` | The brand's own ads were a parenthesis inside Step 1's long reads line; "read or named as missing" let "nothing on file" pass | Step 1 split: 1b "What the brand already runs" with its own done line (Meta + LinkedIn libraries + saved ads, or the library named as empty); §2a lists the live libraries and says GooseWorks records prove nothing |
+| 2 | "your choice show me the final ads only create one ad" taken as license to skip Steps 1, 3, 7, 10 | No rule said short answers only skip the display | Hard rule 5 |
+| 3 | No concept grid; angles taken from the website's headline stats | Taxonomy never loaded; grid not required before the quote | Step 3 loads both references, shows the grid with the coverage note before any quote; concept-grid drafts 2× candidates and checks headline facts against the inventory |
+| 4 | Claims check skipped | Step 7 didn't load its reference | Step 7 loads `claims-and-policy.md` |
+| 5 | The agent judged its own renders | "Blind judge" was a leading word without the rule | Step 10 names a fresh subagent, never the composing agent |
+| 6 | "Make 5 more" skipped Steps 1–4 | No mode for a follow-up set | "More ads" mode: a fresh batch; this chat's ads join the made-before list |
+| 7 | B2B brand's ads live on LinkedIn | Only the Meta library was read | LinkedIn Ad Library added for B2B brands |
+| 8 | Same inputs → same templates (all three from Loxo; local and prod identical) | Suggestions always took the longest-running ad; one tracked competitor | find-references: 3+ advertisers incl. a non-competitor leader; at most one suggestion per advertiser; prefer the layout furthest from the inventory |
+| 9 | Kit colours didn't match the brand's real ads | Colour question only knew the kit | Step 2 suggests the running ads' palette when it differs |
+
+Also: `tests/test-by-hand.md` setup now links the flat layout; Test 10 covers this failure. Not changed: `requires_skills` keeps `claims-gate` because the shared steps it requires need it (the flat-list rule).
+
 ## Appendix — build-time test logs (moved from tests/test-by-hand.md, 20 Oct 2026)
 
 ### Free and cheap reads — 2026-10-19 (no generation)

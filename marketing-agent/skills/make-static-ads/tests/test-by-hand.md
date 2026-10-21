@@ -3,7 +3,7 @@
 ## Setup
 
 1. Connect GooseWorks **staging** to your agent.
-2. Link the playbook: `ln -s "$PWD/marketing-agent/playbooks/make-static-ads" ~/.claude/skills/make-static-ads`
+2. Link the skills side by side, as `marketing-agent/README.md` (How to test) says: every folder in `marketing-agent/skills/` into one `.claude/skills/`, so the playbook can open its steps at `../make-static-ads-<step>/`.
 3. Generation spends credits. Keep paid tests small (two or three ads) and say yes only to quotes you expect.
 
 ## Test 1 — the core ask (DTC)
@@ -68,3 +68,9 @@ The same brand, product, template and words, made twice: once in the GooseWorks 
 3. **Blind judge:** give a fresh subagent (or a person) the renders side by side, unlabelled and shuffled, with `references/judge.md` §3–4 and the question "which would you run, and why?".
 
 **Passes if:** the playbook's ads judge at least as well as the app's on the server checklist, and the blind pick prefers the playbook's or calls them even; every prompt difference traces to a named improvement; nothing the brain marks `guess` or `unknown` appears on the playbook's side. Any rule difference that is not an improvement is a bug in this playbook's copy of the server.
+
+## Test 10 — short answers don't skip the research (Juicebox, 21 Oct)
+
+Brand: a B2B brand with live ads on Meta or LinkedIn but nothing in GooseWorks (Juicebox on production). Answer the template question with "your choice, show me the final ads only, make one ad". Then say "make 5 more".
+**Passes if:** before any quote it reads the brand's live ads in the Meta and LinkedIn Ad Libraries and shows the concept inventory; the concept grid and coverage note come before the quote; the claims check runs; a fresh subagent judges each render; the "5 more" set repeats no reason, template or example content from the first ad or from the brand's running ads; the colour question suggests the running ads' palette when it differs from the kit.
+**Telltale failures:** "brand has no running ads" in the batch file while the libraries show ads; angles taken straight from the website's headline stats; the agent judging its own render.
