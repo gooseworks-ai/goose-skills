@@ -35,7 +35,7 @@ Pick by the ad's visual style too: a lo-fi native ad wants a plain or system-lik
 
 ## 3. Close free matches for common paid brand fonts
 
-For the layers method of copy variants only (the font specimen follows its own server alias rules, `font-specimen.md` §3).
+The Step 2 suggestion when the brand's font isn't on Google Fonts (the match is set as a pairing, compose departure 3), and the layers method of copy variants. The font specimen still follows its own server alias rules (`font-specimen.md` §3).
 
 | Paid font | Free match |
 |---|---|
@@ -46,7 +46,7 @@ For the layers method of copy variants only (the font specimen follows its own s
 | GT America, Graphik | Figtree |
 | Canela, Recoleta | Fraunces, Young Serif |
 | Didot, Bodoni | Bodoni Moda |
-| Garamond | EB Garamond |
+| Garamond, ITC Garamond (incl. Condensed) | EB Garamond |
 | Circular | DM Sans |
 | Brandon Grotesque | Josefin Sans |
 

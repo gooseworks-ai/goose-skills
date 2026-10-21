@@ -17,6 +17,7 @@
 - Fenced blocks are **verbatim server text**. `«...»` marks a value you substitute. Everything else (including `{{ref:ID}}`, `Image N`, quotes, dashes) is literal.
 - "Include IF …" means the server adds that line only under that condition. Lines are joined with a single newline (`\n`) unless stated.
 - Per ad ("creative"), run in this order. Do not skip or reorder.
+- **`scripts/compose.py` does rows 6, 8, 9 (insertion) and 10 for you.** Write the ad's values to `ad.json`, run `python3 scripts/compose.py input ad.json`, answer that text as the composer (row 7) into `answer.json`, then run `python3 scripts/compose.py final ad.json answer.json` (`scripts/README.md`). The fenced text below stays the source of truth; `scripts/test_compose.py` checks the script against it.
 
 | # | Step | Section |
 |---|---|---|
@@ -146,7 +147,7 @@ Build this list **in this order**. The order is reused for the final images.
 
 ## 5. The composer instruction set (verbatim, with conditionals)
 
-Build `composeInput` as these lines joined by `\n`, in this order. `structureOnly` = §2.2 path is structure-only AND a blueprint exists.
+`scripts/compose.py input` assembles this section and §6 (§0). Build `composeInput` as these lines joined by `\n`, in this order. `structureOnly` = §2.2 path is structure-only AND a blueprint exists.
 
 **Line 1**
 
@@ -303,7 +304,7 @@ Then an empty line, then the **context** (§6).
 
 ## 6. The context block (`buildComposeContext`, 1292)
 
-Definitions: `adProducts` = `kit.products` without `adEligibility = "hidden"`. `productLed` as in §5. Lines with no value are omitted.
+Assembled by `scripts/compose.py input` together with §5 (§0). Definitions: `adProducts` = `kit.products` without `adEligibility = "hidden"`. `productLed` as in §5. Lines with no value are omitted.
 
 ### 6.1 `## Source template` (omitted entirely when structure-only)
 
@@ -566,6 +567,8 @@ After answering:
 - **Placeholder check.** Every `{{ref:ID}}` in `prompt` other than `{{ref:logo}}` must be in `reference_ids`. The server fails the whole ad here (`Compose prompt referenced unselected asset id(s)`). **Agent adaptation:** fix the object (add the ID or remove the placeholder) and re-check; never send a prompt that fails this.
 
 ## 8. From the composer's answer to the final prompt
+
+`scripts/compose.py final` does all of §8, the specimen insertion of §9 and §10, and prints the `ads_render` arguments of §11 per ratio (§0).
 
 ### 8.1 Gate the references (`selectTargetReferenceAssets` 605)
 

@@ -6181,7 +6181,7 @@
       "description": "Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads (\"ten fresh ads this week\", \"make me some ads\", \"ads for our sale\"); \"my ads all look the same\"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads",
-      "version": "0.4.3",
+      "version": "0.4.4",
       "files": [
         "marketing-agent/skills/make-static-ads/SKILL.md",
         "marketing-agent/skills/make-static-ads/references/angles-and-hooks.md",
@@ -6198,8 +6198,13 @@
         "marketing-agent/skills/make-static-ads/references/references-and-remix.md",
         "marketing-agent/skills/make-static-ads/references/review-rubric.md",
         "marketing-agent/skills/make-static-ads/references/structure-blueprint.md",
+        "marketing-agent/skills/make-static-ads/scripts/README.md",
+        "marketing-agent/skills/make-static-ads/scripts/compose.py",
+        "marketing-agent/skills/make-static-ads/scripts/example-ad.json",
+        "marketing-agent/skills/make-static-ads/scripts/example-answer.json",
         "marketing-agent/skills/make-static-ads/scripts/schemes.py",
         "marketing-agent/skills/make-static-ads/scripts/specimen.py",
+        "marketing-agent/skills/make-static-ads/scripts/test_compose.py",
         "marketing-agent/skills/make-static-ads/server-needs.md",
         "marketing-agent/skills/make-static-ads/skill.meta.json",
         "marketing-agent/skills/make-static-ads/tests/test-by-hand.md"
@@ -6208,7 +6213,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.4.3",
+        "version": "0.4.4",
         "tags": [
           "ads",
           "design"
@@ -6424,7 +6429,7 @@
       "description": "Step of the make-static-ads playbook: composes every ad exactly as GooseWorks' server composer does — the marketer's chat words as the User instructions, the ad's concept as its Variant brief — and records the final prompt and ordered image list per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-compose",
-      "version": "0.4.3",
+      "version": "0.4.4",
       "files": [
         "marketing-agent/skills/make-static-ads-compose/SKILL.md",
         "marketing-agent/skills/make-static-ads-compose/skill.meta.json"
@@ -6433,7 +6438,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.3",
+        "version": "0.4.4",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6556,7 +6561,7 @@
       "description": "Step of the make-static-ads playbook: finds fresh, real static ads running on Meta — the brand's own, its competitors' and category leaders' — plus library templates that fit each ad's slot, shows them as a template gallery tagged with the concept each would carry, lets the marketer pick (or picks likely-working ones the brand hasn't tried), registers Meta ads that aren't templates yet, and records whether each ad runs structure-only. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-find-references",
-      "version": "0.4.3",
+      "version": "0.4.4",
       "files": [
         "marketing-agent/skills/make-static-ads-find-references/SKILL.md",
         "marketing-agent/skills/make-static-ads-find-references/skill.meta.json"
@@ -6565,7 +6570,7 @@
         "slug": "make-static-ads-find-references",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.3",
+        "version": "0.4.4",
         "playbook": "make-static-ads",
         "tags": [
           "ads",

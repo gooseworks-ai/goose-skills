@@ -2,7 +2,7 @@
 name: make-static-ads-compose
 description: >-
   Step of the make-static-ads playbook: composes every ad exactly as GooseWorks' server composer does — the marketer's chat words as the User instructions, the ad's concept as its Variant brief — and records the final prompt and ordered image list per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.
-version: 0.4.3
+version: 0.4.4
 ---
 
 # compose
@@ -10,7 +10,7 @@ version: 0.4.3
 The method is `../make-static-ads/references/composer.md`: the server's own rules, copied verbatim. This atom says how this playbook fills the composer's slots. **The composer input is `composer.md` §5–§6 filled from the sources below, plus the departures listed in "Playbook departures"; nothing more.**
 
 **Reads:** per ad, its grid row (concept-grid) and the hook direction from its copy row (ad-copy); its template (find-references), read with `gooseworks:ads_template_read` `template_id`; the brand kit, learnings and featured product as `composer.md` §1 lists them (once per batch); the Step 2 answers (logo, colours, font); `../make-static-ads/references/structure-blueprint.md`, `../make-static-ads/references/font-specimen.md`, `../make-static-ads/references/fonts-and-color.md`.
-**Writes:** per ad: the Variant brief, the assembled composer input (a file on a shell host), the composer's six-field answer, and per ratio the final prompt and the ordered `image_urls`; the font specimen (or why none); structure-only yes/no. All of it goes into the batch file.
+**Writes:** per ad: `ad.json` (the ad's inputs, schema in `../make-static-ads/scripts/README.md`), the composer input from `compose.py input`, `answer.json` (the composer's six-field answer), and the `compose.py final` output (per ratio the final prompt, the ordered `image_urls` and the dry-run `ads_render` arguments); the font specimen (or why none); structure-only yes/no. All of it goes into the batch file.
 
 ## Order of work, per ad
 
@@ -23,10 +23,10 @@ Run `composer.md` §0's table, rows 1–10, in order. Row 11 (the quoted `ads_re
 | 3 Colour (§3) | Brand colours → §3 as written, once per batch, seed = the batch file name (`../make-static-ads/scripts/schemes.py`). Fresh palette → the agent's palette per ad (`fonts-and-color.md` §4) as the assigned scheme. Logo colours are never changed (`fonts-and-color.md` §5). Running-ads colours → that palette per ad (`../make-static-ads/references/fonts-and-color.md` §4) as the assigned scheme. |
 | 4 References (§4) | As written. A structure-only template's image is never in the list. |
 | 5 Blueprint | Structure-only ads only (`structure-blueprint.md`). A direct competitor's template ("layout only", `../make-static-ads/references/references-and-remix.md` §5) gets the reduced blueprint (departure 2). |
-| 6 Composer input (§5, §6) | **User instructions (§6.6):** the marketer's own chat words for this ask, trimmed, unchanged — never rewritten, summarised or added to. Words meant for one ad only ("make #3 darker") go to that ad only. **Variant brief (§6.7, the brief form):** below. Leave out §6.6's "Messaging angle for THIS ad" line; the Variant brief already carries the concept, so it is said once. **Proof points:** departure 1. **Typography (§6.3):** as written, except departures 3 and 4. |
-| 7 Answer as the composer (§7) | Answer the assembled input literally; the composer writes the on-image words under its own text-density, copy and claims rules. Run the placeholder check. |
-| 8 Final prompt (§8) | As written. |
-| 9 Font specimen (§9) | `font-specimen.md`, when eligible (`../make-static-ads/scripts/specimen.py`). |
+| 6 Composer input (§5, §6) | **Write `ad.json`** with the values below, then run `python3 ../make-static-ads/scripts/compose.py input ad.json` and use its output word for word; never retype or shorten it. Departures go in as `ad.json` fields (`proof_points`, `font: "pairing"` / `"none"`, `template.brand_owned`, `structure.reduced_mechanic`, `content_policy_recompose`). No shell: assemble `composer.md` §5–§6 by hand, in full. **User instructions (§6.6):** the marketer's own chat words for this ask, trimmed, unchanged — never rewritten, summarised or added to. Words meant for one ad only ("make #3 darker") go to that ad only. **Variant brief (§6.7, the brief form):** below. Leave out §6.6's "Messaging angle for THIS ad" line; the Variant brief already carries the concept, so it is said once. **Proof points:** departure 1. **Typography (§6.3):** as written, except departures 3 and 4. |
+| 7 Answer as the composer (§7) | Answer the assembled input literally, as one JSON object saved to `answer.json`; the composer writes the on-image words under its own text-density, copy and claims rules. |
+| 8 Final prompt (§8) | Run `python3 ../make-static-ads/scripts/compose.py final ad.json answer.json`. It runs the placeholder check, gates and orders the references, builds the manifest, resolves `{{ref:ID}}`, adds the CANVAS ADAPTATION block per ratio and prints a dry-run `ads_render` object per ratio. On an error, fix `answer.json` and run it again. Use its prompts and `image_urls` unchanged. |
+| 9 Font specimen (§9) | `font-specimen.md`, when the `final` output says eligible: make the card from its `specimen_input_prompt` (`../make-static-ads/scripts/specimen.py`), set `font_specimen_url` in `ad.json`, run `final` again. |
 | 10 Cap and ratios (§10) | One base prompt per ratio the ad's placements need. |
 
 ## The Variant brief — one per ad
@@ -63,7 +63,7 @@ Each one is marked in the batch file where it applied. Everything not listed her
 |---|---|---|
 | 1 | `composer.md` §6.2 | **Proof always reaches the composer.** When the brand has many products, §6.2 leaves proof points, value props and audience out of the brand block. Add them back for the featured product under `Proof points:` — its usable facts only. |
 | 2 | `structure-blueprint.md` (signature mechanic) | **Direct competitor → layout only.** Before composing, cut the blueprint's `signature_mechanic` down to the kind of mechanic ("a search bar with a typed query", "a day calendar", "one portrait photo with a big headline") and drop its scene. The picture idea, prop and photo treatment come from the concept, never the competitor; "preserve the signature mechanic" applies to the reduced mechanic. The judge gets the same reduced blueprint (the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`)). |
-| 3 | `composer.md` §6.3 | **Typography, plain system face.** When the §6.3 family for a designed headline resolves to a plain system face (Inter, Arial, Helvetica, Roboto, a generic sans) and the marketer picked a pairing from `../make-static-ads/references/fonts-and-color.md` at Step 2: put that pairing's families in the `Typography:` line (descriptor from the pairing's "feel") and render the specimen from it. Native frames (notes-app, tweet, text message) keep the system face. |
+| 3 | `composer.md` §6.3 | **Typography, plain system face or unusable brand font.** When the §6.3 family for a designed headline resolves to a plain system face (Inter, Arial, Helvetica, Roboto, a generic sans), or to a brand font with no Google Fonts match or metric clone (set `brand_font_unavailable: true` in `ad.json`), and the marketer picked a pairing from `../make-static-ads/references/fonts-and-color.md` at Step 2: put that pairing's families in the `Typography:` line (descriptor from the pairing's "feel") and render the specimen from it. Native frames (notes-app, tweet, text message) keep the system face. |
 | 4 | `composer.md` §6.3 | **No specific font** (Step 2): replace the TYPOGRAPHY instruction with "set all text in a clean, legible typeface that suits the brand and the layout"; no family, no specimen. |
 | 5 | `composer.md` §2.2 | **Structure-only follows ownership** (row 2). |
 | 6 | `composer.md` §11 (content-policy fallback) | A render the image model refuses is re-composed without the line or visual that triggered it (the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`) step 3), not sent to a fallback engine. |

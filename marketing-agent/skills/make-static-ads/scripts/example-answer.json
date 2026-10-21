@@ -1,0 +1,8 @@
+{
+  "prompt": "Recreate the source ad's countertop hero layout for tidewell. Place the Kitchen Spray Starter Kit from {{ref:product-1}} upright on a pale oak kitchen counter in soft Sunday-morning window light, reproduced faithfully: the amber glass bottle with its white trigger, label facing forward, at the true 500 ml scale shown in {{ref:size-reference-1}}. Background field #f6f1e7. Headline top-left in Fraunces, set in #1d2a2a: \"Clean without the fumes.\" A small pill bottom-right filled #1f5f5b with white text in Work Sans: \"Refill for years\". Place the brand's real logo from {{ref:logo}} in its own colours top-right, directly on the background. No gloves, no bucket, no plastic bottles.",
+  "title": "Fume-Free Sunday",
+  "source_media": "product",
+  "target_media": "product",
+  "adapted_subject": "The Tidewell amber glass spray bottle stands on the kitchen counter in place of the source product.",
+  "reference_ids": ["product-1", "size-reference-1"]
+}

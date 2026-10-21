@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads ("ten fresh ads this week", "make me some ads", "ads for our sale"); "my ads all look the same"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).
-version: 0.4.3
+version: 0.4.4
 ---
 
 # make-static-ads
@@ -42,7 +42,7 @@ The number of ads and placements chosen at Step 2. **A concept** = one persona, 
 | Mode | Trigger | What runs |
 |---|---|---|
 | Fresh batch | new ads | Steps 1–12 |
-| More ads | "make 5 more", "another set" later in the same chat | Steps 1–12 as a fresh batch. Reuse this chat's Step 1 reads and Step 2 answers (ask only a new count). Reuse the Step 1b inventory only if this chat built it; otherwise build it now. Every ad made earlier in this chat joins the made-before list |
+| More ads | "make 5 more", "another set" later in the same chat | Steps 1–12 as a fresh batch. Reuse this chat's Step 1 reads and Step 2 answers (ask only a new count). Reuse the Step 1b inventory only if this chat built it; otherwise build it now. Every ad made earlier in this chat joins the made-before list, and the colour rotation continues from where the last set stopped (`start_offset`, `composer.md` §3) |
 | Iterate on a winner | "more like this ad" | Steps 1–12; the grid keeps the winner's reason and proof and changes one named lever per ad |
 | Rotation | an open `Rotation needed: for make-static-ads` line in `ads/campaigns/<slug>/rotation-requests.md`, or pasted | Steps 1–12, the reason taken from the request (the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`) step 7) |
 | Copy variants | "same image, different text / font" on an approved image | read the creative (`gooseworks:ads_creative_read`), then Step 11 |
@@ -62,7 +62,7 @@ Done when the inventory has one line per source (Meta, each other platform the b
 Reads: the state note, the concept inventory, the kit. Writes: the brief and the answers. Use the host's question form (`AskUserQuestion` or its equivalent; in plain chat, one numbered message). Each question has a suggested answer first, so "use your suggestions" is a full reply. Ask:
 1. **Logo:** with the brand logo / no logo.
 2. **Colours:** brand colours / the colours of the brand's running ads (offered, and suggested first with the reason, when Step 1b found they differ from the kit's) / the template's colours / a fresh palette (different on every ad).
-3. **Font:** the brand font (offered only when it is on Google Fonts or has a metric clone, `references/fonts-and-color.md` §1) / one of 2–3 fonts that suit the brand (§2) / no specific font.
+3. **Font:** the brand font (offered only when it is on Google Fonts or has a metric clone, `references/fonts-and-color.md` §1) / when it isn't, the closest free match to it, suggested first (§3) / one of 2–3 fonts that suit the brand (§2) / no specific font. Read the brand's real font from the full kit (`kit.fonts`), not the server's guess (`typography.source: "mapped"`).
 4. **Templates:** you pick from a gallery of real ads running on Meta / I pick and show you what I chose.
 5. **How many ads and where** — suggested: 3 ads, Meta feed 4:5. Skip it when the ask already says. This is the playbook's only default count.
 
@@ -98,7 +98,7 @@ Reads: each render, its compose record. Writes: verdicts, retries, the drop list
 For the one or two images the marketer likes most, offer the `make-static-ads-copy-variants` skill (`../make-static-ads-copy-variants/SKILL.md`): the same picture with other hooks or another font. They test copy, not concepts; each paid step gets its own yes.
 
 ### 12. Package and hand over
-Load `references/handoff-format.md`; re-read the product record. Writes: lower-case tags on every creative (`gooseworks:ads_creative_update`, read-merge-write); the batch file `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`); a `Rotation ready:` answer under a served rotation request; the hand-off in chat in plain words, with each creative's link. Ask which to run. Offer a standing weekly refresh only when spend is steady and creative is fatiguing, created paused with `gooseworks:automation_upsert` (the `spend-gate` skill (`../spend-gate/SKILL.md`), automation rule).
+Load `references/handoff-format.md`; re-read the product record. Writes: lower-case tags on every creative, always including `made-by:make-static-ads` (`gooseworks:ads_creative_update`, read-merge-write; tag list in `references/handoff-format.md` §2); the batch file `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`); a `Rotation ready:` answer under a served rotation request; the hand-off in chat in plain words, with each creative's link. Ask which to run. Offer a standing weekly refresh only when spend is steady and creative is fatiguing, created paused with `gooseworks:automation_upsert` (the `spend-gate` skill (`../spend-gate/SKILL.md`), automation rule).
 
 ## Approval gates
 
