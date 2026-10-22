@@ -215,3 +215,10 @@ Round 10 alignment: the scoped sign-off ask now uses the claims gate's exact con
 | "(AGENTS §2 rule 9)" runtime pointer into a builder doc; "pillar 11" in references/formats.md | Both removed. |
 | Done when was a test oracle ("edits rather than starts over", already in tests/test-by-hand.md) | Checkable per-path bars: units table, hook + 2 alternatives, brief + recorded outline yes + publish kit, redline with reasons, saved template; on every path an edit note, one claims block and every gap tagged. |
 | Description 1,018 characters with synonyms and a deliverables list | 693 characters: what it is, one trigger per branch (carousel copy kept for routing case R46), the Not-for lines. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #1 (shared, spend-gate) "a probe with a yes, then a ceiling" contradicted the one-yes rule | SKILL.md Money and the content-brief step point to spend-gate branch B only. |
+| Codex check: limitations, our own test answers and release-note availability came from the product record | `references/fact-rules.md` and `references/formats.md`: only live docs or pricing pages, a fact claims-gate §1.7–1.9 allows, or the human in this run saying it may be public. |

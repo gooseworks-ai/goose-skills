@@ -39,6 +39,7 @@ A **usable fact** is a fact the table below allows, worded as recorded. Every fa
 - Numbers that go stale (ratings, review counts, awards, offers) are flagged "verify current".
 - **Plain product facts** (name, price with currency, sizes, colours, materials, what's in the box, how to use) are always usable.
 - Drug or medical language for a non-drug ("treats", "heals", "cures") is never usable, whatever its status.
+- **Internal items never:** a fact marked `is_public: false` (no label counts as internal; without the brain tools, one a `Not public —` or `dont` rule covers) stays out of every ad, whatever its status.
 
 ### Tiers — classify every claim-bearing span
 
@@ -71,7 +72,7 @@ Numbers (%, hours, counts, ratings, "2 years", "3×") · superlatives and absolu
 
 Offers, prices and stock are checked against the **product record and the marketer's words**, not the claims list: price and currency exact, terms not narrowed ("first order" ≠ "first jar"), end date shown, no "was" price without a real prior price, no "limited" without a real limit. Re-read the product record just before handing over.
 
-Anything that fails: **cut it before the human sees the ad**, and list it in the hand-off as `cut line → the proof that would restore it` (e.g. "'clears breakouts in 7 days' → a study or confirmed claim stating the 7-day result for this product"). Confirming a new claim is the human's call: a claim the marketer confirms in this chat is saved in their words through the `save-learning` skill (`../../save-learning/SKILL.md`) before it is used.
+Anything that fails: **cut it before the human sees the ad**, and list it in the hand-off as `cut line → the proof that would restore it` (e.g. "'clears breakouts in 7 days' → a study or confirmed claim stating the 7-day result for this product"). Confirming a new claim is the human's call: a claim the marketer confirms in this chat is saved in their words through the `save-learning` skill (`../../save-learning/SKILL.md`) before it is used. A proof-required type (the "Proof required" column of [the `claims-gate` skill's claim types](../../claims-gate/claim-types.md)) is never restored by an OK: only its proof does, and the line is checked again. Before each use, its evidence and any permission are reopened by that file's § Reopening proof; fail closed.
 
 ## 3. Platform, category and disclosure rules
 

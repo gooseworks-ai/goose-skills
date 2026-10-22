@@ -227,3 +227,9 @@ Second pass (independent review of this fix, effort high):
 | B6 The Monday template had facts without dated, clickable sources | Source links beside each material fact (section source lines, a Source column, inline in calls and make-next), linked Sources list; the rule points to write-report §1, which now says an export links to the marketer's own file under a readable name. |
 | B8 "Learnings proposed (saved to your brand…)" was wrong in local mode | "kept only after you've seen them". |
 | B10 Meta descriptions said `foundation/guide §5` | Now the marketing-guide skill (`../marketing-guide/SKILL.md`) §5. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #7 The Monday template marked Meta- and Google-only shut-off and exclusion calls "confirmed" while asking for paid changes | Calls 2 and 3 are now likely, each with a "would change if" naming the missing store check; the label rule says platform-only evidence is likely at most until the store, billing or CRM agrees (`tests-and-learnings.md` § How sure). Call 4 still lacks how sure / would change if: that is template cleanup (round-3 items, tracked separately). |

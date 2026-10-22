@@ -7,7 +7,7 @@ description: >-
   over, then saves the report to the brand. Use alone when you already have the findings and their
   sources; otherwise run the playbook for the job (e.g. research-market, research-competitors,
   plan-campaign).
-version: 0.1.1
+version: 0.1.2
 ---
 
 # write-report
@@ -22,7 +22,7 @@ Every playbook that hands over research, a plan, a strategy or a report writes i
 1. **Title**: what it is, for which brand, the date. Example: "GooseWorks — market research, 18 Oct 2026".
 2. **In short**, **at most 150 words**, in this order:
    - **What we looked at:** one line — scope, sources, date, and the main limit on the evidence (one review site, one country's search results, no access to the ad account).
-   - **2–3 numbered key findings**, each with its "so what" for this brand and how sure, in the body's own word: **confirmed** (two independent sources, or the brand's own data), **likely** (one good source or a clear pattern), **first look** (one sample, place or read; needs a re-check).
+   - **2–3 numbered key findings**, each with its "so what" for this brand and how sure, in the body's own word: **confirmed** (two independent sources, or the brand's own data; ad platforms' own counts are never the brand's data and never independent of each other, so platform-only evidence is likely at most, however many platforms agree, until the store, billing or CRM does), **likely** (one good source or a clear pattern), **first look** (one sample, place or read; needs a re-check).
    - **So, do this first (because of 1 and 2):** the one move, who does it, by when, naming the findings it rests on. When they are only a first look, or the move needs something not yet confirmed, the first move closes that gap (confirm X, run the test, get the data).
    - Only when they apply, one line each: what changed since the last report; where a sibling report disagrees (below).
 3. **Decisions for you**: a short dated box — each decision with your recommendation, the section it rests on ("see How they compare"), and the date it matters by, if any.

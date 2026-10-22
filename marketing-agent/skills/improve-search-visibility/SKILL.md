@@ -9,7 +9,7 @@ description: >-
   fixes to apply this week. Never edits anything live. Not for writing the full page — use
   make-content; not Amazon or marketplace listings (not covered yet); not paid search — use
   run-paid-campaigns.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # improve-search-visibility
@@ -38,7 +38,7 @@ Do all of `references/free-pass.md`, for the brand and its main rivals, without 
 ### 2. One message: the answer, the report, and the decisions left
 Write and deliver the report first (step 5's writing and delivery rules) — in the same turn, before this message, never "say the word and I'll write it". Then the message, in plain words, no tool names, ids or codes. On a repeat run it opens with **since last time** in 3–5 lines (run-memory step 4): today's count against the last check's on the same questions, which of last month's fixes shipped and what moved after them, who moved in. Then **counts first** for what was checked this run ("ChatGPT, asked signed out today: named on 0 of 8 buying questions, 5 of 5 brand questions"; with no browser: "web search today: on page one for 1 of 8 buying questions" and ChatGPT "not checked today — last checked 18 Oct"), who wins instead, the one pattern, the five fixes, the report link, and what the free pass could not see — including that signed-out checks are not what a signed-in buyer sees. Then only the decisions left, together; the marketer's answers update the same report:
 - **Which buyer do we want to win?** — whenever the site shows more than one positioning or audience: name each, recommend one with the reason, and keep any fix that would retitle pages from one to the other conditional on the answer.
-- **One credit yes** for the paid top-up, through the `spend-gate` skill (`../spend-gate/SKILL.md`) proxy branch: exact Google page-one results for the question set (and the site's index check), as "up to N credits", an estimate from the credits log — or, with no history, say what it adds and let the marketer name the ceiling; the first lookup runs as the probe inside that same yes. Never call the price-check tool for these lookups; it doesn't price them. Skip the top-up entirely if the free pass already answers the ask.
+- **One credit yes** for the paid top-up, through the `spend-gate` skill (`../spend-gate/SKILL.md`) proxy branch: exact Google page-one results for the question set (and the site's index check), as "up to N credits"; the ceiling and probe rules are that skill's. Never call the price-check tool for these lookups; it doesn't price them. Skip the top-up entirely if the free pass already answers the ask.
 - **Facts only the marketer knows**, only if a fix depends on them: who can change the site and how many pages a month; may pages name competitors; for local, the locations; optional, Search Console (plain click-by-click steps in `references/citation-protocol.md`).
 - **The question set**, shown for edits that apply to the top-up and the next runs — not a gate before the answer.
 - Hosts without a browser: offer the short paste set for the AI rows instead of running them.

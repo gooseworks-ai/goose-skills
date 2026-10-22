@@ -447,3 +447,9 @@ Sources as in research-market's Round 6. Old skills were read as reference only.
 |---|---|
 | B5 "We don't make video ads yet" in the report's For-you rule; metadata named make-video-ads | A video idea is offered as the next job with the goose-video skill; unreleased producer removed. |
 | B10 "worker briefs: `atoms/`" | "its step skills (`research-competitors-<step>`)". |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #1 (shared, spend-gate) restated the probe | `server-needs.md` #9 points to spend-gate branch B (a numeric ceiling). |

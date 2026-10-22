@@ -7,7 +7,7 @@ description: >-
   this creator" or "write a creator brief". Free research first; one credit yes only to vet deeper.
   Drafts only: contacts nobody, agrees nothing, moves no money. Not for AI-made UGC-style video —
   use goose-video; if unsure, ask: a real person filming, or AI-made?
-version: 0.4.1
+version: 0.4.2
 ---
 
 # work-with-creators
@@ -43,7 +43,7 @@ Creator research answers three things for the marketer: who is worth paying, at 
 
 6. **Write and deliver** through [the `write-report` skill](../write-report/SKILL.md), as `gooseworks-reports/<brand-slug>/<D>-creators.md`; the roster, near-misses and briefs under `creators/` (paths below). Then run-memory's End steps ([references/run-memory.md](references/run-memory.md)): the run record with the counts, wave 1 (or the renew / cut calls) as recommendations with their wave criteria as the test — no creator names or handles.
 
-7. **One message: the draft and the decisions.** Three lines — the best pick and why, the first move, the link. Then only what changes the answer: the budget (it changes the mix; the report shows three sizes); gift unit cost if the plan gifts; names to strike; the claims lines the briefs need (claims-gate scoped sign-off); a **paid top-up** to vet deeper — say what it adds (full post history and views where pages hide them, comment reads at volume, transcripts for claims and safety, audience countries for the top picks, public business contacts for approved names), the estimate, and one yes to "up to N credits" ([the `spend-gate` skill](../spend-gate/SKILL.md) branch B, the probe inside it); roster updates since last time (asked once, never required); a repeat only if it would help this brand (step 9).
+7. **One message: the draft and the decisions.** Three lines — the best pick and why, the first move, the link. Then only what changes the answer: the budget (it changes the mix; the report shows three sizes); gift unit cost if the plan gifts; names to strike; the claims lines the briefs need (claims-gate scoped sign-off); a **paid top-up** to vet deeper — say what it adds (full post history and views where pages hide them, comment reads at volume, transcripts for claims and safety, audience countries for the top picks, public business contacts for approved names), the estimate, and one yes to "up to N credits" ([the `spend-gate` skill](../spend-gate/SKILL.md) branch B); roster updates since last time (asked once, never required); a repeat only if it would help this brand (step 9).
 
 8. **On their answers.** Re-price on the real budget and unit cost, run the top-up inside its ceiling (log every charge), finish briefs and first messages for the approved names, re-deliver the report. Wave results come back through the outcomes ledger (and, once a wave's read window is over, the next run — same job `creator programme`, same `wave-<n>` subject — judges each recommendation by its id against its criterion); a rule the marketer states goes through [the `save-learning` skill](../save-learning/SKILL.md) as `[creators YYYY-MM-DD]`.
 

@@ -49,7 +49,7 @@ What the playbook needs that the GooseWorks MCP does not have today (staging too
 ## 7. Price check for scrapecreators calls — LOW
 
 - **Need:** `gooseworks:data_price_provider` covers fal and ElevenLabs only. The playbook cannot quote a scrapecreators run in credits before asking the human.
-- **Meanwhile:** the shared spend-gate's proxy branch: a yes to one probe (the site-wide `site:` lookup, which also answers "indexed?"), then a yes to a ceiling "up to N credits" labelled an estimate, stop at it, log every charge. The playbook never shows its own sum as a price.
+- **Meanwhile:** the shared spend-gate's proxy branch (a numeric ceiling; the site-wide `site:` lookup, which also answers "indexed?", is the first read). The playbook never shows its own sum as a price.
 
 ## 8. Keyword and SEO data behind the proxy — HIGH (the biggest craft gap in the 19 Oct old-vs-new review)
 

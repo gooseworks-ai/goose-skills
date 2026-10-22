@@ -13,7 +13,7 @@ One template for every run, with the marketer present or scheduled. It is a repo
 **What we looked at:** 6–12 Oct, settled through 10 Oct: the ads GooseWorks made (31% of Meta spend), your Meta and Google exports, store sales from Monday's read. Not visible: frequency. A customer may cost $40 (the plan).
 Since last time: raising "Sales – Broad" worked; the "Problem hook" swap can't be read until 21 Oct.
 1. Real sales are below break-even: $1.90 of new-customer revenue per ad dollar, under the $2.50 you need (**confirmed**, store-joined).
-2. "UGC unboxing" spent $128, over 3× your limit, with no orders (**confirmed**).
+2. "UGC unboxing" spent $128, over 3× your limit, with no orders (**likely**: Meta's own count).
 3. Clear Serum runs out in about 6 days; restock 24 Oct (**likely**, from your stock note).
 **So, do this first (because of 2 and 3):** pause "UGC unboxing" and the Clear Serum ads today (What to do, 2); no scaling (finding 1).
 
@@ -37,15 +37,15 @@ Pacing: $4,180 of $9,000 this month (46% at day 13 of 31 — slightly ahead; [Me
 
 ### This week
 | # | Move | Ad / ad set | Why (window, spend, results vs $40) | How sure | What should happen | How | Check | Source |
-| 1 | Graduate — your pick A, B or C | "Angle B" test winners → main sales ad set | $0.58 per page view vs $1.04 for the other angles; 2.6% of its visitors bought (1,410 visits, ~$22/order); 37 orders | confirmed | the new ads take budget inside the main ad set; it may re-learn for ~3 days (A) | A: approval link · B/C: instructions for you | 20 Oct: cost per order on the new ads ≤ $40 | [Ads Manager](<link>), 6–12 Oct |
-| 2 | Pause | "UGC unboxing" | $128 spent (3.2× the $40 limit), 0 orders, click rate 0.41% vs 1.3% | confirmed | its spend moves to the other ads; it saves money only if the ad set budget is also cut | Say: "pause the UGC unboxing ad" | 15 Oct: shows paused | [Ads Manager](<link>), 6–12 Oct |
+| 1 | Graduate — your pick A, B or C | "Angle B" test winners → main sales ad set | $0.58 per page view vs $1.04 for the other angles; 2.6% of its visitors bought (1,410 visits, ~$22/order); 37 orders | confirmed | the new ads take budget inside the main ad set; it may re-learn for ~3 days (A) | A: approval link · B/C: instructions for you | 20 Oct: cost per order on the new ads ≤ $40 | [Ads Manager](<link>) and store orders by link tag ([Monday's read](<link>)), 6–12 Oct |
+| 2 | Pause | "UGC unboxing" | $128 spent (3.2× the $40 limit), 0 orders, click rate 0.41% vs 1.3% | likely (Meta's count) | its spend moves to the other ads; it saves money only if the ad set budget is also cut | Say: "pause the UGC unboxing ad" | 15 Oct: shows paused | [Ads Manager](<link>), 6–12 Oct |
 | 3 | **Your call** | "Founder story" | $410, 8 orders, $51 per order (1.28×), click rate 1.6% → 1.1% over 3 weeks | first look | see both readings | Kill = say it; hold = nothing | 20 Oct | [Meta export](<file>), 23 Sep–12 Oct |
 | 4 | Swap the creative | "3 benefits static" → "Benefits v2" | click rate down 38% over 3 weeks at the same spend | likely | click rate back toward 1.2%; ~3 days re-learning | Approval link (type GO LIVE) | 21 Oct | [Ads Manager](<link>), 22 Sep–12 Oct |
 | 5 | Hold | 3 ads launched 10 Oct | 4 days, $96, still learning | — | — | nothing | 17 Oct · trip-wire: any of them past $120 with no order → say "pause <name>" | [Ads Manager](<link>), 10–13 Oct |
 | 6 | Fix | rejected ad "Skin check" (reason: speaks to the viewer's skin condition) | — | — | a reworded version from the static-ad maker, then a swap | I've sent the reason to the ad maker | when the new version is picked | [the rejection notice](<link>), 12 Oct |
 | 7 | Hold (no scale) | main sales ad set ($200/day) | $34 per order on 71 orders, steady 3 weeks — but real sales are below break-even | likely | — | nothing | 20 Oct: scale only if store-joined cost ≤ $40 or real sales clear break-even | [Monday's read](<link>), 13 Oct |
 | 8 | Pause before stock-out | ads selling "Clear Serum" | ~6 days of stock left at current sales | likely | no paid clicks to an out-of-stock page | Say: "pause the Clear Serum ads" | on restock: instructions to switch them back on | [your stock note](<file>), 12 Oct |
-| 9 | Lower budget (instructions) | Google "Search – Non-brand", $80 → $65/day | your export: $1,120, 14 conversions, $80 each (2× the limit) | confirmed | ~$105/week less spend; 1–3 fewer conversions | Instructions below | 20 Oct | [Google export](<file>), 6–12 Oct |
+| 9 | Lower budget (instructions) | Google "Search – Non-brand", $80 → $65/day | your export: $1,120, 14 conversions, $80 each (2× the limit) | likely (Google's count) | ~$105/week less spend; 1–3 fewer conversions | Instructions below | 20 Oct | [Google export](<file>), 6–12 Oct |
 
 Move 3 — both readings
 - Kill: 28% over the limit and the click rate has slid three weeks running — a fatigue curve; about $90 a week above the limit.

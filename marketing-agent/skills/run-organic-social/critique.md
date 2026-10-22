@@ -483,3 +483,10 @@ Took the craft, not the structure, the vendor wrappers or the keys. make-content
 | Done when was a test oracle; the hard bars lived only in the steps | Done when now lists the bars: dated card + 8 linked examples per named platform (card + 3 for others), dated sources and a linked pattern per post, at most one fill-in, the product-mix caps, format reasons and video scripts, the run record. The light-edit oracle stays in tests/test-by-hand.md. |
 | Description 961 characters | 643 characters, one trigger per branch. |
 | Not changed (item 3, later) | Refill and repeat set-up stay in place. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #1 (shared, spend-gate) the account-audit step restated the probe | It points to spend-gate branch B, its yes asked in the draft-report message. |
+| Codex check: `references/post-checks.md` let any dated brain offer or price into a public post | Offers and prices only as claims-gate §1.8–1.9 allows (live and confirmed in this job, and public). |

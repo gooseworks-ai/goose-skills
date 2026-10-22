@@ -8,7 +8,7 @@ description: >-
   our launch", "a TikTok or Reel script to shoot on my phone", "tear down @x's account", or "my
   accounts went quiet". The marketer posts by hand; nothing is posted or scheduled. Not for a
   standalone post or repurposing one piece — use make-content.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # run-organic-social

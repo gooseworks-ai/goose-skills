@@ -5,7 +5,7 @@ description: >-
   depth and codes, stock, claims, consent and legal footer, SMS rules, rendering, voice and AI-copy
   tells, and the goal metric. Returns a pass / fixed / open-question table. Use alone when you already
   have the finished draft and the brand's product and policy facts; otherwise run email-lifecycle.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # send-check
@@ -16,7 +16,7 @@ version: 0.1.0
 - **Flow logic:** purchasers exit on every step ("placed order since starting"); checkout suppresses cart suppresses browse; a cross-flow cap and smart sending set; re-entry windows set; post-purchase keyed to delivery, not order date; replenishment uses the product's cycle and skips subscribers; every split has a default branch; a sequence built as broadcasts carries an active (dynamic) exclusion list on every send after the first, never a static one; the plan's monthly send limit is respected.
 - **Offers:** none deeper than allowed (offer-math ran); unique, single-use, non-stacking codes with expiry; recent purchasers excluded from promos; full-price returning customers never discounted in cart flows.
 - **Stock and data:** every featured product in stock; prices pulled live, not typed; every merge tag has a fallback; dynamic blocks hide out-of-stock lines.
-- **Claims:** the claims gate has run on every message and its cuts are applied (this atom does not judge claims itself). Shipping, returns and guarantee promises match the `Policy:` facts and the `[lifecycle]` policy rules, including ones confirmed in this run's message 2 and written at step 9. Drug-like wording and financial promises the gate kept are still flagged for a human read — the sentence, not the whole category.
+- **Claims:** the claims gate has run on every message and its cuts are applied (this atom does not judge claims itself). Shipping, returns and guarantee promises match the `Policy:` facts and the `[lifecycle]` policy rules, including ones confirmed in this run's message 2 and written at step 9, and each is public by the claims gate's §1.9 (brain path: confirmed and public; otherwise shown on the live site). Drug-like wording and financial promises the gate kept are still flagged for a human read — the sentence, not the whole category.
 - **Compliance:** consent per market (no abandoned-checkout email to non-subscribed Canadian contacts; CASL implied-consent windows); footer with legal name and postal address via the tool's own tag, visible unsubscribe and preference link, one-click unsubscribe header noted for the tool; SMS: separate consent, brand name, STOP language, quiet hours, local rules for the markets; review requests go to all customers, not only happy ones; no marketing to marketplace-sourced buyers.
 - **Rendering:** single column, mobile first, live text, alt text on every image, full plain-text part, dark-mode-safe logo, HTML under 102 KB, seed tests listed for Gmail, Outlook, Apple Mail, Yahoo.
 - **Voice and craft:** brand banned words; the 14-item failure list in `copy-craft.md`; one job and one primary CTA per message; subject and preview not repeating.

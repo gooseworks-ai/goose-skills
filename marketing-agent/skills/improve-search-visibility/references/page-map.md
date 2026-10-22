@@ -31,7 +31,7 @@ Audience: <role/segment>, their situation, what they already know
 Questions the page must answer word for word: <AI form> / <Google form> for each question
 Information gain: what the cited winners say (URLs, date read) → what ours must add
 H2 outline (as claims): …
-Facts the page must state: <fact> — source: "Claims you may use" fact | product record field | [PROOF NEEDED]
+Facts the page must state: <fact> — source: "Claims you may use" fact | live product page | [PROOF NEEDED]
 Claims allowed / never say: from the claims gate (scoped sign-off status)
 Competitor names: allowed | not allowed (the human's stance) · public source for each competitor fact
 Internal links to add: the hub page for this topic ↔ this page (both directions); this page ↔ its closest sibling pages in the same cluster; glossary or explainer pages → this page where the term appears — each with the page, the exact anchor text and where in the page it sits

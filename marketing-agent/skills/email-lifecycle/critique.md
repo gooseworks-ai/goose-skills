@@ -275,3 +275,10 @@ Not re-run (per orchestrator: no evals).
 | Done when had no in-run check | Added: send-check passed on every flow; no [placeholder] in a flow marked ready. |
 | Description 998 chars | 695 chars; one trigger per branch (dropped "my list just sits there", "write my email flows"); Not-fors kept. |
 | One name for the person | "the human" → "marketer" in SKILL, atoms and references; "founder note"/"[Founder]" kept as roles. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| #3 (shared, claims-gate) "product facts from the product record" counted as proof | `references/copy-craft.md` and `loadable-flow-format.md`: plain product facts as claims-gate §1.7 allows (the live product page). |
+| Codex check: copy-craft, the flow format and the send check still accepted product records and policy facts without the public test | All three now defer to claims-gate §1.7–1.9; the send check also needs each shipping, returns or guarantee promise to be public (confirmed and public, or shown on the live site). |

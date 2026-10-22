@@ -8,7 +8,7 @@ description: >-
   win; is my tracking working; monthly numbers for the replan; anything on fire today. Not for acting
   on the recommendations (pausing, scaling, launching) — use run-paid-campaigns; not for replanning
   the budget — use plan-campaign.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # analyze-performance

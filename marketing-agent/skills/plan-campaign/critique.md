@@ -282,3 +282,9 @@ Second pass (independent review of this fix, effort high):
 | B5 Video ads and photos were "human-executed / we don't make these yet" | Hand-offs, the closing offer, the brief-and-assets step and the calendar's lead times route them to the goose-video and goose-product-photos skills (offered as the next job); without GooseWorks the same rows go to whoever makes them; real creators filming stay with creators. Unreleased producer removed from `skill.meta.json`. |
 | B7 The brief claimed write-report's shape but had no The story and Sources was not last | Working sections are `###` under `## The story` and `## Appendix — working detail`; Sources is last; the Status line sits under the title. Heading names are unchanged (the step skills' output lines now say `###`). |
 | B10 `skill.meta.json` said `foundation/guide §5` | Now the marketing-guide skill reference. |
+
+## 2026-10-20 — GOOSE-4054 pre-production fixes
+
+| Finding | Fix |
+|---|---|
+| Codex check: the scheduled replan copied the claims gate but not `claim-types.md`, which the gate now needs for proof-required lines | `references/run-memory.md` copies `shared/claim-types.md` too; the prompt's "file beside it" mapping already covers it. |

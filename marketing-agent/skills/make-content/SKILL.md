@@ -9,7 +9,7 @@ description: >-
   published. Not for a dated posting calendar — use run-organic-social; not ad copy (make-static-ads)
   or promo emails (email-lifecycle). Press releases, landing and product pages, and sales decks are
   not covered.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # make-content
@@ -111,7 +111,7 @@ Attach the edit note and one claims block per piece or set.
 - **Bylines and named people.** Anything published under, or quoting, a named person carries PERSON YES NEEDED: that person's own yes.
 - **Outline.** Long-form and case studies: the brief and outline get a yes before drafting.
 - **Publishing.** Nothing goes live from here.
-- **Money.** The default path is free. A proxy read (top search results, post history) or any import that quotes a price follows the spend gate: a probe with a yes, then a ceiling.
+- **Money.** The default path is free. A proxy read (top search results, post history) or any import that quotes a price follows the `spend-gate` skill (`../spend-gate/SKILL.md`) branch B.
 
 ## Output and write-back
 

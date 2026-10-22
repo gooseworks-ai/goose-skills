@@ -9,7 +9,7 @@ description: >-
   Researches first, asks only decisions at the end, and delivers a readable report saved to the brand.
   Not for who the buyers are and their own words — use research-audience; not for a deep look at
   rivals — use research-competitors.
-version: 0.4.1
+version: 0.4.2
 ---
 
 # research-market
