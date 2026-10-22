@@ -13,11 +13,11 @@ The agreed focused outputs are implemented in the existing fourteen playbooks an
 
 ## Evidence
 
-Source validation, the generated catalog, all 56 automated source tests, and the installed-layout check (86 marketing skills, 669 references) passed. Independent source review found and verified repairs to voice/positioning handoffs and native-metric fixture expectations.
+Source validation, the generated catalog, all 57 automated source tests, and the installed-layout check (86 marketing skills, 669 references) passed. Independent source review found and verified repairs to voice/positioning handoffs and native-metric fixture expectations.
 
 Thirteen substantive example outputs are supplied beside the relevant skills: five research/voice outputs and eight SEO reports. They are manual executions against fictional, supplied source evidence. The SEO checker verifies their source fields, counts, exclusions and partial cases. These are not fresh-model execution or live provider proof.
 
-Battlecard and positioning outputs preserve the agreed old output essentials, so their old folders are archived under `archive/retired-gtm/` and the retirement manifest names active replacements. The retained page-intelligence API, blog extraction interface, general HTML asset renderer and video bridges cover broader/raw contracts and remain available.
+Battlecard and positioning outputs preserve the agreed old output essentials, so their old source files are deleted and the retirement manifest names active replacements. Git history preserves the old instructions; no archive copies remain in the repository. The retained page-intelligence API, blog extraction interface, general HTML asset renderer and video bridges cover broader/raw contracts and remain available.
 
 ## What remains unverified
 

@@ -38,7 +38,7 @@ Public cards and CLI routing describe the same fourteen playbooks and focused jo
 | 11. Product photos cut to a song | **Keep existing video route; retain legacy bridge pending qualification** | Test exact supplied audio, beat-aligned photo cuts and a finished reviewed file before claiming coverage or building another engine. Ads or organic supplies the purpose; video owns production. |
 | 12. Podcast to vertical clips | **Keep existing video route; retain legacy bridge pending qualification** | Test moment selection, source context/audio, suitable vertical framing, captions and actual finished clips. Transcript scripts alone do not fulfill it. Do not classify every clip as an ad. |
 
-**Retention:** battlecard-generator and launch-positioning-builder are now archived and redirect to research-competitors and research-market after their agreed outputs passed source-backed fixtures. Other raw or broader interfaces remain where full parity was not verified, including landing-page-intel and the video bridges. Product-update and survey-report cards are removed from public jobs; their broader existing packages remain supporting references/capabilities.
+**Retention:** battlecard-generator and launch-positioning-builder source files are deleted; their old names redirect to research-competitors and research-market after their agreed outputs passed source-backed fixtures. Git history preserves the retired instructions. Other raw or broader interfaces remain where full parity was not verified, including landing-page-intel and the video bridges. Product-update and survey-report cards are removed from public jobs; their broader existing packages remain supporting references/capabilities.
 
 ### The partly covered examples, checked individually
 
