@@ -434,3 +434,13 @@ Minimal edits on the dev version (the owner has a newer rewrite on his branch; t
 **Review findings.** The reviewer found that validating target inversion alone still allowed a folded source mapping. Fixed by checking the exact Jacobian minimum over both band domains (linear in vertical position, quadratic horizontally); a regression rejects the provided folded-source and folded-target cases. Existing spelling and product gates were not relaxed. The optional repair and exhausted-budget stop are now explicit in render-review, and the reference check uses the recorded role for concept-directed scenes.
 
 **Validation.** 31 Python tests passed, including eight runtime repair tests for real pixel transfer, curved geometry, antialiasing, boundaries, source/target inversion, provenance, original preservation and ownership/pose gates. The separate staging artifacts preserve the five raw failures, repair masks, source/base/output hashes, independent verdicts and save lineage. The generated picture remains a recreation except for the transplanted official label pixels; no performance claim follows from these tests.
+
+## Round 22 — 22 Oct: finite research and honest novelty (0.4.7)
+
+**Summary.** The fresh test inspected 26 cards out of a library showing about 540 ads and only part of saved/legacy history. That is valid evidence for its compose/render/repair path, not an exhaustive inventory. Inspection found an inherited instruction conflict: own-library reads said "every static/every row" while other reads had explicit caps.
+
+**Fix.** Research remains mandatory for every applicable source. Own-platform and saved/imported-image reads start at 20 cards/records, extend only while useful, and stop by 60 per source. History uses three relevant batch files, 20 tagged creatives and the existing three-row legacy cap; every earlier ad in the same conversation remains known. Each source records date, available scope/count, examined count, distinct observations, stopping reason and missing coverage. Partial coverage supports "not observed in checked ads", not a claim of global novelty. Every suggested template is still opened by eye.
+
+This changes the research contract, not the generator or label algorithm. The existing five generation jobs and actual-pixel repairs remain evidence for those paths. No paid rerun was made or needed. The original acquisition omissions remain recorded as a limitation rather than rewritten as full compliance.
+
+The main description/output now names the actual registered reference and source, matching the existing library/other-source fallback. It no longer implies every reference was verified as running on Meta.

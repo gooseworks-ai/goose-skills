@@ -99,3 +99,9 @@ Use a connection whose cached tool catalog lacks `ads_render`. Refresh discovery
 Use a real official product photo and a completed render whose scene/shape/pose pass but whose printed label changed. Do not weaken product/spelling checks to accept it.
 
 **Passes if:** the original remains failed; an isolated label may use the free local helper only after rights and compatible pose are checked by eye. Explicit source/target guides remain in evidence; invalid, out-of-bounds, crossed or folded mappings fail. The saved mask accounts for every changed pixel. A fresh reviewer compares the entire candidate to the official source, including label words/marks, edges, light, shape and occlusion. A passed repair is a new `ads_save` creative linked to the original parent; downloaded saved bytes match the approved candidate. No human rating is invented. With an exhausted credit ceiling, no paid retry or layer split runs. An incompatible source or a visible bad repair stays unapproved.
+
+## Test 15 — a large or partly inaccessible ad library
+
+Use a brand with hundreds of live cards, duplicate variants and incomplete older creative history. Request a small fresh set.
+
+**Passes if:** research still runs, but within the source sample limits in `references-and-remix.md` §2a. The inventory records the actual check date, available total/scope, examined count, observed distinct statics/concepts and stopping reason; a missing source is named. Sampling video-inclusive cards does not become an invented count of unique static ads. Repeated messages are grouped. No infinite paging is required before a render. Coverage and recommendations say "not observed in checked ads" when partial; they never call that proof the brand has not used a reason/template. Every candidate actually suggested is still opened by eye. Earlier ads from this conversation remain in the made-before list.
