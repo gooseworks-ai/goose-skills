@@ -25,7 +25,7 @@ N9. **`company/ads` with `media_type: "IMAGE"` returned nothing for AG1** while 
 N10. **Exact text as a launchable creative.** — **Dropped (v0.4).** The playbook no longer sets text or builds images in code; the image model draws the text from the composed prompt, with the font specimen. Copy variants made by the layers method are uploaded to the media library and flagged "launch depends on the push taking a library image".
 
 N11. **`mode: "mine"` mixes uploads with the brand's own Meta ads,** including other brands' reference images, and repeats one ad per version (~3 KB a row). *Step 1.* Meanwhile: keep `source_kind: "scraped_meta"`, merge by primary text, small `limit`. Ask: a source filter and one row per ad.
-N12. **The brand-brain tools.** — **In use.** `brain_map`, `brain_search` and `brain_open` give each fact a status (`confirmed`, `found`, `guess`, `unknown`); Step 1 and the claims rule read them (`references/reading-the-brain.md` §1). On a server without them, the kit's proof points and value props and the product record count as `found`.
+N12. **The brand-brain tools.** — **In use.** `brand_knowledge_browse`, `brand_knowledge_search` and `brand_knowledge_read` give each fact a status (`confirmed`, `found`, `guess`, `unknown`); Step 1 and the claims rule read them (`references/reading-the-brain.md` §1). On a server without them, the kit's proof points and value props and the product record count as `found`.
 
 ### New with the composer port (19 Oct 2026)
 

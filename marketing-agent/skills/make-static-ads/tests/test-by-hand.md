@@ -3,7 +3,7 @@
 ## Setup
 
 1. Connect GooseWorks **staging** to your agent.
-2. Link the playbook: `ln -s "$PWD/marketing-agent/playbooks/make-static-ads" ~/.claude/skills/make-static-ads`
+2. Link the skills side by side, as `marketing-agent/README.md` (How to test) says: every folder in `marketing-agent/skills/` into one `.claude/skills/`, so the playbook can open its steps at `../make-static-ads-<step>/`.
 3. Generation spends credits. Keep paid tests small (two or three ads) and say yes only to quotes you expect.
 
 ## Test 1 — the core ask (DTC)
@@ -68,3 +68,40 @@ The same brand, product, template and words, made twice: once in the GooseWorks 
 3. **Blind judge:** give a fresh subagent (or a person) the renders side by side, unlabelled and shuffled, with `references/judge.md` §3–4 and the question "which would you run, and why?".
 
 **Passes if:** the playbook's ads judge at least as well as the app's on the server checklist, and the blind pick prefers the playbook's or calls them even; every prompt difference traces to a named improvement; nothing the brain marks `guess` or `unknown` appears on the playbook's side. Any rule difference that is not an improvement is a bug in this playbook's copy of the server.
+
+## Test 10 — short answers don't skip the research (Juicebox, 21 Oct)
+
+Brand: a B2B brand with live ads on Meta or LinkedIn but nothing in GooseWorks (Juicebox on production). Answer the template question with "your choice, show me the final ads only, make one ad". Then say "make 5 more".
+**Passes if:** before any quote it reads the brand's live ads in the Meta and LinkedIn Ad Libraries and shows the concept inventory; the concept grid and coverage note come before the quote; the claims check runs; a fresh subagent judges each render; the "5 more" set repeats no reason, template or example content from the first ad or from the brand's running ads; the colour question suggests the running ads' palette when it differs from the kit.
+**Telltale failures:** "brand has no running ads" in the batch file while the libraries show ads; angles taken straight from the website's headline stats; the agent judging its own render.
+**No-browser variant:** on a host with no browser, it asks one yes for the proxy reads (about 1 credit per library), or writes "not checked" with the reason; never "no running ads".
+
+## Test 11 — a fresh scene with a limited reference role
+
+Say: "Five different static ads. Choose for me. Show only the finished ads." Use a brand other than the training examples. Give its real product photo and a different category's conceptual or photographic reference.
+
+**Passes if:** each concept starts from a sourced product truth and a labelled researched situation or creative hypothesis. The agent names the reference's role (`layout`, `mechanism`, `craft`), stages one meaningful relationship, writes exact copy and a protected decision, and carries them through `prepare` → `final` → claims/policy → quoted `ads_render`. Other brands' source images stay out of every generation list. A direct competitor can lend layout only. Different concepts can move far from the reference's props and layout; they remain specific to the product. No invented customer or performance evidence.
+
+**Image review:** a fresh judge checks the authored relationship, exact copy, protected decision and real product, alongside the usual claim and quality rules. A polished generic packshot with the relationship missing fails. Record actual dimensions and defects; do not claim pixel-exact packaging or a blind tournament that did not happen.
+
+## Test 12 — complete reads without repeated scaffolding
+
+On a shell host, prepare two ads with the full brand kit. Read every numbered part in the first manifest. Prepare the second using the first `shared_rules_sha256`. Read every part it returns.
+
+**Passes if:** each part is at most 6,000 characters, all current ad values remain visible, unchanged shared rules are omitted only on a hash match, and changed rules reappear. A missing/stale answer receipt fails before any render arguments are produced. Changing a product photo or source image also invalidates the old receipt. The receipt identifies input; it does not prove comprehension or claim clearance.
+
+## Test 13 — stale connector catalog
+
+Use a connection whose cached tool catalog lacks `ads_render`. Refresh discovery. A shell host may use its existing authorized MCP transport and the same server's live schema. If the actual server still lacks the thin renderer, stop and report it. Never replace it with `ads_generate`; that server workflow may re-compose the prompt or attach source images.
+
+## Test 14 — a valid concept with a garbled product label
+
+Use a real official product photo and a completed render whose scene/shape/pose pass but whose printed label changed. Do not weaken product/spelling checks to accept it.
+
+**Passes if:** the original remains failed; an isolated label may use the free local helper only after rights and compatible pose are checked by eye. Explicit source/target guides remain in evidence; invalid, out-of-bounds, crossed or folded mappings fail. The saved mask accounts for every changed pixel. A fresh reviewer compares the entire candidate to the official source, including label words/marks, edges, light, shape and occlusion. A passed repair is a new `ads_save` creative linked to the original parent; downloaded saved bytes match the approved candidate. No human rating is invented. With an exhausted credit ceiling, no paid retry or layer split runs. An incompatible source or a visible bad repair stays unapproved.
+
+## Test 15 — a large or partly inaccessible ad library
+
+Use a brand with hundreds of live cards, duplicate variants and incomplete older creative history. Request a small fresh set.
+
+**Passes if:** research still runs, but within the source sample limits in `references-and-remix.md` §2a. The inventory records the actual check date, available total/scope, examined count, observed distinct statics/concepts and stopping reason; a missing source is named. Sampling video-inclusive cards does not become an invented count of unique static ads. Repeated messages are grouped. No infinite paging is required before a render. Coverage and recommendations say "not observed in checked ads" when partial; they never call that proof the brand has not used a reason/template. Every candidate actually suggested is still opened by eye. Earlier ads from this conversation remain in the made-before list.

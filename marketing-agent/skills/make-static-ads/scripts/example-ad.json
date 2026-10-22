@@ -1,0 +1,89 @@
+{
+  "brand_id": "brand_example_tidewell",
+  "kit": {
+    "name": "tidewell",
+    "description": "Tidewell makes refillable glass bottles of concentrated plant-based cleaning spray for kitchens and bathrooms.",
+    "audience": "Renters and young families who want a cleaner home without harsh fumes or plastic waste.",
+    "voice": "Warm, plain-spoken, a little dry. Short sentences. Never preachy.",
+    "brandType": "physical",
+    "valueProps": ["One concentrate makes four bottles", "No synthetic fragrance"],
+    "proofPoints": ["Plant-based surfactants", "Glass bottle you keep for years"],
+    "websiteUrl": "https://tidewell.example",
+    "messagingAngles": [
+      {"name": "Less plastic", "statement": "Buy the bottle once, refill it for years."},
+      {"name": "No fumes", "statement": "Clean the kitchen without opening a window."}
+    ],
+    "colorSchemesEnabled": true,
+    "primaryColor": "#1f5f5b",
+    "accentColor": "#f2b84b",
+    "backgroundColor": "#f6f1e7",
+    "textColor": "#1d2a2a",
+    "paletteRead": "Deep sea green with warm sand and a sunny yellow accent.",
+    "palette": ["#1f5f5b", "#f6f1e7", "#f2b84b", "#1d2a2a"],
+    "typography": {
+      "heading": "Fraunces",
+      "body": "Work Sans",
+      "headingDescriptor": "soft high-contrast serif",
+      "bodyDescriptor": "clean geometric sans",
+      "source": "mapped"
+    },
+    "fonts": {"heading": "Fraunces", "body": "Work Sans", "families": ["Fraunces", "Work Sans"]},
+    "products": [
+      {"name": "Kitchen Spray Starter Kit", "adEligibility": "eligible", "aiCreativeNotes": "Show the amber glass bottle upright with its white trigger; the label faces forward."},
+      {"name": "Bathroom Concentrate Refill", "adEligibility": "eligible", "aiCreativeNotes": "The refill is a small pouch; never show it as a bottle."},
+      {"name": "Free Sample Sachet", "adEligibility": "hidden"}
+    ],
+    "logoUrl": "https://cdn.example.com/tidewell/logo.png",
+    "referenceImages": [
+      {"url": "https://cdn.example.com/tidewell/own-ad-1.jpg", "productName": null, "kind": "own_ad"},
+      {"url": "https://cdn.example.com/tidewell/kitchen-kit-front.jpg", "productName": "Kitchen Spray Starter Kit", "kind": null},
+      {"url": "https://cdn.example.com/tidewell/kitchen-kit-counter.jpg", "productName": "Kitchen Spray Starter Kit", "kind": null},
+      {"url": "https://cdn.example.com/tidewell/refill-pouch.jpg", "productName": "Bathroom Concentrate Refill", "kind": null}
+    ],
+    "docs": {"Brand summary": "Tidewell sells a glass spray bottle plus concentrate refills by subscription."},
+    "instructions": "Never show a plastic spray bottle."
+  },
+  "learnings": [
+    {"kind": "must", "text": "Keep the bottle's amber glass colour accurate.", "source": "feedback"},
+    {"kind": "dont", "text": "Do not show gloves or a cleaning bucket.", "source": "feedback"},
+    {"kind": "insight", "text": "Recurring ad-feedback failure modes over the last 30 days (6 flagged ads): wrong_product ×3, too_busy ×2. Generation is biased to correct these.", "source": "feedback_reasons"}
+  ],
+  "template": {
+    "id": "tpl_example_counter_hero",
+    "title": "Countertop hero with one-line headline",
+    "description": "A single product on a kitchen counter, headline top-left, short CTA bottom-right.",
+    "layout_type": "product_hero",
+    "style_tags": ["minimal", "natural light"],
+    "mood_tags": ["calm"],
+    "text_complexity": "low",
+    "remix_spec": null,
+    "ratio": "1:1",
+    "source_kind": "upload",
+    "source_image_url": "https://cdn.example.com/tidewell/templates/counter-hero.jpg",
+    "remix_engine": null,
+    "brand_owned": true
+  },
+  "product_name": "Kitchen Spray Starter Kit",
+  "product": {
+    "name": "Kitchen Spray Starter Kit",
+    "description": "A 500 ml amber glass spray bottle and two concentrate refills.",
+    "pricing": "$34",
+    "offers": null,
+    "notes": "Each refill makes one full bottle. Dilute with tap water.",
+    "ai_creative_notes": "Show the amber glass bottle upright with its white trigger; the label faces forward.",
+    "size_reference_urls": ["https://cdn.example.com/tidewell/kitchen-kit-in-hand.jpg"]
+  },
+  "user_uploads": [],
+  "no_logo": false,
+  "apply_brand_colors": true,
+  "scheme": {"background": "#f6f1e7", "ink": "#1d2a2a", "accent": "#1f5f5b", "on_accent": "#ffffff", "background_is_light": true},
+  "font": "brand",
+  "proof_points": ["One concentrate makes one full 500 ml bottle", "Glass bottle you keep for years"],
+  "user_instructions": "Make it feel like a calm Sunday morning kitchen.",
+  "messaging_angle": null,
+  "variant": {"brief": {"angle": "problem", "message": "For renters tired of fumes from supermarket sprays: one glass bottle, refilled for years, and no window-opening after you clean."}},
+  "ratios": ["1:1", "4:5", "9:16"],
+  "engine": null,
+  "font_specimen_url": null,
+  "unavailable_reference_ids": []
+}

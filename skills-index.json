@@ -6012,10 +6012,10 @@
       "name": "make-static-ads",
       "category": "playbooks",
       "domain": "marketing-agent",
-      "description": "Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads (\"ten fresh ads this week\", \"make me some ads\", \"ads for our sale\"); \"my ads all look the same\"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).",
+      "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Research the brand and its existing ads, compare sourced concepts and visual ideas, compose, quote, render and review through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads",
-      "version": "0.4.2",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads/SKILL.md",
         "marketing-agent/skills/make-static-ads/references/angles-and-hooks.md",
@@ -6032,8 +6032,19 @@
         "marketing-agent/skills/make-static-ads/references/references-and-remix.md",
         "marketing-agent/skills/make-static-ads/references/review-rubric.md",
         "marketing-agent/skills/make-static-ads/references/structure-blueprint.md",
+        "marketing-agent/skills/make-static-ads/references/workflow.md",
+        "marketing-agent/skills/make-static-ads/scripts/README.md",
+        "marketing-agent/skills/make-static-ads/scripts/compose.py",
+        "marketing-agent/skills/make-static-ads/scripts/example-ad.json",
+        "marketing-agent/skills/make-static-ads/scripts/example-answer.json",
+        "marketing-agent/skills/make-static-ads/scripts/example-run.json",
+        "marketing-agent/skills/make-static-ads/scripts/repair_patch.py",
         "marketing-agent/skills/make-static-ads/scripts/schemes.py",
         "marketing-agent/skills/make-static-ads/scripts/specimen.py",
+        "marketing-agent/skills/make-static-ads/scripts/test_compose.py",
+        "marketing-agent/skills/make-static-ads/scripts/test_repair_patch.py",
+        "marketing-agent/skills/make-static-ads/scripts/test_workflow.py",
+        "marketing-agent/skills/make-static-ads/scripts/workflow.py",
         "marketing-agent/skills/make-static-ads/server-needs.md",
         "marketing-agent/skills/make-static-ads/skill.meta.json",
         "marketing-agent/skills/make-static-ads/tests/test-by-hand.md"
@@ -6042,7 +6053,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.4.2",
+        "version": "0.5.1",
         "tags": [
           "ads",
           "design"
@@ -6094,7 +6105,7 @@
           "a header image or social graphic in our brand style"
         ],
         "reads": [
-          "brand brain: core rules and facts with their statuses (confirmed / found / guess / unknown) and sources — brain_map, brain_search, brain_open (server research and the claims-gate sign-off write them)",
+          "brand brain: core rules and facts with their statuses (confirmed / found / guess / unknown) and sources — brand_knowledge_browse, brand_knowledge_search, brand_knowledge_read (server research and the claims-gate sign-off write them)",
           "brand kit, learnings incl. do/dont/must rules, products and competitors — brand_read (server research)",
           "the brand's recent organic posts and what drew replies — brand_read organic (server research)",
           "voice-of-customer bank: research/audience/voc-bank.jsonl / .md — research-audience",
@@ -6106,7 +6117,9 @@
           "own and competitor Meta ads — ads_template_read mine / competitor, imported with ads_library_scrape (server research); category leaders' live Ad Library pages (host browser, or the data proxy on a yes); the template library and community templates",
           "saved inspiration outliers — research-market, research-competitors (social_inspiration_library)",
           "kept product photos — the marketer, or the goose-product-photos skill",
-          "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)"
+          "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)",
+          "the brand's own live ads in the Meta Ad Library and in the library of each other platform it advertises on (LinkedIn, TikTok, Google; host browser, or the data proxy on a yes)",
+          "run-memory: previous run and open recommendation outcomes at start; missing first run is explicit"
         ],
         "writes": [
           "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
@@ -6117,7 +6130,8 @@
           "'Graphic ready:' answer lines under sibling request lines — read by email-lifecycle, run-organic-social, make-content on their next run",
           "font specimen images (media_upload, kind image, tag font-specimen) — attached to this playbook's own renders",
           "brand learnings through the shared save-learning atom, on the human's own words (incl. claims the marketer confirms in chat) — read by every creative playbook",
-          "ad-library charges in research/credits-log/<YYYY-MM>.md (spend-gate branch B) — read by every playbook that estimates proxy spend"
+          "ad-library charges in research/credits-log/<YYYY-MM>.md (spend-gate branch B) — read by every playbook that estimates proxy spend",
+          "run.json: actual source coverage, sourced candidate reasons/personas/proof, selection and hook/visual/reference alternatives, critic findings, exact reviewed render inputs — checked before quoting"
         ],
         "needs": {
           "mcp": [
@@ -6125,9 +6139,9 @@
             "gooseworks:tools_load",
             "gooseworks:card_wait",
             "gooseworks:brand_read",
-            "gooseworks:brain_map",
-            "gooseworks:brain_search",
-            "gooseworks:brain_open",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_search",
+            "gooseworks:brand_knowledge_read",
             "gooseworks:knowledge_search",
             "gooseworks:file_list",
             "gooseworks:file_read",
@@ -6158,10 +6172,10 @@
       "name": "make-static-ads-ad-copy",
       "category": "capabilities",
       "domain": "marketing-agent",
-      "description": "Step of the make-static-ads playbook: writes the copy the platform shows around each image — two primary texts, headline, description, CTA, destination — and the hook and angle direction that goes into the ad's Variant brief, in the brand's voice and the customers' own words, within what the brand brain allows. The on-image words are written by the composer, not here. Run make-static-ads instead; not for direct use.",
+      "description": "Step of make-static-ads: compare hook alternatives, then write exact image copy and the surrounding ad copy from the chosen reason and usable facts. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-ad-copy",
-      "version": "0.4.2",
+      "version": "0.5.0",
       "files": [
         "marketing-agent/skills/make-static-ads-ad-copy/SKILL.md",
         "marketing-agent/skills/make-static-ads-ad-copy/skill.meta.json"
@@ -6170,7 +6184,7 @@
         "slug": "make-static-ads-ad-copy",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.5.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6185,20 +6199,7 @@
             "codex"
           ]
         },
-        "requires_skills": [
-          "claims-gate",
-          "honest-review",
-          "make-static-ads-claims-extract",
-          "make-static-ads-compose",
-          "make-static-ads-render-review",
-          "marketing-data-access",
-          "marketing-guide",
-          "run-memory",
-          "save-learning",
-          "save-to-brain",
-          "spend-gate",
-          "write-report"
-        ]
+        "requires_skills": []
       }
     },
     {
@@ -6257,7 +6258,7 @@
       "description": "Step of the make-static-ads playbook: composes every ad exactly as GooseWorks' server composer does — the marketer's chat words as the User instructions, the ad's concept as its Variant brief — and records the final prompt and ordered image list per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-compose",
-      "version": "0.4.2",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-compose/SKILL.md",
         "marketing-agent/skills/make-static-ads-compose/skill.meta.json"
@@ -6266,7 +6267,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6302,10 +6303,10 @@
       "name": "make-static-ads-concept-grid",
       "category": "capabilities",
       "domain": "marketing-agent",
-      "description": "Step of the make-static-ads playbook: turns the brief, the brand brain, the brand's own running ads and the account state into a grid of genuinely different ad concepts — persona, reason to buy, proof, emotion, awareness, offer, framework, visual style, composition, type and hook per ad — grounded in sources and checked for diversity. Run make-static-ads instead; not for direct use.",
+      "description": "Step of make-static-ads: compare sourced purchase reasons, personas, proof and visual premises before choosing the ads. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-concept-grid",
-      "version": "0.4.2",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-concept-grid/SKILL.md",
         "marketing-agent/skills/make-static-ads-concept-grid/skill.meta.json"
@@ -6314,7 +6315,7 @@
         "slug": "make-static-ads-concept-grid",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6340,7 +6341,7 @@
       "description": "Step of the make-static-ads playbook: after an image is approved, makes more versions of the same picture with different hooks, headlines or fonts — by a quoted re-render composed the server's way with the approved render as the brand's own ad, or by splitting the render into layers and resetting the text exactly — so copy can be tested without new visuals. Offered, never default. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-copy-variants",
-      "version": "0.4.2",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-copy-variants/SKILL.md",
         "marketing-agent/skills/make-static-ads-copy-variants/skill.meta.json"
@@ -6349,7 +6350,7 @@
         "slug": "make-static-ads-copy-variants",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6386,10 +6387,10 @@
       "name": "make-static-ads-find-references",
       "category": "capabilities",
       "domain": "marketing-agent",
-      "description": "Step of the make-static-ads playbook: finds fresh, real static ads running on Meta — the brand's own, its competitors' and category leaders' — plus library templates that fit each ad's slot, shows them as a template gallery tagged with the concept each would carry, lets the marketer pick (or picks likely-working ones the brand hasn't tried), registers Meta ads that aren't templates yet, and records whether each ad runs structure-only. Run make-static-ads instead; not for direct use.",
+      "description": "Step of make-static-ads: study and compare references for each selected concept, record their provenance and choose a limited layout, mechanism or craft contribution. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-find-references",
-      "version": "0.4.2",
+      "version": "0.5.0",
       "files": [
         "marketing-agent/skills/make-static-ads-find-references/SKILL.md",
         "marketing-agent/skills/make-static-ads-find-references/skill.meta.json"
@@ -6398,7 +6399,7 @@
         "slug": "make-static-ads-find-references",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.5.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6424,7 +6425,7 @@
       "description": "Step of the make-static-ads playbook: fixes a static image ad the platform rejected — finds the ad, maps the platform's reason to the line or element at fault, fixes copy for free or re-composes the image text on a quote, re-runs the claims and policy checks, and answers the request. A rejected video is the video playbook's job. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-fix-rejected",
-      "version": "0.4.2",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-fix-rejected/SKILL.md",
         "marketing-agent/skills/make-static-ads-fix-rejected/skill.meta.json"
@@ -6433,7 +6434,7 @@
         "slug": "make-static-ads-fix-rejected",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6474,7 +6475,7 @@
       "description": "Makes one simple non-ad brand graphic, such as an email header, social feed or story image, or a blog or link-preview image, in the brand's style with at most a short line of text, after claim and rights checks and a yes to the quote; returns the link and alt text. Not for carousels, decks or print. Use alone when you already have the purpose, placement and exact wording; otherwise run make-static-ads.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-graphic-request",
-      "version": "0.4.2",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-graphic-request/SKILL.md",
         "marketing-agent/skills/make-static-ads-graphic-request/skill.meta.json"
@@ -6483,7 +6484,7 @@
         "slug": "make-static-ads-graphic-request",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6525,7 +6526,7 @@
       "description": "Step of the make-static-ads playbook: judges every render exactly as GooseWorks' server judge does, retries once with the server's own retry note inside the yes already given, then runs the playbook's extra checks, drops what still fails and records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-render-review",
-      "version": "0.4.2",
+      "version": "0.4.6",
       "files": [
         "marketing-agent/skills/make-static-ads-render-review/SKILL.md",
         "marketing-agent/skills/make-static-ads-render-review/skill.meta.json"
@@ -6534,7 +6535,7 @@
         "slug": "make-static-ads-render-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.2",
+        "version": "0.4.6",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -15155,7 +15156,7 @@
         {
           "slug": "make-static-ads",
           "name": "make-static-ads",
-          "description": "Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads (\"ten fresh ads this week\", \"make me some ads\", \"ads for our sale\"); \"my ads all look the same\"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).",
+          "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Research the brand and its existing ads, compare sourced concepts and visual ideas, compose, quote, render and review through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
           "stage": "create",
           "path": "marketing-agent/skills/make-static-ads"
         },
