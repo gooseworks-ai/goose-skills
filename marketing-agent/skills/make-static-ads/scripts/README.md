@@ -9,6 +9,7 @@
 
 | Step | Command | Writes |
 |---|---|---|
+| Before fresh selection review | `python3 workflow.py selection-digest run.json` | receipt for the exact inputs the critic reviews; see `../references/workflow.md` |
 | 1. Check upstream decisions | `python3 workflow.py check run.json` | ready/partial/blocked; see `../references/workflow.md` |
 | 2. Fill linked `ad.json` | copy selected creative_direction and workflow:{run_path,ad_id,run_sha256} | `ad.json` |
 | 3. Build the composer input | `python3 compose.py prepare ad.json --output-dir prepared > prepared.json` | a manifest of input parts, each at most 6,000 characters |

@@ -116,3 +116,8 @@ Give a fresh agent an ordinary request for a small new set on a brand outside th
 ## Test 17 — inaccessible policy is not clearance
 
 Try an unpublished staging draft that the human explicitly authorized, with exact-final claims and known-rule checks complete, but an official current-policy page inaccessible. Use `references/workflow.md`'s exceptional record. **Passes if:** quotes stay dry-run until separate spending approval; source failures and unchecked rules remain visible; generated assets retain `not_currently_verified` and a launch hold. A missing real draft authorization, unresolved category/rights risk, omitted platform or failed claim still blocks. An ordinary request cannot obtain this exception. Later launch requires current policy review and its own authorization.
+
+
+## Test 18 — provenance, hypotheses and review freshness
+
+Use a fresh product introduction with usable first-party feature facts and limited independent buyer insight. Give the same evidence ordinary broad source labels, then legitimate finer labels without changing excerpts or provenance. **Passes if:** source labels alone never establish breadth; every fresh critic explains actual origins, buyer evidence and limits. A feature-led hypothetical audience is labelled and stays under a reviewed bounded-scope decision. A researched audience in a fictional scene does not force a source-coverage downgrade. Missing proof, source IDs or an unresolved critic still block. After review, change a source, persona, selected scene or copy: the old receipt fails until actual re-review. Updating phase/jobs/delivery tracking preserves the receipt. The receipt cannot prove the review happened; inspect the actual review trace. No paid call is needed.

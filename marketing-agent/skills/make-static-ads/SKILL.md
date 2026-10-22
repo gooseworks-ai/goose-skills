@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Research the brand and its existing ads, compare sourced concepts and visual ideas, compose, quote, render and review through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.5.2
+version: 0.5.3
 ---
 
 # make-static-ads
@@ -35,7 +35,7 @@ For fresh/more ads, read `references/workflow.md` through its selection sections
 
 ### 2. Compare and select
 
-Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`), then `make-static-ads-find-references` (`../make-static-ads-find-references/SKILL.md`) and `make-static-ads-ad-copy` (`../make-static-ads-ad-copy/SKILL.md`) into that same record. Draft sourced reasons and ranked hooks, score the promise/proof/persona gate, and compare competing visible meanings for every fresh/more request, including an ordinary request for five ads. A hypothesis labels an imagined scene; it does not waive purchase-reason evidence or proof. Fix/drop failures; insufficient grounded reasons → research or a smaller justified set.
+Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`), then `make-static-ads-find-references` (`../make-static-ads-find-references/SKILL.md`) and `make-static-ads-ad-copy` (`../make-static-ads-ad-copy/SKILL.md`) into that same record. Draft sourced reasons and ranked hooks, score the promise/proof/persona gate, and compare competing visible meanings for every fresh/more request, including an ordinary request for five ads. Label inferred audiences and imagined scenes as hypotheses; they do not waive purchase-reason evidence or proof. Source breadth is the critic’s provenance judgment under concept-grid, not a count of source labels. Fix/drop failures; insufficient grounded reasons → research or a smaller justified set.
 
 Give a fresh critic the request, evidence, alternatives and whole set before compose; use the concept-grid’s validity and creative-strength review and record specific findings and resolutions. Without delegation, get a real human critique of that evidence and alternatives or stop at selection; self-review cannot clear this gate. **Done:** the upstream check described in `scripts/README.md` is ready or honestly partial with an evidence-based proceed-with-limits decision; blocked means no compose/quote. The checker verifies recorded work and consistency, not truth or creativity.
 
@@ -83,7 +83,7 @@ One batch record with run decisions and evidence, registered references and tagg
 
 ## Done when
 
-The selected ideas have source-backed reasons/personas/proof, compared alternatives, resolved gate findings and honest coverage; composed copy matches that selection; exact quotes and budget were respected; final pixels and set were reviewed under the stated setup; failures and limitations remain visible. Receipts and passing tests alone do not establish those judgments.
+The selected ideas have source-backed reasons/proof, explicitly researched or hypothetical personas, compared alternatives, resolved gate findings and honest coverage; composed copy matches that selection; exact quotes and budget were respected; final pixels and set were reviewed under the stated setup; failures and limitations remain visible. Receipts and passing tests alone do not establish those judgments.
 
 ## Out of scope
 

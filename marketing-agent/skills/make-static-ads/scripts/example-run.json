@@ -7,7 +7,9 @@
     "context": "fresh",
     "verdict": "pass",
     "findings": [],
-    "resolution": "No remaining supported findings"
+    "resolution": "No remaining supported findings",
+    "source_assessment": "s1 is first-party product authority; s2 is a buyer review supporting muddy-walk behavior; s3 is the marketer’s segment statement. They support a bounded wash-use demonstration, not measured cleanup results.",
+    "selection_sha256": "52a1408a2f12b90123bbb9ef4f98ff1b4d73a6aa2170ddb24b4fb93dbf33c924"
   },
   "brief": {
     "request": "Three strong visual ideas, choose one ad about the washable rug.",
@@ -169,7 +171,8 @@
         "source_ids": [
           "s2",
           "s3"
-        ]
+        ],
+        "basis": "research"
       },
       "proof": {
         "description": "The product can be machine washed",
@@ -215,7 +218,8 @@
         "source_ids": [
           "s2",
           "s3"
-        ]
+        ],
+        "basis": "research"
       },
       "proof": {
         "description": "The product can be machine washed",
@@ -240,7 +244,8 @@
         "source_ids": [
           "s2",
           "s3"
-        ]
+        ],
+        "basis": "research"
       },
       "proof": {
         "description": "The product can be machine washed",
