@@ -1,20 +1,17 @@
 ---
 name: make-static-ads-ad-copy
 description: >-
-  Step of the make-static-ads playbook: writes the copy the platform shows around each image — two primary texts, headline, description, CTA, destination — and the hook and angle direction that goes into the ad's Variant brief, in the brand's voice and the customers' own words, within what the brand brain allows. The on-image words are written by the composer, not here. Run make-static-ads instead; not for direct use.
-version: 0.4.2
+  Step of make-static-ads: compare hook alternatives, then write exact image copy and the surrounding ad copy from the chosen reason and usable facts. Run make-static-ads instead; not for direct use.
+version: 0.5.0
 ---
 
 # ad-copy
 
-**Reads:** the concept grid (concept-grid), brand voice, banned words and tone from `gooseworks:brand_read` `kit` and the `do`/`dont` voice rules, the voice-of-customer bank (`../make-static-ads/references/reading-the-brain.md` §2), the brain facts with their statuses (§1), `../make-static-ads/references/angles-and-hooks.md` §5–6, `../make-static-ads/references/formats-and-placements.md` §4.
-**Writes:** a copy row per ad.
+**Read:** the selected reason/persona/proof, customer language and brand voice/rules in run.json and brand context. **Write:** ranked hooks and exact_copy in the selected ad row; primary texts, headline, description, CTA and destination in the batch record. Use `../make-static-ads/references/workflow.md` for the shared record shape.
 
-1. **Mine the customer words** for this angle from the bank's rows (cite row ids): pain phrases, desired outcome in their words, objections, switching stories. Keep their syntax. Customer words may supply the *pain*; the *benefit* must be a usable fact (`../make-static-ads/references/claims-and-policy.md` §2).
-2. **Hook direction for the Variant brief.** Write 3–5 hook candidates per ad from different hook formulas (`angles-and-hooks.md` §5); keep the strongest as the ad's hook direction and rank the rest as spares. The direction goes into the ad's Variant brief message (the `make-static-ads-compose` skill (`../make-static-ads-compose/SKILL.md`)); the composer writes the final on-image words from it. A real review or founder line meant to appear verbatim is passed as a quote with its source — a borrowed phrase must not pose as a quote.
-3. **Primary text × 2:** short (hook + the concept's proof + CTA, inside ~125 characters) and longer (story or objection handling). The hook leads both. After compose, check neither repeats the on-image words word for word.
-4. **Headline** (benefit or offer, not the brand name), **description** (offer terms, shipping — only if true), **CTA** matched to awareness, **destination** (the page that keeps the ad's promise).
-5. **Voice pass:** read it against the kit's do/don't lines and banned words. Read it aloud: does it sound like the brand, and like a person?
-6. **Policy-safe phrasing from the start:** no "you/your" + condition; third person or situation framing instead ("for skin that feels tight by noon").
+1. Mine cited customer language for the situation/tension. A customer's words about a problem do not establish a product benefit. Real attributed review/founder lines retain their wording, source and applicable permission.
+2. Write3–5 distinct hook candidates per fresh ad from different formulas. Rank them with reasons, preserve spares and put rank1 into creative_direction.exact_copy. Choose for the person and promise, not generic enthusiasm. `angles-and-hooks.md` §5–6 is available when exploring a hook family.
+3. Write primary text A (short: hook, supported proof, CTA) and B (story/objection). Do not merely repeat image copy. Add headline, true description/offer terms, CTA appropriate to awareness and the destination that keeps the promise.
+4. Check brand voice/banned words and policy-sensitive framing. A benefit needs usable support; a hypothetical scene remains labelled. No generated person becomes a customer or endorser.
 
-Output per ad: hook direction, spare hooks (ranked — copy-variants uses them), primary text A/B, headline, description, CTA, destination, hook source (evidence id or "brand-written"), the brain facts used with their status.
+A deliberately textless request uses exact_copy[] and copy_intent:no_added_text; do not invent hooks to fill a form. Copy-only requests preserve the approved picture and use the user's requested scope. Claims review happens on the exact composed result before quoting, again on drawn text after rendering.

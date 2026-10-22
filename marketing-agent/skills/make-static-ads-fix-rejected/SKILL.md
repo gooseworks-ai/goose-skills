@@ -2,12 +2,14 @@
 name: make-static-ads-fix-rejected
 description: >-
   Step of the make-static-ads playbook: fixes a static image ad the platform rejected — finds the ad, maps the platform's reason to the line or element at fault, fixes copy for free or re-composes the image text on a quote, re-runs the claims and policy checks, and answers the request. A rejected video is the video playbook's job. Run make-static-ads instead; not for direct use.
-version: 0.4.2
+version: 0.5.0
 ---
 
 # fix-rejected
 
 Runs in place of Steps 1–12. Steps 3–6 of the playbook do not run: no new concepts.
+
+For a composed render, record mode `fix` and the exact parent/request as basis in run.json (`../make-static-ads/references/workflow.md`). No new purchase-reason tournament is required. Link that record before finalizing, then use workflow.py quote after the exact claims/policy review; a free quote is not a spending yes.
 
 **Reads:** the open `Fix needed: for make-static-ads` line in `ads/campaigns/<slug>/rotation-requests.md` and the health line of `ads/campaigns/<slug>/state.md` (`gooseworks:file_read`), or, asked in chat, the ad and the platform's exact reason (ask for both if missing); the creative (`gooseworks:ads_creative_read` by tag, or `gooseworks:ads_template_read` `mode: "mine"`); its batch-file entry.
 **Writes:** the fix in the batch file under the ad; a `Fix ready:` answer under the request line (re-read the file, insert, write the whole file back with `gooseworks:file_write`).

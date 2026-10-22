@@ -450,6 +450,8 @@ def prepare(ad, reuse_rules=None):
     visual_input = {"text": text,
                     "source_image_to_view": None if st["structure_only"] else st["template"].get("source_image_url"),
                     "assets": [{"id": a["id"], "role": a["role"], "url": a["url"]} for a in st["assets"]]}
+    if ad.get("workflow"):
+        visual_input["workflow"] = ad["workflow"]
     receipt = hashlib.sha256(json.dumps(visual_input, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     return {"input_sha256": receipt,
             "shared_rules_sha256": rules_hash,
@@ -459,11 +461,33 @@ def prepare(ad, reuse_rules=None):
             "warnings": st["warnings"]}
 
 
-def save_prepared(prepared, directory):
+def save_prepared(prepared, directory, read_manifest=None):
     """Keep host output bounded while retaining every byte the composer must read."""
     os.makedirs(directory, exist_ok=True)
     manifest = {k: v for k, v in prepared.items() if k not in ("shared_rules", "ad_context")}
     manifest["files_to_read"] = []
+    manifest["parts"] = []
+    manifest["reused_parts"] = []
+    previously_read = {}
+    if read_manifest:
+        if os.path.realpath(os.path.dirname(read_manifest)) == os.path.realpath(directory):
+            raise ComposeError("Use a new per-ad output directory when reusing a read manifest.")
+        try:
+            with open(read_manifest, encoding="utf-8") as f:
+                previous = json.load(f)
+        except (OSError, ValueError) as e:
+            raise ComposeError("Cannot read the previous manifest: " + str(e))
+        if not isinstance(previous, dict):
+            raise ComposeError("Previous manifest must be an object.")
+        for part in previous.get("parts", previous.get("files_to_read", [])):
+            try:
+                with open(part["path"], encoding="utf-8") as f:
+                    previous_text = f.read()
+                h = hashlib.sha256(previous_text.encode()).hexdigest()
+                if h == part.get("sha256"):
+                    previously_read[h] = part["path"]
+            except (OSError, KeyError, TypeError):
+                continue
     for field in ("shared_rules", "ad_context"):
         content = prepared[field]
         if content is None:
@@ -473,8 +497,12 @@ def save_prepared(prepared, directory):
             path = os.path.abspath(os.path.join(directory, "%s-%02d.txt" % (field, index)))
             with open(path, "w", encoding="utf-8") as f:
                 f.write(part)
-            manifest["files_to_read"].append({"path": path, "characters": len(part),
-                                             "sha256": hashlib.sha256(part.encode()).hexdigest()})
+            entry = {"path": path, "characters": len(part), "sha256": hashlib.sha256(part.encode()).hexdigest()}
+            manifest["parts"].append(entry)
+            if entry["sha256"] in previously_read:
+                manifest["reused_parts"].append(dict(entry, previously_read_path=previously_read[entry["sha256"]]))
+            else:
+                manifest["files_to_read"].append(entry)
     with open(os.path.join(directory, "receipt.json"), "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
     return manifest
@@ -1294,10 +1322,11 @@ def main(argv):
         parser = argparse.ArgumentParser(prog="compose.py prepare")
         parser.add_argument("--reuse-rules")
         parser.add_argument("--output-dir")
+        parser.add_argument("--read-manifest")
         options = parser.parse_args(argv[3:])
         prepared = prepare(ad, options.reuse_rules)
         if options.output_dir:
-            prepared = save_prepared(prepared, options.output_dir)
+            prepared = save_prepared(prepared, options.output_dir, options.read_manifest)
         sys.stdout.write(json.dumps(prepared, indent=2, ensure_ascii=False) + "\n")
         return 0
     if len(argv) >= 3 and argv[1] == "input":
@@ -1312,7 +1341,25 @@ def main(argv):
     if len(argv) >= 4 and argv[1] == "final":
         ad, answer = _load(argv[2]), _load(argv[3])
         check_receipt(ad, answer)
+        from workflow import load as load_run, match_ad, WorkflowError
+        try:
+            link = ad.get("workflow") or {}
+            if not link.get("run_path") or not link.get("ad_id"):
+                raise WorkflowError("Link workflow.run_path and ad_id to the checked run before finalizing.")
+            run_path = os.path.join(os.path.dirname(os.path.abspath(argv[2])), link["run_path"])
+            state = match_ad(load_run(run_path), link["ad_id"], ad)
+            if link.get("run_sha256") != state["run_sha256"]:
+                raise WorkflowError("Run changed or run_sha256 missing; check it, update the link and prepare again.")
+        except (WorkflowError, OSError, ValueError, TypeError) as e:
+            raise ComposeError("Workflow blocked: " + str(e))
         out = build_final(ad, answer)
+        out["workflow"] = {"run_sha256": state["run_sha256"], "ad_id": link["ad_id"],
+                           "status": state["status"], "limitations": state["limitations"]}
+        for render in out["renders"]:
+            spec = render.pop("ads_render")
+            spec.pop("dry_run", None)
+            render["render_spec"] = spec
+        out["next"] = "Review these exact prompts/images for claims and policy, then workflow.py quote."
         sys.stdout.write(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
         return 0
     sys.stderr.write(__doc__.split("\n\n")[2] + "\n")

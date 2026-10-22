@@ -837,7 +837,7 @@ class TestDepartures(unittest.TestCase):
 
 
 class TestCli(unittest.TestCase):
-    def test_example_end_to_end(self):
+    def test_example_inspection_and_missing_workflow_block(self):
         script = os.path.join(HERE, "compose.py")
         ad, ans = os.path.join(HERE, "example-ad.json"), os.path.join(HERE, "example-answer.json")
         p = subprocess.run([sys.executable, script, "input", ad], capture_output=True, text=True)
@@ -853,15 +853,9 @@ class TestCli(unittest.TestCase):
             with open(answer_path, "w", encoding="utf-8") as f:
                 json.dump(answer, f)
             p = subprocess.run([sys.executable, script, "final", ad, answer_path], capture_output=True, text=True)
-        self.assertEqual(p.returncode, 0, p.stderr)
-        out = json.loads(p.stdout)
-        with open(ad, encoding="utf-8") as f:
-            ratios = json.load(f)["ratios"]
-        self.assertEqual([r["ratio"] for r in out["renders"]], ratios)
-        for r in out["renders"]:
-            self.assertTrue(r["ads_render"]["dry_run"])
-            self.assertEqual(r["ads_render"]["prompt"], r["prompt"])
-            self.assertNotIn("{{ref:", r["prompt"])
+        self.assertEqual(p.returncode, 1, p.stderr)
+        self.assertIn("Workflow blocked", p.stderr)
+        self.assertEqual(p.stdout, "")
 
 
 class TestCreativeContract(unittest.TestCase):

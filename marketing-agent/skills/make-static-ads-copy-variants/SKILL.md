@@ -2,12 +2,14 @@
 name: make-static-ads-copy-variants
 description: >-
   Step of the make-static-ads playbook: after an image is approved, makes more versions of the same picture with different hooks, headlines or fonts — by a quoted re-render composed the server's way with the approved render as the brand's own ad, or by splitting the render into layers and resetting the text exactly — so copy can be tested without new visuals. Offered, never default. Run make-static-ads instead; not for direct use.
-version: 0.4.2
+version: 0.5.0
 ---
 
 # copy-variants
 
 **When to offer:** as a **hook test on a winner** — after the review (Step 10), for the one or two images the marketer likes most, or later on an ad with results, or when the marketer asks "same image, different text" or "try another font". Say plainly: these test **copy**, not **concepts** — Meta treats the same picture with new words as nearly the same ad, so they go in the same ad (as extra text options), never as new concepts.
+
+For a composed render, record mode `copy` and the exact parent/request as basis in run.json (`../make-static-ads/references/workflow.md`). No new purchase-reason tournament is required. Link that record before finalizing, then use workflow.py quote after the exact claims/policy review; a free quote is not a spending yes.
 
 **Reads:** the approved render (`gooseworks:ads_creative_read` `creative_id`, `include: ["renders","layers"]`); the ad's spare hooks from ad-copy; the parent ad's compose record; `../make-static-ads/references/fonts-and-color.md`; `../make-static-ads/references/composer.md`, `../make-static-ads/references/judge.md`.
 **Writes:** variant renders, each with its text and font in the batch file under the parent ad.

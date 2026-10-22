@@ -17,7 +17,7 @@
 - Fenced blocks are **verbatim server text**. `«...»` marks a value you substitute. Everything else (including `{{ref:ID}}`, `Image N`, quotes, dashes) is literal.
 - "Include IF …" means the server adds that line only under that condition. Lines are joined with a single newline (`\n`) unless stated.
 - Per ad ("creative"), run in this order. Do not skip or reorder.
-- **`scripts/compose.py` does rows 6, 8, 9 (insertion) and 10 for you.** Write the ad's values to `ad.json`, run `python3 scripts/compose.py input ad.json`, answer that text as the composer (row 7) into `answer.json`, then run `python3 scripts/compose.py final ad.json answer.json` (`scripts/README.md`). The fenced text below stays the source of truth; `scripts/test_compose.py` checks the script against it.
+- **`scripts/compose.py` does rows 6, 8, 9 (insertion) and 10 for you.** Write the ad's values to `ad.json`, link the checked run, run `python3 scripts/compose.py prepare ad.json --output-dir prepared`, answer that text as the composer (row 7) into `answer.json`, then run `python3 scripts/compose.py final ad.json answer.json` (`scripts/README.md`). The fenced text below stays the source of truth; `scripts/test_compose.py` checks the script against it.
 
 | # | Step | Section |
 |---|---|---|
@@ -568,7 +568,7 @@ After answering:
 
 ## 8. From the composer's answer to the final prompt
 
-`scripts/compose.py final` does all of §8, the specimen insertion of §9 and §10, and prints the `ads_render` arguments of §11 per ratio (§0).
+`scripts/compose.py final` does all of §8, the specimen insertion of §9 and §10, and prints unquoted render_spec data per ratio. The playbook uses workflow.py quote after reviewing the exact prompts/images for claims and policy; the server assembly below remains the parity reference.
 
 ### 8.1 Gate the references (`selectTargetReferenceAssets` 605)
 

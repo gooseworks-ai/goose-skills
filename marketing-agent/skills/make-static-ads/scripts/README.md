@@ -5,19 +5,21 @@
 - **`schemes.py`** deals the colour scheme per ad (`composer.md` §3). **`specimen.py`** renders the font card (`font-specimen.md`).
 - Compose/schemes use Python 3 standard library; specimen also needs Pillow. The optional local `repair_patch.py` uses numpy and OpenCV. Use an existing authorized environment; if unavailable, leave the image unapproved and use the playbook's quoted-remake path rather than silently adding a service or spending.
 
-## compose.py in four steps
+## Prepare, compose, review, quote
 
 | Step | Command | Writes |
 |---|---|---|
-| 1. Fill `ad.json` for the ad | (by hand, schema below) | `ad.json` |
-| 2. Build the composer input | `python3 compose.py prepare ad.json --output-dir prepared > prepared.json` | a manifest of input parts, each at most 6,000 characters |
-| 3. Answer it as the composer | (read every `files_to_read` part in manifest order; on the normal layout path also view the source image) | `answer.json` |
-| 4. Build the final prompts | `python3 compose.py final ad.json answer.json > final.json` | per ratio: `prompt`, `image_urls`, ready `ads_render` arguments with `dry_run: true` |
+| 1. Check upstream decisions | `python3 workflow.py check run.json` | ready/partial/blocked; see `../references/workflow.md` |
+| 2. Fill linked `ad.json` | copy selected creative_direction and workflow:{run_path,ad_id,run_sha256} | `ad.json` |
+| 3. Build the composer input | `python3 compose.py prepare ad.json --output-dir prepared > prepared.json` | a manifest of input parts, each at most 6,000 characters |
+| 4. Answer it as the composer | (read every `files_to_read` part in manifest order; on the normal layout path also view the source image) | `answer.json` |
+| 5. Build the final prompts | `python3 compose.py final ad.json answer.json > final.json` | per ratio: `prompt`, `image_urls`, unquoted `render_spec` data; claims/policy review precedes quote requests |
 
-- **Reading once safely.** Later ads may use `--reuse-rules <shared_rules_sha256>` only when that exact rules hash was already read in this conversation. New or changed rules are returned in full. Every ad context is returned in full, split into parts; read every part. This avoids silent truncation of huge kits and does not ask the agent to diff large prompts by hand. In a fresh conversation, read the rules again.
+- **Reading once safely.** Later ads may use `--reuse-rules <shared_rules_sha256>` only when that exact rules hash was already read in this conversation. New or changed rules are returned in full. Every ad context is stored in full. After actually reading an earlier manifest in this conversation, --read-manifest receipt.json reuses only byte-identical parts whose previous files still match their hashes; every changed part stays in files_to_read. Fresh agents start without reuse. This records content identity, not comprehension. This avoids silent truncation of huge kits and does not ask the agent to diff large prompts by hand. In a fresh conversation, read the rules again.
+- **Quote gate.** Review exact final prompts and input images for claims/policy, record final_sha256 and the review findings, then `python3 workflow.py quote run.json a1 final.json review.json`. The output contains dry-run requests only. A digest does not grant spending approval or decide whether a claim is true. Full schema: `../references/workflow.md`.
 - **Input receipt.** Copy `input_sha256` from the prepared manifest into `answer.json`. `final` rejects stale or missing receipts and unknown template ownership. This proves which input an answer belongs to; it cannot prove reading, judgment, claim truth, or image quality. `input` remains the legacy plain-text/parity inspection command.
-- **Font specimen.** When `final.json` says `font_specimen.eligible` and nothing is inserted yet, make the card from `specimen_input_prompt` (`font-specimen.md`), put its URL in `ad.json` as `font_specimen_url`, and run step 4 again.
-- **Errors stop the ad, as on the server.** A `{{ref:ID}}` that is not in `reference_ids`, or that the reference gate removed, exits with a message. Fix `answer.json` and run step 4 again.
+- **Font specimen.** When `final.json` says `font_specimen.eligible` and nothing is inserted yet, make the card from `specimen_input_prompt` (`font-specimen.md`), put its URL in `ad.json` as `font_specimen_url`, and run final again.
+- **Errors stop the ad, as on the server.** A `{{ref:ID}}` that is not in `reference_ids`, or that the reference gate removed, exits with a message. Fix `answer.json` and run final again.
 - **Warnings** (in `final.json` and on stderr) say where the server would quietly change something: a forced brand colour or font, a dropped reference, a too-long prompt.
 
 ## ad.json
@@ -26,6 +28,7 @@ One ad. Copy tool answers in as they come back; do not rewrite them. The full fi
 
 | Field | From | Notes |
 |---|---|---|
+| `workflow` | selected run row | `{run_path,ad_id,run_sha256}`, path relative to this ad.json; required by final CLI in every mode |
 | `brand_id` | the brand | copied into `ads_render` |
 | `kit` | `brand_read` kit, `detail: "full"` | camelCase, as returned |
 | `learnings` | `brand_read` learnings | rows in the order returned |
@@ -38,7 +41,7 @@ One ad. Copy tool answers in as they come back; do not rewrite them. The full fi
 | `font` | Step 2 answer | `brand`, `template`, `pairing` (+ `font_pairing`, departure 3) or `none` (departure 4) |
 | `proof_points` | the featured product's usable facts | departure 1 (product-led brands only) |
 | `user_instructions` | the marketer's own chat words | unchanged |
-| `creative_direction` | the selected concept and approved copy | required for a fresh concept; schema below |
+| `creative_direction` | the selected concept and approved copy | copy the selected run object unchanged; schema below |
 | `variant` | `{"brief": {"angle": "problem", "message": "..."}}` | `angle` is a `VARIANT_BRIEF_ANGLE_COPY` key |
 | `ratios` | the ad's placements | `1:1`, `4:5`, `9:16`, `16:9`, `3:4` |
 | `engine`, `font_specimen_url`, `unavailable_reference_ids`, `content_policy_recompose` | later steps | departure 6 is recorded only |
@@ -62,7 +65,7 @@ For example, an unsweetened mix supplies a fact about choice. An optional guest 
 
 A layout reference may suit a clear product demonstration. A different category's reference may offer a physical device without its layout, or only convincing photographic craft. Select the useful contribution; do not force every reference object into every ad. Preserve real product proportions even when surrounding props change scale. A generated recreation is not pixel-exact packaging.
 
-Worked example (a made-up brand): `example-ad.json` and `example-answer.json`.
+Worked example (a made-up brand): `example-run.json` shows the upstream shape. `example-ad.json` and `example-answer.json` are legacy assembly/parity inputs; link a checked run before using final CLI. These fixtures are made-up evidence, not a real research pack.
 
 ```bash
 python3 compose.py input example-ad.json

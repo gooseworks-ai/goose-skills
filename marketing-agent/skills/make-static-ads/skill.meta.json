@@ -2,7 +2,7 @@
   "slug": "make-static-ads",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.4.7",
+  "version": "0.5.0",
   "tags": [
     "ads",
     "design"
@@ -78,7 +78,8 @@
     "'Graphic ready:' answer lines under sibling request lines — read by email-lifecycle, run-organic-social, make-content on their next run",
     "font specimen images (media_upload, kind image, tag font-specimen) — attached to this playbook's own renders",
     "brand learnings through the shared save-learning atom, on the human's own words (incl. claims the marketer confirms in chat) — read by every creative playbook",
-    "ad-library charges in research/credits-log/<YYYY-MM>.md (spend-gate branch B) — read by every playbook that estimates proxy spend"
+    "ad-library charges in research/credits-log/<YYYY-MM>.md (spend-gate branch B) — read by every playbook that estimates proxy spend",
+    "run.json: actual source coverage, sourced candidate reasons/personas/proof, selection and hook/visual/reference alternatives, critic findings, exact reviewed render inputs — checked before quoting"
   ],
   "needs": {
     "mcp": [
