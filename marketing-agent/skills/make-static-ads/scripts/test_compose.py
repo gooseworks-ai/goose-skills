@@ -895,6 +895,22 @@ class TestCreativeContract(unittest.TestCase):
         self.assertIn(7, result["departures_used"])
         self.assertEqual(result["creative_direction"], ad["creative_direction"])
 
+    def test_ratio_change_keeps_authored_scene_authority(self):
+        for role in ('craft', 'mechanism', 'layout'):
+            with self.subTest(role=role):
+                ad = self.creative_ad(role)
+                ad['ratios'] = ['1:1', '9:16', '4:5']
+                result = compose.build_final(ad, self.answer(ad))
+                base = result['renders'][0]['prompt']
+                for render in result['renders'][1:]:
+                    adaptation = render['prompt'][len(base):]
+                    self.assertIn(render['ratio'], adaptation)
+                    self.assertIn('true real-world proportions', adaptation)
+                    self.assertEqual("source ad's layout" in adaptation, role == 'layout')
+                    self.assertEqual('authored concept' in adaptation, role != 'layout')
+                    self.assertEqual(render['image_urls'], result['renders'][0]['image_urls'])
+                    self.assertIn(ad['creative_direction']['protected_decision'], render['prompt'])
+
     def test_competitor_can_lend_only_layout(self):
         for role in ("mechanism", "craft"):
             with self.assertRaisesRegex(compose.ComposeError, "Direct competitors"):

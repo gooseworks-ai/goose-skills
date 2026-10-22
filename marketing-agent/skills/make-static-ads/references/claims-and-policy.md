@@ -21,6 +21,8 @@ Treat each of these as a claim that must trace to a usable brain fact or a plain
 | Offer and commercial terms | "free shipping", "20% off", "$16", "free returns", "limited stock" | Must be live today, on this product, with real terms; fake scarcity is deceptive |
 | Safety / environmental | "safe for kids", "eco-friendly", "carbon neutral" | Green claims are now actively enforced (FTC Green Guides, EU) |
 
+**Authored metaphor.** A visibly imagined scene or relationship may express a supported product role without being a factual claim that the scene happened. State the likely factual takeaway, then check that against §2. A visual analogy does not by itself promise measured control, saved time or a better outcome; words, staging or comparison can turn it into that promise. Keep expressive meaning when the takeaway is supported. A metaphor label never excuses an unsupported result, endorsement or product capability.
+
 **Puffery** — vague, unmeasurable praise ("you'll love it", "a little luxury", "rethink your ritual") — is not a claim and may stay. The test: could someone prove it false? If yes, it is a claim.
 
 ## 2. Usable facts — where proof may come from

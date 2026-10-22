@@ -10,7 +10,7 @@ Research and choose the ideas before paying to draw them. Keep one `run.json` co
 
 Use `scripts/workflow.py check run.json` before compose. It returns `ready`, `partial` with named limits, or `blocked`. A partial inventory supports “not observed in checked ads,” never global novelty. Complete missing work or explain the smaller/research-first choice when blocked; do not fill an empty proof slot with an imagined customer situation.
 
-After compose, record claims and policy findings against the exact final prompts and image list. `workflow.py quote` emits only dry-run requests once that review matches. The marketer's quote approval remains separate; no JSON field grants spending permission.
+After compose, record claims and policy findings against the exact final prompts and image list. `workflow.py quote` emits only dry-run requests once that review matches; the exceptional unpublished-draft route below preserves an unverified-policy status and launch hold. The marketer's quote approval remains separate; no JSON field grants spending permission.
 
 Shell-free host: keep the same record in the batch file, apply these checks directly, and name the checker/reviewer used. Do not claim a script ran. All media and paid requests still use the live GooseWorks tools.
 
@@ -38,12 +38,12 @@ Use `schema_version:1`, `brand_id`, `mode` (`fresh`, `more`, `iterate`, `rotatio
 | `gate` per selected reason | Each of `promise,proof,hook,message,persona` is `{pass:true/false,why}`. Check a specific believable promise, usable proof or a real product demonstration, phone-size hook, three-second message and researched persona fit. A false/missing check blocks compose; fix/drop it. These are argued pass/fail judgments, not automatic scores. Fewer grounded reasons → research, a smaller set, or named user-supplied reasons before proceeding. |
 | `ads[]` | `{id,reason_id,template_id,truth_source_ids,situation_source_ids,creative_direction,hooks,visual_options,selected_visual_id,reference_options}`. Count equals brief.count. New/iterated concepts also record framework/style/composition/awareness; same reason+framework+style twice is one ad. Use one full creative_direction in the selected row; copy that object unchanged into ad.json, not a second interpretation. |
 | `hooks[]` |3–5 distinct `{text,formula,rank,why}` per fresh ad, ranks1…N. Rank1 is an exact on-image line. Preserve other ranked options for later variants. Deliberately textless ads use `exact_copy:[]`, `copy_intent:"no_added_text"` and `hooks:[]`. |
-| `visual_options[]` | `{id,premise,relationship,decision,why}`. For every fresh/more concept compare at least three materially different visible meanings per ad before choosing, including ordinary “make five ads” requests; alternate crops, finishes or captions of one scene are one option. Explain the specific product fact and human tension, why that relationship belongs to this product/person and what made the winner stronger. For a borrowed mechanism, compare adjacent and more distant translations with the obvious product photo/demo; different meanings matter more than different props. A straightforward non-surreal idea may win. One justified option is enough for explicit constrained action/scene requests, copy/fix/graphic execution, and non-transformative parent iterations. A straightforward label alone is not a constraint. Reject weak options explicitly. This is comparison, not a creativity guarantee. |
+| `visual_options[]` | `{id,premise,relationship,decision,why}`. For every fresh/more concept compare at least three materially different visible meanings per ad before choosing, including ordinary “make five ads” requests; alternate crops, finishes or captions of one scene are one option. Record credible competing events and the actual selection tradeoff under `../../make-static-ads-concept-grid/SKILL.md` steps 4–6; count materially different meanings, not drafts that fail basic truth or feasibility. `../../make-static-ads-find-references/SKILL.md` step 3 owns reference translation. A straightforward non-surreal idea may win. One justified option is enough for explicit constrained action/scene requests, copy/fix/graphic execution, and non-transformative parent iterations. A straightforward label alone is not a constraint. Reject weak options explicitly. This is comparison, not a creativity guarantee. |
 | `reference_options[]` | `{template_id,advertiser,source_id,decision,why}`. Three compared candidates/advertisers for fresh concepts; one selected. The selected ID matches template_id. Record unknown run length as unknown. Sources preserve actual image/record provenance. Source pixels stay text-only unless the brand owns the layout reference. |
 
 `creative_direction` retains `product_truth,truth_source,human_situation,situation_basis,premise,relationship,scene,protected_decision,reference_role,reference_contribution,direct_competitor,exact_copy` (`scripts/README.md`). Research situations also cite situation_source and situation_source_ids; hypotheses remain labelled. Its premise/relationship must equal the selected visual option. A craft reference can supply finish only; the concept still needs a reason to exist. Direct competitors supply layout only.
 
-Before composing new/iterated concepts, give a fresh critic the request, record, actual cited evidence and product/reference pixels rather than only our summaries. Ask it to challenge proof/persona fit, distinct purchase reasons, visual-option substance and the winning bridge. Keep `{reviewer,context,verdict,findings,resolution}` in `selection_review`; context is `fresh` for an independent agent or `human` with `critique_source` pointing to the real human critique. Without either, selection is blocked, even if delegation is unavailable. Same-agent review cannot clear it. Verdict pass only after findings are resolved. It is separate from the later blind pixel judge.
+Before composing new/iterated concepts, give a fresh critic the request, record, actual cited evidence and product/reference pixels rather than only our summaries. Use the validity, creative-strength and whole-set review in `../../make-static-ads-concept-grid/SKILL.md` step 7; record specific findings and their resolution, not just a general readiness verdict. Keep `{reviewer,context,verdict,findings,resolution}` in `selection_review`; context is `fresh` for an independent agent or `human` with `critique_source` pointing to the real human critique. Without either, selection is blocked, even if delegation is unavailable. Same-agent review cannot clear it. Verdict pass only after findings are resolved. It is separate from the later blind pixel judge.
 
 ## Compose and quote
 
@@ -51,5 +51,30 @@ Before composing new/iterated concepts, give a fresh critic the request, record,
 2. `compose.py final ad.json answer.json > final.json` produces prompts, ordered image lists and unquoted `render_spec` objects. Its legacy in-process assembly functions remain for server-parity tests; their output is not a workflow approval.
 3. Review exact final prompts/images for claims and applicable policy. Get the digest with `workflow.py digest final.json`. Write review.json as `{final_sha256,reviewed_by,reviewed_at,claims:{verdict:"pass",basis},policy:{verdict:"pass",basis}}`; retain spans/cuts and sources in the batch record. A pass is the reviewer's decision, never generated by the checker. Any changed text or reference invalidates it.
 4. `workflow.py quote run.json a1 final.json review.json` returns dry_run_requests only. Obtain each live quote, show it with the selected concepts/coverage limits, and submit only the exact quoted request within the marketer's approved ceiling. A prior yes covers only its stated scope/ceiling.
+
+### Inaccessible current policy sources: unpublished draft only
+
+A failed current-policy read is not a policy pass. An agent may continue to quote an **unpublished draft** only when the human explicitly authorized that draft/test scope and all actual claims, known platform/category rules and rights checks pass. A known violation, unresolved risk, missing category/rights evidence or an omitted applicable platform still blocks. Record every checked rule/platform and every unchecked current-rule check; source access must be the only remaining gap. Asset URLs are not promised to be private.
+
+For this case only, keep claims at `pass` and use:
+
+```json
+{
+  "policy": {
+    "verdict": "source_unavailable",
+    "basis": "Which current-policy checks could not be refreshed and why",
+    "known_rules": {"verdict": "pass", "basis": "All applicable platforms, checks actually completed, evidence and findings"},
+    "unresolved_risks": [],
+    "unavailable_sources": [{"url": "Official policy URL actually tried", "reason": "Actual access failure", "unchecked_rules": "Checks still unverified"}]
+  },
+  "unpublished_draft": {
+    "authorization_source": "Actual human message or approval record",
+    "authorization_quote": "Exact words explicitly authorizing the unpublished draft/test",
+    "launch_hold": true
+  }
+}
+```
+
+The responsible agent must verify that authorization from the real conversation or approval record before quoting; fields cannot grant it. An ordinary ad request supplies no exception. Retain the usual exact-final digest and reviewer fields. The quote output carries `policy_status: "not_currently_verified"`, the checked-rule screen, unchecked sources and `launch_hold: true`. Show them at quote approval and delivery; keep them in the batch and run-memory records. The usual live quote and spending approval still apply. Recheck rendered content; any new claim, rights issue or known policy risk blocks delivery. No publishing, platform submission or launch follows. Clear the hold only through a new complete current-policy review and separate launch authorization.
 
 For a worked fictional shape see `scripts/example-run.json`. Evidence there is illustrative, not usable for a real brand.

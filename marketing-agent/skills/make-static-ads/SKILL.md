@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Research the brand and its existing ads, compare sourced concepts and visual ideas, compose, quote, render and review through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.5.1
+version: 0.5.2
 ---
 
 # make-static-ads
@@ -37,13 +37,13 @@ For fresh/more ads, read `references/workflow.md` through its selection sections
 
 Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`), then `make-static-ads-find-references` (`../make-static-ads-find-references/SKILL.md`) and `make-static-ads-ad-copy` (`../make-static-ads-ad-copy/SKILL.md`) into that same record. Draft sourced reasons and ranked hooks, score the promise/proof/persona gate, and compare competing visible meanings for every fresh/more request, including an ordinary request for five ads. A hypothesis labels an imagined scene; it does not waive purchase-reason evidence or proof. Fix/drop failures; insufficient grounded reasons → research or a smaller justified set.
 
-Give a fresh critic the request, evidence and alternatives before compose; record findings and resolutions. Without delegation, get a real human critique of that evidence and alternatives or stop at selection; self-review cannot clear this gate. **Done:** the upstream check described in `scripts/README.md` is ready or honestly partial with an evidence-based proceed-with-limits decision; blocked means no compose/quote. The checker verifies recorded work and consistency, not truth or creativity.
+Give a fresh critic the request, evidence, alternatives and whole set before compose; use the concept-grid’s validity and creative-strength review and record specific findings and resolutions. Without delegation, get a real human critique of that evidence and alternatives or stop at selection; self-review cannot clear this gate. **Done:** the upstream check described in `scripts/README.md` is ready or honestly partial with an evidence-based proceed-with-limits decision; blocked means no compose/quote. The checker verifies recorded work and consistency, not truth or creativity.
 
 ### 3. Compose, then check the exact result
 
 Run `make-static-ads-compose` (`../make-static-ads-compose/SKILL.md`). Link each ad.json to the selected run row. Prepare complete bounded input, read every returned part, then author the answer. The finalizer checks the run/selected direction/input and retains exact copy and the protected decision.
 
-Run `make-static-ads-claims-extract` (`../make-static-ads-claims-extract/SKILL.md`) Pass A and `ad-policy-check` (`../ad-policy-check/SKILL.md`) against exact final prompts/images. Cut → recompose/review. **Done:** the run, final output and claims/policy review match; the reviewed-quote operation in `scripts/README.md` emits only dry-run requests. Shell-free hosts apply the same record checks directly and name that path.
+Run `make-static-ads-claims-extract` (`../make-static-ads-claims-extract/SKILL.md`) Pass A and `ad-policy-check` (`../ad-policy-check/SKILL.md`) against exact final prompts/images. Cut → recompose/review. An inaccessible current-policy source stays unverified; `references/workflow.md` defines the narrow explicitly authorized unpublished-draft exception and launch hold. **Done:** the run, final output and claims/policy review match; the reviewed-quote operation in `scripts/README.md` emits only dry-run requests. Shell-free hosts apply the same record checks directly and name that path.
 
 ### 4. Quote and render
 
@@ -59,7 +59,7 @@ One quoted retry within the ceiling; a compatible isolated label defect may use 
 
 ### 6. Deliver and remember
 
-Use `references/handoff-format.md` for the final table and `references/reading-the-brain.md` §7 for the batch fields. Save run/selection/compose/claims/pixel verdicts, exact prompts and ordered inputs, IDs and provenance. Read-merge-write lower-case tags, including made-by:make-static-ads. Preserve raw failures and repair lineage. Re-read product price/eligibility before delivery.
+Use `references/handoff-format.md` for the final table and `references/reading-the-brain.md` §7 for the batch fields. Save run/selection/compose/claims/pixel verdicts, exact prompts and ordered inputs, IDs and provenance. Carry any unverified-policy status and launch hold into delivery and run-memory; draft approval never clears launch. Read-merge-write lower-case tags, including made-by:make-static-ads. Preserve raw failures and repair lineage. Re-read product price/eligibility before delivery.
 
 Ask which ads the marketer prefers. Offer `make-static-ads-copy-variants` (`../make-static-ads-copy-variants/SKILL.md`) for chosen images; each paid variant has its own applicable approval. Save lasting human feedback through `save-learning` (`../save-learning/SKILL.md`), not agent judgments. **Done:** the batch and creative links are delivered with honest limits; publishing is a separate human decision.
 
