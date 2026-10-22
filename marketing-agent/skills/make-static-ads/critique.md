@@ -459,3 +459,20 @@ The main description/output now names the actual registered reference and source
 **Fixes.** Fresh/more requests compare three substantive visual meanings even when the request is ordinary; only an explicit quoted user action/scene constraint can narrow that comparison. The independent critic checks that constraint and the ideas, rather than treating a “straightforward” label as permission to skip selection. A same-agent review cannot clear the selection gate; a real human critique with a source or a fresh critic is required.
 
 Run-memory Start and End are mandatory, including first-run honesty, prior recommendation outcomes and blocked/partial exits. All mandatory must/dont learnings reach the composer; only optional guidance is capped at eight. This intentionally departs from the retained server first-eight-total reference. Runtime command syntax moved into the discoverable scripts guide. Negative tests cover the bypasses and mandatory-rule overflow; they do not establish research truth or creative quality.
+
+
+## Round 24 — 23 Oct: competitive ideas and honest draft-policy limits (0.5.2)
+
+**Summary.** A fresh ordinary Graza run performed real research, kept alternatives and passed independent selection review, yet mostly chose use photos and a can hero. The independent free audit held the set before spending. This update changes selection judgment, not the source/spend gates or the original run.
+
+**Evidence.** content-goose: `clients/graza/working/static-skill-rebuild-2026-10-22/fresh-graza/independent-free-audit.md`, `run.json` and final prompts. The audit found weak rivals (including an already unsupported environmental spectacle), craft-only reference choices, loser reasons that assumed copying entire source scenes, and repeated bottle/hand/flow pictures. The earlier Kolkata Chai `finals/creative-experiment-2026-10-22/how-to.md` explains meaningful near/distant relationships and product-authored metaphors; its positive human feedback is craft evidence, not performance proof.
+
+| Finding | Change / limit |
+|---|---|
+| Different alternatives could still be easy to beat | Develop credible competing events; repair avoidable staging/claim defects before comparing. The critic challenges winner strength, brand specificity and the whole set as well as validity. No unusual-prop or surrealism quota. |
+| Generic craft removed a reference's useful relationship | Try a conceptual source's relationship in the product's human situation; judge each candidate's allowed contribution. Craft-only remains valid when the authored event earns its place. |
+| A hypothetical visual analogy was rejected as a possible measured-control promise | Evaluate its likely factual takeaway. Expressive relationships may stay; any implied result still needs support. |
+| Craft/mechanism ratio suffix restored source-layout authority | Ratio adaptation now retains the authored scene for those roles; layout path retains the server behavior. Reconcile authored colour choices with the assigned scheme before compose. |
+| Official current Meta policy pages could not be reached | A separate audit checked seven official URLs (`policy-access-check.md` in the same Graza working folder). An explicitly authorized unpublished draft may quote only with all actual known-rule/claim/rights checks passing and source access as the sole gap. The review and output retain unchecked sources/rules and a launch hold. No real risk, default ad request or publishing authorization is cleared. The agent must verify real human authority; record fields alone cannot supply it. |
+
+**Validation.** 48 Python runtime tests and 55 repository tests passed. Skill validation, 634 published-reference links, atom-version checks and lint passed (existing unrelated lint warnings remain); the catalog index was rebuilt. These checks cover recorded gates, exact review binding and prompt authority. A fresh uncoached selection run is still needed to establish improved creative decisions; paid pixels and human preference are separate evidence. The original Graza set remains held. [[derived-from::fresh-graza]]

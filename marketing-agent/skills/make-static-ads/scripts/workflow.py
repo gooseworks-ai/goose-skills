@@ -219,9 +219,25 @@ def quote(plan, ad_id, final, review):
     require(selected is not None and final.get('creative_direction') == selected['creative_direction'], 'final creative direction drift')
     require(review.get('final_sha256') == digest(final), 'claims/policy review is missing or stale for these exact prompts/images')
     fields(review, ('reviewed_by', 'reviewed_at'), 'review')
-    for key in ('claims', 'policy'):
-        fields(review.get(key), ('basis',), key)
-        require(review[key].get('verdict') == 'pass', key + ' review blocks quoting')
+    fields(review.get('claims'), ('basis',), 'claims')
+    require(review['claims'].get('verdict') == 'pass', 'claims review blocks quoting')
+    policy = review.get('policy')
+    fields(policy, ('basis',), 'policy')
+    draft = None
+    if policy.get('verdict') == 'source_unavailable':
+        # A recorded declaration is review evidence, never authorization or a policy pass.
+        fields(policy.get('known_rules'), ('basis',), 'policy.known_rules')
+        require(policy['known_rules'].get('verdict') == 'pass', 'known policy rules must pass')
+        require(policy.get('unresolved_risks') == [], 'unresolved policy/category/rights risks block quoting')
+        unavailable = rows(policy.get('unavailable_sources'), 'policy.unavailable_sources')
+        require(unavailable, 'record inaccessible current-policy sources')
+        for source in unavailable:
+            fields(source, ('url', 'reason', 'unchecked_rules'), 'unavailable policy source')
+        draft = review.get('unpublished_draft')
+        fields(draft, ('authorization_source', 'authorization_quote'), 'unpublished_draft')
+        require(draft.get('launch_hold') is True, 'unpublished draft requires a launch hold')
+    else:
+        require(policy.get('verdict') == 'pass', 'policy review blocks quoting')
     requests = []
     for render in final['renders']:
         request = copy.deepcopy(render['render_spec'])
@@ -230,7 +246,14 @@ def quote(plan, ad_id, final, review):
         require(isinstance(request.get('prompt'), str) and len(request['prompt']) <= 12000, 'render prompt exceeds the tool limit')
         request['dry_run'] = True
         requests.append(request)
-    return {'status': 'quote_ready', 'limitations': validate(plan)['limitations'], 'dry_run_requests': requests}
+    result = {'status': 'quote_ready', 'limitations': validate(plan)['limitations'], 'dry_run_requests': requests}
+    if draft is not None:
+        result.update(policy_status='not_currently_verified', launch_hold=True,
+                      unpublished_draft=copy.deepcopy(draft),
+                      checked_policy_rules=copy.deepcopy(policy['known_rules']),
+                      unchecked_policy_sources=copy.deepcopy(policy['unavailable_sources']))
+        result['limitations'].append('Current policy sources inaccessible: unpublished draft only; launch held')
+    return result
 
 
 def load(path):

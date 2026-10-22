@@ -65,6 +65,28 @@ def run_fixture():
                                                   why='The action fits' if n == 0 else 'Less useful relationship') for n in range(3)])])
 
 
+def quote_fixture():
+    plan = run_fixture()
+    request = dict(brand_id='brand_test', prompt='Exact', image_urls=['https://brand.test/real.png'], ratios=['4:5'], variants=1)
+    final = dict(creative_direction=plan['ads'][0]['creative_direction'],
+                 workflow=dict(run_sha256=workflow.digest(plan), ad_id='a1'),
+                 renders=[dict(prompt='Exact', image_urls=request['image_urls'], render_spec=request)])
+    review = dict(final_sha256=workflow.digest(final), reviewed_by='reviewer', reviewed_at='2026-10-22',
+                  claims=dict(verdict='pass', basis='Exact fact and qualifiers'),
+                  policy=dict(verdict='pass', basis='Applicable category checked'))
+    return plan, final, review
+
+
+def unpublished_draft_review(review):
+    review['policy'] = dict(verdict='source_unavailable', basis='Current Meta rules could not be refreshed.',
+                          known_rules=dict(verdict='pass', basis='Meta personal traits, misleading content and disclosure screens checked; no category restriction applies.'),
+                          unresolved_risks=[], unavailable_sources=[dict(url='https://policy.test/current', reason='HTTP 429',
+                                                                       unchecked_rules='Current changes to Meta advertising rules')])
+    review['unpublished_draft'] = dict(authorization_source='User message 7',
+                                     authorization_quote='Generate this only as an unpublished staging draft test.', launch_hold=True)
+    return review
+
+
 class WorkflowTests(unittest.TestCase):
     def assertBlocked(self, plan, fragment):
         with self.assertRaisesRegex(workflow.WorkflowError, fragment):
@@ -202,12 +224,7 @@ class WorkflowTests(unittest.TestCase):
             workflow.match_ad(p, 'a1', ad)
 
     def test_quote_binds_review_to_exact_final_and_remains_dry_run(self):
-        p = run_fixture(); direction = p['ads'][0]['creative_direction']
-        request = dict(brand_id='brand_test', prompt='Exact', image_urls=['https://brand.test/real.png'], ratios=['4:5'], variants=1)
-        final = dict(creative_direction=direction, workflow=dict(run_sha256=workflow.digest(p), ad_id='a1'),
-                     renders=[dict(prompt='Exact', image_urls=request['image_urls'], render_spec=request)])
-        review = dict(final_sha256=workflow.digest(final), reviewed_by='reviewer', reviewed_at='2026-10-22',
-                      claims=dict(verdict='pass', basis='Exact fact and qualifiers'), policy=dict(verdict='pass', basis='Applicable category checked'))
+        p, final, review = quote_fixture()
         out = workflow.quote(p, 'a1', final, review)
         self.assertTrue(out['dry_run_requests'][0]['dry_run'])
         final['renders'][0]['image_urls'] = ['https://brand.test/other.png']
@@ -216,6 +233,52 @@ class WorkflowTests(unittest.TestCase):
         review['final_sha256'] = workflow.digest(final)
         with self.assertRaisesRegex(workflow.WorkflowError, 'specification drift'):
             workflow.quote(p, 'a1', final, review)
+
+    def test_unpublished_draft_keeps_unverified_policy_and_only_emits_dry_quotes(self):
+        plan, final, review = quote_fixture()
+        unpublished_draft_review(review)
+        before = copy.deepcopy(review)
+        result = workflow.quote(plan, 'a1', final, review)
+        self.assertEqual(result['policy_status'], 'not_currently_verified')
+        self.assertIs(result['launch_hold'], True)
+        self.assertEqual(result['checked_policy_rules'], review['policy']['known_rules'])
+        self.assertEqual(result['unchecked_policy_sources'], review['policy']['unavailable_sources'])
+        self.assertEqual(result['unpublished_draft'], review['unpublished_draft'])
+        self.assertTrue(all(r['dry_run'] is True for r in result['dry_run_requests']))
+        self.assertTrue(result['limitations'])
+        self.assertEqual(review, before)
+        # This exceptional route still binds the exact reviewed prompts/images.
+        final['renders'][0]['prompt'] = 'Changed after review'
+        with self.assertRaisesRegex(workflow.WorkflowError, 'stale'):
+            workflow.quote(plan, 'a1', final, review)
+
+    def test_unpublished_draft_cannot_clear_real_risks_or_supply_its_own_authority(self):
+        mutations = [
+            (lambda r: r.pop('unpublished_draft'), 'unpublished_draft'),
+            (lambda r: r['unpublished_draft'].pop('authorization_source'), 'authorization_source'),
+            (lambda r: r['unpublished_draft'].update(authorization_quote=''), 'authorization_quote'),
+            (lambda r: r['unpublished_draft'].update(launch_hold=False), 'launch hold'),
+            (lambda r: r['policy'].update(unresolved_risks=['Unresolved regulated-category restriction']), 'unresolved'),
+            (lambda r: r['policy'].pop('unresolved_risks'), 'unresolved'),
+            (lambda r: r['policy']['known_rules'].update(verdict='flag'), 'known policy'),
+            (lambda r: r['policy'].update(unavailable_sources=[]), 'inaccessible'),
+            (lambda r: r['policy']['unavailable_sources'][0].pop('reason'), 'reason'),
+            (lambda r: r['policy']['unavailable_sources'][0].pop('unchecked_rules'), 'unchecked_rules'),
+            (lambda r: r['policy'].update(verdict='flag'), 'policy review'),
+            (lambda r: r['claims'].update(verdict='flag'), 'claims review'),
+        ]
+        for mutate, message in mutations:
+            with self.subTest(case=message):
+                plan, final, review = quote_fixture()
+                unpublished_draft_review(review)
+                mutate(review)
+                with self.assertRaisesRegex(workflow.WorkflowError, message):
+                    workflow.quote(plan, 'a1', final, review)
+        # An ordinary request with incomplete policy review gets no default exception.
+        plan, final, review = quote_fixture()
+        review['policy']['verdict'] = 'not_checked'
+        with self.assertRaisesRegex(workflow.WorkflowError, 'policy review'):
+            workflow.quote(plan, 'a1', final, review)
 
     def test_read_manifest_reuses_only_exact_verified_parts(self):
         with tempfile.TemporaryDirectory() as tmp:

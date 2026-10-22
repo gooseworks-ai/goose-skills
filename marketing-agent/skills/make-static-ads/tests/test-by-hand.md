@@ -105,3 +105,14 @@ Use a real official product photo and a completed render whose scene/shape/pose 
 Use a brand with hundreds of live cards, duplicate variants and incomplete older creative history. Request a small fresh set.
 
 **Passes if:** research still runs, but within the source sample limits in `references-and-remix.md` §2a. The inventory records the actual check date, available total/scope, examined count, observed distinct statics/concepts and stopping reason; a missing source is named. Sampling video-inclusive cards does not become an invented count of unique static ads. Repeated messages are grouped. No infinite paging is required before a render. Coverage and recommendations say "not observed in checked ads" when partial; they never call that proof the brand has not used a reason/template. Every candidate actually suggested is still opened by eye. Earlier ads from this conversation remain in the made-before list.
+
+
+## Test 16 — selection quality before spending
+
+Give a fresh agent an ordinary request for a small new set on a brand outside the craft examples. Supply source access and the real product images, without proposed concepts or a preferred visual device. Review the actual options, selected events and critic findings before any paid call.
+
+**Passes if:** contenders are supported, feasible and worth choosing between; the critic challenges a valid but interchangeable winner, a rival rejected only for a repairable staging problem, a reference rejected for objects its limited role would not import, and a set repeating the same use action under different product labels. The selected pictures express distinct buying situations and meaningful events. Direct demonstrations may win for a specific proof need. No requirement for surrealism, prop variety or market-performance claims. A completed record alone cannot pass this behavioral test.
+
+## Test 17 — inaccessible policy is not clearance
+
+Try an unpublished staging draft that the human explicitly authorized, with exact-final claims and known-rule checks complete, but an official current-policy page inaccessible. Use `references/workflow.md`'s exceptional record. **Passes if:** quotes stay dry-run until separate spending approval; source failures and unchecked rules remain visible; generated assets retain `not_currently_verified` and a launch hold. A missing real draft authorization, unresolved category/rights risk, omitted platform or failed claim still blocks. An ordinary request cannot obtain this exception. Later launch requires current policy review and its own authorization.

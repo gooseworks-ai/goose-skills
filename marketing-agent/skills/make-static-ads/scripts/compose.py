@@ -1121,11 +1121,15 @@ def final_prompt_result(body, slots, unavailable=(), logo_state="unavailable"):
     return final_image_manifest(slots) + "\n\n" + resolve_placeholders(reconciled, slots), degradations
 
 
-def with_ratio_adaptation(prompt, target, template_ratio):
+def with_ratio_adaptation(prompt, target, template_ratio, concept_scene=False):
     if not template_ratio or template_ratio == target:
         return prompt
     orientation = {"9:16": "vertical portrait", "4:5": "portrait", "16:9": "horizontal landscape"}.get(target, "square")
-    return prompt + CANVAS_ADAPTATION.format(target=target, orientation=orientation, template_ratio=template_ratio)
+    adaptation = CANVAS_ADAPTATION
+    if concept_scene:
+        adaptation = adaptation.replace("the source ad's layout was composed for a {template_ratio} canvas",
+                                        "the authored concept is being adapted to this canvas")
+    return prompt + adaptation.format(target=target, orientation=orientation, template_ratio=template_ratio)
 
 
 def resolve_engine(batch_engine, template_engine):
@@ -1273,7 +1277,7 @@ def build_final(ad, answer):
     for ratio in ad.get("ratios") or []:
         if ratio not in AD_RATIOS:
             raise ComposeError('ratio "%s" is not one of %s.' % (ratio, ", ".join(AD_RATIOS)))
-        p = with_ratio_adaptation(final_prompt, ratio, t.get("ratio"))
+        p = with_ratio_adaptation(final_prompt, ratio, t.get("ratio"), st["concept_scene"])
         if len(p) > ADS_RENDER_PROMPT_MAX:
             warnings.append("the %s prompt is %d characters; ads_render takes at most %d." % (ratio, len(p),
                                                                                             ADS_RENDER_PROMPT_MAX))
