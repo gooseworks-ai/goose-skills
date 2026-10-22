@@ -1,10 +1,10 @@
-# References and remix — every ad is a remix of a real ad
+# References — choose what each source contributes
 
 **In short**
-- **Every ad is a remix.** Each ad starts from a template — a real static ad — and the composer recreates its layout and signature mechanic for this brand (`composer.md`). There is no "from scratch" path and no ad without a template.
+- **Every ad has a registered reference with a named role.** `layout` keeps its abstract structure; `mechanism` takes a functional relationship into a new brand-specific scene; `craft` takes only treatment. The concept supplies the subject and meaning. Direct competitors are `layout` only. Run length is a sourcing signal, never proof that an ad performed well.
 - **Fresh templates every run, from Meta.** Like the custom-video flow, the agent finds real statics running on Meta (the brand's competitors and category leaders, plus the template library) and shows them to the marketer as templates to remix.
 - **The marketer picks; if they don't, the agent picks** — templates likely to work (long-running, or run in several versions) that the brand **has not already tried**.
-- **The template's pixels follow the server's rule:** a template the brand doesn't own is turned into a written layout blueprint and never shown to the image model (`structure-blueprint.md`); the brand's own ads are shown as images.
+- **The template's pixels follow the server's rule:** a template the brand doesn't own is turned into a written layout blueprint and never shown to the image model (`structure-blueprint.md`); an owned layout reference may be shown as an image; mechanism/craft uses written direction only.
 
 Taxonomy terms: `creative-taxonomy.md`.
 
@@ -59,7 +59,7 @@ Work through these in order and stop when every concept has 3–5 candidates. Bu
 2. Show them as a **gallery of templates** the marketer can scan in one screen — each with the image, the advertiser, how long it has run (or "several versions"), a one-line "what it does" (framework, style), and the concept it would carry. Shell host: one HTML page with a link; hosted chat: an artifact where supported, else a table with image links.
 3. Mark the agent's suggestion for each slot. **The marketer picks.** If they don't pick (or say "you choose"), the agent uses its suggestions: likely-working templates the brand hasn't tried, spread across different frameworks and looks (`creative-taxonomy.md` §3).
 4. A slot where nothing fits → show more candidates for that slot (another leader, the library, a keyword search on a yes); keep going until each ad has a template.
-5. **The template gives the shape; the concept keeps the message.** When the marketer picks a template other than the suggestion — including one shown for another slot — the slot keeps its concept: persona, reason to buy, proof and hook direction. The agent updates the row's look columns (framework, visual style, composition) to the new template, re-runs the diversity checks (`creative-taxonomy.md` §4) and picks the angle directive again, then checks that the template's mechanic can carry the concept. If it can't, say so in one line and offer the nearest template that can, or move the concept to the slot whose template fits. Never take on the template's own message, metaphor or audience in place of the concept.
+5. **The concept keeps its meaning.** For `layout` references, When the marketer picks a template other than the suggestion — including one shown for another slot — the slot keeps its concept: persona, reason to buy, proof and hook direction. The agent updates the row's look columns (framework, visual style, composition) to the new template, re-runs the diversity checks (`creative-taxonomy.md` §4) and picks the angle directive again, then checks that the template's mechanic can carry the concept. If it can't, say so in one line and offer the nearest template that can, or move the concept to the slot whose template fits. For `mechanism` or `craft`, record the limited contribution and create an authored scene blueprint (`scripts/README.md`, departure 7) instead of preserving the source scene. Never replace the concept with the source's audience, claims or message.
 6. **A template already used for this brand** (the "made before" list) is never the suggestion. If the marketer picks it anyway, say once which ad used it, and change everything inside the layout: the example content, the picture and the words.
 
 ## 4. Register each picked template
@@ -67,9 +67,9 @@ Work through these in order and stop when every concept has 3–5 candidates. Bu
 The composer works from a GooseWorks template record (its detail gives title, description, layout, style and mood tags, text density and `remix_spec` — `composer.md` inputs).
 - **Already a template** (library, community, imported competitor or own ad) → use its `template_id`.
 - **A Meta ad found in §2b–d** → re-host the image (`gooseworks:media_upload` `source: {type: "fetch"}`; ad-library links expire) and register it with `gooseworks:ads_template_create` (`source: {type: "media"}`, a title naming the advertiser and framework, tags `ref:meta`, `src:<advertiser-slug>`). `rights_attested: true` only for the brand's own ads, on the marketer's word. Wait until the template's detail shows its remix fields.
-- **Pixels:** the server's rule decides what the image model sees (`structure-blueprint.md`): a template the brand doesn't own → the agent looks at it only to write the layout blueprint (as the server's blueprint step does), composes from the blueprint, and never sends the template image to the image model; the brand's own ad → the template image goes first in the image list.
+- **Pixels:** the server's rule decides what the image model sees (`structure-blueprint.md`): a template the brand doesn't own → the agent looks at it only to write the layout blueprint (as the server's blueprint step does), composes from the blueprint, and never sends the template image to the image model; a confirmed owned `layout` reference → its image goes first; `mechanism`/`craft` → no template image, including owned sources.
 
-Record per ad: template id, advertiser and Ad Library link, and whether it ran structure-only, in the grid row and the batch file (`src:` tag = first 8 characters of the template id).
+Record per ad: template id, advertiser, actual source URL and source type (Meta, library or another recorded source), observed run dates or "unknown", reference role and contribution, and whether it ran structure-only, in the grid row and the batch file (`src:` tag = first 8 characters of the template id).
 
 ## 5. Rights
 

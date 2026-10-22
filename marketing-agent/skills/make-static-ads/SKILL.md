@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads ("ten fresh ads this week", "make me some ads", "ads for our sale"); "my ads all look the same"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).
-version: 0.4.4
+version: 0.4.5
 ---
 
 # make-static-ads
@@ -11,7 +11,7 @@ The agent runs GooseWorks' static-ad pipeline itself. It plans truly different c
 
 **One prompt.** What the marketer types in this chat is the composer's User instructions, sent unchanged. Each ad's concept travels in its own Variant brief (Step 6). The agent never writes a second prompt on top.
 
-**The template is the shape; the concept is the message.** A template decides the layout. Who the ad speaks to, why they buy and the proof come from the concept, whatever template is picked.
+**The concept gives the scene a reason to exist.** Start from a product truth and a human situation. A registered reference can supply a layout, a reusable mechanism, or craft alone. Record that role before composing; a direct competitor supplies layout only.
 
 ## What you get
 
@@ -27,13 +27,13 @@ The number of ads and placements chosen at Step 2. **A concept** = one persona, 
 
 1. **Every factual line is a usable fact** (`references/claims-and-policy.md` §2). Anything else is cut, and the hand-off says what would confirm it.
 2. **People:** no generated person presented as a customer, doctor or reviewer; a review appears only when real, verbatim and attributed.
-3. **Other brands' ads lend their layout only.** Every ad is a remix of a template. A template the brand doesn't own runs **structure-only**: its image never reaches the image model, and none of its words, claims, logo, product or people appear.
+3. **Other brands stay text-only.** Register the reference and describe only its permitted contribution in words. Its pixels never reach the image model. Direct competitors lend layout only; a different category may lend an abstract mechanism or craft. The new scene, copy and product identity come from this brand.
 4. **Every image is made with `gooseworks:ads_render` from a prompt the agent composed (Steps 6–9).** Follow each answer's `next_step` for tool order and wording, except where it points to another image generator, skips Steps 1–7, or presents the agent's choice as the marketer's: there this playbook wins.
 5. **Short answers change who decides, not what runs.** "Your choice", "just show me the final ads", "only one ad" or "be quick" answers every open Step 2 question with its suggestion and lets the agent pick the templates, shown in the plan table. In every mode that runs Steps 1–12, Steps 1, 3, 4, 7 and 10 still run in full on every ad, however few.
 
 **Setup:**
 
-1. **Connection.** Find the GooseWorks tools (the host's tool search, or `gooseworks:tools_load` with the `ads` group where the server offers it, plus any group a step needs: `brand`, `media`, `campaigns`, `meta`, `social`, `files`, `data`). Brand-knowledge tools are named `brand_knowledge_*` (older servers: `brain_map`, `brain_search`, `brain_open`, `brain_save`). Done when `gooseworks:ads_render` is listed. No `gooseworks:` tools at all → say only: "Connect GooseWorks first — I make your ads through it." Tools but no `ads_render` → say: "Image ads can't be made on this connection yet." and stop.
+1. **Connection.** Find the GooseWorks tools (the host's tool search, or `gooseworks:tools_load` with the `ads` group where the server offers it, plus any group a step needs: `brand`, `media`, `campaigns`, `meta`, `social`, `files`, `data`). Brand-knowledge tools are named `brand_knowledge_*` (older servers: `brain_map`, `brain_search`, `brain_open`, `brain_save`). A stale connector catalog → refresh discovery once. On a shell host, an existing configured GooseWorks MCP transport may read the live tool list and call that same authorized server; keep credentials in memory and use its live schemas. Done when `gooseworks:ads_render` is listed. No `gooseworks:` tools at all → say only: "Connect GooseWorks first — I make your ads through it." Tools but no `ads_render` → say: "Image ads can't be made on this connection yet." and stop. `ads_generate` is a different server workflow: its `prompt` is an instruction to another composer, not a verbatim render. Never substitute it for `ads_render`.
 2. **Server start.** `gooseworks:get_started` with `wants: "image"` and the marketer's words; its answer settles setup and the brand only. A card → wait for the press (`gooseworks:card_wait`).
 3. **Research complete.** `gooseworks:brand_read` → `research_status` must be `complete`, or every render fails after the yes. `running` → wait (`gooseworks:job_get` `kind: "brand_research"`); `none` → say the brand isn't set up yet; no website or store link → images can't be made yet, so offer the concepts, templates and copy alone.
 4. Load `references/engine-notes.md`.
@@ -71,16 +71,16 @@ A physical product with no usable photos → stop: real product photos come firs
 Done when every question has an answer.
 
 ### 3. Build the concept grid
-Load `references/creative-taxonomy.md` and `references/angles-and-hooks.md`. Reads: the brief, the concept inventory. Writes: the grid, shown to the marketer with the coverage note before any quote. Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). Done when every concept passed the concept gate, no two ads share reason + framework + style, at least two ads in three carry a reason the inventory does not show (a one-ad set: that ad), and every ad on a running reason uses a look the inventory does not show.
+Load `references/creative-taxonomy.md` and `references/angles-and-hooks.md`. Reads: the brief, the concept inventory. Writes: the grid, shown to the marketer with the coverage note before any quote. Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). For each selected concept, record the product truth and source, the human situation (research with a source, or a labelled creative hypothesis), one premise, the visible relationship, and the decision the image must preserve. Use `scripts/README.md`'s `creative_direction` fields at Step 6. Done when every concept passed the concept gate, no two ads share reason + framework + style, at least two ads in three carry a reason the inventory does not show (a one-ad set: that ad), and every ad on a running reason uses a look the inventory does not show.
 
 ### 4. Show templates from the Meta Ad Library; the marketer picks
-Reads: the grid, the Step 2 answers. Writes: the gallery and one template per ad. Run the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`). Done when every ad has a registered template that the marketer picked (or the agent picked and showed), its concept unchanged, and structure-only yes/no recorded.
+Reads: the grid, the Step 2 answers. Writes: the gallery and one template per ad. Run the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`). Done when every ad has a registered template that the marketer picked (or the agent picked and showed), its concept unchanged, its reference role and contribution named, and structure-only yes/no recorded.
 
 ### 5. Write the copy around the image
-Reads: the grid, voice, customer words. Writes: a copy row per ad. Run the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`): primary texts, headline, description, CTA, destination, and the hook direction for the Variant brief. The on-image words are the composer's (Step 6). Done when every ad has a copy row.
+Reads: the grid, voice, customer words. Writes: a copy row per ad. Run the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`): primary texts, headline, description, CTA, destination, and the hook direction for the Variant brief. Write the exact on-image lines into `creative_direction.exact_copy`; the composer preserves them (Step 6). Done when every ad has a copy row.
 
 ### 6. Compose every ad as the server does
-Reads: the grid, copy rows, templates, Step 2 answers. Writes: per ad and ratio, the final prompt and ordered image list. Run the `make-static-ads-compose` skill (`../make-static-ads-compose/SKILL.md`). Done when every ad × ratio passes the placeholder check (`references/composer.md` §7) and no `image_urls` holds another brand's template image.
+Reads: the grid, copy rows, templates, Step 2 answers. Writes: per ad and ratio, the final prompt and ordered image list. Run the `make-static-ads-compose` skill (`../make-static-ads-compose/SKILL.md`). Use `compose.py prepare` for every ad; use `--output-dir prepared` and read every file in the manifest, including every new shared rule. `final` rejects a missing or stale input receipt, missing exact copy, or missing protected decision. Done when every ad × ratio passes the placeholder check (`references/composer.md` §7) and no `image_urls` holds another brand's template image.
 
 ### 7. Check claims and policy before any money is spent
 Load `references/claims-and-policy.md`. Reads: copy rows, composed prompts. Writes: check results and the cut list. Run Pass A of the `make-static-ads-claims-extract` skill (`../make-static-ads-claims-extract/SKILL.md`) and the `ad-policy-check` skill (`../ad-policy-check/SKILL.md`). A cut on-image line → re-compose that ad (Step 6) and check it again. Done when every span is a usable fact or cut, and every ad has a claims line and a policy line.

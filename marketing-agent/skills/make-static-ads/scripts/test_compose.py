@@ -14,6 +14,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -842,7 +843,16 @@ class TestCli(unittest.TestCase):
         p = subprocess.run([sys.executable, script, "input", ad], capture_output=True, text=True)
         self.assertEqual(p.returncode, 0, p.stderr)
         self.assertTrue(p.stdout.startswith(compose.L1_NORMAL))
-        p = subprocess.run([sys.executable, script, "final", ad, ans], capture_output=True, text=True)
+        prepared = subprocess.run([sys.executable, script, "prepare", ad], capture_output=True, text=True)
+        self.assertEqual(prepared.returncode, 0, prepared.stderr)
+        with open(ans, encoding="utf-8") as f:
+            answer = json.load(f)
+        answer["input_sha256"] = json.loads(prepared.stdout)["input_sha256"]
+        with tempfile.TemporaryDirectory() as tmp:
+            answer_path = os.path.join(tmp, "answer.json")
+            with open(answer_path, "w", encoding="utf-8") as f:
+                json.dump(answer, f)
+            p = subprocess.run([sys.executable, script, "final", ad, answer_path], capture_output=True, text=True)
         self.assertEqual(p.returncode, 0, p.stderr)
         out = json.loads(p.stdout)
         with open(ad, encoding="utf-8") as f:
@@ -852,6 +862,131 @@ class TestCli(unittest.TestCase):
             self.assertTrue(r["ads_render"]["dry_run"])
             self.assertEqual(r["ads_render"]["prompt"], r["prompt"])
             self.assertNotIn("{{ref:", r["prompt"])
+
+
+class TestCreativeContract(unittest.TestCase):
+    def creative_ad(self, role="craft", competitor=False):
+        ad = base_ad()
+        ad["template"]["brand_owned"] = False
+        ad["structure"] = {"blueprint_instruction": "A rug in an original domestic scene.", "media_slot": "product"}
+        ad["creative_direction"] = {
+            "product_truth": "Machine washable", "truth_source": "kit.valueProps[0]",
+            "human_situation": "Cleaning can displace a shared routine", "situation_basis": "creative_hypothesis",
+            "premise": "A rug takes its own bath while the room waits.",
+            "relationship": "The rug is a participant in the household routine.",
+            "scene": "Overhead practical miniature bathroom; full-size faithful rug; warm window light and cast shadows.",
+            "protected_decision": "The rug visibly occupies the tiny bathtub.",
+            "reference_role": role, "direct_competitor": competitor,
+            "reference_contribution": "Tactile practical set photography with believable materials.",
+            "exact_copy": ["Bath time.", "Machine washable wool."]}
+        return ad
+
+    def answer(self, ad):
+        return {"prompt": 'Faithful {{ref:product-1}}. "Bath time." "Machine washable wool." '
+                + ad["creative_direction"]["protected_decision"], "title": "Bath time",
+                "source_media": "product", "target_media": "product", "adapted_subject": "A rug taking a bath",
+                "reference_ids": ["product-1"], "input_sha256": compose.prepare(ad)["input_sha256"]}
+
+    def test_concept_scene_replaces_source_invariants_and_preserves_identity(self):
+        ad = self.creative_ad()
+        text = inp(ad)
+        for rule in (compose.L2_STRUCTURE, compose.TARGET_CONTRACT, compose.SCENE, compose.SIGNATURE,
+                     compose.TYPO_SURGICAL, compose.MEDIA_RULE, compose.TEXT_DENSITY):
+            self.assertNotIn(rule, text)
+        self.assertIn(compose.PRODUCT_FIDELITY, text)
+        self.assertIn(compose.CLAIMS, text)
+        self.assertIn('"situation_basis": "creative_hypothesis"', text)
+        result = compose.build_final(ad, self.answer(ad))
+        self.assertNotIn(TEMPLATE_URL, result["renders"][0]["image_urls"])
+        self.assertIn(7, result["departures_used"])
+        self.assertEqual(result["creative_direction"], ad["creative_direction"])
+
+    def test_competitor_can_lend_only_layout(self):
+        for role in ("mechanism", "craft"):
+            with self.assertRaisesRegex(compose.ComposeError, "Direct competitors"):
+                compose.prepare(self.creative_ad(role, True))
+        ad = self.creative_ad("layout", True)
+        self.assertIn(compose.SIGNATURE, inp(ad))
+        self.assertNotIn(TEMPLATE_URL, compose.build_final(ad, self.answer(ad))["renders"][0]["image_urls"])
+
+    def test_exact_copy_and_distinctive_decision_cannot_disappear(self):
+        ad = self.creative_ad()
+        answer = self.answer(ad)
+        for removed in ad["creative_direction"]["exact_copy"] + [ad["creative_direction"]["protected_decision"]]:
+            bad = dict(answer, prompt=answer["prompt"].replace(removed, ""))
+            with self.assertRaises(compose.ComposeError):
+                compose.build_final(ad, bad)
+
+    def test_fresh_input_receipt_rejects_stale_or_missing_answer(self):
+        ad = self.creative_ad()
+        answer = self.answer(ad)
+        compose.check_receipt(ad, answer)
+        with self.assertRaisesRegex(compose.ComposeError, "Missing or stale"):
+            compose.check_receipt(ad, dict(answer, input_sha256="old"))
+        ad["creative_direction"]["scene"] += " Evening light."
+        with self.assertRaisesRegex(compose.ComposeError, "Missing or stale"):
+            compose.check_receipt(ad, answer)
+
+    def test_receipt_binds_source_and_product_image_urls(self):
+        ad = base_ad()
+        ad["template"]["brand_owned"] = True
+        answer = self.answer(self.creative_ad())
+        answer["input_sha256"] = compose.prepare(ad)["input_sha256"]
+        compose.check_receipt(ad, answer)
+        for change in ("template", "product"):
+            changed = copy.deepcopy(ad)
+            if change == "template":
+                changed["template"]["source_image_url"] = "https://cdn.test/new-template.jpg"
+            else:
+                for ref in changed["kit"]["referenceImages"]:
+                    ref["url"] += "?new-product-photo"
+            with self.assertRaisesRegex(compose.ComposeError, "Missing or stale"):
+                compose.check_receipt(changed, answer)
+
+    def test_rule_reuse_keeps_every_new_ad_value_visible(self):
+        ad = self.creative_ad()
+        first = compose.prepare(ad)
+        ad["creative_direction"]["exact_copy"] = ["A different headline."]
+        later = compose.prepare(ad, first["shared_rules_sha256"])
+        self.assertIsNone(later["shared_rules"])
+        self.assertNotEqual(first["input_sha256"], later["input_sha256"])
+        self.assertIn("A different headline.", later["ad_context"])
+        ad["font"] = "none"
+        changed = compose.prepare(ad, first["shared_rules_sha256"])
+        self.assertIsNotNone(changed["shared_rules"])
+
+    def test_intentional_no_text_keeps_real_product_markings(self):
+        ad = self.creative_ad()
+        ad["creative_direction"]["exact_copy"] = []
+        self.assertIn("Add no campaign text", inp(ad))
+        answer = self.answer(ad)
+        answer["prompt"] = "Faithful {{ref:product-1}}. " + ad["creative_direction"]["protected_decision"]
+        self.assertTrue(compose.build_final(ad, answer)["renders"])
+
+    def test_large_context_parts_reconstruct_complete_input(self):
+        ad = self.creative_ad()
+        ad["kit"]["docs"] = {"Evidence": "Long evidence. " * 15000}
+        prepared = compose.prepare(ad)
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest = compose.save_prepared(prepared, tmp)
+            parts = []
+            for record in manifest["files_to_read"]:
+                with open(record["path"], encoding="utf-8") as f:
+                    parts.append(f.read())
+                self.assertLessEqual(len(parts[-1]), 6000)
+            self.assertEqual("".join(parts), prepared["shared_rules"] + prepared["ad_context"])
+            self.assertGreater(len(parts), 20)
+
+    def test_unknown_ownership_and_false_research_are_rejected(self):
+        ad = self.creative_ad()
+        answer = self.answer(ad)
+        del ad["template"]["brand_owned"]
+        with self.assertRaisesRegex(compose.ComposeError, "ownership"):
+            compose.check_receipt(ad, answer)
+        ad = self.creative_ad()
+        ad["creative_direction"]["situation_basis"] = "research"
+        with self.assertRaisesRegex(compose.ComposeError, "situation_source"):
+            compose.prepare(ad)
 
 
 if __name__ == "__main__":

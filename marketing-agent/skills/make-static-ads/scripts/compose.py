@@ -12,6 +12,7 @@ fenced block of composer.md §5, §6, §8 and §10 against this script's output.
 The agent still answers the composer itself (composer.md §7). This script only does the assembly before and after.
 
 Usage:
+    python3 compose.py prepare <ad.json> --output-dir <directory>  # bounded complete input + receipt
     python3 compose.py input <ad.json>                  # prints the composer input (composer.md §5 + §6)
     python3 compose.py final <ad.json> <answer.json>    # prints the final prompt per ratio (§8, §9, §10, §11)
 
@@ -67,9 +68,11 @@ ad.json (one ad). Keys the server reads, by composer.md section. Missing optiona
     content_policy_recompose  str   departure 6: what was removed after a refused render (recorded only).
 
 answer.json: the composer's six-field object (composer.md §7): prompt, title, source_media, target_media,
-adapted_subject, reference_ids.
+adapted_subject, reference_ids; CLI final also requires input_sha256 from prepare.
 """
 
+import argparse
+import hashlib
 import json
 import os
 import re
@@ -404,6 +407,89 @@ def price_for_display(pricing):
     return s
 
 
+def creative_direction(ad):
+    """Validate the agent's creative decisions, not the truth of its evidence."""
+    c = ad.get("creative_direction")
+    if c is None:
+        return None
+    if not isinstance(c, dict):
+        raise ComposeError("creative_direction must be an object.")
+    for key in ("product_truth", "truth_source", "human_situation", "situation_basis", "premise",
+                "relationship", "scene", "protected_decision", "reference_contribution"):
+        if not isinstance(c.get(key), str) or not c[key].strip():
+            raise ComposeError("creative_direction.%s must be a non-blank string." % key)
+    if c.get("situation_basis") not in ("research", "creative_hypothesis"):
+        raise ComposeError("situation_basis must be research or creative_hypothesis; a hypothesis is not customer evidence.")
+    if c["situation_basis"] == "research" and not c.get("situation_source"):
+        raise ComposeError("A researched situation needs situation_source.")
+    if c.get("reference_role") not in ("layout", "mechanism", "craft"):
+        raise ComposeError("reference_role must be layout, mechanism or craft.")
+    if not isinstance(c.get("direct_competitor"), bool):
+        raise ComposeError("creative_direction.direct_competitor must be explicitly true or false.")
+    if c["direct_competitor"] and c["reference_role"] != "layout":
+        raise ComposeError("Direct competitors lend layout only; choose another reference for mechanism or craft.")
+    copy = c.get("exact_copy")
+    if not isinstance(copy, list) or any(not isinstance(x, str) or not x.strip() for x in copy):
+        raise ComposeError("creative_direction.exact_copy must be a list of exact on-image lines; [] explicitly means no added text.")
+    return c
+
+
+def direction_block(c):
+    text = "## Creative direction (playbook departure 7)\n" + json.dumps(c, ensure_ascii=False, indent=2)
+    if not c["exact_copy"]:
+        text += "\nAdd no campaign text; preserve only the real product markings and requested real logo."
+    return text
+
+
+def prepare(ad, reuse_rules=None):
+    """Return every current ad value; omit shared rules only on an exact hash match."""
+    text, st = build_compose_input(ad)
+    context = build_context(st)
+    rules = text[:-len(context)]
+    rules_hash = hashlib.sha256(rules.encode()).hexdigest()
+    visual_input = {"text": text,
+                    "source_image_to_view": None if st["structure_only"] else st["template"].get("source_image_url"),
+                    "assets": [{"id": a["id"], "role": a["role"], "url": a["url"]} for a in st["assets"]]}
+    receipt = hashlib.sha256(json.dumps(visual_input, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    return {"input_sha256": receipt,
+            "shared_rules_sha256": rules_hash,
+            "shared_rules": None if reuse_rules == rules_hash else rules,
+            "ad_context": context,
+            "source_image_to_view": None if st["structure_only"] else st["template"].get("source_image_url"),
+            "warnings": st["warnings"]}
+
+
+def save_prepared(prepared, directory):
+    """Keep host output bounded while retaining every byte the composer must read."""
+    os.makedirs(directory, exist_ok=True)
+    manifest = {k: v for k, v in prepared.items() if k not in ("shared_rules", "ad_context")}
+    manifest["files_to_read"] = []
+    for field in ("shared_rules", "ad_context"):
+        content = prepared[field]
+        if content is None:
+            continue
+        for index, start in enumerate(range(0, len(content), 6000), 1):
+            part = content[start:start + 6000]
+            path = os.path.abspath(os.path.join(directory, "%s-%02d.txt" % (field, index)))
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(part)
+            manifest["files_to_read"].append({"path": path, "characters": len(part),
+                                             "sha256": hashlib.sha256(part.encode()).hexdigest()})
+    with open(os.path.join(directory, "receipt.json"), "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2, ensure_ascii=False)
+    return manifest
+
+
+def check_receipt(ad, answer):
+    resolve(ad)
+    check_answer(answer)
+    if not isinstance((ad.get("template") or {}).get("brand_owned"), bool):
+        raise ComposeError("Set template.brand_owned explicitly; unknown ownership is not permission to send pixels.")
+    expected = prepare(ad)["input_sha256"]
+    if answer.get("input_sha256") != expected:
+        raise ComposeError("Missing or stale input_sha256. Read prepare for this ad, then compose its answer again.")
+
+
 def resolve(ad):
     """Every decision the server makes before composing (composer.md §2, §3, §4), plus the playbook departures."""
     if not isinstance(ad, dict):
@@ -415,6 +501,8 @@ def resolve(ad):
     if not isinstance(template, dict):
         raise ComposeError("ad.json needs a template object (ads_template_read).")
     warnings, departures = [], []
+    direction = creative_direction(ad)
+    concept_scene = bool(direction and direction["reference_role"] != "layout")
     source_kind = template.get("source_kind")
 
     # §2.2 + departure 5: structure-only when the brand does not own the template.
@@ -422,19 +510,21 @@ def resolve(ad):
     brand_owned = template.get("brand_owned")
     if brand_owned is None:
         brand_owned = not server_structure_only
-    structure_only = server_structure_only or brand_owned is False
+    structure_only = server_structure_only or brand_owned is False or concept_scene
     if structure_only and not server_structure_only:
         departures.append(5)
     blueprint = media_slot = None
     if structure_only:
         st = ad.get("structure") or {}
-        blueprint = st.get("blueprint_instruction")
+        blueprint = direction["scene"] if concept_scene else st.get("blueprint_instruction")
         if not isinstance(blueprint, str) or not blueprint:
             raise ComposeError(
                 "This template is structure-only (not the brand's own ad), so structure.blueprint_instruction is "
                 "required: run structure-blueprint.md first. The source image must never reach the composer."
             )
         slot = st.get("media_slot")
+        if concept_scene and slot not in MEDIA:
+            raise ComposeError("A concept-directed scene needs structure.media_slot: none, screen or product.")
         media_slot = "screen" if slot == "screen" else "none" if slot == "none" else "product"
         if st.get("reduced_mechanic"):
             departures.append(2)
@@ -584,7 +674,8 @@ def resolve(ad):
         "no_logo": no_logo, "has_logo_ref": has_logo_ref, "scheme": scheme, "selected": selected, "refs": refs,
         "assets": assets, "product_led": product_led, "proof_points": proof_points if product_led else [],
         "user_prompt": user_prompt, "has_user_prompt": bool(base), "variant_directive": variant_directive,
-        "warnings": warnings, "departures": sorted(set(departures)),
+        "warnings": warnings, "departures": sorted(set(departures + ([7] if direction else []))),
+        "creative_direction": direction, "concept_scene": concept_scene,
     }
 
 
@@ -781,6 +872,8 @@ def build_context(st):
         lines += ["", CTX_USER, st["user_prompt"].strip()]
     if st["variant_directive"]:
         lines += ["", CTX_VARIANT, st["variant_directive"]]
+    if st["creative_direction"]:
+        lines += ["", direction_block(st["creative_direction"])]
     return "\n".join(lines)
 
 
@@ -827,6 +920,26 @@ def assemble_compose_input(st):
         lines.append(NO_PHOTO_PRODUCT.format(name=sel["name"]))
     if st["product_led"]:
         lines.append(PRODUCT_LED)
+    if st["concept_scene"]:
+        # The concept owns the scene; remove every source-layout invariant rather than appending a conflict.
+        omit = {L2_STRUCTURE, st["blueprint"], ADAPT_SUBJECT, TARGET_CONTRACT, SCENE, PHOTOREALISM,
+                COLORS_KEEP, TYPO_KEEP, TYPO_SURGICAL, STAGING, TEXT_DENSITY, SOURCE_TEXT, SIGNATURE, MEDIA_RULE}
+        lines = [line for line in lines if line not in omit and not line.startswith("COLORS — RESTYLE TO BRAND, BY ROLE:")]
+        lines += [
+            "Compose ONE original scene from Creative direction. The registered reference contributes only its named "
+            "mechanism or craft, described in words. Its layout, objects and scene are not requirements. Preserve the "
+            "relationship and protected_decision. Product identity, source facts, claims and policy remain binding.",
+            "Stage the scene with the specified camera, scale, materials, lighting and cast shadows. A deliberate "
+            "impossible interaction may be photographed like a practical set; preserve believable product form and anatomy.",
+            "Use the assigned palette and Typography line in this concept's own hierarchy. Render exact_copy verbatim; "
+            "add no extra slogans or claims. Keep all required lines legible at thumbnail size.",
+            "MEDIA: source_media describes this concept's authored scene slot, not the reference ad. Select target_media "
+            "and stable reference IDs for the real product or real software screenshot needed by the scene. "
+            "Invent no software UI. Use exact {{ref:ID}} placeholders."
+        ]
+    elif st["creative_direction"]:
+        lines.append("Keep this layout, but stage the concept's own relationship and protected_decision. "
+                     "Render exact_copy verbatim; add no extra slogans or factual claims.")
     lines += [COMPOSE_OUTPUT_INSTRUCTION, "", build_context(st)]
     return "\n".join(lines)
 
@@ -1030,6 +1143,13 @@ def build_final(ad, answer):
     """composer.md §7 checks, §8, §9, §10 and the §11 ads_render arguments."""
     st = resolve(ad)
     check_answer(answer)
+    direction = st["creative_direction"]
+    if direction:
+        for line in direction["exact_copy"]:
+            if line not in answer["prompt"]:
+                raise ComposeError("The composed prompt lost exact_copy: %s" % line)
+        if direction["protected_decision"] not in answer["prompt"]:
+            raise ComposeError("The composed prompt must carry protected_decision verbatim so the judge can check it.")
     warnings = st["warnings"]
     t = st["template"]
     viewed = t.get("source_image_viewed", True) is not False
@@ -1136,7 +1256,11 @@ def build_final(ad, answer):
     if not renders:
         raise ComposeError("ad.json needs at least one entry in ratios.")
 
+    if st["structure_only"] and t.get("source_image_url") in image_urls:
+        raise ComposeError("The structure-only source image was also supplied as a brand reference. Remove it.")
     out = {
+        "creative_direction": direction,
+        "input_sha256": prepare(ad)["input_sha256"],
         "title": title,
         "structure_only": st["structure_only"],
         "source_media": source_media,
@@ -1162,6 +1286,20 @@ def _load(path):
 
 
 def main(argv):
+    if len(argv) >= 3 and argv[1] == "prepare":
+        ad = _load(argv[2])
+        resolve(ad)
+        if not isinstance((ad.get("template") or {}).get("brand_owned"), bool):
+            raise ComposeError("Set template.brand_owned explicitly before composing.")
+        parser = argparse.ArgumentParser(prog="compose.py prepare")
+        parser.add_argument("--reuse-rules")
+        parser.add_argument("--output-dir")
+        options = parser.parse_args(argv[3:])
+        prepared = prepare(ad, options.reuse_rules)
+        if options.output_dir:
+            prepared = save_prepared(prepared, options.output_dir)
+        sys.stdout.write(json.dumps(prepared, indent=2, ensure_ascii=False) + "\n")
+        return 0
     if len(argv) >= 3 and argv[1] == "input":
         text, st = build_compose_input(_load(argv[2]))
         sys.stdout.write(text + "\n")
@@ -1172,7 +1310,9 @@ def main(argv):
                              "before answering.\n" % (SOURCE_AD_LABEL, st["template"].get("source_image_url")))
         return 0
     if len(argv) >= 4 and argv[1] == "final":
-        out = build_final(_load(argv[2]), _load(argv[3]))
+        ad, answer = _load(argv[2]), _load(argv[3])
+        check_receipt(ad, answer)
+        out = build_final(ad, answer)
         sys.stdout.write(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
         return 0
     sys.stderr.write(__doc__.split("\n\n")[2] + "\n")

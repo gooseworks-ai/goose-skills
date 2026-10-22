@@ -402,3 +402,23 @@ Minimal edits on the dev version (the owner has a newer rewrite on his branch; t
 | Finding | Fix |
 |---|---|
 | A4 (partly) The hand test still sent claims to learn-my-brand | `tests/test-by-hand.md`: claims are approved in the claims gate's scoped sign-off. |
+
+## Round 20 — 22 Oct: complete reads and concept-directed scenes (0.4.5)
+
+**Summary.** The handoff's retests still diff-read later composer inputs and described rather than exercised final judging. The Kolkata Chai experiment showed how a product truth and human situation can supply meaning while a reference contributes a direct device, a broader relationship, or craft alone. This update changes the existing composer and playbook; it adds no parallel skill.
+
+**Evidence and scope.** Claude session `24c8dcfd-cbcf-4012-835d-69637cbf7532` ended with Graza/GooseWorks dry-run debriefs and PR330 at 0.4.4. The installed Claude link still pointed to the older nested playbook. Creative source: content-goose's `clients/kolkata-chai-co/finals/creative-experiment-2026-10-22/how-to.md` and the five exact prompts in its working folder. Those five images were first generations, without a blind tournament or customer validation. They supply craft evidence and hypotheses, not performance claims.
+
+| Finding | Change / limit |
+|---|---|
+| Full kits and repeated scaffolding encouraged partial reads | `prepare --output-dir` writes every required byte in ordered parts of at most 6,000 characters. Exact shared-rule hash reuse avoids manual diff-reading. |
+| An answer could belong to an earlier input | CLI `final` requires the current input receipt. It binds assembled text, the viewed source URL and the ordered product/reference asset URLs. This detects stale inputs; it cannot prove attention. |
+| The source-layout hard invariant overruled a new scene | A structured `creative_direction` records truth/source, situation basis, premise, relationship, scene, protected decision, exact copy and reference role. Mechanism/craft replaces the conflicting layout instructions, rather than appending another instruction. Layout remixes retain server parity. |
+| Copy or the central choice could disappear during composing | Finalization requires the exact copy and protected-decision sentence. Intentional `exact_copy: []` keeps no-text ads possible. The image judge still checks what is actually visible. |
+| A concept can move far from reference objects | The optional-guest and remembered-home examples explain why the relationship carries meaning. They are examples, not fixed concepts or required surrealism. |
+| Ownership could default to true on an upload | CLI preparation/finalization requires explicit ownership; foreign images remain text-only. Direct competitors accept layout only. |
+| Cached connector tools can differ from the live server | Refresh discovery or use an existing authorized MCP transport. No `ads_generate` substitution: it invokes another composer. |
+
+**Independent review.** The reviewer found an input-receipt gap: changing an image URL did not change the text-only hash. Fixed by binding the visual asset inventory as well; regression coverage rejects both changed source and product URLs. Earlier review also caught the prepare/input command mismatch and intentional no-text ads; both fixed before push.
+
+**Validation.** Python composer suite: 23 passed, including existing server-parity checks and nine contract tests. Repository suite: 52 passed. Skill validation: 361 skills. Marketing links: 86 skills, 629 references, zero broken. Atom-version check: zero errors. Atom lint: zero errors (existing warnings elsewhere). Index rebuilt. Real paid renders and their independent visual review belong to the fresh staging run; they are not claimed by these checks.

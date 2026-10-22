@@ -9,7 +9,7 @@ The live tool answers are the truth for parameters. These notes cover what the t
 |---|---|---|
 | Brand, products, competitors, `must`/`dont` learnings (Steps 1–5) | `brand_read` `sections: ["summary","kit","products","competitors","learnings"]` (lean, the default) | small |
 | One product's full record | `brand_read` `product_ids: [<id>]` | small |
-| Kit and learnings in full, for compose (once per batch) | `brand_read` `sections: ["kit","learnings"]`, `detail: "full"` → save to `kit.json` | very large: save it, never re-read it |
+| Kit and learnings in full, for compose (once per batch) | `brand_read` `sections: ["kit","learnings"]`, `detail: "full"` → save to `kit.json` | very large: save once, read every field used by this batch |
 | Brand facts and claims | `brand_knowledge_browse` once, then `brand_knowledge_search` with `source_types` and `product_id`, `limit` ≤ 25 | medium |
 | Ads this playbook made before | `ads_creative_read` `tags: ["made-by:make-static-ads"]`, `limit: 20` | small |
 | Other ads made in GooseWorks (in the app, or before this tag existed) | the brand's batch files first; then `ads_creative_read` `limit: 3`, opening single ones with `creative_id`. Never page through the list | very large: video projects ride along on every row (10 rows were over 700K characters in a test) |
@@ -17,6 +17,7 @@ The live tool answers are the truth for parameters. These notes cover what the t
 | One template | `ads_template_read` `template_id` | small |
 
 Never `detail: "full"` on every section at once, and never a creatives list without `tags`, `status`, `batch_id` or `approved_only`.
+- **Capability gate.** `ads_generate` is not an adapter for `ads_render`: it re-composes the prompt and may add source images. With no thin render tool, report the missing capability and stop before spending.
 - **The kit's font may be a guess.** The kit always returns a font, often one the server guessed (`typography.source: "mapped"`), and Inter for many software, finance and services brands. That is why Step 2 asks.
 - **Edits are unquoted.** `regenerate`, `precision_edit` and `resize` return no dry-run price, so they are not used. Every remake, text fix, extra placement and copy variant is a composed, quoted `ads_render` call (copy variants may also use the layer split).
 - **Polling.** `job_get` (`kind: "ads_batch"`) reports the batch `status` as `complete` when done and each creative's `pending` count; stop when every `pending` is 0.

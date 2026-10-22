@@ -75,3 +75,21 @@ Brand: a B2B brand with live ads on Meta or LinkedIn but nothing in GooseWorks (
 **Passes if:** before any quote it reads the brand's live ads in the Meta and LinkedIn Ad Libraries and shows the concept inventory; the concept grid and coverage note come before the quote; the claims check runs; a fresh subagent judges each render; the "5 more" set repeats no reason, template or example content from the first ad or from the brand's running ads; the colour question suggests the running ads' palette when it differs from the kit.
 **Telltale failures:** "brand has no running ads" in the batch file while the libraries show ads; angles taken straight from the website's headline stats; the agent judging its own render.
 **No-browser variant:** on a host with no browser, it asks one yes for the proxy reads (about 1 credit per library), or writes "not checked" with the reason; never "no running ads".
+
+## Test 11 — a fresh scene with a limited reference role
+
+Say: "Five different static ads. Choose for me. Show only the finished ads." Use a brand other than the training examples. Give its real product photo and a different category's conceptual or photographic reference.
+
+**Passes if:** each concept starts from a sourced product truth and a labelled researched situation or creative hypothesis. The agent names the reference's role (`layout`, `mechanism`, `craft`), stages one meaningful relationship, writes exact copy and a protected decision, and carries them through `prepare` → `final` → claims/policy → quoted `ads_render`. Other brands' source images stay out of every generation list. A direct competitor can lend layout only. Different concepts can move far from the reference's props and layout; they remain specific to the product. No invented customer or performance evidence.
+
+**Image review:** a fresh judge checks the authored relationship, exact copy, protected decision and real product, alongside the usual claim and quality rules. A polished generic packshot with the relationship missing fails. Record actual dimensions and defects; do not claim pixel-exact packaging or a blind tournament that did not happen.
+
+## Test 12 — complete reads without repeated scaffolding
+
+On a shell host, prepare two ads with the full brand kit. Read every numbered part in the first manifest. Prepare the second using the first `shared_rules_sha256`. Read every part it returns.
+
+**Passes if:** each part is at most 6,000 characters, all current ad values remain visible, unchanged shared rules are omitted only on a hash match, and changed rules reappear. A missing/stale answer receipt fails before any render arguments are produced. Changing a product photo or source image also invalidates the old receipt. The receipt identifies input; it does not prove comprehension or claim clearance.
+
+## Test 13 — stale connector catalog
+
+Use a connection whose cached tool catalog lacks `ads_render`. Refresh discovery. A shell host may use its existing authorized MCP transport and the same server's live schema. If the actual server still lacks the thin renderer, stop and report it. Never replace it with `ads_generate`; that server workflow may re-compose the prompt or attach source images.
