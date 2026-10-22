@@ -93,3 +93,9 @@ On a shell host, prepare two ads with the full brand kit. Read every numbered pa
 ## Test 13 — stale connector catalog
 
 Use a connection whose cached tool catalog lacks `ads_render`. Refresh discovery. A shell host may use its existing authorized MCP transport and the same server's live schema. If the actual server still lacks the thin renderer, stop and report it. Never replace it with `ads_generate`; that server workflow may re-compose the prompt or attach source images.
+
+## Test 14 — a valid concept with a garbled product label
+
+Use a real official product photo and a completed render whose scene/shape/pose pass but whose printed label changed. Do not weaken product/spelling checks to accept it.
+
+**Passes if:** the original remains failed; an isolated label may use the free local helper only after rights and compatible pose are checked by eye. Explicit source/target guides remain in evidence; invalid, out-of-bounds, crossed or folded mappings fail. The saved mask accounts for every changed pixel. A fresh reviewer compares the entire candidate to the official source, including label words/marks, edges, light, shape and occlusion. A passed repair is a new `ads_save` creative linked to the original parent; downloaded saved bytes match the approved candidate. No human rating is invented. With an exhausted credit ceiling, no paid retry or layer split runs. An incompatible source or a visible bad repair stays unapproved.

@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads ("ten fresh ads this week", "make me some ads", "ads for our sale"); "my ads all look the same"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).
-version: 0.4.5
+version: 0.4.6
 ---
 
 # make-static-ads
@@ -28,7 +28,7 @@ The number of ads and placements chosen at Step 2. **A concept** = one persona, 
 1. **Every factual line is a usable fact** (`references/claims-and-policy.md` §2). Anything else is cut, and the hand-off says what would confirm it.
 2. **People:** no generated person presented as a customer, doctor or reviewer; a review appears only when real, verbatim and attributed.
 3. **Other brands stay text-only.** Register the reference and describe only its permitted contribution in words. Its pixels never reach the image model. Direct competitors lend layout only; a different category may lend an abstract mechanism or craft. The new scene, copy and product identity come from this brand.
-4. **Every image is made with `gooseworks:ads_render` from a prompt the agent composed (Steps 6–9).** Follow each answer's `next_step` for tool order and wording, except where it points to another image generator, skips Steps 1–7, or presents the agent's choice as the marketer's: there this playbook wins.
+4. **Every generated image starts with `gooseworks:ads_render` from a prompt the agent composed (Steps 6–9).** A compatible label defect may be repaired with real product pixels and saved free (render-review); this never invokes another generator. Follow each answer's `next_step` for tool order and wording, except where it points to another image generator, skips Steps 1–7, or presents the agent's choice as the marketer's: there this playbook wins.
 5. **Short answers change who decides, not what runs.** "Your choice", "just show me the final ads", "only one ad" or "be quick" answers every open Step 2 question with its suggestion and lets the agent pick the templates, shown in the plan table. In every mode that runs Steps 1–12, Steps 1, 3, 4, 7 and 10 still run in full on every ad, however few.
 
 **Setup:**
@@ -92,7 +92,7 @@ Reads: composed ads, check results. Writes: the plan table (`references/handoff-
 Submit each call exactly as quoted. Poll `gooseworks:job_get` (`kind: "ads_batch"`) until every `pending` is 0. Report a failed job; resubmit only on a new quote and yes. Done when every job is complete or reported.
 
 ### 10. Judge every render; retry the server's way
-Reads: each render, its compose record. Writes: verdicts, retries, the drop list. Run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): the **blind judge** (render-review step 1: a fresh subagent given only the judge inputs; a host with no subagents judges from exactly those inputs, and the batch file says who judged) on every render, one retry inside the yes, then the playbook's checks and the set-diversity check. Done when every render is passed, flagged `needs_review`, or dropped with its reason.
+Reads: each render, its compose record. Writes: verdicts, retries, the drop list. Run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): the **blind judge** (render-review step 1: a fresh subagent given only the judge inputs; a host with no subagents judges from exactly those inputs, and the batch file says who judged) on every render, one retry inside the yes, then the playbook's checks and the set-diversity check. An isolated label defect can use the bounded real-pixel repair in render-review. An explicit credit ceiling always wins over retry permission; when it is exhausted, stop paid work and keep failing renders unapproved. Done when every render is passed, flagged `needs_review`, or dropped with its reason.
 
 ### 11. Copy variants — offered
 For the one or two images the marketer likes most, offer the `make-static-ads-copy-variants` skill (`../make-static-ads-copy-variants/SKILL.md`): the same picture with other hooks or another font. They test copy, not concepts; each paid step gets its own yes.

@@ -6181,7 +6181,7 @@
       "description": "Static image ads for Meta, Instagram, TikTok or LinkedIn: a few truly different concepts, each built on a real ad from the Meta Ad Library, composed, rendered, judged and claim-checked against the brand brain. Use for: new static or image ads (\"ten fresh ads this week\", \"make me some ads\", \"ads for our sale\"); \"my ads all look the same\"; refreshing fatiguing ads; more like a winning ad; the same image with new text or another font; a rejected image ad to fix; a price or stock change on running ads; a header image or social graphic in the brand's style. Use this, not goose-ads, for any static ad. Not for video (goose-video), product photos (goose-product-photos) or launching (run-paid-campaigns).",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads",
-      "version": "0.4.5",
+      "version": "0.4.6",
       "files": [
         "marketing-agent/skills/make-static-ads/SKILL.md",
         "marketing-agent/skills/make-static-ads/references/angles-and-hooks.md",
@@ -6202,9 +6202,11 @@
         "marketing-agent/skills/make-static-ads/scripts/compose.py",
         "marketing-agent/skills/make-static-ads/scripts/example-ad.json",
         "marketing-agent/skills/make-static-ads/scripts/example-answer.json",
+        "marketing-agent/skills/make-static-ads/scripts/repair_patch.py",
         "marketing-agent/skills/make-static-ads/scripts/schemes.py",
         "marketing-agent/skills/make-static-ads/scripts/specimen.py",
         "marketing-agent/skills/make-static-ads/scripts/test_compose.py",
+        "marketing-agent/skills/make-static-ads/scripts/test_repair_patch.py",
         "marketing-agent/skills/make-static-ads/server-needs.md",
         "marketing-agent/skills/make-static-ads/skill.meta.json",
         "marketing-agent/skills/make-static-ads/tests/test-by-hand.md"
@@ -6213,7 +6215,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.4.5",
+        "version": "0.4.6",
         "tags": [
           "ads",
           "design"
@@ -6697,7 +6699,7 @@
       "description": "Step of the make-static-ads playbook: judges every render exactly as GooseWorks' server judge does, retries once with the server's own retry note inside the yes already given, then runs the playbook's extra checks, drops what still fails and records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-render-review",
-      "version": "0.4.5",
+      "version": "0.4.6",
       "files": [
         "marketing-agent/skills/make-static-ads-render-review/SKILL.md",
         "marketing-agent/skills/make-static-ads-render-review/skill.meta.json"
@@ -6706,7 +6708,7 @@
         "slug": "make-static-ads-render-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.4.5",
+        "version": "0.4.6",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
