@@ -176,6 +176,9 @@ async function installSkill(options) {
   const { slug, target, projectDir } = options;
   const index = await fetchIndex();
 
+  const retired = (index.retired_skills || []).find((entry) => entry.slug === slug);
+  if (retired) throw new Error(`Skill "${slug}" was retired. Use "${retired.replacement}" instead: npx goose-skills install ${retired.replacement}`);
+
   // Check packs first
   const pack = (index.packs || []).find((p) => p.slug === slug);
   if (pack) {
