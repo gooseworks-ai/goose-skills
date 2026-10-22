@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Research the brand and its existing ads, compare sourced concepts and visual ideas, compose, quote, render and review through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.5.0
+version: 0.5.1
 ---
 
 # make-static-ads
@@ -23,6 +23,8 @@ Read the brand, product, saved rules and research status; generation requires co
 
 Short answers (“your choice,” “one ad,” “finals only”) delegate choices and shorten display. They retain the work below. Reuse this conversation's valid reads and settings; add every earlier ad to history and continue palette rotation.
 
+Load `run-memory` (`../run-memory/SKILL.md`) at the start of every run, including copy/fix/graphic work. Read the previous record and check each open recommendation against actual changes and outcomes using the atom’s status/verdict rules and sources. A missing record is an honest first run; unreadable history is a named gap. Never infer an outcome from silence.
+
 ## Steps
 
 ### 1. Research and record
@@ -33,15 +35,15 @@ For fresh/more ads, read `references/workflow.md` through its selection sections
 
 ### 2. Compare and select
 
-Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`), then `make-static-ads-find-references` (`../make-static-ads-find-references/SKILL.md`) and `make-static-ads-ad-copy` (`../make-static-ads-ad-copy/SKILL.md`) into that same record. Draft sourced reasons and ranked hooks, score the promise/proof/persona gate, and compare competing visible events for a transformative request. A hypothesis labels an imagined scene; it does not waive purchase-reason evidence or proof. Fix/drop failures; insufficient grounded reasons → research or a smaller justified set.
+Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`), then `make-static-ads-find-references` (`../make-static-ads-find-references/SKILL.md`) and `make-static-ads-ad-copy` (`../make-static-ads-ad-copy/SKILL.md`) into that same record. Draft sourced reasons and ranked hooks, score the promise/proof/persona gate, and compare competing visible meanings for every fresh/more request, including an ordinary request for five ads. A hypothesis labels an imagined scene; it does not waive purchase-reason evidence or proof. Fix/drop failures; insufficient grounded reasons → research or a smaller justified set.
 
-Give a fresh critic the request, evidence and alternatives before compose; record findings and resolutions. On a host without delegation, record same-agent review explicitly. **Done:** `workflow.py check run.json` is ready or honestly partial with an evidence-based proceed-with-limits decision; blocked means no compose/quote. The checker verifies recorded work and consistency, not truth or creativity.
+Give a fresh critic the request, evidence and alternatives before compose; record findings and resolutions. Without delegation, get a real human critique of that evidence and alternatives or stop at selection; self-review cannot clear this gate. **Done:** the upstream check described in `scripts/README.md` is ready or honestly partial with an evidence-based proceed-with-limits decision; blocked means no compose/quote. The checker verifies recorded work and consistency, not truth or creativity.
 
 ### 3. Compose, then check the exact result
 
 Run `make-static-ads-compose` (`../make-static-ads-compose/SKILL.md`). Link each ad.json to the selected run row. Prepare complete bounded input, read every returned part, then author the answer. The finalizer checks the run/selected direction/input and retains exact copy and the protected decision.
 
-Run `make-static-ads-claims-extract` (`../make-static-ads-claims-extract/SKILL.md`) Pass A and `ad-policy-check` (`../ad-policy-check/SKILL.md`) against exact final prompts/images. Cut → recompose/review. **Done:** the run, final output and claims/policy review match; `workflow.py quote` emits only dry-run requests. Shell-free hosts apply the same record checks directly and name that path.
+Run `make-static-ads-claims-extract` (`../make-static-ads-claims-extract/SKILL.md`) Pass A and `ad-policy-check` (`../ad-policy-check/SKILL.md`) against exact final prompts/images. Cut → recompose/review. **Done:** the run, final output and claims/policy review match; the reviewed-quote operation in `scripts/README.md` emits only dry-run requests. Shell-free hosts apply the same record checks directly and name that path.
 
 ### 4. Quote and render
 
@@ -77,7 +79,7 @@ Rights and claims evidence before public copy; marketer approval of exact live q
 
 ## Output and write-back
 
-One batch record with run decisions and evidence, registered references and tagged creative versions. Agent judge results belong in the record/tags; feedback is the human's channel. Follow `run-memory` (`../run-memory/SKILL.md`) for a short reusable run summary when relevant.
+One batch record with run decisions and evidence, registered references and tagged creative versions. Agent judge results belong in the record/tags; feedback is the human's channel. Run the mandatory End step of `run-memory` (`../run-memory/SKILL.md`) on every exit, including a block or partial run. Save outcomes, unresolved recommendations and next checks, carrying forward unknowns. A failed save remains explicit; do not claim the record was saved.
 
 ## Done when
 

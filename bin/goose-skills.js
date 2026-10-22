@@ -16,6 +16,7 @@ const fs = require('fs');
 const path = require('path');
 const {
   parseInstallOptions,
+  successorInstallCommand,
   placeForCodex,
   placeForCursor,
 } = require('./lib/targets');
@@ -175,6 +176,9 @@ async function installPack(pack, options) {
 async function installSkill(options) {
   const { slug, target, projectDir } = options;
   const index = await fetchIndex();
+
+  const retired = (index.retired_skills || []).find((entry) => entry.slug === slug);
+  if (retired) throw new Error(`Skill "${slug}" was retired. Use "${retired.replacement}" instead: ${successorInstallCommand(retired.replacement, options)}`);
 
   // Check packs first
   const pack = (index.packs || []).find((p) => p.slug === slug);

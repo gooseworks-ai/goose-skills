@@ -20,6 +20,7 @@
 - **Input receipt.** Copy `input_sha256` from the prepared manifest into `answer.json`. `final` rejects stale or missing receipts and unknown template ownership. This proves which input an answer belongs to; it cannot prove reading, judgment, claim truth, or image quality. `input` remains the legacy plain-text/parity inspection command.
 - **Font specimen.** When `final.json` says `font_specimen.eligible` and nothing is inserted yet, make the card from `specimen_input_prompt` (`font-specimen.md`), put its URL in `ad.json` as `font_specimen_url`, and run final again.
 - **Errors stop the ad, as on the server.** A `{{ref:ID}}` that is not in `reference_ids`, or that the reference gate removed, exits with a message. Fix `answer.json` and run final again.
+- **Mandatory learnings.** All must/dont rows reach the prepared context, regardless of their order. Only optional do/template_hint/insight rows are capped at eight. This is departure 8 from the retained server reference, not exact overflow parity.
 - **Warnings** (in `final.json` and on stderr) say where the server would quietly change something: a forced brand colour or font, a dropped reference, a too-long prompt.
 
 ## ad.json

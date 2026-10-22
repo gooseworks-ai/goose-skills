@@ -6,12 +6,12 @@ description: >-
   rights checks and a yes to the quote; returns the link and alt text. Not for carousels, decks or
   print. Use alone when you already have the purpose, placement and exact wording; otherwise run
   make-static-ads.
-version: 0.5.0
+version: 0.5.1
 ---
 
 # graphic-request
 
-For a composed render, record mode `graphic` and the exact parent/request as basis in run.json (`../make-static-ads/references/workflow.md`). No new purchase-reason tournament is required. Link that record before finalizing, then use workflow.py quote after the exact claims/policy review; a free quote is not a spending yes.
+For a composed render, record mode `graphic` and the exact parent/request as basis in run.json (`../make-static-ads/references/workflow.md`). No new purchase-reason tournament is required. Link that record before finalizing, then use the reviewed-quote operation in `../make-static-ads/scripts/README.md` after the exact claims/policy review; a free quote is not a spending yes.
 
 **Reads** (no ad-account reads — only these): the request — asked in chat, or a request line in a sibling's file (`../make-static-ads/references/reading-the-brain.md` §6) read with `gooseworks:file_read`: purpose, placement, exact text (or none), mandatories, where it goes. The brand kit, learnings and product as `../make-static-ads/references/composer.md` §1 lists them; the brain facts behind any words (`reading-the-brain.md` §1).
 **Writes:** the graphic (a creative in GooseWorks); for a request line, one answer line under it — re-read the file, insert, write the whole file back with `gooseworks:file_write`: `Graphic ready: <link> · <YYYY-MM-DD> · alt: <text> · <ratio> · claims: <ok / cut …>`.

@@ -426,6 +426,8 @@ No reference photo is available for this product — do not claim photo fidelity
 
 ### 6.5 Learnings block (`loadBrandLearningsBlock` 1960; `formatLearningsForCompose`, `formatAdjustmentForCompose`, `REASON_DIRECTIVES` in ad-brand-learning.service.ts 261, 591, 459)
 
+**Playbook departure 8:** the local composer preserves every must/dont row and caps only optional do/template_hint/insight rows at eight. The server reference below retains its original first-eight-total rule; overflow is intentionally not parity.
+
 Take the **first 8** rows of `result.learnings` (the server's `COMPOSE_INJECTION_LIMIT`). Group by `kind`; each row is `- «text»`; omit empty groups; omit the whole block when no group has rows:
 ```text
 ## What we've learned about this brand's ads (from feedback — apply these)

@@ -103,12 +103,16 @@ class WorkflowTests(unittest.TestCase):
         p = run_fixture(); p['ads'][0]['reference_options'][1]['advertiser'] = 'Brand0'
         self.assertBlocked(p, 'three advertisers')
 
-    def test_review_is_required_and_same_agent_needs_unavailable_delegation(self):
+    def test_independent_review_required_even_without_delegation(self):
         p = run_fixture(); p.pop('selection_review')
         self.assertBlocked(p, 'selection_review')
         p = run_fixture(); p['selection_review']['context'] = 'same_agent'
-        self.assertBlocked(p, 'fresh critic')
+        self.assertBlocked(p, 'independent selection review')
         p['delegation_available'] = False
+        self.assertBlocked(p, 'independent selection review')
+        p['selection_review']['context'] = 'human'
+        self.assertBlocked(p, 'critique_source')
+        p['selection_review']['critique_source'] = 'Human critique in message 42: proof fits; revise the second option'
         self.assertEqual(workflow.validate(p)['status'], 'ready')
         p['selection_review']['verdict'] = 'revise'
         self.assertBlocked(p, 'resolve selection')
@@ -130,13 +134,53 @@ class WorkflowTests(unittest.TestCase):
         p = run_fixture(); p['ads'][0]['truth_source_ids'] = ['s2']
         self.assertBlocked(p, 'product truth needs')
 
-    def test_visual_selection_for_transformative_but_not_forced_surrealism(self):
+    def test_ordinary_fresh_request_cannot_skip_visual_comparison(self):
+        p = run_fixture()
+        p['brief'].update(request='Make five static ads for this rug.', count=5,
+                          creative_goal='straightforward', goal_basis='Ordinary fresh ads')
+        first = p['ads'][0]
+        first['visual_options'] = first['visual_options'][:1]
+        for n in range(1, 5):
+            other = copy.deepcopy(first); other.update(id='a' + str(n + 1), framework='framework ' + str(n))
+            p['ads'].append(other)
+        self.assertBlocked(p, 'competing visual premises')
+        p['mode'] = 'more'
+        self.assertBlocked(p, 'competing visual premises')
+
+    def test_explicit_scene_constraint_not_a_straightforward_label(self):
         p = run_fixture(); p['ads'][0]['visual_options'] = p['ads'][0]['visual_options'][:1]
         self.assertBlocked(p, 'competing visual')
-        p['brief'].update(creative_goal='straightforward', goal_basis='User requested a direct demonstration')
+        p['brief'].update(creative_goal='straightforward', goal_basis='Direct demonstration chosen by agent')
+        self.assertBlocked(p, 'competing visual')
+        p['brief']['execution_constraint'] = dict(kind='direct_demonstration', user_quote='Show the rug entering the washer.')
+        self.assertBlocked(p, 'actual request')
+        p['brief']['request'] = 'Make an ad. Show the rug entering the washer.'
+        self.assertEqual(workflow.validate(p)['status'], 'ready')
+        p['brief']['execution_constraint']['kind'] = 'ordinary'
+        self.assertBlocked(p, 'unknown execution constraint')
+        p['brief']['execution_constraint']['kind'] = 'user_supplied_scene'
         self.assertEqual(workflow.validate(p)['status'], 'ready')
         p['ads'][0]['creative_direction']['premise'] = 'different'
         self.assertBlocked(p, 'chosen visual')
+
+    def test_mandatory_learnings_survive_all_optional_ranks(self):
+        ad = base_ad()
+        optional = [dict(kind='do', text='optional %02d' % n) for n in range(12)]
+        mandatory = [dict(kind=k, text='%s rule %02d' % (k, n))
+                     for n in range(12) for k in ('must', 'dont')]
+        ad['learnings'] = optional + mandatory
+        self.assertIn(8, compose.resolve(ad)['departures'])
+        prepared = compose.prepare(ad)
+        text = prepared['shared_rules'] + prepared['ad_context']
+        for row in mandatory:
+            self.assertIn(row['text'], text)
+        for row in optional[:8]:
+            self.assertIn(row['text'], text)
+        for row in optional[8:]:
+            self.assertNotIn(row['text'], text)
+        # Rules at the front must not consume the optional allowance either.
+        ad['learnings'] = mandatory + optional
+        self.assertEqual(compose.learnings_block(ad), compose.learnings_block(dict(ad, learnings=optional + mandatory)))
 
     def test_no_text_and_nonfresh_have_explicit_scoped_paths(self):
         p = run_fixture(); a = p['ads'][0]

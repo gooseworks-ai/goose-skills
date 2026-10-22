@@ -60,6 +60,11 @@ def validate(plan):
     fields(brief, ('request', 'creative_goal', 'goal_basis'), 'brief')
     require(brief['creative_goal'] in ('transformative', 'straightforward'), 'choose a creative_goal from the request')
     require(type(brief.get('count')) is int and brief['count'] > 0, 'brief.count must be positive')
+    constraint = brief.get('execution_constraint')
+    if constraint is not None:
+        fields(constraint, ('kind', 'user_quote'), 'execution_constraint')
+        require(constraint['kind'] in ('direct_demonstration', 'user_supplied_scene'), 'unknown execution constraint')
+        require(constraint['user_quote'] in brief['request'], 'execution constraint must quote the actual request')
     coverage = rows(plan.get('coverage'), 'coverage')
     required = {'brand', 'own_ads', 'history', 'customer', 'references', 'platform_scope'} if fresh else {'brand'}
     require(required <= {x.get('kind') for x in coverage}, 'coverage missing required source kinds: ' + ', '.join(sorted(required)))
@@ -163,8 +168,8 @@ def validate(plan):
         else:
             require(a.get('copy_intent') == 'no_added_text' and not hooks, 'no-text ad must explicitly record no_added_text')
         options = index(a.get('visual_options'), 'visual_options')
-        transformative = brief['creative_goal'] == 'transformative' and mode not in ('fix', 'copy')
-        require(len(options) >= (3 if transformative else 1), 'transformative brief needs competing visual premises')
+        compare_visuals = (fresh or brief['creative_goal'] == 'transformative') and not execution_only and constraint is None
+        require(len(options) >= (3 if compare_visuals else 1), 'fresh concepts need competing visual premises unless the user explicitly constrained the execution')
         require(len({v.get('premise') for v in options.values()}) == len(options), 'visual alternatives must have different premises')
         chosen = a.get('selected_visual_id')
         require(chosen in options, 'select a visual option')
@@ -185,8 +190,9 @@ def validate(plan):
     if not execution_only:
         review = plan.get('selection_review')
         fields(review, ('reviewer', 'context', 'verdict', 'resolution'), 'selection_review')
-        require(review['context'] in ('fresh', 'same_agent'), 'selection reviewer context must be explicit')
-        require(review['context'] == 'fresh' or plan.get('delegation_available') is False, 'use a fresh critic when delegation is available')
+        require(review['context'] in ('fresh', 'human'), 'independent selection review required; same-agent review cannot clear this gate')
+        if review['context'] == 'human':
+            fields(review, ('critique_source',), 'human selection review')
         require(review['verdict'] == 'pass' and isinstance(review.get('findings'), list), 'resolve selection review before compose')
     if partial:
         fields(plan.get('coverage_decision'), ('why',), 'coverage_decision')

@@ -1,6 +1,58 @@
 {
   "version": "1.4.0",
   "generated": "2026-10-22",
+  "retired_skills": [
+    {
+      "slug": "campaign-brief-generator",
+      "replacement": "plan-campaign",
+      "reason": "The old channel, message, calendar, asset and measurement brief is covered by the released campaign plan and brief template."
+    },
+    {
+      "slug": "competitive-pricing-intel",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft §6 covers tiers, feature gates, buyer-scenario cost, hidden charges and Wayback history; watch-and-react diffs packaging and price changes."
+    },
+    {
+      "slug": "competitor-content-tracker",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft §3 covers social/blog/newsletter/podcast cadence, content mix and normalized top posts; the weekly watch compares snapshots and feeds."
+    },
+    {
+      "slug": "competitor-intel",
+      "replacement": "research-competitors",
+      "reason": "Released rival profiles, landscape, openings and watch cover the old web/social/review positioning research and competitive gap report."
+    },
+    {
+      "slug": "competitor-monitoring-system",
+      "replacement": "research-competitors",
+      "reason": "Released baseline snapshots and watch cover recurring content, ads, reviews, pricing and product changes, with explicit scheduled-browser limitations."
+    },
+    {
+      "slug": "competitor-social-research",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft §3 compares platforms, cadence, content mix, series and normalized top posts; the report delivers formats, angles and brand-specific tests."
+    },
+    {
+      "slug": "create-html-carousel",
+      "replacement": "goose-graphics",
+      "reason": "The old file explicitly declares goose-graphics its successor; goose-graphics renders the same carousel deliverable with format/style discovery."
+    },
+    {
+      "slug": "product-demand-research",
+      "replacement": "research-market",
+      "reason": "The idea-validation branch explicitly researches demand for a new product, offer or concept and delivers evidence and a next-test decision."
+    },
+    {
+      "slug": "social-listening-brief",
+      "replacement": "research-market",
+      "reason": "The listening step and brand watch cover linked mentions, sentiment, repeated versus isolated signals, source limits, risks and prioritized actions."
+    },
+    {
+      "slug": "social-media-scraping-scrapecreators",
+      "replacement": "scrapecreators-api",
+      "reason": "Already only a compatibility alias directing all provider operations to scrapecreators-api; adds no independent API capability."
+    }
+  ],
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1133,34 +1185,6 @@
       }
     },
     {
-      "slug": "campaign-brief-generator",
-      "name": "campaign-brief-generator",
-      "category": "composites",
-      "domain": "content",
-      "description": ">",
-      "tags": "content",
-      "path": "skills/content/composites/campaign-brief-generator",
-      "files": [
-        "skills/content/composites/campaign-brief-generator/SKILL.md",
-        "skills/content/composites/campaign-brief-generator/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "campaign-brief-generator",
-        "category": "composites",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install campaign-brief-generator",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "caption-burn",
       "name": "caption-burn",
       "category": "capabilities",
@@ -1599,34 +1623,6 @@
       }
     },
     {
-      "slug": "competitive-pricing-intel",
-      "name": "competitive-pricing-intel",
-      "category": "composites",
-      "domain": "competitive-intel",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/competitive-intel/composites/competitive-pricing-intel",
-      "files": [
-        "skills/competitive-intel/composites/competitive-pricing-intel/SKILL.md",
-        "skills/competitive-intel/composites/competitive-pricing-intel/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitive-pricing-intel",
-        "category": "composites",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitive-pricing-intel",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "competitor-ad-intelligence",
       "name": "competitor-ad-intelligence",
       "category": "composites",
@@ -1660,95 +1656,6 @@
           "scrapecreators-api",
           "transcript-intelligence"
         ]
-      }
-    },
-    {
-      "slug": "competitor-content-tracker",
-      "name": "competitor-content-tracker",
-      "category": "composites",
-      "domain": "competitive-intel",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/competitive-intel/composites/competitor-content-tracker",
-      "files": [
-        "skills/competitive-intel/composites/competitor-content-tracker/SKILL.md",
-        "skills/competitive-intel/composites/competitor-content-tracker/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-content-tracker",
-        "category": "composites",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitor-content-tracker",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "blog-feed-monitor",
-          "linkedin-profile-post-scraper",
-          "twitter-mention-tracker"
-        ]
-      }
-    },
-    {
-      "slug": "competitor-intel",
-      "name": "competitor-intel",
-      "category": "composites",
-      "domain": "competitive-intel",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/competitive-intel/composites/competitor-intel",
-      "files": [
-        "skills/competitive-intel/composites/competitor-intel/SKILL.md",
-        "skills/competitive-intel/composites/competitor-intel/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-intel",
-        "category": "composites",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitor-intel",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "competitor-monitoring-system",
-      "name": "competitor-monitoring-system",
-      "category": "playbooks",
-      "domain": "competitive-intel",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/competitive-intel/playbooks/competitor-monitoring-system",
-      "files": [
-        "skills/competitive-intel/playbooks/competitor-monitoring-system/SKILL.md",
-        "skills/competitive-intel/playbooks/competitor-monitoring-system/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-monitoring-system",
-        "category": "playbooks",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitor-monitoring-system",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
       }
     },
     {
@@ -1841,45 +1748,6 @@
             "codex"
           ]
         }
-      }
-    },
-    {
-      "slug": "competitor-social-research",
-      "name": "competitor-social-research",
-      "category": "composites",
-      "domain": "social",
-      "description": "Compare competitors' social content across platforms to identify recurring topics, formats, hooks, audience reactions, distribution patterns, and credible content opportunities for a brand.",
-      "tags": "social, competitive-intel, research",
-      "path": "skills/social/composites/competitor-social-research",
-      "files": [
-        "skills/social/composites/competitor-social-research/SKILL.md",
-        "skills/social/composites/competitor-social-research/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-social-research",
-        "category": "composites",
-        "domain": "social",
-        "tags": [
-          "social",
-          "competitive-intel",
-          "research"
-        ],
-        "source": "scrapecreators",
-        "installation": {
-          "base_command": "npx goose-skills install competitor-social-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "scrapecreators-api",
-          "outlier-post-finder",
-          "transcript-intelligence",
-          "comment-mining",
-          "creator-profile-teardown"
-        ]
       }
     },
     {
@@ -2312,40 +2180,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install create-dashboard",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "create-html-carousel",
-      "name": "create-html-carousel",
-      "category": "capabilities",
-      "domain": "design",
-      "description": "Create LinkedIn carousel posts as high-quality PNG images. Design informational multi-slide posts like \"5 AI GTM workflows\" with consistent styling, then automatically screenshot each slide at LinkedIn's optimal 1080x1080px format.",
-      "tags": "content",
-      "path": "skills/design/capabilities/create-html-carousel",
-      "files": [
-        "skills/design/capabilities/create-html-carousel/README.md",
-        "skills/design/capabilities/create-html-carousel/SKILL.md",
-        "skills/design/capabilities/create-html-carousel/STYLE_PRESETS.md",
-        "skills/design/capabilities/create-html-carousel/package.json",
-        "skills/design/capabilities/create-html-carousel/screenshot-slides.js",
-        "skills/design/capabilities/create-html-carousel/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "create-html-carousel",
-        "category": "capabilities",
-        "tags": [
-          "content"
-        ],
-        "deprecated": true,
-        "deprecation_note": "Superseded by `goose-graphics` (skills/composites/goose-graphics/). Scheduled for removal after one release cycle.",
-        "installation": {
-          "base_command": "npx goose-skills install create-html-carousel",
           "supports": [
             "claude",
             "cursor",
@@ -6181,7 +6015,7 @@
       "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Research the brand and its existing ads, compare sourced concepts and visual ideas, compose, quote, render and review through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads/SKILL.md",
         "marketing-agent/skills/make-static-ads/references/angles-and-hooks.md",
@@ -6219,7 +6053,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "tags": [
           "ads",
           "design"
@@ -6284,7 +6118,8 @@
           "saved inspiration outliers — research-market, research-competitors (social_inspiration_library)",
           "kept product photos — the marketer, or the goose-product-photos skill",
           "graphic request lines 'Graphic needed: for make-static-ads · …' in lifecycle/flows/<flow-slug>.md (email-lifecycle), social/calendar/<start-date>.md (run-organic-social), content/repurposed/<source-slug>/<date>.md and content/drafts/<date>-<slug>.md (make-content)",
-          "the brand's own live ads in the Meta Ad Library and in the library of each other platform it advertises on (LinkedIn, TikTok, Google; host browser, or the data proxy on a yes)"
+          "the brand's own live ads in the Meta Ad Library and in the library of each other platform it advertises on (LinkedIn, TikTok, Google; host browser, or the data proxy on a yes)",
+          "run-memory: previous run and open recommendation outcomes at start; missing first run is explicit"
         ],
         "writes": [
           "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
@@ -6423,7 +6258,7 @@
       "description": "Step of the make-static-ads playbook: composes every ad exactly as GooseWorks' server composer does — the marketer's chat words as the User instructions, the ad's concept as its Variant brief — and records the final prompt and ordered image list per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-compose",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-compose/SKILL.md",
         "marketing-agent/skills/make-static-ads-compose/skill.meta.json"
@@ -6432,7 +6267,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6471,7 +6306,7 @@
       "description": "Step of make-static-ads: compare sourced purchase reasons, personas, proof and visual premises before choosing the ads. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-concept-grid",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-concept-grid/SKILL.md",
         "marketing-agent/skills/make-static-ads-concept-grid/skill.meta.json"
@@ -6480,7 +6315,7 @@
         "slug": "make-static-ads-concept-grid",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6506,7 +6341,7 @@
       "description": "Step of the make-static-ads playbook: after an image is approved, makes more versions of the same picture with different hooks, headlines or fonts — by a quoted re-render composed the server's way with the approved render as the brand's own ad, or by splitting the render into layers and resetting the text exactly — so copy can be tested without new visuals. Offered, never default. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-copy-variants",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-copy-variants/SKILL.md",
         "marketing-agent/skills/make-static-ads-copy-variants/skill.meta.json"
@@ -6515,7 +6350,7 @@
         "slug": "make-static-ads-copy-variants",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6590,7 +6425,7 @@
       "description": "Step of the make-static-ads playbook: fixes a static image ad the platform rejected — finds the ad, maps the platform's reason to the line or element at fault, fixes copy for free or re-composes the image text on a quote, re-runs the claims and policy checks, and answers the request. A rejected video is the video playbook's job. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-fix-rejected",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-fix-rejected/SKILL.md",
         "marketing-agent/skills/make-static-ads-fix-rejected/skill.meta.json"
@@ -6599,7 +6434,7 @@
         "slug": "make-static-ads-fix-rejected",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -6640,7 +6475,7 @@
       "description": "Makes one simple non-ad brand graphic, such as an email header, social feed or story image, or a blog or link-preview image, in the brand's style with at most a short line of text, after claim and rights checks and a yes to the quote; returns the link and alt text. Not for carousels, decks or print. Use alone when you already have the purpose, placement and exact wording; otherwise run make-static-ads.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-graphic-request",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "files": [
         "marketing-agent/skills/make-static-ads-graphic-request/SKILL.md",
         "marketing-agent/skills/make-static-ads-graphic-request/skill.meta.json"
@@ -6649,7 +6484,7 @@
         "slug": "make-static-ads-graphic-request",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -7976,43 +7811,6 @@
             "codex"
           ]
         }
-      }
-    },
-    {
-      "slug": "product-demand-research",
-      "name": "product-demand-research",
-      "category": "composites",
-      "domain": "research",
-      "description": "Test product-demand hypotheses using public customer language, search and social signals, competitor offers, reviews, comments, creator content, and social-commerce evidence before committing to a product, launch, offer, or campaign.",
-      "tags": "research, social, brand",
-      "path": "skills/research/composites/product-demand-research",
-      "files": [
-        "skills/research/composites/product-demand-research/SKILL.md",
-        "skills/research/composites/product-demand-research/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "product-demand-research",
-        "category": "composites",
-        "domain": "research",
-        "tags": [
-          "research",
-          "social",
-          "brand"
-        ],
-        "source": "scrapecreators",
-        "installation": {
-          "base_command": "npx goose-skills install product-demand-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "scrapecreators-api",
-          "comment-mining",
-          "transcript-intelligence"
-        ]
       }
     },
     {
@@ -12478,77 +12276,6 @@
         "source": "orthogonal",
         "installation": {
           "base_command": "npx goose-skills install social-listening",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "scrapecreators-api"
-        ]
-      }
-    },
-    {
-      "slug": "social-listening-brief",
-      "name": "social-listening-brief",
-      "category": "composites",
-      "domain": "social",
-      "description": "Produce a decision-ready brief of current brand, product, category, and competitor conversations across social platforms, including sentiment drivers, questions, risks, and growth opportunities.",
-      "tags": "social, research, monitoring",
-      "path": "skills/social/composites/social-listening-brief",
-      "files": [
-        "skills/social/composites/social-listening-brief/SKILL.md",
-        "skills/social/composites/social-listening-brief/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "social-listening-brief",
-        "category": "composites",
-        "domain": "social",
-        "tags": [
-          "social",
-          "research",
-          "monitoring"
-        ],
-        "source": "scrapecreators",
-        "installation": {
-          "base_command": "npx goose-skills install social-listening-brief",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "scrapecreators-api",
-          "comment-mining"
-        ]
-      }
-    },
-    {
-      "slug": "social-media-scraping-scrapecreators",
-      "name": "social-media-scraping-scrapecreators",
-      "category": "capabilities",
-      "domain": "social",
-      "description": "Compatibility alias for the original ScrapeCreators social scraping skill. Use scrapecreators-api for current endpoint guidance and the task-specific Brand Growth research skills for finished analysis.",
-      "tags": "social, research-tools",
-      "path": "skills/social/capabilities/social-media-scraping-scrapecreators",
-      "files": [
-        "skills/social/capabilities/social-media-scraping-scrapecreators/SKILL.md",
-        "skills/social/capabilities/social-media-scraping-scrapecreators/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "social-media-scraping-scrapecreators",
-        "category": "capabilities",
-        "tags": [
-          "social",
-          "research-tools"
-        ],
-        "source": "scrapecreators",
-        "deprecated": true,
-        "superseded_by": "scrapecreators-api",
-        "installation": {
-          "base_command": "npx goose-skills install social-media-scraping-scrapecreators",
           "supports": [
             "claude",
             "cursor",

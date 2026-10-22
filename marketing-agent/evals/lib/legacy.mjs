@@ -3,9 +3,28 @@
 // Also: which keys each old skill needs, and which key failures showed up in a finished run.
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import { execFileSync } from 'node:child_process';
 import { EVALS_DIR, MA_DIR } from './files.mjs';
 
-export const GOOSE_SKILLS_DIR = process.env.GOOSE_SKILLS_DIR || path.resolve(MA_DIR, '..');
+const CURRENT_ROOT = path.resolve(MA_DIR, '..');
+export let GOOSE_SKILLS_DIR = process.env.GOOSE_SKILLS_DIR || CURRENT_ROOT;
+let materialized = false;
+function ensureLegacyRoot() {
+  if (materialized || process.env.GOOSE_SKILLS_DIR) return;
+  const manifest = JSON.parse(fs.readFileSync(path.join(CURRENT_ROOT, 'retired-skills.json'), 'utf8'));
+  if (!/^[a-f0-9]{40}$/.test(manifest.legacy_revision)) throw new Error('Invalid legacy source revision');
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'goose-skills-legacy-'));
+  try {
+    const archive = execFileSync('git', ['archive', manifest.legacy_revision, 'skills', 'tools', 'skills-index.json'], { cwd: CURRENT_ROOT, maxBuffer: 128 * 1024 * 1024 });
+    execFileSync('tar', ['-xf', '-', '-C', temp], { input: archive });
+    GOOSE_SKILLS_DIR = temp;
+    materialized = true;
+  } catch (error) {
+    fs.rmSync(temp, { recursive: true, force: true });
+    throw new Error(`Cannot read pinned legacy skills. Set GOOSE_SKILLS_DIR to a checkout of ${manifest.legacy_revision}.`, { cause: error });
+  }
+}
 
 // Env vars old skills read. GOOSEWORKS_API_KEY/_BASE come from the CLI login (~/.gooseworks/credentials.json),
 // which the eval's sandbox home points at the STAGING profile. Everything else is a vendor key a normal user lacks.
@@ -20,6 +39,7 @@ export function loadMapping() {
 }
 
 function loadIndex() {
+  ensureLegacyRoot();
   const f = path.join(GOOSE_SKILLS_DIR, 'skills-index.json');
   if (!fs.existsSync(f)) throw new Error(`No skills-index.json in ${GOOSE_SKILLS_DIR} (set GOOSE_SKILLS_DIR to a goose-skills checkout on dev)`);
   return new Map(JSON.parse(fs.readFileSync(f, 'utf8')).skills.map((s) => [s.slug, s]));

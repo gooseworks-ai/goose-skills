@@ -696,6 +696,8 @@ def resolve(ad):
     if ad.get("content_policy_recompose"):
         departures.append(6)
 
+    if any(isinstance(r, dict) and r.get("kind") in ("must", "dont") for r in (ad.get("learnings") or [])):
+        departures.append(8)
     return {
         "ad": ad, "kit": kit, "template": template, "structure_only": structure_only, "blueprint": blueprint,
         "media_slot": media_slot, "apply_colors": apply_colors, "apply_font": apply_font, "font": font,
@@ -714,7 +716,10 @@ def resolve(ad):
 def learnings_block(ad):
     rows = [r for r in (ad.get("learnings") or []) if isinstance(r, dict)]
     blocks = []
-    top = rows[:COMPOSE_INJECTION_LIMIT]
+    # Mandatory rules are not ranked suggestions: preserve every must/dont row.
+    mandatory = [r for r in rows if r.get("kind") in ("must", "dont")]
+    optional = [r for r in rows if r.get("kind") in ("do", "template_hint", "insight")]
+    top = mandatory + optional[:COMPOSE_INJECTION_LIMIT]
     if top:
         def bucket(kind):
             return ["- " + js_str(r.get("text")) for r in top if r.get("kind") == kind]
