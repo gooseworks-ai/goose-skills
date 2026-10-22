@@ -27,7 +27,7 @@ def run_fixture():
     reasons = []
     for n, why in enumerate(['Clean up after muddy walks', 'Care instructions visible before buying', 'Wool texture for a room']):
         reasons.append(dict(id='r' + str(n), reason=why, source_ids=['s' + str(n + 1)],
-                            persona=dict(description='Pet owner', source_ids=['s2', 's3']),
+                            persona=dict(description='Pet owner', basis='research', source_ids=['s2', 's3']),
                             proof=dict(description='The product can be machine washed', source_ids=['s1'], kind='demonstration',
                                        supports='Shows the cleanup capability, not a guaranteed result.'),
                             decision='selected' if n == 0 else 'rejected', why='Most relevant cleanup tension' if n == 0 else 'Less relevant to requested moment',
@@ -46,8 +46,9 @@ def run_fixture():
                      protected_decision='The paw trail must visibly connect the real rug to the laundry.',
                      reference_role='mechanism', reference_contribution='An object points toward its next useful action.', direct_competitor=False,
                      exact_copy=['Walk. Wash. Repeat.'])
-    return dict(schema_version=1, brand_id='brand_test', mode='fresh',
-                selection_review=dict(reviewer='fresh critic', context='fresh', verdict='pass', findings=[], resolution='No remaining supported findings'),
+    plan = dict(schema_version=1, brand_id='brand_test', mode='fresh',
+                selection_review=dict(reviewer='fresh critic', context='fresh', verdict='pass', findings=[], resolution='No remaining supported findings',
+                                      source_assessment='s1 is first-party product authority. s2 is a customer review supporting muddy-walk behavior; s3 is the marketer segment statement. This supports a bounded washable-rug demonstration, not measured cleanup results.'),
                 brief=dict(request='Three strong visual ideas, choose one ad about the washable rug.', count=1,
                            creative_goal='transformative', goal_basis='The request asks for competing visual ideas.'),
                 coverage=[dict(kind=k, status='complete', locator='call/' + k, checked_at='2026-10-22', scope='first bounded sample',
@@ -63,6 +64,14 @@ def run_fixture():
                           reference_options=[dict(template_id='template_test' if n == 0 else 'other' + str(n), advertiser='Brand' + str(n),
                                                   source_id='ref' + str(n), decision='selected' if n == 0 else 'rejected',
                                                   why='The action fits' if n == 0 else 'Less useful relationship') for n in range(3)])])
+
+    return reviewed_fixture(plan)
+
+
+def reviewed_fixture(plan):
+    # Test-only stand-in for the critic returning the receipt after reviewing these inputs.
+    plan['selection_review']['selection_sha256'] = workflow.selection_digest(plan)
+    return plan
 
 
 def quote_fixture():
@@ -98,7 +107,7 @@ class WorkflowTests(unittest.TestCase):
         p['coverage'][1].update(status='partial', available_total=540, limitation='Only three cards inspected')
         self.assertBlocked(p, 'coverage_decision')
         p['coverage_decision'] = {'choice': 'proceed_with_limits', 'why': 'Research enough for these facts; no global novelty claim.'}
-        result = workflow.validate(p)
+        result = workflow.validate(reviewed_fixture(p))
         self.assertEqual(result['status'], 'partial')
         self.assertEqual(len(result['limitations']), 1)
 
@@ -177,11 +186,11 @@ class WorkflowTests(unittest.TestCase):
         p['brief']['execution_constraint'] = dict(kind='direct_demonstration', user_quote='Show the rug entering the washer.')
         self.assertBlocked(p, 'actual request')
         p['brief']['request'] = 'Make an ad. Show the rug entering the washer.'
-        self.assertEqual(workflow.validate(p)['status'], 'ready')
+        self.assertEqual(workflow.validate(reviewed_fixture(p))['status'], 'ready')
         p['brief']['execution_constraint']['kind'] = 'ordinary'
         self.assertBlocked(p, 'unknown execution constraint')
         p['brief']['execution_constraint']['kind'] = 'user_supplied_scene'
-        self.assertEqual(workflow.validate(p)['status'], 'ready')
+        self.assertEqual(workflow.validate(reviewed_fixture(p))['status'], 'ready')
         p['ads'][0]['creative_direction']['premise'] = 'different'
         self.assertBlocked(p, 'chosen visual')
 
@@ -207,7 +216,7 @@ class WorkflowTests(unittest.TestCase):
     def test_no_text_and_nonfresh_have_explicit_scoped_paths(self):
         p = run_fixture(); a = p['ads'][0]
         a['creative_direction']['exact_copy'] = []; a['hooks'] = []; a['copy_intent'] = 'no_added_text'
-        self.assertEqual(workflow.validate(p)['status'], 'ready')
+        self.assertEqual(workflow.validate(reviewed_fixture(p))['status'], 'ready')
         p['mode'] = 'copy'; p['reasons'] = p['reasons'][:1]; a['visual_options'] = a['visual_options'][:1]
         a['reference_options'] = a['reference_options'][:1]; p['coverage'] = p['coverage'][:1]
         self.assertBlocked(p, 'basis')
@@ -280,6 +289,127 @@ class WorkflowTests(unittest.TestCase):
         with self.assertRaisesRegex(workflow.WorkflowError, 'policy review'):
             workflow.quote(plan, 'a1', final, review)
 
+    def test_source_labels_do_not_decide_breadth_or_replace_review(self):
+        plan = run_fixture()
+        plan['sources'][0]['locator'] = 'https://brand.test/products/rug'
+        plan['sources'][2].update(type='official_website', locator='https://brand.test/rug-care',
+                                  excerpt='Machine washable wool rug; cold gentle cycle.', advertising_use='plain_fact')
+        plan['reasons'][0]['source_ids'] = ['s1', 's2']
+        plan['reasons'][1]['source_ids'] = ['s3']
+        plan['reasons'][2]['source_ids'] = ['s1']
+        plan['selection_review']['source_assessment'] = (
+            's1 and s3 are the same brand’s product/care facts, not independent corroboration. '
+            's2 is a buyer review supporting pet-owner behavior. These support a bounded wash-use introduction.')
+        reviewed_fixture(plan)
+        # Same sources, excerpts and locators; descriptive granularity cannot change the decision.
+        outcomes = []
+        for labels in [('record',) * 3, ('product_documentation', 'customer_review', 'official_website'),
+                       ('brand_website', 'customer_review', 'brand_website')]:
+            labelled = copy.deepcopy(plan)
+            for source, label in zip(labelled['sources'][:3], labels):
+                source['type'] = label
+            # A source-record edit first needs the critic to review the changed record.
+            if labels != tuple(s['type'] for s in plan['sources'][:3]):
+                self.assertBlocked(labelled, 'stale')
+            outcomes.append(workflow.validate(reviewed_fixture(labelled))['status'])
+            labelled['selection_review'].pop('source_assessment')
+            self.assertBlocked(labelled, 'source_assessment')
+        self.assertEqual(outcomes, ['ready', 'ready', 'ready'])
+
+    def test_feature_facts_and_hypothetical_audience_need_reviewed_scope_limits(self):
+        plan = run_fixture()
+        plan['sources'] = [s for s in plan['sources'] if s['id'] not in ('s2', 's3')]
+        for reason in plan['reasons']:
+            reason['source_ids'] = ['s1']
+            reason['persona'].update(basis='creative_hypothesis', source_ids=['s1'])
+        plan['reasons'][0]['gate']['persona']['why'] = 'Pet-owner use inferred from the feature; unvalidated audience hypothesis.'
+        ad = plan['ads'][0]
+        ad['creative_direction']['situation_basis'] = 'creative_hypothesis'
+        ad['situation_source_ids'] = []
+        # A fully examined source is not proof that this inferred audience has been validated.
+        customer = next(c for c in plan['coverage'] if c['kind'] == 'customer')
+        customer.update(status='complete', examined=0, available_total=0, observations=[],
+                        scope='Customer bank checked; no buyer records exist.', stopping_reason='No records found')
+        plan['selection_review']['source_assessment'] = (
+            's1 is one first-party product source; catalogue facts do not prove buyer demand. No independent '
+            'buyer insight was retrieved. Pet owners are an audience hypothesis. Machine-washability supports '
+            'only the bounded product-use introduction; no typical result or validated demand is claimed.')
+        reviewed_fixture(plan)
+        self.assertBlocked(plan, 'coverage_decision')
+        plan['coverage_decision'] = dict(choice='proceed_with_limits',
+                                         why='No audience support retrieved; pet-owner use is an unvalidated hypothesis for a bounded feature introduction.')
+        result = workflow.validate(reviewed_fixture(plan))
+        self.assertEqual(result['status'], 'partial')
+        self.assertIn('Unvalidated audience hypotheses', result['limitations'][0])
+        self.assertEqual(customer['status'], 'complete')
+        # A hypothesis is context, never an alternative proof kind or a usable fact.
+        broken = copy.deepcopy(plan); broken['reasons'][0]['proof']['kind'] = 'creative_hypothesis'
+        self.assertBlocked(broken, 'unsupported proof')
+        broken = copy.deepcopy(plan); broken['reasons'][0]['proof']['source_ids'] = ['missing']
+        self.assertBlocked(broken, 'proof')
+        broken = copy.deepcopy(plan); broken['sources'][0]['status'] = 'unknown'
+        self.assertBlocked(broken, 'unusable evidence')
+        broken = copy.deepcopy(plan); broken['selection_review']['verdict'] = 'blocked'
+        self.assertBlocked(broken, 'resolve selection')
+        broken = copy.deepcopy(plan); broken['reasons'][0]['persona'].pop('basis')
+        self.assertBlocked(broken, 'persona basis')
+
+    def test_authored_scene_does_not_downgrade_researched_audience(self):
+        plan = run_fixture()
+        plan['ads'][0]['creative_direction']['situation_basis'] = 'creative_hypothesis'
+        plan['ads'][0]['situation_source_ids'] = []
+        plan['selection_review']['source_assessment'] += ' The specific scene is authored; the pet-owner audience remains supported by s2.'
+        result = workflow.validate(reviewed_fixture(plan))
+        self.assertEqual(result['status'], 'ready')
+        self.assertEqual(result['limitations'], [])
+        self.assertTrue(all(c['status'] == 'complete' for c in plan['coverage']))
+
+    def test_selection_receipt_binds_reviewed_inputs_not_execution_tracking(self):
+        original = run_fixture()
+        # Shapes used by the actual held runs, with fictional evidence and no brand concepts.
+        original.update(history_context=[dict(id='prior-use', locator='prior-batch.json', excerpt='Earlier use photo')],
+                        set_decision='Keep distinct events', unsupported_gaps=[dict(reason='Unproven outcome', why='No result evidence')],
+                        reference_exclusions=['Rejected fixture image'],
+                        evidence_families=[dict(origin='brand', source_ids=['s1'])],
+                        platforms=['Meta'], placements=['feed'], ratios=['4:5'])
+        original['ads'][0].update(ratio='4:5', platforms=['Meta'], placements=['feed'],
+                                  settings_basis='Current kit palette and font')
+        reviewed_fixture(original)
+        missing = copy.deepcopy(original); missing['selection_review'].pop('selection_sha256')
+        self.assertBlocked(missing, 'stale')
+        edits = [
+            lambda p: p['sources'][0].update(excerpt='New product claim'),
+            lambda p: p['reasons'][0]['proof'].update(supports='Different promise'),
+            lambda p: p['reasons'][0]['persona'].update(description='New audience'),
+            lambda p: p['ads'][0]['creative_direction'].update(scene='Different selected event'),
+            lambda p: p['ads'][0]['reference_options'][0].update(why='Different contribution'),
+            lambda p: p['ads'][0].update(copy={'primary_a': 'Changed copy'}),
+            lambda p: p['history_context'][0].update(excerpt='Another known ad'),
+            lambda p: p.update(set_decision='Replace duplicated event'),
+            lambda p: p['unsupported_gaps'][0].update(why='Changed evidence gap'),
+            lambda p: p['reference_exclusions'].append('Another excluded reference'),
+            lambda p: p['evidence_families'][0].update(origin='Changed origin'),
+            lambda p: p['ads'][0].update(ratio='9:16'),
+            lambda p: p['ads'][0].update(ratios=['9:16']),
+            lambda p: p['ads'][0]['platforms'].append('Google'),
+            lambda p: p['ads'][0]['placements'].append('story'),
+            lambda p: p['ads'][0].update(settings_basis='Different font/palette'),
+            lambda p: p['platforms'].append('Google'),
+            lambda p: p['placements'].append('story'),
+            lambda p: p['ratios'].append('9:16'),
+            lambda p: p['coverage'][0]['observations'].append('Additional source observation'),
+        ]
+        for edit in edits:
+            with self.subTest(edit=edit):
+                changed = copy.deepcopy(original); edit(changed)
+                self.assertBlocked(changed, 'stale')
+        tracked = copy.deepcopy(original)
+        tracked.update(phase='composing', jobs=['job1'], delivery={'url': 'artifact'})
+        tracked['ads'][0].update(compose={'path': 'final.json'}, job_id='job1', render_id='render1')
+        tracked['selection_review'].update(reviewed_at='2026-10-23', resolution='Review metadata update')
+        self.assertEqual(workflow.selection_digest(original), workflow.selection_digest(tracked))
+        self.assertEqual(workflow.validate(tracked)['status'], 'ready')
+
     def test_read_manifest_reuses_only_exact_verified_parts(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -318,6 +448,9 @@ class WorkflowTests(unittest.TestCase):
                 return subprocess.run([sys.executable, script, 'final', str(ap), str(answer_path)], capture_output=True, text=True)
             self.assertIn('Workflow blocked', execute().stderr)
             (root / 'run.json').write_text(json.dumps(p)); ad['workflow'] = dict(run_path='run.json', ad_id='a1', run_sha256=workflow.digest(p))
+            receipt = subprocess.run([sys.executable, str(Path(script).with_name('workflow.py')), 'selection-digest',
+                                      str(root / 'run.json')], capture_output=True, text=True, check=True)
+            self.assertEqual(json.loads(receipt.stdout)['selection_sha256'], p['selection_review']['selection_sha256'])
             result = execute()
             self.assertEqual(result.returncode, 0, result.stderr)
             final = json.loads(result.stdout)
@@ -325,6 +458,10 @@ class WorkflowTests(unittest.TestCase):
             self.assertNotIn('dry_run', final['renders'][0]['render_spec'])
             self.assertEqual(final['workflow']['run_sha256'], workflow.digest(p))
             p['brief']['goal_basis'] += ' changed'
+            (root / 'run.json').write_text(json.dumps(p))
+            self.assertIn('selection review is missing or stale', execute().stderr)
+            # Even after a fresh selection review, the old linked compose receipt is still stale.
+            reviewed_fixture(p)
             (root / 'run.json').write_text(json.dumps(p))
             self.assertIn('Run changed', execute().stderr)
 

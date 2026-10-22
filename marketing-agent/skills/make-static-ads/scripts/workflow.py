@@ -2,8 +2,9 @@
 """Validate recorded ad decisions; never infer research, truth, approval or quality.
 
 check run.json
+selection-digest run.json
 quote run.json ad-id final.json review.json
-The second command emits free dry-run requests, never a paid submit.
+The quote command emits free dry-run requests, never a paid submit.
 """
 import copy
 import hashlib
@@ -46,6 +47,26 @@ def fields(obj, names, label):
 
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
+# Only inputs the selection critic reviews; execution bookkeeping never enters this receipt.
+SELECTION_FIELDS = ('brand_id', 'mode', 'brief', 'basis', 'coverage', 'coverage_decision',
+                    'sources', 'reasons', 'evidence_families', 'history', 'history_context',
+                    'set_decision', 'set_decisions', 'unsupported_gaps', 'reference_exclusions',
+                    'platform', 'platforms', 'placement', 'placements', 'ratio', 'ratios')
+SELECTED_AD_FIELDS = ('id', 'reason_id', 'template_id', 'truth_source_ids', 'situation_source_ids',
+                      'creative_direction', 'hooks', 'visual_options', 'selected_visual_id',
+                      'reference_options', 'framework', 'style', 'composition', 'awareness',
+                      'copy', 'copy_intent', 'product_name', 'settings_basis', 'persona_basis',
+                      'platform', 'platforms', 'placement', 'placements', 'ratio', 'ratios')
+
+
+def selection_digest(plan):
+    """Identify the reviewed selection, not whether a real review occurred."""
+    basis = {key: plan[key] for key in SELECTION_FIELDS if key in plan}
+    basis['ads'] = [{key: ad[key] for key in SELECTED_AD_FIELDS if key in ad}
+                    for ad in rows(plan.get('ads'), 'ads')]
+    return digest(basis)
 
 
 def validate(plan):
@@ -105,10 +126,9 @@ def validate(plan):
     require(None not in used and used <= candidates.keys(), 'each ad needs an existing reason_id')
     if fresh:
         require(len(candidates) >= 2 * len(used), 'draft at least twice the selected reasons before choosing')
-        require(len({s['type'] for c in candidates.values() for i in c.get('source_ids', []) if (s := sources.get(i))}) >= 3,
-                'candidate reasons need at least three recorded source types; name the gap instead of padding')
     if not fresh:
         fields(plan.get('basis'), ('locator', 'decision'), 'non-fresh basis')
+    audience_hypotheses = []
     for r in candidates.values():
         fields(r, ('reason', 'decision', 'why'), 'reason')
         require(r['decision'] in ('selected', 'rejected'), 'reason.decision must be selected/rejected')
@@ -121,6 +141,10 @@ def validate(plan):
         evidence(proof.get('source_ids'), 'proof')
         require(proof['kind'] in ('product_fact', 'approved_claim', 'demonstration', 'real_quote'), 'unsupported proof kind')
         if r['id'] in used:
+            if fresh:
+                require(persona.get('basis') in ('research', 'creative_hypothesis'), 'label selected persona basis as research or creative_hypothesis')
+                if persona['basis'] == 'creative_hypothesis':
+                    audience_hypotheses.append(persona['description'])
             proof_sources = [sources[i] for i in proof['source_ids']]
             if proof['kind'] in ('product_fact', 'demonstration'):
                 require(any(s['advertising_use'] in ('plain_fact', 'approved_claim') for s in proof_sources), 'proof needs a usable fact, not an observation or hypothesis')
@@ -194,9 +218,15 @@ def validate(plan):
         if review['context'] == 'human':
             fields(review, ('critique_source',), 'human selection review')
         require(review['verdict'] == 'pass' and isinstance(review.get('findings'), list), 'resolve selection review before compose')
+        if fresh:
+            fields(review, ('source_assessment',), 'selection_review')
+    if audience_hypotheses:
+        partial.append('Unvalidated audience hypotheses: ' + '; '.join(dict.fromkeys(audience_hypotheses)))
     if partial:
         fields(plan.get('coverage_decision'), ('why',), 'coverage_decision')
         require(plan['coverage_decision'].get('choice') == 'proceed_with_limits', 'resolve partial coverage before composing')
+    if fresh:
+        require(review.get('selection_sha256') == selection_digest(plan), 'selection review is missing or stale; obtain a fresh review of this selection')
     return {'status': 'partial' if partial else 'ready', 'can_compose': True, 'limitations': partial,
             'run_sha256': digest(plan), 'ads': list(ads)}
 
@@ -265,6 +295,8 @@ def main(args):
     try:
         if len(args) == 3 and args[1] == 'check':
             result = validate(load(args[2]))
+        elif len(args) == 3 and args[1] == 'selection-digest':
+            result = {'selection_sha256': selection_digest(load(args[2]))}
         elif len(args) == 3 and args[1] == 'digest':
             result = {'sha256': digest(load(args[2]))}
         elif len(args) == 6 and args[1] == 'quote':
