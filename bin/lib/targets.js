@@ -44,6 +44,14 @@ function parseInstallOptions(args) {
   return { slug, target, projectDir };
 }
 
+function successorInstallCommand(slug, { target, projectDir }) {
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) throw new Error('Invalid successor skill slug');
+  const args = [slug];
+  if (target !== 'claude') args.push(`--${target}`);
+  if (projectDir) args.push('--project-dir', "'" + projectDir.replace(/'/g, "'\\''") + "'");
+  return `npx goose-skills install ${args.join(' ')}`;
+}
+
 function renderCursorRule(slug, skillContent) {
   return [
     '---',
@@ -86,6 +94,7 @@ function placeForCursor(sourceSkillDir, projectDir) {
 
 module.exports = {
   parseInstallOptions,
+  successorInstallCommand,
   renderCursorRule,
   placeForCodex,
   placeForCursor,
