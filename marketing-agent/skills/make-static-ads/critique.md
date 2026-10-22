@@ -301,6 +301,39 @@ A fresh subagent (effort xhigh) reviewed every file against the "writing for age
 Not changed: the verbatim server text inside `composer.md`, `judge.md`, `structure-blueprint.md`, `font-specimen.md` (parity, Test 9). Departure 6 (content-policy re-compose instead of the server's engine fallback) is kept from Round 14, now marked in the compose ledger.
 Outside this skill (follow-ups): goose-ads should route static requests here; the server's MCP instruction "static ads: ads_template_read … then ads_generate" should point at this flow.
 
+## Round 17 — production run skipped the research (Juicebox, 20–21 Oct, v0.4.3)
+
+Akhil ran 0.4.2 on production ("create static ads for juicebox brand", then "make 5 more"). The session loaded the skill and asked the Step 2 form, then skipped most of the research and checks. 4 of 6 ads repeated messages Juicebox already runs on LinkedIn, in the kit's blue instead of the brand's real purple; about 240 of 420 credits went to repeats. A separate check found that local and production runs pick the same three Loxo ads and the same website facts, so the same inputs give the same ads.
+
+| # | What happened | Why the skill allowed it | Done |
+|---|---|---|---|
+| 1 | Never read the brand's live ads; wrote "brand has no running ads" after finding nothing in GooseWorks. Never opened `references-and-remix.md` | The brand's own ads were a parenthesis inside Step 1's long reads line; "read or named as missing" let "nothing on file" pass | Step 1 split: 1b "What the brand already runs" with its own done line (Meta + LinkedIn libraries + saved ads, or the library named as empty); §2a lists the live libraries and says GooseWorks records prove nothing |
+| 2 | "your choice show me the final ads only create one ad" taken as license to skip Steps 1, 3, 7, 10 | No rule said short answers only skip the display | Hard rule 5 |
+| 3 | No concept grid; angles taken from the website's headline stats | Taxonomy never loaded; grid not required before the quote | Step 3 loads both references, shows the grid with the coverage note before any quote; concept-grid drafts 2× candidates and checks headline facts against the inventory |
+| 4 | Claims check skipped | Step 7 didn't load its reference | Step 7 loads `claims-and-policy.md` |
+| 5 | The agent judged its own renders | "Blind judge" was a leading word without the rule | Step 10 names a fresh subagent, never the composing agent |
+| 6 | "Make 5 more" skipped Steps 1–4 | No mode for a follow-up set | "More ads" mode: a fresh batch; this chat's ads join the made-before list |
+| 7 | B2B brand's ads live on LinkedIn | Only the Meta library was read | LinkedIn Ad Library added for B2B brands |
+| 8 | Same inputs → same templates (all three from Loxo; local and prod identical) | Suggestions always took the longest-running ad; one tracked competitor | find-references: 3+ advertisers incl. a non-competitor leader; at most one suggestion per advertiser; prefer the layout furthest from the inventory |
+| 9 | Kit colours didn't match the brand's real ads | Colour question only knew the kit | Step 2 suggests the running ads' palette when it differs |
+
+Also: `tests/test-by-hand.md` setup now links the flat layout; Test 10 covers this failure. Not changed: `requires_skills` keeps `claims-gate` because the shared steps it requires need it (the flat-list rule).
+
+**Round 17b — review and dry run before merge (21 Oct).** A reviewer (effort high) and a dry run on production Juicebox (both rounds up to the quote, nothing spent or written) checked 0.4.3. The dry run read Juicebox's live Meta (~59 ads) and LinkedIn (765) pages first, built the inventory, drafted 10 reasons, dropped the ones Juicebox already runs, showed the coverage note and ran the claims check (cut "100+ integrations"). Fixes from both:
+- Hard rule 5 reworded ("short answers change who decides, not what runs"); Step 4 added to the always-run list; no clash with modes that skip steps.
+- Step 1b done line needs evidence per source (URL or call, count); empty GooseWorks import = "not checked"; proxy fallback on one yes when there is no browser; LinkedIn for every brand, advertiser confirmed.
+- Saved ads of other brands stay out of the inventory.
+- Running-ads palette is a real colour answer (fonts-and-color §4 row, compose row 3).
+- Repeats capped: at least two ads in three on a reason the brand does not run.
+- Judge trace records who judged; More-ads mode builds the inventory if the first set didn't.
+- find-references: one floor (3+ advertisers incl. 3–5 non-competitor leaders); cap per advertiser = one per concept, a third of the set.
+- Production renamed `brain_*` to `brand_knowledge_*` (old names still callable, hidden from discovery): the skill uses the new names and says so in Setup.
+- Still open: the server's reference selection reaches only the first three product screenshots, so later UI ads lack real screens; the kit's logo URL can be an SVG; runs on different servers still pick alike (made-before is per workspace).
+
+**Round 17c — real-entry retests (21 Oct).** Two fresh agents started from `/gooseworks create static ads for <brand>` on staging, never told to follow make-static-ads exactly, with the Juicebox session's scripted answers: Graza (consumer) and GooseWorks (B2B). Both read the brand, the brain (`brand_knowledge_*`), the live Meta library and the made-before list, built a concept grid, ran the claims check and reached the quote. LinkedIn: GooseWorks checked it, Graza correctly didn't (the platform rule now follows the platforms the brand advertises on, not every brand). Debriefs agree on why steps get cut: instructions from outside the skill (a stale local router sending static ads to goose-ads; server next_steps "one line and wait", "recommend one plan"); very large tool answers (kit 50–155K characters, creative lists 0.8–1.5 MB); composer.md's 712 lines re-typed per ad (both abbreviated it as "[verbatim]"); and Step 4's live category-leader search, the most expensive step and the one most often cut.
+
+**Round 18 — 0.4.4: compose script, small reads, template recipe (21 Oct).** Built `scripts/compose.py` (composer input and final prompt; 14 tests; output matches the server's own TypeScript on 5 example ads). Added an exact read-call table (`engine-notes.md`), the `made-by:make-static-ads` tag, and a fixed template search (`references-and-remix.md` §2b). Two local retests from `/gooseworks` (current router from `main`) on staging, Graza and GooseWorks, both rounds to the quote: both used `compose.py` for every ad; GooseWorks read 64 leader ads across 4 advertisers; Graza's leader search was blocked by the host's safety check, so its templates came from the library. Fixes from the debriefs: past-ads list read capped at 3 rows (10 rows were 729K characters), the colour rotation continues across "more ads", every candidate's detail is opened before suggesting (a staging QA fixture had been suggested), headline-less templates only on the marketer's pick, and the font question suggests the closest free match when the brand font isn't on Google Fonts (`brand_font_unavailable` in `ad.json`). Open, outside this skill: the router on `main` still names `brain_*` and `brand_setup`; the server's knowledge search labels kit value props "not an approved ad claim", against this skill's rule; `get_started` still says "one line and wait".
+
 ## Appendix — build-time test logs (moved from tests/test-by-hand.md, 20 Oct 2026)
 
 ### Free and cheap reads — 2026-10-19 (no generation)
@@ -369,3 +402,88 @@ Minimal edits on the dev version (the owner has a newer rewrite on his branch; t
 | Finding | Fix |
 |---|---|
 | A4 (partly) The hand test still sent claims to learn-my-brand | `tests/test-by-hand.md`: claims are approved in the claims gate's scoped sign-off. |
+
+## Round 20 — 22 Oct: complete reads and concept-directed scenes (0.4.5)
+
+**Summary.** The handoff's retests still diff-read later composer inputs and described rather than exercised final judging. The Kolkata Chai experiment showed how a product truth and human situation can supply meaning while a reference contributes a direct device, a broader relationship, or craft alone. This update changes the existing composer and playbook; it adds no parallel skill.
+
+**Evidence and scope.** Claude session `24c8dcfd-cbcf-4012-835d-69637cbf7532` ended with Graza/GooseWorks dry-run debriefs and PR330 at 0.4.4. The installed Claude link still pointed to the older nested playbook. Creative source: content-goose's `clients/kolkata-chai-co/finals/creative-experiment-2026-10-22/how-to.md` and the five exact prompts in its working folder. Those five images were first generations, without a blind tournament or customer validation. They supply craft evidence and hypotheses, not performance claims.
+
+| Finding | Change / limit |
+|---|---|
+| Full kits and repeated scaffolding encouraged partial reads | `prepare --output-dir` writes every required byte in ordered parts of at most 6,000 characters. Exact shared-rule hash reuse avoids manual diff-reading. |
+| An answer could belong to an earlier input | CLI `final` requires the current input receipt. It binds assembled text, the viewed source URL and the ordered product/reference asset URLs. This detects stale inputs; it cannot prove attention. |
+| The source-layout hard invariant overruled a new scene | A structured `creative_direction` records truth/source, situation basis, premise, relationship, scene, protected decision, exact copy and reference role. Mechanism/craft replaces the conflicting layout instructions, rather than appending another instruction. Layout remixes retain server parity. |
+| Copy or the central choice could disappear during composing | Finalization requires the exact copy and protected-decision sentence. Intentional `exact_copy: []` keeps no-text ads possible. The image judge still checks what is actually visible. |
+| A concept can move far from reference objects | The optional-guest and remembered-home examples explain why the relationship carries meaning. They are examples, not fixed concepts or required surrealism. |
+| Ownership could default to true on an upload | CLI preparation/finalization requires explicit ownership; foreign images remain text-only. Direct competitors accept layout only. |
+| Cached connector tools can differ from the live server | Refresh discovery or use an existing authorized MCP transport. No `ads_generate` substitution: it invokes another composer. |
+
+**Independent review.** The reviewer found an input-receipt gap: changing an image URL did not change the text-only hash. Fixed by binding the visual asset inventory as well; regression coverage rejects both changed source and product URLs. Earlier review also caught the prepare/input command mismatch and intentional no-text ads; both fixed before push.
+
+**Validation.** Python composer suite: 23 passed, including existing server-parity checks and nine contract tests. Repository suite: 52 passed. Skill validation: 361 skills. Marketing links: 86 skills, 629 references, zero broken. Atom-version check: zero errors. Atom lint: zero errors (existing warnings elsewhere). Index rebuilt. Real paid renders and their independent visual review belong to the fresh staging run; they are not claimed by these checks.
+
+## Round 21 — 22 Oct: real staging renders and bounded label recovery (0.4.6)
+
+**Summary.** The fresh Graza staging run made five distinct scenes with exact prompt/image-order delivery and spent the approved 300 credits. All five first generations failed independent review because the model redrew official label microtype; one also added pseudo-recipe glyphs. The quality gate stayed intact. Free local official-pixel repairs then passed independent full-image review.
+
+**What actually ran.** Five thin `ads_render` submissions, five completed images, no paid retries. The source was Graza's official Sizzle front photo; the other four product images were inspected and none supplied a clean transparent cutout. Label recovery remapped actual source pixels through manually inspected curved label bands while retaining the render outside the mask. The recipe plane was separately cleaned with explicit nonword strokes and fitted paper shading; that scoped prototype is not represented as a general product helper.
+
+**Reusable change.** `scripts/repair_patch.py` now supports a compatible, near-front-facing, unoccluded label patch on a shell host with numpy/OpenCV. It requires explicit rights/pose confirmations, finite in-bounds non-crossing geometry, a non-inverting source/target mapping, convergence, lossless new output paths and exact outside-mask preservation. It is not automatic segmentation, a pose matcher or a cure for a wrong silhouette. The five actual source/target configurations were also executed through the packaged helper; their outputs and hashes were reviewed separately from the first prototype.
+
+**Review findings.** The reviewer found that validating target inversion alone still allowed a folded source mapping. Fixed by checking the exact Jacobian minimum over both band domains (linear in vertical position, quadratic horizontally); a regression rejects the provided folded-source and folded-target cases. Existing spelling and product gates were not relaxed. The optional repair and exhausted-budget stop are now explicit in render-review, and the reference check uses the recorded role for concept-directed scenes.
+
+**Validation.** 31 Python tests passed, including eight runtime repair tests for real pixel transfer, curved geometry, antialiasing, boundaries, source/target inversion, provenance, original preservation and ownership/pose gates. The separate staging artifacts preserve the five raw failures, repair masks, source/base/output hashes, independent verdicts and save lineage. The generated picture remains a recreation except for the transplanted official label pixels; no performance claim follows from these tests.
+
+## Round 22 — 22 Oct: finite research and honest novelty (0.4.7)
+
+**Summary.** The fresh test inspected 26 cards out of a library showing about 540 ads and only part of saved/legacy history. That is valid evidence for its compose/render/repair path, not an exhaustive inventory. Inspection found an inherited instruction conflict: own-library reads said "every static/every row" while other reads had explicit caps.
+
+**Fix.** Research remains mandatory for every applicable source. Own-platform and saved/imported-image reads start at 20 cards/records, extend only while useful, and stop by 60 per source. History uses three relevant batch files, 20 tagged creatives and the existing three-row legacy cap; every earlier ad in the same conversation remains known. Each source records date, available scope/count, examined count, distinct observations, stopping reason and missing coverage. Partial coverage supports "not observed in checked ads", not a claim of global novelty. Every suggested template is still opened by eye.
+
+This changes the research contract, not the generator or label algorithm. The existing five generation jobs and actual-pixel repairs remain evidence for those paths. No paid rerun was made or needed. The original acquisition omissions remain recorded as a limitation rather than rewritten as full compliance.
+
+The main description/output now names the actual registered reference and source, matching the existing library/other-source fallback. It no longer implies every reference was verified as running on Meta.
+
+## Round 22 — execute the real research and selection path (22 Oct,0.5.0)
+
+**Evidence.** The full terminal reports in Claude session24c8dcfd-cbcf-4012-835d-69637cbf7532 diagnose stale routing, competing next steps, huge/scattered reads and costly reference acquisition. The later five paid Graza jobs exercised prompt assembly/rendering but omitted required candidate/grid/hook/gate outputs and used a reused reviewer rather than a fresh blind judge. Their successful label repairs do not fill those gaps. Both execution audits and the reconciliation are preserved in content-goose's Graza test working folder.
+
+**Change.** Shorten the main workflow, co-locate upstream decisions in one run artifact and make missing work block composition/quote preparation. Source coverage remains bounded and honest; sourced reasons carry persona/proof and argued five-check gate decisions, ranked hook spares, reference comparisons and competing visual premises for transformative requests. A fresh critic challenges evidence and selections; the script verifies completeness/consistency only. Copy/fix/graphic modes preserve the actual approved parent/request without forcing new sales concepts. Exact verified prepared parts may be reused only after reading them in the same conversation; full current input remains available and every changed part is returned. Compose output stays unquoted until exact claims/policy review. Rights, claims, actual product identity and budget gates remain.
+
+**Related work.** Canonical CLI router and app instruction precedence are separate reviewed PRs. This skill change alone does not update installed routers. Tests cannot establish source truth, comprehension, creativity or performance. A new fresh staging run must audit the actual entry path and pre-spend evidence before generating; the original five jobs remain historical partial-process evidence.
+
+
+## Round 23 — close the review shortcuts (22 Oct, 0.5.1)
+
+**Fixes.** Fresh/more requests compare three substantive visual meanings even when the request is ordinary; only an explicit quoted user action/scene constraint can narrow that comparison. The independent critic checks that constraint and the ideas, rather than treating a “straightforward” label as permission to skip selection. A same-agent review cannot clear the selection gate; a real human critique with a source or a fresh critic is required.
+
+Run-memory Start and End are mandatory, including first-run honesty, prior recommendation outcomes and blocked/partial exits. All mandatory must/dont learnings reach the composer; only optional guidance is capped at eight. This intentionally departs from the retained server first-eight-total reference. Runtime command syntax moved into the discoverable scripts guide. Negative tests cover the bypasses and mandatory-rule overflow; they do not establish research truth or creative quality.
+
+
+## Round 24 — 23 Oct: competitive ideas and honest draft-policy limits (0.5.2)
+
+**Summary.** A fresh ordinary Graza run performed real research, kept alternatives and passed independent selection review, yet mostly chose use photos and a can hero. The independent free audit held the set before spending. This update changes selection judgment, not the source/spend gates or the original run.
+
+**Evidence.** content-goose: `clients/graza/working/static-skill-rebuild-2026-10-22/fresh-graza/independent-free-audit.md`, `run.json` and final prompts. The audit found weak rivals (including an already unsupported environmental spectacle), craft-only reference choices, loser reasons that assumed copying entire source scenes, and repeated bottle/hand/flow pictures. The earlier Kolkata Chai `finals/creative-experiment-2026-10-22/how-to.md` explains meaningful near/distant relationships and product-authored metaphors; its positive human feedback is craft evidence, not performance proof.
+
+| Finding | Change / limit |
+|---|---|
+| Different alternatives could still be easy to beat | Develop credible competing events; repair avoidable staging/claim defects before comparing. The critic challenges winner strength, brand specificity and the whole set as well as validity. No unusual-prop or surrealism quota. |
+| Generic craft removed a reference's useful relationship | Try a conceptual source's relationship in the product's human situation; judge each candidate's allowed contribution. Craft-only remains valid when the authored event earns its place. |
+| A hypothetical visual analogy was rejected as a possible measured-control promise | Evaluate its likely factual takeaway. Expressive relationships may stay; any implied result still needs support. |
+| Craft/mechanism ratio suffix restored source-layout authority | Ratio adaptation now retains the authored scene for those roles; layout path retains the server behavior. Reconcile authored colour choices with the assigned scheme before compose. |
+| Official current Meta policy pages could not be reached | A separate audit checked seven official URLs (`policy-access-check.md` in the same Graza working folder). An explicitly authorized unpublished draft may quote only with all actual known-rule/claim/rights checks passing and source access as the sole gap. The review and output retain unchecked sources/rules and a launch hold. No real risk, default ad request or publishing authorization is cleared. The agent must verify real human authority; record fields alone cannot supply it. |
+
+**Validation.** 48 Python runtime tests and 55 repository tests passed. Skill validation, 634 published-reference links, atom-version checks and lint passed (existing unrelated lint warnings remain); the catalog index was rebuilt. These checks cover recorded gates, exact review binding and prompt authority. A fresh uncoached selection run is still needed to establish improved creative decisions; paid pixels and human preference are separate evidence. The original Graza set remains held. [[derived-from::fresh-graza]]
+
+
+## Round 25 — 23 Oct: judge evidence, not source labels (0.5.3)
+
+**Summary.** The fresh software run stopped on a raw count of three source-type strings. Its independent audit supplement confirmed that unchanged legitimate first-party feature evidence could reach that count under finer labels. The count could neither establish independent buyer grounding nor explain why Graza’s catalogue-plus-website-plus-review passed. The actual software selection remains held for thin buyer insight and an unresolved independent re-review.
+
+**Evidence.** content-goose: `clients/graza/working/static-skill-rebuild-2026-10-22/fresh-gooseworks/{independent-free-audit.md,source-type-gate-supplement.md,run.json,upstream-check.json}`. These records are unchanged.
+
+**Change.** Source types remain descriptive; coverage groups actual provenance and separates first-party fact authority from independent buyer insight. Every fresh critic must explain that evidence’s sufficiency and limits. Selected audiences are explicitly researched or hypothetical. Source coverage describes examined records; fictional scenes do not downgrade a researched audience. Unvalidated audiences add named run-level limits. Feature facts can support a bounded introduction with hypothetical audiences and a reviewed bounded-scope decision; they never establish measured demand or waive proof. Candidate comparisons, source/claim gates and independent review remain required. A small receipt binds the critic to the reviewed selection inputs while excluding execution tracking; a producer cannot legitimately renew it without actual re-review.
+
+**Validation.** 52 Python tests and 55 repository tests passed. Skill validation, 636 published-reference links, atom versions/lint and the rebuilt index passed; lint retains existing unrelated warnings. Runtime regressions cover same-provenance relabelling, fact/hypothesis scope boundaries, missing proof/review/source IDs, changed actual history/set/reference/placement inputs and stable bookkeeping. This repairs a label-sensitive blocker; it does not clear the original run, prove customer demand or grant spending/publishing authority. All 0.5.2 creative, policy and spending boundaries remain. [[qualifies::source-type-gate-supplement]]

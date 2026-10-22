@@ -17,6 +17,7 @@
 - Fenced blocks are **verbatim server text**. `«...»` marks a value you substitute. Everything else (including `{{ref:ID}}`, `Image N`, quotes, dashes) is literal.
 - "Include IF …" means the server adds that line only under that condition. Lines are joined with a single newline (`\n`) unless stated.
 - Per ad ("creative"), run in this order. Do not skip or reorder.
+- **`scripts/compose.py` does rows 6, 8, 9 (insertion) and 10 for you.** Write the ad's values to `ad.json`, link the checked run, run `python3 scripts/compose.py prepare ad.json --output-dir prepared`, answer that text as the composer (row 7) into `answer.json`, then run `python3 scripts/compose.py final ad.json answer.json` (`scripts/README.md`). The fenced text below stays the source of truth; `scripts/test_compose.py` checks the script against it.
 
 | # | Step | Section |
 |---|---|---|
@@ -146,7 +147,7 @@ Build this list **in this order**. The order is reused for the final images.
 
 ## 5. The composer instruction set (verbatim, with conditionals)
 
-Build `composeInput` as these lines joined by `\n`, in this order. `structureOnly` = §2.2 path is structure-only AND a blueprint exists.
+`scripts/compose.py input` assembles this section and §6 (§0). Build `composeInput` as these lines joined by `\n`, in this order. `structureOnly` = §2.2 path is structure-only AND a blueprint exists.
 
 **Line 1**
 
@@ -303,7 +304,7 @@ Then an empty line, then the **context** (§6).
 
 ## 6. The context block (`buildComposeContext`, 1292)
 
-Definitions: `adProducts` = `kit.products` without `adEligibility = "hidden"`. `productLed` as in §5. Lines with no value are omitted.
+Assembled by `scripts/compose.py input` together with §5 (§0). Definitions: `adProducts` = `kit.products` without `adEligibility = "hidden"`. `productLed` as in §5. Lines with no value are omitted.
 
 ### 6.1 `## Source template` (omitted entirely when structure-only)
 
@@ -424,6 +425,8 @@ No reference photo is available for this product — do not claim photo fidelity
 ```
 
 ### 6.5 Learnings block (`loadBrandLearningsBlock` 1960; `formatLearningsForCompose`, `formatAdjustmentForCompose`, `REASON_DIRECTIVES` in ad-brand-learning.service.ts 261, 591, 459)
+
+**Playbook departure 8:** the local composer preserves every must/dont row and caps only optional do/template_hint/insight rows at eight. The server reference below retains its original first-eight-total rule; overflow is intentionally not parity.
 
 Take the **first 8** rows of `result.learnings` (the server's `COMPOSE_INJECTION_LIMIT`). Group by `kind`; each row is `- «text»`; omit empty groups; omit the whole block when no group has rows:
 ```text
@@ -566,6 +569,8 @@ After answering:
 - **Placeholder check.** Every `{{ref:ID}}` in `prompt` other than `{{ref:logo}}` must be in `reference_ids`. The server fails the whole ad here (`Compose prompt referenced unselected asset id(s)`). **Agent adaptation:** fix the object (add the ID or remove the placeholder) and re-check; never send a prompt that fails this.
 
 ## 8. From the composer's answer to the final prompt
+
+`scripts/compose.py final` does all of §8, the specimen insertion of §9 and §10, and prints unquoted render_spec data per ratio. The playbook uses workflow.py quote after reviewing the exact prompts/images for claims and policy; the server assembly below remains the parity reference.
 
 ### 8.1 Gate the references (`selectTargetReferenceAssets` 605)
 

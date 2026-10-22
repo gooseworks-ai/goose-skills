@@ -35,7 +35,7 @@ Pick by the ad's visual style too: a lo-fi native ad wants a plain or system-lik
 
 ## 3. Close free matches for common paid brand fonts
 
-For the layers method of copy variants only (the font specimen follows its own server alias rules, `font-specimen.md` §3).
+The Step 2 suggestion when the brand's font isn't on Google Fonts (the match is set as a pairing, compose departure 3), and the layers method of copy variants. The font specimen still follows its own server alias rules (`font-specimen.md` §3).
 
 | Paid font | Free match |
 |---|---|
@@ -46,7 +46,7 @@ For the layers method of copy variants only (the font specimen follows its own s
 | GT America, Graphik | Figtree |
 | Canela, Recoleta | Fraunces, Young Serif |
 | Didot, Bodoni | Bodoni Moda |
-| Garamond | EB Garamond |
+| Garamond, ITC Garamond (incl. Condensed) | EB Garamond |
 | Circular | DM Sans |
 | Brandon Grotesque | Josefin Sans |
 
@@ -55,6 +55,7 @@ For the layers method of copy variants only (the font specimen follows its own s
 | Answer | What the composer gets |
 |---|---|
 | **Brand colours** (default) | `apply_brand_colors` on; the scheme dealt per ad from the kit (`composer.md` §3) |
+| **The brand's running-ads colours** | The palette read from the running ads (background, text, accent as hex) replaces the kit's: the agent deals it per ad as the assigned scheme in the COLORS line, at least two background tones across the set, text-to-background contrast at least 4.5:1. Offer once to save it as a look rule through the `save-learning` skill |
 | **The template's colours** | The brand's own template: `apply_brand_colors` off (KEEP SOURCE). Another brand's template: GooseWorks never copies another brand's exact colours, so the agent keeps the template's light/dark structure and mood and picks a close palette of its own — say so once |
 | **A fresh palette** | The agent picks a new palette per ad (background, text, accent as hex), different on every ad, text-to-background contrast at least 4.5:1, logo placed on an area where its real colours read; it goes in the composer's COLORS line as the assigned scheme |
 

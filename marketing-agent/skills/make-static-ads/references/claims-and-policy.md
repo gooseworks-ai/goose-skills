@@ -21,20 +21,22 @@ Treat each of these as a claim that must trace to a usable brain fact or a plain
 | Offer and commercial terms | "free shipping", "20% off", "$16", "free returns", "limited stock" | Must be live today, on this product, with real terms; fake scarcity is deceptive |
 | Safety / environmental | "safe for kids", "eco-friendly", "carbon neutral" | Green claims are now actively enforced (FTC Green Guides, EU) |
 
+**Authored metaphor.** A visibly imagined scene or relationship may express a supported product role without being a factual claim that the scene happened. State the likely factual takeaway, then check that against §2. A visual analogy does not by itself promise measured control, saved time or a better outcome; words, staging or comparison can turn it into that promise. Keep expressive meaning when the takeaway is supported. A metaphor label never excuses an unsupported result, endorsement or product capability.
+
 **Puffery** — vague, unmeasurable praise ("you'll love it", "a little luxury", "rethink your ritual") — is not a claim and may stay. The test: could someone prove it false? If yes, it is a claim.
 
 ## 2. Usable facts — where proof may come from
 
 A **usable fact** is a fact the table below allows, worded as recorded. Every factual line in an ad — copy, on-image text, badge, implied by the picture — is a usable fact or is cut. This playbook follows the **server composer's claims rule** ("any factual claim may appear ONLY if it is present in the brand context — proof points, value props, brand facts, product details; never invent, round up or embellish"), checked against the **brand brain's status** for each fact:
 
-| Brain status (`gooseworks:brain_search` `statuses`) | Source | Use it? |
+| Brain status (`gooseworks:brand_knowledge_search` `statuses`) | Source | Use it? |
 |---|---|---|
 | `confirmed` | any | **Yes**, worded as recorded |
 | `found` | the brand's own website, the brand kit (proof points, value props), the product record | **Yes**, worded as recorded |
 | `found` | press, third-party pages, reviews | Only as a quoted, attributed line (press quote, review) |
 | `guess`, `unknown` | any | **No** — cut, and list it with what would confirm it |
 
-- Read the brain once at Step 1: `gooseworks:brain_map` (`brand_id`), then `gooseworks:brain_search` for the product's claims and proof (`source_types: ["claim","brand_kit","fact","product"]`, `product_id`). On a server without the brain tools, the brand kit's proof points and value props and the product record count as `found`.
+- Read the brain once at Step 1: `gooseworks:brand_knowledge_browse` (`brand_id`), then `gooseworks:brand_knowledge_search` for the product's claims and proof (`source_types: ["claim","brand_kit","fact","product"]`, `product_id`). On a server without the brain tools, the brand kit's proof points and value props and the product record count as `found`.
 - The composer may write headlines in the brand's voice **from** these facts ("Wool up top" from "Merino wool upper"). It may not add a fact, a number, a result or a promise that isn't there ("feet stay dry" from "water-repellent finish" adds a result — cut it). Numbers, ratings, guarantees, qualifiers and regulated wording stay exactly as recorded.
 - Numbers that go stale (ratings, review counts, awards, offers) are flagged "verify current".
 - **Plain product facts** (name, price with currency, sizes, colours, materials, what's in the box, how to use) are always usable.

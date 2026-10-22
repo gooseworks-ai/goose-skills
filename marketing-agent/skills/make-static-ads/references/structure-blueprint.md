@@ -1,7 +1,7 @@
 # Human version
 
 - **What this is:** the legal guard for reference ads the brand does not own. Instead of copying a competitor's or library ad, the server has a "layout analyst" describe it as an abstract wireframe plus style categories: no colours, no font names, no copy, no description of the photo. The brand's ad is then built from that blueprint and the brand kit alone.
-- **When it runs:** on every normal batch, for templates whose source is a competitor import, a community ad or the curated library. The brand's own uploads and own scraped ads skip it and are remixed directly.
+- **When it runs:** the table below documents the original server path. This playbook requires explicit ownership: an upload or import is not proof of rights. Any unowned source stays text-only. For a mechanism/craft reference, compose departure 7 replaces the source blueprint with the concept's authored scene; no source pixels reach compose, render or judge.
 - **The rule that matters:** after extraction, the source image goes to **neither** the composer nor the image model, and the judge does not see it either.
 - **Copied from the server.** Extraction prompt, output fields and their descriptions, the text the blueprint becomes, and the colour flip are all verbatim from gooseworks-app `origin/dev` (commit `42a3dec20`, read 2026-10-19).
 - **Sources:** `apps/api/src/services/ad-structure-blueprint.service.ts` — schema 21–339, `treatmentLines` 649, `sceneLines` 735, `renderBlueprintInstruction` 751, `extractionPrompt` 801, `minimalStructureBlueprint` 859, `extractStructureBlueprint` 1011. `ad-remix-pipeline.service.ts` — `STRUCTURE_ONLY_SOURCE_KINDS` 2506, `readStructureOnlyIntent` 2551, `withAssignedTargetScheme` 2613, `resolveStructureOnlyBlueprint` 2645, image order 4385. `ad-remix-batches.service.ts` — `resolveStructureOnlyAutoMarker` 2814.
@@ -11,7 +11,7 @@
 
 # Agent version
 
-## 1. When it applies
+## 1. Original server behavior (playbook departures take priority)
 
 | `template.source_kind` (from `gooseworks:ads_template_read { template_id }`) | Path |
 |---|---|
