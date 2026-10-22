@@ -25,3 +25,7 @@ Checked against the GooseWorks staging tool list on 2026-10-16. Each need: what,
 | 19 | **A web search / page fetch through GooseWorks for hosts without their own** (a scheduled coworker run, or a hosted chat without browsing) — the rebuilt teardown's main source is the host's free web search, fetch and browser. | 2–3, 8 (watch) | Hosts with web tools use them; without, the run uses server reads and lists every dimension it couldn't reach. |
 | 20 | **LinkedIn post and ad-library reads** (company pages, founders' posts, ad library) — the most important B2B dimension; public pages often need a login. | 3 (rival pass §2–4) | Public pages and search-engine results for `site:linkedin.com/posts`; gaps listed. |
 
+
+## 22 Oct — focused engagement access
+
+GOOSE-4062 adds the supplied-export/public-sample intelligence path. Live collection is a separate check: only when listed, `marketing_data_describe` / `marketing_data_lookup` expose scoped `linkedin_comments` and `linkedin_reactions` operations. The backend audit verified the provider's catalogue/schema free, not a paid per-person result. Follow the live tool's quote/execute contract through marketing-data-access; inspect actual rows before assuming profile/comment/date fields. Until the connector lists these operations and a real response passes provenance/pagination checks, managed extraction remains unqualified. Supplied-export processing can still complete without vendor keys; the report names that method. Personal rows remain workspace-only.

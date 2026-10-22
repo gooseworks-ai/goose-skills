@@ -3,7 +3,7 @@
   "$comment": "Not published: the CLI gooseworks router routes to the playbooks instead. Kept for evals and hand tests.",
   "catalog": false,
   "tier": "foundation",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "pillar": "all",
   "intents": [
     "help me with marketing",

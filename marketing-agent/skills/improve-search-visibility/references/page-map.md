@@ -1,6 +1,6 @@
 # The page map (the search roadmap)
 
-Load at step 4. Pillar 4's core output is a prioritised map from what buyers ask to the page that answers it. The five fixes are this week's slice of it; the briefs are the pages it says are missing. It is a standing record: every run updates it, never starts over.
+Use for a search roadmap, subject cluster or planned new pages. Map intents to the pages that answer them; use `seo-jobs.md` for the requested cluster, gap or pSEO deliverable. This roadmap can exceed the recommendation count. Read it before updating, preserving rows outside this job's scope.
 
 ## Shape (`search/page-map.md`)
 ```
@@ -15,11 +15,11 @@ Page map — <Brand> — <YYYY-MM-DD> v<N> · country <cc> · demand source: Sea
 - **State:** ok · rewrite · fix (profile or foundation) · needed (brief) · merge (two pages compete for one cluster; proposal with redirect risk) · blocked (foundation blocker) · parked (not winnable now, or a comparison when the human said not to name competitors; why).
 - **Demand:** always name the source. In order: Search Console impressions summed over the cluster's queries (when shared); Google Keyword Planner ranges (when the brand shares its Ads account); Google Trends relative interest and autocomplete presence (free, in the browser — relative, not counts); a vendor's AI prompt-volume estimate only if the brand already has that account, labelled "estimate". None → "no demand data, ranked by judgment". Never invent volumes.
 - **Priority:** 1 = do first. Blockers on key question pages and false brand facts rank first; then near-winners (positions ~4–15 or cited sometimes); then missing pages by demand × winnability; prestigious-but-hopeless clusters are parked with the reason.
-- **Quarter:** "now" for this-week fixes; then fill quarters in priority order at the human's stated capacity (pages a month from intake), so the map reads as a realistic quarterly roadmap. The map grows from 12–15 questions toward 25–40 over runs.
+- **Quarter:** "now" for this-week fixes; then fill quarters in priority order at the human's stated capacity (pages a month from intake), so the map reads as a realistic quarterly roadmap. Those sizes are useful for recurring visibility samples, not limits on an audit or subject map. For a one-off topic cluster, give a build order without asking for publishing capacity; date a calendar only when capacity is known.
 
-## How the five and the briefs come from it
-- The five fixes are the top-priority rows whose fix the named person can ship this week (plus site-wide blockers, which always come first).
-- Every "needed" row of priority ≤ 5 gets a page brief (below); lower rows wait.
+## How priorities and briefs come from it
+- Ranked recommendations follow the request and `prioritising.md`; recurring visibility checks default to five changes the named person can ship this week.
+- Create briefs for requested pages and the priority pages selected for the next production step. A complete map still lists the other pages with their intent, links and priority; it need not include a full brief for each.
 - On a re-run, rows whose fix shipped are re-checked against this run's evidence; a row that moved changes state, one that didn't keeps its priority with a note.
 
 ## Page brief — make-content's brief input shape (`search/briefs/<page-slug>.md`)

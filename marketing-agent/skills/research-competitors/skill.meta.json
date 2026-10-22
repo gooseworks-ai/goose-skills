@@ -2,7 +2,7 @@
   "slug": "research-competitors",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "tags": [
     "competitive-intel",
     "research"
@@ -33,7 +33,7 @@
     "spend-gate",
     "write-report"
   ],
-  "pillar": "1 — Strategy and planning",
+  "pillar": "1 \u2014 Strategy and planning",
   "intents": [
     "What are my competitors running right now, and what works for them?",
     "Do a competitor teardown",
@@ -42,32 +42,36 @@
     "How do my competitors price?",
     "Find the gaps and angles nobody covers",
     "What changed with my competitors this week?",
-    "<Competitor> just launched / shut down / cut prices — what do we do?",
-    "Watch my competitors every week"
+    "<Competitor> just launched / shut down / cut prices \u2014 what do we do?",
+    "Watch my competitors every week",
+    "Build a sales battlecard against <rival>",
+    "What tools and pixels does this competitor page use?",
+    "Who comments on or reacts to our competitor's LinkedIn posts?"
   ],
   "reads": [
-    "brand brain: summary, kit, products, competitors, organic, learnings (brand_read) — server research and the app (learn-my-brand, unreleased)",
-    "claims through the claims-gate shared atom — its scoped sign-off, or earlier records (learn-my-brand, unreleased)",
-    "competitor roster, dossiers and suggestions (competitor_read) — research-market / server research",
-    "public web: news, launches, pricing (and Wayback), ad libraries (LinkedIn, Google, Meta, TikTok), company and founder posts, reviews, community, jobs, events — host web search, fetch and browser (free)",
-    "Meta ad sample (ads_template_read mode competitor) and rival posts (brand_read organic) — server research, free",
-    "the newest market report research/market/<date>-read.md (which market) — research-market; buyer groups research/audience/buyer-groups.md and the latest audience report — research-audience; plans/ — plan-campaign",
-    "angle results: workspace reports/performance/<date>.md — analyze-performance; creatives tagged angle:a-nn — make-static-ads",
-    "previous report and rival records with snapshots: workspace research/competitors/* — research-competitors itself",
-    "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data",
-    "AI-answer and search visibility report: workspace search/visibility/<date>.md — improve-search-visibility (when no AI engine is reachable)"
+    "brand brain: summary, kit, products, competitors, organic, learnings (brand_read) \u2014 server research and the app (learn-my-brand, unreleased)",
+    "claims through the claims-gate shared atom \u2014 its scoped sign-off, or earlier records (learn-my-brand, unreleased)",
+    "competitor roster, dossiers and suggestions (competitor_read) \u2014 research-market / server research",
+    "public web: news, launches, pricing (and Wayback), ad libraries (LinkedIn, Google, Meta, TikTok), company and founder posts, reviews, community, jobs, events \u2014 host web search, fetch and browser (free)",
+    "Meta ad sample (ads_template_read mode competitor) and rival posts (brand_read organic) \u2014 server research, free",
+    "the newest market report research/market/<date>-read.md (which market) \u2014 research-market; buyer groups research/audience/buyer-groups.md and the latest audience report \u2014 research-audience; plans/ \u2014 plan-campaign",
+    "angle results: workspace reports/performance/<date>.md \u2014 analyze-performance; creatives tagged angle:a-nn \u2014 make-static-ads",
+    "previous report and rival records with snapshots: workspace research/competitors/* \u2014 research-competitors itself",
+    "shared price history: workspace research/credits-log/<YYYY-MM>.md \u2014 any playbook that spends on data",
+    "AI-answer and search visibility report: workspace search/visibility/<date>.md \u2014 improve-search-visibility (when no AI engine is reachable)"
   ],
   "writes": [
-    "competitor report ('In short' with 'Do this first', timely openings, rivals one by one, how they compare, You vs them, formats worth borrowing, angles, what to do): local gooseworks-reports/<brand-slug>/<date>-competitor-research.md + workspace research/competitors/<date>-report.md + brand document (keep-history) — read by the founder and team, the next run",
-    "rival records with snapshots: workspace research/competitors/<slug>.md (supersede) — read by the weekly watch, plan-campaign, make-content",
-    "landscape: workspace research/competitors/landscape.md (supersede) — read by plan-campaign",
-    "angle bank keyed A-NN (makers tag angle:a-nn): workspace research/competitors/angle-bank.md (supersede) — read by make-static-ads, plan-campaign",
-    "swipe-file items: inspiration library via social_inspiration_save — read by make-static-ads, make-content",
-    "weekly watch notes: workspace research/competitors/watch/<date>.md (keep-history; line 2 'Week of …') — read by the founder, analyze-performance",
+    "competitor report ('In short' with 'Do this first', timely openings, rivals one by one, how they compare, You vs them, formats worth borrowing, angles, what to do): local gooseworks-reports/<brand-slug>/<date>-competitor-research.md + workspace research/competitors/<date>-report.md + brand document (keep-history) \u2014 read by the founder and team, the next run",
+    "rival records with snapshots: workspace research/competitors/<slug>.md (supersede) \u2014 read by the weekly watch, plan-campaign, make-content",
+    "landscape: workspace research/competitors/landscape.md (supersede) \u2014 read by plan-campaign",
+    "angle bank keyed A-NN (makers tag angle:a-nn): workspace research/competitors/angle-bank.md (supersede) \u2014 read by make-static-ads, plan-campaign",
+    "swipe-file items: inspiration library via social_inspiration_save \u2014 read by make-static-ads, make-content",
+    "weekly watch notes: workspace research/competitors/watch/<date>.md (keep-history; line 2 'Week of \u2026') \u2014 read by the founder, analyze-performance",
     "new rivals on the roster via competitor_save, on the founder's yes",
     "rules for top angles through the save-learning shared atom, on the founder's words",
     "scheduled watch (opt-in, created paused) via automation_upsert; method file research/competitors/method/watch.md",
-    "run records: workspace runs/research-competitors/<job-slug>/<date>.md + brand document (keep-history) through the run-memory shared atom — read by this playbook's next run"
+    "run records: workspace runs/research-competitors/<job-slug>/<date>.md + brand document (keep-history) through the run-memory shared atom \u2014 read by this playbook's next run",
+    "Focused outputs: research/competitors/battlecards/<rival>/<date>.md; technology/<rival>/<date>.md; engagers/<rival>/<date>-report.md (aggregate only) \u2014 keep-history through write-report; private engager CSVs stay workspace-only, never brain imported"
   ],
   "needs": {
     "mcp": [
@@ -98,7 +102,9 @@
       "gooseworks:brand_setup",
       "gooseworks:brain_map",
       "gooseworks:brain_open",
-      "gooseworks:brain_search"
+      "gooseworks:brain_search",
+      "gooseworks:marketing_data_describe",
+      "gooseworks:marketing_data_lookup"
     ]
   }
 }

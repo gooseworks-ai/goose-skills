@@ -1,6 +1,6 @@
 # From gap to fix
 
-Load at step 4 (pattern and fixes).
+Use for AI-answer visibility patterns and fixes. Counts follow `prioritising.md`; an audit or planning request uses its branch in `seo-jobs.md`.
 
 ## Find the pattern (countable statements only)
 1. Take the cited URLs from lost and partial rows; classify each by source type.
@@ -8,12 +8,12 @@ Load at step 4 (pattern and fixes).
 3. For each lost key question, open the passage the engine lifted from the winner and the brand's nearest page. Note what the winner has: a first sentence that answers outright, the entity named, numbers (price, size, counts), a comparison table, a visible date, a page that matches the intent at all.
 
 ## Lever by cause
-| Cause | Fix type | Counts in the five? |
+| Cause | Fix type | This-week visibility fix? |
 |---|---|---|
 | Our page blocked, unindexed, JS-only, wrong canonical | foundation fix (exact line or setting) | yes — blockers first |
 | Our page exists but can't be lifted | rewrite: title, meta, H1, answer-first opening, fact block, Q&A block, internal links | yes |
 | Near-winner on Google (positions ~4–15, or impressions high and clicks low) | title/meta rewrite, refresh, internal links from strong pages | yes |
-| No page for the intent | page brief to make-content (comparison, alternatives, use-case, location page) | no — listed under the five |
+| No page for the intent | page brief to make-content (comparison, alternatives, use-case, location page) | no — listed beside the selected fixes |
 | Name collision (engines answer about a namesake: "is <brand> legit" returns another company) | a visible one-line "who we are — not <namesake>" on About and the homepage, the brand's full name in every page title, consistent profiles, `alternateName` / `sameAs` in the existing Organization markup | yes — usually fix #1 |
 | Wrong or old brand description in answers | entity fix: exact field values on the profile the engine cites, plus our About page and Organization markup | yes |
 | Absent from cited listicles / review roundups | inclusion request: one drafted email to the page's editor naming the page, the gap and the facts (the human sends it) | yes, if the cited page is maintained and plausibly updated |

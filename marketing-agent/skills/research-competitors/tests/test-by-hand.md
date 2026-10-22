@@ -36,3 +36,21 @@ The old run read only Meta ad libraries, asked "go deeper?", found the Fetcher s
 - `ads_template_read` mode `competitor` returns a capped sample (~24 per rival) with ad id, start date, last-seen date, copy, CTA and destination; `media_list` tags `ad_library` + `competitor_ad` hold rival video ads.
 - `brand_read` section `organic` returns rival top posts with views.
 These are free extras; the free web pass (search, fetch, browser) is the main source.
+
+## 22 October — focused-output acceptance (GOOSE-4056 / 4059 / 4062)
+
+**Inputs:** `fixtures/focused-evidence.md`, `fixtures/page-source.html`, `fixtures/engagers.csv`. All are fictional supplied evidence; setup and approval are simulated. Use only these files, with test date 22 October. No live brand reads/writes, browsing, provider requests or spend. This is a local method exercise, not live acceptance.
+
+| Ask | Actual local output | Acceptance inspected |
+|---|---|---|
+| Build a sales battlecard against BillPilot for five reviewers | `examples/2026-10-22/battlecard.md` | 811 words; deal fit, where they win, four evaluation questions, three finished objection answers, same-scenario price and two short replies. Enterprise/export unknown stays unknown; no fabricated saving or deal win rate. Exact price-only approval is respected |
+| What tools/pixels are on these supplied competitor pages? | `examples/2026-10-22/technology.md` | Four positive source signatures; historical commented script is not loaded-tag evidence; tag manager does not prove GA4; prose mentions do not prove Intercom/Drift; inaccessible pricing page is not checked |
+| Who engaged with the two supplied posts? | `examples/2026-10-22/engagement-report.md`, `engagers.csv`, `excluded.csv` | 9 raw → 5 kept rows / 4 distinct profiles. Three comments, two reactions; four exclusions (duplicate, staff, missing profile, wrong post). Same-name people kept distinct; unknown engagement date retained only under post-publication window; formula-like comment escaped. Report has aggregate data only |
+
+**Checks actually run:** CSV reconciliation/types/distinct-profile identity, exact excluded reasons, unknown-date count, spreadsheet escaping, no person/profile strings in aggregate report, every local source/output link resolves, output word counts. Skill validation passed (351 skills at that point). Installed-layout link check had no owned-file failures; its three failures were concurrent unfinished shared/SEO references, reported to the parent.
+
+**Branch rehearsal:** follow focused-outputs.md from the ask using the supplied snapshots instead of live setup. Inspect the three produced artifacts against each branch's completion check. Source-only HTML and supplied CSV exercise the available-source paths; they do not exercise rendered-page or managed API access. The full teardown entry remains the default for a broad ask.
+
+**Negative cases:** remove a rival capability/price field → unknown, not “they lack it”; remove comparative approval → proposal plus safe product facts; provide only a cleaned page excerpt → tools not checked; provide only posts/counts with no rows → extraction incomplete, not zero engagers; change the ask to engagement dates → unknown-date reaction cannot count. Check these explicitly on the next host acceptance run.
+
+**Still to test live:** managed commenter/reactor response shape and pagination after deployment, quoted approval/billing, public render/network capture, live brand/private-row save paths and links. No live success is claimed for these operations.

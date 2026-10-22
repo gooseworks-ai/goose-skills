@@ -2,7 +2,7 @@
   "slug": "make-content-two-pass-edit",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "playbook": "make-content",
   "tags": [
     "content"

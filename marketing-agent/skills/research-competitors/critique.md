@@ -447,3 +447,18 @@ Sources as in research-market's Round 6. Old skills were read as reference only.
 |---|---|
 | B5 "We don't make video ads yet" in the report's For-you rule; metadata named make-video-ads | A video idea is offered as the next job with the goose-video skill; unreleased producer removed. |
 | B10 "worker briefs: `atoms/`" | "its step skills (`research-competitors-<step>`)". |
+
+## 2026-10-22 — agreed focused outputs (GOOSE-4052)
+
+The user approved implementing the named outputs within existing owners; this supersedes the earlier surface freeze for these branches only. Independent source review distinguished existing research from missing outputs before edits.
+
+| Finding | Change / verification |
+|---|---|
+| Broad teardown procedure would swallow a focused request | Early branch after setup; saved evidence reused and only gaps read; full report/watch defaults retained |
+| Research implications were being confused with finished deliverables | Competitor battlecard and market positioning branch contain actual response/message shapes, approval/proof checks and saved artifact paths |
+| New choices could silently overwrite current strategy | Positioning alternatives saved as history; only an explicit owner choice updates the scoped current brief; selection remains distinct from validation |
+| Source presence could be overclaimed as live behaviour | Technology report separates detected/possible/not detected/not checked; commented HTML is historical, prose mentions are not detections |
+| Post search could be mistaken for engager collection | Live managed operation is checked conditionally; supplied export and public sample label coverage; private rows never brain-imported; actual provider result remains untested without paid approval |
+| Evidence fixtures are not live acceptance | Local fixture outputs and exact limitations recorded in tests; no paid read, external save or runtime completeness claim |
+
+Read the 22 October acceptance section in tests/test-by-hand.md for the fixture paths, outputs and remaining live checks.

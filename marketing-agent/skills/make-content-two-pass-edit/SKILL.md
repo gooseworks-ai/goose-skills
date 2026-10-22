@@ -5,7 +5,7 @@ description: >-
   fit), a claims and fact check that cuts or softens unproven lines, a readability and voice-match
   pass, then an AI-tell sweep, with an edit note listing open gaps. Use alone when you already have a
   finished draft and the brand's voice samples and approved claims; otherwise run make-content.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Edit, check, edit
@@ -22,10 +22,11 @@ Run on every fresh draft, refresh redline and repurposed set. The full checklist
 2. **Claims check:** the shared claims gate (the `claims-gate` skill, `../claims-gate/SKILL.md`) for brand claims, plus `../make-content/references/fact-rules.md` for world facts, competitor facts, stories, sensitive topics and third-party rights. When the piece is sponsored, affiliate, gifted or a creator collaboration, also load `../ad-policy-check/disclosure.md` (in the `ad-policy-check` skill) and apply it (disclosure in the piece itself, before "more"). It cuts and softens lines, which leaves gaps.
 3. **Readability pass** on the post-cut text: smooth the gaps, headline, lede, H2s as claims, scannability, ending. Then **voice match** against the best voice sample available, in this order:
    1. the named author's voice card (bylined pieces);
-   2. the kit's voice example lines;
-   3. the brand's own post captions (`brand_read organic`);
-   4. "From the site" lines in product notes;
-   5. three lines the human pastes on request.
+   2. the saved company blog guide `brand/voices/blog-<brand-slug>.md` for company blog/article work (apply its rules and bans; keep any provisional status);
+   3. the kit’s voice example lines;
+   4. the brand's own post captions (`brand_read organic`);
+   5. "From the site" lines in product notes;
+   6. three lines the human pastes on request.
 
    If none exist, write "voice unmatched: no real samples" in the note and keep the copy plain rather than guessing at personality.
 4. **AI-tell check** (mechanical) on the final text. Anything the brand's real writing uses stays; with no real samples, everything on the list goes.

@@ -8,10 +8,12 @@ description: >-
   our launch", "a TikTok or Reel script to shoot on my phone", "tear down @x's account", or "my
   accounts went quiet". The marketer posts by hand; nothing is posted or scheduled. Not for a
   standalone post or repurposing one piece — use make-content.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # run-organic-social
+
+**A post list or focused research request:** after shared setup, use `marketing-data-access` (`../marketing-data-access/SKILL.md`) and its `focused-reads.md` reference for requested post rows, dates, engagement and bounded rankings. For interpretation or voices, use the existing platform-research step, restricted to that question. Deliver the requested list/analysis; skip the full-plan opening, calendar, account-strategy intake and eight-example-per-platform gate. A top-voices list states its ranking evidence and coverage, rather than claiming an exhaustive directory.
 
 **Say once, at the start, in these words or close:** "I'll look at how each platform works right now and what's getting watched in your space, then give you a plan and two weeks of posts. I can't post for you yet; you'll post by hand."
 
@@ -35,6 +37,8 @@ A report the marketer opens with one click (delivered through the `write-report`
 - **What we couldn't check,** in plain words.
 
 Every post is checked for claims, voice and disclosure. Posts that speak for a named person are flagged for that person's yes.
+
+For brand voice, read an existing company guide at `brand/voices/blog-<brand-slug>.md` alongside the account’s card and brand rules. Reuse transferable tone and bans; keep account-specific social patterns and never turn blog article length into a post limit. Preserve a guide’s provisional status.
 
 ## Before you start
 

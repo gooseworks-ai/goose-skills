@@ -36,7 +36,7 @@ Nine kinds of buying language, strongest first (score them in the row's reason):
 | Missing feature | 7 | "does <rival> support <feature>", "wish <rival> had" |
 | Problem questions | 6 | "how to <job>", "best way to <problem>", "recommendations for <category>" |
 
-The top two queries per kind (18 searches), more only for the kinds that return buyers. One lookback: 30 days (90 for rivals' launches and case studies). **Hacker News** (free, no key): the public search API's by-date endpoint, `https://hn.algolia.com/api/v1/search_by_date?query=<q>&tags=story` and again with `tags=comment`, `numericFilters=created_at_i><unix time of the lookback>`, up to 200 hits per page; dedupe by item id; keep the text and the parent story title. Reddit and forums: web search with `site:` filters, then read the thread in the host browser; at volume, the paid Reddit search. **Only the author of a post or comment counts** — never the people who liked, upvoted or replied around them. The row's signal is the post itself (URL, date, their words).
+The top two queries per kind (18 searches), more only for the kinds that return buyers. One lookback: 30 days (90 for rivals' launches and case studies). **Hacker News** (free, no key): the public search API's by-date endpoint, `https://hn.algolia.com/api/v1/search_by_date?query=<q>&tags=story` and again with `tags=comment`, `numericFilters=created_at_i><unix time of the lookback>`, up to 200 hits per page; dedupe by item id; keep the text and the parent story title. Reddit and forums: web search with `site:` filters, then read the thread in the host browser; at volume, the paid Reddit search. **Only the author of a post or comment counts** — never infer the same pain from people who liked or upvoted it; a reply counts only for its own author’s explicit words. The row's signal is the post itself (URL, date, their words).
 
 Turn a post into a list row only when **the author's own profile on that same site** names the person and a company that fits. **Never match a handle to a real identity across sites** (no searching a Reddit or HN username elsewhere). An anonymous handle is a quote for the bank, not a lead.
 
@@ -68,3 +68,7 @@ Case studies, logo walls, testimonial authors on the rival's site or review page
 ## Past champions
 
 Phase one, once: people who praised the product in public (reviews on public review sites, public posts about the product), each with the link they published, plus any champion list the marketer supplies (their own users or contacts). Never look up people by name in a people database to build this list, and never store their emails. Then watch them for job moves (watches.md).
+
+## Competitor-post engagement candidates
+
+For people who reacted to or commented on competitor LinkedIn posts, use research-competitors’ focused engagement branch first. It returns source-linked people and separate aggregate findings. Engagement is interest only: it proves neither a pain, buying intent nor permission to contact. List mode may then qualify those candidates against the existing fit definition, verify current roles, apply exclusions and suppression, and obtain requested work contacts through the managed data path. Keep original post URLs and dates; never transfer the post author’s complaint to a reactor.

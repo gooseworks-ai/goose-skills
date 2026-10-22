@@ -9,7 +9,9 @@ What this playbook hands the `run-memory` skill (`../../run-memory/SKILL.md`) at
 | `competitor research` | a full run — on ask, or the quarterly teardown | `quarterly` (on ask: `ad hoc`) |
 | `competitor watch` | the what-changed run — weekly scheduled, or "what changed this week?" | `weekly` |
 
-`playbook` = `research-competitors`; no `subject` (one record covers all rivals). **The last record is the newest record of either job** — a watch after a quarterly teardown reads the teardown (its fresh ad counts and new recommendations), and a teardown reads the last watch. Each run saves under its own job.
+Focused jobs: `battlecard`, `page technology`, `LinkedIn engagement` use `cadence: ad hoc` and `subject: <rival-slug>`. Each reads only its own job/subject record, not the full teardown baseline. Record output links, source dates, proof/approval gaps and 3–6 useful counts; engagement records contain counts and post URLs only, no people or comment text. They do not update the full teardown snapshots unless those fields were actually checked.
+
+For the full research/watch: `playbook` = `research-competitors`; no `subject` (one record covers all rivals). **The last record is the newest record of either job** — a watch after a quarterly teardown reads the teardown (its fresh ad counts and new recommendations), and a teardown reads the last watch. Each run saves under its own job.
 
 **No run record, but an earlier report exists** (saved before run memory): say "first tracked run; last report <date>", take that report's baselines table as the before (labelled "from the <date> report"), and log its "What to do" moves as recommendations with new ids, each status taken from a source. **Nothing at all:** "first run" — no "since last time"; this run's numbers are the baseline.
 

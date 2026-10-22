@@ -1,6 +1,6 @@
 # improve-search-visibility — server needs
 
-What the playbook needs that the GooseWorks MCP does not have today (staging tool list read 2026-10-16). Each entry: the need, the step that needs it, and what the playbook does meanwhile.
+Track access needed to complete requested search jobs. Historical entries below were checked on 16–19 Oct; the SEO-data entry was rechecked against the 22 Oct managed-source work. Runtime always inspects the listed tool schemas and reports missing access; source documentation is not proof that a deployment exposes the tool.
 
 ## 1. An AI-answer check tool (the core gap) — HIGH
 
@@ -49,13 +49,16 @@ What the playbook needs that the GooseWorks MCP does not have today (staging too
 ## 7. Price check for scrapecreators calls — LOW
 
 - **Need:** `gooseworks:data_price_provider` covers fal and ElevenLabs only. The playbook cannot quote a scrapecreators run in credits before asking the human.
-- **Meanwhile:** the shared spend-gate's proxy branch: a yes to one probe (the site-wide `site:` lookup, which also answers "indexed?"), then a yes to a ceiling "up to N credits" labelled an estimate, stop at it, log every charge. The playbook never shows its own sum as a price.
+- **Meanwhile:** for this older scrapecreators route, the shared spend-gate proxy branch asks once for a ceiling with the first probe inside it; stop at the ceiling and log charges. Managed quoted operations follow their request-bound quote contract instead (`references/seo-data.md`).
 
-## 8. Keyword and SEO data behind the proxy — HIGH (the biggest craft gap in the 19 Oct old-vs-new review)
+## 8. Managed SEO-source access and field coverage — HIGH; live paid results still to verify
 
-- **Need:** a licensed keyword and SEO data provider on the GooseWorks proxy (`gooseworks:data_call_provider`), e.g. DataForSEO — the one the old programmatic-SEO and topic skills recommended: search volume and difficulty per query; keywords each rival page (or page pattern) ranks for; rival traffic estimates; backlinks. App-store search popularity for apps.
-- **Step:** 1 (question weighting, rival content map), 4 (roadmap demand column and priorities), and backlog #17 (the B2B content roadmap: topic gaps, templated-page planning).
-- **Meanwhile:** Search Console impressions when shared; Google Trends and autocomplete (relative only); a vendor estimate only if the brand already has that account. Otherwise the demand column says "no demand data, ranked by judgment". Volumes are never invented, and the provider never comes back to a skill as a vendor key (AGENTS §2.4). Scraping Semrush or Ahrefs pages is not a substitute (fragile, and against their terms).
+- **Need:** comparable domain organic-traffic estimates, organic keyword counts, referring domains/backlinks and source-specific authority where requested; ranked keywords/pages per rival with market/date and demand/difficulty when available. These belong in this SEO playbook's audit, gaps, metrics and pSEO paths.
+- **Implemented access seam:** `marketing_data_describe` / `marketing_data_lookup`, when deployed and listed, discover supported operations and quote exact requests before paid execution. `references/seo-data.md` owns the agent procedure. Vendor credentials and actor inputs stay on the service.
+- **22 Oct free verification:** the backend checked that its managed Apify credential is configured and the Ahrefs and Semrush actors are active with their current input schemas. The curated `domain_seo_metrics` and `domain_seo_overview` operations use those actors. This verifies access and metadata, **not successful live paid metric extraction**. No paid run was made in this implementation test.
+- **Remaining verification:** on an authorized paid run, inspect actual native metrics, dates/markets, missing fields and charge receipts. Do not promise authority, organic traffic, backlinks or ranked-keyword coverage merely because an actor section was requested. Exhaustive rival keyword/page data and demand/difficulty remain prerequisites where these operations do not return them.
+- **Separate source:** `website_traffic` returns estimated total website visits/channel shares, not substitute organic traffic or authority. The earlier catalog-only search found no dedicated full SEO operation there; the active managed Apify source is a separate route.
+- **Meanwhile:** when tools/setup/results are unavailable, include the requested unavailable cells and exact prerequisite in the report. A metrics-only job without usable requested values is incomplete. Audits still deliver free technical/content findings; selected-query gaps can use dated search samples. Subject architecture and pSEO blueprints proceed with demand unknown, not fabricated.
 
 ## 9. Local pack and Maps rank — LOW (local businesses)
 

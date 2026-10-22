@@ -1,23 +1,28 @@
 ---
 name: voice-card
 description: >-
-  Builds or updates a voice card: how one account or person actually writes, measured from about 8 or
+  Builds or updates a voice card from a company blog ("extract our blog voice") or how an account or
+  person actually writes, measured from about 8 or
   more of their real posts (length, casing, emoji, openings, pet phrases, opinions with their source).
   When there are too few posts, it runs a short interview instead. It ends with a test that checks a
   draft against the card. The brand's rules always beat the card. Use alone when you already have the
   account's posts or the person on hand; otherwise run the playbook for the job (e.g.
   run-organic-social, write-outreach, email-lifecycle).
-version: 0.1.1
+version: 0.2.0
 ---
 
 # voice-card
 
 The brand voice (kit `voice` plus the brand's rules: every `dont` and `must` in its learnings) says what the brand may say and how it sounds overall. A **voice card** says how one account or person actually writes: lowercase or not, how long, which emoji, how they open. Adjectives ("warm, playful") don't stop generic copy; a card measured from real posts does.
 
+## Choose the source
+
+Used alone: first do the `marketing-guide` skill (`../marketing-guide/SKILL.md`) §1–2 (connection, brand and brain rules). Called from a writing job: reuse its setup. A company-blog or long-form voice ask follows `references/blog-voice.md` and returns; social posts and personal voice follow Build below. A blog guide is usable without releasing the full brand intake playbook.
+
 ## Where it lives
 
 - One file per account or person: `brand/voices/<handle>.md`, brand coworker scope (`coworker_agent_id` from the `gooseworks:brand_read` list; no coworker → default workspace, path prefixed `brands/<brand-slug>/`).
-- **Handle:** lower-case, hyphens, no `@`: `brand` (the brand's own voice across its accounts), `ig-<account>`, `tiktok-<account>`, `linkedin-<first-last>`, `founder-<first-last>`. One card per account where mechanics differ; accounts that write the same way share `brand`.
+- **Handle:** lower-case, hyphens, no `@`: `brand` (the brand's own voice across its accounts), `ig-<account>`, `tiktok-<account>`, `linkedin-<first-last>`, `founder-<first-last>`, `blog-<brand-slug>` (company long-form writing). One card per account where mechanics differ; accounts that write the same way share `brand`.
 - Read before you write (`gooseworks:file_read`; `file_write` replaces the file). Save with the `save-to-brain` skill (`../save-to-brain/SKILL.md`) (`versioned: supersede`, title `Voice card <handle> — <Brand> — <YYYY-MM-DD>`, tags `[voice-card, voice-<handle>]`) so it is findable from any host. The tags name this atom, not the playbook that ran it: for save-to-brain's supersede rule, the creator is the first tag (`voice-card`), so any writer's newer card supersedes an older one.
 
 ## Precedence (non-negotiable)

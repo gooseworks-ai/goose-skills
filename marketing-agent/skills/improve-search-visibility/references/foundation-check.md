@@ -1,6 +1,6 @@
-# Foundation check (light, free)
+# Foundation check
 
-Load at step 1 (free pass: site-wide and the 3–6 pages behind the gaps). Every item is **pass / fail / not checked** — never pass by default. A blocker on a page outranks any copy fix on that page. Deep technical SEO stays with engineering; this check flags blockers only.
+Use for an SEO/technical audit or the relevant pages in a visibility check. The audit scope comes from `seo-jobs.md`: site-wide checks plus important pages and representative templates, expanded when variation warrants it. Record URLs checked, coverage and discovery limits. Every item is **pass / fail / not checked** from observed evidence; a sampled pass applies only to that sample. Diagnose technical issues here and give engineering the implementation handoff. A blocker outranks copy polish on the affected page.
 
 ## Site-wide (once)
 | Check | How (no paid tools) | Class |
@@ -21,13 +21,13 @@ Load at step 1 (free pass: site-wide and the 3–6 pages behind the gaps). Every
 | Indexed | `site:domain.com/path` (paid, counted) or Search Console URL Inspection if shared | blocker |
 | robots meta / X-Robots-Tag | view-source for `noindex`; `curl -sI` for the header | blocker |
 | Status and redirects | `curl -sIL`: final 200; ≤ 1 hop; 301 not 302 for permanent moves; no redirect to the homepage | blocker (4xx/5xx, loops); polish (chains) |
-| Canonical | self-referencing, absolute, returns 200 | blocker if it points elsewhere |
+| Canonical | expected canonical target, absolute and returns 200; intended indexable unique pages normally self-reference; duplicate variants point to the intended primary page | blocker if it contradicts the intended indexable page |
 | Content visible without JavaScript | `curl` the page and search for the key paragraph and the price; most AI crawlers do not run JavaScript | blocker for AI answers |
 | Title / H1 / meta | present, unique, matches the question's intent; title ≲ 60 characters, head term first, brand last | polish (often the fastest win) |
 | Answer-first | the first 40–60 words under the H1 answer the question with the entity named and facts stated | polish (core AEO fix) |
 | Structured data | read the theme's or CMS's existing JSON-LD first (most Shopify themes already output Product); eligible types valid (Product/Offer, Organization, LocalBusiness, SoftwareApplication, Article, Breadcrumb); values match the visible text; no review markup on Organization; Rich Results Test / validator.schema.org | polish (Product errors on a store page = priority polish) |
 | Speed | PageSpeed Insights API `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=<url>&strategy=mobile`; use field (CrUX) data when present. Good: LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1. Poor: LCP > 4s, INP > 500ms, CLS > 0.25 (75th percentile, 28 days) | polish unless poor on a money page |
-| Internal links | how many internal links point to the page, from which strong pages, with what anchor text | polish (the cheapest ranking lever most sites ignore) |
+| Internal links | find links from navigation, hubs and relevant pages with useful anchors; exact inbound counts need a complete crawl or supplied crawl export, otherwise report only the checked links | issue when important pages are hard to discover or link targets are broken |
 | hreflang (multi-region only) | reciprocal, valid codes, x-default | blocker if wrong |
 
 ## Hosts without a fetch tool, or with a limited one
@@ -35,3 +35,14 @@ Some hosted fetch tools open only URLs already in the chat and cannot set a user
 
 ## Traffic-drop entry (with Search Console)
 Tell apart: (1) crawl/indexing (pages dropped out; robots or noindex change), (2) a core update (drop aligned to a published update date across many pages), (3) AI Overviews taking clicks (impressions flat or up, clicks down — not a ranking loss and never reported as one), (4) seasonality (same dip last year).
+
+## Technical audit extensions (when the site uses them)
+
+| Structure | Evidence to collect | Diagnosis / handoff |
+|---|---|---|
+| Facets, parameters and pagination | representative filtered/sorted URLs, canonical/robots/index controls, navigation links and sitemap inclusion | conflicting intent or uncontrolled duplicate variants; propose intended index/crawl rules with risk/undo, preserving useful search and user paths |
+| Migration or domain/URL change | supplied old/new mappings, important old URLs, redirect targets/chains, internal links and sitemap/canonical/hreflang alignment | broken or mismatched mappings and remaining old signals; state mappings/logs not available and engineering checks still needed |
+| Duplicate or competing pages | sitemap inventory, overlapping intents, page content and query/page data when available | consolidate only where intent genuinely overlaps; identify a matching destination and preserve traffic/conversion paths |
+| Rendering and templates | raw vs rendered key content, links and markup on important template variants | missing content or links in the crawler-visible version; hand over the exact affected template/URLs and observed difference |
+
+A full crawl or crawl export and Search Console/log access strengthen large-site diagnosis; name what was unavailable. Do not convert an unavailable check into a pass or a guessed site-wide defect. Site-speed engineering and migration execution remain proposals, separate from this diagnosis.

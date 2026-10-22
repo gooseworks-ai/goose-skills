@@ -6,8 +6,8 @@ const manifest = require('../retired-skills.json');
 
 test('retirement map preserves retained jobs and every active dependency', () => {
   assert.deepEqual(validateRetirements(manifest, index.skills), index.retired_skills);
-  assert.equal(manifest.retired.length, 10);
-  assert.equal(manifest.retained.length, 181);
+  assert.equal(manifest.retired.length, 12);
+  assert.equal(manifest.retained.length, 179);
   assert.ok(index.skills.some(s => s.slug === 'video-clipper'));
   assert.ok(index.skills.some(s => s.slug === 'cold-email-outreach'));
   assert.ok(index.skills.some(s => s.slug === 'comprehensive-enrichment'));

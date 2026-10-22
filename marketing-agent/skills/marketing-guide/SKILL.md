@@ -5,7 +5,7 @@ description: >-
   shared claims, money, research and schedule rules, and the index of what each playbook saves and who
   reads it. Load at the start of any playbook run. Not a marketer ask: for "what should I do first?"
   use where-to-start.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # marketing-guide
@@ -60,10 +60,12 @@ Paths are relative to the brand's workspace. `<D>` is a date (`YYYY-MM-DD`). Onl
 |---|---|---|
 | Brand kit, products, onboarding, learnings (`brand_update`) | GooseWorks' own brand research and the app (kit, products, claims, voice); research-audience (audience, as a proposal); where-to-start (onboarding); every playbook's learnings through `save-learning`, and the claims marker and claims through `claims-gate` | every playbook |
 | `brand/records/<D>-v<N>.md` + "Brand record" document | `claims-gate` (and earlier brand passes) | `claims-gate` (variants and proof) |
-| `brand/voices/<handle>.md` | `voice-card` (make-content, run-organic-social) | make-content, run-organic-social, email-lifecycle, any copy step |
+| `brand/voices/<handle>.md`, `brand/voices/blog-<brand-slug>.md` | `voice-card` (make-content, run-organic-social) | make-content, run-organic-social, email-lifecycle, any copy step |
 | `brand/situation.md` | where-to-start | where-to-start |
 | `research/market/<D>-read.md` (the market report, keep-history, incl. "What people are saying" — read the newest and check that section's window line), `demand.md`, `watchlist.md`, `watch/<D>.md` (brand-watch alerts — only when something crossed a threshold), `method/` (scheduled runs' copied method); local copy `gooseworks-reports/<brand-slug>/<D>-market-research.md` | research-market | plan-campaign, research-competitors, make-static-ads, make-content, run-organic-social, improve-search-visibility, analyze-performance, run-paid-campaigns (`demand.md`) |
 | `research/competitors/<D>-report.md` (the readable report, keep-history), `<slug>.md` (rival records with snapshots), `landscape.md`, `angle-bank.md`, `watch/<D>.md` (what-changed reports), `method/` (the scheduled watch's method); local copy `gooseworks-reports/<brand-slug>/<D>-competitor-research.md` | research-competitors | plan-campaign, make-static-ads, make-content, analyze-performance (`watch/`, line 2) |
+| `research/market/positioning/<D>.md`; current `positioning.md` or `positioning-<product>.md` only after the owner chooses | research-market | plan-campaign, make-content, write-outreach |
+| `research/competitors/battlecards/<rival>/<D>.md`, `technology/<rival>/<D>.md`, `engagers/<rival>/<D>-report.md`; `<D>-engagers.csv` stays in the workspace, never imported | research-competitors | sales and copy steps (battlecards), research-audience (engager candidates), plan-campaign |
 | Competitor roster (`competitor_save`) | research-market, research-competitors | research-competitors, research-market, plan-campaign, research-audience, improve-search-visibility, make-content, work-with-creators |
 | `research/audience/buyer-groups.md` (the buyer groups with counts; supersede), `voc-bank.md` (+ `voc-bank.jsonl`, not imported) — the customer-quote bank, `<D>-report.md` (the audience report, keep-history); local copy `gooseworks-reports/<brand-slug>/<D>-audience.md` | research-audience | research-market (sizes the groups), research-competitors, plan-campaign, make-static-ads, make-content, run-organic-social, improve-search-visibility, work-with-creators, the voice-card atom |
 | `research/audience/<D>-<list>/…` (`report.md`, `list.csv`, `segments.csv`, `catch-all.csv`, `dropped.csv` — not imported), `ledger.csv`, `fit-definition.md`, `lessons/<D>.md`, `watch/` (champions and account watches, `watch/<D>.md`); local copy `gooseworks-reports/<brand-slug>/<D>-list.md` + `<D>-list.csv` | research-audience (`outcomes-ledger`; write-outreach updates ledger statuses and lessons from replies) | write-outreach, research-audience, the marketer |
@@ -73,7 +75,7 @@ Paths are relative to the brand's workspace. `<D>` is a date (`YYYY-MM-DD`). Onl
 | Inspiration library (`social_inspiration_save`) | research-market (tag `research-market`), research-competitors | make-static-ads, make-content, run-organic-social, work-with-creators |
 | `social/calendar/<D>.md` (+ `<D>-sheet.csv`), `social/accounts.md`, `social/audit/<D>.md` | run-organic-social | run-organic-social, analyze-performance, make-content (`accounts.md`), research-market (crisis hold list), make-static-ads (graphic requests) |
 | `content/briefs/`, `drafts/`, `repurposed/`, `refresh/`, `pov/`, `newsletter/`, `channels.md` | make-content | run-organic-social (repurposed cuts, `pov/`, `channels.md`), email-lifecycle (`newsletter/`), improve-search-visibility (drafts naming its briefs), make-static-ads (graphic requests), the marketer |
-| `search/questions.md`, `page-map.md`, `visibility/<D>.md` (+ `<D>-runs.md`, not imported), `fixes/<D>.md`, `briefs/<page>.md` | improve-search-visibility | make-content (page briefs), email-lifecycle (the fixes file's review-request section), research-competitors (who is named instead), analyze-performance |
+| `search/questions.md`, `page-map.md`, `visibility/<D>.md` (+ `<D>-runs.md`, not imported), `fixes/<D>.md`, `briefs/<page>.md`, `audits/`, `gaps/`, `clusters/`, `pseo/`, `metrics/` (focused reports with dated sources and coverage) | improve-search-visibility | make-content (page briefs), email-lifecycle (the fixes file's review-request section), research-competitors (who is named instead), analyze-performance |
 | `lifecycle/program.md`, `flows/`, `calendar/<YYYY-MM>.md`, `broadcasts/`, `deliverability/` | email-lifecycle | analyze-performance, plan-campaign (`calendar/`), research-market (crisis hold list), make-static-ads (graphic requests in `flows/`), the marketer |
 | `creators/roster.csv`, `roster-summary.md`, `creators/<D>/…`, `lessons/<D>.md` | work-with-creators (`outcomes-ledger`) | plan-campaign, analyze-performance (roster), the marketer |
 | Campaign record + concepts (`campaign_upsert`, `add_campaign_concept`) | plan-campaign | run-paid-campaigns, analyze-performance, the makers, make-content, email-lifecycle, run-organic-social, work-with-creators |

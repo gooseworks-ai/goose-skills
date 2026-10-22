@@ -3,7 +3,7 @@ name: research-market-market-pass
 description: >-
   Step of the research-market playbook: the worker brief for researching the market itself, including
   category, size, changes, pricing norms and demand. Run research-market instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # market-pass
@@ -28,7 +28,7 @@ List the 2–3 categories the brand could be filed under (from its own site and 
 | **Sub-category** | you serve a niche of it clearly better | "AI-native sales engagement" |
 | **New category** | nothing buyers search for describes what you do | "revenue orchestration" |
 
-Rules: if buyers already search for the category, use it or a sub-category of it; if you'd spend half your sales calls explaining the category, don't create a new one; create one only when nothing existing fits, and keep its name plain enough to guess. (After April Dunford's positioning method; writing the full positioning is a separate, backlog job.) Name the neighbours buyers use instead: a spreadsheet, an agency, an in-house hire, the platform's own free tools, doing nothing.
+Rules: if buyers already search for the category, use it or a sub-category of it; if you'd spend half your sales calls explaining the category, don't create a new one; create one only when nothing existing fits, and keep its name plain enough to guess. (After April Dunford's positioning method; the positioning branch of research-market writes the full options and messages.) Name the neighbours buyers use instead: a spreadsheet, an agency, an in-house hire, the platform's own free tools, doing nothing.
 
 ## 2. How big — top-down and bottom-up
 

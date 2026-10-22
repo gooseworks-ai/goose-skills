@@ -320,3 +320,15 @@ test('marketing-agent/skills: flat skills are indexed with folded descriptions, 
   ]);
   assert.equal(idx.skills.some((s) => s.slug === 'marketing-agent'), false, 'catalog:false is not published');
 });
+
+
+test('legacy and pack cards publish folded and literal descriptions instead of YAML markers', () => {
+  const root = makeFixtureRoot();
+  writeSkill(root, 'composites', 'folded-card', { name: 'folded-card', description: '>\n  Compare tools\n  with evidence.' }, baseMeta('folded-card', 'composites'));
+  writePack(root, 'examples', { slug: 'examples', name: 'Examples', skills: ['literal-card'] });
+  writePackSubSkill(root, 'examples', 'literal-card', { name: 'literal-card', description: '|-\n  First line.\n  Second line.' });
+  runBuild(root);
+  const index = readIndex(root);
+  assert.equal(index.skills.find(skill => skill.slug === 'folded-card').description, 'Compare tools with evidence.');
+  assert.equal(index.skills.find(skill => skill.slug === 'literal-card').description, 'First line.\nSecond line.');
+});

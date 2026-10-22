@@ -2,7 +2,7 @@
   "slug": "improve-search-visibility-page-and-foundation-check",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "playbook": "improve-search-visibility",
   "tags": [
     "seo"

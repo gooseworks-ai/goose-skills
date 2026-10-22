@@ -11,7 +11,15 @@
 
 **The choice:** extend existing methods for the genuine gaps; keep existing capabilities where they already cover the request. Product updates and survey reports do not need a dedicated skill job. Outreach remains finished writing plus an import file; the user loads and sends from their own tool.
 
-These decisions follow [GOOSE-4052](https://linear.app/gooseworks/issue/GOOSE-4052), a per-job interview with Akhil and independent reading of the old skills, current playbooks and relevant steps. Source baseline: `b4c6ec04e623df61f83014e4481f884477ed953c`. This is a decision record, not a fresh live acceptance result.
+These decisions follow [GOOSE-4052](https://linear.app/gooseworks/issue/GOOSE-4052), a per-job interview with Akhil and independent reading of the old skills, current playbooks and relevant steps. Source baseline: `b4c6ec04e623df61f83014e4481f884477ed953c`. The approved changes are now implemented below. Acceptance distinguishes local source/fixture checks from paid live execution.
+
+### Implementation and verification — 22 October 2026
+
+The existing playbooks now have focused battlecard, page technology, engagement, launch-positioning and company-blog-voice paths. SEO now handles requested audit scope, topic/ranking gaps, subject clusters, programmatic page plans and comparable source-labelled metrics. Campaign/content/outreach readers explicitly consume selected positioning; company-content/social writers consume the saved blog guide. Raw social lists and multiple standalone briefs bypass whole-campaign intake.
+
+The app adds free managed-data discovery and request-bound quotes plus approved, capped execution for business identity, work-email find/verify, LinkedIn commenters/reactors and two existing managed SEO sources. Source schema discovery and free quote calls passed; paid reads remain unrun. Local fixtures verify the written output and error/partial rules, not live collection quality. Product/photo writes, sending and paid media rendering were not exercised.
+
+Public cards and CLI routing describe the same fourteen playbooks and focused jobs. The library keeps supporting capabilities behind its toggle. New backend tools and content need their respective dev merges and approved production promotion before customers receive them; an open PR is not deployment.
 
 ### The twelve originally uncovered jobs
 
@@ -30,7 +38,7 @@ These decisions follow [GOOSE-4052](https://linear.app/gooseworks/issue/GOOSE-40
 | 11. Product photos cut to a song | **Keep existing video route; retain legacy bridge pending qualification** | Test exact supplied audio, beat-aligned photo cuts and a finished reviewed file before claiming coverage or building another engine. Ads or organic supplies the purpose; video owns production. |
 | 12. Podcast to vertical clips | **Keep existing video route; retain legacy bridge pending qualification** | Test moment selection, source context/audio, suitable vertical framing, captions and actual finished clips. Transcript scripts alone do not fulfill it. Do not classify every clip as an ad. |
 
-**Retention:** the earlier cleanup retained old implementations temporarily. This record does not delete them or claim they work on every host. Retire a bridge only after the replacement's required output is verified through the normal reviewed cleanup; the product/report decisions above do not delete their broader legacy packages in this change.
+**Retention:** battlecard-generator and launch-positioning-builder are now archived and redirect to research-competitors and research-market after their agreed outputs passed source-backed fixtures. Other raw or broader interfaces remain where full parity was not verified, including landing-page-intel and the video bridges. Product-update and survey-report cards are removed from public jobs; their broader existing packages remain supporting references/capabilities.
 
 ### The partly covered examples, checked individually
 

@@ -2,6 +2,10 @@
 
 What this playbook hands the `run-memory` skill (`../../run-memory/SKILL.md`) at the start and the end of every run. The atom does the work; this file says what is specific here.
 
+## Positioning branch
+
+Job `positioning`, cadence `ad hoc`, optional product-slug subject: read only the previous positioning record for that scope. Keep the proposed/selected option, evidence dates, supported/blocked message counts, approval gaps and the validation test with its result. Outcome sources are the current positioning brief and the owner's actual test results; a new document alone never proves a message worked. This branch does not overwrite market-size or listening baselines.
+
 ## Jobs
 
 | `job` | When | `cadence` |
@@ -66,4 +70,3 @@ Brand watch (<weekly | daily>, nobody present, alerts only) for brand <brand nam
 3. Something crossed → write research/market/watch/<YYYY-MM-DD>.md in the brand-watch note shape (title "Brand watch — <brand name> — <YYYY-MM-DD>", tags research-market, brand-watch) and import it. Nothing crossed → no note.
 4. Either way, write the run record at runs/research-market/brand-watch/<YYYY-MM-DD>.md (title "Run record — brand watch — <brand name> — <YYYY-MM-DD>", tags research-market, run-record; keep-history; import) with the window, its length, the watchlist date, mentions per day, negative themes, alerts or "nothing crossed a threshold". A run that couldn't read its sources writes "Not run: <why>".
 ```
-

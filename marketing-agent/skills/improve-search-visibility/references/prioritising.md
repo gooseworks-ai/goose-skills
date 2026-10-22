@@ -1,28 +1,31 @@
-# Picking the five
+# Picking priorities
 
-Load at step 4. Candidates come from the top of the page map (`page-map.md`) plus site-wide blockers and profile fixes. State each priority's demand evidence (or "no demand data, ranked by judgment"). Measurement first when it's missing (Search Console + Bing + an AI-referral baseline): about 20 minutes, and every later check depends on it.
+Rank evidence-backed actions for the requested job. Honor the requested count; default to ten audit priorities or five this-week fixes for a recurring AI-visibility check. Fewer real findings means fewer reported, with the reason. A recommendation count never caps the inventory, topic map or page families.
 
-## Score
-(Impact × Confidence) ÷ Effort, each 1–5.
-- **Impact:** how many lost or partial rows (questions × surfaces) it touches, weighted by stage — purchase and comparison ×1.5; a false brand fact counts high (it costs sales now).
-- **Confidence:** does the evidence tie this gap to this cause? A blocked page or a profile stating the wrong fact the engine repeats: 5. "Pages with Q&A get cited more": 2.
-- **Effort:** for the named person who ships it: under 2 hours, no engineering = 1; needs a developer or an app release = 3–4.
+## Score and order
 
-## Order
-1. Foundation blockers on key question pages.
-2. Brand-accuracy fixes (entity, About page).
-3. Near-winner rewrites (pages ranking ~4–15, or already cited sometimes).
-4. Off-site fixes the pattern points to (inclusion requests, review profiles).
-5. Missing pages → briefs (listed under the five, never counted).
-Spread the five across at least two lever types when the pattern supports it, so one wrong bet does not sink the week. **When the engines lean on third-party pages** (the pattern count shows round-ups, review sites or rivals' comparison pages among the cited sources), at least one of the five is off-site — a round-up inclusion request, an affiliate-list ask, more reviews. Off-site work is slow, so it starts this week; never push it to next quarter. Five means five: if fewer than five real fixes exist, say so rather than padding.
+Use (Impact × Confidence) ÷ Effort, each 1–5, with a short reason:
+- **Impact:** affected important pages, intents and buyers. For a visibility check, use lost/partial questions × checked engines, weighted toward purchase/comparison. For an audit, use the affected pages/templates, their business importance and available performance evidence. Do not rank cosmetic issues above a real indexing blocker.
+- **Confidence:** observed cause and effect mechanism, not a promised ranking lift. A wrong canonical on the intended indexable page: high. A generic claim that Q&A receives more citations: low.
+- **Effort:** the actual owner and scope. Separate a one-line setting change from a migration. Use agent and human active time where a task estimate is given.
 
-## Time to show (state on every fix)
-| Change | Typical time |
+Order: foundation blockers → false or conflicting brand facts → relevant near-winners → content/intent gaps and supporting off-site actions. State demand evidence when available, otherwise "ranked by relevance and judgment". Missing measurement is a useful recommendation when it prevents diagnosis or verification; it does not automatically displace a confirmed site outage or a requested topic blueprint.
+
+For a recurring visibility check, draw this week's fixes from the page map plus blockers/profiles. Spread across lever types when supported. If cited third-party pages explain losses, start a useful off-site action this week. New-page briefs sit beside these fixes; the full roadmap is not limited to five. Carry worthwhile open fixes forward with their ids before adding new ones.
+
+## What an action contains
+
+Affected page/template · source/date and observed defect/gap · why it matters · exact change or precise engineering handoff · owner · agent/human effort · how to verify · risk/undo for structural changes. Use the fix-writer for finished copy/code only when the required site facts are known. A ten-item audit is a ranked backlog, not a claim all ten ship this week.
+
+## Time to observe results
+
+| Change | Typical observation window |
 |---|---|
-| Unblocking OAI-SearchBot in robots.txt | ~24 hours (OpenAI's stated figure) |
-| Page change, for answer engines that search (ChatGPT search, Perplexity, AI Mode) | days to weeks after recrawl |
-| Google title/snippet | days after recrawl; ranking moves weeks to months |
-| AI Overviews | follows the Google index; weeks |
-| Profile edits (G2, Crunchbase, Business Profile) | live in days after moderation; picked up in weeks |
-| Answers given from training memory (no search) | months, at the next model update — never promised |
-| iOS metadata | the next approved app version |
+| Retrieval crawler access | check the response immediately; search pickup after recrawl |
+| Changed page or title | days to weeks after recrawl; ranking changes can take months |
+| New useful page | weeks to months; indexation and usefulness checked before traffic claims |
+| Profiles | moderation first, then engine pickup |
+| iOS metadata | next approved app version |
+| Training-memory answer | an uncertain model-update timeline, not a this-week outcome |
+
+State these as review windows, not guarantees. Use `run-memory.md` for comparable measurements after a fix is live.

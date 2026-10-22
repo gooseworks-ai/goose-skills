@@ -1,0 +1,619 @@
+{
+  "fixture_notice": "Entirely fictional test evidence. .test domains are fixtures, not live sources. Observations were supplied, not fetched. No real data calls, edits, publishes, saves or credits occur.",
+  "date": "2026-10-22",
+  "brand": {
+    "name": "Coldfield",
+    "domain": "coldfield.test",
+    "market": "US",
+    "language": "en",
+    "product": "Reusable cold-brew filter and 1-litre brewer",
+    "audience": "Home coffee drinkers",
+    "cms": "Unknown implementation; engineering handoff required, no guessed editor fields",
+    "claims": "Only listed product features confirmed; health claims and competitor superiority are not approved",
+    "workspace": "fixture setup completed; report files are saved by the harness, no brand-save service in this fixture"
+  },
+  "own_inventory": {
+    "method": "Complete supplied sitemap inventory, all 18 listed HTML pages checked; navigation and parameter URLs sampled separately",
+    "urls": [
+      "/",
+      "/products/filter",
+      "/products/brewer",
+      "/collections/cold-brew",
+      "/blog",
+      "/blog/cold-brew-guide",
+      "/blog/cold-brew-ratio",
+      "/blog/cold-brew-too-bitter",
+      "/blog/iced-coffee",
+      "/about",
+      "/faq",
+      "/shipping",
+      "/returns",
+      "/contact",
+      "/privacy",
+      "/terms",
+      "/guides/clean-filter",
+      "/guides/filter-care"
+    ],
+    "query_notes": "Own topic coverage inspected across all 18 pages. No storage, bean-selection, concentrate-dilution or decaf cold-brew article found. Cold-brew ratio page covers water/coffee ratios but lacks ready-to-drink vs concentrate distinctions. Other nine pages did not have confirmed page-level defects."
+  },
+  "audit_observations": [
+    {
+      "id": "A1",
+      "url": "/collections/cold-brew",
+      "evidence": "Raw HTML robots meta noindex; intended public category; 200 status; sitemap includes it",
+      "issue": "category excluded from index",
+      "verification": "Confirm noindex removed from intended public page, response 200, correct canonical, then request index inspection",
+      "risk_undo": "Keep private pages excluded; restore original tag if public intent was mistaken"
+    },
+    {
+      "id": "A2",
+      "url": "/products/brewer",
+      "evidence": "canonical points to a discontinued /products/old-brewer URL that returns 404",
+      "issue": "wrong canonical target",
+      "verification": "Live intended product canonical points to a 200 product URL; check any variant canonicals",
+      "risk_undo": "Review variant behavior; revert to approved prior canonical only if intended mapping differs"
+    },
+    {
+      "id": "A3",
+      "url": "/products/filter",
+      "evidence": "normal browser and raw HTML 200, but Googlebot request returns CDN challenge 403; no CAPTCHA bypass attempted",
+      "issue": "retrieval blocked by edge rule",
+      "verification": "Authorized bot request returns content while edge protections remain active",
+      "risk_undo": "Scope any allow rule to verified bot traffic, review abuse exposure, rollback edge rule if needed"
+    },
+    {
+      "id": "A4",
+      "url": "/guides/clean-filter",
+      "evidence": "GET returns 404; linked from product page and present in sitemap; /guides/filter-care is 200 and includes the same cleaning task",
+      "issue": "broken old guide URL",
+      "verification": "Approved matching redirect returns 301 to filter-care and both internal link and sitemap use the destination",
+      "risk_undo": "Check no live campaign has different destination intent; restore mapping if wrong"
+    },
+    {
+      "id": "A5",
+      "url": "/?sort=price and /collections/cold-brew?sort=price",
+      "evidence": "two observed navigation variants are 200 and each self-canonical with identical product inventory; broad parameter crawl not supplied",
+      "issue": "duplicate sort variants",
+      "verification": "Designate intended primary pages and verify sample canonical/link behavior; do not claim all facets audited",
+      "risk_undo": "Preserve useful filter paths, test tracking and navigation before changing controls"
+    },
+    {
+      "id": "A6",
+      "url": "/products/brewer",
+      "evidence": "key dimensions, price and add-to-cart description absent from raw HTML, visible in rendered DOM; no server implementation access",
+      "issue": "essential product facts depend on rendering",
+      "verification": "Fetch key facts and crawlable links in server response after approved implementation",
+      "risk_undo": "Engineering should preserve interaction and price freshness; rollback rendering change if purchase flow regresses"
+    },
+    {
+      "id": "A7",
+      "url": "/blog/cold-brew-guide and /blog/cold-brew-ratio",
+      "evidence": "guide has no link to ratio article; ratio article has no link back to guide despite adjacent subject",
+      "issue": "missing useful hub/supporting links",
+      "verification": "Both live pages show descriptive links to each other"
+    },
+    {
+      "id": "A8",
+      "url": "/products/filter and /products/brewer",
+      "evidence": "Both titles are exactly Shop | Coldfield; H1s differ correctly",
+      "issue": "duplicate uninformative titles",
+      "verification": "Distinct title for each actual product, without unapproved claims"
+    },
+    {
+      "id": "A9",
+      "url": "/products/filter",
+      "evidence": "visible price is 19.00 USD; Product Offer JSON-LD price is 9.00 USD",
+      "issue": "structured price disagrees with live price",
+      "verification": "Existing Offer block uses same current value/currency as visible product price"
+    },
+    {
+      "id": "A10",
+      "url": "/collections/cold-brew",
+      "evidence": "supplied CrUX mobile field export for 28 days ending 2026-10-19: LCP p75 4.8s, INP p75 170ms, CLS p75 .04; implementation unknown",
+      "issue": "poor loading field performance",
+      "verification": "Engineering profile followed by CrUX same-window metric after enough settled data; no fabricated root cause"
+    },
+    {
+      "id": "A11",
+      "url": "/blog/cold-brew-ratio",
+      "evidence": "Article has one 1:8 recipe with no distinction between concentrate and ready-to-drink; queried ratio results distinguish these intents",
+      "issue": "incomplete ratio explanation",
+      "verification": "Updated article distinguishes supported recipe uses and links dilution article where needed"
+    },
+    {
+      "id": "A12",
+      "url": "/guides/filter-care",
+      "evidence": "Internal navigation/product links all target the broken clean-filter URL; no inspected internal link reaches filter-care; sitemap lists it",
+      "issue": "important care guide not linked by observed navigation",
+      "verification": "Product care links reach the live matching guide, not just sitemap discovery"
+    }
+  ],
+  "rivals": {
+    "brewbench.test": {
+      "inventory": [
+        "/guides/cold-brew-storage",
+        "/guides/best-beans-cold-brew",
+        "/guides/cold-brew-ratio",
+        "/recipes/decaf-cold-brew"
+      ],
+      "page_types": {
+        "guide": 3,
+        "recipe": 1
+      },
+      "ranking_samples": [
+        {
+          "query": "how to store cold brew coffee",
+          "url": "https://brewbench.test/guides/cold-brew-storage",
+          "position": 3,
+          "content": "Storage, refrigerator container and freshness signs; no numeric safety shelf-life approved for our copy"
+        },
+        {
+          "query": "best beans for cold brew coffee",
+          "url": "https://brewbench.test/guides/best-beans-cold-brew",
+          "position": 4,
+          "content": "Roast/grind tradeoffs with brewing examples"
+        },
+        {
+          "query": "cold brew ratio",
+          "url": "https://brewbench.test/guides/cold-brew-ratio",
+          "position": 2,
+          "content": "Concentrate vs ready-to-drink recipe boundaries"
+        },
+        {
+          "query": "decaf cold brew coffee",
+          "url": "https://brewbench.test/recipes/decaf-cold-brew",
+          "position": 6,
+          "content": "Brewing decaf rather than a medical claim"
+        }
+      ]
+    },
+    "slowcup.test": {
+      "inventory": [
+        "/learn/cold-brew-dilution",
+        "/learn/iced-coffee-vs-cold-brew",
+        "/recipes/cold-brew-latte"
+      ],
+      "ranking_samples": [
+        {
+          "query": "how to dilute cold brew concentrate",
+          "url": "https://slowcup.test/learn/cold-brew-dilution",
+          "position": 5,
+          "content": "Concentrate-to-water or milk serving calculation"
+        },
+        {
+          "query": "iced coffee vs cold brew",
+          "url": "https://slowcup.test/learn/iced-coffee-vs-cold-brew",
+          "position": 4,
+          "content": "Brewing-method comparison; our iced-coffee page covers both methods sufficiently"
+        },
+        {
+          "query": "cold brew latte recipe",
+          "url": "https://slowcup.test/recipes/cold-brew-latte",
+          "position": null,
+          "content": "Page exists, no observed top-ten result for this query"
+        }
+      ]
+    }
+  },
+  "ranking_method": {
+    "engine": "supplied Google organic page-one snapshot",
+    "market": "US",
+    "language": "en",
+    "date": "2026-10-22",
+    "depth": 10,
+    "limits": "seven selected queries only, not exhaustive provider ranked keywords; no volumes, difficulty or estimated SEO traffic supplied"
+  },
+  "subject_research": [
+    {
+      "source": "https://brewbench.test/guides/cold-brew-ratio",
+      "observed": "Concentrate vs ready-to-drink are related ratio intents; dilution is a separate serving task"
+    },
+    {
+      "source": "https://brewbench.test/guides/best-beans-cold-brew",
+      "observed": "Bean roast and grind are selection/preparation decisions"
+    },
+    {
+      "source": "https://brewbench.test/guides/cold-brew-storage",
+      "observed": "Storage/container questions distinct from brewing method; do not invent safety durations"
+    },
+    {
+      "source": "https://coldfield.test/blog/cold-brew-too-bitter",
+      "observed": "Troubleshooting bitterness and weak brew belongs under extraction troubleshooting"
+    },
+    {
+      "source": "supplied suggestion notes",
+      "observed": [
+        "cold brew ratio",
+        "cold brew steep time",
+        "best grind for cold brew",
+        "cold brew too bitter",
+        "cold brew storage",
+        "how to dilute cold brew concentrate",
+        "decaf cold brew",
+        "iced coffee vs cold brew"
+      ]
+    }
+  ],
+  "pseo_inputs": {
+    "candidate_families": [
+      "brew-method/{method}",
+      "brewer-guides/{model}",
+      "coffee-for/{city}"
+    ],
+    "actual_data": [
+      {
+        "model": "coldfield-one-litre",
+        "capacity_ml": 1000,
+        "filter": "reusable mesh",
+        "fit_confirmed": true,
+        "source": "https://coldfield.test/products/brewer",
+        "method": "immersion",
+        "care_source": "https://coldfield.test/guides/filter-care",
+        "source_updated": "2026-10-21"
+      },
+      {
+        "model": "glass-mason-jar",
+        "capacity_ml": 750,
+        "filter": "Coldfield filter fits listed wide-mouth jar",
+        "fit_confirmed": true,
+        "source": "fixture compatibility test record C2",
+        "method": "immersion",
+        "care_source": "https://coldfield.test/guides/filter-care",
+        "source_updated": "2026-10-18"
+      },
+      {
+        "model": "unknown-wide-mouth",
+        "capacity_ml": null,
+        "filter": null,
+        "fit_confirmed": false,
+        "source": null
+      }
+    ],
+    "demand_samples": [
+      {
+        "query": "cold brew in mason jar",
+        "page_one": "specific jar instructions present in supplied results; volume unknown"
+      },
+      {
+        "query": "cold brew french press",
+        "page_one": "specific method instructions present; Coldfield filter fit not tested"
+      },
+      {
+        "query": "cold brew in Seattle",
+        "page_one": "local caf\u00e9-shopping intent; no local store or local dataset for Coldfield"
+      }
+    ],
+    "constraints": "Useful, finite fit-tested brewer guides possible. We lack city-specific inventory/offerings. General method pages may overlap the existing pillar/ratio pages; do not recommend near duplicates solely for scale. Start with two verified brewer variants; no publishing or live implementation. Review surface is the blueprint here, then engineering PR and rendered pilot previews."
+  },
+  "managed_source": {
+    "describe": {
+      "available": true,
+      "operations": [
+        {
+          "operation": "domain_seo_metrics",
+          "query_schema": {
+            "domain": "domain"
+          },
+          "source": "radeance/ahrefs-scraper"
+        },
+        {
+          "operation": "domain_seo_overview",
+          "query_schema": {
+            "domain": "domain"
+          },
+          "source": "devnaz/semrush-scraper"
+        },
+        {
+          "operation": "website_traffic",
+          "query_schema": {
+            "company": "domain"
+          },
+          "meaning": "estimated total visits and channel shares"
+        }
+      ]
+    },
+    "quotes": [
+      {
+        "status": "quoted",
+        "operation": "domain_seo_metrics",
+        "query": {
+          "domain": "coldfield.test"
+        },
+        "source": {
+          "provider": "apify",
+          "api": "radeance/ahrefs-scraper",
+          "endpoint": "/runs",
+          "retrieved_at": "2026-10-22T08:00:00Z"
+        },
+        "cost": {
+          "credits": 3,
+          "kind": "maximum_budget"
+        },
+        "quote_token": "fixture-native-quote-1",
+        "expires_at": "2026-10-22T08:20:00Z",
+        "limitations": [
+          "synthetic fixture; maximum cap, not guaranteed bill"
+        ]
+      },
+      {
+        "status": "quoted",
+        "operation": "domain_seo_metrics",
+        "query": {
+          "domain": "brewbench.test"
+        },
+        "source": {
+          "provider": "apify",
+          "api": "radeance/ahrefs-scraper",
+          "endpoint": "/runs",
+          "retrieved_at": "2026-10-22T08:00:00Z"
+        },
+        "cost": {
+          "credits": 3,
+          "kind": "maximum_budget"
+        },
+        "quote_token": "fixture-native-quote-2",
+        "expires_at": "2026-10-22T08:20:00Z",
+        "limitations": [
+          "synthetic fixture; maximum cap, not guaranteed bill"
+        ]
+      },
+      {
+        "status": "quoted",
+        "operation": "domain_seo_metrics",
+        "query": {
+          "domain": "slowcup.test"
+        },
+        "source": {
+          "provider": "apify",
+          "api": "radeance/ahrefs-scraper",
+          "endpoint": "/runs",
+          "retrieved_at": "2026-10-22T08:00:00Z"
+        },
+        "cost": {
+          "credits": 3,
+          "kind": "maximum_budget"
+        },
+        "quote_token": "fixture-native-quote-3",
+        "expires_at": "2026-10-22T08:20:00Z",
+        "limitations": [
+          "synthetic fixture; maximum cap, not guaranteed bill"
+        ]
+      }
+    ],
+    "approval": "Fixture human approved these unchanged three SEO metric reads up to nine credits total (maximum caps). Supplied fixture receipts only; no external call is permitted.",
+    "responses": [
+      {
+        "status": "success",
+        "operation": "domain_seo_metrics",
+        "source": {
+          "provider": "apify",
+          "api": "radeance/ahrefs-scraper",
+          "endpoint": "/runs",
+          "retrieved_at": "2026-10-22T08:01:00Z"
+        },
+        "data": [
+          {
+            "domain": "coldfield.test",
+            "data_captured_at": "2026-10-21",
+            "domain_rating": 22,
+            "backlinks": 420,
+            "refdomains": 75,
+            "website_overall_search_traffic": 3200
+          }
+        ],
+        "cost": {
+          "credits": 2,
+          "debited": true
+        },
+        "limitations": [
+          "provider estimates",
+          "market and traffic period not supplied",
+          "organic ranking-keyword count not returned"
+        ]
+      },
+      {
+        "status": "success",
+        "operation": "domain_seo_metrics",
+        "source": {
+          "provider": "apify",
+          "api": "radeance/ahrefs-scraper",
+          "endpoint": "/runs",
+          "retrieved_at": "2026-10-22T08:01:00Z"
+        },
+        "data": [
+          {
+            "domain": "brewbench.test",
+            "data_captured_at": "2026-10-21",
+            "domain_rating": 46,
+            "backlinks": 2100,
+            "refdomains": 310,
+            "website_overall_search_traffic": 18000
+          }
+        ],
+        "cost": {
+          "credits": 2,
+          "debited": true
+        },
+        "limitations": [
+          "provider estimates",
+          "market and traffic period not supplied",
+          "organic ranking-keyword count not returned"
+        ]
+      },
+      {
+        "status": "success",
+        "operation": "domain_seo_metrics",
+        "source": {
+          "provider": "apify",
+          "api": "radeance/ahrefs-scraper",
+          "endpoint": "/runs",
+          "retrieved_at": "2026-10-22T08:01:00Z"
+        },
+        "data": [
+          {
+            "domain": "slowcup.test",
+            "data_captured_at": "2026-10-21",
+            "domain_rating": 35,
+            "backlinks": 1150,
+            "refdomains": 190,
+            "website_overall_search_traffic": 9500
+          }
+        ],
+        "cost": {
+          "credits": 2,
+          "debited": true
+        },
+        "limitations": [
+          "provider estimates",
+          "market and traffic period not supplied",
+          "organic ranking-keyword count not returned"
+        ]
+      }
+    ]
+  },
+  "missing_source_case": {
+    "describe": {
+      "available": false,
+      "reason": "managed source connection unavailable"
+    },
+    "own_search_console": null,
+    "exports": null,
+    "approval": null,
+    "expected": "No execution; requested metric cells unavailable; incomplete result with prerequisite, no invented provider call"
+  },
+  "connected_seo_export_case": {
+    "source": "Customer-supplied Search Atlas fixture export; no new tool exists or is assumed",
+    "market": "US",
+    "period": "2026-09",
+    "retrieved": "2026-10-22",
+    "data": [
+      {
+        "domain": "coldfield.test",
+        "estimated_organic_monthly_visits": 3200,
+        "organic_keywords": 410,
+        "referring_domains": 75,
+        "authority_score": 22
+      },
+      {
+        "domain": "brewbench.test",
+        "estimated_organic_monthly_visits": 18000,
+        "organic_keywords": 1800,
+        "referring_domains": 310,
+        "authority_score": 46
+      },
+      {
+        "domain": "slowcup.test",
+        "estimated_organic_monthly_visits": 9500,
+        "organic_keywords": 960,
+        "referring_domains": 190,
+        "authority_score": 35
+      }
+    ],
+    "limits": "Provider estimates, not own analytics truth; one consistent export and score scale"
+  },
+  "traffic_only_source": {
+    "describe": {
+      "available": true,
+      "operations": [
+        {
+          "operation": "website_traffic",
+          "query_schema": {
+            "company": "domain"
+          },
+          "meaning": "estimated total website visits and channel shares",
+          "does_not_supply": [
+            "organic_search_visits",
+            "organic_keywords",
+            "authority",
+            "backlinks",
+            "referring_domains",
+            "ranked_keywords"
+          ]
+        }
+      ]
+    },
+    "quotes": [
+      {
+        "domain": "coldfield.test",
+        "credits": 3,
+        "quote_token": "fixture-quote-1"
+      },
+      {
+        "domain": "brewbench.test",
+        "credits": 3,
+        "quote_token": "fixture-quote-2"
+      },
+      {
+        "domain": "slowcup.test",
+        "credits": 3,
+        "quote_token": "fixture-quote-3"
+      }
+    ],
+    "approval": "Fixture human explicitly approved these unchanged three total-website-traffic reads, up to nine credits total. No approval for new sources or requests. These are supplied receipts; never make an external call.",
+    "responses": [
+      {
+        "domain": "coldfield.test",
+        "data": {
+          "estimated_total_monthly_visits": 12000,
+          "period": "2026-09",
+          "channels": {
+            "organic_search_share": 0.42
+          }
+        },
+        "source": {
+          "provider": "akta-pro",
+          "api": "website-traffic",
+          "retrieved_at": "2026-10-22T08:00:00Z"
+        },
+        "limitations": [
+          "provider estimate",
+          "country coverage not supplied",
+          "not organic traffic count, authority, backlink or ranked keyword data"
+        ],
+        "credits_charged": 3
+      },
+      {
+        "domain": "brewbench.test",
+        "data": {
+          "estimated_total_monthly_visits": 46000,
+          "period": "2026-09",
+          "channels": {
+            "organic_search_share": 0.51
+          }
+        },
+        "source": {
+          "provider": "akta-pro",
+          "api": "website-traffic",
+          "retrieved_at": "2026-10-22T08:00:00Z"
+        },
+        "limitations": [
+          "provider estimate",
+          "country coverage not supplied",
+          "not organic traffic count, authority, backlink or ranked keyword data"
+        ],
+        "credits_charged": 3
+      },
+      {
+        "domain": "slowcup.test",
+        "data": {
+          "estimated_total_monthly_visits": 29000,
+          "period": "2026-09",
+          "channels": {
+            "organic_search_share": 0.39
+          }
+        },
+        "source": {
+          "provider": "akta-pro",
+          "api": "website-traffic",
+          "retrieved_at": "2026-10-22T08:00:00Z"
+        },
+        "limitations": [
+          "provider estimate",
+          "country coverage not supplied",
+          "not organic traffic count, authority, backlink or ranked keyword data"
+        ],
+        "credits_charged": 3
+      }
+    ]
+  }
+}

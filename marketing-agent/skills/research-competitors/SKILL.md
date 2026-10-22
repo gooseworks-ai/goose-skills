@@ -4,24 +4,26 @@ description: >-
   Competitor research: what every main rival is running, launching, charging and saying now, what
   works for them, and what that means for you. Use when the marketer asks for competitor research or a
   teardown, "what ads are my competitors running", "how do they price", "find gaps and angles", "what
-  changed this week" (a weekly watch), or "X just launched / shut down / cut prices" (react now).
+  changed this week" (a weekly watch), or "X just launched / shut down / cut prices" (react now). Also builds a sales battlecard, checks a
+  competitor page's tools/pixels, or studies who engages with their LinkedIn posts.
   Delivers a readable report saved to the brand, so the next run reports what changed. Never copies
   their words or disparages them. Not for what people say about you or your market — use
   research-market; not for who your buyers are — use research-audience.
-version: 0.4.1
+version: 0.5.0
 ---
 
 # research-competitors
 
 Competitor research tells the marketer what to do next; it is not a list of ads. Craft: `references/research-spec.md`; worker briefs: its step skills (`research-competitors-<step>`); the report: `references/report-format.md` — next to this file.
 
-**The rule that matters most: free pass first, ask nothing, report once** (`../marketing-guide/research-pattern.md` (in the `marketing-guide` skill) — read it before the first search). Research every dimension for every main rival, browser-only sources included, before the first message; never ask permission for free work or offer to pay for what a free read could get. An ask that names an area ("what ads are they running?") gets that area covered completely, news and launches first.
+**The rule that matters most: free pass first, ask nothing, report once** (`../marketing-guide/research-pattern.md` (in the `marketing-guide` skill) — read it before the first search). For a full teardown, research every dimension for every main rival, browser-only sources included, before the first message; never ask permission for free work or offer to pay for what a free read could get. An ask that names an area ("what ads are they running?") gets that area covered completely, news and launches first.
 
 ## Before you start
 
 1. **Setup first:** do the `marketing-guide` skill (`../marketing-guide/SKILL.md`) §1–2 (connect, brand, brain read) before anything else; the job line is "I research your competitors and save what I find through it." Here: a named brand not in the account → create it from its website (`gooseworks:brand_setup`) without asking and wait for its research (`gooseworks:job_get`); don't show a menu unrelated to research. Fallback brand read: `gooseworks:brand_read` (`summary`, `kit`, `products`, `competitors`, `organic`, `learnings`). Either path: `gooseworks:competitor_read` (+ `suggestions`), `gooseworks:automation_list`; workspace: `research/competitors/` (last report, rival records), `research/market/` (the newest market report and its "which market" decision), `research/audience/` (`buyer-groups.md` and the latest audience report), `plans/`, `reports/performance/`. Brand facts: brain first, website second. Claims: only the read step of the `claims-gate` skill (`../claims-gate/SKILL.md`) now.
-2. **Run memory:** job `competitor research` or `competitor watch`; what this job hands the atom is in `references/run-memory.md`. Its "since last time" opens the chat and the report's story.
-3. Never change the host's settings or permissions, and never seed a search or a worker with names or claims from memory — only what a source gave you.
+2. **Focused output:** for a battlecard, page tools/pixels, or LinkedIn engagers, select and finish the matching branch in `references/focused-outputs.md` after setup, then return. Reuse saved evidence; these branches replace the full teardown below.
+3. **Run memory:** job `competitor research` or `competitor watch`; what this job hands the atom is in `references/run-memory.md`. Its "since last time" opens the chat and the report's story.
+4. Never change the host's settings or permissions, and never seed a search or a worker with names or claims from memory — only what a source gave you.
 
 ## Steps
 
@@ -47,13 +49,15 @@ Competitor research tells the marketer what to do next; it is not a list of ads.
 
 - The free pass needs no yes and asks nothing; a paid top-up needs one yes to a ceiling; schedules are created paused.
 - Only with the marketer's yes: newsletter or trial sign-ups, tracking a rival, saved rules, new claims.
-- Research recommends; it never makes the asset. Never publish, contact anyone, copy a rival's words or footage, mock a rival or its customers, or claim their spend or results. Named comparisons need sign-off and dated proof.
+- Research delivers reports, battlecards and briefs; makers produce ads and posts. Never publish, contact anyone, copy a rival's words or footage, mock a rival or its customers, or claim their spend or results. Named comparisons need sign-off and dated proof.
 
 ## Output and write-back
 
-Paths and readers: the research-competitors rows of the marketing-guide's §4 table. Each file's title, tags and save mode: `references/report-format.md`; what-changed reports: `references/watch-and-react.md`.
+Paths and readers: the research-competitors rows of the marketing-guide's §4 table. Each file's title, tags and save mode: `references/report-format.md`; what-changed reports: `references/watch-and-react.md`; focused outputs: `references/focused-outputs.md`.
 
 ## Done when
+
+Focused outputs use their branch's completion check (`references/focused-outputs.md`). For a full teardown:
 
 - No question before the report, beyond picking a brand.
 - The frame of reference is stated; rivals were chosen from category evidence; a change of frame or rivals since the last run is stated with its reason.
@@ -67,4 +71,4 @@ Paths and readers: the research-competitors rows of the marketing-guide's §4 ta
 
 ## Out of scope
 
-Making the ads (make-static-ads; video ads: the goose-video skill) · budgets and channel bets (plan-campaign) · what people say about our brand and the market (research-market) · our own search visibility (improve-search-visibility) · writing positioning (write-my-positioning, backlog).
+Making the ads (make-static-ads; video ads: the goose-video skill) · budgets and channel bets (plan-campaign) · what people say about our brand and the market (research-market) · our own search visibility (improve-search-visibility) · finished positioning and messages (research-market).
