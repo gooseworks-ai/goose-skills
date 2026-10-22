@@ -1,11 +1,61 @@
-# Playbooks to build later
+# Marketing jobs: decisions and backlog
 
 **In short**
-- These are marketing jobs the 14 released playbooks do not cover. Each one is written down on purpose, with who needs it and what should make us build it.
-- **Decision (Akhil, 16 Oct 2026): build none of these now.** Building and testing the playbooks we have well comes first; a bigger surface now would make that harder.
+- This records coverage decisions and deferred marketing jobs for the 14 released playbooks. Each genuine gap has an owner, an output and a trigger or implementation ticket.
+- **Decision (Akhil, 16 Oct 2026): the wider backlog stays deferred.** The specific 22 October decisions below supersede that freeze for the named outputs only. Keep the existing playbook set; reuse its steps.
 - The list comes from the plan's backlog plus the 16 Oct coverage review (`reviews/2026-10-16-coverage.md`), which ran five company types through a full quarter using only these playbooks.
-- Until a card is built, playbooks say plainly "this isn't covered yet" and never fake the work.
+- Until an approved output is implemented and checked, playbooks state the actual limit. A decision or ticket is not a working capability.
 - **Held back (Akhil, 20 Oct 2026):** learn-my-brand, make-video-ads and make-product-photos are built but wait for server work; see the section below.
+
+## Coverage decisions — 22 October 2026
+
+**The choice:** extend existing methods for the genuine gaps; keep existing capabilities where they already cover the request. Product updates and survey reports do not need a dedicated skill job. Outreach remains finished writing plus an import file; the user loads and sends from their own tool.
+
+These decisions follow [GOOSE-4052](https://linear.app/gooseworks/issue/GOOSE-4052), a per-job interview with Akhil and independent reading of the old skills, current playbooks and relevant steps. Source baseline: `b4c6ec04e623df61f83014e4481f884477ed953c`. This is a decision record, not a fresh live acceptance result.
+
+### The twelve originally uncovered jobs
+
+| Job | Decision and existing owner | Output or next check |
+|---|---|---|
+| 1. Battlecard | **Add output:** research-competitors | Sales-ready quick reference from existing rival evidence: where we win/lose, questions, objections, comparison and replies. [GOOSE-4056](https://linear.app/gooseworks/issue/GOOSE-4056). Do not wait for the broader sales-collateral card. |
+| 2. Brand voice from blogs | **Extend step:** voice-card; brand learning owns the concept | Read company blog samples and save a sourced reusable voice guide; content/social consume it. Do not wait for the full unreleased brand-learning workflow. [GOOSE-4057](https://linear.app/gooseworks/issue/GOOSE-4057). |
+| 3. Add product/photos to brand kit | **Drop as a separate skill job** | Use the existing brand/product capability directly. Preserve that capability; no new maintenance playbook. |
+| 4. Launch positioning | **Add output:** research-market | Positioning choices, trade-offs, recommendation and finished messages based on buyer/product/competitor evidence; campaign planning consumes the result. [GOOSE-4058](https://linear.app/gooseworks/issue/GOOSE-4058). This replaces card #5's proposed new standalone playbook for this job. |
+| 5. Competitor page tools/pixels | **Extend step:** research-competitors | Add only the missing technology/tag evidence to the existing page analysis. Detection is not proof a pixel fires or that the rival spends on ads. [GOOSE-4059](https://linear.app/gooseworks/issue/GOOSE-4059). |
+| 6. Programmatic SEO page sets | **Add planning output:** improve-search-visibility | Extend existing rival-pattern work into the data/template/linking/pilot/quality blueprint. No new SEO playbook or implicit CMS publication. [GOOSE-4060](https://linear.app/gooseworks/issue/GOOSE-4060). |
+| 7. SEO domain metrics | **Add acquisition/output:** improve-search-visibility | Obtain and show comparable sourced, dated metrics for the requested domains. Missing managed data access is part of this deficiency, not grounds to declare a prose report complete. [GOOSE-4061](https://linear.app/gooseworks/issue/GOOSE-4061). |
+| 8. Branded survey report | **Drop as a dedicated skill job** | The agent can make an ordinary report from supplied results; existing content/report writing already supports that. No survey-running workflow or special branded one-page renderer is being added. |
+| 9. Signup-email enrichment | **Keep existing list workflow; repair access:** research-audience | Its list/scoring/contact steps already own this work. Connect the minimum reliable business-identity routes and let outreach read the result; do not duplicate enrichment inside email broadcasts. [GOOSE-4064](https://linear.app/gooseworks/issue/GOOSE-4064). |
+| 10. Competitor LinkedIn engagers | **Add source/output:** research-competitors | Verify current managed commenter/reactor access and explicitly reconcile today's collection exclusion. Reuse audience list mode if qualified prospects are requested. [GOOSE-4062](https://linear.app/gooseworks/issue/GOOSE-4062). Posts alone do not establish engager support. |
+| 11. Product photos cut to a song | **Keep existing video route; retain legacy bridge pending qualification** | Test exact supplied audio, beat-aligned photo cuts and a finished reviewed file before claiming coverage or building another engine. Ads or organic supplies the purpose; video owns production. |
+| 12. Podcast to vertical clips | **Keep existing video route; retain legacy bridge pending qualification** | Test moment selection, source context/audio, suitable vertical framing, captions and actual finished clips. Transcript scripts alone do not fulfill it. Do not classify every clip as an ad. |
+
+**Retention:** the earlier cleanup retained old implementations temporarily. This record does not delete them or claim they work on every host. Retire a bridge only after the replacement's required output is verified through the normal reviewed cleanup; the product/report decisions above do not delete their broader legacy packages in this change.
+
+### The partly covered examples, checked individually
+
+The original ticket says twelve partial examples, but its grouped list identifies **eleven** distinct asks. The original 89 public prompts were recovered; the original row-by-row classification was not. Do not invent a twelfth or treat that count as verified.
+
+| Original ask | Coverage decision |
+|---|---|
+| Last 30 Instagram posts with likes | Existing data access and account-audit steps. Read/paginate and return the requested rows; check count/coverage. Do not force a calendar or new scraper. |
+| Top TikToks for a hashtag this week | Existing managed routes. Verify exact hashtag/date membership and rank the retrieved sample honestly; keyword search is not automatically an exact hashtag result. |
+| Most-liked LinkedIn topic posts this month | Existing post search and organic platform research. Verify the period, dedupe and metric; do not relabel total reactions as LIKE-only counts. |
+| Top 50 LinkedIn voices in a topic/country | Existing organic voice discovery. A sampled author list is not an exhaustive directory. State ranking criteria and coverage; creator recruitment is a different job. |
+| People complaining on LinkedIn | Already covered by market listening and audience pain-language prospecting. Themes go to market research; named fitting post authors go to list mode. No new listening playbook. |
+| SEO audit and top ten fixes | Existing technical checks; fix arbitrary five-fix/3–6-page limits so the request controls scope and count. [GOOSE-4063](https://linear.app/gooseworks/issue/GOOSE-4063). |
+| Topics rivals rank for that we lack | Extend the existing SEO inventory into topic/query gaps with actual ranking evidence. [GOOSE-4063](https://linear.app/gooseworks/issue/GOOSE-4063). |
+| Topic cluster for a supplied subject | Reuse SEO question clusters/page maps with a clear subject-led path. Basic planning does not require volume/difficulty numbers. [GOOSE-4063](https://linear.app/gooseworks/issue/GOOSE-4063). |
+| Ten keyword content briefs | Repeat the existing standalone make-content-content-brief step. No hard one-brief cap was found; no batch engine is needed. Add routing wording only if a focused run exposes a failure. |
+| Find 100 heads of marketing at US beverage brands | Audience list mode already owns prospecting. The original ask did not request emails; do not add them as an acceptance requirement. Check actual named-person count, not just company count. Existing find/check routes are repaired separately in [GOOSE-4064](https://linear.app/gooseworks/issue/GOOSE-4064). |
+| Write and set up a three-step campaign for 200 leads | Outreach already writes sequences, first lines, replies and an import-ready file. **Keep that boundary** (Akhil confirmed): actual import, configuration and sending stay with the user. No sending integration is added by this decision. |
+
+### Execution and review
+
+- Seven missing outputs have their own tickets; two additional tickets repair existing SEO/list workflows. Keep implementation scoped to their named owners.
+- First run existing-capability examples before adding behavior. Inspect required method reads and the actual requested output; source inspection alone is not a runtime pass.
+- For the two video jobs, use the existing production harness and normal quote/approval rules. A failed qualification identifies the smallest missing operation; it does not authorize a new engine.
+- Review surface: this decision PR plus GOOSE-4052 for Akhil and Shiv; implementation PRs and example outputs are linked from each follow-up. No new provider subscription, paid test, production release or legacy deletion follows from merging this document.
 
 ## How to read a card
 
@@ -32,9 +82,9 @@ Three playbooks are built but not released, because they need server work before
 | 2 | **Landing and product page copy** — campaign landing pages, product pages, homepage and pricing page, popups, waitlist pages | Mode in `make-content` | Every paid launch (the page must match the ad); B2B homepage and pricing; app waitlists | The first launch where run-paid-campaigns' page-match check blocks a launch, or 3 customer asks |
 | 3 | **Reply drafts** — finished replies to comments, mentions and DMs on the brand's own posts and in the places it is mentioned, each with a recommendation (reply / take private / stay silent), disclosure on third-party communities, and holding statements in a crisis; the human sends. Owner: **run-organic-social**, which already runs the daily engagement routine. research-market's brand-watch mode finds the threads and flags risks; this card drafts the replies. The old craft is in git history at `playbooks/listen-social/references/reply-drafting.md` | Mode in run-organic-social | DTC and consumer brands with active comment sections; any brand in a crisis | 3 customers ask for reply drafts after a research-market run flags threads, or the first crisis where a drafted holding statement is needed |
 | 4 | **Search-ad copy** — Google responsive search ads, sitelinks, keyword themes, starter negatives; Apple Search Ads keywords | Mode in `make-static-ads` | B2B SaaS, local and DTC whenever plan-campaign marks Google Search "Run" | The first customer with a live Google Search line in a plan |
-| 5 | **write-my-positioning** — 2–3 positioning options, a messaging framework traced to approved claims, boilerplate, homepage hero lines | New playbook | Just-launched B2B SaaS, services firms, pre-launch apps, in week 1 | 3 founders in a month where where-to-start reports "no positioning", or the first services customer |
+| 5 | **Positioning** — 2–3 options, a messaging framework traced to approved claims, boilerplate, homepage hero lines | Mode in research-market (22 Oct decision above) | Just-launched B2B SaaS, services firms, pre-launch apps, in week 1 | Approved 22 Oct; implementation tracked in GOOSE-4058 |
 | 6 | **do-outreach (sending half)** — sending sequences from the customer's own domain and mailboxes, warm-up, stop-on-reply, reply handling in the product. **The writing half is built (19 Oct): write-outreach** drafts sequences, first lines, replies and results reads; the human sends | Sending layer (server) + a mode in write-outreach | B2B founders and sellers running outbound weekly | A sending layer that connects the customer's own mailbox (not the @agentmail.to workspace inbox), and 3 customers who use write-outreach ask to send from GooseWorks |
-| 7 | **Sales collateral** — one-pagers, battlecards, demo scripts, sell-sheets | Mode in `make-content` | B2B launches (plan-campaign lists them on asset lists); CPG retail pitches | Built together with #4 or #5, whichever comes first |
+| 7 | **Sales collateral** — one-pagers, demo scripts, sell-sheets; battlecards now have their own research-competitors output ticket above | Mode in `make-content`; battlecards in research-competitors | B2B launches (plan-campaign lists them on asset lists); CPG retail pitches | Wider collateral remains deferred; needs a separate scope decision. Only battlecards are approved in GOOSE-4056 |
 | 8 | **optimize-listings v1** — Amazon/marketplace listing audit and copy, the listing image set, feed health (Merchant Center, Meta catalogue, TikTok Shop); plus Amazon rows in analyze-performance and Sponsored Products moves in run-paid-campaigns | New playbook + modes | Amazon and marketplace sellers from week 1 (about 15–20% of their work is served today); DTC brands when a feed disapproval stops catalogue ads | The first marketplace seller signs up, or feed disapprovals show up in 2 accounts |
 | 9 | **manage-reviews** — reply drafts and rating watch across Google, app stores, Amazon, Trustpilot (review-request emails already exist in email-lifecycle's flows) | New playbook | Local businesses, apps and Amazon sellers, weekly | The first local or app customer, or a review-site read becomes available through the data proxy |
 | 10 | **run-my-week** — one weekly sequence that runs the recurring playbooks in the right order, with one intake and one calendar of everything going out | Foundation piece (not a listed playbook) | Every customer once more than 3 playbooks run weekly; today a human must drive the Monday loop | Scheduled runs are live for 2+ playbooks at one customer |
@@ -50,7 +100,7 @@ Three playbooks are built but not released, because they need server work before
 
 ## Seed notes for cards #5 and #7 (from the old library, 19 Oct)
 
-The old skills are being deleted; these keep what was worth having. Craft only — not their structure, vendor calls or keys.
+These notes preserve useful legacy craft. Retirement follows verified coverage; these notes do not authorize deleting a legacy skill. Keep the craft, rather than its structure, vendor calls or keys.
 
 - **#5 write-my-positioning — seed: `skills/brand/composites/launch-positioning-builder/SKILL.md` (in git history).** Keep its April Dunford spine:
   - what buyers use instead (rivals, substitutes, doing nothing);
@@ -60,7 +110,7 @@ The old skills are being deleted; these keep what was worth having. Craft only �
   - where to use them (homepage, ads, sales deck, bios);
   - a "what we're not saying" list.
 
-  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". When built: proof goes through `marketing-agent/skills/claims-gate/SKILL.md` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `skills/write-report/SKILL.md`.
+  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". For the research-market output: proof goes through `marketing-agent/skills/claims-gate/SKILL.md` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `skills/write-report/SKILL.md`.
 - **#7 Sales collateral — seed: `skills/competitive-intel/composites/battlecard-generator/SKILL.md` § "Phase 3: Output — Battlecard" (in git history).** Keep the one-page sheet a salesperson opens five minutes before a call:
   - a 30-second version;
   - questions that frame the deal;
@@ -70,7 +120,7 @@ The old skills are being deleted; these keep what was worth having. Craft only �
   - where we win (lead with these), where we lose (don't engage there) and where it's close;
   - short email replies for common moments.
 
-  When built: it reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `marketing-agent/skills/claims-gate/SKILL.md`.
+  The battlecard output reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `marketing-agent/skills/claims-gate/SKILL.md`.
 
 ## Still skipped on purpose
 
