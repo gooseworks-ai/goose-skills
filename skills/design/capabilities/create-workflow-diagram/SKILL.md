@@ -599,7 +599,7 @@ See STYLE_PRESETS.md for complete styling details.
 
 ## Related Skills
 
-- **create-html-carousel** — For multi-slide LinkedIn carousels
+- [[references::goose-graphics]] — For multi-slide LinkedIn carousels
 - **frontend-slides** — For full HTML presentations
 
 ---

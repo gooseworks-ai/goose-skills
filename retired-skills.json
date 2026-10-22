@@ -1,0 +1,783 @@
+{
+  "schema_version": 1,
+  "legacy_revision": "b1725097a2d69c1c076388f87cf4e1cd231527ae",
+  "decision": "Keep old skills temporarily where released playbooks do not fully replace the job. Approved 2026-10-22.",
+  "retired": [
+    {
+      "slug": "campaign-brief-generator",
+      "replacement": "plan-campaign",
+      "reason": "The old channel, message, calendar, asset and measurement brief is covered by the released campaign plan and brief template."
+    },
+    {
+      "slug": "competitive-pricing-intel",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft \u00a76 covers tiers, feature gates, buyer-scenario cost, hidden charges and Wayback history; watch-and-react diffs packaging and price changes."
+    },
+    {
+      "slug": "competitor-content-tracker",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft \u00a73 covers social/blog/newsletter/podcast cadence, content mix and normalized top posts; the weekly watch compares snapshots and feeds."
+    },
+    {
+      "slug": "competitor-intel",
+      "replacement": "research-competitors",
+      "reason": "Released rival profiles, landscape, openings and watch cover the old web/social/review positioning research and competitive gap report."
+    },
+    {
+      "slug": "competitor-monitoring-system",
+      "replacement": "research-competitors",
+      "reason": "Released baseline snapshots and watch cover recurring content, ads, reviews, pricing and product changes, with explicit scheduled-browser limitations."
+    },
+    {
+      "slug": "competitor-social-research",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft \u00a73 compares platforms, cadence, content mix, series and normalized top posts; the report delivers formats, angles and brand-specific tests."
+    },
+    {
+      "slug": "create-html-carousel",
+      "replacement": "goose-graphics",
+      "reason": "The old file explicitly declares goose-graphics its successor; goose-graphics renders the same carousel deliverable with format/style discovery."
+    },
+    {
+      "slug": "product-demand-research",
+      "replacement": "research-market",
+      "reason": "The idea-validation branch explicitly researches demand for a new product, offer or concept and delivers evidence and a next-test decision."
+    },
+    {
+      "slug": "social-listening-brief",
+      "replacement": "research-market",
+      "reason": "The listening step and brand watch cover linked mentions, sentiment, repeated versus isolated signals, source limits, risks and prioritized actions."
+    },
+    {
+      "slug": "social-media-scraping-scrapecreators",
+      "replacement": "scrapecreators-api",
+      "reason": "Already only a compatibility alias directing all provider operations to scrapecreators-api; adds no independent API capability."
+    }
+  ],
+  "retained": [
+    {
+      "slug": "aeo",
+      "reason": "Keep multi-engine CLI setup, persistent queries, metrics/dashboard and historical diff; sampled search visibility does not replace that API/tool contract."
+    },
+    {
+      "slug": "ai-video-calls-tavus",
+      "reason": "Keep direct provider/API utility: AI video conversations - create real-time video calls with AI personas. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "ai-web-scraping-scrapegraph",
+      "reason": "Keep direct provider/API utility: AI-powered web scraping - extract data using natural language prompts. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "amazon-search",
+      "reason": "Keep direct provider/API utility: Search Amazon products - find items, compare prices, read reviews. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "api-tester",
+      "reason": "Keep direct provider/API utility: Test and document API endpoints - validate responses, check status, generate examples. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "apollo-lead-finder",
+      "reason": "Keep specialist job: Two-phase Apollo.io prospecting: free People Search to discover ICP-matching leads, then selective enrichment to reveal emails/phones (credits per contact). Creates Apollo lists. Deduplicates against existing contacts by LinkedIn URL. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "audience-research",
+      "reason": "Keep creator and brand-account aggregate audience-fit/demographic comparisons; work-with-creators covers only creator programmes. Required by retained influencer-prospecting."
+    },
+    {
+      "slug": "battlecard-generator",
+      "reason": "Keep sales battlecards, landmine questions and win/loss objections; make-content and write-outreach explicitly exclude battlecards."
+    },
+    {
+      "slug": "beat-sync-reel",
+      "reason": "Keep deterministic beat detection/Ken Burns MP4 production; no released rendering replacement. Preserve video-production fonts."
+    },
+    {
+      "slug": "blog-feed-monitor",
+      "reason": "Keep raw RSS/Atom parsing/discovery and filters; retained company-current-gtm-analysis and industry-scanner require it."
+    },
+    {
+      "slug": "brand-intel-branddev",
+      "reason": "Keep direct provider/API utility: Brand intelligence - logos, colors, fonts, styleguides, and company data from any domain. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "brand-voice-extractor",
+      "reason": "Keep company-content voice extraction and voice profile; brand learning/sign-off is unreleased. Required by retained seo-content-audit."
+    },
+    {
+      "slug": "browser-automation-notte",
+      "reason": "Keep direct provider/API utility: Browser automation - control browser sessions, scrape pages, and run AI agents. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "buyer-persona-generator",
+      "reason": "Keep synthetic persona JSON/Markdown outputs explicitly loaded by retained icp-website-audit and icp-website-review; buyer groups are a different contract."
+    },
+    {
+      "slug": "champion-move-outreach",
+      "reason": "Keep specialist job: End-to-end champion/buyer/user job change signal composite. Takes a set of known people (past buyers, champions, power users), detects when they move to a new company, researches the new company for ICP fit, and drafts personalized outreach leveraging the existing relationship. Tool-agnostic \u2014 works with any people source, detection method, and outreach platform. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "champion-tracker",
+      "reason": "Keep saved person baselines and job-change detection, scoring and mover/contact CSVs; new audience lists do not replace persistent champion tracking."
+    },
+    {
+      "slug": "churn-risk-detector",
+      "reason": "Keep account-level support/Slack/NPS/usage risk scorecards and save plays; no released playbook covers customer-success risk detection."
+    },
+    {
+      "slug": "cold-email-outreach",
+      "reason": "Keep actual campaign setup and launch; write-outreach explicitly drafts only. Required by retained sales and signal-outreach composites."
+    },
+    {
+      "slug": "community-signals",
+      "reason": "Keep forum user-level intent scoring/cross-platform dedup CSV; preserve lead-gen-devtools shared tools/resources."
+    },
+    {
+      "slug": "company-current-gtm-analysis",
+      "reason": "Keep full GTM scorecard including traffic/SEO, hiring, partnerships and acquisition channels; a capped rival profile only partly replaces it."
+    },
+    {
+      "slug": "company-domain-lookup-logodev",
+      "reason": "Keep direct provider/API utility: Logo.dev - search for company domains by brand name. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "company-funding-search",
+      "reason": "Keep direct provider/API utility: Find company funding history, investors, and investment details. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "company-intel",
+      "reason": "Keep direct provider/API utility: Full company intelligence report - overview, team, funding, products, news. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "competitor-post-engagers",
+      "reason": "Keep specialist job: Find leads by scraping engagers from a competitor's top LinkedIn posts. Given one or more company page URLs, scrapes recent posts, ranks by engagement, selects the top N, extracts all reactors and commenters, ICP-classifies, and exports CSV. Use when someone wants to \"find leads engaging with competitor content\" or \"scrape people who interact with [company]'s LinkedIn posts\". No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "competitor-research",
+      "reason": "Keep raw competitor/team/funding/customer API recipes; research-competitors report does not replace endpoint access."
+    },
+    {
+      "slug": "competitor-signals",
+      "reason": "Keep user-level PH/HN/case-study switching signals and scored CSV; preserve lead-gen-devtools resources."
+    },
+    {
+      "slug": "comprehensive-enrichment",
+      "reason": "Keep direct provider/API utility: Enrich any person or company from any identifier \u2014 email, name, LinkedIn URL, domain, company name, Twitter/X handle. Use when asked to enrich, look up, or research a lead, contact, person, or company. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "conference-speaker-scraper",
+      "reason": "Keep specialist job: Extract speaker names, titles, companies, and bios from conference websites. Supports direct HTML scraping and Apify web scraper fallback for JS-heavy sites. Use for pre-event research and outreach targeting. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "contact-cache",
+      "reason": "Keep CSV contact status/dedup interface required by retained funding-signal-monitor; outcomes-ledger is not a compatible caller replacement."
+    },
+    {
+      "slug": "contact-finder-contactout",
+      "reason": "Keep direct provider/API utility: Find emails, phone numbers, and enrich profiles using ContactOut. LinkedIn enrichment, people search, company enrichment, and batch operations. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "content-asset-creator",
+      "reason": "Keep branded HTML reports, landing pages, comparison sheets, one-pagers and PDF-ready assets; make-content excludes landing pages and one-pagers."
+    },
+    {
+      "slug": "content-brief-factory",
+      "reason": "Keep 10\u201350 briefs per batch, per-keyword SERP feature targets and detailed internal-link plans; visibility page briefs only partly replace this."
+    },
+    {
+      "slug": "content-repurposing",
+      "reason": "Keep optional dated calendar/publishing sequence in the same run; make-content explicitly excludes calendars. Preserve its post-writer dependencies."
+    },
+    {
+      "slug": "create-dashboard",
+      "reason": "Keep specialist job: Create a custom web dashboard (React + Vite + Express) inside your sandbox to visualize the agent's Turso database. The dashboard is served on port 3847 and the user sees it live in the \"App\" tab in Gooseworks. Use when the user asks for a dashboard, visualization, chart, metric view, or any custom UI powered by their agent's data. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "create-html-slides",
+      "reason": "Keep PPT/PPTX conversion and animated HTML presentations despite deprecation; new playbooks lack conversion. visual-brand-extractor reads its STYLE_PRESETS.md."
+    },
+    {
+      "slug": "create-linkedin-content",
+      "reason": "Covered by make-content as writing, but retained content-repurposing/social-kit require its existing file/voice-guide contract; generate-voice-guide also references it."
+    },
+    {
+      "slug": "create-workflow-diagram",
+      "reason": "Keep arbitrary standalone workflow-to-PNG and geometry/style contract; social designed slots cover only part of that utility."
+    },
+    {
+      "slug": "create-x-content",
+      "reason": "Covered by make-content as writing, but retained content-repurposing/social-kit require its existing file/voice-guide contract; generate-voice-guide also references it."
+    },
+    {
+      "slug": "creator-profile-teardown",
+      "reason": "Covered by organic-social teardown, but retained influencer-prospecting/content-repurposing require this reusable skill and output contract."
+    },
+    {
+      "slug": "customer-discovery",
+      "reason": "Keep exhaustive multi-source named-customer discovery/dedup; new rival profiles only sample customers."
+    },
+    {
+      "slug": "customer-story-builder",
+      "reason": "Keep case studies plus sales one-pagers, deck slides and proof cards; make-content excludes one-pagers and decks."
+    },
+    {
+      "slug": "customer-win-back-sequencer",
+      "reason": "Keep churn-list change research, MRR-based recovery scoring and contact checks; write-outreach replaces only drafting."
+    },
+    {
+      "slug": "data-charts-tako",
+      "reason": "Keep direct provider/API utility: Search and visualize the world's data - get charts, insights, and embeddable knowledge cards for finance, economics, demographics, sports, and more. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "demo-builder",
+      "reason": "Keep working personalized product prototypes and live demo reports; preserve lead-gen-devtools resources."
+    },
+    {
+      "slug": "disqualification-handling",
+      "reason": "Keep disqualification classification plus referral/nurture destination routing; new outreach only replaces response drafting."
+    },
+    {
+      "slug": "ebay-search",
+      "reason": "Keep direct provider/API utility: Search eBay listings - find items, auctions, deals, and compare prices. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "email-campaign",
+      "reason": "Keep direct provider/API utility: Build email campaigns - find emails, verify them, and prepare outreach. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "email-drafting",
+      "reason": "Writing is covered by write-outreach, but retained cold-email-outreach, sales-coaching, sequence-performance and signal composites require this contract."
+    },
+    {
+      "slug": "email-finder-hunter",
+      "reason": "Keep direct provider/API utility: Email finder and verifier - find emails, verify deliverability, discover companies. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "email-finder-tomba",
+      "reason": "Keep direct provider/API utility: Email finder and verifier - find emails from domains, LinkedIn, or company search. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "enrichment-nyne",
+      "reason": "Keep direct provider/API utility: Intelligence and enrichment - person and company data, social profiles, events, and funding. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "event-prospecting-pipeline",
+      "reason": "Keep specialist job: Find attendees at conferences/events, research their companies, qualify against ICP, and launch outreach. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "event-signals",
+      "reason": "Keep event/speaker/sponsor/podcast/hackathon data and scoring; preserve lead-gen-devtools shared resources."
+    },
+    {
+      "slug": "expansion-signal-spotter",
+      "reason": "Keep existing-customer upsell/cross-sell opportunity/value scoring and talk tracks; no new customer-expansion operations playbook."
+    },
+    {
+      "slug": "extract-webpage-data",
+      "reason": "Keep direct provider/API utility: Extract structured data from web pages using AI. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "feature-launch-playbook",
+      "reason": "Keep combined changelog, in-app banner and sales enablement one-pager launch kit; make-content excludes sales one-pagers."
+    },
+    {
+      "slug": "find-email-by-name",
+      "reason": "Keep direct provider/API utility: Find someone's email address given their name and company. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "find-skill",
+      "reason": "Keep direct provider/API utility: Find and install skills from the Orthogonal skill library. Use when you need capabilities you don't have, want to discover available skills, or need to add new tools to your agent. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "find-twitter-influencers",
+      "reason": "Keep contact/email enrichment and underlying discovery pipeline; creator shortlists cover only part of its outputs."
+    },
+    {
+      "slug": "funding-signal-monitor",
+      "reason": "Keep specialist job: Monitor web sources for Series A-C funding announcements. Aggregates signals from TechCrunch, Crunchbase (via web search), Twitter, Hacker News, and LinkedIn. Filters by stage, amount, and industry. Returns qualified recently-funded companies ready for outreach. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "funding-signal-outreach",
+      "reason": "Keep specialist job: End-to-end funding signal composite. Takes any set of companies, detects recent funding events, qualifies against your company context, finds relevant people (buyers, champions, users), and drafts personalized outreach. Tool-agnostic \u2014 works with any company source, contact finder, and outreach platform. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "generate-voice-guide",
+      "reason": "Keep personal post-corpus calibration, feedback loop, voice Markdown and config paths; explicitly approved gap."
+    },
+    {
+      "slug": "get-qualified-leads-from-luma",
+      "reason": "Keep specialist job: End-to-end lead prospecting from Luma events. Searches Luma for events by topic and location, extracts all attendees/hosts, qualifies them against a qualification prompt, outputs results to a Google Sheet, and sends a Slack alert with top leads. Use this skill whenever someone wants to find qualified leads from events, prospect event attendees, or run an event-based lead gen workflow. Also triggers for \"find people at events and qualify them\" or \"who's attending X events that matches our ICP.\". No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "github-repo-signals",
+      "reason": "Keep GitHub interaction scoring and user CSV; preserve lead-gen-devtools shared tools/resources."
+    },
+    {
+      "slug": "gtm-enrichment-deep",
+      "reason": "Keep direct provider/API utility: AI-agent-powered lead enrichment using Sixtyfour as primary source. Takes an email (+ optional name) and returns comprehensive person + company data with funding, AI/B2B classification, and full error visibility. Higher cost (~$0.20/lead) but simpler architecture. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "gtm-enrichment-smart",
+      "reason": "Keep direct provider/API utility: Multi-provider waterfall lead enrichment. Takes an email (+ optional name) and returns person + company data by cross-referencing cheap APIs first, using expensive AI agents only as fallback. Cost-efficient (~$0.04-$0.10/lead) with confidence scoring and full error visibility. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "help-center-article-generator",
+      "reason": "Keep ticket clustering and batch procedural/troubleshooting help-centre articles; new content formats do not cover support documentation production."
+    },
+    {
+      "slug": "hiring-signal-outreach",
+      "reason": "Keep specialist job: End-to-end hiring signal composite. Takes any set of companies, detects job postings that your product augments or replaces, finds relevant people (the hiring manager, buyers, champions, users), and drafts personalized outreach using the job role as the hook. Tool-agnostic \u2014 works with any company source, job board, contact finder, and outreach platform. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "hyperlocal-weather-precip",
+      "reason": "Keep direct provider/API utility: Hyperlocal weather data - precipitation, temperature, wind, soil moisture and more. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "icp-identification",
+      "reason": "Keep precise search-filter/exclusion definition and handoff into retained TAM/lead-finding data contracts; new audience research does not migrate callers."
+    },
+    {
+      "slug": "icp-website-audit",
+      "reason": "Keep synthetic-persona scorecards and head-to-head website/positioning comparison with branded audit outputs; search checks are a different job."
+    },
+    {
+      "slug": "icp-website-review",
+      "reason": "Keep synthetic-persona scorecard, focus-group and head-to-head modes; new playbooks do not execute persona-based reviews."
+    },
+    {
+      "slug": "identity-verification-didit",
+      "reason": "Keep direct provider/API utility: Identity verification via phone/email OTP and AML screening using Didit API. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "image-analyzer",
+      "reason": "Keep direct provider/API utility: Analyze images with AI - extract text, describe content, detect objects. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "inbound-lead-enrichment",
+      "reason": "Keep CRM relationship checks, stakeholder discovery and lead-record updates; list scoring does not replace enrichment."
+    },
+    {
+      "slug": "inbound-lead-qualification",
+      "reason": "Keep CRM/pipeline dedup, use-case scoring and relationship-overlap flags; new list ranking covers only part of this."
+    },
+    {
+      "slug": "inbound-lead-triage",
+      "reason": "Keep CRM/form ingestion, urgency queue, enrichment and destination routing; new list scoring/reply writing covers only part."
+    },
+    {
+      "slug": "industry-scanner",
+      "reason": "Keep configured daily scans including private newsletter inbox, event/CFP discovery and strategic briefing; public market research only partly replaces it."
+    },
+    {
+      "slug": "influencer-prospecting",
+      "reason": "Keep affiliate and broader UGC-partner discovery; work-with-creators explicitly excludes affiliate programmes and UGC marketplaces. Preserve declared dependencies."
+    },
+    {
+      "slug": "instagram-scraper",
+      "reason": "Keep direct provider/API utility: Get Instagram profiles, posts, and reels. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "investor-call-prep",
+      "reason": "Keep direct provider/API utility: Prepare for investor calls by pulling upcoming meetings from Google Calendar, deeply researching each investor and their firm (website scraping, portfolio analysis, thesis extraction), checking for competitor conflicts, and outputting an honest prep sheet with compatibility assessments. Use when asked to prep for investor meetings, fundraising calls, VC meetings, or demo day. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "investor-research",
+      "reason": "Keep direct provider/API utility: Research VCs, angels, and investors - portfolio, thesis, contact info. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "job-posting-intent",
+      "reason": "Keep specialist job: Detect buying intent from job postings. When a company posts a job in your problem area, they've allocated budget and are actively thinking about the problem. This skill finds those companies, qualifies them, extracts personalization context, and outputs everything to a Google Sheet. Does NOT do outreach \u2014 just delivers qualified leads with reasoning. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "job-scraper",
+      "reason": "Keep specialist job: Search for job postings across LinkedIn and Indeed. Use when users want to find open roles, monitor hiring signals, identify companies hiring for specific positions, or research competitor hiring activity. Returns job title, company, location, salary, description, seniority level, and direct apply URLs. No login or cookies required. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "job-search",
+      "reason": "Keep direct provider/API utility: Search for jobs matching your skills, experience, and preferences. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "kol-content-monitor",
+      "reason": "Keep a chosen-KOL watchlist and trigger-based content calendar; social refill reads voices only as one input."
+    },
+    {
+      "slug": "kol-discovery",
+      "reason": "Keep LinkedIn author discovery/export and declared dependency of retained kol-content-monitor."
+    },
+    {
+      "slug": "kol-engager-icp",
+      "reason": "Keep specialist job: Find ICP-fit leads from KOL audiences on LinkedIn. Given a list of KOLs, scrapes their most relevant high-engagement post from the last 30 days, extracts engagers (reactors + commenters), pre-filters by position, enriches top profiles, and ICP-classifies. Cost-controlled: 1 post per KOL. Use when someone wants to \"find leads from KOL audiences\" or \"scrape engagers from influencer posts\" or after running kol-discovery. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "landing-page-intel",
+      "reason": "Keep raw HTML tech stack, pixels/analytics, hidden elements and customer/logo reads; explicitly retained technical gap."
+    },
+    {
+      "slug": "launch-positioning-builder",
+      "reason": "Keep category/positioning/differentiation/proof/audience messages; positioning writing remains in backlog."
+    },
+    {
+      "slug": "lead-discovery",
+      "reason": "Keep routing/config contract for specialized devtools signal scanners; preserve lead-gen-devtools pack assets."
+    },
+    {
+      "slug": "lead-enrichment",
+      "reason": "Keep direct provider/API utility: Enrich leads with email, phone, company data using multiple data sources. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "lead-enrichment-sixtyfour",
+      "reason": "Keep direct provider/API utility: AI-powered lead enrichment - find emails, phones, and enrich company/lead data. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "lead-qualification",
+      "reason": "Keep reusable custom qualification prompt, batch LinkedIn enrichment and export; retained Luma/inbound workflows require it."
+    },
+    {
+      "slug": "leadership-change-outreach",
+      "reason": "Keep specialist job: End-to-end leadership change signal composite. Takes any set of companies, detects recent leadership changes (new VP+, C-suite hires and promotions), evaluates relevance to your product, and drafts personalized outreach. Uses Apollo People Search (free) for fast detection + Apollo Enrichment (1 credit/person) for employment history, start dates, LinkedIn URLs, and verified emails. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "linkedin-commenter-extractor",
+      "reason": "Keep specialist job: Extract commenters from LinkedIn posts via Apify. Returns commenter names, titles, LinkedIn profile URLs, and comment text. Use to find warm leads engaging with relevant discussions. No LinkedIn cookies required. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "linkedin-influencer-discovery",
+      "reason": "Keep specialist job: Discover top LinkedIn influencers and voices by topic, industry, follower count, and country. Use when you need to find the top 100 voices in a space, build influencer lists for outreach, or identify thought leaders on LinkedIn. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "linkedin-job-scraper",
+      "reason": "Keep specialist job: Scrapes LinkedIn job postings using the JobSpy library (python-jobspy). Use this skill whenever the user wants to find jobs on LinkedIn, search for open roles, pull job listings, build a job pipeline, source job targets for GTM research, or monitor hiring signals. Even if the user just says \"find me some jobs\" or \"what roles is [company] hiring for\", use this skill. It runs a local Python script that outputs a CSV of job postings with title, company, location, salary, job type, description, and direct URLs. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "linkedin-message-writer",
+      "reason": "Keep all LinkedIn message types including comments/comment replies and tool-ready CSVs; organic-social reply drafting is parked."
+    },
+    {
+      "slug": "linkedin-outreach",
+      "reason": "Keep Supabase selection, cooldown, tool-specific exports and outreach_log writes; new outreach only replaces drafting. Retained composites require it."
+    },
+    {
+      "slug": "linkedin-post-research",
+      "reason": "Keep specialist job: Search LinkedIn posts by keywords, sorted by engagement or date. Use when researching what people are saying about a topic on LinkedIn, finding high-engagement content, identifying thought leaders, or discovering warm leads through post engagement. Returns author, post text, reactions, comments, shares, post URL, and date. No LinkedIn cookies or login required. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "linkedin-scraper",
+      "reason": "Keep direct provider/API utility: Get LinkedIn profiles, company pages, and posts. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "luma-event-attendees",
+      "reason": "Keep specialist job: Find speakers, hosts, and guest profiles at conferences and events on Luma. Two modes - free direct scrape for hosts, or Apify-powered search for full guest profiles with LinkedIn/Twitter/bio. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "market-research",
+      "reason": "Keep direct research/company-search API recipes and raw records; research-market report does not replace endpoint access."
+    },
+    {
+      "slug": "meeting-brief",
+      "reason": "Keep calendar research and actual emailed meeting briefs; no new playbook does preparation or sending."
+    },
+    {
+      "slug": "multi-platform-search-searchapi",
+      "reason": "Keep direct provider/API utility: Multi-platform search - YouTube, Amazon, eBay, Walmart, TikTok, Instagram, and more. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "news-signal-outreach",
+      "reason": "Keep specialist job: End-to-end news-triggered signal composite. Takes any piece of news \u2014 an article, LinkedIn post, tweet, announcement, event, trend, regulation, product launch, acquisition, layoff, expansion, or any other public event \u2014 and evaluates whether the companies or people mentioned are ICP fits. If yes, identifies the connection between the news and your product, finds the right people to contact, and drafts personalized outreach using the news as the hook. Tool-agnostic. Accepts both company-level and person-level news triggers. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "newsletter-monitor",
+      "reason": "Keep AgentMail inbox scanning and structured keyword/message exports; public market listening does not read that inbox contract."
+    },
+    {
+      "slug": "newsletter-signal-scanner",
+      "reason": "Keep newsletter subscriptions, inbox ingestion and recurring buying-signal digest; new market report/content writing do not replace it."
+    },
+    {
+      "slug": "outbound-prospecting-engine",
+      "reason": "Keep specialist job: End-to-end outbound prospecting: detect intent signals, research companies, find decision-maker contacts, personalize messaging, launch campaign. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "outlier-post-finder",
+      "reason": "Keep declared dependency of retained creator-profile-teardown and trend-discovery; new playbook analysis does not migrate those callers."
+    },
+    {
+      "slug": "pain-language-engagers",
+      "reason": "Keep specialist job: Find warm leads by searching LinkedIn for pain-language posts \u2014 the frustrations, complaints, and operational struggles your ICP talks about publicly. Asks clarifying questions to understand your product, ICP, and their pain points, then generates pain-language search keywords, scrapes LinkedIn for posts and engagers, enriches profiles, and ICP-filters the results. Use when someone wants to \"find leads who are complaining about X\" or \"find people discussing problems we solve\" or \"LinkedIn pain-based prospecting.\". No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "pdf-processor",
+      "reason": "Keep direct provider/API utility: Process PDFs - extract text, tables, and structured data from documents. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "people-company-search-fiber",
+      "reason": "Keep direct provider/API utility: People, company, investor, and job search with LinkedIn data enrichment. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "person-lookup",
+      "reason": "Keep direct provider/API utility: Look up information about a person - work history, social profiles, contact info. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "phone-verification",
+      "reason": "Keep direct provider/API utility: Verify phone numbers using SMS one-time codes via the Didit API. Use when you need to confirm a user owns a phone number, implement SMS-based 2FA, or validate phone during signup/onboarding flows. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "pipeline-review",
+      "reason": "Keep sales stage velocity, stuck-deal, win/loss and forecast diagnostics; marketing performance only reads pipeline as an outcome."
+    },
+    {
+      "slug": "prediction-market-odds",
+      "reason": "Keep direct provider/API utility: Get prediction market odds and prices from Polymarket and Kalshi. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "prediction-markets-dome",
+      "reason": "Keep direct provider/API utility: Prediction markets data - Polymarket, Kalshi markets, prices, positions, and trades. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "product-hunt-scraper",
+      "reason": "Keep specialist job: Scrape Product Hunt trending products using Apify. Use when you need to discover new product launches, track competitors on Product Hunt, or monitor the startup ecosystem for relevant launches. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "product-reel-generator",
+      "reason": "Keep product URL-to-Higgsfield animated reel and audio composition; preserve video-production shared fonts."
+    },
+    {
+      "slug": "programmatic-seo-planner",
+      "reason": "Keep pSEO URL patterns, template data schema and variable-source blueprint; explicitly retained unsupported specialist work."
+    },
+    {
+      "slug": "programmatic-seo-spy",
+      "reason": "Keep competitor URL clustering, template quality and traffic inference; new sampled visibility is partial."
+    },
+    {
+      "slug": "remotion-best-practices",
+      "reason": "Keep Remotion code, captions/audio and rendering references needed by specialist video workflows."
+    },
+    {
+      "slug": "restaurant-booking",
+      "reason": "Keep direct provider/API utility: Book restaurant reservations via browser automation. Use when asked to make dinner reservations, book a table, or find availability at restaurants. Supports OpenTable, Resy, and direct restaurant booking sites. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "review-intelligence-digest",
+      "reason": "Keep recurring review-specific proof, objection and displacement libraries; broader market/audience reports do not guarantee its complete digest contract."
+    },
+    {
+      "slug": "review-scraper",
+      "reason": "Keep raw G2/Capterra/Trustpilot structured review exports; playbook reports do not replace provider data tools."
+    },
+    {
+      "slug": "review-site-scraper",
+      "reason": "Keep raw review data; required transitively by retained battlecard, positioning, SEO audit and brief workflows."
+    },
+    {
+      "slug": "sales-call-prep",
+      "reason": "Keep sales-specific person/company research, objections and call strategy; no released pre-call preparation replacement."
+    },
+    {
+      "slug": "sales-coaching",
+      "reason": "Keep call/transcript/email/deal coaching and individual 30-day improvement plan; outreach results cover messaging only."
+    },
+    {
+      "slug": "sales-prospecting",
+      "reason": "Keep direct provider/API utility: Build targeted prospect lists with verified contact information. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "send-sms-textbelt",
+      "reason": "Keep direct provider/API utility: Send SMS text messages to phone numbers. Use when the user asks to send a text, send an SMS, text someone, message a phone number, or send a notification via text message. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "seo-analyzer",
+      "reason": "Keep raw scraping/domain/keyword provider analysis recipes; visibility reports do not replace API access."
+    },
+    {
+      "slug": "seo-content-audit",
+      "reason": "Keep complete inventory, measured rankings/traffic, gap matrices and voice profile; new sampled visibility checks are partial."
+    },
+    {
+      "slug": "seo-content-engine",
+      "reason": "Keep full audit/keyword-architecture/calendar/drafting engine and retained specialist handoffs; no single new playbook replaces it."
+    },
+    {
+      "slug": "seo-opportunity-finder",
+      "reason": "Keep measured keyword/traffic-based competitor gaps and 90-day calendar; new visibility checks cannot promise those metrics."
+    },
+    {
+      "slug": "seo-traffic-analyzer",
+      "reason": "Keep indexation/ranking/traffic-estimate profile; new visibility checks are not a full SEO metrics tool."
+    },
+    {
+      "slug": "sequence-performance",
+      "reason": "Keep sending-platform campaign pulls and quantitative/copy/lead-quality diagnostic; new outreach reads pasted replies rather than this full data pipeline."
+    },
+    {
+      "slug": "setup-outreach-campaign-smartlead",
+      "reason": "Keep actual campaign/lead/sequence/schedule/mailbox creation; write-outreach never sends or schedules."
+    },
+    {
+      "slug": "signal-detection-pipeline",
+      "reason": "Keep specialist job: Detect buying signals from multiple sources, qualify leads, and generate outreach context. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "signal-scanner",
+      "reason": "Keep persistent TAM/person diffs, Supabase signal writes, lead_status updates and activation scoring; new list watch is a different contract."
+    },
+    {
+      "slug": "site-content-catalog",
+      "reason": "Keep complete sitemap/blog inventory and metadata export; required by retained programmatic SEO, content briefs and SEO audits."
+    },
+    {
+      "slug": "skill-creator",
+      "reason": "Keep direct provider/API utility: Create, structure, and package agent skills. Use when designing new skills, updating existing skills, or helping users build skills with scripts, references, and assets. Triggers on requests to create skills, write SKILL.md files, or structure skill directories. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "social-kit",
+      "reason": "Keep one-brief X and LinkedIn variants plus matching rendered graphic; make-content excludes rendering and organic-social is a different planning job."
+    },
+    {
+      "slug": "social-listening",
+      "reason": "Keep direct structured data-provider social/web mention queries; report playbooks do not replace raw provider access."
+    },
+    {
+      "slug": "structured-scraping-riveter",
+      "reason": "Keep direct provider/API utility: Web scraping with structured data extraction - define your output schema. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "talking-head-video",
+      "reason": "Keep HeyGen avatar narration/multi-scene rendering and config; preserve video-production resources."
+    },
+    {
+      "slug": "tam-builder",
+      "reason": "Keep Apollo company enumeration/refresh, scored account CSV and persona watchlist; market sizing is not the same database contract."
+    },
+    {
+      "slug": "targeted-prospecting",
+      "reason": "Keep direct provider/API utility: Build a prospect list of companies with decision makers, verified contact info, and hiring/intent signals. Use when asked to find leads by industry, build an account list with specific titles, prospect companies that are actively hiring, or create a targeted outreach list filtered by company size, location, and hiring activity. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "team-linkedin-profiles",
+      "reason": "Keep direct provider/API utility: Find LinkedIn profiles of a specific team or department at a company. Use when asked to get LinkedIn profiles, find team members, or look up people in a particular team/department/group at a company. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "tech-stack-teardown",
+      "reason": "Keep specialist job: Reverse-engineer a company's sales and marketing tech stack from public signals. Detects CRMs, cold email tools, people databases, ad pixels, email delivery services, and outbound sending domains via DNS records, website source inspection, Apify technology profiling, blacklist checks, and public spam complaint searches. Works on single companies or batches. Outputs a structured markdown report per company. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "terminal-gif-recordings",
+      "reason": "Keep direct provider/API utility: Create polished terminal GIF recordings using VHS (Video Hardware Software) by Charmbracelet. Use when asked to create terminal demos, CLI gifs, command-line recordings, or animated terminal screenshots for documentation, READMEs, or marketing. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "tiktok-influencer-finder",
+      "reason": "Keep specialist job: Find TikTok influencers using Apify's Influencer Discovery Agent. Use when the user wants to discover TikTok creators or influencers in any niche. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "tiktok-search",
+      "reason": "Keep direct provider/API utility: Search TikTok - find profiles, videos, hashtags, and trending content. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "topical-authority-mapper",
+      "reason": "Keep complete hub/spoke architecture, internal-link matrix and coverage map; a visibility roadmap only partly replaces this."
+    },
+    {
+      "slug": "trend-discovery",
+      "reason": "Keep song-linked videos/audio/format discovery, trend-feed acceleration and shelf-life tests; market listening only partly replaces that sound/format specialist contract."
+    },
+    {
+      "slug": "twitter-profile-lookup",
+      "reason": "Keep direct provider/API utility: Look up Twitter/X profiles - get bio, followers, tweets, and engagement. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "update-brand-kit",
+      "reason": "Keep brand/product/image updates, clear/partial-update and hero-image semantics; brand setup is unreleased."
+    },
+    {
+      "slug": "uptime-monitor",
+      "reason": "Keep direct provider/API utility: Monitor website uptime - check availability, response times, and status. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "verify-email",
+      "reason": "Keep direct provider/API utility: Verify if an email address is valid and deliverable. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "video-clipper",
+      "reason": "Keep podcast/interview transcription, moment selection, tracked vertical reframing and captioned clip rendering; no released replacement."
+    },
+    {
+      "slug": "video-polish",
+      "reason": "Keep narration-driven zoom/pan and Remotion screen-recording rendering; no released replacement."
+    },
+    {
+      "slug": "visual-brand-extractor",
+      "reason": "Keep CSS typography/layout extraction and compatible slide-preset/brand-config files; preserve referenced HTML-slides resources."
+    },
+    {
+      "slug": "voice-of-customer-synthesizer",
+      "reason": "Keep support/NPS/Slack/call/survey period trends and product/CS-specific actions; buyer quote research only partly replaces this full feedback synthesis."
+    },
+    {
+      "slug": "weather",
+      "reason": "Keep direct provider/API utility: Get current weather and forecasts using free APIs (no API key required). Use when asked about weather, temperature, forecasts, or climate conditions for any location. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-archive-scraper",
+      "reason": "Keep specialist job: Search the Wayback Machine for archived versions of websites. Extract cached pages, customer lists, testimonials, and partner directories from sites that have changed or gone offline. Uses the free CDX API \u2014 no API key needed. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "web-research-parallel",
+      "reason": "Keep direct provider/API utility: Web research API with OpenAI-compatible chat completions and async tasks. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-scraping",
+      "reason": "Keep direct provider/API utility: Scrape websites, extract structured data, and automate browsers. Use when asked to scrape, extract, crawl, parse, or pull data from web pages or any URL. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-scraping-olostep",
+      "reason": "Keep direct provider/API utility: Web scraping, crawling, and AI-powered answer extraction at scale. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-search",
+      "reason": "Keep direct provider/API utility: Search the web, platforms, and datasets. Use when asked to search, find, look up, research, or discover information from the web, YouTube, Amazon, eBay, news, academic sources, or any online platform. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-search-andi",
+      "reason": "Keep direct provider/API utility: Fast, high-quality web search with intelligent ranking and instant answers. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-search-exa",
+      "reason": "Keep direct provider/API utility: Neural web search - find similar content, extract pages, and run deep research. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-search-jina",
+      "reason": "Keep direct provider/API utility: Jina Search - fast web search returning SERP results. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-search-linkup",
+      "reason": "Keep direct provider/API utility: Web search and content fetching - search the web or extract content from URLs. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-search-perplexity",
+      "reason": "Keep direct provider/API utility: Perplexity AI search and chat completions with real-time web data. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-search-tavily",
+      "reason": "Keep direct provider/API utility: AI-powered web search, crawling, extraction, and deep research. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "web-search-valyu",
+      "reason": "Keep direct provider/API utility: Web search, AI answers, content extraction, and async deep research. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "website-screenshot-notte",
+      "reason": "Keep direct provider/API utility: Take screenshots of any website using Notte browser automation. Use when asked to screenshot, capture, or snap a webpage. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "yc-batch-evaluator",
+      "reason": "Keep direct provider/API utility: Evaluate YC batch companies for investment \u2014 scrapes the YC directory, researches each company and its founders (work history, LinkedIn, website), assesses founder-company fit, and exports to Google Sheets with priority rankings. Use when asked to evaluate YC companies, research a YC batch, screen startups, or do due diligence on YC companies. Released playbooks do not replace its raw endpoint/output contract."
+    },
+    {
+      "slug": "youtube-apify-transcript",
+      "reason": "Keep specialist job: Fetch YouTube transcripts via APIFY API. Works from cloud IPs (Hetzner, AWS, etc.) by bypassing YouTube's bot detection. Free tier includes $5/month credits (~714 videos). No credit card required. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    },
+    {
+      "slug": "youtube-watcher",
+      "reason": "Keep specialist job: Fetch and read transcripts from YouTube videos. Use when you need to summarize a video, answer questions about its content, or extract information from it. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+    }
+  ]
+}

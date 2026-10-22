@@ -1,6 +1,58 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-20",
+  "generated": "2026-10-22",
+  "retired_skills": [
+    {
+      "slug": "campaign-brief-generator",
+      "replacement": "plan-campaign",
+      "reason": "The old channel, message, calendar, asset and measurement brief is covered by the released campaign plan and brief template."
+    },
+    {
+      "slug": "competitive-pricing-intel",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft §6 covers tiers, feature gates, buyer-scenario cost, hidden charges and Wayback history; watch-and-react diffs packaging and price changes."
+    },
+    {
+      "slug": "competitor-content-tracker",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft §3 covers social/blog/newsletter/podcast cadence, content mix and normalized top posts; the weekly watch compares snapshots and feeds."
+    },
+    {
+      "slug": "competitor-intel",
+      "replacement": "research-competitors",
+      "reason": "Released rival profiles, landscape, openings and watch cover the old web/social/review positioning research and competitive gap report."
+    },
+    {
+      "slug": "competitor-monitoring-system",
+      "replacement": "research-competitors",
+      "reason": "Released baseline snapshots and watch cover recurring content, ads, reviews, pricing and product changes, with explicit scheduled-browser limitations."
+    },
+    {
+      "slug": "competitor-social-research",
+      "replacement": "research-competitors",
+      "reason": "Rival-craft §3 compares platforms, cadence, content mix, series and normalized top posts; the report delivers formats, angles and brand-specific tests."
+    },
+    {
+      "slug": "create-html-carousel",
+      "replacement": "goose-graphics",
+      "reason": "The old file explicitly declares goose-graphics its successor; goose-graphics renders the same carousel deliverable with format/style discovery."
+    },
+    {
+      "slug": "product-demand-research",
+      "replacement": "research-market",
+      "reason": "The idea-validation branch explicitly researches demand for a new product, offer or concept and delivers evidence and a next-test decision."
+    },
+    {
+      "slug": "social-listening-brief",
+      "replacement": "research-market",
+      "reason": "The listening step and brand watch cover linked mentions, sentiment, repeated versus isolated signals, source limits, risks and prioritized actions."
+    },
+    {
+      "slug": "social-media-scraping-scrapecreators",
+      "replacement": "scrapecreators-api",
+      "reason": "Already only a compatibility alias directing all provider operations to scrapecreators-api; adds no independent API capability."
+    }
+  ],
   "skills": [
     {
       "slug": "ad-angle-miner",
@@ -1133,34 +1185,6 @@
       }
     },
     {
-      "slug": "campaign-brief-generator",
-      "name": "campaign-brief-generator",
-      "category": "composites",
-      "domain": "content",
-      "description": ">",
-      "tags": "content",
-      "path": "skills/content/composites/campaign-brief-generator",
-      "files": [
-        "skills/content/composites/campaign-brief-generator/SKILL.md",
-        "skills/content/composites/campaign-brief-generator/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "campaign-brief-generator",
-        "category": "composites",
-        "tags": [
-          "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install campaign-brief-generator",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "caption-burn",
       "name": "caption-burn",
       "category": "capabilities",
@@ -1599,34 +1623,6 @@
       }
     },
     {
-      "slug": "competitive-pricing-intel",
-      "name": "competitive-pricing-intel",
-      "category": "composites",
-      "domain": "competitive-intel",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/competitive-intel/composites/competitive-pricing-intel",
-      "files": [
-        "skills/competitive-intel/composites/competitive-pricing-intel/SKILL.md",
-        "skills/competitive-intel/composites/competitive-pricing-intel/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitive-pricing-intel",
-        "category": "composites",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitive-pricing-intel",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
       "slug": "competitor-ad-intelligence",
       "name": "competitor-ad-intelligence",
       "category": "composites",
@@ -1660,95 +1656,6 @@
           "scrapecreators-api",
           "transcript-intelligence"
         ]
-      }
-    },
-    {
-      "slug": "competitor-content-tracker",
-      "name": "competitor-content-tracker",
-      "category": "composites",
-      "domain": "competitive-intel",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/competitive-intel/composites/competitor-content-tracker",
-      "files": [
-        "skills/competitive-intel/composites/competitor-content-tracker/SKILL.md",
-        "skills/competitive-intel/composites/competitor-content-tracker/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-content-tracker",
-        "category": "composites",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitor-content-tracker",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "blog-feed-monitor",
-          "linkedin-profile-post-scraper",
-          "twitter-mention-tracker"
-        ]
-      }
-    },
-    {
-      "slug": "competitor-intel",
-      "name": "competitor-intel",
-      "category": "composites",
-      "domain": "competitive-intel",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/competitive-intel/composites/competitor-intel",
-      "files": [
-        "skills/competitive-intel/composites/competitor-intel/SKILL.md",
-        "skills/competitive-intel/composites/competitor-intel/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-intel",
-        "category": "composites",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitor-intel",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "competitor-monitoring-system",
-      "name": "competitor-monitoring-system",
-      "category": "playbooks",
-      "domain": "competitive-intel",
-      "description": ">",
-      "tags": "competitive-intel",
-      "path": "skills/competitive-intel/playbooks/competitor-monitoring-system",
-      "files": [
-        "skills/competitive-intel/playbooks/competitor-monitoring-system/SKILL.md",
-        "skills/competitive-intel/playbooks/competitor-monitoring-system/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-monitoring-system",
-        "category": "playbooks",
-        "tags": [
-          "competitive-intel"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install competitor-monitoring-system",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
       }
     },
     {
@@ -1841,45 +1748,6 @@
             "codex"
           ]
         }
-      }
-    },
-    {
-      "slug": "competitor-social-research",
-      "name": "competitor-social-research",
-      "category": "composites",
-      "domain": "social",
-      "description": "Compare competitors' social content across platforms to identify recurring topics, formats, hooks, audience reactions, distribution patterns, and credible content opportunities for a brand.",
-      "tags": "social, competitive-intel, research",
-      "path": "skills/social/composites/competitor-social-research",
-      "files": [
-        "skills/social/composites/competitor-social-research/SKILL.md",
-        "skills/social/composites/competitor-social-research/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "competitor-social-research",
-        "category": "composites",
-        "domain": "social",
-        "tags": [
-          "social",
-          "competitive-intel",
-          "research"
-        ],
-        "source": "scrapecreators",
-        "installation": {
-          "base_command": "npx goose-skills install competitor-social-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "scrapecreators-api",
-          "outlier-post-finder",
-          "transcript-intelligence",
-          "comment-mining",
-          "creator-profile-teardown"
-        ]
       }
     },
     {
@@ -2312,40 +2180,6 @@
         ],
         "installation": {
           "base_command": "npx goose-skills install create-dashboard",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
-      }
-    },
-    {
-      "slug": "create-html-carousel",
-      "name": "create-html-carousel",
-      "category": "capabilities",
-      "domain": "design",
-      "description": "Create LinkedIn carousel posts as high-quality PNG images. Design informational multi-slide posts like \"5 AI GTM workflows\" with consistent styling, then automatically screenshot each slide at LinkedIn's optimal 1080x1080px format.",
-      "tags": "content",
-      "path": "skills/design/capabilities/create-html-carousel",
-      "files": [
-        "skills/design/capabilities/create-html-carousel/README.md",
-        "skills/design/capabilities/create-html-carousel/SKILL.md",
-        "skills/design/capabilities/create-html-carousel/STYLE_PRESETS.md",
-        "skills/design/capabilities/create-html-carousel/package.json",
-        "skills/design/capabilities/create-html-carousel/screenshot-slides.js",
-        "skills/design/capabilities/create-html-carousel/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "create-html-carousel",
-        "category": "capabilities",
-        "tags": [
-          "content"
-        ],
-        "deprecated": true,
-        "deprecation_note": "Superseded by `goose-graphics` (skills/composites/goose-graphics/). Scheduled for removal after one release cycle.",
-        "installation": {
-          "base_command": "npx goose-skills install create-html-carousel",
           "supports": [
             "claude",
             "cursor",
@@ -7979,43 +7813,6 @@
       }
     },
     {
-      "slug": "product-demand-research",
-      "name": "product-demand-research",
-      "category": "composites",
-      "domain": "research",
-      "description": "Test product-demand hypotheses using public customer language, search and social signals, competitor offers, reviews, comments, creator content, and social-commerce evidence before committing to a product, launch, offer, or campaign.",
-      "tags": "research, social, brand",
-      "path": "skills/research/composites/product-demand-research",
-      "files": [
-        "skills/research/composites/product-demand-research/SKILL.md",
-        "skills/research/composites/product-demand-research/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "product-demand-research",
-        "category": "composites",
-        "domain": "research",
-        "tags": [
-          "research",
-          "social",
-          "brand"
-        ],
-        "source": "scrapecreators",
-        "installation": {
-          "base_command": "npx goose-skills install product-demand-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "scrapecreators-api",
-          "comment-mining",
-          "transcript-intelligence"
-        ]
-      }
-    },
-    {
       "slug": "product-hunt-scraper",
       "name": "product-hunt-scraper",
       "category": "capabilities",
@@ -12478,77 +12275,6 @@
         "source": "orthogonal",
         "installation": {
           "base_command": "npx goose-skills install social-listening",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "scrapecreators-api"
-        ]
-      }
-    },
-    {
-      "slug": "social-listening-brief",
-      "name": "social-listening-brief",
-      "category": "composites",
-      "domain": "social",
-      "description": "Produce a decision-ready brief of current brand, product, category, and competitor conversations across social platforms, including sentiment drivers, questions, risks, and growth opportunities.",
-      "tags": "social, research, monitoring",
-      "path": "skills/social/composites/social-listening-brief",
-      "files": [
-        "skills/social/composites/social-listening-brief/SKILL.md",
-        "skills/social/composites/social-listening-brief/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "social-listening-brief",
-        "category": "composites",
-        "domain": "social",
-        "tags": [
-          "social",
-          "research",
-          "monitoring"
-        ],
-        "source": "scrapecreators",
-        "installation": {
-          "base_command": "npx goose-skills install social-listening-brief",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "scrapecreators-api",
-          "comment-mining"
-        ]
-      }
-    },
-    {
-      "slug": "social-media-scraping-scrapecreators",
-      "name": "social-media-scraping-scrapecreators",
-      "category": "capabilities",
-      "domain": "social",
-      "description": "Compatibility alias for the original ScrapeCreators social scraping skill. Use scrapecreators-api for current endpoint guidance and the task-specific Brand Growth research skills for finished analysis.",
-      "tags": "social, research-tools",
-      "path": "skills/social/capabilities/social-media-scraping-scrapecreators",
-      "files": [
-        "skills/social/capabilities/social-media-scraping-scrapecreators/SKILL.md",
-        "skills/social/capabilities/social-media-scraping-scrapecreators/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "social-media-scraping-scrapecreators",
-        "category": "capabilities",
-        "tags": [
-          "social",
-          "research-tools"
-        ],
-        "source": "scrapecreators",
-        "deprecated": true,
-        "superseded_by": "scrapecreators-api",
-        "installation": {
-          "base_command": "npx goose-skills install social-media-scraping-scrapecreators",
           "supports": [
             "claude",
             "cursor",

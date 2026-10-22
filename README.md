@@ -14,11 +14,17 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 [![npm version](https://img.shields.io/npm/v/goose-skills?color=blue)](https://www.npmjs.com/package/goose-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-200%2B-orange)]()
+[![Skills](https://img.shields.io/badge/skills-marketing-orange)]()
 
 </div>
 
 ---
+
+## Marketing library cleanup
+
+Fourteen marketing playbooks now lead the library. Retired names and their replacements are listed in [retired-skills.json](retired-skills.json). Skills without a complete replacement stay available, including specialist SEO, contact enrichment, sending, clipping and report work. The ads/video engine and its dependencies are preserved.
+
+Old source remains available at the pinned `legacy_revision` in that file. The legacy eval arm reads that revision automatically; no history rewrite or customer-installed skill deletion is involved.
 
 ## Contents
 
@@ -75,7 +81,7 @@ npx gooseworks@latest install --claude --mcp   # or --cursor --mcp, --codex --mc
 npx gooseworks@latest install --all            # every detected agent
 ```
 
-This gives your coding agent access to the **full catalog of 200+ skills**. After installing, just ask your agent to use any skill by name.
+This gives your coding agent access to the **current skills catalog**. After installing, just ask your agent to use any skill by name.
 
 > If you want a cloud-based AI coworker that already knows all these skills and more, sign up to [Gooseworks](https://app.gooseworks.ai)
 
@@ -87,7 +93,7 @@ The **Brand Growth** collection is a curated path through the normal Goose Skill
 
 | Stage | What your agent can do | Example skills |
 |---|---|---|
-| **Research** | Understand the brand, customers, competitors, audiences, creators, trends, comments, and product demand | `brand-research`, `audience-research`, `comment-mining`, `competitor-social-research`, `influencer-prospecting`, `trend-discovery`, `product-demand-research` |
+| **Research** | Understand the brand, customers, competitors, audiences, creators, trends, comments, and product demand | `brand-research`, `audience-research`, `comment-mining`, `research-competitors`, `influencer-prospecting`, `trend-discovery`, `research-market` |
 | **Analyze** | Diagnose ads, creator profiles, transcripts, policy risk, landing-page message match, and unusual social performance | `competitor-ad-intelligence`, `creator-profile-teardown`, `transcript-intelligence`, `meta-ads-analyzer`, `meta-ad-policy-checker`, `ad-to-landing-page-auditor`, `outlier-post-finder` |
 | **Create** | Repurpose research, remix graphic ads, make product photography and social graphics, and animate static images | `content-repurposing`, `remix-graphic-ad-from-reference`, `product-photoshoot`, `goose-graphics`, `animate-image` |
 | **Learn and iterate** | Bring results back into research and analysis, then decide the next test | Re-run the relevant analysis skill with current performance and audience evidence |

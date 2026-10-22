@@ -6,6 +6,7 @@ const path = require('node:path');
 
 const {
   parseInstallOptions,
+  successorInstallCommand,
   renderCursorRule,
   placeForCodex,
   placeForCursor,
@@ -91,3 +92,11 @@ test('placeForCursor writes rule file in project directory', () => {
   assert.match(contents, /# skill body/);
 });
 
+
+test('successor install guidance keeps the selected agent and project', () => {
+  assert.equal(successorInstallCommand('research-competitors', parseInstallOptions(['old', '--codex'])), 'npx goose-skills install research-competitors --codex');
+  const project = "/tmp/Bo's project";
+  const command = successorInstallCommand('research-competitors', parseInstallOptions(['old', '--cursor', '--project-dir', project]));
+  assert.equal(command, "npx goose-skills install research-competitors --cursor --project-dir '/tmp/Bo'\\''s project'");
+  assert.equal(successorInstallCommand('research-competitors', parseInstallOptions(['old'])), 'npx goose-skills install research-competitors');
+});

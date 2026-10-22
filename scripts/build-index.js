@@ -515,9 +515,15 @@ if (fs.existsSync(OUTPUT)) {
   } catch {}
 }
 
+const retirementFile = path.join(ROOT, 'retired-skills.json');
+const retirementManifest = fs.existsSync(retirementFile) ? JSON.parse(fs.readFileSync(retirementFile, 'utf8')) : {};
+const { validateRetirements } = require('./lib/retirements');
+const retiredSkills = validateRetirements(retirementManifest, skills);
+
 const index = {
   version: '1.4.0',
   generated: generatedDate,
+  retired_skills: retiredSkills,
   skills,
   packs,
   collections,
