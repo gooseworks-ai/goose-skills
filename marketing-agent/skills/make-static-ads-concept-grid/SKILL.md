@@ -56,6 +56,6 @@ Give a **fresh subagent** only: the board (without the critic section), the prod
 - check each starting point's source supports what the row implies;
 - pick the two weakest rows and say why.
 
-Fix or replace what it names, then write its notes and your changes into the board. A row you keep against its objection says why. No subagents on this host → show the board to the marketer and ask for their critique before going on; your own review does not count.
+Fix or replace what it names, then write its notes and your changes into the board. A row you keep against its objection says why. **New or rewritten rows go back to a critic** (the same one or a fresh one) before you continue; an unreviewed replacement is the easiest place for a weak idea to slip through. No subagents on this host → show the board to the marketer and ask for their critique before going on; your own review does not count.
 
 **Done:** every row has a source or a hypothesis label, a physical event, a protected choice, and survived the critic or was changed.
