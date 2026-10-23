@@ -21,7 +21,7 @@ Same reading rules as below: as a person would, public pages only, no logins, no
 
 ## List mode — the free pass
 
-Today the customer's GooseWorks connector has **no** people search, company database, email finder or email checker — the server has them, but not on the connector yet (server-needs). Most of a good list is on public pages anyway:
+Check the current tool list: `marketing_data_describe` and `marketing_data_lookup` provide curated people/company lookup and work-email find/verify when deployed. Free discovery and quotes are not paid results. Use those tools as described below; on an older connector, use public sources or a supplied export and state the missing access. Most of a good list is on public pages anyway:
 
 | Need | Free source |
 |---|---|
@@ -55,9 +55,9 @@ Paths are from the provider's public documentation as checked on 2026-10-16. The
 
 Not usable for this playbook even though it exists: `/v1/find-creator-emails` (built for creators' public business emails — fine for work-with-creators, not for B2B people); `/v1/detect-age-gender` (never infer protected traits about prospects).
 
-## When the contact routes exist (server-needs #1–#4)
+## Managed people and work-contact reads
 
-Check the connector's `data_call_provider` description for its provider list at the start of a list run (it names the providers it accepts); when a new one appears, one small probe call inside the ceiling confirms the path and its charge. When email checking, email finding or people search is listed, use it, inside the one approved ceiling:
+Load the two managed marketing data tools. Call `marketing_data_describe` for the operation and its current input schema; do not guess vendor paths, field names or result fields. Use `marketing_data_lookup` with `quote_only: true`, show its returned maximum credits, obtain approval through spend-gate branch A and execute the identical request using the returned quote token and approved ceiling. Search/enrich companies and people only for the stated list or supplied signups; find work email only when requested and verify every returned candidate. A sample is paid when the quote says it is: never describe paid people search as free. Match supplied signups by exact work email/domain and available identifiers; leave ambiguous matches unresolved. Per-row errors and missing matches stay visible. No sending is performed.
 
 1. **Search before you pay per person.** People search returns a count and a sample first — show "≈<n> match; here are 10" in the report before any reveals. One broad search ("<titles> at <industry> companies, <size>, <country>") beats one search per company; list title variants with OR; use explicit title lists, never seniority buckets (they pull in juniors and recruiters); filter companies by domain.
 2. **Accounts before people, still.** Only accounts that passed the gates get people looked up.
@@ -66,11 +66,11 @@ Check the connector's `data_call_provider` description for its provider list at 
 5. **Never:** phone finders or "enrich mobile" options, "personal" email modes, reveal-by-name when a record id exists, the deprecated free people search that hides surnames.
 6. **Log** every charge (query kind and count, never a person's name or address) and stop before the next call could pass the ceiling.
 
-The routes, paths and prices are in [../server-needs.md](../server-needs.md). Until they appear, everything above runs on the free pass and the marketer's own checker.
+The live describe response supplies allowed operations and exact schemas; lookup supplies a request-bound quote. If either tool is absent or no relevant operation is listed, use the public pass and supplied checker results, label the missing access, and never substitute guessed verification.
 
 ## Credits
 
-Spending follows the `spend-gate` skill (`../../spend-gate/SKILL.md`) (proxy branch): one yes to a ceiling "up to N credits", estimated from the credits log (or, with no history, from one small probe run inside that same ceiling), labelled an estimate; stop at it. `gooseworks:data_price_provider` does not price these lookups (server-needs #1). Every charge is logged in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`) — the kind of query, never a prospect's name. Never retry a failed paid call blindly; a resubmit pays again. The counts below are for a list built mostly from paid reads; a top-up that only fills gaps in a free result needs far fewer — count the rows it touches.
+Spending follows the `spend-gate` skill (`../../spend-gate/SKILL.md`) (proxy branch): one yes to a ceiling "up to N credits", estimated from the credits log (or, with no history, from one small probe run inside that same ceiling), labelled an estimate; stop at it. Managed data reads use spend-gate branch A and their own free quotes; the ScrapeCreators fallback below uses branch B. Every charge is logged in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`) — the kind of query, never a prospect's name. Never retry a failed paid call blindly; a resubmit pays again. The counts below are for a list built mostly from paid reads; a top-up that only fills gaps in a free result needs far fewer — count the rows it touches.
 
 ## Yield (approximate, from outbound practice — use it to size the lookup counts you show)
 

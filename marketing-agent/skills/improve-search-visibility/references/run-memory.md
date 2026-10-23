@@ -1,14 +1,23 @@
 # Run memory for improve-search-visibility
 
-What this playbook hands the `run-memory` skill (`../../run-memory/SKILL.md`) at the start and end of every run. The atom does the work: it finds the last record, checks recommendations, writes "since last time" and saves the new record. This file says what is specific to search: the per-question baseline, how to tell real movement from noise, and how to check whether last run's five fixes shipped.
+What this playbook hands the `run-memory` skill (`../../run-memory/SKILL.md`) at the start and end of every run. The atom does the work: it finds the last record, checks recommendations, writes "since last time" and saves the new record. This file says what is specific to search: the per-question baseline, how to tell real movement from noise, and how to check whether last run's ranked fixes shipped.
 
-## Job
+## Match the record to the job
 
-| `job` | When | `cadence` |
+| `job` | Subject | When |
 |---|---|---|
-| `search visibility check` | every run: the first one, a monthly scheduled run, a re-check after a fix ships, or "am I in ChatGPT yet?" | `monthly` |
+| `search visibility check` | none | recurring AI/Google question-set check; monthly when useful |
+| `seo audit` | none | site or technical audit |
+| `keyword gaps` | none | competitor topic/ranking comparison |
+| `topic cluster` | topic slug | subject architecture or its update |
+| `seo metrics` | none | requested domain-metric comparison |
+| `pseo plan` | page-family/product slug | page-set blueprint or its update |
 
-`playbook` = `improve-search-visibility`. No `subject`: one record covers the whole question set. File: `runs/improve-search-visibility/search-visibility-check/<YYYY-MM-DD>.md`.
+`playbook` = `improve-search-visibility`. File: `runs/improve-search-visibility/<job-slug>/[<subject>/]<date>.md`, through the shared run-memory atom. A mixed ask uses its main job and links the additional artifacts. Read the latest matching job/subject; do not compare a technical audit to an AI mention survey.
+
+**Jobs other than AI visibility:** record the request/scope, evidence dates/methods, report/artifact links, recommendations and unresolved access. For an audit, check whether prior defects still occur on the affected URLs/templates. For gaps/clusters/pSEO, preserve existing decisions and check relevant content/data changes; for metrics, compare only the same meaning/source/market/period and record missing values, not zeros. A one-off map/plan needs no standing schedule. Recommendations record owner, verification and review timing from when the work goes live, never a guaranteed ranking lift.
+
+**The sections below apply to AI visibility checks.** The recurring question-set method stays unchanged; the recommendation count follows the request (default five this-week fixes).
 
 **What it does not replace.** These files stay the source of truth, and the record links them by path without copying them:
 - `search/questions.md`: the question set, its ids and its version.
@@ -16,7 +25,7 @@ What this playbook hands the `run-memory` skill (`../../run-memory/SKILL.md`) at
 - `search/fixes/<date>.md`: the finished fix text.
 - `search/visibility/<date>-runs.md`: the verbatim answers.
 
-The record holds only the snapshot below, the five fixes as recommendations, and their outcomes.
+The record holds only the snapshot below, the ranked fixes as recommendations, and their outcomes.
 
 **When each Start step runs.** Atom steps 1–2 (find and read the last record, read what happened since) run before the free pass, so the free pass knows which questions and fixes to re-check. Steps 3–4 (check each fix, write since last time) run **after** the free pass, from its answers: never ask a question twice, and never write since last time before today's answers exist.
 
@@ -61,11 +70,11 @@ Movement is judged only between like and like. Anything else is "not comparable"
 - **Who moved in.** When a rival newly wins a question, name the source the answer cites. That is usually the reason.
 - An earlier run's answers are still never counted in today's numbers. They are the baseline for the comparison, shown as "last checked <date>".
 
-## Recommendations: the five fixes, checked
+## Recommendations: the ranked fixes, checked
 
-**Open fixes come first in this run's five.** A fix from last time that is still open and still worth doing keeps its id. It goes into this run's five first, marked "still open from <date>", never re-issued as new. New fixes fill the rest, up to five. Anything else is parked on the roadmap (`page-map.md`), and the report says so in one line.
+**Open fixes come first in this run's recommendation list.** A fix from last time that is still open and still worth doing keeps its id. It goes into this run's recommendation list first, marked "still open from <date>", never re-issued as new. New fixes fill the remaining requested places (default five). Anything else is parked on the roadmap (`page-map.md`), and the report says so in one line.
 
-Each of the five fixes in the report becomes a recommendation:
+Each of the ranked fixes in the report becomes a recommendation:
 - **id:** `<YYYYMMDD>-<n>`, carried unchanged until it is done or dropped.
 - **owner:** `marketer`, or `make-content` for a new page brief.
 - **parts:** a fix with several parts (measurement: Search Console, Bing, the AI-referral baseline; a title and an opening) lists them in the `what` cell. It is `done` only when every part is shown. Otherwise it is `not done (partly: title live; opening unchanged)`.
@@ -73,7 +82,7 @@ Each of the five fixes in the report becomes a recommendation:
 - **review by:** see below.
 - **how we'll know:** the questions it targets (by id), the engine, today's cell for each, and the recipe: same question version, same route and location, 3 tries for key questions.
 
-Roadmap rows that are not in the five stay in `page-map.md` and are not recommendations.
+Roadmap rows not selected as fixes stay in `page-map.md` and are not recommendations.
 
 **Did it ship? `done` only from a source, never from a draft or an inference.**
 

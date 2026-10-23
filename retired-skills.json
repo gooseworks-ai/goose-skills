@@ -4,6 +4,11 @@
   "decision": "Keep old skills temporarily where released playbooks do not fully replace the job. Approved 2026-10-22.",
   "retired": [
     {
+      "slug": "battlecard-generator",
+      "replacement": "research-competitors",
+      "reason": "The focused battlecard branch delivers deal fit, win/lose guidance, fair evaluation questions, sourced objection replies, honest feature/pricing comparisons and outreach replies from existing evidence. Fixture output verified on 2026-10-22."
+    },
+    {
       "slug": "campaign-brief-generator",
       "replacement": "plan-campaign",
       "reason": "The old channel, message, calendar, asset and measurement brief is covered by the released campaign plan and brief template."
@@ -37,6 +42,11 @@
       "slug": "create-html-carousel",
       "replacement": "goose-graphics",
       "reason": "The old file explicitly declares goose-graphics its successor; goose-graphics renders the same carousel deliverable with format/style discovery."
+    },
+    {
+      "slug": "launch-positioning-builder",
+      "replacement": "research-market",
+      "reason": "The focused positioning branch delivers category and alternatives, attribute-value-proof mapping, positioning choices, finished launch messages, buyer adaptations and tests. Only owner selection updates the current positioning brief. Fixture output verified on 2026-10-22."
     },
     {
       "slug": "product-demand-research",
@@ -84,10 +94,6 @@
       "reason": "Keep creator and brand-account aggregate audience-fit/demographic comparisons; work-with-creators covers only creator programmes. Required by retained influencer-prospecting."
     },
     {
-      "slug": "battlecard-generator",
-      "reason": "Keep sales battlecards, landmine questions and win/loss objections; make-content and write-outreach explicitly exclude battlecards."
-    },
-    {
       "slug": "beat-sync-reel",
       "reason": "Keep deterministic beat detection/Ken Burns MP4 production; no released rendering replacement. Preserve video-production fonts."
     },
@@ -101,7 +107,7 @@
     },
     {
       "slug": "brand-voice-extractor",
-      "reason": "Keep company-content voice extraction and voice profile; brand learning/sign-off is unreleased. Required by retained seo-content-audit."
+      "reason": "Keep its structured extraction interface for retained seo-content-audit. Company-blog voice is now covered by voice-card; no separate company-blog job is required."
     },
     {
       "slug": "browser-automation-notte",
@@ -177,7 +183,7 @@
     },
     {
       "slug": "content-asset-creator",
-      "reason": "Keep branded HTML reports, landing pages, comparison sheets, one-pagers and PDF-ready assets; make-content excludes landing pages and one-pagers."
+      "reason": "Keep general HTML/landing-page asset rendering as a supporting capability. Ordinary reports from supplied survey data require no dedicated public skill job."
     },
     {
       "slug": "content-brief-factory",
@@ -410,10 +416,6 @@
     {
       "slug": "landing-page-intel",
       "reason": "Keep raw HTML tech stack, pixels/analytics, hidden elements and customer/logo reads; explicitly retained technical gap."
-    },
-    {
-      "slug": "launch-positioning-builder",
-      "reason": "Keep category/positioning/differentiation/proof/audience messages; positioning writing remains in backlog."
     },
     {
       "slug": "lead-discovery",
@@ -685,7 +687,7 @@
     },
     {
       "slug": "update-brand-kit",
-      "reason": "Keep brand/product/image updates, clear/partial-update and hero-image semantics; brand setup is unreleased."
+      "reason": "Supporting reference for existing direct brand/product tool semantics, not a dedicated public job. Product and photo updates use the tools directly."
     },
     {
       "slug": "uptime-monitor",

@@ -13,16 +13,16 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 ## research-market — "Which market are we in, how big is it, and what's changing?"
 - **Say it as:** "researching your market: which category you compete in, how big it is, what's changing, how people buy and what they pay — and what people are saying about you" (never the name above, to the founder).
 - **Fits:** before positioning, a plan or a raise; when the category is moving (platform changes, new entrants, price shifts); "what are people saying about us?" (a narrow ask covers just that); "watch my brand" (alerts only, weekly or daily during a launch or crisis).
-- **Produces:** a market report — which market to compete in, its size top-down and bottom-up (buyers × price, from research-audience's buyer groups), what's changing, how and where buyers find and buy, pricing norms, where attention is, demand and seasonality, what people are saying (mentions, sentiment, trends with post-by dates, risks), the competition in brief, what it means for positioning; a demand read; or brand-watch alerts. A serious risk is told in chat at once.
+- **Produces:** a market report — which market to compete in, its size top-down and bottom-up (buyers × price, from research-audience's buyer groups), what's changing, how and where buyers find and buy, pricing norms, where attention is, demand and seasonality, what people are saying (mentions, sentiment, trends with post-by dates, risks), the competition in brief, what it means for positioning; on request finished positioning choices and messages; a demand read; or brand-watch alerts. A serious risk is told in chat at once.
 - **Must bring:** nothing — it researches first.
 - **Reads:** the brand brain; research-audience's buyer groups; the latest competitor report.
-- **Not:** who the buyers are and their words (research-audience), rival teardowns, positioning, posting or replying (reply drafts are not covered yet).
+- **Not:** who the buyers are and their words (research-audience), rival teardowns, posting or replying (reply drafts are not covered yet).
 - **Costs:** Free first; paid reads (full social counts, platforms behind logins) only within one credit ceiling the founder approves after the report.
 
 ## research-competitors — "What are my competitors running right now, and what works for them?"
 - **Say it as:** "looking at what your competitors are running and what works for them" (never the name above, to the founder).
 - **Fits:** before briefing ads, before a planning cycle, when a competitor visibly moves; categories with active advertisers (DTC, apps).
-- **Produces:** a competitor report (the frame we compete in, timely openings, rivals one by one, pricing and what a typical buyer actually pays, how they compare, formats and angles, what to do), rival records with snapshots, an angle bank, and an optional weekly what-changed report.
+- **Produces:** a competitor report (the frame we compete in, timely openings, rivals one by one, pricing and what a typical buyer actually pays, how they compare, formats and angles, what to do), rival records with snapshots, an angle bank, and an optional weekly what-changed report; on request a battlecard, page-tool evidence or competitor engager intelligence with actual source coverage.
 - **Must bring:** nothing — rivals are chosen from category evidence; the founder can add or drop them afterwards.
 - **Reads:** the brand brain and its tracked rivals, the latest market report, research-audience's buyer groups.
 - **Not:** making ads, budget calls, mining customer reviews, brand listening.
@@ -85,7 +85,7 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 ## improve-search-visibility — "When people ask ChatGPT or Google for products like mine, am I in the answer?"
 - **Say it as:** "getting found when people ask Google or AI assistants" (never the name above, to the founder).
 - **Fits:** buyers research before buying (B2B SaaS, considered purchases, services, local businesses, apps with store search); organic traffic has flattened; a competitor keeps getting named.
-- **Produces:** a visibility report question by question and a this-week list of five fixes finished enough to apply (page rewrites, profile corrections, listing changes, app-store listing).
+- **Produces:** a visibility report question by question and a prioritized fix list matching the requested scope, plus focused audits, metrics, topic gaps/clusters or programmatic page-set plans (page rewrites, profile corrections, listing changes, app-store listing).
 - **Must bring:** approval of the buyer questions it drafts (and the 3–5 that matter most), the list of locations for a local business, who can edit the site and profiles this week, and pasted AI answers if the host has no browser.
 - **Reads:** the brand brain.
 - **Not:** full articles (make-content), marketplace listings, link building, paid search.
@@ -126,7 +126,6 @@ Name these out loud using the "What to say" line only; backlog card names are in
 
 | The need | Status | What to say | Helps alongside |
 |---|---|---|---|
-| Positioning from scratch (no clear "who it's for and why us") | write-my-positioning (backlog) | "Writing positioning isn't covered yet. You decide it; finding out who buys and their words gives you what it's built from." | research-market |
 | Offers, pricing, discount design | plan-offers (backlog) | "Offer design isn't covered yet. Decide the offer; everything I make for you will use it." | email-lifecycle slots a standing offer |
 | Landing page, store, checkout or onboarding fixes (CRO) | audit-my-pages (backlog) | "Page fixes aren't covered yet; you or your developer make them." | analyze-performance (a light check that top ads match their landing pages) |
 | Marketplace listings (Amazon, Etsy, Walmart…) | optimize-listings (backlog) | "Listing optimization isn't covered yet." | none |
@@ -148,13 +147,13 @@ A lens, not a route: it shows which playbooks touch each type's heaviest work (p
 | Company type | Heaviest work on the map | Heaviest work off the map |
 |---|---|---|
 | DTC e-commerce | make-static-ads, run-paid-campaigns, email-lifecycle, work-with-creators, analyze-performance | offers and promos, store and product-page conversion, WhatsApp; video ads and product photos go to the goose-video and goose-product-photos skills |
-| B2B SaaS / sales-led | research-market, research-audience, make-content, improve-search-visibility, run-organic-social (founder account) | positioning from scratch, sending outreach, product-led onboarding |
+| B2B SaaS / sales-led | research-market, research-audience, make-content, improve-search-visibility, run-organic-social (founder account) | sending outreach, product-led onboarding |
 | B2B non-SaaS, CPG in retail | research-audience, make-content | trade and distributors, trade shows, retail, sampling |
 | Consumer app | improve-search-visibility (app-store listing), email-lifecycle (push and in-app), run-organic-social, analyze-performance (cohorts) | onboarding and growth loops (product work); video ads go to the goose-video skill |
 | Marketplace seller (Amazon, Etsy, Walmart) | improve-search-visibility (search and AI answers off the marketplace), analyze-performance (from exports the seller pastes) | listing copy and images, marketplace ads (Sponsored Products), reviews and deals; the marketplace's own rules on claims |
 | Marketplace (two-sided) | research-audience (supply that is a business), improve-search-visibility (demand side), plan-campaign | recruiting individual supply (gig workers), liquidity incentives, community |
 | Local / multi-location | improve-search-visibility (local search, listings, review-request brief), research-market (what locals say on Instagram and local forums), make-content | offline and field, referrals, WhatsApp, review replies |
-| Services, agency, consultant | make-content (thought leadership), research-audience, run-organic-social (founder account), improve-search-visibility | positioning, referrals, speaking, PR |
+| Services, agency, consultant | make-content (thought leadership), research-audience, run-organic-social (founder account), improve-search-visibility | referrals, speaking, PR |
 | Creator / media | run-organic-social, make-content, email-lifecycle (newsletter welcome) | sponsorship sales, memberships |
 | Non-profit | email-lifecycle (donors), make-content | grants, events, PR |
 | Regulated categories (health, beauty, supplements, finance, food, kids) | the claims check's sign-off of the lines each writing or making job needs, before anything states a fact | a full claims audit, legal review |

@@ -2,7 +2,7 @@
   "slug": "marketing-data-access",
   "category": "capabilities",
   "tier": "foundation",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "tags": [
     "research-tools"
   ],
@@ -31,7 +31,9 @@
     "mcp": [
       "gooseworks:data_call_provider",
       "gooseworks:data_post_provider",
-      "gooseworks:data_price_provider"
+      "gooseworks:data_price_provider",
+      "gooseworks:marketing_data_describe",
+      "gooseworks:marketing_data_lookup"
     ]
   }
 }

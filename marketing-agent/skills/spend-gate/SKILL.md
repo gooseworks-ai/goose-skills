@@ -5,7 +5,7 @@ description: >-
   work-with-creators): gets the human's yes before any credits are spent. Shows the price exactly as
   quoted, or asks for one yes to a credit ceiling for paid data reads, stays under it and logs each
   charge. Also covers scheduled runs. Loaded by those playbooks; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # spend-gate
@@ -15,6 +15,8 @@ No credit is spent before the human's yes in this conversation. Money is always 
 Pick the branch by the tool:
 
 ## A. Engine-quoted work (ads, photos, video, any tool with a dry run or a price check)
+
+**Managed marketing data:** `marketing_data_describe` is free. `marketing_data_lookup` defaults to `quote_only: true`. Read the returned maximum credits and expiry, then request approval for that exact bounded work. Submit the same request with its quote token, the approved ceiling and the user’s words. A new request or expired quote needs a fresh quote. An existing approval may cover later calls only when it explicitly named that same bounded plan and total ceiling: quote each call, preserve the original approval words, and set its maximum no higher than the remaining approved credits. Ask again only for changed scope or more budget. Log every returned charge and deduct it before the next call; the tool’s per-call cap is not a cumulative plan limit. Free continuation pages inside that approved plan need no second spending approval. A capped quote is a maximum, not a claim about final usage. Never treat discovery, a successful quote or a fixture as proof that a paid data read ran.
 
 1. Ask the tool for its quote (its dry run, `quote_only`, or `gooseworks:data_price_provider` for fal and ElevenLabs calls).
 2. Show each quote exactly as given. Several quotes are shown one by one, never added up by you.

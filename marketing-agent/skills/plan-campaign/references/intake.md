@@ -17,14 +17,15 @@ Load at Before you start, steps 2–3. A good marketer reads everything they can
 | `lifecycle/program.md`, `lifecycle/calendar/<YYYY-MM>.md` | email/SMS list size, flows, sends already planned, standing offer | "do you have an email list?" |
 | `reports/performance/definitions.md` + newest weekly read | margin, the real number (store / CRM), tracking state, recent results | margin, "is tracking set up?" |
 | the last approved plan's money and status sections | AOV, margin, list size, founder hours given last time | anything already stated |
+| `research/market/positioning.md` or product-specific `research/market/positioning-<product>.md`, plus the dated positioning report it cites | the owner-selected launch direction and messaging; unselected options are proposals only | do not ask the owner to choose again when the selection is recorded |
 | research files (`gooseworks:file_read`, else `knowledge_search` documents): the market read and `demand.md`, buyer groups and the customer-words bank, the competitor report, `angle-bank.md`, `landscape.md`; `competitor_read`; `creators/roster.csv` when creators may be a leg | who buys, why, what rivals run, which creators exist | "who's your customer?" |
 | the claims contract, through the `claims-gate` skill (`../../claims-gate/SKILL.md`) | which claims are usable for the hero product | "what can we say about it?" |
-| **the brand's live site — required every run** (host web fetch / browser): home and pricing pages (the address is in the brand summary) | live offer, prices, positioning; beats saved notes and old plans | "is there a sale on?" — confirm instead of asking |
+| **the brand's live site — required every run** (host web fetch / browser): home and pricing pages (the address is in the brand summary) | live offer, prices and current public positioning; confirms current commercial facts | "is there a sale on?" — confirm instead of asking |
 | an existing plan for the same occasion | what was decided before — **input to refresh, never the answer**; its numbers are re-checked against today's facts | "is this the same campaign?" — say what you found and that you'll refresh it |
 
 On the `brand_read` path, read lean first, then `product_ids` for the hero product, then learnings in full in their own call — never every section at full detail in one call (it overflows and gets skipped).
 
-When sources disagree (e.g. saved notes vs the live pricing page), use the live site and say which you used in one line. If the host has no way to read web pages, say so in the first message and label prices "from saved notes, unconfirmed".
+When sources disagree about current commercial facts (e.g. saved prices vs live pricing), use the live site and say which you used. An explicitly owner-selected launch brief is the planned direction even when the current site has not changed: name that difference and carry the selected positioning into the campaign. Do not replace it with old public copy or silently select an unapproved option. Claims still pass the claims gate. If the host has no way to read web pages, say so in the first message and label prices "from saved notes, unconfirmed".
 
 **Local mode** (no GooseWorks, marketing-guide §5): the look-first pass is the live site, the local folder (`brand-notes.md`, `claims.md` through the claims gate, the last plan in `plans/<slug>/` — step 1's existing-plan check — and run records) and any connectors the marketer has (read-only). Everything the brain would have answered becomes a question or a labelled assumption.
 

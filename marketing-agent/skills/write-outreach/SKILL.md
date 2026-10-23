@@ -9,7 +9,7 @@ description: >-
   Drafts only; the marketer sends from their own tool. Not for finding the people — use
   research-audience; not for emails to subscribers or users, or consumer win-back — use
   email-lifecycle.
-version: 0.2.0
+version: 0.2.1
 ---
 
 # write-outreach
@@ -25,6 +25,8 @@ Turns a list, or a buyer group, into words a founder or seller can send this wee
 3. **Later, on request:** reply drafts for real replies, and a read of results — what to fix in targeting, timing or message.
 
 ## Before you start
+
+Read `research/market/positioning-<product>.md` when present, else `research/market/positioning.md`, and its dated report. Carry the owner-selected launch direction into this work even when the live site/kit still uses earlier messaging. Unselected options stay proposals and every factual claim keeps its existing proof/approval status.
 
 1. **Setup first:** do [the `marketing-guide` skill](../marketing-guide/SKILL.md) §1–2 (connect, brand, brain read) before anything else; the job line is "I write your outreach from what's saved about your brand." (`get_started` with `wants: "more"`; tool groups `brand`, `files`.)
 2. **Read — free, no questions.** Brain path: chapters 14 (rules — every `[outreach …]` and `[outreach-copy …]` one), 22 and 23 (what we've run, what is working) and the products chapter; `gooseworks:brain_search` for outreach lessons, case studies, customer results and signed-off claims. Fallback: `gooseworks:brand_read` (summary, kit, products with prices, learnings) and `gooseworks:knowledge_search` for the same. Claims: the read step of [the `claims-gate` skill](../claims-gate/SKILL.md). Workspace: `research/audience/` — the newest `<D>-<list>/list.csv` and its `report.md` (the segments' angles), `catch-all.csv`, `fit-definition.md`, `buyer-groups.md`, `voc-bank.md`, `ledger.csv`, `lessons/`; `outreach/` — earlier packs and results reads. The sender's voice card if one exists ([the `voice-card` skill](../voice-card/SKILL.md), read only).

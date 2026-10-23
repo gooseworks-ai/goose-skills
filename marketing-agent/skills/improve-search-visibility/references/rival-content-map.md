@@ -1,12 +1,12 @@
 # Rival content map (free)
 
-Load in the free pass (step 1). It answers the content-strategy question a single page fix can't: **what kinds of pages do the rivals have that we don't?** ("They have 12 comparison pages and 40 integration pages; you have none.") Everything here is free: sitemaps and the host's own fetch (marketing-guide §3, "Public data"; the `marketing-data-access` skill (`../../marketing-data-access/SKILL.md`) lists sitemaps as a free source).
+Use for the requested competitor, audit or pSEO branch. It answers **what kinds of pages do the rivals have that we don't?** ("They have 12 comparison pages and 40 integration pages; you have none.") Everything here is free: sitemaps and the host's own fetch (marketing-guide §3, "Public data"; the `marketing-data-access` skill (`../../marketing-data-access/SKILL.md`) lists sitemaps as a free source).
 
 ## Who to map
-The brand plus 3–5 rivals: the tracked roster (`competitor_read`) first, then any rival the engines named most often in this run. Never more than five — the point is the pattern, not a census.
+Use the requested rivals. Otherwise choose a focused set from the tracked roster (`competitor_read`) and observed search competitors, explaining the selection. The requested comparison count wins.
 
 ## 1. Read each sitemap
-`/sitemap.xml`, else `/sitemap_index.xml` (follow its child sitemaps), else the `Sitemap:` line in `/robots.txt`, else the blog feed (`/feed`, `/blog/feed`). No sitemap and no feed → "not mapped — no sitemap" for that site; never crawl a site page by page. Hosts that can't fetch → "not checked" and say why.
+`/sitemap.xml`, else `/sitemap_index.xml` (follow its child sitemaps), else the `Sitemap:` line in `/robots.txt`, else the blog feed (`/feed`, `/blog/feed`). If these are absent or incomplete, inspect public blog/resource/navigation indexes or available crawl exports for the requested scope. Record discovery methods and limits; do not imply the sitemap is a complete content inventory. Hosts that cannot fetch mark the unavailable checks and say why.
 
 ## 2. Sort every URL by page type
 Use the URL first, the page title when the URL is unclear. Adapt patterns to the site (a `/compare/` folder is the same type as `/vs/`).
@@ -49,16 +49,10 @@ Average ≥ 4: well built, hard to beat without a real difference. 3–4: beatab
 | Integration | 2 | 40 | 28 | 15 | partly |
 | Case study | 0 | 22 | 15 | 8 | **yes** |
 
-Gap = we have none (or far fewer) of a type at least two rivals invest in **and** the type matches a buyer question in our set. A type everyone has is not automatically ours to copy: weigh it against what buyers ask (don't follow the herd). Counts come from sitemaps on the date read; in the story say it plainly ("from each site's public list of pages, read 19 Oct — it can miss pages"), never the word "sitemap" outside the developer section.
+A candidate gap means we lack useful coverage for an intent relevant to our buyers while a checked rival invests in it. Two rivals provide stronger evidence, not a prerequisite. A type everyone has is not automatically ours to copy: weigh it against what buyers ask (don't follow the herd). Counts come from sitemaps on the date read; in the story say it plainly ("from each site's public list of pages, read 19 Oct — it can miss pages"), never the word "sitemap" outside the developer section.
 
 ## 5. Where it lands
-- A gap type that answers questions in our set becomes a **needed** row in the page map (one brief for the first page of the type, not the whole set), with the rivals' best example cited.
-- A rival templated set scoring ≥ 4 on a question we lose explains *why* we lose it — say it in the pattern.
-- Building a whole templated set of our own (e.g. "us vs every rival") is not a this-week fix and not this playbook's job yet: the report says so in "What we're not doing", and the page map holds only the first page of the type.
 
-## Not done here — seed for the B2B content roadmap (backlog #17)
-These parts of the old SEO skills need keyword data or a new job and wait for backlog card #17 (and server-needs §8):
-- **Topic gap table** — topics each rival covers that we don't, and topics nobody owns, with volume and difficulty.
-- **Templated-page planning** — scoring each pattern ("vs {rival}", "{tool} integration", "for {industry}") by demand, data availability and feasibility; the template blueprint (URL, title and meta templates, H1, sections, data per page); a build sequence.
-- **Keyword validation** of each pattern's head and tail terms.
-- **Topic-cluster architecture** at site scale (pillar and cluster pages for a whole subject).
+For an AI-answer check, a relevant gap becomes a needed roadmap row and a first-page brief. For a topic/ranking-gap request, continue to the topic-level matrix in `seo-jobs.md`; page-family counts alone do not fulfill it. For a pSEO request, continue to the complete page-family blueprint, data model and pilot in `seo-jobs.md` rather than stopping at one sample page.
+
+Use `seo-data.md` for ranking, demand and traffic evidence. A set's existence or template score never proves it ranks or drives traffic. Topic architecture and a useful pSEO blueprint can be drafted without numerical volume/difficulty, with demand confidence stated.

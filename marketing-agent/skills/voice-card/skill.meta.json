@@ -2,7 +2,7 @@
   "slug": "voice-card",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "used_by": [
     "email-lifecycle",
     "make-content",
@@ -31,5 +31,8 @@
     "save-to-brain",
     "spend-gate",
     "write-report"
+  ],
+  "writes": [
+    "Sourced social/personal or company blog voice card at brand/voices/<handle>.md, supersede per handle; blog handle blog-<brand-slug>; provisional until confirmed"
   ]
 }

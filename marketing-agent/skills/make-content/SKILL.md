@@ -9,7 +9,7 @@ description: >-
   published. Not for a dated posting calendar — use run-organic-social; not ad copy (make-static-ads)
   or promo emails (email-lifecycle). Press releases, landing and product pages, and sales decks are
   not covered.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # make-content
@@ -27,6 +27,10 @@ One of five things, saved to the brand's workspace and shown in chat:
 Every piece carries an **edit note** and a **claims check**: what was kept, softened and cut, and the proof that would restore each cut. The formats are listed in references/formats.md. Anything else is routed (Out of scope).
 
 ## Before you start
+
+Read `research/market/positioning-<product>.md` when present, else `research/market/positioning.md`, and its dated report. Carry the owner-selected launch direction into this work even when the live site/kit still uses earlier messaging. Unselected options stay proposals and every factual claim keeps its existing proof/approval status.
+
+**Briefs only, one or several topics:** after the shared setup and evidence read below, run the existing `make-content-content-brief` skill (`../make-content-content-brief/SKILL.md`) for each supplied topic. Reuse a shared inventory/source read, distinguish overlapping intents, and deliver the requested briefs with their sources and proof gaps. Stop at briefs: no draft articles, outline-approval loop or newsletter intake unless asked. State any unfinished topic; never return one brief as a completed ten-topic request.
 
 1. **Setup first:** do the `marketing-guide` skill (`../marketing-guide/SKILL.md`) §1–2 (connect, brand, brain read) before anything else; the job line is "I write from your brand's voice and claims through it." (`get_started` with `wants: "more"`.) Then, for this playbook:
    - Brain path: open chapters 2 "What we sell", 5 "Who we sell to", 11 "How we sound" and 22 "Everything we have made and run" (past content), then `gooseworks:brand_read` lean with only `sections: ["sources","organic"]` (the brain doesn't hold own posts or saved sources).
@@ -72,7 +76,7 @@ Every piece carries an **edit note** and a **claims check**: what was kept, soft
 3. **Proof gate.** Count only H2s that make factual claims; interview lines count as proof. If fewer than half are proofed, stop at the brief and hand over "what unlocks this draft" (4–6 specific asks).
 4. **Outline gate.** Long-form and every case study: show the brief and outline and wait for a yes.
 5. **Draft.**
-   - Bylined pieces: the author's card through the voice-card atom.
+   - Bylined pieces: the author’s card through the voice-card atom. For company blog/article work, read `brand/voices/blog-<brand-slug>.md` first when present; apply its company style and bans, then a named author’s card for individual differences. A provisional guide stays labelled provisional. Social cuts use its applicable channel rules, not blog length.
    - Draft to the format's anatomy (references/formats.md), section by section for long pieces, saving each with `gooseworks:file_write`.
    - Fill proof only from the brief's inventory; each gap stays `[PROOF NEEDED: …]`. **Before leaving any fill-in or gap, check the brand's own public docs** (help centre, quickstart, pricing, changelog): a product fact found there (e.g. what one video costs in credits) is filled in with its link, not asked. Fill-ins should shrink between drafts, never grow.
    - A page draft puts its `search/briefs/…` path on line one.
@@ -120,7 +124,7 @@ Attach the edit note and one claims block per piece or set.
   - `content/newsletter/template.md` and `content/newsletter/<D>.md`
   - `content/pov/` (interview answers, reused by the social calendar)
   - `content/channels.md` (platforms and house style)
-  - voice cards at `brand/voices/<handle>.md`, through the voice-card atom
+  - voice cards at `brand/voices/<handle>.md` and `brand/voices/blog-<brand-slug>.md`, through the voice-card atom
 - **Brand documents** via the shared save-to-brain atom (`../save-to-brain/SKILL.md`):
   - The newsletter template, `versioned: supersede`, so the previous version is retired.
   - Drafts are never imported; they aren't brand facts.
@@ -145,7 +149,8 @@ And on every path: its edit note; one claims block; every unfilled gap tagged `[
 - Ad copy and creative: **make-static-ads** (image ads); video ads: the goose-video skill.
 - Rendering images or carousels: make-static-ads; produced video: the goose-video skill. Here: words, scripts, slide copy, shot notes.
 - Keyword research, content audits, visibility checks: **improve-search-visibility**, which sends page briefs here.
+- Battlecards — research-competitors, which uses the saved rival evidence.
 - Which topics get the month's capacity: the marketer, with **plan-campaign**'s brief.
 - Promo email broadcasts and flows: **email-lifecycle**. The editorial newsletter issue is here.
 - Approving claims: the scoped sign-off runs inline through the claims gate. A full claims audit and signing off the brand voice are not covered yet.
-- Landing pages, product and listing pages, press releases, sales decks, one-pagers and battlecards, sponsor reads, translation: not covered yet. Say so plainly, without naming internal plans.
+- Landing pages, product and listing pages, press releases, sales decks, one-pagers, sponsor reads, translation: not covered yet. Say so plainly, without naming internal plans.

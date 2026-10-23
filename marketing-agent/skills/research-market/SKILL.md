@@ -6,10 +6,11 @@ description: >-
   positioning. Use when the marketer asks for market research, "how big is my market", "what's
   changing in my category", "what do others charge", "what are people saying about us", "is there
   demand for <idea>", or "watch my brand / tell me if something blows up" (alerts only, risk first).
-  Researches first, asks only decisions at the end, and delivers a readable report saved to the brand.
+  Also writes positioning choices and finished messages ("position my product", "write our positioning").
+  Researches first, asks only decisions at the end, and saves the output to the brand.
   Not for who the buyers are and their own words — use research-audience; not for a deep look at
   rivals — use research-competitors.
-version: 0.4.1
+version: 0.5.0
 ---
 
 # research-market
@@ -21,9 +22,10 @@ Market research decides **which market the brand is in, how big the reachable pa
 ## Before you start
 
 1. **Setup first:** do the `marketing-guide` skill (`../marketing-guide/SKILL.md`) §1–2 (connect, brand, brain read) before anything else; the job line is "I research your market and save what I find through it." Here: call `get_started` with `wants: "more"`; a named brand not in the account → create it from its website (`gooseworks:brand_setup`) without asking and wait for its research (`gooseworks:job_get`); don't show a menu unrelated to research. Fallback brand read: `gooseworks:brand_read` (`summary`, `kit`, `products`, `competitors`, `learnings`, `sources`, `organic`, `accounts`) and `gooseworks:knowledge_search`. Either path: `gooseworks:competitor_read`; workspace: `research/market/` (the last report and watch log), `research/audience/` (`buyer-groups.md` — the groups with their counts — and the latest audience report), `research/competitors/` (the latest report), `plans/`, `research/credits-log/`. Where the brain and the website differ on a brand fact, say so and use neither as a claim. Claims: only the read step of the `claims-gate` skill (`../claims-gate/SKILL.md`) now.
-2. **Run memory:** job `market research`, `market pulse` or `brand watch`; what this job hands the atom is in `references/run-memory.md`. Its "since last time" opens the chat and the report's story.
-3. **An idea, not a market?** When the ask names a product, offer or concept that doesn't exist yet ("is there demand for …?"), run the same steps pointed at it, with `references/idea-validation.md`.
-4. Never change the host's settings, and never seed a search with names or claims from memory.
+2. **Positioning ask:** when the user wants positioning choices, a new position or finished messages, complete `references/positioning.md` after setup and return. It reuses the saved research and fills only its evidence gaps; a full market-size report is not a prerequisite.
+3. **Run memory:** job `market research`, `market pulse` or `brand watch`; what this job hands the atom is in `references/run-memory.md`. Its "since last time" opens the chat and the report's story.
+4. **An idea, not a market?** When the ask names a product, offer or concept that doesn't exist yet ("is there demand for …?"), run the same steps pointed at it, with `references/idea-validation.md`.
+5. Never change the host's settings, and never seed a search with names or claims from memory.
 
 ## Steps — the market report
 
@@ -44,14 +46,16 @@ Market research decides **which market the brand is in, how big the reachable pa
 ## Approval gates
 
 - The free pass needs no yes; a paid top-up needs one yes to a ceiling; schedules are created paused.
-- Rivals tracked and rules saved only on the marketer's yes. Research recommends; it never makes the asset.
+- Rivals tracked, positioning selected and rules confirmed only on the marketer's yes. This job drafts positioning/messages; makers produce the campaign assets.
 - Never contact, reply to or report anyone; pause nothing — the hold list is a recommendation.
 
 ## Output and write-back
 
-Paths and readers: the research-market rows of the marketing-guide's §4 table. Each file's title, tags and save mode: `references/report-format.md` (the watchlist's shape: `references/listening-craft.md`).
+Paths and readers: the research-market rows of the marketing-guide's §4 table. Each file's title, tags and save mode: `references/report-format.md` (the watchlist's shape: `references/listening-craft.md`); positioning: `references/positioning.md`.
 
 ## Done when
+
+Positioning uses `references/positioning.md`'s completion check. For the market report:
 
 - No question before the report, beyond picking the brand; news ran first; browser-only pages opened or named as couldn't-read.
 - The report passes write-report §3 and the report-format check.
@@ -63,4 +67,4 @@ Paths and readers: the research-market rows of the marketing-guide's §4 table. 
 
 ## Out of scope
 
-Who the buyers are, their problems and their words, and the customer-quote bank (research-audience) · deep rival profiles and ads (research-competitors) · reply drafts (BACKLOG, owner run-organic-social) · writing positioning (write-my-positioning, backlog) · channels and budgets (plan-campaign).
+Who the buyers are, their problems and their words, and the customer-quote bank (research-audience) · deep rival profiles and ads (research-competitors) · reply drafts (BACKLOG, owner run-organic-social) · channels and budgets (plan-campaign).

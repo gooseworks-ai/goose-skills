@@ -6,7 +6,7 @@ description: >-
   a job not covered yet (a one-off brand setup), which it says plainly; video ads and product photos go to the goose-video and goose-product-photos skills. Not
   for an ask that names a job, even two jobs ("plan our launch and make the ads"): pick the playbook
   for the first job. Not for a playbook already chosen: run that one directly.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # marketing-agent (router)
@@ -22,38 +22,39 @@ Pick one playbook for the marketer's ask, then run it. Never chain playbooks you
    - **"Write an email to …"**, cold or warm unclear → "To people who haven't heard from you, or people on your list?" Named accounts a person emails (demo-request replies, reconnects, win-back of specific accounts) → write-outreach; automated emails to a list segment (onboarding, win-back automation) → email-lifecycle.
 4. **No outcome named** ("help me with marketing", "where do I start") → where-to-start.
 5. **Video ads** (Reels, TikTok and Shorts ads, AI UGC-style video, product demo videos, fixing a rejected video ad) → the goose-video skill. **Product photos** without a shoot (packshots, lifestyle or on-model shots) → the goose-product-photos skill. Both are GooseWorks skills, not playbooks.
-6. **A job on the "not covered yet" list** → say plainly it isn't covered yet, offer the nearest playbook only if it really helps, and never fake the work.
-7. Talk to the marketer about what they'll get, never about playbooks or tools.
+6. **A focused request** — run only the requested outcome. Blog/company voice → the `voice-card` skill (`../voice-card/SKILL.md`). Raw post rows or a bounded social ranking → the `marketing-data-access` skill (`../marketing-data-access/SKILL.md`), its focused-reads reference. Product/photos in the existing brand kit → the listed brand tools directly; no maintenance playbook. A report from supplied survey results is ordinary content/report work, not a new survey job.
+7. **A job on the "not covered yet" list** → say plainly it isn't covered yet, offer the nearest playbook only if it really helps, and never fake the work.
+8. Talk to the marketer about what they'll get, never about playbooks or tools.
 
 ## Playbooks
 
 | Playbook | The marketer says | Not this — use |
 |---|---|---|
 | where-to-start | "help me with marketing" · "where do I start" · "we just launched and need customers" · "what should I focus on this month" | A named outcome → that playbook; "why did sales drop" with live channels → analyze-performance |
-| research-market | "do the market research" · "which market are we in" · "how big is my market" · "is my category growing" · "what's changing in my market" · "how do people buy in my category" · "what do others charge" · "who's talking about us" · "any mentions this week" · "is a complaint blowing up" · "watch my brand" · "what's trending in my category" | Who our buyers are, personas, their words, mining reviews → research-audience; what rivals run → research-competitors; posts that ride a trend → run-organic-social |
-| research-competitors | "competitor teardown" · "what ads are my competitors running" · "how do they price" · "find angles to brief" · "competitor X just launched" · "watch my competitors weekly" | What people say about rivals → research-market |
-| research-audience | "who is my customer" · "who are our buyers" · "build buyer personas" · "voice of customer" · "mine our reviews" · "what words do customers use" · "where does our audience hang out" · "build me a prospect list" · "find 50 right-fit people with emails" · "ABM target list" · "score these leads" · "which inbound leads first" · "who's looking for an alternative to X" · "tell me when a past champion changes jobs" | Market size, trends and how people buy → research-market; writing the messages → write-outreach; influencers → work-with-creators |
+| research-market | "draft our launch positioning" · "do the market research" · "which market are we in" · "how big is my market" · "is my category growing" · "what's changing in my market" · "how do people buy in my category" · "what do others charge" · "who's talking about us" · "any mentions this week" · "is a complaint blowing up" · "watch my brand" · "what's trending in my category" | Who our buyers are, personas, their words, mining reviews → research-audience; what rivals run → research-competitors; posts that ride a trend → run-organic-social |
+| research-competitors | "make a battlecard" · "what tools and pixels does this page use" · "who engages with this competitor" · "competitor teardown" · "what ads are my competitors running" · "how do they price" · "find angles to brief" · "competitor X just launched" · "watch my competitors weekly" | What people say about rivals → research-market |
+| research-audience | "who is my customer" · "who are our buyers" · "build buyer personas" · "voice of customer" · "mine our reviews" · "what words do customers use" · "where does our audience hang out" · "build me a prospect list" · "find 50 right-fit people with emails" · "ABM target list" · "enrich these business signup emails" · "score these leads" · "which inbound leads first" · "who's looking for an alternative to X" · "tell me when a past champion changes jobs" | Market size, trends and how people buy → research-market; writing the messages → write-outreach; influencers → work-with-creators |
 | write-outreach | "write a cold email sequence" · "what do I send to this list" · "LinkedIn messages for these leads" · "first lines for my prospects" · "how do I reply to this prospect" · "handle this objection" · "win back accounts that churned" · "reply to this demo request" · "reconnect with accounts that went quiet" · "why is nobody replying to my outreach" | Finding the people → research-audience; automated emails to a list segment (onboarding, win-back automation) → email-lifecycle; sending → not covered (the marketer sends) |
 | plan-campaign | "I have this budget and date — what do I run" · "plan my launch / Black Friday" · "where should I advertise" · "how should I split my budget" · "replan next month" | Pausing ads on a sold-out product → run-paid-campaigns; only email sends → email-lifecycle |
 | make-static-ads | "make me image ads" · "fresh ads this week" · "refresh my tired ads" · "more like my winning ad" · "my image ad got rejected — fix it" · "a header image or social graphic" | Video ads → goose-video; clean product shots → goose-product-photos; launching → run-paid-campaigns |
 | run-paid-campaigns | "launch these ads" · "kill, scale or pause?" · "my ads are live, run them" · "swap this tired ad" · "we sold out — pause the ads" · "give me the Google / TikTok changes" | "Which ad won / how did we do" → analyze-performance; fixing a rejected ad → its maker |
 | analyze-performance | "write my Monday report" · "which ad won" · "are my ads making money" · "Meta ROAS vs real revenue" · "why did sales drop" · "anything on fire today" | Acting on the calls → run-paid-campaigns; replanning budget → plan-campaign |
 | email-lifecycle | "welcome and abandoned-cart emails" · "write my email flows" · "plan this week's emails and texts" · "win back lapsed customers" · "why are my emails going to spam" | Emails a person sends to named accounts (demo replies, reconnects) → write-outreach; the newsletter issue → make-content; the whole Black Friday campaign → plan-campaign |
-| improve-search-visibility | "am I in ChatGPT / Google answers" · "why does ChatGPT recommend my competitor" · "SEO quick wins" · "organic traffic is flat" · "fix my app store listing" | Writing the full page → make-content |
+| improve-search-visibility | "am I in ChatGPT / Google answers" · "why does ChatGPT recommend my competitor" · "audit our site and give ten fixes" · "pull domain SEO metrics" · "keyword gaps" · "map a topic cluster" · "plan programmatic pages" · "SEO quick wins" · "organic traffic is flat" · "fix my app store listing" | Writing the full page → make-content |
 | work-with-creators | "find influencers" · "find real UGC creators" · "who should we send product to" · "is this creator's engagement real" · "what should I pay this creator" | AI-made UGC-style video → goose-video |
-| make-content | "write a blog post / case study / guide" · "draft this week's newsletter" · "repurpose this webinar" · "write one LinkedIn or X post" · "an X article / thread / long post" | A two-week posting calendar → run-organic-social; ad copy → make-static-ads |
-| run-organic-social | "fill my social calendar" · "write this week's posts" · "ghostwrite my founder's LinkedIn" · "plan the social for our launch" · "my accounts went quiet" | One standalone post, article or thread → make-content; replies → not covered yet; crises → research-market flags them |
+| make-content | "write briefs for these ten keywords" · "write a blog post / case study / guide" · "draft this week's newsletter" · "repurpose this webinar" · "write one LinkedIn or X post" · "an X article / thread / long post" | A two-week posting calendar → run-organic-social; ad copy → make-static-ads |
+| run-organic-social | "research top posts and voices" · "fill my social calendar" · "write this week's posts" · "ghostwrite my founder's LinkedIn" · "plan the social for our launch" · "my accounts went quiet" | One standalone post, article or thread → make-content; replies → not covered yet; crises → research-market flags them |
 
 ## Not covered yet
 
 Say so plainly; details and triggers are in `../../BACKLOG.md`.
 - Designing an offer or sale from margin (a playbook can price an offer the marketer already chose).
-- Landing pages, product pages, homepages, popups; sales one-pagers and battlecards.
+- Landing pages, product pages, homepages, popups; sales one-pagers. Battlecards use research-competitors.
 - Google search-ad copy and keywords.
-- Writing positioning from scratch.
+- Broad brand setup and claims approval as a standalone job; a focused positioning request uses research-market.
 - Sending outreach (we write the emails and LinkedIn messages; the marketer sends them from their own tool).
 - Amazon and marketplace listings and feeds.
 - Review replies and review monitoring (review-request emails are covered, in the email flows).
 - Drafting replies to comments and DMs, and comment moderation ("draft replies to these comments").
 - Press releases and PR pitching; WhatsApp flows.
-- Brand setup as its own job (learning the brand in one pass, a brand book, approving all the claims or the voice at once, recording a price or product change): GooseWorks sets the brand up on first connect, and each job approves the claims it needs.
+- Brand setup as its own job (learning the brand in one pass, a brand book, approving all the claims or the voice at once): GooseWorks sets the brand up on first connect, and each job approves the claims it needs.

@@ -7,7 +7,7 @@ description: >-
   more customers", "sales are flat", "what should I focus on this month", or "I'm back, what's next?".
   Recommends only; never runs the work. Not for a named job like "make me ads" (go straight to it);
   not for why this week's numbers moved — use analyze-performance.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # where-to-start

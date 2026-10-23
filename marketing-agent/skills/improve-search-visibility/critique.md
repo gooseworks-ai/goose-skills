@@ -332,3 +332,20 @@ Not re-run (per orchestrator: no evals).
 | Done when mixed bars with test oracles | Done when: first message leads with k-of-N counts; report has the per-question table, roadmap and exactly five fixes (or fewer, stated); banned-word scan clean; saved with a link. The re-ask oracle is test item 5; "start one fix that week" added to test item 6. |
 | "Human" for the person | "Marketer" throughout. |
 | Description did not say what the skill is | Now starts "Search and AI-answer visibility (SEO, AEO, GEO). Use when…"; 891 → 694 characters. |
+
+
+## 2026-10-22 — GOOSE-4052 / 4060 / 4061 / 4063 scoped SEO implementation
+
+**Decision:** SEO metrics, technical diagnosis, rival topic/ranking gaps, subject clusters and pSEO page-set plans belong in this existing SEO playbook. The operator explicitly authorized implementation, overriding the older scope freeze and backlog deferrals. Main instructions select a requested job; branch craft lives in `references/seo-jobs.md` and data acquisition in `references/seo-data.md`.
+
+| Finding from the independent source/marketer audit | Change |
+|---|---|
+| Technical checking was real, but limited to 3–6 gap pages and exactly five fixes | Inventory and requested scope replace the artificial cap; audits default to ten supported priorities, explicit counts win, sample limits stay visible. Engineering implements; the playbook diagnoses. |
+| Rival page-type counts did not answer topic/ranking gaps | Own-topic inventory, verified rival query/URL/position matrix, content-status matching and separate unverified candidates. Existing ratio content is updated, not recommended as absent. |
+| Basic clusters and hub links already existed; "all need volume/difficulty" was overstated | Reuse those shapes for subject-led pillar/supporting architecture, intent boundaries, anchors and order. Numeric demand is optional enrichment, not a gate. |
+| pSEO pattern detection stopped at one page | Add family qualification, complete templates, variable schema/sources, representative records, unique value, quality/index rules and a bounded pilot. No new playbook. |
+| A server-needs entry did not obtain/show SEO metrics | Read the managed operation schema, quote and obtain supported domain metrics, then show a same-source dated table with native field limits. Total visits remain separate. Missing setup/fields are explicit; no fabricated zeros or keyword-count inference from sample lists. |
+| Initial catalog-only source search missed the existing managed Apify route | Backend verified configured credentials and active Ahrefs/Semrush actor schemas, and added curated managed operations. Reference now distinguishes metadata/access verification from paid result verification. No paid extraction claim. |
+| The metric fixture expectation still described total visits after native SEO data was added | Split native, traffic-only, missing-source and supplied-export cases; assertions now match each packet. |
+
+**Validation:** eight substantive manual fixture reports are in `tests/fixture-reports/`; `python3 tests/run-fixtures.py` passes evidence/count/coverage/metric/architecture checks. Test methods and prerequisites are explicit in `tests/test-by-hand.md`. The optional fresh-model CLI attempt was blocked by automatic approval review over external transmission; it was not retried. No paid source call, live site change, external send or brand write was made. A live paid result and fresh-agent behavior remain unverified, not silently graded as passing.

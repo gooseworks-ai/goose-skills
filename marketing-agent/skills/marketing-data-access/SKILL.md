@@ -2,19 +2,29 @@
 name: marketing-data-access
 description: >-
   How to get live public data (ads libraries, social posts and comments, search results, creator
-  profiles) and paid media generation through GooseWorks, with no vendor key. Load before any playbook
+  profiles), business identity/work-contact reads, domain SEO metrics and paid media generation through GooseWorks, with no vendor key. Load before any playbook
   step that reads public data or calls an outside model: which proxy call fits the job, what it costs,
   how to get the human's yes, and what to do when the data is not reachable. Not for brand facts (read
   the brand brain) or the customer's own ad accounts (the GooseWorks ads tools, or an ads connector
   they have).
-version: 0.1.0
+version: 0.1.1
 ---
 
 # marketing-data-access
 
 One door to outside data and models: the GooseWorks proxy. The customer never needs a vendor account or key, and GooseWorks bills the calls in credits.
 
-## The three calls
+## A focused data request
+
+For a post list, engagement ranking or voices list, read [focused-reads.md](focused-reads.md), then return the requested data without a full marketing report or calendar. Use only the relevant endpoint reference; preserve dates, exact measures and coverage.
+
+## Managed marketing data
+
+When the current tool list includes `marketing_data_describe` and `marketing_data_lookup`, use them for curated people/company search and enrichment, work-email finding/verification, LinkedIn post engagers and domain SEO metrics. Describe is free and returns current operation schemas. Lookup defaults to a free quote: preserve the request, show the quoted maximum credits, obtain approval through spend-gate branch A, then execute with its request-bound quote token and approved ceiling. Read the actual result and charge before claiming coverage. Operations differ: total visits are not organic traffic, a finder is not an email check, and post counts are not people who engaged. For paginated LinkedIn results, preserve the returned continuation token and follow the live schema; do not start later pages as new searches or invent a provider receipt. Read every partial-failure receipt and cost before deciding whether to retry. No arbitrary vendor paths, personal email or phone lookups.
+
+If these tools are absent, use public pages, an existing read-only connector or a supplied export and label missing fields. Do not tell the customer to obtain vendor keys.
+
+## Raw provider calls
 
 | Call | Use it for | Cost |
 |---|---|---|
@@ -62,12 +72,12 @@ Every paid call goes through the `spend-gate` skill (`../spend-gate/SKILL.md`), 
 
 ## When the data is not reachable
 
-The proxy covers public social and search data, fal and ElevenLabs. It does **not** cover today: people and company enrichment, email finding at scale and email verification, AI-answer engines (ChatGPT, Perplexity, AI Overviews), Search Console, page-speed data, app-store listings, or the customer's own email, store and analytics tools.
+The raw proxy covers public social and search data, fal and ElevenLabs. The managed marketing tools above cover their listed lead/contact and SEO operations when deployed. Neither path promises unlisted metrics, AI-answer engines (ChatGPT, Perplexity, AI Overviews), Search Console, page-speed data, app-store listings, or the customer's own email, store and analytics tools.
 
 When a step needs one of these, in this order:
 1. Use a connector the host agent already has for the customer's own account, read-only (only run-paid-campaigns makes changes through one: the marketing-guide §3, "Connectors").
 2. Use the host's own web search, web fetch or browser for public pages and news (launches, funding, press, job posts, changelogs). This is free and should be the default for anything recent.
 3. Ask the human for the export or a screenshot, in plain words.
-4. Otherwise skip the step and say plainly what went unread. Never estimate the missing number. When only the marketer can do the step (finding or checking email addresses), say so and name two or three outside tools as examples, never an endorsement (the marketing-guide §3).
+4. Otherwise skip the step and say plainly what went unread. Never estimate the missing number. When only the marketer can provide missing account data, name the needed export and columns plainly.
 
 If GooseWorks is not connected at all, follow the `marketing-guide` skill (`../marketing-guide/SKILL.md`) §1 step 1; in local mode, use steps 1–3 only, with no paid reads, and say once what went unread.

@@ -61,7 +61,7 @@ At most 8 names, one line each, the strongest now, and the alternatives buyers u
 - <The audience report leads with X; this report sees Y, because…>
 
 ## What this means for positioning
-Three lines: who we're for, what we're up against, why we win — as this research sees it, with the decision it implies. Writing the positioning itself is a separate job.
+Three lines: who we're for, what we're up against, why we win — as this research sees it, with the decision it implies. For finished choices and messages, the positioning branch of this playbook uses `positioning.md`.
 
 ## What to do
 1. <Move> — who does it · what it needs · how we'll know it worked (a number or something you can see) · by when.

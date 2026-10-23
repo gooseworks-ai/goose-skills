@@ -2,7 +2,7 @@
   "slug": "research-market-market-pass",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "playbook": "research-market",
   "tags": [
     "research",

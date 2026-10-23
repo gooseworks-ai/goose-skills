@@ -1,19 +1,45 @@
-# improve-search-visibility — test by hand
+# Human version
 
-## How to test it (sharpened after critique)
+The SEO playbook now handles the five requested jobs without a new playbook: scoped audits, ranking/topic gaps, subject clusters, domain metrics and pSEO blueprints. Eight fictional example reports demonstrate the outputs and their missing-data behavior. Local checks pass; live paid extraction and a fresh isolated model run were not verified.
 
-Run it on a brand with a live site you can open yourself, from a host that can browse logged-out if you can (otherwise be ready to paste a few answers). Ask: **"When people ask ChatGPT or Google for products like mine, am I in the answer?"**
+---
 
-It passes when, in order:
-1. **No questions before the work.** Its first message to you already answers "am I in ChatGPT?" — question by question, who's named instead and why — with the draft five fixes. It asked you nothing before that.
-2. That first message carries **all** the decisions left, together: one credit yes for the exact Google results ("up to N credits", marked an estimate — or you name the ceiling), plus only the facts it can't find (who ships, may we name competitors), and the question list for edits. One yes, never a probe yes and then a ceiling yes.
-3. **One report you open with one click**: a local file link on a computer host (an artifact or the full report in a hosted chat), plus a "saved to your brand" link that opens. Never a list of workspace paths.
-4. **It reads like a good marketer wrote it** (write-report §3): the top five lines tell you what to do first and why; a non-marketer can follow it; no question ids, codes, tool names, file paths or jargon in the story — technical detail only in the closing "for whoever edits your site" section.
-5. You re-ask two or three questions yourself in a private window and the read holds.
-6. The roadmap maps each topic to the page that should answer it, and the five fixes are finished: you could hand each to whoever edits the site today, and you start at least one that week.
-7. Nothing live was touched; nothing was sent; no fact appears that you never approved.
+# Agent version
 
-Telltale failures (the 18 Oct hand test hit the first four; the 19 Oct evals hit the next five): a first turn that ends "say the word and I'll write the report"; yesterday's answers counted as today's; a number with no source opened this run; the brand's own marketing lines or unread rival facts in fix copy; a bare file path instead of a link, or the report never saved to the brand; intake questions before any result; two credit yeses; reports left only in the workspace with paths shown as links; a report full of ids and "0/1" scoring; generic advice ("add an FAQ", "improve E-E-A-T"); one run reported as fact; a rank "in ChatGPT"; FAQ markup sold as a rich result; a fix on a page that can't be crawled; llms.txt in the five.
+## Current acceptance cases — 22 October 2026
+
+Read `fixtures/coldfield.json`, execute the requested branch and compare the result with `fixture-reports/`. The supplied .test domains and metrics are fictional. Setup and source observations are supplied by the fixture; no live source is fetched. These reports were produced by a manual walkthrough in the implementation chat, then checked against the evidence. They are not a fresh-agent benchmark or proof of live extraction.
+
+| Exact request / condition | Output to inspect | Required behavior |
+|---|---|---|
+| Audit our site's SEO and tell me the top 10 fixes | [Audit example](fixture-reports/audit.md) | Ten distinct supported findings; blockers first; all 18 supplied pages inventoried; parameter sampling declared; URLs, action, owner/effort, verification and structural risk/undo |
+| What topics do competitors rank for that we haven't written about? | [Gap example](fixture-reports/gaps.md) | Topic/query matrix; dated ranking URLs/positions; ratio is an update, iced-coffee comparison already covered; existing unranked latte page stays a candidate |
+| Map a topic cluster for cold brew coffee | [Cluster example](fixture-reports/cluster.md) | Pillar plus supporting intents, links/anchors and order; quantity vs dilution boundary; no site, capacity or keyword-provider gate |
+| Pull SEO metrics for us and two rivals | [Native SEO example](fixture-reports/metrics.md) | Use the actual managed-operation contract with synthetic native responses; three domains, sourced DR/link/traffic fields; absent market/window and keyword count remain explicit |
+| Plan pSEO page sets | [pSEO example](fixture-reports/pseo.md) | Family selection, template, typed fields/sources, records, useful differences, quality/index rules, pilot and engineering review; city set rejected, unknown model held |
+| SEO source unavailable | [Missing-source example](fixture-reports/metrics-missing.md) | Incomplete; unavailable values, prerequisite and no fake/paid call |
+| Only total website traffic available | [Traffic-only example](fixture-reports/metrics-traffic-only.md) | Website traffic separate; no organic count inferred from channel share; requested SEO fields remain incomplete |
+| Existing authorized customer SEO report | [Export example](fixture-reports/metrics-export.md) | Read the supplied consistent export without demanding a new connection; preserve source, market, period and score scale |
+
+Run the local evidence checks from this folder:
+
+```bash
+python3 tests/run-fixtures.py
+```
+
+**Executed:** all eight cases passed. The checks validate source matching, requested count, priority blockers, covered-vs-new topics, ranking vs page existence, link closure, per-page data readiness, native metric mapping and missing-value behavior. They make zero model, network, provider, write-back or paid calls. Passing them confirms these example artifacts, not how a future agent behaves.
+
+**Fresh isolated model test limitation:** an attempted tools-disabled Claude CLI run could not initialize inside the sandbox. Automatic approval review then rejected the elevated run because it could send internal skill/fixture text to an external service without specific authorization. It was not retried or worked around. No external model report was produced. A new isolated model run needs that authorization; manual fixture execution and local checks remain available meanwhile.
+
+**Live metric test prerequisite:** the deployed connection must list `marketing_data_describe` and `marketing_data_lookup`; an approved request-bound quote is required before a paid `domain_seo_metrics` / `domain_seo_overview` run. Verify returned fields, native dates/market, partial failures and actual charge receipt. Backend free verification of credentials and active actor schemas is not a paid extraction test. No live paid run, brand save, site change or send was made here.
+
+## AI visibility regression (existing branch)
+
+On an explicit ChatGPT/Google visibility request, preserve the free evidence pass, fresh answer counts and sources, comparable history, one credit decision and readable linked report. The default weekly slice is five fixes; an explicit count overrides it. Unchecked engines and earlier observations never become today's misses or counts. Repeat checks evaluate actual shipped changes after the recorded review timing; one noisy flip does not establish a trend.
+
+## Historical run notes
+
+The records below describe earlier versions and their actual tools/limits. They are retained as evidence; their old intake and two-stage credit wording is not the current procedure.
 
 ## Staging run — 2026-10-16, brand Personal Day (DTC acne-safe skincare), up to the first paid step
 

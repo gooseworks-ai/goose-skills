@@ -60,6 +60,11 @@ function parseFrontmatter(content) {
     }
     result[kvMatch[1]] = value;
   }
+  // Legacy cards use YAML block descriptions too; never publish the marker as copy.
+  const blocks = parseBlockFrontmatter(content);
+  for (const [key, value] of Object.entries(result)) {
+    if (typeof value === 'string' && /^[>|][-+]?$/.test(value)) result[key] = blocks[key];
+  }
   return result;
 }
 

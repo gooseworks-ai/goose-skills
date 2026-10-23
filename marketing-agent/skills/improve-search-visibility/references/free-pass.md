@@ -1,10 +1,10 @@
 # The free pass
 
-Load at step 1. Everything here costs no credits. Do all of it before the first message to the marketer; never stop after one source to ask "go deeper?". Work through the host's own tools: browser, web search, fetch or shell — reading public pages that way is allowed (marketing-guide §3, "Public data").
+Load only for the AI-answer visibility branch. Everything here costs no credits. Do all of it before the first message to the marketer; never stop after one source to ask "go deeper?". Work through the host's own tools: browser, web search, fetch or shell — reading public pages that way is allowed (marketing-guide §3, "Public data").
 
 ## Order (cheapest and most decisive first)
 0. **Place the battle** (`battlegrounds.md`): which surfaces decide findability for this business; the pre-launch path if nothing is live.
-1. **The brand's own side.** Brain summary, products, approved claims status, past search runs; the homepage, pricing, about and the 3–6 pages nearest the buying questions (title, first paragraph, what it says the product is); robots.txt and sitemap.
+1. **The brand's own side.** Brain summary, products, approved claims status, past search runs; the homepage, pricing, about and the pages needed to cover the buying questions and relevant templates (title, first paragraph, what it says the product is); robots.txt and sitemap.
 2. **Draft the question set** (the `improve-search-visibility-question-set` skill (`../../improve-search-visibility-question-set/SKILL.md`), `question-list.md`): 12–15 buyer questions — category, problem, comparison and brand, grouped into clusters — from what you just read plus customer words and the rivals' pages, covering each audience the site currently sells to. No approval needed to run it; the marketer edits it afterwards.
 2b. **Read the positioning the site sells today** (homepage, product pages, blog mix, the brain) — if more than one buyer or positioning shows (e.g. old outbound posts next to new ads pages), note each for the "which buyer" decision; never pick one.
 3. **ChatGPT, signed out, in the host browser** (the `improve-search-visibility-citation-check` skill, `../../improve-search-visibility-citation-check/SKILL.md`) — every question once, waiting for each answer to finish, key questions three times (`citation-protocol.md` for the settings and the wait rule). This is the headline of the first message.
@@ -24,5 +24,5 @@ ChatGPT, AI Overview and AI Mode can't be asked. Do everything else, say plainly
 - Per question: ChatGPT named yes/no (k of N), who is named instead, which sources it cited.
 - The pattern in one sentence.
 - The page-type gap table (what kinds of pages rivals have that we don't), or "not mapped" with the reason.
-- Draft five fixes, each in one plain line.
+- Draft the requested number of evidence-backed fixes (default five for this recurring check), each in one plain line.
 - What wasn't checked and why.

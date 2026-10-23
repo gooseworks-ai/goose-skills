@@ -1,0 +1,51 @@
+{
+  "job": "seo-metrics",
+  "completion": "complete",
+  "report_markdown": "**Fictional fixture example \u2014 supplied test evidence, not a live site check.**\n\n# Coldfield and two rivals \u2014 supplied SEO report comparison\n\n## In short\n\nThe authorized customer-supplied report contains consistent **US, September 2026** SEO estimates for all three domains, so there is no need to block this comparison on a new managed connection. Coldfield is below Brewbench and Slowcup on the returned organic visits, ranking-keyword count, referring domains and same-source authority. These are the report provider's estimates, not measured visits from the company's analytics.\n\n| Metric | Coldfield | Brewbench | Slowcup |\n|---|---:|---:|---:|\n| Estimated organic monthly visits | 3,200 | 18,000 | 9,500 |\n| Organic ranking keywords | 410 | 1,800 | 960 |\n| Referring domains | 75 | 310 | 190 |\n| Same-source authority score | 22 | 46 | 35 |\n\nSource: supplied Search Atlas fixture export, US, September 2026, retrieved 22 October. The authority score remains this source's score; it is not renamed Ahrefs DR or combined with another provider's scale. The report supports a same-source comparison over the stated scope, but does not establish why one company ranks higher or forecast the return from creating a page.\n\nThe useful next step is a topic/query comparison to identify where relevant content and rankings differ, rather than making a blanket recommendation to chase a score. No new data request or paid lookup is needed to present this existing report. Backlink totals and page-level rankings were not in the supplied export; they are not invented or implied by referring domains. This completes the requested comparison of the available SEO metrics, with the source and omitted fields explicit.\n\n\nSources: the supplied Coldfield fixture packet, dated 22 October 2026. These .test domains were not browsed. This local example was saved by the fixture exercise; saving to a live brand was not exercised. Nothing was changed, sent or published.\n",
+  "evidence": {
+    "metrics": [
+      {
+        "metric": "Estimated organic visits",
+        "kind": "organic_search_visits",
+        "values": {
+          "coldfield.test": 3200,
+          "brewbench.test": 18000,
+          "slowcup.test": 9500
+        },
+        "source": "Customer-supplied Search Atlas fixture export; US, September 2026; retrieved 22 October"
+      },
+      {
+        "metric": "Organic keywords",
+        "kind": "organic_keyword_count",
+        "values": {
+          "coldfield.test": 410,
+          "brewbench.test": 1800,
+          "slowcup.test": 960
+        },
+        "source": "Customer-supplied Search Atlas fixture export; US, September 2026; retrieved 22 October"
+      },
+      {
+        "metric": "Referring domains",
+        "kind": "referring_domains",
+        "values": {
+          "coldfield.test": 75,
+          "brewbench.test": 310,
+          "slowcup.test": 190
+        },
+        "source": "Customer-supplied Search Atlas fixture export; US, September 2026; retrieved 22 October"
+      },
+      {
+        "metric": "Source-specific authority",
+        "kind": "authority_score",
+        "values": {
+          "coldfield.test": 22,
+          "brewbench.test": 46,
+          "slowcup.test": 35
+        },
+        "source": "Customer-supplied Search Atlas fixture export; US, September 2026; retrieved 22 October"
+      }
+    ]
+  },
+  "remaining_prerequisites": [],
+  "execution": "manual fixture execution in this chat; local evidence checks only"
+}
