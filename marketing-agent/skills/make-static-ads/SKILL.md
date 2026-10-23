@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.7.2
+version: 0.8.0
 ---
 
 # make-static-ads
@@ -41,13 +41,15 @@ Say what you actually read, with counts, in the profile and board headers: "Read
 
 Ask everything open in **one** message, each item with a recommended answer the marketer can accept with one word:
 - **How creative, first and on its own line:** close ("a proven ad layout with your words"), balanced ("a new idea inside a proven layout") or bold ("idea first, in your own style"); recommended **balanced** (`references/levels.md`);
-- **Angle(s):** a picker with the profile's angles first, then at most two new ones marked "new", one recommended per ad or for the set, plus room to write their own. Next to each angle, the claim line it needs;
+- **Angle(s):** a picker with the profile's angles first, then at most one new angle per five ads, marked "new", one recommended per ad or for the set, plus room to write their own. Next to each angle, the claim line it needs;
 - **Claim lines:** recommended angles use only usable lines (plain product facts or approved claims). Any other line goes to the marketer in this same message in the `claims-gate` sign-off form (`../claims-gate/SKILL.md` §4.3); "your choice" never approves a claim.
 - **Logo:** on every ad (recommended) or none, and which file. A logo file under about 300 px wide: ask for a bigger one here, and use the small one if none comes;
 - product, how many ads, placements, any live offer;
 - every conflict the profile found (kit vs website, font, positioning), with your recommendation.
 
 Never a chain of stops. "Your choice", "just give me the images" or no answer → take every recommendation and go on; say what you chose on the board.
+
+**Done:** one message sent, every item with a recommended answer; the answers (or "recommended") recorded.
 
 ### 3. Find the ideas → the concept board
 
@@ -59,29 +61,39 @@ Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/S
 
 Run the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`): the on-image text in the format its level sets (the template's text slots, or the brand's own style at bold), then the primary texts, headline, description and CTA around the image.
 
+**Done:** every slot of every ad has its final words; each ad has primary texts A and B, headline, description, CTA and destination.
+
 ### 5. Write each prompt
 
 Run the `make-static-ads-compose` skill (`../make-static-ads-compose/SKILL.md`): one prompt per ad and ratio, written from the board row (`references/prompts.md`).
+
+**Done:** each ad and ratio has a prompt that passed the read-back in `prompts.md` §5, with its image list.
 
 ### 6. Check the exact prompts
 
 Pass A of the `make-static-ads-claims-extract` skill (`../make-static-ads-claims-extract/SKILL.md`) and the `ad-policy-check` skill (`../ad-policy-check/SKILL.md`) on each finished prompt and its copy. A cut line goes back to Step 4 or 5, then through this check again.
 
+**Done:** every span is keep, quote or cut, no cut words remain in any prompt, and the policy check passed or its flags are on the board.
+
 ### 7. Show the board and the quote
 
-`gooseworks:ads_render` with `dry_run: true` for every ad and ratio. Show the marketer, in one message: the board (`references/handoff-format.md` §3) **with each ad's template image and two alternates they can swap to**, the creativity level (they can change it here), the cut lines, each quote exactly as returned, and "If an image fails my check I redo it once, at the same price." The `spend-gate` skill (`../spend-gate/SKILL.md`) applies: render only what they approved, within their ceiling.
+`gooseworks:ads_render` with `dry_run: true` for every ad and ratio. Show the marketer, in one message: the board (`references/handoff-format.md` §2) with the templates as images (chosen and two alternates), the creativity level (they can change it here), the cut lines, each quote exactly as returned, and "If an image fails my check I redo it once, at the same price." The `spend-gate` skill (`../spend-gate/SKILL.md`) applies: render only what they approved, within their ceiling.
 
 "Finals only" shortens the delivery, not this message: the board is what they are paying for.
 
-**A swap or level change at the board:** a template swap redoes Steps 5–6 for that ad; a level change redoes Steps 3–6 for the ads it touches. Get the new dry-run quote and show only the changed rows with their new quotes for the yes. Submit nothing that wasn't quoted and approved as shown.
+**A swap or level change at the board:** a template swap redoes Steps 5–6 for that ad; the level applies to the whole set, so a level change redoes Steps 3–6. Get the new dry-run quote and show only the changed rows with their new quotes for the yes. Submit nothing that wasn't quoted and approved as shown.
+
+**Done:** the marketer said yes to the quotes shown, or the run stops here with the board saved.
 
 ### 8. Render and review
 
-Submit the exact quoted requests; poll `gooseworks:job_get` (`kind: "ads_batch"`) until every `pending` is 0. Then run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): a fresh judge checks each image against its board row and the product photos, one retry inside the approval, then the whole set.
+Submit the exact quoted requests and wait for them (`references/engine-notes.md`, Polling). Then run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): a fresh judge checks each image against its board row and the product photos, one retry inside the approval, then the whole set.
+
+**Done:** every image passed, is flagged for the marketer's look, or was dropped with the reason.
 
 ### 9. Deliver and remember
 
-Hand over with `references/handoff-format.md` §4. Write the batch file (`references/reading-the-brain.md` §7) and the lower-case tags, including `made-by:make-static-ads`. Ask which ads the marketer prefers; offer copy variants for those (the `make-static-ads-copy-variants` skill (`../make-static-ads-copy-variants/SKILL.md`)). Save lasting human feedback through the `save-learning` skill (`../save-learning/SKILL.md`). Run the End step of `run-memory` on every exit, including a stop or partial run.
+Hand over with `references/handoff-format.md` §3. Write the batch file (`references/reading-the-brain.md` §7) and the lower-case tags, including `made-by:make-static-ads`. Ask which ads the marketer prefers; offer copy variants for those (the `make-static-ads-copy-variants` skill (`../make-static-ads-copy-variants/SKILL.md`)). Save lasting human feedback through the `save-learning` skill (`../save-learning/SKILL.md`). Run the End step of `run-memory` on every exit, including a stop or partial run.
 
 ## Other modes
 

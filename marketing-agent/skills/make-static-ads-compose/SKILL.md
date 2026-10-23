@@ -2,7 +2,7 @@
 name: make-static-ads-compose
 description: >-
   Step of make-static-ads: writes each ad's render prompt and ordered image list from its concept-board row, one per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.
-version: 0.7.1
+version: 0.8.0
 ---
 
 # compose
@@ -19,3 +19,5 @@ version: 0.7.1
 6. **Read it back** (`prompts.md` §5). Then hand it to the claims check.
 
 Engine: leave `engine` unset (the default) unless the marketer asked for another or the default refused the content. A changed prompt after the claims check goes through the check again.
+
+**Done:** each ad and ratio has its prompt, image list and render arguments; each passed the read-back.

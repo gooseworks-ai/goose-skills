@@ -2,7 +2,7 @@
 
 An ad idea is **a real product fact or human situation, turned into one small physical event the viewer understands at a glance.** Lighting, type and colour make a good idea easy to read. They cannot rescue a missing one.
 
-This file is the craft behind the concept-grid step. Read it whole before drafting.
+This file is the craft behind the concept-grid step, which says which parts to read.
 
 ## 1. The failure this prevents
 
@@ -14,9 +14,9 @@ Every one of those is a **demonstration**: it shows the product doing its normal
 
 ## 2. The method
 
-### Step A: list starting points (10 or more)
+### Step A: gather material for each chosen angle
 
-A starting point is something true about the product or the people who use it. Write each one as a plain sentence with its source.
+In the message step, for each angle the marketer chose, list what is true about the product or the people who use it, one plain sentence each with its source. Start from the product's main job for its buyer, then what only this brand has; side features last.
 
 - **Product facts:** what it is, what's already done for you, what it leaves out, how it's made, how it's used. ("Tea and whole spices already blended." "Unsweetened.")
 - **Human situations around the product:** the moment of use, who else is involved, what gets in the way, what it means to people. ("A parent has opinions about how you make chai." "Recipe research spirals." "It tastes like home to people who moved away.")
@@ -61,23 +61,7 @@ One sentence per ad: the detail that, if lost, kills the idea. "The hand must vi
 5. **Build test.** Can the image model draw it reliably? It fails at small handwriting, long text inside the scene (paragraphs on notes, screens or lists; a template's short slots are fine), many hands, crowds, and precise physics (an unbroken oil line, keys mid-fall). Keep the event big and simple; put words in the headline, not inside the picture.
 6. **Truth test.** What would a buyer take away as fact? That takeaway must be a usable fact (`claims-and-policy.md` §2). A visibly imagined scene is not a claim that it happened; a promised result is.
 
-## 4. The set
-
-Every ad must be one **this brand would run**: it serves an angle from the brand profile (or is marked as a new one), sounds like the brand and fits its look (`brand-profile.md`). A brilliant idea in someone else's voice fails.
-
-No repeats: against the brand's live ads and its last 5–10 ads made in GooseWorks, a new ad may share an angle, but at least one of message, visual idea or template must change. The same ad resized or for another platform is not a repeat.
-
-Five ads should be **five different meanings**, not five looks. Kolkata covered family, convenience, personal time, home and sweetness. Ask: if I cover the headlines, do two images say the same thing? Two rows built on the same product fact (why Drizzle differs from Sizzle, shown two ways) are one meaning. Merge them and find another starting point.
-
-Start from the product's **main job** for its buyer, then the facts that only this brand has. Side features come last: they make good retargeting ads, not a first impression.
-
-At most one ad in five may be a straight demonstration, and only when watching the action answers the buyer's main question.
-
-## 5. Where templates fit
-
-Every ad has a template, chosen after the idea; the creativity level decides how much of it the ad keeps (`levels.md`). At bold, a template from another brand gives you a **device**, not a layout. The Oatside image of a carton coming out of a laptop gave permission for "an object crosses a screen". That device was used directly in one ad, loosely in two and not at all in two more, where the product fact carried the idea. See the find-references step for roles.
-
-## 6. The worked example (do not copy)
+## 4. The worked example (do not copy)
 
 Kolkata Chai, Signature Masala Chai Mix, 22 Oct 2026. Five concepts, all from their first render:
 

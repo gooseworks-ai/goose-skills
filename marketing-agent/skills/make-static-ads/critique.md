@@ -571,3 +571,17 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 - **Templates:** at least one per set from outside the GooseWorks library, or say what was tried.
 
 **Not skill-side (server or host), still open:** server hints "recommend one plan" / "one line and wait"; "Still indexing: N of N"; render settings echo shows brand colours on when sent off; new brands get no workspace (coworker id null); adding a founder's X account fails with a billing error; the browser can't open the Meta Ad Library.
+
+
+## Round 32 — 23 Oct: writing-for-agents review (0.8.0)
+
+**Summary.** A fresh agent reviewed the whole skill against the writing-for-agents standard. The core steps held; six old reference files still taught the pre-template system and contradicted the new rules. All findings applied in one change.
+
+- **Old layout default removed** from the ad-copy description, the board column, the formats copy limits and rubric checks 11–12. Positive rule only: fill every slot the template has.
+- **ideas.md:** Step A is now the material for the message step, per chosen angle; the repeated set and template sections cut. concept-grid reads §2 B–E and §3 only.
+- **Records:** tags and the batch file carry angle, message, visual idea, template, level (`level:` and `template:` tags); old lever tags, definitions and "cells" gone.
+- **Cut:** creative-taxonomy.md and angles-and-hooks.md (the type map moved to handoff-format, the hook formulas to ad-copy); research.md merged into brand-profile.md; formats-and-placements §1–2 (archetypes, company types) and fonts-and-color's question sections; the SaaS "UI letter by letter" rule moved to render-review.
+- **Done lines** on Steps 2, 4–8 and on ad-copy, compose, claims-extract and find-references. The Approval gates / Output / Done when sections stay: the marketing-agent AGENTS.md §5 requires them.
+- **One source each:** level table (levels.md), template description (find-references), alternates (find-references §5), usable facts (claims-and-policy §2), Pass A/B (claims-extract), polling (engine-notes), capability gate (SKILL.md), 9:16 safe zones (prompts.md §4), font rules (prompts.md §2), brand fit (rubric 15).
+- **Contradictions fixed:** unseen-image tag, chat-confirmed claims (claims-gate), colour default (the brand's ads), one new angle per five, the level applies to the whole set, `ads_creative_layerize`.
+- compose stays a separate step skill (AGENTS.md: every step is its own skill).
