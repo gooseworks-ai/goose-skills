@@ -5993,7 +5993,7 @@
       "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "files": [
         "marketing-agent/skills/make-static-ads/SKILL.md",
         "marketing-agent/skills/make-static-ads/references/angles-and-hooks.md",
@@ -6019,7 +6019,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.6.0",
+        "version": "0.6.1",
         "tags": [
           "ads",
           "design"
@@ -6271,7 +6271,7 @@
       "description": "Step of make-static-ads: turns product facts and customer situations into distinct visual ideas, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "marketing-agent/skills/make-static-ads-concept-grid",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "files": [
         "marketing-agent/skills/make-static-ads-concept-grid/SKILL.md",
         "marketing-agent/skills/make-static-ads-concept-grid/skill.meta.json"
@@ -6280,7 +6280,7 @@
         "slug": "make-static-ads-concept-grid",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.6.0",
+        "version": "0.6.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
