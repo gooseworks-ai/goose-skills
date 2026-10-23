@@ -58,4 +58,4 @@ skills read the exact shape. See [`references/output-contract.md`](./references/
 
 ## Part of
 
-[gooseworks-ads-skills](../../../README.md) — GooseWorks' internal ad-production skills.
+GooseWorks' ad-production skills.

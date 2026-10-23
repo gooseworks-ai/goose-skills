@@ -13,7 +13,7 @@ superseded_by: phone-chat@1.2.0
 
 Generate single-frame ChatGPT mobile screens that read as real iOS captures — accurate header chrome, user/assistant message styling, composer pill, status bar, and the OpenAI spiral mark. Designed for use inside ad creatives, social posts, video storyboards, and product mockups.
 
-If you need an **animated, video-recorded chat reveal** (bubbles popping over time, SFX, music bed, end card), use the molecule `skills/molecules/create-chatgpt-video-ad`. This atom only produces a single still frame.
+If you need an **animated, video-recorded chat reveal** (bubbles popping over time, SFX, music bed, end card), use the `render-chatgpt-chat` skill. This atom only produces a single still frame.
 
 ## Inputs
 

@@ -1,8 +1,8 @@
 ---
 name: render-narrated-ugc-wardrobe-stitch
-description: Assemble a narrated-UGC "stitch reply" ad from a config — a single spoken VO carries a verbatim testimonial while ~30 per-cut i2v clips (one creator across ~5 wardrobes in ~3 worlds, plus product B-roll) are each trimmed to their EDL window built from the VO's Whisper word boundaries and hard-concatenated via filter_complex concat (never the demuxer, which drops audio on a duration mismatch), the VO mixed over an optional sidechain-ducked instrumental bed (−20dB, 20 to 1) so the VO stays on top, karaoke-pop captions burned on every word throughout (VEED Whisper preset, re-spelled against the locked script), a landing-page scroll rendered as FFmpeg zoompan over a Playwright PNG (not i2v), and closed on the brand's real end-card PNG — never AI-rendered text. This is the FREE deterministic assembly stage (trim-to-EDL + filter_complex concat + VO and music mix + karaoke captions + landing-page zoompan + end-card append), run with the shared stitch-videos-ffmpeg montage.py helper that installs with this package; the VO, creator, start-frames, and clips come from create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal / create-video-fal. Use for the narrated-ugc-wardrobe-stitch format.
+description: "Assemble a narrated-UGC \"stitch reply\" ad from a config: one voiceover carries a verbatim testimonial while about 30 short clips (one creator across about 5 outfits and 3 settings, plus product B-roll) are trimmed to windows cut from the voiceover's word timings and joined. The voiceover sits over a ducked music bed, word-by-word captions run throughout, a landing-page scroll is animated from a screenshot, and the brand's real end card closes it (never AI-rendered text). Free, deterministic assembly using the shared stitch-videos-ffmpeg helper; the voiceover, creator stills and clips come from create-vo-elevenlabs, create-image-gpt-image-fal, create-image-fal and create-video-fal. Use for the narrated-ugc-wardrobe-stitch format."
 status: active
-version: "1.0.1"
+version: "1.0.2"
 updated: 2026-10-06
 ---
 

@@ -108,7 +108,7 @@ rather than editing pixels. Keep each version.
 2. Build one `index.html` from `assets/overlay-template.html`: reproduce the reference's background,
  place the cutout, lay the new copy in the same zones. Arrows = inline SVG; scalloped seals = inline JS
  (template has both). Use the brand font (Google Fonts) + palette.
-3. Render via `create-goose-graphics` / the goose-graphics screenshot pipeline:
+3. Render via the `goose-graphics` skill's screenshot pipeline:
  `node <goose-graphics>/screenshot/screenshot.js --format <canvas> --input index.html --output render.png --font-delay 1500`.
  Map aspect→canvas: 1080×1080→`carousel`, 1080×1350→`poster`, 1080×1920→`story`. **2:3 (1080×1620) has NO goose-graphics preset** → render at `poster` (1080×1350, nearest) or a standalone 2:3 Playwright canvas; don't hand-edit the vendored renderer.
 

@@ -37,4 +37,4 @@ schema is in [`references/source-sample-schema.md`](./references/source-sample-s
 
 ## Part of
 
-[gooseworks-ads-skills](../../../README.md) — GooseWorks' internal ad-production skills.
+GooseWorks' ad-production skills.

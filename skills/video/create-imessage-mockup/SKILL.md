@@ -31,7 +31,7 @@ The atom embeds **no LLM** — it is deterministic. The orchestrating agent is r
 - Want a side-by-side hero image showing a conversation in an iPhone frame.
 - Need a typing indicator or "Delivered" beat for a video storyboard.
 
-If you're rendering programmatic graphic frames more broadly (cards, posters, infographics), use `create-goose-graphics` instead.
+If you're rendering programmatic graphic frames more broadly (cards, posters, infographics), use the `goose-graphics` skill instead.
 
 ## Inputs
 

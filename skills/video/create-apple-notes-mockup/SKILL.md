@@ -21,7 +21,7 @@ Turn a JSON note spec into a pixel-accurate Apple Notes (iPhone, light mode) scr
 - Need a sequence of Apple Notes frames (title-only → adding paragraphs → cursor moves) to drive a typing-animation video — used by `create-apple-notes-video-ad`.
 - Need a static "noted to self" beat in a storyboard.
 
-If you're rendering an iMessage thread, use `skills/atoms/messaging/create-imessage-mockup` instead.
+If you're rendering an iMessage thread, use the `create-imessage-mockup` skill instead.
 
 ## Inputs
 
