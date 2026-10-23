@@ -5,7 +5,7 @@ description: >-
   research-competitors, email-lifecycle): reads the last run's record, checks whether its
   recommendations were done and whether they worked, and saves a short record of this run for the next
   one. Loaded by those playbooks; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # run-memory
@@ -42,9 +42,9 @@ Brand inputs (`brand_id`, `brand_slug`, `coworker_agent_id`, scope) come from th
 
 Look in the workspace first, because it is the canonical copy and the exact check. Use the brain search to catch a record saved somewhere else.
 - **Workspace.** Call `gooseworks:file_list` on `runs/<playbook>/<job-slug>/` (or the subject folder) in the brand's scope. If the coworker scope has no record, also list `brands/<brand_slug>/runs/…` in the default workspace. Records saved before the brand had a coworker live there.
-- **Brain.** If `brain_*` tools are listed, call `gooseworks:brain_search` with query `Run record <job> <Brand>`, `source_types: ["document"]`, `since` = today minus 180 days, and `limit: 5`. Otherwise call `gooseworks:knowledge_search` with the same query and `source_types`. Keep only hits whose title matches this job's title up to the date, subject included. An empty search proves nothing: the brain may still be indexing ("Still indexing: 65 of 204…"), or the import may not have finished.
+- **Brain.** If the Brand Brain tools are listed (`brand_knowledge_*` on current servers; names mapped in the `marketing-guide` skill §1.4), call `gooseworks:brain_search` with query `Run record <job> <Brand>`, `source_types: ["document"]`, `since` = today minus 180 days, and `limit: 5`. Otherwise call `gooseworks:knowledge_search` with the same query and `source_types`. Keep only hits whose title matches this job's title up to the date, subject included. An empty search proves nothing: the brain may still be indexing ("Still indexing: 65 of 204…"), or the import may not have finished.
 
-The newest dated record wins. **Read the whole record:** use `gooseworks:file_read` on the workspace file, or, if the brain is the only place it exists, `gooseworks:brain_open` on the document hit, following its continuations. **Without `brain_*` tools** (production today) a hit that exists only in the brain can't be opened in full: say "I found an earlier record I can't open here", treat this as a run with no readable record, and continue. Never work from a search snippet.
+The newest dated record wins. **Read the whole record:** use `gooseworks:file_read` on the workspace file, or, if the brain is the only place it exists, `gooseworks:brain_open` on the document hit, following its continuations. **Without `brain_*` tools** (older servers) a hit that exists only in the brain can't be opened in full: say "I found an earlier record I can't open here", treat this as a run with no readable record, and continue. Never work from a search snippet.
 
 **The baseline is the newest record that has Numbers.** A `Not run` record (see Scheduled runs) only adds gaps and carried items. Keep reading back until you find one with Numbers.
 

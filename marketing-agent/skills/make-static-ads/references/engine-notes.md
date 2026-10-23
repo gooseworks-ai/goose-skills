@@ -16,7 +16,8 @@ The live tool answers are the truth for parameters. These notes cover what the t
 | Own and competitor imported ads | `ads_template_read` `mode: "mine"` / `"competitor"`, `filters.format: "image"`, `limit: 20` | medium |
 | One template | `ads_template_read` `template_id` | small |
 
-Never `detail: "full"` on every section at once, and never a creatives list without `tags`, `status`, `batch_id` or `approved_only`.
+Never `detail: "full"` on every section at once, never the `sources` section (saved web passages; it alone can pass 100K characters), and never a creatives list without `tags`, `status`, `batch_id` or `approved_only`. An answer over about 50K characters: save it to a file once and read fields from the file.
+- **Polling.** Every `job_get` answer repeats the full prompt. Poll every 30–60 seconds, or check the render's image URL instead.
 - **Capability gate.** `ads_generate` is not an adapter for `ads_render`: it re-composes the prompt and may add source images. With no thin render tool, report the missing capability and stop before spending.
 - **The kit's font may be a guess.** The kit always returns a font, often one the server guessed (`typography.source: "mapped"`), and Inter for many software, finance and services brands. That is why Step 2 asks.
 - **Edits are unquoted.** `regenerate`, `precision_edit` and `resize` return no dry-run price, so they are not used. Every remake, text fix, extra placement and copy variant is a written, quoted `ads_render` call (copy variants may also use the layer split).

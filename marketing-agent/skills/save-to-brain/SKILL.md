@@ -30,6 +30,8 @@ Every durable artifact goes through this atom. Never keep the only copy in chat 
 
 ## Brand Brain tools
 
+On current servers these are `brand_knowledge_*` (`brain_save` = `brand_knowledge_save`, `brain_search` = `brand_knowledge_search`, `brain_open` = `brand_knowledge_read`; the `marketing-guide` skill §1.4).
+
 `brain_save` has **no document or report target**. Its targets are learning, fact, claim, audience, competitor, product, kit fields, operating-plan sections and proposals. So documents keep the route below (workspace file → `media_upload` → `knowledge_import`) on every server. What changes when `brain_*` tools are listed:
 - **Read-back** (step 6) uses `gooseworks:brain_search` with `source_types: ["document"]`, and `gooseworks:brain_open` on the hit to read it in full. Otherwise use `gooseworks:knowledge_search`.
 - **Status.** An imported document is *found*: never call it confirmed, and it is never an approved claim (the marketing-guide §1.4).

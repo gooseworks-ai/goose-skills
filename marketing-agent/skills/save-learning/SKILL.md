@@ -5,14 +5,14 @@ description: >-
   write-outreach): saves a short brand rule or finding in the human's own words, one idea per rule,
   retires the playbook's own older rules it replaces, and reads the result back to confirm. Loaded by
   those playbooks; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # save-learning
 
 Learnings are the brand's short rules. Every playbook writes them through this atom and nowhere else. There are two server paths, and this atom picks between them:
-- **Brain path:** when `brain_*` tools are listed (the Brand Brain). Save with `gooseworks:brain_save`, read back with `gooseworks:brain_open` / `gooseworks:brain_search`.
-- **Older path:** otherwise (production today). Save with `gooseworks:brand_update` `patch.facts`, read back with `gooseworks:brand_read`.
+- **Brain path:** when the Brand Brain tools are listed (`brand_knowledge_*` on current servers; `brain_*` names below map as in the `marketing-guide` skill §1.4). Save with `brand_knowledge_save` (`brain_save`), read back with `brand_knowledge_read` / `brand_knowledge_search`. **Exception:** claims-gate's claim facts and marker always use the older path below.
+- **Older path:** otherwise (older servers), and always for claims-gate's claim facts. Save with `gooseworks:brand_update` `patch.facts`, read back with `gooseworks:brand_read`.
 - **Local mode** (no GooseWorks, [the `marketing-guide` skill](../marketing-guide/SKILL.md) §5): append to `gooseworks-local/<brand-slug>/brand-notes.md`, same opening, their words, dated. Read the file first; mark your own superseded line `retired <date>`; read it back.
 
 The playbooks do not change between the paths.
@@ -55,7 +55,7 @@ Long evidence, tables and reports belong in a brand document (the `save-to-brain
 5. **Read back.** `gooseworks:brain_open` the saved record, or check `brain_save` `proposal` `list` when the answer says it waits for a yes. Compare the stored text with what you sent. A missing one is reported as not saved.
 6. **Tell the human in one line** what was saved, and whether it waits for their yes: "I've saved that rule. It's waiting for your yes in GooseWorks before ads follow it."
 
-## Steps: older path (no `brain_*` tools; one `brand_update` call per save)
+## Steps: older path (no Brand Brain tools, or claims-gate's claim facts; one `brand_update` call per save)
 
 1. **Read** `gooseworks:brand_read` `sections: ["learnings"]`. Lean returns every `must`/`dont`; use `detail: "full"` when you also need `do`/`insight`/`template_hint` rows and their ids. Look for a learning that already says the same thing.
 2. **Retire your own superseded learnings** in the same call: `{id, active: false}` for each of your playbook's learnings (same opening) that the new one replaces or contradicts. Never retire another playbook's learning; if yours contradicts it, tell the human. Exceptions: the `claims-gate` skill (`../claims-gate/SKILL.md`) §5 retires and rewrites the claims marker; `Standing offer:` (above).

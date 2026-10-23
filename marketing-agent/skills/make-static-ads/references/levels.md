@@ -22,6 +22,6 @@ Today's most creative mode. The template is a source of a device ("an object cro
 
 ## Text and fullness, at every level
 
-Never default to the agent's own layout: headline on top, product in the middle, an explaining sentence at the bottom. Fill the text slots the source has, all of them: if the template carries a list, a price-free badge, UI, a quote card or a product grid, so does the ad (with this brand's true content). If it has just a headline, the ad has just a headline. A fact with no slot goes in the post text.
+Never default to the agent's own layout: headline on top, product in the middle, an explaining sentence at the bottom. Fill the text slots the source has, all of them: if the template carries a list, a price-free badge, UI, a quote card or a product grid, so does the ad (with this brand's true content). If it has just a headline, the ad has just a headline. Keep slot content short so it draws cleanly (list items of 2–4 words, a few large UI labels, a one-line quote): the build test rules out long or small text, not the slots. A fact with no slot goes in the post text.
 
 **Fill the frame.** A big headline floating on empty background is not a layout. Every area of the template does a job in the ad. Across a set, vary the structure: no two ads share the same text pattern (headline + subhead every time reads as one template). Pick templates whose information density matches the brand's own ads.

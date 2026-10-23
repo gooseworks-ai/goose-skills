@@ -33,7 +33,7 @@ Every ad gets a template, picked after the visual idea so the layout fits it (th
 
 Run on each candidate, fix or drop failures:
 - **Brand fit:** would this brand run it? It serves a profile angle (or is marked new), sounds like the brand, and its look fits the profile. An idea the brand's marketer would call "not us" fails, however clever.
-- **No repeat:** against the brand's live ads and its last 5–10 ads made in GooseWorks, and within this set: an ad may share an angle, but at least one of message, visual idea or template must change. The same ad resized or for another platform is not a repeat.
+- **No repeat:** against the brand's live ads and its last 5–10 ads made in GooseWorks, an ad may share an angle, but at least one of message, visual idea or template must change. Within this set, every ad has its own message. The same ad resized or for another platform is not a repeat.
 - The six tests in `ideas.md` §3: swap, stranger, thumbnail, show-it, build, truth.
 
 ## 6. Choose the set
@@ -46,7 +46,7 @@ Five different messages, not five looks (`ideas.md` §4). At most one straight d
 # Concept board — <brand>, <product>, <date>
 
 Read: <what you actually read, with counts; what was skimmed; what wasn't checked>
-Level: <close / balanced / bold> · Angles: <chosen, and who chose them>
+Level: <close / balanced / bold> · Angles: <chosen, and who chose them> · Templates from outside the library: <which, or what was tried>
 
 | # | Angle (profile / new) | Message (source) | Visual idea | Headline / support | Template (source, what it keeps) | Protect |
 |---|---|---|---|---|---|---|
