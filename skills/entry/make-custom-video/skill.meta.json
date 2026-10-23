@@ -1,0 +1,21 @@
+{
+  "slug": "make-custom-video",
+  "category": "playbooks",
+  "domain": "gooseworks",
+  "tier": "entry",
+  "version": "3.8.2",
+  "tags": [
+    "ads"
+  ],
+  "installation": {
+    "base_command": "npx gooseworks@latest install --mcp",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  },
+  "requires_skills": [
+    "video-production-harness"
+  ]
+}

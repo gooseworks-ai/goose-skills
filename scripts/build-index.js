@@ -8,6 +8,8 @@
  *   skills/video/<slug>/       video skills (atoms, formats, the production harness)
  *   skills/shared/<slug>/      older skills that a video skill, a playbook or
  *                              gooseworks-app still uses (see retired-skills.json)
+ *   skills/entry/<slug>/       the skills `gooseworks install` puts in every agent
+ *                              (the gooseworks router, goose-ads, goose-video…)
  *   packs/<pack>.json          install bundles of video skills, by slug
  * A reference to another skill is `../<slug>/SKILL.md` inside a family.
  *
@@ -108,6 +110,7 @@ const FAMILIES = [
   { dir: 'skills/marketing', domain: 'marketing-agent' },
   { dir: 'skills/video', domain: 'ads' },
   { dir: 'skills/shared', domain: null },
+  { dir: 'skills/entry', domain: 'gooseworks' },
 ];
 const PACKS_DIR = 'packs';
 // Kept in a skill folder for the people who build it; never shipped with the skill.

@@ -9,6 +9,7 @@
 | A new marketing job (a marketer's want, done end to end) | `skills/marketing/<slug>/` | A playbook: `tier: playbook`, `category: playbooks`. Read `docs/marketing/AGENTS.md` first. Prefer a new mode or output of an existing playbook over a new playbook. |
 | One step a playbook loads | `skills/marketing/<playbook>-<step>/` | `tier: atom`. Steps several playbooks share get a plain name (`claims-gate`). List it in the playbook's `requires_skills`. |
 | A video atom or format renderer | `skills/video/<slug>/` | Starts at `version: 1.0.0`; see "Video atoms" below. To ship it in a bundle, add its slug to a `packs/<pack>.json`. |
+| A change to what every install starts with | `skills/entry/<slug>/` | The six entry skills. Raise `version` in both SKILL.md and skill.meta.json; `test/entry-skills.test.js` enforces real action names, credits only, no install lines and the size budgets. |
 | Anything else | Ask first | `skills/shared/` holds only older skills something still uses; new skills don't go there. |
 
 **Names never change.** Recipes, the GooseWorks app, routes and installed copies refer to skills by slug, so a published slug is permanent. To replace a skill, add the new one, then retire the old one in `retired-skills.json` with its `replacement` (or `null` and a `reason`).
@@ -21,7 +22,7 @@ node scripts/build-index.js && node scripts/validate-skills.js && node scripts/c
 
 Commit the regenerated `skills-index.json` with your change. Open the PR into `dev`: merging publishes to staging; promoting `dev` to `main` publishes to production ([DEPLOYMENT.md](DEPLOYMENT.md)).
 
-**To make a marketing playbook use it,** reference it from the playbook's SKILL.md as `` the `<slug>` skill (`../<slug>/SKILL.md`) `` and list it in `requires_skills`. To make GooseWorks route customers to a new playbook, add its row to `gooseworks/src/skills/routes.ts` in the GooseWorks CLI repo and copy the regenerated routes into `collections/brand-growth/routes.json`.
+**To make a marketing playbook use it,** reference it from the playbook's SKILL.md as `` the `<slug>` skill (`../<slug>/SKILL.md`) `` and list it in `requires_skills`. **To make GooseWorks route customers to it,** add its row to `skills/entry/gooseworks/routes.json` and run `node scripts/build-router.js`, which rewrites the router's tables and the Brand Growth collection's routes (CI checks they match).
 
 ## Authoring SKILL.md files — prose constraints
 

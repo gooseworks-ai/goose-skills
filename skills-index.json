@@ -2876,6 +2876,35 @@
       }
     },
     {
+      "slug": "goose-ads",
+      "name": "goose-ads",
+      "category": "playbooks",
+      "domain": "gooseworks",
+      "description": "Edit, resize, animate and study image ads with GooseWorks in this chat. New static or image ads go to the make-static-ads skill when it is installed or catalog_fetch opens it. Read the brand and follow the active playbook, preserving factual prerequisites and approvals.",
+      "tags": "ads",
+      "path": "skills/entry/goose-ads",
+      "version": "3.2.1",
+      "files": [],
+      "metadata": {
+        "slug": "goose-ads",
+        "category": "playbooks",
+        "domain": "gooseworks",
+        "tier": "entry",
+        "version": "3.2.1",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx gooseworks@latest install --mcp",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
       "slug": "goose-graphics",
       "name": "goose-graphics",
       "category": "composites",
@@ -3001,6 +3030,126 @@
           "Registers the new style in styles/index.json and examples/manifest.json"
         ],
         "domain": "design"
+      }
+    },
+    {
+      "slug": "goose-product-photos",
+      "name": "goose-product-photos",
+      "category": "playbooks",
+      "domain": "gooseworks",
+      "description": "Make product photos (studio, lifestyle or on a model) of a brand's real products with GooseWorks in this chat. Start brand work with brain_map and follow the next_step in every answer.",
+      "tags": "ads, brand",
+      "path": "skills/entry/goose-product-photos",
+      "version": "1.1.0",
+      "files": [],
+      "metadata": {
+        "slug": "goose-product-photos",
+        "category": "playbooks",
+        "domain": "gooseworks",
+        "tier": "entry",
+        "version": "1.1.0",
+        "tags": [
+          "ads",
+          "brand"
+        ],
+        "installation": {
+          "base_command": "npx gooseworks@latest install --mcp",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "goose-video",
+      "name": "goose-video",
+      "category": "playbooks",
+      "domain": "gooseworks",
+      "description": "Make a video ad in this chat from a real reference ad, found or theirs; styles are the fallback. Follow every answer's next_step.",
+      "tags": "ads",
+      "path": "skills/entry/goose-video",
+      "version": "4.5.0",
+      "files": [],
+      "metadata": {
+        "slug": "goose-video",
+        "category": "playbooks",
+        "domain": "gooseworks",
+        "tier": "entry",
+        "version": "4.5.0",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx gooseworks@latest install --mcp",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "goose-video-local",
+      "name": "goose-video-local",
+      "category": "capabilities",
+      "domain": "gooseworks",
+      "description": "Make an approved GooseWorks video when an answer's next_step gives its command.",
+      "tags": "ads",
+      "path": "skills/entry/goose-video-local",
+      "version": "1.0.3",
+      "files": [],
+      "metadata": {
+        "slug": "goose-video-local",
+        "category": "capabilities",
+        "domain": "gooseworks",
+        "tier": "entry",
+        "version": "1.0.3",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx gooseworks@latest install --mcp",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
+      }
+    },
+    {
+      "slug": "gooseworks",
+      "name": "gooseworks",
+      "category": "playbooks",
+      "domain": "gooseworks",
+      "description": "GooseWorks growth coworker and router for markets, competitors, audiences, creators, campaigns, ads, photos, graphics, video, content, email, SEO, social, leads and contacts. Use for brand facts or copy too, so offers, prices, rules, audience and bestsellers reach the brand's Marketing Brain.",
+      "tags": "research, ads, lead-generation, social",
+      "path": "skills/entry/gooseworks",
+      "version": "2.2.1",
+      "files": [],
+      "metadata": {
+        "slug": "gooseworks",
+        "category": "playbooks",
+        "domain": "gooseworks",
+        "tier": "entry",
+        "version": "2.2.1",
+        "tags": [
+          "research",
+          "ads",
+          "lead-generation",
+          "social"
+        ],
+        "installation": {
+          "base_command": "npx gooseworks@latest install --mcp",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        }
       }
     },
     {
@@ -3836,6 +3985,38 @@
           "save-to-brain",
           "spend-gate",
           "write-report"
+        ]
+      }
+    },
+    {
+      "slug": "make-custom-video",
+      "name": "make-custom-video",
+      "category": "playbooks",
+      "domain": "gooseworks",
+      "description": "Create a custom video with sourced product accuracy, explicit sound routing and exact-final audiovisual review.",
+      "tags": "ads",
+      "path": "skills/entry/make-custom-video",
+      "version": "3.8.2",
+      "files": [],
+      "metadata": {
+        "slug": "make-custom-video",
+        "category": "playbooks",
+        "domain": "gooseworks",
+        "tier": "entry",
+        "version": "3.8.2",
+        "tags": [
+          "ads"
+        ],
+        "installation": {
+          "base_command": "npx gooseworks@latest install --mcp",
+          "supports": [
+            "claude",
+            "cursor",
+            "codex"
+          ]
+        },
+        "requires_skills": [
+          "video-production-harness"
         ]
       }
     },
@@ -10247,9 +10428,8 @@
         },
         "routes": {
           "$ref": "./routes.json",
-          "$comment": "Routing is NOT declared here. This collection derives it from the single source — gooseworks/src/skills/routes.ts, published as skills/routes.json in the gooseworks CLI package. See routes.json for the mirror and test/brand-growth-routes.test.js for the drift guard.",
-          "source_repo": "gooseworks-ai/gooseworks",
-          "source_file": "src/skills/routes.ts"
+          "$comment": "Routing is NOT declared here. It is derived from skills/entry/gooseworks/routes.json by scripts/build-router.js; test/brand-growth-routes.test.js guards the drift.",
+          "source_file": "skills/entry/gooseworks/routes.json"
         },
         "stages": [
           {

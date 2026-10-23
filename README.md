@@ -27,6 +27,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 | `skills/marketing/` | **14 marketing playbooks** (one marketer job each, end to end), the 70 steps they load, and 2 foundation skills | 86 |
 | `skills/video/` | **Video-ad skills**: render atoms, format renderers, mockups, voice, music and the production harness | 68 |
 | `skills/shared/` | Older skills that a video skill, a playbook or the GooseWorks app still uses. Each one's user is listed in [retired-skills.json](retired-skills.json) | 29 |
+| `skills/entry/` | **The entry skills** `gooseworks install` puts in every agent: the `gooseworks` router, `goose-ads`, `goose-video`, `make-custom-video`, `goose-video-local`, `goose-product-photos`. Routing lives in `skills/entry/gooseworks/routes.json` | 6 |
 
 The old GTM library was deleted on 23 Oct 2026. [retired-skills.json](retired-skills.json) maps every retired name to the playbook that replaced it (or says why none did), and the old source stays readable at tag `legacy-gtm-final`.
 
@@ -132,6 +133,7 @@ skills/
   marketing/<slug>/    marketing playbooks, their steps, foundation skills
   video/<slug>/        video-ad skills
   shared/<slug>/       older skills still in use (see retired-skills.json)
+  entry/<slug>/        the skills every GooseWorks install starts with; routes.json is the routing source
 packs/<pack>.json      install bundles of video skills
 parts/<id>/<x.y.z>/    versioned video building blocks the GooseWorks kit loads (never edited once published)
 collections/           curated paths through the catalog (Brand Growth)

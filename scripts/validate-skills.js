@@ -40,8 +40,10 @@ const slugs = new Set();
 const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 // Skill families: skills/<family>/<slug>/ (see build-index.js). Marketing skills
 // carry a tier and stricter frontmatter rules.
-const FAMILIES = ['marketing', 'video', 'shared'];
-const FAMILY_DOMAIN = { marketing: 'marketing-agent', video: 'ads', shared: null };
+const FAMILIES = ['marketing', 'video', 'shared', 'entry'];
+const FAMILY_DOMAIN = { marketing: 'marketing-agent', video: 'ads', shared: null, entry: 'gooseworks' };
+// Families with their own domain value, outside the schema's enum.
+const OWN_DOMAIN = new Set(['marketing', 'entry']);
 const MA_TIERS = new Set(['playbook', 'atom', 'foundation']);
 const DESCRIPTION_LIMIT = 1024;
 
@@ -116,6 +118,12 @@ for (const family of FAMILIES) {
       }
       if (!Array.isArray(meta.tags) || meta.tags.length === 0) errors.push(`tags must be a non-empty array in ${where}`);
       if (!Array.isArray(meta.requires_skills)) errors.push(`requires_skills must be an array in ${where}`);
+    } else if (family === 'entry') {
+      // Entry skills are installed by `gooseworks install` and compared by version.
+      if (fm.name !== slug) errors.push(`Frontmatter name must be the slug in ${where}: name=${fm.name}`);
+      if (!SEMVER.test(String(meta.version)) || fm.version !== meta.version) {
+        errors.push(`version in SKILL.md (${fm.version}) and skill.meta.json (${meta.version}) must be the same semver in ${where}`);
+      }
     } else if (meta.version !== undefined && !SEMVER.test(String(meta.version))) {
       errors.push(`version must be a semver string (x.y.z) in ${where}: ${JSON.stringify(meta.version)}`);
     }
@@ -126,7 +134,7 @@ for (const family of FAMILIES) {
     }
     const domain = meta.domain || FAMILY_DOMAIN[family];
     if (!domain) errors.push(`domain required in ${where}/skill.meta.json`);
-    else if (family !== 'marketing' && allowedDomains.size && !allowedDomains.has(domain)) {
+    else if (!OWN_DOMAIN.has(family) && allowedDomains.size && !allowedDomains.has(domain)) {
       errors.push(`Unknown domain "${domain}" in ${where}: allowed ${[...allowedDomains].sort().join(', ')}`);
     }
     if (!fm.description) errors.push(`description required in ${where}/SKILL.md`);

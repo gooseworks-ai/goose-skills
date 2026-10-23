@@ -35,6 +35,9 @@ jobs:
         # Every reference in skills/marketing resolves when skills sit side by side, names a listed dependency, and the lists are flat.
         run: node scripts/check-marketing-agent-links.js
 
+      - name: Router tables match skills/entry/gooseworks/routes.json
+        run: node scripts/build-router.js --check
+
       - name: Test the Git LFS pointer check
         run: node --test scripts/__tests__/check-lfs-pointers.test.js
 

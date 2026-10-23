@@ -1,0 +1,19 @@
+{
+  "slug": "goose-product-photos",
+  "category": "playbooks",
+  "domain": "gooseworks",
+  "tier": "entry",
+  "version": "1.1.0",
+  "tags": [
+    "ads",
+    "brand"
+  ],
+  "installation": {
+    "base_command": "npx gooseworks@latest install --mcp",
+    "supports": [
+      "claude",
+      "cursor",
+      "codex"
+    ]
+  }
+}
