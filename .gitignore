@@ -15,14 +15,8 @@ snapshots/
 # Kept local for now (do not commit real account data to this public repo).
 **/eval/fixtures/
 
-# SkillOpt — optimization run outputs, generated/captured datasets, and the local
-# venv. data/ holds generated questions + calibrated rubrics that can reference real
-# client paths/content (e.g. extract-source-sample), so the WHOLE dir stays local —
-# never commit it to this public repo.
-skillopt/outputs/
-skillopt/data/
-skillopt-venv/
+# Local agent session state.
+.claude/
 # Run outputs and input lists of real people (names, LinkedIn URLs, emails).
 # Never commit personal data to this public repo.
 skills/**/output/
-skills/sales/capabilities/champion-tracker/input/

@@ -171,6 +171,7 @@ jobs:
         run: >
           python -m pytest -q
           test/recipe-media-fixes
+          test/custom-video-regressions.py
           skills/video/review-finished-ad/tests
           skills/video/create-vo-elevenlabs/tests
           skills/video/create-creator-takes-h3/tests
