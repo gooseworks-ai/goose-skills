@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Research the brand and its existing ads, compare sourced concepts and visual ideas, compose, quote, render and review through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.5.3
+version: 0.5.4
 ---
 
 # make-static-ads
@@ -29,7 +29,7 @@ Load `run-memory` (`../run-memory/SKILL.md`) at the start of every run, includin
 
 ### 1. Research and record
 
-For fresh/more ads, read `references/workflow.md` through its selection sections and use one run.json. It is the upstream record for the next steps, not a second report. `references/engine-notes.md` gives small exact reads; `references/reading-the-brain.md` gives paths only when a needed record is missing. Check the brand/customer sources, own live/saved ads, history and applicable platform scope with bounded samples. Record actual counts/date/limits; absent imports do not prove zero live ads.
+For fresh/more ads, read `references/workflow.md` through its selection sections and use one run.json. It is the upstream record for the next steps, not a second report. `references/engine-notes.md` gives small exact reads; `references/reading-the-brain.md` gives paths only when a needed record is missing. Check the brand/customer sources, own live/saved ads, history and applicable platform scope with bounded samples. Record actual counts/date/limits and the extent of each read/view under workflow.md; absent imports do not prove zero live ads.
 
 **Done:** coverage and cited evidence are recorded, or named unavailable. Ask only unresolved choices: product/placements/count, logo/palette/font, template choice and any needed offer/claim clarification. Suggest answers based on the evidence. Read `references/fonts-and-color.md` only for a font/palette choice beyond the kit; actual kit fonts may differ from a mapped guess.
 

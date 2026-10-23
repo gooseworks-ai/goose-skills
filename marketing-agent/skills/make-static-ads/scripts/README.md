@@ -59,7 +59,7 @@ Build the idea before choosing its finish. Record these fields as `ad.json.creat
 | `premise`, `relationship` | One event and why its physical or visual relationship explains the message. |
 | `scene` | Camera, action, meaningful props, product position and scale, materials, lighting. This is the authored blueprint for mechanism/craft. Set `structure.media_slot` to `product`, `screen` or `none` for this scene. |
 | `protected_decision` | One concrete sentence naming what must remain visible; carry it verbatim into the final prompt. |
-| `reference_role`, `reference_contribution` | `layout`, `mechanism` or `craft`, and precisely what this source contributes. A mechanism can be a direct device or a broader relationship; craft alone may influence lighting/materials while the product supplies the metaphor. |
+| `reference_role`, `reference_contribution` | `layout`, `mechanism` or `craft`, and precisely what the viewed source contributes, distinguishing observed cues from interpretation and authored departures (which scene records). A mechanism can be a direct device or a broader relationship; craft alone may influence lighting/materials while the product supplies the metaphor. |
 | `direct_competitor` | Explicit boolean. True accepts layout only. Other brands' images stay out of generation inputs in every role. |
 | `exact_copy` | List of exact on-image lines (`[]` explicitly requests no added campaign text), written in Step 5. Compose must carry each verbatim, then the claims check clears them before quoting. |
 

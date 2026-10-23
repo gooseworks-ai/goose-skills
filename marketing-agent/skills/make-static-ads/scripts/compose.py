@@ -435,7 +435,11 @@ def creative_direction(ad):
 
 
 def direction_block(c):
-    text = "## Creative direction (playbook departure 7)\n" + json.dumps(c, ensure_ascii=False, indent=2)
+    text = ("## Creative direction (playbook departure 7)\n"
+            "Reference observations describe viewed pixels; inferred meaning and authored scene choices stay distinct. "
+            "Use authored departures as scene instructions, not as facts about the source. "
+            "If reference_contribution conflicts with its evidence, return it for selection re-review before composing.\n"
+            + json.dumps(c, ensure_ascii=False, indent=2))
     if not c["exact_copy"]:
         text += "\nAdd no campaign text; preserve only the real product markings and requested real logo."
     return text
