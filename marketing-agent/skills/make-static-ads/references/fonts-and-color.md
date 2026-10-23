@@ -1,20 +1,19 @@
 # Fonts and colour — pick type that looks like an ad, not a default
 
 **In short**
-- The composer sets type and colour the server's way: the kit's font in its `Typography:` line plus a font specimen (`composer.md` §6.3, `font-specimen.md`), and a colour scheme dealt per ad from the kit (`composer.md` §3). This file does not replace that.
-- **One improvement:** when the brand font resolves to a plain system face (Inter, Arial, Helvetica, Roboto, a generic sans) for a designed headline, offer 2–3 pairings from §2 at Step 2, one suggested; the chosen pairing goes into the composer's `Typography:` line and the specimen (the `make-static-ads-compose` skill (`../../make-static-ads-compose/SKILL.md`)).
-- The same pairings are the font options for copy variants (the `make-static-ads-copy-variants` skill (`../../make-static-ads-copy-variants/SKILL.md`)). Every font here is free on Google Fonts, so the specimen and the layers method can set it exactly.
-
+- Type and colour go into the prompt's shared foundation (`prompts.md` §2) as words: the font family by name plus a description of its look, and the palette as named colours or hex.
+- When the brand font is a plain system face (Inter, Arial, Helvetica, Roboto) for a designed headline, or a paid font the image model won't know, offer 2–3 pairings from §2 at Step 2, one suggested.
+- The same pairings are the font options for copy variants (the `make-static-ads-copy-variants` skill (`../../make-static-ads-copy-variants/SKILL.md`)).
 
 ## 1. The font question (Step 2) and what each answer does
 
-| Answer | What the composer gets (`composer.md` §6.3, `font-specimen.md`) |
+| Answer | What goes in the prompt |
 |---|---|
-| **Brand font** — offered only when it is on Google Fonts or has a metric clone (`font-specimen.md` §3), the only faces the specimen can set | The family in the `Typography:` line and a font specimen rendered in it |
-| **Pick one of 2–3 fonts** that suit the brand (§2, one suggested) | The pairing in the `Typography:` line and a specimen rendered in it (all are Google Fonts) |
-| **No specific font** | No family named and no specimen: replace the composer's TYPOGRAPHY instruction with "set all text in a clean, legible typeface that suits the brand and the layout" |
+| **Brand font**, when it is a Google Font or has a close free match (§3) | The family by name and its look ("a heavy condensed serif, black") |
+| **One of 2–3 pairings** (§2, one suggested) | The pairing's families and its "feel" |
+| **No specific font** | "Set all text in a clean, legible typeface that suits the brand and the scene" |
 
-A brand font with no Google Fonts match or metric clone is never named to the image model: it cannot draw a font it doesn't know, and naming it produces a lookalike. Offer a pairing or no specific font instead. Never Inter, Arial, Helvetica or Roboto as a designed headline unless the marketer chose it; never more than two families; no light weights for the hook.
+Never name a font the model can't know; describe its look instead. Never Inter, Arial, Helvetica or Roboto as a designed headline unless the marketer chose it; never more than two families; no light weights for the hook.
 
 ## 2. Pairings by brand type (headline / body)
 
@@ -35,7 +34,7 @@ Pick by the ad's visual style too: a lo-fi native ad wants a plain or system-lik
 
 ## 3. Close free matches for common paid brand fonts
 
-The Step 2 suggestion when the brand's font isn't on Google Fonts (the match is set as a pairing, compose departure 3), and the layers method of copy variants. The font specimen still follows its own server alias rules (`font-specimen.md` §3).
+The Step 2 suggestion when the brand's font isn't on Google Fonts, and the layers method of copy variants.
 
 | Paid font | Free match |
 |---|---|
@@ -52,15 +51,16 @@ The Step 2 suggestion when the brand's font isn't on Google Fonts (the match is 
 
 ## 4. Colour — the colour question (Step 2) and what each answer does
 
-| Answer | What the composer gets |
+| Answer | What goes in the prompt |
 |---|---|
-| **Brand colours** (default) | `apply_brand_colors` on; the scheme dealt per ad from the kit (`composer.md` §3) |
-| **The brand's running-ads colours** | The palette read from the running ads (background, text, accent as hex) replaces the kit's: the agent deals it per ad as the assigned scheme in the COLORS line, at least two background tones across the set, text-to-background contrast at least 4.5:1. Offer once to save it as a look rule through the `save-learning` skill |
-| **The template's colours** | The brand's own template: `apply_brand_colors` off (KEEP SOURCE). Another brand's template: GooseWorks never copies another brand's exact colours, so the agent keeps the template's light/dark structure and mood and picks a close palette of its own — say so once |
-| **A fresh palette** | The agent picks a new palette per ad (background, text, accent as hex), different on every ad, text-to-background contrast at least 4.5:1, logo placed on an area where its real colours read; it goes in the composer's COLORS line as the assigned scheme |
+| **Brand colours** (default) | The kit's colours, used selectively; vary the background across ads |
+| **The brand's running-ads colours** | The palette read from the running ads (background, text, accent). Offer once to save it as a look rule through the `save-learning` skill |
+| **A fresh palette** | A palette per ad, text-to-background contrast at least 4.5:1, logo on an area where its real colours read |
+
+The product's own packaging colours often make the best palette: the scenes then feel like the brand without a template.
 
 Across a set, at least two background tones (light and dark) so the ads don't blur together. Never imitate a platform's UI colours, never lead with a competitor's signature colour.
 
 ## 5. Logo — the logo question (Step 2)
 
-With logo → the kit logo is attached and placed where the template's logo sits, or a calm corner when the template has none; it keeps its own colours — when the assigned background would hide it, the agent moves it to a contrasting area or changes that ad's scheme, never recolours it. No logo → `no_logo` on. A brand `must` ("wordmark in every ad") beats the answer; say so.
+With logo → attach the kit logo file and say where it sits (a calm corner or the footer); it keeps its own colours. When the background would hide it, move it or change that ad's background, never recolour it. No logo → say "no logo" in the prompt; the product's own label still shows the brand. A brand `must` ("wordmark in every ad") beats the answer; say so.

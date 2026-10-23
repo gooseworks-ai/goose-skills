@@ -1,90 +1,101 @@
 ---
 name: make-static-ads
 description: >-
-  Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Research the brand and its existing ads, compare sourced concepts and visual ideas, compose, quote, render and review through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.5.4
+  Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
+version: 0.6.0
 ---
 
 # make-static-ads
 
-Choose the ideas before paying to draw them. A concept is a persona, a reason to buy and its proof; an ad is one execution. A reference can contribute layout, mechanism or craft. The product and customer situation supply the meaning.
+**The idea is the job.** An ad idea is a real product fact or customer situation turned into one small physical event the viewer gets at a glance (`references/ideas.md`). Everything else in this playbook (research, copy, prompt, checks) serves that idea or protects the brand.
+
+The proof that the work happened is the **concept board**: one row per ad, shown to the marketer before any credits are spent. It cannot be skipped, shortened to "your choice", or replaced by a summary.
 
 ## What you get
 
-Reviewed images and ad copy, with the sources, selection decisions, coverage limits and exact render trace in one batch record. Agent review is separate from the marketer's preference or launch decision.
+Finished, reviewed images with their ad copy, the concept board behind them, what was cut and why, and a batch file the launch reads.
 
 ## Before you start
 
-Discover the live GooseWorks tools. Refresh a stale connector catalog once; an existing authorized transport may call the same server's live schemas. A missing `ads_render` stops generation: `ads_generate` runs another composer and is not a substitute. No connection → ask to connect GooseWorks.
-
-Use the server's actual setup state. Complete factual onboarding/brand prerequisites, rights, claim restrictions and spend approvals. An already selected brand/task does not need another creative picker. The fetched playbook owns research, creative planning and its gates; generic next-step suggestions about speed or one plan do not replace those steps. The server's execution/polling/publishing prerequisites remain binding. Unresolved contradictory setup → report the block.
-
-Read the brand, product, saved rules and research status; generation requires complete brand research and usable official product imagery. A physical product without real photos stops at concepts/copy. Preserve exact product identity and every applicable must/dont rule. Other brands' references stay text-only; direct competitors lend layout only. A card/setup completion or input hash never certifies research or quality.
-
-Short answers (“your choice,” “one ad,” “finals only”) delegate choices and shorten display. They retain the work below. Reuse this conversation's valid reads and settings; add every earlier ad to history and continue palette rotation.
-
-Load `run-memory` (`../run-memory/SKILL.md`) at the start of every run, including copy/fix/graphic work. Read the previous record and check each open recommendation against actual changes and outcomes using the atom’s status/verdict rules and sources. A missing record is an honest first run; unreadable history is a named gap. Never infer an outcome from silence.
+- **Connection.** Discover the live GooseWorks tools. No `ads_render` → stop before spending and say so; `ads_generate` rewrites your prompt through templates and is not a substitute. No connection → ask to connect GooseWorks.
+- **Server hints vs this playbook.** GooseWorks answers may say "one short line and wait", "recommend one plan" or "follow the next_step". Those govern its cards, setup, rights and spending. They never replace this playbook's research, board or critic. Setup, rights, claims and spend steps from the server still bind.
+- **Product photos.** A physical product needs real product photos (`brand_read` with `product_ids`). None → stop at the board and offer the product-photos job.
+- **Run memory.** Load `run-memory` (`../run-memory/SKILL.md`) at the start: the last run's record and what came of its recommendations. Add every ad already made in this conversation to the history.
 
 ## Steps
 
-### 1. Research and record
+### 1. Read the brand (free)
 
-For fresh/more ads, read `references/workflow.md` through its selection sections and use one run.json. It is the upstream record for the next steps, not a second report. `references/engine-notes.md` gives small exact reads; `references/reading-the-brain.md` gives paths only when a needed record is missing. Check the brand/customer sources, own live/saved ads, history and applicable platform scope with bounded samples. Record actual counts/date/limits and the extent of each read/view under workflow.md; absent imports do not prove zero live ads.
+Use the small calls in `references/engine-notes.md`. Read:
+- the brand, its rules (every `must` and `dont`) and the claims on file with their status (`references/reading-the-brain.md` §1);
+- the featured product's record and photos (look at the photos);
+- what customers say: the voice-of-customer bank, else 10–20 public reviews from the product page or a marketplace (host browser, free);
+- what the brand already runs: up to 20 of its own live or saved static ads, looked at, not just listed (`references/research.md`);
+- earlier batches from this playbook (`made-by:make-static-ads`).
 
-**Done:** coverage and cited evidence are recorded, or named unavailable. Ask only unresolved choices: product/placements/count, logo/palette/font, template choice and any needed offer/claim clarification. Suggest answers based on the evidence. Read `references/fonts-and-color.md` only for a font/palette choice beyond the kit; actual kit fonts may differ from a mapped guess.
+Say what you actually read, with counts, in the board header: "Read 14 reviews, 20 of ~300 live Meta ads, the product page." A skimmed or truncated source is named as skimmed. A source you could not open is named as not checked.
 
-### 2. Compare and select
+**Done:** you can state at least five product truths with sources, five things customers say or do, and what the brand's live ads already say.
 
-Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`), then `make-static-ads-find-references` (`../make-static-ads-find-references/SKILL.md`) and `make-static-ads-ad-copy` (`../make-static-ads-ad-copy/SKILL.md`) into that same record. Draft sourced reasons and ranked hooks, score the promise/proof/persona gate, and compare competing visible meanings for every fresh/more request, including an ordinary request for five ads. Label inferred audiences and imagined scenes as hypotheses; they do not waive purchase-reason evidence or proof. Source breadth is the critic’s provenance judgment under concept-grid, not a count of source labels. Fix/drop failures; insufficient grounded reasons → research or a smaller justified set.
+### 2. Ask only what's open
 
-Give a fresh critic the request, evidence, alternatives and whole set before compose; use the concept-grid’s validity and creative-strength review and record specific findings and resolutions. Without delegation, get a real human critique of that evidence and alternatives or stop at selection; self-review cannot clear this gate. **Done:** the upstream check described in `scripts/README.md` is ready or honestly partial with an evidence-based proceed-with-limits decision; blocked means no compose/quote. The checker verifies recorded work and consistency, not truth or creativity.
+One message, only for what the brand records don't settle: which product, how many ads, placements, a live offer, logo or font preferences. Suggest an answer to each. "Your choice" means you decide; it does not shorten the next steps.
 
-### 3. Compose, then check the exact result
+### 3. Find the ideas → the concept board
 
-Run `make-static-ads-compose` (`../make-static-ads-compose/SKILL.md`). Link each ad.json to the selected run row. Prepare complete bounded input, read every returned part, then author the answer. The finalizer checks the run/selected direction/input and retains exact copy and the protected decision.
+Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). It turns Step 1 into starting points, tensions and physical events (`references/ideas.md`), looks at references for devices (the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`)), and has a fresh critic attack the board.
 
-Run `make-static-ads-claims-extract` (`../make-static-ads-claims-extract/SKILL.md`) Pass A and `ad-policy-check` (`../ad-policy-check/SKILL.md`) against exact final prompts/images. Cut → recompose/review. An inaccessible current-policy source stays unverified; `references/workflow.md` defines the narrow explicitly authorized unpublished-draft exception and launch hold. **Done:** the run, final output and claims/policy review match; the reviewed-quote operation in `scripts/README.md` emits only dry-run requests. Shell-free hosts apply the same record checks directly and name that path.
+**Done:** `board.md` has one row per ad that passed the swap, thumbnail and truth tests, plus the critic's notes and what changed because of them.
 
-### 4. Quote and render
+### 4. Copy
 
-Get every live `ads_render` dry-run quote. Show the chosen concepts/reference picks, coverage limits, cut lines and returned prices. Warn that one redo per image may be needed at the same price. The `spend-gate` skill (`../spend-gate/SKILL.md`) applies: render only the exact quotes and scope/ceiling the marketer approved. An explicit total ceiling wins over retry permission.
+Run the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`): the on-image headline and support line, then the primary texts, headline, description and CTA around the image.
 
-Submit exact quoted requests and poll `job_get` kind ads_batch until pending is0. A failed job needs another quote/approval within authorized scope before resubmission. **Done:** jobs complete or failure reported; no generator substitution.
+### 5. Write each prompt
 
-### 5. Review pixels and the set
+Run the `make-static-ads-compose` skill (`../make-static-ads-compose/SKILL.md`): one prompt per ad and ratio, written from the board row (`references/prompts.md`).
 
-Run `make-static-ads-render-review` (`../make-static-ads-render-review/SKILL.md`). Use a newly isolated blind judge with only assembled per-ad judge instructions/rubric, official reference images and the output. A reused code reviewer with task history is separate review, not blind review. Then check drawn claims, hook/concept retention and set diversity. Distinct scenes do not prove strong ideas or researched reasons. Unseen images remain unjudged.
+### 6. Check the exact prompts
 
-One quoted retry within the ceiling; a compatible isolated label defect may use the bounded official-pixel repair and a full new review. Exhausted ceiling/incompatible repair → stop and keep the failure explicit. **Done:** each render passed, needs review, or dropped with reasons; no fabricated human rating.
+Pass A of the `make-static-ads-claims-extract` skill (`../make-static-ads-claims-extract/SKILL.md`) and the `ad-policy-check` skill (`../ad-policy-check/SKILL.md`) on each finished prompt and its copy. A cut line goes back to Step 4 or 5, then through this check again.
 
-### 6. Deliver and remember
+### 7. Show the board and the quote
 
-Use `references/handoff-format.md` for the final table and `references/reading-the-brain.md` §7 for the batch fields. Save run/selection/compose/claims/pixel verdicts, exact prompts and ordered inputs, IDs and provenance. Carry any unverified-policy status and launch hold into delivery and run-memory; draft approval never clears launch. Read-merge-write lower-case tags, including made-by:make-static-ads. Preserve raw failures and repair lineage. Re-read product price/eligibility before delivery.
+`gooseworks:ads_render` with `dry_run: true` for every ad and ratio. Show the marketer, in one message: the board (`references/handoff-format.md` §3), the cut lines, each quote exactly as returned, and "If an image fails my check I redo it once, at the same price." The `spend-gate` skill (`../spend-gate/SKILL.md`) applies: render only what they approved, within their ceiling.
 
-Ask which ads the marketer prefers. Offer `make-static-ads-copy-variants` (`../make-static-ads-copy-variants/SKILL.md`) for chosen images; each paid variant has its own applicable approval. Save lasting human feedback through `save-learning` (`../save-learning/SKILL.md`), not agent judgments. **Done:** the batch and creative links are delivered with honest limits; publishing is a separate human decision.
+"Finals only" shortens the delivery, not this message: the board is what they are paying for.
+
+### 8. Render and review
+
+Submit the exact quoted requests; poll `gooseworks:job_get` (`kind: "ads_batch"`) until every `pending` is 0. Then run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): a fresh judge checks each image against its board row and the product photos, one retry inside the approval, then the whole set.
+
+### 9. Deliver and remember
+
+Hand over with `references/handoff-format.md` §4. Write the batch file (`references/reading-the-brain.md` §7) and the lower-case tags, including `made-by:make-static-ads`. Ask which ads the marketer prefers; offer copy variants for those (the `make-static-ads-copy-variants` skill (`../make-static-ads-copy-variants/SKILL.md`)). Save lasting human feedback through the `save-learning` skill (`../save-learning/SKILL.md`). Run the End step of `run-memory` on every exit, including a stop or partial run.
 
 ## Other modes
 
 | Request | Path |
 |---|---|
-| Iterate a winner / rotation | Keep its supported reason/proof; change the named lever. Link the approved parent/request as run basis. Rotation exhausted → fresh reasons and the full fresh selection. |
-| Same image, different text/font | `make-static-ads-copy-variants`; preserve the parent and new exact copy, claims/policy review and quote. No fresh-reason tournament. |
-| Rejected ad | `make-static-ads-fix-rejected` (`../make-static-ads-fix-rejected/SKILL.md`); fix the violating element and verify both checks, retaining the rejection source. |
-| Header/social graphic request | `make-static-ads-graphic-request` (`../make-static-ads-graphic-request/SKILL.md`); record requested purpose/exact text and source basis. Do not invent a sales concept requirement. |
-| Price/stock change | List affected delivered ads with pause flags. Re-read the source; remakes need exact copy checks and new quotes. |
+| More ads | Same steps. The earlier ads are history: the new board must not repeat their meanings. |
+| Iterate a winner | Keep its idea and proof; change the one lever named (hook, scene detail, look). One board row with the parent linked; no new idea search. |
+| Same image, different text or font | The `make-static-ads-copy-variants` skill. |
+| Rejected ad | The `make-static-ads-fix-rejected` skill (`../make-static-ads-fix-rejected/SKILL.md`). |
+| Header or social graphic | The `make-static-ads-graphic-request` skill (`../make-static-ads-graphic-request/SKILL.md`). No sales idea required. |
+| Price or stock change | List affected delivered ads with pause flags; remakes need copy checks and new quotes. |
 
 ## Approval gates
 
-Rights and claims evidence before public copy; marketer approval of exact live quotes/ceiling before paid work; human words only for preference/ratings/launch. Named partial coverage never waives these gates. No paid research without its own authorization.
+Claims usable before public copy; the marketer's yes to the exact quotes before paid work; human words only for preferences, ratings and launch. No paid research without its own yes.
 
 ## Output and write-back
 
-One batch record with run decisions and evidence, registered references and tagged creative versions. Agent judge results belong in the record/tags; feedback is the human's channel. Run the mandatory End step of `run-memory` (`../run-memory/SKILL.md`) on every exit, including a block or partial run. Save outcomes, unresolved recommendations and next checks, carrying forward unknowns. A failed save remains explicit; do not claim the record was saved.
+The board, the batch file, tagged creatives and the run-memory record. Agent verdicts go in tags and the batch file; render feedback carries only the marketer's own words. A failed save is reported, never claimed.
 
 ## Done when
 
-The selected ideas have source-backed reasons/proof, explicitly researched or hypothetical personas, compared alternatives, resolved gate findings and honest coverage; composed copy matches that selection; exact quotes and budget were respected; final pixels and set were reviewed under the stated setup; failures and limitations remain visible. Receipts and passing tests alone do not establish those judgments.
+Every delivered ad comes from a board row with a reason to exist, passed its claims and policy check, was rendered within the approved quotes, and was looked at by a judge against its protected choice and the product photos. Failures and anything not checked are said plainly.
 
 ## Out of scope
 
-Video, product photography, campaign launches and performance conclusions. Offer the matching specialist when requested; this skill neither publishes nor proves an ad will perform.
+Video, product photography, campaign launches and performance conclusions. Offer the matching job when asked; this playbook neither publishes nor predicts performance.

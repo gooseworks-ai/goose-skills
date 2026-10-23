@@ -498,3 +498,20 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 **Change.** Compare exact hook lines against their own buyer tension, proof and event; develop surrounding copy from a specific moment or objection. Judge each reference's strongest feasible allowed contribution. Separate viewed cues, interpretation and authored departures in existing notes, and carry that distinction into prepared composer context. The critic challenges these choices and coverage claims before compose. Coverage now distinguishes full records, excerpts and pixels; skipped leader checks remain partial, and stopping claims stay bounded to actual named attempts. The lookup guide no longer tells an agent to stop before the leader sweep just because imports filled the shortlist. No new record fields or numeric quality gate; useful direct demonstrations and bounded draft work remain valid. Claim, rights, approval, spend and pixel gates remain binding.
 
 **Validation limit.** Automated checks verify compatibility, structure and prompt plumbing. They cannot judge whether a comparison is insightful or a source was read faithfully. Test 19 defines a substantive free/offline check; it is not a recorded pass. Independent review and fresh behavior remain separate evidence. No live source call, paid generation, launch or historical-case rewrite is part of this change.
+
+
+## Round 27 — 23 Oct: rebuilt around how good ideas are made (0.6.0)
+
+**Summary.** From 0.4 to 0.5.4 each round answered "agents skip steps" with more required record fields, receipts and gates. The skill grew to about 2,800 lines of instructions plus a 1,400-line composer script. Agents still skipped: they printed the first 1,000 characters of a record and called it read, skipped the leader search, and passed the quote gate with review notes they wrote themselves. Worse, the output got less creative. A Codex agent with **no skill** made five strong Kolkata Chai ads on 22 Oct (`content-goose/clients/kolkata-chai-co/finals/creative-experiment-2026-10-22/how-to.md`); the 0.5.3 skill made five Graza product demonstrations ("Two oils. Different jobs.").
+
+**Why agents cut corners** (Claude handoff session 21 Oct, Codex audit 23 Oct): too much to read, so they abbreviate and over-claim; GooseWorks server hints ("one line and wait", "recommend one plan") pull toward speed; reference search is slow; every self-written field can be faked. Adding fields makes all four worse.
+
+**Change.**
+- The method is now `references/ideas.md`: starting points (product facts and customer situations, sourced or labelled hypothesis) → tension → one physical event → headline that names the relationship → the protected choice. Swap, thumbnail and truth tests. Kolkata is the worked example; the Graza set is the named failure.
+- One working artifact, `board.md`, shown to the marketer with the quotes. A human sees it, so it can't be skipped quietly. "Finals only" shortens delivery, not the board.
+- One fresh critic attacks the board (swap test, demonstrations, duplicates, buildability). No subagent → the marketer critiques it. No receipts or hashes.
+- The agent writes the render prompt itself from the board row (`references/prompts.md`), with image roles in a fixed order and the protected choice word for word. `ads_render` adds nothing.
+- Removed: `run.json` and `workflow.py` gates, `compose.py` and the 717-line server composer copy, structure blueprints, the server judge copy, font specimens, colour-scheme dealing, references-and-remix. Kept: claims and policy rules, brand-brain reading, the review rubric (idea check first), label repair, side modes.
+- The acceptance test is now "beats a no-playbook agent" (`tests/test-by-hand.md` Test 1).
+
+**Open decision.** Other brands' ad images still never go to the image model (rights). The Kolkata run attached two other brands' ads as idea and craft references. If ideas suffer without them, revisit with the marketer's rights position. [[derived-from::kolkata-chai-creative-experiment-2026-10-22]] [[supersedes::round-26]]

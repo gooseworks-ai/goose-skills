@@ -27,7 +27,7 @@ Treat each of these as a claim that must trace to a usable brain fact or a plain
 
 ## 2. Usable facts — where proof may come from
 
-A **usable fact** is a fact the table below allows, worded as recorded. Every factual line in an ad — copy, on-image text, badge, implied by the picture — is a usable fact or is cut. This playbook follows the **server composer's claims rule** ("any factual claim may appear ONLY if it is present in the brand context — proof points, value props, brand facts, product details; never invent, round up or embellish"), checked against the **brand brain's status** for each fact:
+A **usable fact** is a fact the table below allows, worded as recorded. Every factual line in an ad — copy, on-image text, badge, implied by the picture — is a usable fact or is cut. Any factual claim may appear only if it is in the brand context (proof points, value props, brand facts, product details), never invented, rounded up or embellished, checked against the **brand brain's status** for each fact:
 
 | Brain status (`gooseworks:brand_knowledge_search` `statuses`) | Source | Use it? |
 |---|---|---|
@@ -37,7 +37,7 @@ A **usable fact** is a fact the table below allows, worded as recorded. Every fa
 | `guess`, `unknown` | any | **No** — cut, and list it with what would confirm it |
 
 - Read the brain once at Step 1: `gooseworks:brand_knowledge_browse` (`brand_id`), then `gooseworks:brand_knowledge_search` for the product's claims and proof (`source_types: ["claim","brand_kit","fact","product"]`, `product_id`). On a server without the brain tools, the brand kit's proof points and value props and the product record count as `found`.
-- The composer may write headlines in the brand's voice **from** these facts ("Wool up top" from "Merino wool upper"). It may not add a fact, a number, a result or a promise that isn't there ("feet stay dry" from "water-repellent finish" adds a result — cut it). Numbers, ratings, guarantees, qualifiers and regulated wording stay exactly as recorded.
+- You may write headlines in the brand's voice **from** these facts ("Wool up top" from "Merino wool upper"). It may not add a fact, a number, a result or a promise that isn't there ("feet stay dry" from "water-repellent finish" adds a result — cut it). Numbers, ratings, guarantees, qualifiers and regulated wording stay exactly as recorded.
 - Numbers that go stale (ratings, review counts, awards, offers) are flagged "verify current".
 - **Plain product facts** (name, price with currency, sizes, colours, materials, what's in the box, how to use) are always usable.
 - Drug or medical language for a non-drug ("treats", "heals", "cures") is never usable, whatever its status.
@@ -53,7 +53,7 @@ A **usable fact** is a fact the table below allows, worded as recorded. Every fa
 | T5 Not usable | `guess`, `unknown`, or nothing on file — including a reworded, shortened or merged version of a usable fact | Cut; list with what would confirm it |
 | Never | drug/medical language for a non-drug ("treats eczema", "heals", "boosts collagen", "cures") | Cut, and tell the human it is a regulatory line, not just a proof gap |
 
-**Rewording.** Only as recorded; never a paraphrase of your own, however faithful — the composer's rule says the same ("never invent, round up or embellish"). **No fusion.** Two usable claims cannot be combined into a stronger third ("dermatologist-proven 72h" from "dermatologist tested" + "up to 72 hours").
+**Rewording.** Only as recorded; never a paraphrase of your own, however faithful — never invent, round up or embellish. **No fusion.** Two usable claims cannot be combined into a stronger third ("dermatologist-proven 72h" from "dermatologist tested" + "up to 72 hours").
 
 ### Trigger words — a span is claim-bearing if it contains any of these
 
@@ -64,11 +64,11 @@ Numbers (%, hours, counts, ratings, "2 years", "3×") · superlatives and absolu
 1. **Customer quotes.** A review that says "cleared my redness" is the brand claiming it clears redness. Customer words may supply the *pain*; the *benefit* must be a usable brain fact. Quote only real reviews, verbatim, from the brand's own customers, with their source.
 2. **The source template.** A remixed competitor or community ad can carry its badges, seals, stars and numbers into the render.
 3. **The visual.** Split screens, glow effects, measuring devices and lab coats imply outcomes and authority.
-4. **The image model.** It invents "#1", "Dermatologist approved", 4.9★, prices and laurels. The composer's own rules fence it (`composer.md` §5: grounded claims, coherent copy, text density); the judge's `claims_grounded` and `legible_text` checks catch what slips through (`judge.md` §4), and the agent reads every render afterwards.
+4. **The image model.** It invents "#1", "Dermatologist approved", 4.9★, prices and laurels. The prompt's text-control line fences it (`prompts.md` §2); the judge and Pass B catch what slips through.
 
 ### Run it twice
 
-- **Pass A, before spend:** on the copy rows and on each composed prompt — every on-image word it asks for and what its scene implies.
+- **Pass A, before spend:** on the copy and on each finished prompt — every on-image word it asks for and what its scene implies.
 - **Pass B, after render:** on every rendered ratio — the text the model actually drew, any marks it added, dropped qualifiers, what the picture implies.
 
 Offers, prices and stock are checked against the **product record and the marketer's words**, not the claims list: price and currency exact, terms not narrowed ("first order" ≠ "first jar"), end date shown, no "was" price without a real prior price, no "limited" without a real limit. Re-read the product record just before handing over.

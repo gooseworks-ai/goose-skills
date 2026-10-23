@@ -2,7 +2,7 @@
   "slug": "make-static-ads-claims-extract",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.4.2",
+  "version": "0.6.0",
   "playbook": "make-static-ads",
   "tags": [
     "ads",
