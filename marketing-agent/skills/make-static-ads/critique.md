@@ -557,3 +557,17 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 **Summary.** The 0.7.0 run on the new Gooseworks brand produced on-brand ads, but Akhil found five problems: the creativity choice was easy to miss and silently defaulted; templates were never shown to pick from; the ads were creative but empty (a headline on blank space, a clapperboard standing in for video, headline + subhead in every ad); the logo was missing (the combined question had dropped it and the small file was left "to add later"); and the agent's own list of gaps.
 
 **Change.** Creativity is the first item of the combined question, with a one-line description of each level, and can be changed at the board. The board shows each ad's template and two alternates as images; swapping is free and needs no extra stop. Levels: fill every slot the template has, fill the frame, vary text patterns across the set, match the brand's information density. New show-it test (the real thing, not a symbol) and rubric check 31 (fills the frame). The logo file is attached to every render unless the marketer says none; a small file is still used. Also: each angle shows the claim line it needs; at most two critic rounds; a text-fit check before quoting; one rewording rule (voice headlines may express a fact's meaning, adding nothing). The old Fern & Field example in handoff-format was cut to keep the length flat.
+
+
+## Round 31 — 23 Oct: the rest of the gaps from the staging runs (0.7.2)
+
+**Summary.** Fixes every skill-side gap the 0.6.1 and 0.7.0 staging runs reported, in one change, before the next deploy.
+
+- **One claims rule.** The playbook said facts on the brand's own site and kit are usable; the shared claims-gate said the site is never approved. Now both say: what the product is and does, worded as the brand's own product record, kit or site says it, is a plain product fact; results, numbers, comparisons, customers and regulated words need the sign-off. This keeps the repo rule "claims only from the approved list" and Akhil's 19 Oct rule (kit facts usable) for plain descriptions.
+- **Brain tool names.** Skills test for `brain_*`; servers now list `brand_knowledge_*`. The marketing-guide maps the names once (browse = map, search, read = open, save), and claims-gate, save-learning and run-memory point to it. Their presence means the brain path, and `brand_knowledge_save` is the save tool.
+- **Software and services:** identity is real UI screenshots, logo and mascot; never a fake UI; never stop for missing packshots.
+- **Reads:** never the `sources` section in a brand read; save answers over ~50K characters to a file; poll `job_get` lightly.
+- **Retries:** the batch file links each retry to the try it replaces; the marketer gets one image per ad.
+- **Templates:** at least one per set from outside the GooseWorks library, or say what was tried.
+
+**Not skill-side (server or host), still open:** server hints "recommend one plan" / "one line and wait"; "Still indexing: N of N"; render settings echo shows brand colours on when sent off; new brands get no workspace (coworker id null); adding a founder's X account fails with a billing error; the browser can't open the Meta Ad Library.

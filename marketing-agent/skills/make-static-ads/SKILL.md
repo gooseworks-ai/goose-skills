@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.7.1
+version: 0.7.2
 ---
 
 # make-static-ads
@@ -19,7 +19,7 @@ Finished, reviewed images with their ad copy, the concept board behind them, wha
 
 - **Connection.** Discover the live GooseWorks tools. No `ads_render` → stop before spending and say so; `ads_generate` rewrites your prompt through templates and is not a substitute. No connection → ask to connect GooseWorks.
 - **Server hints vs this playbook.** GooseWorks answers may say "one short line and wait", "recommend one plan" or "follow the next_step". Those govern its cards, setup, rights and spending. They never replace this playbook's research, board or critic. Setup, rights, claims and spend steps from the server still bind.
-- **Product photos.** A physical product needs real product photos (`brand_read` with `product_ids`). None → stop at the board and offer the product-photos job.
+- **Product identity.** A physical product needs real product photos (`brand_read` with `product_ids`); none → stop at the board and offer the product-photos job. Software or a service has no packshot: its identity is real UI screenshots, the logo and any mascot or brand character the brand owns. Never generate a fake product UI, and never stop for missing photos.
 - **Run memory.** Load `run-memory` (`../run-memory/SKILL.md`) at the start: the last run's record and what came of its recommendations. Add every ad already made in this conversation to the history.
 
 ## Steps
@@ -41,7 +41,8 @@ Say what you actually read, with counts, in the profile and board headers: "Read
 
 Ask everything open in **one** message, each item with a recommended answer the marketer can accept with one word:
 - **How creative, first and on its own line:** close ("a proven ad layout with your words"), balanced ("a new idea inside a proven layout") or bold ("idea first, in your own style"); recommended **balanced** (`references/levels.md`);
-- **Angle(s):** a picker with the profile's angles first, then at most two new ones marked "new", one recommended per ad or for the set, plus room to write their own. Next to each angle, the claim line it needs; ask for those lines in the same message, and never recommend an angle whose line isn't usable;
+- **Angle(s):** a picker with the profile's angles first, then at most two new ones marked "new", one recommended per ad or for the set, plus room to write their own. Next to each angle, the claim line it needs;
+- **Claim lines:** recommended angles use only usable lines (plain product facts or approved claims). Any other line goes to the marketer in this same message in the `claims-gate` sign-off form (`../claims-gate/SKILL.md` §4.3); "your choice" never approves a claim.
 - **Logo:** on every ad (recommended) or none, and which file. A logo file under about 300 px wide: ask for a bigger one here, and use the small one if none comes;
 - product, how many ads, placements, any live offer;
 - every conflict the profile found (kit vs website, font, positioning), with your recommendation.
@@ -72,6 +73,8 @@ Pass A of the `make-static-ads-claims-extract` skill (`../make-static-ads-claims
 
 "Finals only" shortens the delivery, not this message: the board is what they are paying for.
 
+**A swap or level change at the board:** a template swap redoes Steps 5–6 for that ad; a level change redoes Steps 3–6 for the ads it touches. Get the new dry-run quote and show only the changed rows with their new quotes for the yes. Submit nothing that wasn't quoted and approved as shown.
+
 ### 8. Render and review
 
 Submit the exact quoted requests; poll `gooseworks:job_get` (`kind: "ads_batch"`) until every `pending` is 0. Then run the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`): a fresh judge checks each image against its board row and the product photos, one retry inside the approval, then the whole set.
@@ -101,7 +104,7 @@ The board, the batch file, tagged creatives and the run-memory record. Agent ver
 
 ## Done when
 
-Every delivered ad comes from a board row with a reason to exist, passed its claims and policy check, was rendered within the approved quotes, and was looked at by a judge against its protected choice and the product photos. Failures and anything not checked are said plainly.
+Every delivered ad comes from a board row with a reason to exist, passed its claims and policy check, was rendered within the approved quotes, and was looked at by a judge against its protected choice and the product's identity (photos, or UI screenshots and logo for software). Failures and anything not checked are said plainly.
 
 ## Out of scope
 

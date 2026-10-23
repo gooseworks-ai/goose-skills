@@ -2,7 +2,7 @@
 name: make-static-ads-find-references
 description: >-
   Step of make-static-ads: picks a template for every ad after its visual idea is set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.
-version: 0.7.1
+version: 0.7.2
 ---
 
 # find-references
@@ -16,6 +16,8 @@ Every ad has a template. Without one the image model falls back on its own defau
 1. **The brand's own ads** (its past and running statics, `../make-static-ads/references/research.md` §2). They already look like the brand, and at **close** their image can go to the image model.
 2. **The GooseWorks template library:** `gooseworks:ads_template_read` `mode: "static_library"` with a query for the layout or device the visual idea needs. Open each candidate's detail and look at the image. Name a library source as such, never as a verified running ad.
 3. **Category leaders and inventive brands from other categories** in the Meta Ad Library, in the host browser (routes in `research.md` §2): the first 20 or so statics of 2–3 advertisers.
+
+Each set uses at least one template from outside the GooseWorks library (the brand's own ads, a leader, or another category's inventive brand). If none of those can be opened, say which you tried on the board.
 
 Look at every candidate's image before choosing. Reject fixtures, placeholder brands, illegible layouts and templates whose text slots can't carry this ad's message.
 

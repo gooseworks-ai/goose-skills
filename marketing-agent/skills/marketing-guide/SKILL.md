@@ -5,7 +5,7 @@ description: >-
   shared claims, money, research and schedule rules, and the index of what each playbook saves and who
   reads it. Load at the start of any playbook run. Not a marketer ask: for "what should I do first?"
   use where-to-start.
-version: 0.1.2
+version: 0.1.3
 ---
 
 # marketing-guide
@@ -20,6 +20,7 @@ Every playbook does the same setup and follows the same rules. They live here on
 2. **First GooseWorks call of the conversation:** `gooseworks:get_started` with the marketer's own words. Its answer settles setup, and the brand only when the marketer named it; the playbook's gates decide the rest.
 3. **Which brand?** `gooseworks:brand_read` lists the brands. One brand → use it. Several and none named → ask which, by name, before any research; never default to one. Keep the brand's `coworker_agent_id`.
 4. **Read the brain before asking anything.** Ask only what the brain and the public site cannot answer.
+   - **Brain tool names.** Current servers list the Brand Brain tools under newer names: `brand_knowledge_browse` (= `brain_map`), `brand_knowledge_search` (= `brain_search`), `brand_knowledge_read` (= `brain_open`), `brand_knowledge_save` (= `brain_save`). Their presence means the brain path (claims excepted: the `claims-gate` skill decides); wherever a skill names a `brain_*` tool, call its listed name. Never request `brand_read`'s `sources` section in a routine read: it can pass 100K characters.
    - **When `brain_*` tools are listed** (the Brand Brain), start with `gooseworks:brain_map`: the rules, the never-list, the items **waiting for the marketer's yes**, and the chapters' "read when" hints. Open the chapters the task needs and its `required_reads` (`brain_map` `kind` or `gooseworks:brain_open`); `gooseworks:brain_search` for gaps.
    - **Otherwise:** `gooseworks:brand_read` (lean is enough for rules: every `must` and `dont` comes back), then `gooseworks:knowledge_search` for the task. Never every section at full detail in one call (it overflows and gets skipped); learnings at `detail: "full"` go in their own call.
    - **Found vs confirmed.** Only *confirmed* items are the brand's settled truth; *found* items (everything an agent saved) are context. Items waiting for a yes may go in drafts, labelled as waiting, never in public copy, claims or ads. Internal items (`is_public: false`) stay internal, even in drafts.
