@@ -53,7 +53,7 @@ A **usable fact** is a fact the table below allows, worded as recorded. Every fa
 | T5 Not usable | `guess`, `unknown`, or nothing on file — including a reworded, shortened or merged version of a usable fact | Cut; list with what would confirm it |
 | Never | drug/medical language for a non-drug ("treats eczema", "heals", "boosts collagen", "cures") | Cut, and tell the human it is a regulatory line, not just a proof gap |
 
-**Rewording.** Only as recorded; never a paraphrase of your own, however faithful — never invent, round up or embellish. **No fusion.** Two usable claims cannot be combined into a stronger third ("dermatologist-proven 72h" from "dermatologist tested" + "up to 72 hours").
+**Rewording.** A line stated as a fact uses the recorded words. A headline in the brand's voice may express a usable fact's meaning ("Same agent. New job." from "Goose makes ads inside the agent you already use") only if it adds nothing: no number, result, scope or promise beyond the fact. Never invent, round up or embellish. **No fusion.** Two usable claims cannot be combined into a stronger third ("dermatologist-proven 72h" from "dermatologist tested" + "up to 72 hours").
 
 ### Trigger words — a span is claim-bearing if it contains any of these
 

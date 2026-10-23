@@ -83,7 +83,7 @@ The hook is the first thing read: the headline on the image, or the first line o
 - Keep their syntax: "I forgot I was wearing it" beats "Our lightweight formula".
 - A quote used as a testimonial must be real, verbatim, attributed and permitted; a phrase borrowed as a hook must not pose as a quote.
 
-**Hook formulas** — every example is traced to the worked example's hypothetical (`handoff-format.md` §5: claims C1–C5, customer words V1–V5, label directions, founder story F1); in a real run each line must trace the same way to what the brand has on file:
+**Hook formulas** — the examples use a hypothetical skincare brand (claims C1–C5, customer words V1–V5, a founder line F1); in a real run each line must trace to what the brand has on file:
 - Situation call-out: "11am, and skin already feels tight." (V1, as pain in brand voice) — a moment stated, never a question about the viewer's trait ("Your acne…?" breaks Meta's personal-attribute rule).
 - Contrarian opinion + confirmed proof: "A face cream doesn't need a scent. Fragrance-free." (opinion = puffery; proof = C2 verbatim) — never imply rivals mislabel without a confirmed comparative claim.
 - Specific number: "Made with 5 ceramides." (C4 verbatim)

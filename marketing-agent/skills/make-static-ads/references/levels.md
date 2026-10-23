@@ -20,6 +20,8 @@ The template sets the stage (layout, text slots, background treatment); the visu
 
 Today's most creative mode. The template is a source of a device ("an object crosses a screen") or a look (lighting, set). Text style comes from the brand's own ads, never from the agent's default. If the brand has no ads, use the website's headline style and say so on the board.
 
-## Text, at every level
+## Text and fullness, at every level
 
-Never default to the agent's own layout: headline on top, product in the middle, an explaining sentence at the bottom. Fill only the text slots the source has. If the template has just a headline, the ad has just a headline. A fact that doesn't fit goes in the post text around the image.
+Never default to the agent's own layout: headline on top, product in the middle, an explaining sentence at the bottom. Fill the text slots the source has, all of them: if the template carries a list, a price-free badge, UI, a quote card or a product grid, so does the ad (with this brand's true content). If it has just a headline, the ad has just a headline. A fact with no slot goes in the post text.
+
+**Fill the frame.** A big headline floating on empty background is not a layout. Every area of the template does a job in the ad. Across a set, vary the structure: no two ads share the same text pattern (headline + subhead every time reads as one template). Pick templates whose information density matches the brand's own ads.

@@ -52,13 +52,14 @@ The headline **names the relationship**, not the effect, in words a person might
 
 One sentence per ad: the detail that, if lost, kills the idea. "The hand must visibly cross the screen boundary; a normal video call loses the joke." "The sugar chair sits apart from the group." This sentence goes into the prompt word for word and is the first thing the reviewer checks.
 
-## 3. Five tests before an idea is kept
+## 3. Six tests before an idea is kept
 
 1. **Swap test.** Replace our product with a competitor's. Does the ad still work? If yes, it is generic. Push it until the idea needs this product's fact or this brand's customer. ("Booked for chai" was the weakest Kolkata idea by this test: any drink brand could run it.)
 2. **Stranger test.** Someone who has never heard of the brand sees only this ad. Do they know what the product is and what it does for them? A chai pouch explains itself; a new kind of product doesn't. A clever ad about a side feature ("skip the API keys") makes a stranger smile and scroll on. For a product in a new or unfamiliar category, most of the set must carry the **main promise**, with the surprise built on it, not beside it.
 3. **Thumbnail test.** Describe the image in one sentence a stranger understands. If you need two sentences, the scene is too busy.
-4. **Build test.** Can the image model draw it reliably? It fails at small handwriting, long text inside the scene (notes, screens, lists), many hands, crowds, and precise physics (an unbroken oil line, keys mid-fall). Keep the event big and simple; put words in the headline, not inside the picture.
-5. **Truth test.** What would a buyer take away as fact? That takeaway must be a usable fact (`claims-and-policy.md` §2). A visibly imagined scene is not a claim that it happened; a promised result is.
+4. **Show-it test.** Show the real thing, not a symbol of it: an ad about video ads shows a frame of one playing on a phone, not a clapperboard; an ad about making ads shows the finished ads. Symbols read as stock and leave the frame empty.
+5. **Build test.** Can the image model draw it reliably? It fails at small handwriting, long text inside the scene (notes, screens, lists), many hands, crowds, and precise physics (an unbroken oil line, keys mid-fall). Keep the event big and simple; put words in the headline, not inside the picture.
+6. **Truth test.** What would a buyer take away as fact? That takeaway must be a usable fact (`claims-and-policy.md` §2). A visibly imagined scene is not a claim that it happened; a promised result is.
 
 ## 4. The set
 

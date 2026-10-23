@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.7.0
+version: 0.7.1
 ---
 
 # make-static-ads
@@ -40,8 +40,9 @@ Say what you actually read, with counts, in the profile and board headers: "Read
 ### 2. One combined question
 
 Ask everything open in **one** message, each item with a recommended answer the marketer can accept with one word:
-- **Angle(s):** a picker with the profile's angles first, then at most two new ones marked "new", one recommended per ad or for the set, plus room to write their own;
-- **Creativity level:** close, balanced or bold (`references/levels.md`), recommended **balanced**;
+- **How creative, first and on its own line:** close ("a proven ad layout with your words"), balanced ("a new idea inside a proven layout") or bold ("idea first, in your own style"); recommended **balanced** (`references/levels.md`);
+- **Angle(s):** a picker with the profile's angles first, then at most two new ones marked "new", one recommended per ad or for the set, plus room to write their own. Next to each angle, the claim line it needs; ask for those lines in the same message, and never recommend an angle whose line isn't usable;
+- **Logo:** on every ad (recommended) or none, and which file. A logo file under about 300 px wide: ask for a bigger one here, and use the small one if none comes;
 - product, how many ads, placements, any live offer;
 - every conflict the profile found (kit vs website, font, positioning), with your recommendation.
 
@@ -51,7 +52,7 @@ Never a chain of stops. "Your choice", "just give me the images" or no answer �
 
 Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). The order is fixed: **angle → message → visual idea → template.** It turns the chosen angles into messages and physical events (`references/ideas.md`), picks a template for every ad at the chosen level (the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`)), checks each ad against the brand profile and the recent history, and has a fresh critic attack the board.
 
-**Done:** `board.md` has one row per ad, each with its angle, template and level, that passed the brand-fit, no-repeat, swap, stranger, thumbnail, build and truth tests, plus the critic's notes and what changed.
+**Done:** `board.md` has one row per ad, each with its angle, template and level, that passed the brand-fit, no-repeat, swap, stranger, thumbnail, show-it, build and truth tests, plus the critic's notes and what changed.
 
 ### 4. Copy
 
@@ -67,7 +68,7 @@ Pass A of the `make-static-ads-claims-extract` skill (`../make-static-ads-claims
 
 ### 7. Show the board and the quote
 
-`gooseworks:ads_render` with `dry_run: true` for every ad and ratio. Show the marketer, in one message: the board (`references/handoff-format.md` §3), the cut lines, each quote exactly as returned, and "If an image fails my check I redo it once, at the same price." The `spend-gate` skill (`../spend-gate/SKILL.md`) applies: render only what they approved, within their ceiling.
+`gooseworks:ads_render` with `dry_run: true` for every ad and ratio. Show the marketer, in one message: the board (`references/handoff-format.md` §3) **with each ad's template image and two alternates they can swap to**, the creativity level (they can change it here), the cut lines, each quote exactly as returned, and "If an image fails my check I redo it once, at the same price." The `spend-gate` skill (`../spend-gate/SKILL.md`) applies: render only what they approved, within their ceiling.
 
 "Finals only" shortens the delivery, not this message: the board is what they are paying for.
 

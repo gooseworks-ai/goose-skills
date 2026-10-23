@@ -2,7 +2,7 @@
 name: make-static-ads-find-references
 description: >-
   Step of make-static-ads: picks a template for every ad after its visual idea is set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.
-version: 0.7.0
+version: 0.7.1
 ---
 
 # find-references
@@ -39,4 +39,4 @@ Other brands' templates never go into `image_urls`, at any level. Keep none of t
 
 ## 5. Showing them
 
-When the marketer wants to choose, show the templates with the board. "Your choice" → name them in the Template column.
+Keep three looked-at candidates per ad: the chosen one and two alternates. All three go on the board as images (`../make-static-ads/references/handoff-format.md` §3), even after "your choice", so the marketer can swap before paying.

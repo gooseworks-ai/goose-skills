@@ -11,7 +11,7 @@ The idea survives generation only if the prompt **describes the event concretely
 Name every attached image's job in the prompt, in the same order:
 
 1. **Product identity** (always first): "Image 1 is the official product. Reproduce this exact pouch: yellow top, dark teal bottom, black KOLKATA CHAI CO. wordmark, label layout and proportions. Never substitute another package."
-2. **More product angles or the logo**, if needed for fidelity.
+2. **The logo file**, on every ad unless the marketer said none: "Image 2 is our logo: place it exactly as given at <position>, at about <size>; never redraw or recolour it." A small file is still attached; never leave an empty space to add it later. More product angles follow if needed.
 3. **The template**, only at **close** and only when the brand owns it (its own past ad): "Image 3 is the layout to follow: keep its composition, block positions and text slots; replace its product, words and colours with ours." At every other level, or for any other brand's template, describe the layout in words (§3).
 
 Describe the product's identity in words too (colours, shape, label wording, cap). The model drifts on labels; words and pixels together hold it better than either alone.
@@ -53,6 +53,7 @@ Read the finished prompt once as the image model would. Check:
 - the protected choice is in it, word for word;
 - every word you want drawn is in quotes, and nothing else is asked to be drawn;
 - each attached image's role is named, in order;
+- every text slot can hold its words at the size asked (a 15-word line will not fit two lines at 4% of the image height: shorten it or move it to the post text);
 - it is under 12,000 characters.
 
 Then run the claims check on the exact prompt (the claims-extract step, Pass A).

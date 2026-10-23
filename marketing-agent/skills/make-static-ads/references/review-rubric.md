@@ -34,6 +34,7 @@ The checks the judge runs on every render (the `make-static-ads-render-review` s
 | 28 | Idea intact | The board row's physical event happened and its protected choice is visible at thumbnail size. A polished image that lost the event is a failed ad | REMAKE |
 | 29 | Not a repeat | No example content (search query, names, on-screen numbers) copied from an ad on the made-before list | REMAKE |
 | 30 | Brand fit | Next to two of the brand's own ads (`profile.md`), it reads as the same brand: voice, look, text style | REMAKE |
+| 31 | Fills the frame | No large empty areas the template doesn't have; the template's elements are all there with real content; not a symbol standing in for the real thing | REMAKE |
 
 ## Order
 

@@ -550,3 +550,10 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 - No repeats against live ads and the last 5–10 GooseWorks ads: something among message, visual idea and template must change; resizes and other platforms are exempt.
 
 **Change.** New `references/brand-profile.md` and `references/levels.md`; Steps 1–3 rewritten; concept-grid, find-references, ad-copy, compose, prompts, hand-off board, render review and rubric (check 30, brand fit) updated. Test 0 (the real loop on staging) added.
+
+
+## Round 30 — 23 Oct: what the 0.7.0 staging run still got wrong (0.7.1)
+
+**Summary.** The 0.7.0 run on the new Gooseworks brand produced on-brand ads, but Akhil found five problems: the creativity choice was easy to miss and silently defaulted; templates were never shown to pick from; the ads were creative but empty (a headline on blank space, a clapperboard standing in for video, headline + subhead in every ad); the logo was missing (the combined question had dropped it and the small file was left "to add later"); and the agent's own list of gaps.
+
+**Change.** Creativity is the first item of the combined question, with a one-line description of each level, and can be changed at the board. The board shows each ad's template and two alternates as images; swapping is free and needs no extra stop. Levels: fill every slot the template has, fill the frame, vary text patterns across the set, match the brand's information density. New show-it test (the real thing, not a symbol) and rubric check 31 (fills the frame). The logo file is attached to every render unless the marketer says none; a small file is still used. Also: each angle shows the claim line it needs; at most two critic rounds; a text-fit check before quoting; one rewording rule (voice headlines may express a fact's meaning, adding nothing). The old Fern & Field example in handoff-format was cut to keep the length flat.

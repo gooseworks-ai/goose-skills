@@ -19,7 +19,7 @@ Readable name for the human and the ad account: `brand_product_angle_stage_hook#
 
 ## 3. The board at the spend gate (Step 7)
 
-Show the concept board from `board.md`, trimmed for the marketer:
+Show the concept board from `board.md`, trimmed for the marketer. **Show the templates as images** (a gallery page on a shell host, an artifact in hosted chat, else image links): each ad's chosen template, marked, plus two alternates. The marketer may swap any template or change the creativity level; a swap means a new prompt and a new free quote, not another stop.
 
 | # | Angle (yours / new) | The idea in one line | What you'll see | On-image text | Template it's built on | Why it's ours (fact or customer words, source) | Quote |
 |---|---|---|---|---|---|---|---|
@@ -42,24 +42,3 @@ Then, in this order (and the same content into `ads/batches/<YYYY-MM-DD>-<slug>.
 4. **Recommended test structure** for run-paid-campaigns — e.g. "Cell A: angle test, one ad per angle, same copy; Cell B: two hooks inside the winning angle". Structure is theirs to decide; this is a suggestion.
 5. **What I checked / what you should check.**
 6. **Your pick** — "Tell me which to run; I'll mark them approved for launch."
-
-## 5. A worked example — what excellent looks like
-
-*Hypothetical brand "Fern & Field", Barrier Cream 50 ml, in stock, Meta feed + Stories. Brain facts on file, all `confirmed`: C1 "Clinically shown to increase skin hydration for up to 72 hours." (qualifier: "Corneometer study, 32 participants, single application"); C2 "Fragrance-free."; C3 "Non-greasy finish."; C4 "Made with 5 ceramides."; C5 "Rated 4.8/5 from 12,400+ reviews." (as of 30 Sep). Customer words on file: V1 "my face felt tight by 11am"; V2 "I forgot I was wearing it"; V3 "the first rich cream that doesn't pill under my sunscreen"; V4 "my sister keeps stealing it"; V5 "I have oily skin and was scared it'd be too heavy". Label directions on file: apply morning and night. Founder story on file: F1 "I wanted one cream I didn't have to think about." — Mara, founder. Offer on file: 15% off first order, code HELLO15, ends 20 Oct.*
-
-| # | Angle — they buy because… | Stage | Archetype | On-image text | Claims |
-|---|---|---|---|---|---|
-| A1 | Dryness comes back by noon; this lasts | Problem | Notes-app native | "11am. Skin already feels tight." | V1 as pain, in brand voice (not posed as a quote); C1 verbatim + qualifier in primary text. **Cut** a "things I reapply before lunch: ~~moisturiser~~" joke — it implies a no-reapply-by-lunch result C1 does not state |
-| A2 | Same angle, proof-led | Problem | Big-number stat | "Clinically shown to increase skin hydration for up to 72 hours*" + legible qualifier | C1 verbatim (a shorter "Up to 72h hydration*" is a new claim — cut; restore: confirm that wording in the brand brain) |
-| B1 | A rich cream without the greasy feel | Solution | Benefit stack beside the jar (no rival column — "most rich creams are greasy" is a comparative needing proof) | "Non-greasy finish. Fragrance-free." | C3, C2 verbatim. **Cut** "doesn't pill under SPF" → needs a layering test the brain marks `confirmed` |
-| B2 | Same angle, sensory | Solution | Texture macro | "Rich. Non-greasy finish." | "Rich" puffery + C3 verbatim; V5 verbatim and attributed in the long primary text as the reviewer's worry (pain only — no oily-skin suitability claim; "non-greasy finish" is all C3 says) |
-| B3 | Same reason, new proof (concept c3) | Product | Review card | "I forgot I was wearing it." — <reviewer, source> | V2 verbatim, attributed, own customer with permission; no stars (the reviewer's own rating is not on file). V3 card **cut** — it imports the pilling claim |
-| C1 | Lots of people already rate it (angle label only, never copy) | Product | Stat / proof card (no per-review stars, no invented reviews) | "Rated 4.8/5 from 12,400+ reviews." (as of 30 Sep) | C5 verbatim, dated — verify current |
-| C2 | Same angle, humour | Product | Lo-fi shelf photo, sticky note "MINE" | "The jar that keeps going missing." | Brand-written puffery in third person, hook source V4 (not posed as a customer post); C5 verbatim in primary text |
-| D1 | One rich cream for morning and night | Unaware | Flat lay, the jar alone on a clean shelf | "One jar. Morning and night." | Product fact: label directions; C4, C2 verbatim in primary text. **Cut** "Skip steps 2–9" and the nine-faded-bottles visual — both imply it replaces serums and SPF |
-| D2 | Same angle, founder | Problem | Handwritten founder note | "I wanted one cream I didn't have to think about. — Mara" | F1 verbatim — the founder's own words from the brain |
-| E1 | Try it for less | Most-aware | Hero + offer band | "15% off your first order. HELLO15. Ends Tue 20 Oct." | Offer matches record — "first order", not "first jar" |
-
-Concepts in this example: **c1** dryness comes back by noon (A1, A2); **c2** rich without the greasy feel, proof = confirmed texture claims (B1, B2); **c3** the same reason with a different proof — a real customer review — so it is its own concept (B3); **c4** lots of people rate it (C1, C2); **c5** one cream, morning and night (D1, D2); **c6** the live offer (E1). Persona: the hypothetical brand has one segment on file (people who want one simple, rich moisturiser), so there is no persona column; a brand with several segments adds one. A2's and D2's headlines run past eight words because each is a confirmed claim or the founder's real words used verbatim, and both still read in two lines.
-
-Why it is excellent: every on-image line is a confirmed claim worded as recorded, a plain product fact, an offer matching the record, puffery, or a real attributed quote — and every cut, in words or pictures, is shown; five different reasons to buy, each in one to three looks; awareness matched to each ad's job (cold concepts problem- and solution-aware; proof and offer ads for warm audiences — this example serves both); hooks traceable to customer words or confirmed claims; cuts shown with restore-proof; variants inside an angle differ in hook or format, never message; CTA follows awareness (Learn more cold, Shop now warm); five visual grammars. The junior set — ten versions of "hydration that lasts" on different backgrounds, all Shop now, all brand-speak — tests nothing and fatigues all at once.
