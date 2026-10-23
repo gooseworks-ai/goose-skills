@@ -1,12 +1,12 @@
 # Human version
 
-**What this folder is.** The GooseWorks marketing agent's skills, rebuilt from scratch: 14 released playbooks, their steps ("atoms"), the shared steps and 2 foundation skills, all published to the GooseWorks catalog as separate skills, plus the `marketing-agent` router (kept for evals, not published). Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back in `unreleased/` until their server work exists (Akhil, 20 Oct; see `unreleased/README.md`). A playbook is one marketer want, done end to end ("fill my email flows", "which ad won and what do I make next").
+**What this folder is.** The GooseWorks marketing agent's skills, rebuilt from scratch: 14 released playbooks, their steps ("atoms"), the shared steps and 2 foundation skills, all published to the GooseWorks catalog as separate skills, plus the `marketing-agent` router (kept for evals, not published). Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back in `drafts/marketing/` until their server work exists (Akhil, 20 Oct; see `drafts/marketing/README.md`). A playbook is one marketer want, done end to end ("fill my email flows", "which ad won and what do I make next").
 
-**Why a separate folder.** We are scrapping the old 295-skill library, not patching it. Building in a clean folder keeps the old skills out of the builders' heads and keeps the live ad engine untouched. Since 20 Oct `marketing-agent/skills/` is published: `scripts/build-index.js` lists every folder there in `skills-index.json` (domain `marketing-agent`), and a merge to `dev` syncs them to staging.
+**Where things live.** The skills are in `skills/marketing/<slug>/` (published: `scripts/build-index.js` lists every folder there in `skills-index.json`, domain `marketing-agent`, and a merge to `dev` syncs them to staging). This guide, the backlog and the review reports are in `docs/marketing/`; evals in `evals/marketing/`; held-back playbooks in `drafts/marketing/`. The old 295-skill library was deleted on 23 Oct; we built these from scratch rather than patch it.
 
 **The rules in one breath.**
-- Never read `skills/`, `parts/`, `collections/` or `skillopt/`. Build from the specs and from first principles of marketing.
-- Never edit anything outside `marketing-agent/`.
+- Never read `skills/video/`, `skills/shared/`, `parts/` or `collections/`. Build from the specs and from first principles of marketing.
+- Never edit anything outside `skills/marketing/`, `docs/marketing/`, `evals/marketing/` and `drafts/marketing/`.
 - Critique hard and often, with subagents: **scope** (did we miss work a marketer does?) and **depth** (would a senior marketer accept this output?).
 - Each builder owns its own folders only. No git writes. One PR at the end.
 
@@ -16,7 +16,7 @@
 
 ## 1. Source material (read these, in this order)
 
-All in the goose-lab checkout at `/Users/akhil/projects/content-goose/plan/marketing-twin/`:
+All in the GooseWorks Company OS repo (goose-lab, private) under `plan/marketing-twin/`:
 
 | File | What it gives you |
 |---|---|
@@ -58,12 +58,14 @@ Log the verdict for each point in the playbook's `critique.md`.
 ## 3. Folder layout and ownership
 
 ```
-marketing-agent/
+docs/marketing/
 ├── AGENTS.md                this file (owner: orchestrator)
 ├── README.md                human overview + how to test (owner: orchestrator)
-├── reviews/                 cross-set critique reports
-├── unreleased/<slug>/       built but held back (not published)
-└── skills/<slug>/           one flat folder per published skill — each is its own catalog skill
+├── BACKLOG.md               jobs not covered yet
+└── reviews/                 cross-set critique reports
+drafts/marketing/<slug>/     built but held back (not published)
+evals/marketing/             routing and behaviour evals
+skills/marketing/<slug>/     one flat folder per published skill — each is its own catalog skill
     ├── <playbook>/          a playbook (owner: the session assigned it)
     │   ├── SKILL.md             the playbook
     │   ├── skill.meta.json      metadata (format below)
@@ -79,7 +81,7 @@ marketing-agent/
 
 **Why flat.** The catalog ships each skill as its own folder only, and an install puts them side by side (`~/.agents/skills/<slug>/`). With one flat folder per slug, `../<slug>/SKILL.md` resolves the same here, in an install, in the catalog archive and in the evals.
 
-- **You write only inside your own playbook's folders** (`skills/<playbook>/` and `skills/<playbook>-<step>/`). Never touch another playbook's folder, this file, or anything outside `marketing-agent/`.
+- **You write only inside your own playbook's folders** (`skills/marketing/<playbook>/` and `skills/marketing/<playbook>-<step>/`). Never touch another playbook's folder, this file, or anything outside the marketing folders above.
 - **A step several playbooks share lives once, as its own skill** (claims gate, save-to-brain, spend gate…; list in §8). Load it from there; never copy it into your playbook. Only the owner named in §8 edits a shared atom; others send the owner a request.
 - **No git writes.** No `git add`, `commit`, `stash`, `checkout`, `reset`, branch changes. Several sessions share this worktree; the orchestrator makes one commit and one PR at the end.
 

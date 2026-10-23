@@ -4,14 +4,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const EVALS_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const MA_DIR = path.resolve(EVALS_DIR, '..'); // marketing-agent/
+export const REPO_ROOT = path.resolve(EVALS_DIR, '..', '..'); // evals/marketing/ → the goose-skills root
 
-export const SKILLS_DIR = path.join(MA_DIR, 'skills');
+export const SKILLS_DIR = path.join(REPO_ROOT, 'skills', 'marketing');
 
 /**
- * Every skill the catalog publishes (marketing-agent/skills/<slug>/, flat by slug): the 14 playbooks,
+ * Every marketing skill the catalog publishes (skills/marketing/<slug>/, flat by slug): the 14 playbooks,
  * their steps, the shared steps and the two foundation skills. A folder whose skill.meta.json says
- * "catalog": false (the marketing-agent router) and unreleased/ are never listed.
+ * "catalog": false (the marketing-agent router) and drafts/marketing/ are never listed.
  * Each entry: { slug, tier ('playbook' | 'atom' | 'foundation'), dir, name, description }.
  */
 export function listSkills({ tiers } = {}) {
@@ -31,7 +31,7 @@ export function listSkills({ tiers } = {}) {
 }
 
 /** Kept in a skill folder for its builders and not published (scripts/build-index.js). */
-export const BUILDER_FILES = new Set(['critique.md']);
+export const BUILDER_FILES = new Set(['critique.md', 'server-needs.md']);
 
 /** Minimal frontmatter reader: `key: value` and folded `key: >-` blocks. Enough for our SKILL.md files. */
 export function readFrontmatter(text) {

@@ -2,7 +2,7 @@
 
 ## Setup
 1. Connect GooseWorks **staging** to your agent.
-2. Link the playbook: `ln -s "$PWD/marketing-agent/unreleased/learn-my-brand" ~/.claude/skills/learn-my-brand`
+2. Link the playbook: `ln -s "$PWD/drafts/marketing/learn-my-brand" ~/.claude/skills/learn-my-brand`
 3. Pick a brand the team knows deeply, with the documents and links the founder would really hand over. Run it twice more on: one regulated brand (skincare or supplements; staging's Personal Day works) and one B2B brand. Not only a well-known DTC brand.
 
 ## Part 1: the intake run

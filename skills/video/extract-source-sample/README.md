@@ -6,7 +6,7 @@ the Goose Ads library.
 
 This skill is **agent-executed** (no Python scripts). The agent reads the
 run folder, builds the JSON, links every character + voice to the central
-character library at `/Users/akhil/projects/content-goose/assets/character-library/`,
+character library at `<workspace>/assets/character-library/`,
 and **adds any missing characters to the library before linking**.
 
 ## How it fits

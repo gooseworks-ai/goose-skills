@@ -5,7 +5,7 @@ A worked extraction. Drive it with one sentence:
 ```
 Read ./gooseworks-ads-video/skills/templates/extract-source-sample/SKILL.md
 and extract the source-sample.json for
-/Users/akhil/projects/content-goose/clients/ladder/ad-runs/run-02-podcast-skit.
+<workspace>/clients/ladder/ad-runs/run-02-podcast-skit.
 ```
 
 ## What the agent reads

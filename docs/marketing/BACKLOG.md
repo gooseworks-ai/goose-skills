@@ -118,7 +118,7 @@ These notes preserve useful legacy craft. Retirement follows verified coverage; 
   - where to use them (homepage, ads, sales deck, bios);
   - a "what we're not saying" list.
 
-  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". For the research-market output: proof goes through `marketing-agent/skills/claims-gate/SKILL.md` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `skills/write-report/SKILL.md`.
+  Its category-choice rules (existing vs sub-category vs new) were already ported into research-market's "which market are we in". For the research-market output: proof goes through `skills/marketing/claims-gate/SKILL.md` (never the old "proof points library"); buyer groups and quotes come from research-audience; rivals and the frame come from research-competitors; the market decision from research-market. The output follows `skills/write-report/SKILL.md`.
 - **#7 Sales collateral — seed: `skills/competitive-intel/composites/battlecard-generator/SKILL.md` § "Phase 3: Output — Battlecard" (in git history).** Keep the one-page sheet a salesperson opens five minutes before a call:
   - a 30-second version;
   - questions that frame the deal;
@@ -128,7 +128,7 @@ These notes preserve useful legacy craft. Retirement follows verified coverage; 
   - where we win (lead with these), where we lose (don't engage there) and where it's close;
   - short email replies for common moments.
 
-  The battlecard output reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `marketing-agent/skills/claims-gate/SKILL.md`.
+  The battlecard output reads research-competitors' rival records (already the evidence) and research-audience's objections, and every comparative claim needs sign-off and dated proof through `skills/marketing/claims-gate/SKILL.md`.
 
 ## Still skipped on purpose
 

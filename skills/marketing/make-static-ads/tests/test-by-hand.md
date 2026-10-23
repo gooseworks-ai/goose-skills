@@ -7,7 +7,7 @@
 ## Setup
 
 1. Connect GooseWorks **staging** to your agent.
-2. Link the skills side by side, as `marketing-agent/README.md` (How to test) says, so the playbook can open its steps at `../make-static-ads-<step>/`.
+2. Link the skills side by side, as `docs/marketing/README.md` (How to test) says, so the playbook can open its steps at `../make-static-ads-<step>/`.
 3. Generation spends credits. Tests 1–3 stop at the quote and cost nothing.
 
 ## Test 0 — the real loop on staging

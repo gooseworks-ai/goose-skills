@@ -65,7 +65,7 @@ Stopped before: nothing paid exists in this playbook. Generation (`request_campa
 - **Plan:** `gooseworks-reports/gooseworks/2026-10-18-campaign-plan.md` + brand copy `plans/thanksgiving-win-back/2026-10-18-plan-v3.md` (document imported, searchable). Opened with In short / Do this first (the shape before 20 Oct; write-report §1 now puts what we looked at and the findings first); expected case ~15 of 20 with the case for changing the goal; email to 1,000+ lapsed users as the core leg, Meta retargeting + a capped Meta test, organic LinkedIn/X; LinkedIn ads, X ads, creators, Google dropped with reasons; 23-row asset list; every outside number dated and sourced.
 - **Campaign record not written:** the approved v2 is live; the draft stayed in the file and brand copy, as the playbook says.
 - **Grade vs write-report §3:** pass on top lines, plain story, no ids/tool names, local link; fixed afterwards: link-tag strings in asset rows, a jargon heading, one-hour brand link noted.
-- Results file: `/Users/akhil/projects/marketing-agent-test/results/2026-10-18-plan-campaign-sonnet-rerun.md`.
+- Results file: `results/2026-10-18-plan-campaign-sonnet-rerun.md` in the marketing-agent test workspace.
 
 ## Test 8 — a matching plan already exists (refresh, not copy)
 On a brand that already has an approved plan for the same occasion, ask for "a new Thanksgiving campaign". Pass if it says in one line that a plan exists and it will refresh it; fetches the live pricing page; re-derives the money math from today's prices (no stale price copied from the old plan); writes the plan in the current shape (In short first, no research codes, no "mode:" line); has one "What changed since the last plan" line; and closes with the three-line chat message only.

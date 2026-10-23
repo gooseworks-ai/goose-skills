@@ -5,7 +5,7 @@
 - **Why:** each one needs server work before it can run safely or be tested properly. The details are in each folder's `server-needs.md`; the blockers are summarised below.
 - **Decision:** Akhil, 20 Oct 2026. They come back when the server work exists.
 - **What users see meanwhile:** video ads go to the goose-video skill and product photos to goose-product-photos (GooseWorks skills, not playbooks); brand setup as its own job is "not covered yet", and claims are approved through the claims gate's scoped sign-off. Nothing hands off to these three.
-- The folders are kept whole (SKILL.md, atoms, references, tests, critique), so nothing is lost. Hosts never list them, because nothing links or installs from `unreleased/`.
+- The folders are kept whole (SKILL.md, atoms, references, tests, critique), so nothing is lost. Hosts never list them, because nothing links to or installs from `drafts/`.
 
 ## The three, and what blocks each
 
@@ -28,15 +28,15 @@ These are **data formats**, not hand-offs. Records written earlier (by a full br
 ## How to release one
 
 1. **Check the blockers are fixed** on staging: the items above, against the playbook's `server-needs.md`.
-2. **Move it into the published tree** (flat since 20 Oct): `git mv marketing-agent/unreleased/<name> marketing-agent/skills/<name>`, then each of its `atoms/<step>/ATOM.md` to `marketing-agent/skills/<name>-<step>/SKILL.md` with frontmatter (`name`, `description`, `version`) and a `skill.meta.json` (AGENTS.md §5). Rewrite its links to the `../<slug>/SKILL.md` form (the links to shared steps now read `../../skills/<slug>/SKILL.md` from here) and run `node scripts/build-index.js && node scripts/check-marketing-agent-links.js`, which lists what is left. Change the `ln -s` line in its `tests/test-by-hand.md`.
-3. **Put the hand-offs back.** The 20 Oct change replaced them with "not covered yet" or "the marketer does it"; `git log -S "held back" -- marketing-agent` finds that change, and its diff is the list to undo for this playbook. The main places:
-   - the router (`../skills/marketing-agent/SKILL.md`): its row, the "Not this" cells that pointed to it, the "Not covered yet" bullet, and the description line;
-   - the index in `../skills/marketing-guide/SKILL.md` (and the reserved paths above);
+2. **Move it into the published tree**: `git mv drafts/marketing/<name> skills/marketing/<name>`, then each of its `atoms/<step>/ATOM.md` to `skills/marketing/<name>-<step>/SKILL.md` with frontmatter (`name`, `description`, `version`) and a `skill.meta.json` (`docs/marketing/AGENTS.md` §5). Rewrite its links to the `../<slug>/SKILL.md` form (the links to shared steps now read `../../../skills/marketing/<slug>/SKILL.md` from here) and run `node scripts/build-index.js && node scripts/check-marketing-agent-links.js`, which lists what is left. Change the `ln -s` line in its `tests/test-by-hand.md`.
+3. **Put the hand-offs back.** The 20 Oct change replaced them with "not covered yet" or "the marketer does it"; `git log -S "held back" -- marketing-agent skills/marketing` finds that change, and its diff is the list to undo for this playbook. The main places:
+   - the router (`../../skills/marketing/marketing-agent/SKILL.md`): its row, the "Not this" cells that pointed to it, the "Not covered yet" bullet, and the description line;
+   - the index in `../../skills/marketing/marketing-guide/SKILL.md` (and the reserved paths above);
    - where-to-start's `references/playbook-map.md` (the playbook's entry, the gaps table, the company-type table);
    - plan-campaign's brief roles and calendar, run-paid-campaigns' rotation and fix lines, analyze-performance's "what to make next", make-content, run-organic-social, work-with-creators;
    - the `reads`/`writes` lines in other playbooks' `skill.meta.json` marked "unreleased";
-   - the atoms' owner lines and `AGENTS.md` §8, and the playbook counts in `README.md` and `AGENTS.md`.
-4. **Routing eval:** restore the expected playbook in `evals/routing/cases.jsonl` for the cases whose note says "held back" (R02, R08, R09, R20, R37, R51, R52, R60; add the alternatives back on R19, R30, R39).
+   - the atoms' owner lines and `AGENTS.md` §8, and the playbook counts in `docs/marketing/README.md` and `docs/marketing/AGENTS.md`.
+4. **Routing eval:** restore the expected playbook in `evals/marketing/routing/cases.jsonl` for the cases whose note says "held back" (R02, R08, R09, R20, R37, R51, R52, R60; add the alternatives back on R19, R30, R39).
 5. **Test** with its `tests/test-by-hand.md` on staging, then run the routing eval.
 
 For **make-static-ads** (being reworked on its own branch): the Codex round-1 fixes (20 Oct) repointed its video, photo and claims hand-offs to goose-video, goose-product-photos and the claims gate, and dropped its `Product imagery needed` request line. The rewrite carries those over before it merges.

@@ -5,9 +5,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { execFileSync } from 'node:child_process';
-import { EVALS_DIR, MA_DIR } from './files.mjs';
+import { EVALS_DIR, REPO_ROOT } from './files.mjs';
 
-const CURRENT_ROOT = path.resolve(MA_DIR, '..');
+const CURRENT_ROOT = REPO_ROOT;
 export let GOOSE_SKILLS_DIR = process.env.GOOSE_SKILLS_DIR || CURRENT_ROOT;
 let materialized = false;
 function ensureLegacyRoot() {

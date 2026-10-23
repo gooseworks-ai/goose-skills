@@ -1,8 +1,8 @@
 # GooseWorks Marketing Agent — skills rebuilt from scratch
 
 **In short**
-- The skills a marketing agent needs to do the whole job of a marketer: **14 released playbooks** (one marketer want each, done end to end; 3 more are built but held back, see [unreleased/](unreleased/README.md)) their steps, and **2 foundation skills**: `marketing-guide` (shared setup and rules) and `marketing-data-access` (live public data with no vendor keys). The `marketing-agent` router is kept for evals and hand tests only; customers reach the playbooks through the GooseWorks CLI's own `gooseworks` router.
-- Built from scratch in this folder. The old library under `skills/` is being scrapped, not patched. **Published since 20 Oct:** every folder in `skills/` here is its own catalog skill (14 playbooks, 66 steps, 2 foundation skills = 82), listed in the repo's `skills-index.json` under domain `marketing-agent`. A merge to `dev` publishes them to staging; `main` to production.
+- The skills a marketing agent needs to do the whole job of a marketer: **14 released playbooks** (one marketer want each, done end to end; 3 more are built but held back, see [drafts/marketing/](../../drafts/marketing/README.md)), their steps, and **2 foundation skills**: `marketing-guide` (shared setup and rules) and `marketing-data-access` (live public data with no vendor keys). The `marketing-agent` router is kept for evals and hand tests only; customers reach the playbooks through the GooseWorks CLI's own `gooseworks` router.
+- **Where they live:** `skills/marketing/<slug>/`, one flat folder per skill. Each is its own catalog skill (14 playbooks, 70 steps, 2 foundation skills = 86), listed in `skills-index.json` under domain `marketing-agent`. A merge to `dev` publishes them to staging; `main` to production. Built from scratch, published from 20 Oct; the old GTM library they replace was deleted on 23 Oct (`retired-skills.json` maps each old skill to its playbook).
 - Each playbook is built from its spec, then attacked by critics for **scope** (missed work) and **depth** (shallow output) until they find nothing major. Every round is logged in the playbook's `critique.md`.
 - Source plans: [the Marketing Agent map](https://claude.ai/artifact/6PAQXoadLzETsFd57vP79a) (Akhil) on top of [the goose-skills rebuild plan](https://goose-publish.shiv-861.workers.dev/goose-skills-rebuild/) (Shiv).
 
@@ -27,7 +27,7 @@
 
 ## What we are not building yet
 
-[BACKLOG.md](BACKLOG.md) lists the marketing jobs these playbooks do not cover yet, each with who needs it and what should make us build it. Decided 16 Oct: keep the surface at 17 until these are built and tested well. Decided 18 Oct: social listening became a step of research-market, so the surface is 16; drafting replies to comments and DMs is not covered yet (BACKLOG card "Reply drafts"). Decided 19 Oct (Akhil): lead generation is completed — research-audience's list mode builds, scores and watches lists, and **write-outreach** writes the emails and LinkedIn messages; sending stays with the marketer (BACKLOG #6), so the surface was 17. Decided 20 Oct (Akhil): learn-my-brand, make-video-ads and make-product-photos are held back from the first release until the server work they need exists, so the released surface is 14 ([unreleased/README.md](unreleased/README.md)).
+[BACKLOG.md](BACKLOG.md) lists the marketing jobs these playbooks do not cover yet, each with who needs it and what should make us build it. Decided 16 Oct: keep the surface at 17 until these are built and tested well. Decided 18 Oct: social listening became a step of research-market, so the surface is 16; drafting replies to comments and DMs is not covered yet (BACKLOG card "Reply drafts"). Decided 19 Oct (Akhil): lead generation is completed — research-audience's list mode builds, scores and watches lists, and **write-outreach** writes the emails and LinkedIn messages; sending stays with the marketer (BACKLOG #6), so the surface was 17. Decided 20 Oct (Akhil): learn-my-brand, make-video-ads and make-product-photos are held back from the first release until the server work they need exists, so the released surface is 14 ([drafts/marketing/README.md](../../drafts/marketing/README.md)).
 
 ## How to test a playbook
 
@@ -35,13 +35,13 @@
 2. Link **every** skill into your agent's skills folder, side by side, so `../<slug>/` links resolve (a playbook needs its steps and the shared steps). From the repo root, for the hand-test folder:
    ```bash
    mkdir -p ~/projects/marketing-agent-test/.claude/skills
-   for d in "$PWD"/marketing-agent/skills/*/; do ln -sfn "${d%/}" ~/projects/marketing-agent-test/.claude/skills/"$(basename "$d")"; done
+   for d in "$PWD"/skills/marketing/*/; do ln -sfn "${d%/}" ~/projects/marketing-agent-test/.claude/skills/"$(basename "$d")"; done
    ```
-   That also links the `marketing-agent` router (not published) — remove its link to test what customers get. Links from the old layout (`playbooks/`, `atoms/`, `foundation/`) are dead: delete them first (`find ~/projects/marketing-agent-test/.claude -maxdepth 2 -type l ! -exec test -e {} \; -print -delete`).
+   That also links the `marketing-agent` router (not published) — remove its link to test what customers get. Links from older layouts (`marketing-agent/skills/`, `playbooks/`, `atoms/`, `foundation/`) are dead: delete them first (`find ~/projects/marketing-agent-test/.claude -maxdepth 2 -type l ! -exec test -e {} \; -print -delete`).
 3. Follow that playbook's `tests/test-by-hand.md`. It passes when its "Done when" line holds.
 
-## Later: retiring the old library
+## The old library
 
-Deleting old skills under `skills/` is a separate step after this set is tested. **Ad-creation skills used by live recipes stay** until the new playbooks replace them: before deleting any ads skill, check which recipes are live in production and which skills they call.
+Deleted on 23 Oct. Every old skill is in `retired-skills.json` with the playbook that replaces it (or none, with a reason), and stays readable at tag `legacy-gtm-final`. The few older skills that video skills, these playbooks or gooseworks-app still use live in `skills/shared/`, each with who uses it and when it can go.
 
 For builders: read [AGENTS.md](AGENTS.md) first.

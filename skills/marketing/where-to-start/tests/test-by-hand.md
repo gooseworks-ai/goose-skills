@@ -2,7 +2,7 @@
 
 ## Setup
 1. Connect GooseWorks **staging** to your agent.
-2. Link every marketing skill side by side (the playbook needs its steps and the shared steps): see "How to test a playbook" in `marketing-agent/README.md`.
+2. Link every marketing skill side by side (the playbook needs its steps and the shared steps): see "How to test a playbook" in `docs/marketing/README.md`.
 3. Open a fresh session for each case.
 
 ## Cases

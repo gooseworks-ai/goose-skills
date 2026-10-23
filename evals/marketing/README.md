@@ -3,7 +3,7 @@
 **What this is.** Evals that tell us whether each marketing playbook actually helps. For each playbook we run the same marketer's ask up to three times — **with** the new playbooks, with the **old** goose-skills a user would have used for the job (legacy), and with **no** marketing skills (baseline) — and an AI judge scores each run against the same pass/fail checklist. If the baseline or the old skills do as well, the new playbook isn't earning its place.
 
 **In short**
-- **Two kinds of eval.** *Routing:* given only the descriptions of every published skill (82 since 20 Oct: 14 playbooks, their 66 steps and 2 foundation skills; the router and `../unreleased/` are left out) plus the two GooseWorks entry skills video and photo asks go to (`routing/external-skills.json`), does a model pick the right playbook for 87 real asks? *Behaviour:* does a full run of a playbook deliver what a good marketer would, compared with no skill?
+- **Two kinds of eval.** *Routing:* given only the descriptions of every published skill (86: 14 playbooks, their 70 steps and 2 foundation skills; the router and `drafts/marketing/` are left out) plus the two GooseWorks entry skills video and photo asks go to (`routing/external-skills.json`), does a model pick the right playbook for 87 real asks? *Behaviour:* does a full run of a playbook deliver what a good marketer would, compared with no skill?
 - **Nine behaviour evals so far**: one per hand-tested playbook (research-market, research-audience, research-competitors, run-organic-social, plan-campaign, improve-search-visibility, where-to-start), plus research-audience's **list mode** (`research-audience-list`, where the marketer actually asks for the list) and **write-outreach** (added 19 Oct, not yet run). All use the GooseWorks brand on **staging**, with Akhil's real opening asks from the 18 Oct hand tests.
 - **Nothing is spent or published.** Paid and publishing GooseWorks tools are switched off for the agent, production GooseWorks is blocked, and the simulated marketer declines every top-up.
 - **Every arm starts from the same brand state.** The runner snapshots the staging Gooseworks brand before an arm and undoes that arm's changes afterwards (details below).
@@ -11,7 +11,7 @@
 
 ## How to run one
 
-From this folder (`marketing-agent/evals/`), with Node 20+ and the `claude` CLI signed in:
+From this folder (`evals/marketing/`), with Node 20+ and the `claude` CLI signed in:
 
 ```bash
 # Routing: all 87 asks, cheap (Haiku). About 3 minutes.
