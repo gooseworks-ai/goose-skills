@@ -70,3 +70,33 @@ test('counts a negation only when it governs the phrase', () => {
   const rules = lintSkill('No discount: pay 8 dollars and install the plugin.').map((problem) => problem.split(':')[0]);
   assert.deepEqual(rules, ['money.credits_only', 'setup.no_install']);
 });
+
+// Ported from the CLI's static-ad-workflow test when the entry skills moved here.
+const read = (name) => fs.readFileSync(path.join(ENTRY_DIR, name, 'SKILL.md'), 'utf8');
+const rulesOf = (name) => read(name).split('\n## Rules\n')[1] || '';
+const routes = JSON.parse(fs.readFileSync(path.join(ENTRY_DIR, 'gooseworks', 'routes.json'), 'utf8'));
+
+test('the router sends new static ads to make-static-ads before goose-ads', () => {
+  const at = (skill) => routes.domain_routes.findIndex((r) => r.skill === skill);
+  assert.equal(routes.domain_routes[at('make-static-ads')].delivery, 'fetch');
+  assert.equal(routes.domain_routes[at('goose-ads')].delivery, 'entry');
+  assert.ok(at('make-static-ads') < at('goose-ads'));
+});
+
+test('goose-ads has no alternative image generator, only the fetched playbook', () => {
+  const ads = read('goose-ads');
+  assert.match(ads, /catalog_fetch/);
+  assert.doesNotMatch(ads, /ads_generate/);
+  assert.match(ads, /stop/);
+  assert.doesNotMatch(read('gooseworks'), /call brand_setup with action status/);
+});
+
+test('generic next steps are qualified for the router and ads, not for photos', () => {
+  for (const name of ['gooseworks', 'goose-ads']) {
+    const rules = rulesOf(name);
+    assert.match(rules, /spend approval/, name);
+    assert.match(rules, /publishing/, name);
+    assert.doesNotMatch(rules, /Follow the next_step in every answer\./, name);
+  }
+  assert.match(rulesOf('goose-product-photos'), /Follow the next_step in every answer\./);
+});
