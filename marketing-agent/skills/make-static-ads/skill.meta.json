@@ -2,7 +2,7 @@
   "slug": "make-static-ads",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "tags": [
     "ads",
     "design"
@@ -74,13 +74,12 @@
     "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
     "lower-case creative tags (concept:c-n, angle:a-nn, persona, emotion, style, type, archetype, hook, stage, batch, mode, test, offer-ends, claims, src, structure-only, judge:*, try:*, superseded, picked) — read by analyze-performance (angle and concept ranking) and research-competitors (angle test status)",
     "the human's picks and verdicts: feedback in the human's words (rating happy only on their pick) + 'picked' tag + the batch file — read by run-paid-campaigns and the brand's learned rules",
-    "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, concept id and row (persona, reason to buy, proof with brain status, emotion, stage, framework, style), template id, advertiser and Ad Library link, structure-only yes/no, font, palette, logo, the User instructions and Variant brief, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, coverage note, test question, test structure with the stated budget, cut list, flags — run-paid-campaigns launches from it verbatim",
+    "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: the concept board (what was read, each row's starting point and source, human situation, physical event, headline, protected choice, references and roles, critic notes), per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, font, palette, logo, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, cut list, flags — run-paid-campaigns launches from it verbatim",
     "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run",
     "'Graphic ready:' answer lines under sibling request lines — read by email-lifecycle, run-organic-social, make-content on their next run",
-    "font specimen images (media_upload, kind image, tag font-specimen) — attached to this playbook's own renders",
     "brand learnings through the shared save-learning atom, on the human's own words (incl. claims the marketer confirms in chat) — read by every creative playbook",
     "ad-library charges in research/credits-log/<YYYY-MM>.md (spend-gate branch B) — read by every playbook that estimates proxy spend",
-    "run.json: actual source coverage, sourced candidate reasons/personas/proof, selection and hook/visual/reference alternatives, critic findings, exact reviewed render inputs — checked before quoting"
+    "board.md: the concept board, shown to the marketer with the quotes"
   ],
   "needs": {
     "mcp": [

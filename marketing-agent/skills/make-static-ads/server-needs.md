@@ -2,6 +2,8 @@
 
 What this playbook needs that the GooseWorks MCP does not give today. Each: the need · the step · what the playbook does meanwhile.
 
+**Since 0.6.0 (23 Oct 2026):** the playbook writes each render prompt itself from its concept board and no longer copies the server composer, blueprint or judge, so items about composer parity (N2, N8, N13 and the composer port) are history. Still relevant: N0, tag writes, and the server hints that pull agents away from a running playbook ("one line and wait", "recommend one plan").
+
 **Status in short (v0.4, 19 Oct 2026):** the thin render tool shipped (N1, gooseworks-app PR #2105) and tag writes were fixed in the same PR (#21). Per-ad copy direction (N2) is solved inside the composer's Variant brief. Still open and most important: other brands' ads registered as templates must be structure-only on the server (N0). New since the composer port: N13–N17. Items 1–21 were checked against staging on 2026-10-16 and describe the earlier route through the server's own prompt writer; they are kept for history, with their status updated.
 
 ## Added 2026-10-19 — concepts, templates, the composer port

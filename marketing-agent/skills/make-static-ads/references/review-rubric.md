@@ -1,6 +1,6 @@
 # Review rubric — every render, every ratio
 
-The playbook's extra checks, run after the server's judge (`judge.md`) on every render. Severity decides what happens: **BLOCK** — never ships (fixed by the render's one retry, or dropped); **REMAKE** — fixed by the one retry, else dropped or, for a taste call, shown as a NOTE; **NOTE** — label for the human. Feedback reason codes in brackets are for the **human's** verdicts only (see "Record every verdict" below).
+The checks the judge runs on every render (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`)). Severity decides what happens: **BLOCK** — never ships (fixed by the render's one retry, or dropped); **REMAKE** — fixed by the one retry, else dropped or, for a taste call, shown as a NOTE; **NOTE** — label for the human. Feedback reason codes in brackets are for the **human's** verdicts only (see "Record every verdict" below).
 
 | # | Check | How a senior checks | Severity |
 |---|---|---|---|
@@ -25,23 +25,23 @@ The playbook's extra checks, run after the server's judge (`judge.md`) on every 
 | 19 | Set diversity | `creative-taxonomy.md` §4 still holds after retries and drops: cover the text — no two ads look alike; no two share reason to buy + framework + visual style | REMAKE set |
 | 20 | Rights | No celebrity or lookalike, no third-party trademark, competitor ads used for structure only, creator/model permission on file | BLOCK |
 | 21 | Destination match | The destination shows the product, offer and promise of the ad | NOTE (flag to analyze-performance's page audit) |
-| 22 | Template followed, not copied | The recorded contribution survives: layout/signature for a `layout` reference, the authored relationship for `mechanism`, or the specified treatment for `craft`; none of the source's words, product, logo or people. The concept scene is the comparison target for mechanism/craft (compose departure 7). For a direct competitor's template ("layout only"), the main agent — never the judge — puts the render beside the template image with both logos covered: could a buyer take ours for theirs? (`references-and-remix.md` §5) | REMAKE / BLOCK if copied |
-| 23 | Composed prompt followed | Every on-image word in the composed prompt is drawn, and nothing else; type, colours and logo / no logo as the prompt says | REMAKE |
+| 22 | Reference used, not copied | None of a reference's words, product, logo or people appear. For a direct competitor, the main agent puts the render beside the reference with both logos covered: could a buyer take ours for theirs? (`research.md` §4) | REMAKE / BLOCK if copied |
+| 23 | Prompt followed | Every on-image word in the composed prompt is drawn, and nothing else; type, colours and logo / no logo as the prompt says | REMAKE |
 | 24 | Logo matches the kit | Same shape, letters and colours as the kit logo file; recoloured or redrawn = fail | REMAKE |
 | 25 | Bodies and products in use | Feet and shoes face the right way, garments are worn correctly, hands look natural; a floating product has a believable shadow or is clearly a cut-out graphic | REMAKE |
 | 26 | Product used for what it is for | A casual shoe is not shown sprinting; a mug is not a vase | REMAKE |
 | 27 | Text inside its panel | No line crosses a band or card edge; nothing is cut off at the canvas edge | REMAKE |
-| 28 | Concept intact | The image still speaks to the grid row's persona and reason to buy. A proof missing from the image moves into the primary text first (free, no retry); only a picture or headline that speaks to someone else uses the retry | REMAKE |
+| 28 | Idea intact | The board row's physical event happened and its protected choice is visible at thumbnail size. A polished image that lost the event is a failed ad | REMAKE |
 | 29 | Not a repeat | No example content (search query, names, on-screen numbers) copied from an ad on the made-before list | REMAKE |
 
-## The server's judge comes first
+## Order
 
-Every render is judged with `judge.md` (its checklist, pass rule and one retry) before these checks. `ads_render` creatives are never judged by the server, so the agent's judge is the only one; read its result from the batch record, never from a flag on the creative. A check here that the judge already failed is not counted twice.
+Check 28 first: if the idea didn't happen, nothing else matters. Then 3 (right product), 8 (spelling) and 1–2 (claims and invented marks).
 
 **What juniors miss:** 1 (implied and imported claims), 2 (invented seals), 4 (second-person attributes), 7 (narrowed offer terms), 11 (illegible qualifier), 13 (a 9:16 headline under the Reels caption).
 
-**Loop rule.** One retry per render (`judge.md` §7 — the judge's, or one of these checks on try 1, in the same note form), inside the yes already given. Still failing a BLOCK after it → drop it and list it ("dropped: invented seal survived the retry"). Never a third render without a new quote and yes. Never show a failing ad "with caveats".
+**Loop rule.** One retry per render, inside the yes already given. Still failing a BLOCK after it → drop it and list it ("dropped: invented seal survived the retry"). Never a third render without a new quote and yes. Never show a failing ad "with caveats".
 
-**When you cannot see the image.** Some hosts return only links. Then the render is unjudged (`judge.md` §6): no retry, flagged `needs_review`. Compare the composed prompt's on-image words with the creative's detail (`ads_creative_read` `include: ["renders","plan"]`) and mark the ad "not visually checked" with a three-item checklist for the human (e.g. "read the headline letter by letter; check the jar's lid; look for any badge or star we did not ask for"). Never present an unseen render as checked.
+**When you cannot see the image.** Some hosts return only links. Then the render is unjudged: no retry, flagged `needs_review`. Compare the prompt's on-image words with the creative's detail (`ads_creative_read` `include: ["renders","plan"]`) and mark the ad "not visually checked" with a three-item checklist for the human (e.g. "read the headline letter by letter; check the jar's lid; look for any badge or star we did not ask for"). Never present an unseen render as checked.
 
-**Record every verdict** in the batch file and the creative's tags (`judge.md` §8). Render feedback (`ads_creative_update` `feedback`) carries **only the human's own verdicts** in their words: `rating` `happy` only on the human's pick; `sad` + `reasons` only for faults the human names. The agent's judge and these checks never go into feedback — it trains the brand's learned rules. Durable lessons — "template X carries a competitor seal", "the model garbles our wordmark at small sizes" — are offered to the human and saved through the shared save-learning atom (the `save-learning` skill (`../../save-learning/SKILL.md`)) only on their confirmation, in their words.
+**Record every verdict** in the batch file and the creative's tags. Render feedback (`ads_creative_update` `feedback`) carries **only the human's own verdicts** in their words: `rating` `happy` only on the human's pick; `sad` + `reasons` only for faults the human names. The agent's judge and these checks never go into feedback — it trains the brand's learned rules. Durable lessons — "template X carries a competitor seal", "the model garbles our wordmark at small sizes" — are offered to the human and saved through the shared save-learning atom (the `save-learning` skill (`../../save-learning/SKILL.md`)) only on their confirmation, in their words.

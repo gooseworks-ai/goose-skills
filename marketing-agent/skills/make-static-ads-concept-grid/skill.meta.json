@@ -2,7 +2,7 @@
   "slug": "make-static-ads-concept-grid",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "playbook": "make-static-ads",
   "tags": [
     "ads",
@@ -17,5 +17,7 @@
       "codex"
     ]
   },
-  "requires_skills": []
+  "requires_skills": [
+    "make-static-ads-find-references"
+  ]
 }

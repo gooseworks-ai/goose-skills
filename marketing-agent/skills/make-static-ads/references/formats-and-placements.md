@@ -55,7 +55,7 @@ If no template fits an archetype, look for more (Meta, the library) before using
 | Email header (graphic request) | ~600–1200 px wide, roughly 2:1 or 3:1 | Not a render ratio — use 16:9 and flag (the email tool crops or scales); mobile-legible; check dark mode |
 | Blog / OG image | 1200×630 (~1.91:1) | Use 16:9 and flag |
 
-**Render ratios** (`gooseworks:ads_render`): `1:1`, `4:5`, `9:16`, `16:9`, `3:4`. Each ratio other than the template's own gets the composer's CANVAS ADAPTATION block, so it is its own base prompt and its own call (`composer.md` §10–11) — one dry run per ad and ratio. For a Meta-only set ask whether 1:1 is needed. Extra placements on an approved render (LinkedIn or Google landscape, a 9:16 added later): a new composed base prompt for that ratio and a quoted `ads_render` call, judged like any render (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`) step 7). `resize` and `precision_edit` are not used until their own dry run returns credits.
+**Render ratios** (`gooseworks:ads_render`): `1:1`, `4:5`, `9:16`, `16:9`, `3:4`. Each ratio is its own prompt and its own call (`prompts.md` §4): one dry run per ad and ratio. For a Meta-only set ask whether 1:1 is needed. Extra placements on an approved render (LinkedIn or Google landscape, a 9:16 added later): a new prompt for that ratio and a quoted `ads_render` call, judged like any render (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`) step 7). `resize` and `precision_edit` are not used until their own dry run returns credits.
 
 ## 4. Copy limits (visible before truncation, approximate)
 

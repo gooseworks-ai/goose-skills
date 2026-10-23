@@ -1,6 +1,6 @@
 # Angles and hooks — how a senior creative strategist builds a set that actually tests something
 
-The on-image words are the composer's (`composer.md`); the hooks here steer it through each ad's Variant brief.
+Optional craft for the ad-copy step: hook formulas and how angles differ. The idea itself comes from `ideas.md`; a hook names what the picture shows.
 
 ## 1. Angle ≠ execution
 
@@ -96,7 +96,7 @@ The hook is the first thing read: the headline on the image, or the first line o
 
 **Hook rules:**
 - One message. If the hook needs "and", it is two ads.
-- Six to eight words on the image; more goes in the primary text (the composer also mirrors the template's text density).
+- Six to eight words on the image; more goes in the primary text.
 - Concrete beats clever. Nouns and numbers beat adjectives.
 - No claim the claims check would cut — write within the usable brain facts from the start.
 

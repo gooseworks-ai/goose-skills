@@ -1,18 +1,40 @@
 ---
 name: make-static-ads-find-references
 description: >-
-  Step of make-static-ads: study and compare references for each selected concept, record their provenance and choose a limited layout, mechanism or craft contribution. Run make-static-ads instead; not for direct use.
-version: 0.5.2
+  Step of make-static-ads: looks at strong ads from other brands and categories for devices, craft and layouts the concept board can use, and records what each one contributes. Run make-static-ads instead; not for direct use.
+version: 0.6.0
 ---
 
 # find-references
 
-**Read:** the selected concepts and checked own-ad/history inventory. **Write:** compared reference_options and selected template ID in run.json; show picks with the concept plan. `../make-static-ads/references/workflow.md` owns the shared record shape.
+**Reads:** the starting points and draft ideas from the concept-grid step. **Writes:** the References column of `board.md` and a short reference list (source, link, what it contributed) under the board.
 
-1. Inspect available imported competitor statics, then3–5category leaders (about20ads each), then query the library for slots leaders cannot fill. Complete the leader sweep even when imports already fill the shortlist, or name the skipped leaders/checks and justify partial scope under workflow.md. An access failure for one library does not establish that other leaders are inaccessible. Record actual attempted sources and stopping reasons. `references-and-remix.md` §2 supplies lookup routes; a genuine host block is reported, never bypassed. Library run length stays unknown.
-2. Keep three useful candidates from three advertisers per concept. View each image and open its detail before suggesting it. Ground source descriptions in those pixels: describe visible surface cues (for example, translucent edges and reflected highlights), keeping uncertain material identity qualified. Separate what is visible, the inferred relationship, and our chosen adaptation in the existing reference notes; authored materials, props or lighting are not observed source properties. Conflicting metadata yields to the viewed image. Reject fixtures, placeholder brands, illegible or infeasible treatments. Reuse a concept's shortlist across its executions; a new search is useful when it adds a missing relationship/look, not as ritual.
-3. State what each contributes: layout, mechanism or craft. Direct competitors supply layout only. For a conceptual source outside direct competitors, name the relationship that makes it interesting and try translating that relationship to this product's human tension before deciding its role. In the existing visual-options comparison, compare a close translation and a more distant meaningful one with the direct product treatment; develop credible scenes, not just swapped props. A craft-only choice is valid when the authored concept has its own strong event; explain what makes that event worth choosing. Preserve the concept's reason/persona/proof.
-4. Show the gallery when the marketer wants to choose. “Your choice/finals only” → show the selected image/advertiser in the plan instead. Compare the limited contribution actually considered: borrowing its lighting or relationship does not require its original objects, UI or whole composition. Compare the strongest feasible use of each allowed contribution for this exact buyer/event. Name what the selected contribution enables and what the rival would lose; a generic “clutter” objection is insufficient when that rival's unrelated objects/layout would not be borrowed. Keep source observations and authored departures distinct in reference_contribution and scene so compose can retain the distinction. Spread suggestions across advertisers and looks; compare with checked history and qualify novelty.
-5. Register unregistered references through media_upload/ads_template_create and read their actual details before compose. Confirm ownership explicitly. Other brands' pixels stay out of generation in every role; an owned layout reference may be attached, mechanism/craft remains written direction. Record the actual source URL/type and known or unknown run dates.
+A reference widens what you can imagine. It does not decide the ad. The idea comes from the product and the customer (`../make-static-ads/references/ideas.md` §5).
 
-No-headline reference only when deliberately chosen for a textless treatment. Missing inputs for a review, founder note or software screen → choose another feasible treatment. Blueprint extraction is needed for a layout reference only; mechanism/craft uses the authored scene. See references-and-remix §5 for direct-competitor abstraction and side-by-side checks.
+## 1. Where to look (free first)
+
+- **Category leaders and adjacent categories** in the Meta Ad Library, in the host browser: search the advertiser by name, open its page, look at the first 20 or so statics (the default order puts the ads they spend most on first). Routes: `../make-static-ads/references/research.md` §2.
+- **Outside the category.** Many of the best devices come from a different product type (a drink ad's set design for a spice brand). Look at 2–3 brands known for inventive statics.
+- **The GooseWorks library**: `gooseworks:ads_template_read` `mode: "static_library"` with a query for the device or look you need. Name a library or Pinterest source as such, never as a verified running ad.
+
+Stop when you have devices for the ideas you need. Twenty well-looked-at ads beat a hundred listed ones. Write down which advertisers you looked at and how many ads; name a library that wouldn't load as not checked.
+
+## 2. Name the contribution
+
+For each reference you use, say what it gives, in one of three roles:
+
+| Role | It gives | Example |
+|---|---|---|
+| **Device** | A relationship or trick: an object crosses a screen, a flat thing becomes physical | Oatside's carton coming out of a laptop |
+| **Craft** | Treatment only: lighting, set, texture, typography | Oatly's directional light and simple sets |
+| **Layout** | Where things sit, in the abstract | A big headline over one centred object |
+
+A direct competitor's ad gives layout only. Describe what you actually see in the image; don't credit it with things you are adding.
+
+## 3. Keep other brands out of the image
+
+Other brands' ads never go into `image_urls`. Write the device or craft into the prompt in words (`../make-static-ads/references/prompts.md` §1). The finished ad keeps none of the reference's product, words, logo or people. If a buyer could mistake ours for theirs, change it.
+
+## 4. Showing them
+
+When the marketer wants to choose, show the references with the board. "Your choice" → name them in the References column instead.

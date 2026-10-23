@@ -4,7 +4,7 @@
 - Every static ad is one choice on each of **nine levers**: four about the *message* (persona, reason to buy, emotion, awareness), one about the *deal* (offer), and four about the *look* (framework, visual style, composition, type and colour).
 - **A concept** is who it talks to, the one reason to buy and its proof. **An ad** is one execution of a concept: its framework, visual style, composition, type and hook. A good set has a few strong concepts, each in two or three clearly different looks. Two ads that differ only in their words are **one ad** to Meta.
 - Meta's delivery system (Andromeda, 2025) groups ads that look or open alike and lets only one of them compete. A set is diverse only when its ads differ in **message and look at the same time**.
-- Use the grid in §3 before composing any ad, and the diversity checks and the **concept gate** in §4 before showing the plan. Difference is not enough — every concept must also be good.
+- **Optional vocabulary.** The working sheet is the concept board (the `make-static-ads-concept-grid` skill (`../../make-static-ads-concept-grid/SKILL.md`)), and ideas come from `ideas.md`. Use these levers to describe and spread the *look* once the ideas are chosen, and the checks in §4 as a second opinion. Levers never generate an idea: five frameworks on one reason is still one idea.
 
 The angle families, awareness stages and hook formulas live in `angles-and-hooks.md`; the archetype table and company types live in `formats-and-placements.md` §1–2. This file is the frame that ties them together.
 
@@ -24,7 +24,7 @@ AG1 is one product family with one brand look, yet its top static ads each sell 
 
 Its ads that week also included a military discount, a "sold out, it's back" scarcity push, a celebrity morning routine and a new sleep product.
 
-**The lesson:** no two rows share a reason to buy, and few share a persona, emotion or look. That is concept diversity — across concepts. Inside each concept, a brand like AG1 then runs two or three looks (it runs several versions of most of these); this playbook does the same (§3). The failure it guards against: ten ads that all say "the drink that helps your health" on ten backgrounds. (AG1's real claims are their own; a brand using this playbook may only say what its own brain allows — `claims-and-policy.md` §2.)
+**The lesson:** no two rows share a reason to buy, and few share a persona, emotion or look. That is concept diversity — across concepts. Inside each concept, a brand like AG1 then runs two or three looks (it runs several versions of most of these); this playbook does the same (§3, "Shaping a set"). The failure it guards against: ten ads that all say "the drink that helps your health" on ten backgrounds. (AG1's real claims are their own; a brand using this playbook may only say what its own brain allows — `claims-and-policy.md` §2.)
 
 ## 2. The nine levers
 
@@ -56,14 +56,9 @@ Its ads that week also included a military discount, a "sold out, it's back" sca
 
 **Media type** (static, video, carousel) is a tenth lever that sits above this playbook: statics reach people who mostly engage with images, so a brand running only video should add statics, and vice versa.
 
-## 3. The concept grid — fill it before composing any ad
+## 3. Shaping a set
 
-One row per ad. The agent fills every column; "same as #N" is allowed only for the one variable that cell is testing.
-
-| # | Concept | Persona | Reason to buy (they buy because…) | Proof | Emotion | Awareness | Offer | Framework | Visual style | Composition | Type & colour | Hook | Source of the reason |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-
-**Shape of a good set: a few strong concepts, each in more than one look.** Ten different mediocre ads lose to three or four strong concepts with two or three executions each — and that shape makes test results readable (the concept wins or loses as a unit). Default for ten ads: **3–5 concepts × 2–3 executions** (executions differ in framework, style or composition, never only in words).
+**Shape of a good set: a few strong concepts, each in more than one look.** Ten different mediocre ads lose to three or four strong concepts with two or three executions each — and that shape makes test results readable (the concept wins or loses as a unit). Default for ten ads: **5–7 ideas**, the strongest with a second execution (a different event or look, never only different words). For five ads or fewer, every ad is its own idea.
 
 **Two hard rules (always):**
 1. **No two ads share reason to buy + framework + visual style.** Two executions of one concept must differ in look; two concepts must differ in reason to buy.
@@ -80,7 +75,7 @@ One row per ad. The agent fills every column; "same as #N" is allowed only for t
 
 **Iterate / rotation sets** change one named lever per ad from the winner and keep the rest: a new hook (cheapest), a new framework or style (new look, same message), or a new reason to buy (when the angle is tired).
 
-**Talk to the marketer in concepts, not levers.** The grid is the agent's working sheet. The plan shows each concept as one plain sentence — "For busy parents: back to sleep in minutes — proof: 4,000 reviews — shown as a handwritten note and as a product hero" — and keeps the lever columns in the batch file.
+**Talk to the marketer in ideas, not levers.** The board shows each ad as its situation, its physical event and its headline; lever labels stay in the batch file and tags.
 
 ## 4. Checks before showing the plan
 

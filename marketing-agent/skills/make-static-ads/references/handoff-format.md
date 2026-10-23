@@ -3,9 +3,9 @@
 
 ## 1. Definitions
 
-- **A concept** = one persona, one reason to buy, one proof.
-- **An ad** = one execution of a concept: one look (framework, style, composition), one hook, one copy set, delivered in every ratio its placements need. "Ten ads" = ten executions, usually of 3–5 concepts ≈ twenty to thirty images. One dry run per ad and ratio (each ratio is its own composed prompt, `composer.md` §10–11).
-- **A cell** = the ads inside one concept, which differ in look (and may differ in hook), so the concept wins or loses as a unit.
+- **An idea** = one starting point (product fact or customer situation) made visible as one physical event (`ideas.md`). Tag it `concept:c<n>`.
+- **An ad** = one execution of an idea: one scene, one headline, one copy set, delivered in every ratio its placements need. One dry run per ad and ratio (each ratio is its own prompt, `prompts.md` §4).
+- **A cell** = several ads of one idea, so the idea wins or loses as a unit. For five ads or fewer, every ad is its own idea.
 
 ## 2. Tags and naming (so results trace back)
 
@@ -17,19 +17,21 @@ Write with `gooseworks:ads_creative_update` `patch.tags`. **Everything lower-cas
 
 Readable name for the human and the ad account: `brand_product_angle_stage_hook#_archetype_ratio_yyyy-mm-dd` (lower-case).
 
-## 3. The plan table (shown at the spend gate, Step 8)
+## 3. The board at the spend gate (Step 7)
 
-| # | Concept | Persona | Reason to buy — they buy because… (source) | Proof (brain status) | Framework · style | Template (advertiser, Ad Library link) | Structure-only | Ratios |
-|---|---|---|---|---|---|---|---|---|
+Show the concept board from `board.md`, trimmed for the marketer:
 
-Above it: the coverage note ("Already running: … New here: …") and the lever tally (`creative-taxonomy.md` §4). Below it: cut lines with what would confirm them, open flags, the test question, each ad's quote line exactly as the engine returned it, the sentence "If an image fails my check I redo it once, at the same price.", and one question: "Go ahead with these quotes?" Font, palette and logo per ad, the on-image words the composer wrote and the full prompts stay in the batch file; show them in chat only when the marketer asks.
+| # | The idea in one line | What you'll see | Headline / support | Why it's ours (fact or customer words, source) | Quote |
+|---|---|---|---|---|---|
 
-## 4. The finished set (Step 12)
+Above it: what was read ("Read: 14 reviews, 20 of ~300 live Meta ads, the product page; LinkedIn not checked") and what the brand already runs. Below it: the critic's main objection and what changed, cut lines with what would confirm them, open flags, the sentence "If an image fails my check I redo it once, at the same price.", and one question: "Go ahead with these quotes?" Prompts, fonts and palettes stay in the batch file; show them when asked.
+
+## 4. The finished set (Step 9)
 
 Per ad:
 
-| # | Concept · persona · reason to buy (source) · proof | Emotion / stage | Framework · style | Template | On-image text (as drawn) | Primary text (2 versions) | Headline | Description | CTA | Destination | Safe to say? | Platform rules | Check result | Look at | Link |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| # | Idea · starting point (source) | Physical event | References (role) | On-image text (as drawn) | Primary text (2 versions) | Headline | Description | CTA | Destination | Safe to say? | Platform rules | Check result | Look at | Link |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
 Write the check columns in plain words ("safe to say", "cut 'never oily' — nothing on file confirms it", "rewritten for Meta's rule on personal traits", "passed my check on the second try", "please read the headline letter by letter"). Brain statuses, judge checklists and check names go into tags and the batch file, not the chat.
 
