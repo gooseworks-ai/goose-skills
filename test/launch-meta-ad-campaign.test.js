@@ -329,7 +329,7 @@ test('blocks policy and destination failures before Meta writes', async () => {
 test('skill metadata resolves to an adapter file that installation can copy', () => {
   const metaPath = path.resolve(
     __dirname,
-    '../skills/ads/composites/launch-meta-ad-campaign/skill.meta.json',
+    '../skills/shared/launch-meta-ad-campaign/skill.meta.json',
   );
   const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
   assert.deepEqual(meta.requires_tools, ['meta_marketing_api']);

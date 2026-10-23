@@ -15,7 +15,7 @@ function git(root, ...args) {
 }
 
 function writeAtom(root, slug, { skill = `# ${slug}\n\nHow to drive the model well.\n`, meta = { slug, version: '1.0.0' }, files = {} } = {}) {
-  const dir = path.join(root, 'skills', 'ads', 'capabilities', slug);
+  const dir = path.join(root, 'skills', 'video', slug);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'SKILL.md'), skill);
   if (meta) fs.writeFileSync(path.join(dir, 'skill.meta.json'), `${JSON.stringify(meta, null, 2)}\n`);

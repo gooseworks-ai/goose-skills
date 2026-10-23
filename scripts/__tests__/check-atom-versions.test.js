@@ -4,9 +4,10 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const { git, makeRepo, commitAll, run, writeAtom } = require('./atom-checks.helpers');
 
-const DIR = path.join('skills', 'ads', 'capabilities', 'clip-maker');
+const DIR = path.join('skills', 'video', 'clip-maker');
 
 function setVersion(root, version) {
   fs.writeFileSync(path.join(root, DIR, 'skill.meta.json'), JSON.stringify({ slug: 'clip-maker', version }));
@@ -84,18 +85,23 @@ test('a push with no previous tip cannot pass as unchecked', () => {
   assert.equal(res.code, 2, res.out);
 });
 
-test('an atom moved into a pack is compared with its old folder', () => {
+test('an atom moved from the old skills/ads layout is compared with its old folder', () => {
   const { root, base } = makeRepo({ 'clip-maker': {} });
-  const packDir = path.join(root, 'skills', 'ads', 'packs', 'video-pack', 'clip-maker');
-  fs.mkdirSync(path.dirname(packDir), { recursive: true });
-  fs.renameSync(path.join(root, DIR), packDir);
-  commitAll(root, 'move');
-  const moved = run('check-atom-versions.js', root, ['--base', base, '--direct']);
+  // Rewrite the base so the atom lived where atoms did before the flat layout.
+  const oldDir = path.join(root, 'skills', 'ads', 'packs', 'video-pack', 'clip-maker');
+  fs.mkdirSync(path.dirname(oldDir), { recursive: true });
+  fs.renameSync(path.join(root, DIR), oldDir);
+  commitAll(root, 'old layout');
+  const oldBase = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+  fs.renameSync(oldDir, path.join(root, DIR));
+  commitAll(root, 'move to skills/video');
+  const moved = run('check-atom-versions.js', root, ['--base', oldBase, '--direct']);
   assert.equal(moved.code, 0, moved.out);
 
-  fs.appendFileSync(path.join(packDir, 'SKILL.md'), 'Keep the subject centred.\n');
+  fs.appendFileSync(path.join(root, DIR, 'SKILL.md'), 'Keep the subject centred.\n');
   commitAll(root, 'edit after the move');
-  const edited = run('check-atom-versions.js', root, ['--base', base, '--direct']);
+  const edited = run('check-atom-versions.js', root, ['--base', oldBase, '--direct']);
   assert.equal(edited.code, 1, edited.out);
-  assert.match(edited.out, /packs\/video-pack\/clip-maker: changed on this branch, so its version must go above 1\.0\.0/);
+  assert.match(edited.out, /skills\/video\/clip-maker: changed on this branch, so its version must go above 1\.0\.0/);
+  assert.ok(base);
 });

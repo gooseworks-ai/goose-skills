@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { makeRepo, commitAll, run } = require('./atom-checks.helpers');
 
-const SKILL = path.join('skills', 'ads', 'capabilities', 'clip-maker', 'SKILL.md');
+const SKILL = path.join('skills', 'video', 'clip-maker', 'SKILL.md');
 const clean = '# clip-maker\n\nWrite the prompt as one shot with one camera move.\n';
 
 function branchAdds(text) {
