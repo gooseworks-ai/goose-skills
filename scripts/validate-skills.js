@@ -86,7 +86,7 @@ for (const family of FAMILIES) {
   if (!isDir(familyDir)) continue;
   for (const slug of fs.readdirSync(familyDir).sort()) {
     const skillDir = path.join(familyDir, slug);
-    if (!isDir(skillDir)) continue;
+    if (slug.startsWith('.') || !isDir(skillDir)) continue;
     const where = `skills/${family}/${slug}`;
     const skillMd = path.join(skillDir, 'SKILL.md');
     const metaPath = path.join(skillDir, 'skill.meta.json');

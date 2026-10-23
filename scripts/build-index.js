@@ -169,7 +169,8 @@ function scanFolders() {
     if (!fs.existsSync(root)) continue;
     for (const slug of fs.readdirSync(root).sort()) {
       const skillDir = path.join(root, slug);
-      if (!fs.statSync(skillDir).isDirectory()) continue;
+      // Dot folders hold plugin manifests (skills/entry/.claude-plugin), not skills.
+      if (slug.startsWith('.') || !fs.statSync(skillDir).isDirectory()) continue;
       const relDir = `${family.dir}/${slug}`;
       if (!fs.existsSync(path.join(skillDir, 'SKILL.md'))) {
         throw new Error(`Missing SKILL.md in ${relDir}`);

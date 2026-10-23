@@ -100,3 +100,12 @@ test('generic next steps are qualified for the router and ads, not for photos', 
   }
   assert.match(rulesOf('goose-product-photos'), /Follow the next_step in every answer\./);
 });
+
+test('the Claude and Codex plugins ship exactly the entry skills from skills/entry', () => {
+  for (const host of ['.claude-plugin', '.codex-plugin']) {
+    const manifest = JSON.parse(fs.readFileSync(path.join(ENTRY_DIR, host, 'plugin.json'), 'utf8'));
+    assert.equal(manifest.name, 'gooseworks', host);
+    assert.equal(manifest.skills, './', `${host} loads every <slug>/SKILL.md under skills/entry`);
+    assert.match(manifest.version, /^\d+\.\d+\.\d+$/, `${host}: raise the version so plugin users get updates`);
+  }
+});
