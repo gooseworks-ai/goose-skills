@@ -2884,7 +2884,10 @@
       "tags": "ads",
       "path": "skills/entry/goose-ads",
       "version": "3.2.1",
-      "files": [],
+      "files": [
+        "skills/entry/goose-ads/SKILL.md",
+        "skills/entry/goose-ads/skill.meta.json"
+      ],
       "metadata": {
         "slug": "goose-ads",
         "category": "playbooks",
@@ -3041,7 +3044,10 @@
       "tags": "ads, brand",
       "path": "skills/entry/goose-product-photos",
       "version": "1.1.0",
-      "files": [],
+      "files": [
+        "skills/entry/goose-product-photos/SKILL.md",
+        "skills/entry/goose-product-photos/skill.meta.json"
+      ],
       "metadata": {
         "slug": "goose-product-photos",
         "category": "playbooks",
@@ -3070,14 +3076,17 @@
       "description": "Make a video ad in this chat from a real reference ad, found or theirs; styles are the fallback. Follow every answer's next_step.",
       "tags": "ads",
       "path": "skills/entry/goose-video",
-      "version": "4.5.0",
-      "files": [],
+      "version": "4.5.2",
+      "files": [
+        "skills/entry/goose-video/SKILL.md",
+        "skills/entry/goose-video/skill.meta.json"
+      ],
       "metadata": {
         "slug": "goose-video",
         "category": "playbooks",
         "domain": "gooseworks",
         "tier": "entry",
-        "version": "4.5.0",
+        "version": "4.5.2",
         "tags": [
           "ads"
         ],
@@ -3100,7 +3109,10 @@
       "tags": "ads",
       "path": "skills/entry/goose-video-local",
       "version": "1.0.3",
-      "files": [],
+      "files": [
+        "skills/entry/goose-video-local/SKILL.md",
+        "skills/entry/goose-video-local/skill.meta.json"
+      ],
       "metadata": {
         "slug": "goose-video-local",
         "category": "capabilities",
@@ -3129,7 +3141,11 @@
       "tags": "research, ads, lead-generation, social",
       "path": "skills/entry/gooseworks",
       "version": "2.2.1",
-      "files": [],
+      "files": [
+        "skills/entry/gooseworks/SKILL.md",
+        "skills/entry/gooseworks/routes.json",
+        "skills/entry/gooseworks/skill.meta.json"
+      ],
       "metadata": {
         "slug": "gooseworks",
         "category": "playbooks",
@@ -3997,7 +4013,10 @@
       "tags": "ads",
       "path": "skills/entry/make-custom-video",
       "version": "3.8.2",
-      "files": [],
+      "files": [
+        "skills/entry/make-custom-video/SKILL.md",
+        "skills/entry/make-custom-video/skill.meta.json"
+      ],
       "metadata": {
         "slug": "make-custom-video",
         "category": "playbooks",

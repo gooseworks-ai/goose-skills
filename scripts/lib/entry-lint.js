@@ -57,6 +57,8 @@ const ANSWER_FIELDS = [
   // make-custom-video 3.8.0 (gooseworks-app #2076, carrying the 3.7.x server text): the reviewed changes from the
   // reference, the character step and the measured final check.
   'changes_from_reference', 'make_character', 'final_measure',
+  // make-custom-video 3.8.2 (server text): the reference_shots.py study saved as frame_study.
+  'reference_shots', 'frame_study',
 ];
 
 /** author.size_limits: an entry skill is at most 5,000 characters. */
