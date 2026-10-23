@@ -2,7 +2,7 @@
   "slug": "make-static-ads-compose",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "playbook": "make-static-ads",
   "tags": [
     "ads",

@@ -2,7 +2,7 @@
 name: make-static-ads-compose
 description: >-
   Step of the make-static-ads playbook: composes every ad exactly as GooseWorks' server composer does — the marketer's chat words as the User instructions, the ad's concept as its Variant brief — and records the final prompt and ordered image list per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.
-version: 0.5.2
+version: 0.5.3
 ---
 
 # compose
@@ -53,7 +53,7 @@ Use this exact messaging direction for this variant: «message»
 | A question hook the concept was built on | `hook-question` |
 
 - **«message»** = one or two plain sentences: who it is for, why they buy, the proof worded as the brand brain records it (a usable fact, `../make-static-ads/references/claims-and-policy.md` §2), and the hook direction from ad-copy. A real review or founder line meant to appear verbatim is quoted with its attribution ("use this review verbatim, attributed to …"). A sale or "was/now" price appears only when the marketer said yes at Step 2; never an invented end date or urgency.
-- **The concept stays intact.** The message line is the grid row's concept. A `layout` reference keeps the blueprint. A `mechanism` reference contributes a functional relationship, with new props and scene. A `craft` reference contributes only photographic or material treatment. The template's audience, claims and copy never enter it. The concept's proof appears on the image; when the layout has no room for it, it goes in the primary text (the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`)) and the batch file says so.
+- **The concept stays intact.** The message line is the grid row's concept. A `layout` reference keeps the blueprint. A `mechanism` reference contributes a functional relationship, with new props and scene. A `craft` reference contributes only photographic or material treatment. Keep the source's visible cues separate from the scene's authored departures; if their descriptions conflict, correct the selected record and obtain actual re-review before compose. The prepared input carries this distinction, not independent visual verification. The template's audience, claims and copy never enter it. The concept's proof appears on the image; when the layout has no room for it, it goes in the primary text (the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`)) and the batch file says so.
 
 ## Playbook departures from the server
 
