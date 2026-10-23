@@ -2,12 +2,12 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.6.1
+version: 0.7.0
 ---
 
 # make-static-ads
 
-**The idea is the job.** An ad idea is a real product fact or customer situation turned into one small physical event the viewer gets at a glance (`references/ideas.md`). Everything else in this playbook (research, copy, prompt, checks) serves that idea or protects the brand.
+**The idea is the job, and it must be this brand's idea.** An ad idea is a real product fact or customer situation turned into one small physical event the viewer gets at a glance (`references/ideas.md`), said the way this brand already talks and looks (`references/brand-profile.md`), built on a template at the creativity level the marketer chose (`references/levels.md`). Everything else in this playbook serves that idea or protects the brand.
 
 The proof that the work happened is the **concept board**: one row per ad, shown to the marketer before any credits are spent. It cannot be skipped, shortened to "your choice", or replaced by a summary.
 
@@ -24,32 +24,38 @@ Finished, reviewed images with their ad copy, the concept board behind them, wha
 
 ## Steps
 
-### 1. Read the brand (free)
+### 1. Read the brand and write its profile (free)
 
 Use the small calls in `references/engine-notes.md`. Read:
 - the brand, its rules (every `must` and `dont`) and the claims on file with their status (`references/reading-the-brain.md` §1);
 - the featured product's record and photos (look at the photos);
+- **how the brand already advertises:** its own ads (looked at, not listed), its recent social posts, its website and kit. Write `profile.md`: positioning, the angles it uses, how its ads look, how it writes on-image text, what it never does (`references/brand-profile.md`);
 - what customers say: the voice-of-customer bank, else 10–20 public reviews from the product page or a marketplace (host browser, free);
-- what the brand already runs: up to 20 of its own live or saved static ads, looked at, not just listed (`references/research.md`);
-- earlier batches from this playbook (`made-by:make-static-ads`).
+- history: the last 5–10 ads made in GooseWorks for this brand (`made-by:make-static-ads`, then the brand's recent creatives) and the ads it is running now.
 
-Say what you actually read, with counts, in the board header: "Read 14 reviews, 20 of ~300 live Meta ads, the product page." A skimmed or truncated source is named as skimmed. A source you could not open is named as not checked.
+Say what you actually read, with counts, in the profile and board headers: "Read 14 reviews, 20 of ~300 live Meta ads, 15 X posts, the homepage." A skimmed or truncated source is named as skimmed. A source you could not open is named as not checked.
 
-**Done:** you can state at least five product truths with sources, five things customers say or do, and what the brand's live ads already say.
+**Done:** `profile.md` exists; you can state five product truths with sources, five things customers say or do, the angles the brand uses, and its look.
 
-### 2. Ask only what's open
+### 2. One combined question
 
-One message, only for what the brand records don't settle: which product, how many ads, placements, a live offer, logo or font preferences. Suggest an answer to each. "Your choice" means you decide; it does not shorten the next steps.
+Ask everything open in **one** message, each item with a recommended answer the marketer can accept with one word:
+- **Angle(s):** a picker with the profile's angles first, then at most two new ones marked "new", one recommended per ad or for the set, plus room to write their own;
+- **Creativity level:** close, balanced or bold (`references/levels.md`), recommended **balanced**;
+- product, how many ads, placements, any live offer;
+- every conflict the profile found (kit vs website, font, positioning), with your recommendation.
+
+Never a chain of stops. "Your choice", "just give me the images" or no answer → take every recommendation and go on; say what you chose on the board.
 
 ### 3. Find the ideas → the concept board
 
-Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). It turns Step 1 into starting points, tensions and physical events (`references/ideas.md`), looks at references for devices (the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`)), and has a fresh critic attack the board.
+Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). The order is fixed: **angle → message → visual idea → template.** It turns the chosen angles into messages and physical events (`references/ideas.md`), picks a template for every ad at the chosen level (the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`)), checks each ad against the brand profile and the recent history, and has a fresh critic attack the board.
 
-**Done:** `board.md` has one row per ad that passed the swap, stranger, thumbnail, build and truth tests, plus the critic's notes and what changed because of them.
+**Done:** `board.md` has one row per ad, each with its angle, template and level, that passed the brand-fit, no-repeat, swap, stranger, thumbnail, build and truth tests, plus the critic's notes and what changed.
 
 ### 4. Copy
 
-Run the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`): the on-image headline and support line, then the primary texts, headline, description and CTA around the image.
+Run the `make-static-ads-ad-copy` skill (`../make-static-ads-ad-copy/SKILL.md`): the on-image text in the format its level sets (the template's text slots, or the brand's own style at bold), then the primary texts, headline, description and CTA around the image.
 
 ### 5. Write each prompt
 

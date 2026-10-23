@@ -536,3 +536,17 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 - The critic gets the product records as they came back, not the agent's summary.
 
 **Not yet re-tested.** These fixes target the Gooseworks loss; a re-run on Gooseworks would show whether they close it.
+
+
+## Round 29 — 23 Oct: brand fit, templates and creativity levels (0.7.0)
+
+**Summary.** The end-to-end staging run of 0.6.1 made clever Gooseworks ads that Gooseworks would never run. Three causes: the skill told agents to treat the brand's own ads as "what not to say" instead of how the brand talks and looks; agents skimmed titles instead of looking at ad images and posts; and the staging brand data was stale (the kit's positioning and look predate the current site). Akhil also saw that template-free ads fall back on a generic text layout (headline on top, explaining line at the bottom), even when they're creative.
+
+**Decisions (Akhil, 23 Oct, grilling round).**
+- A brand profile is written before any idea, from the brand's own ads, social posts, website and kit. Conflicting sources are asked, not guessed.
+- One combined question: an angle picker (the brand's angles first, at most two new ones marked new, a recommendation, room to write), creativity level, product, count, conflicts. "Just give me the images" takes every recommendation. Never a chain of stops.
+- Order: angle → message → visual idea → template. Every ad has a template.
+- Creativity levels: close (template's scene and layout, brand swapped in; template image sent only when the brand owns it), balanced (default; new idea inside the template's layout), bold (0.6 behaviour; template lends a device or look). Text format comes from the template's slots, or at bold from the brand's own ads, never from the agent's default.
+- No repeats against live ads and the last 5–10 GooseWorks ads: something among message, visual idea and template must change; resizes and other platforms are exempt.
+
+**Change.** New `references/brand-profile.md` and `references/levels.md`; Steps 1–3 rewritten; concept-grid, find-references, ad-copy, compose, prompts, hand-off board, render review and rubric (check 30, brand fit) updated. Test 0 (the real loop on staging) added.

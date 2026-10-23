@@ -1,40 +1,42 @@
 ---
 name: make-static-ads-find-references
 description: >-
-  Step of make-static-ads: looks at strong ads from other brands and categories for devices, craft and layouts the concept board can use, and records what each one contributes. Run make-static-ads instead; not for direct use.
-version: 0.6.0
+  Step of make-static-ads: picks a template for every ad after its visual idea is set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.
+version: 0.7.0
 ---
 
 # find-references
 
-**Reads:** the starting points and draft ideas from the concept-grid step. **Writes:** the References column of `board.md` and a short reference list (source, link, what it contributed) under the board.
+**Reads:** each board row's angle, message and visual idea; the chosen level (`../make-static-ads/references/levels.md`); `profile.md`. **Writes:** the Template column of `board.md` and a short template list under the board (source, link, what it keeps).
 
-A reference widens what you can imagine. It does not decide the ad. The idea comes from the product and the customer (`../make-static-ads/references/ideas.md` §5).
+Every ad has a template. Without one the image model falls back on its own default layout, and every brand's ads end up looking the same.
 
-## 1. Where to look (free first)
+## 1. Where to look (free first), in this order
 
-- **Category leaders and adjacent categories** in the Meta Ad Library, in the host browser: search the advertiser by name, open its page, look at the first 20 or so statics (the default order puts the ads they spend most on first). Routes: `../make-static-ads/references/research.md` §2.
-- **Outside the category.** Many of the best devices come from a different product type (a drink ad's set design for a spice brand). Look at 2–3 brands known for inventive statics.
-- **The GooseWorks library**: `gooseworks:ads_template_read` `mode: "static_library"` with a query for the device or look you need. Name a library or Pinterest source as such, never as a verified running ad.
+1. **The brand's own ads** (its past and running statics, `../make-static-ads/references/research.md` §2). They already look like the brand, and at **close** their image can go to the image model.
+2. **The GooseWorks template library:** `gooseworks:ads_template_read` `mode: "static_library"` with a query for the layout or device the visual idea needs. Open each candidate's detail and look at the image. Name a library source as such, never as a verified running ad.
+3. **Category leaders and inventive brands from other categories** in the Meta Ad Library, in the host browser (routes in `research.md` §2): the first 20 or so statics of 2–3 advertisers.
 
-Stop when you have devices for the ideas you need. Twenty well-looked-at ads beat a hundred listed ones. Write down which advertisers you looked at and how many ads; name a library that wouldn't load as not checked.
+Look at every candidate's image before choosing. Reject fixtures, placeholder brands, illegible layouts and templates whose text slots can't carry this ad's message.
 
-## 2. Name the contribution
+## 2. Choose the template after the idea
 
-For each reference you use, say what it gives, in one of three roles:
+Pick the template whose layout fits the visual idea: one big object needs a hero layout, a comparison a split, a list a stacked layout. Spread the set across different templates and advertisers; two ads on one template must differ in message and visual idea.
 
-| Role | It gives | Example |
+## 3. Record what this level keeps (`levels.md`)
+
+| Level | Keep from the template | Template image to the image model |
 |---|---|---|
-| **Device** | A relationship or trick: an object crosses a screen, a flat thing becomes physical | Oatside's carton coming out of a laptop |
-| **Craft** | Treatment only: lighting, set, texture, typography | Oatly's directional light and simple sets |
-| **Layout** | Where things sit, in the abstract | A big headline over one centred object |
+| Close | Scene, layout and text slots; swap in this brand's product, words, colours | Only if the brand owns it; otherwise a detailed layout description |
+| Balanced | Layout and text slots; the visual idea fills it | No; describe the layout |
+| Bold | A device or a look only | No; words only |
 
-A direct competitor's ad gives layout only. Describe what you actually see in the image; don't credit it with things you are adding.
+Describe what you actually see in the template: block positions and rough sizes, background, product position and scale, each text slot's position, length and weight. Don't credit it with things you're adding.
 
-## 3. Keep other brands out of the image
+## 4. Rights
 
-Other brands' ads never go into `image_urls`. Write the device or craft into the prompt in words (`../make-static-ads/references/prompts.md` §1). The finished ad keeps none of the reference's product, words, logo or people. If a buyer could mistake ours for theirs, change it.
+Other brands' templates never go into `image_urls`, at any level. Keep none of their product, words, logo, people or signature look. A direct competitor's template gives layout only. If a buyer could mistake ours for theirs (side-by-side test, `research.md` §4), change it.
 
-## 4. Showing them
+## 5. Showing them
 
-When the marketer wants to choose, show the references with the board. "Your choice" → name them in the References column instead.
+When the marketer wants to choose, show the templates with the board. "Your choice" → name them in the Template column.

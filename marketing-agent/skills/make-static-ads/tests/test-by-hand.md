@@ -1,5 +1,7 @@
 # make-static-ads — test by hand
 
+**Also test through staging, not only from a local copy:** merge, let the catalogue deploy, then give a fresh agent only the marketer's words (Test 0).
+
 **The bar:** this playbook must produce better ideas than a capable agent with no playbook at all. If it doesn't, it is making agents worse (it did, up to 0.5.4: see `critique.md` round 27). Test 1 is the acceptance test; run it after any change to the idea steps.
 
 ## Setup
@@ -7,6 +9,10 @@
 1. Connect GooseWorks **staging** to your agent.
 2. Link the skills side by side, as `marketing-agent/README.md` (How to test) says, so the playbook can open its steps at `../make-static-ads-<step>/`.
 3. Generation spends credits. Tests 1–3 stop at the quote and cost nothing.
+
+## Test 0 — the real loop on staging
+
+A fresh agent connected to GooseWorks staging gets only "make 5 static ads for <brand>". It follows the server and loads the playbook from the staging catalogue. **Passes if:** it writes `profile.md` from the brand's own ads, posts, site and kit; asks one combined question (angles with the brand's own first, creativity level, product, count, conflicts); every board row names its angle and template; the brand's marketer looks at the board and says "yes, we'd run these".
 
 ## Test 1 — beats a no-playbook agent (free)
 
@@ -16,7 +22,7 @@ Pick a staging consumer brand with real product photos that no earlier test used
 
 Both may read the brand on staging and browse the web. Neither sees the other's work or any earlier batch's concepts.
 
-Then a third fresh agent compares the two boards, shuffled and unlabelled, row by row: Would a competitor's product fit this ad (swap test)? Is it an idea or a demonstration? Do the five say different things? Which board would you pay to render?
+Then a third fresh agent compares the two boards, shuffled and unlabelled, row by row, with two of the brand's real ads beside them: Would this brand run it? Would a competitor's product fit this ad (swap test)? Is it an idea or a demonstration? Do the five say different things? Which board would you pay to render?
 
 **Passes if:** the blind comparison prefers A's board or calls them even, and A's board has at most one demonstration, five different meanings, a source or hypothesis label on every row, a protected choice on every row, and critic notes with real changes.
 **Telltale failures:** product + headline + the product doing its job, five times; headlines that name features ("Two oils. Different jobs."); a board that says "read" where the agent skimmed; critic notes with no changes.
