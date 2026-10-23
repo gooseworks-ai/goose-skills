@@ -2,12 +2,12 @@
 name: make-static-ads-concept-grid
 description: >-
   Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.
-version: 0.7.1
+version: 0.8.0
 ---
 
 # concept-grid
 
-**Read first, whole:** `../make-static-ads/references/ideas.md` (the method), `../make-static-ads/references/levels.md` (what each creativity level keeps from the template). This step is the order of work.
+**Read first:** `../make-static-ads/references/ideas.md` §2 B–E and §3 (the method; §2 A is the material for step 2 below, §4 an example), `../make-static-ads/references/levels.md` (what each creativity level keeps from the template). This step is the order of work.
 **Reads:** `profile.md` and what Step 1 found (product facts, customer words, history); the angles and level chosen in Step 2.
 **Writes:** `board.md` (in the batch folder, or the batch file on a host with no files).
 
@@ -38,7 +38,7 @@ Run on each candidate, fix or drop failures:
 
 ## 6. Choose the set
 
-Five different messages, not five looks (`ideas.md` §4). At most one straight demonstration per five, and only if watching it answers the buyer's main question.
+Five different messages, not five looks. At most one straight demonstration per five, and only if watching it answers the buyer's main question.
 
 ## 7. Write the board
 
@@ -48,7 +48,7 @@ Five different messages, not five looks (`ideas.md` §4). At most one straight d
 Read: <what you actually read, with counts; what was skimmed; what wasn't checked>
 Level: <close / balanced / bold> · Angles: <chosen, and who chose them> · Templates from outside the library: <which, or what was tried>
 
-| # | Angle (profile / new) | Message (source) | Visual idea | Headline / support | Template (source, what it keeps) | Protect |
+| # | Angle (profile / new) | Message (source) | Visual idea | On-image text (per slot) | Template (source, what it keeps) | Protect |
 |---|---|---|---|---|---|---|
 | 1 | ... | ... | ... | "..." / "..." | ... | ... |
 
@@ -57,7 +57,7 @@ Level: <close / balanced / bold> · Angles: <chosen, and who chose them> · Temp
 ```
 
 - **Visual idea:** one sentence a stranger could picture.
-- **Headline / support:** in the text format the level sets; a working line the ad-copy step finalises.
+- **On-image text:** one working line per template slot; the ad-copy step finalises it.
 - **Template:** where it came from (brand's own ad, library, another brand's ad) and what this ad keeps from it.
 - **Protect:** the one detail that kills the idea if lost (`ideas.md` §2 E).
 
@@ -69,7 +69,7 @@ Give a **fresh subagent** only: the board (without the critic section), `profile
 - run the swap and stranger tests on every row;
 - name demonstrations dressed up as ideas;
 - check each event is buildable (no small handwriting, long in-scene text, many hands, crowds or fragile physics) and readable at thumbnail size;
-- name rows that look empty or bland: a headline on blank space, a symbol instead of the real thing, or the same headline + subhead pattern as another row;
+- name rows that look empty or bland: a headline on blank space, a symbol instead of the real thing, or the same text pattern as another row;
 - check each source supports what the row implies;
 - pick the two weakest rows and say why.
 

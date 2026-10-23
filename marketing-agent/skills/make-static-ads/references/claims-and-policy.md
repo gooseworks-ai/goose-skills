@@ -68,8 +68,7 @@ Numbers (%, hours, counts, ratings, "2 years", "3×") · superlatives and absolu
 
 ### Run it twice
 
-- **Pass A, before spend:** on the copy and on each finished prompt — every on-image word it asks for and what its scene implies.
-- **Pass B, after render:** on every rendered ratio — the text the model actually drew, any marks it added, dropped qualifiers, what the picture implies.
+Pass A (before spend, on the copy and each finished prompt) and Pass B (after render, on what was drawn): the `make-static-ads-claims-extract` skill (`../../make-static-ads-claims-extract/SKILL.md`).
 
 Offers, prices and stock are checked against the **product record and the marketer's words**, not the claims list: price and currency exact, terms not narrowed ("first order" ≠ "first jar"), end date shown, no "was" price without a real prior price, no "limited" without a real limit. Re-read the product record just before handing over.
 
