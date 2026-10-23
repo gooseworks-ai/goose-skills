@@ -2,12 +2,12 @@
 name: make-static-ads-concept-grid
 description: >-
   Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.
-version: 0.7.0
+version: 0.8.0
 ---
 
 # concept-grid
 
-**Read first, whole:** `../make-static-ads/references/ideas.md` (the method), `../make-static-ads/references/levels.md` (what each creativity level keeps from the template). This step is the order of work.
+**Read first:** `../make-static-ads/references/ideas.md` §2 B–E and §3 (the method; §2 A is the material for step 2 below, §4 an example), `../make-static-ads/references/levels.md` (what each creativity level keeps from the template). This step is the order of work.
 **Reads:** `profile.md` and what Step 1 found (product facts, customer words, history); the angles and level chosen in Step 2.
 **Writes:** `board.md` (in the batch folder, or the batch file on a host with no files).
 
@@ -33,12 +33,12 @@ Every ad gets a template, picked after the visual idea so the layout fits it (th
 
 Run on each candidate, fix or drop failures:
 - **Brand fit:** would this brand run it? It serves a profile angle (or is marked new), sounds like the brand, and its look fits the profile. An idea the brand's marketer would call "not us" fails, however clever.
-- **No repeat:** against the brand's live ads and its last 5–10 ads made in GooseWorks, and within this set: an ad may share an angle, but at least one of message, visual idea or template must change. The same ad resized or for another platform is not a repeat.
-- The five tests in `ideas.md` §3: swap, stranger, thumbnail, build, truth.
+- **No repeat:** against the brand's live ads and its last 5–10 ads made in GooseWorks, an ad may share an angle, but at least one of message, visual idea or template must change. Within this set, every ad has its own message. The same ad resized or for another platform is not a repeat.
+- The six tests in `ideas.md` §3: swap, stranger, thumbnail, show-it, build, truth.
 
 ## 6. Choose the set
 
-Five different messages, not five looks (`ideas.md` §4). At most one straight demonstration per five, and only if watching it answers the buyer's main question.
+Five different messages, not five looks. At most one straight demonstration per five, and only if watching it answers the buyer's main question.
 
 ## 7. Write the board
 
@@ -46,9 +46,9 @@ Five different messages, not five looks (`ideas.md` §4). At most one straight d
 # Concept board — <brand>, <product>, <date>
 
 Read: <what you actually read, with counts; what was skimmed; what wasn't checked>
-Level: <close / balanced / bold> · Angles: <chosen, and who chose them>
+Level: <close / balanced / bold> · Angles: <chosen, and who chose them> · Templates from outside the library: <which, or what was tried>
 
-| # | Angle (profile / new) | Message (source) | Visual idea | Headline / support | Template (source, what it keeps) | Protect |
+| # | Angle (profile / new) | Message (source) | Visual idea | On-image text (per slot) | Template (source, what it keeps) | Protect |
 |---|---|---|---|---|---|---|
 | 1 | ... | ... | ... | "..." / "..." | ... | ... |
 
@@ -57,7 +57,7 @@ Level: <close / balanced / bold> · Angles: <chosen, and who chose them>
 ```
 
 - **Visual idea:** one sentence a stranger could picture.
-- **Headline / support:** in the text format the level sets; a working line the ad-copy step finalises.
+- **On-image text:** one working line per template slot; the ad-copy step finalises it.
 - **Template:** where it came from (brand's own ad, library, another brand's ad) and what this ad keeps from it.
 - **Protect:** the one detail that kills the idea if lost (`ideas.md` §2 E).
 
@@ -69,9 +69,10 @@ Give a **fresh subagent** only: the board (without the critic section), `profile
 - run the swap and stranger tests on every row;
 - name demonstrations dressed up as ideas;
 - check each event is buildable (no small handwriting, long in-scene text, many hands, crowds or fragile physics) and readable at thumbnail size;
+- name rows that look empty or bland: a headline on blank space, a symbol instead of the real thing, or the same text pattern as another row;
 - check each source supports what the row implies;
 - pick the two weakest rows and say why.
 
-Fix or replace what it names; write its notes and your changes into the board. A row you keep against its objection says why. **New or rewritten rows go back to a critic** before you continue. No subagents on this host → show the board to the marketer and ask for their critique; your own review does not count.
+Fix or replace what it names; write its notes and your changes into the board. A row you keep against its objection says why. **New or rewritten rows go back to a critic** once. At most two critic rounds: objections still open after that go on the board for the marketer. No subagents on this host → show the board to the marketer and ask for their critique; your own review does not count.
 
 **Done:** every row has an angle, a sourced message, a visual idea, a template and a protected choice, passed the tests, and survived the critic or was changed.

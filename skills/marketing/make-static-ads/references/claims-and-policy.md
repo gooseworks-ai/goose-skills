@@ -31,12 +31,12 @@ A **usable fact** is a fact the table below allows, worded as recorded. Every fa
 
 | Brain status (`gooseworks:brand_knowledge_search` `statuses`) | Source | Use it? |
 |---|---|---|
-| `confirmed` | any | **Yes**, worded as recorded |
-| `found` | the brand's own website, the brand kit (proof points, value props), the product record | **Yes**, worded as recorded |
+| `confirmed` | any | **Yes**, worded as recorded, when the `claims-gate` skill passes it (its full-record check; the stricter source wins) |
+| `found` | the brand's own website, kit or product record | **Yes as a plain product fact**, worded as recorded, when it says what the product is or does. A result, number, comparison, customer or regulated word needs the claims sign-off (the `claims-gate` skill §4) |
 | `found` | press, third-party pages, reviews | Only as a quoted, attributed line (press quote, review) |
 | `guess`, `unknown` | any | **No** — cut, and list it with what would confirm it |
 
-- Read the brain once at Step 1: `gooseworks:brand_knowledge_browse` (`brand_id`), then `gooseworks:brand_knowledge_search` for the product's claims and proof (`source_types: ["claim","brand_kit","fact","product"]`, `product_id`). On a server without the brain tools, the brand kit's proof points and value props and the product record count as `found`.
+- Approved claims come only through the `claims-gate` skill (`../../claims-gate/SKILL.md`). For context, read the brain once at Step 1: `gooseworks:brand_knowledge_browse` (`brand_id`), then `gooseworks:brand_knowledge_search` for the product's facts and proof (`source_types: ["claim","brand_kit","fact","product"]`, `product_id`). On a server without the brain tools, the brand kit's proof points and value props and the product record count as `found`.
 - You may write headlines in the brand's voice **from** these facts ("Wool up top" from "Merino wool upper"). It may not add a fact, a number, a result or a promise that isn't there ("feet stay dry" from "water-repellent finish" adds a result — cut it). Numbers, ratings, guarantees, qualifiers and regulated wording stay exactly as recorded.
 - Numbers that go stale (ratings, review counts, awards, offers) are flagged "verify current".
 - **Plain product facts** (name, price with currency, sizes, colours, materials, what's in the box, how to use) are always usable.
@@ -46,14 +46,14 @@ A **usable fact** is a fact the table below allows, worded as recorded. Every fa
 
 | Tier | Example | Rule |
 |---|---|---|
-| T1 Usable, as recorded | a `confirmed` fact, or one `found` on the brand's website, kit or product record, with its qualifier | Use as recorded. Its qualifier travels with it, legibly — an illegible qualifier counts as missing |
+| T1 Usable, as recorded | a `confirmed` fact, or a plain description of what the product is or does `found` on the brand's website, kit or product record, with its qualifier | Use as recorded. Its qualifier travels with it, legibly — an illegible qualifier counts as missing |
 | T2 Usable as a quote only | a press line or review the brain holds as `found` | Quoted verbatim and attributed, never restated as the brand's own claim |
 | T3 Puffery | "feels like a hug", "our favourite", "sinks in" | Unmeasurable. If in doubt, treat as a claim |
 | T4 Implied | "Skip steps 2–9", a dull-vs-glowing split, "your skin will thank you" | Is a claim — check it as if written out |
-| T5 Not usable | `guess`, `unknown`, or nothing on file — including a reworded, shortened or merged version of a usable fact | Cut; list with what would confirm it |
+| T5 Not usable | `guess`, `unknown`, or nothing on file — including a reworded, shortened or merged version of an approved claim (a brand-voice line about a plain product fact that adds nothing is fine, see Rewording) | Cut; list with what would confirm it |
 | Never | drug/medical language for a non-drug ("treats eczema", "heals", "boosts collagen", "cures") | Cut, and tell the human it is a regulatory line, not just a proof gap |
 
-**Rewording.** Only as recorded; never a paraphrase of your own, however faithful — never invent, round up or embellish. **No fusion.** Two usable claims cannot be combined into a stronger third ("dermatologist-proven 72h" from "dermatologist tested" + "up to 72 hours").
+**Rewording.** A line stated as a fact uses the recorded words. A headline in the brand's voice may express a **plain product fact's** meaning ("Same agent. New job." from "Goose makes ads inside the agent you already use") only if it adds nothing: no number, result, scope or promise beyond the fact. An approved claim, a number and any regulated word are always verbatim. Never invent, round up or embellish. **No fusion.** Two usable claims cannot be combined into a stronger third ("dermatologist-proven 72h" from "dermatologist tested" + "up to 72 hours").
 
 ### Trigger words — a span is claim-bearing if it contains any of these
 
@@ -68,12 +68,11 @@ Numbers (%, hours, counts, ratings, "2 years", "3×") · superlatives and absolu
 
 ### Run it twice
 
-- **Pass A, before spend:** on the copy and on each finished prompt — every on-image word it asks for and what its scene implies.
-- **Pass B, after render:** on every rendered ratio — the text the model actually drew, any marks it added, dropped qualifiers, what the picture implies.
+Pass A (before spend, on the copy and each finished prompt) and Pass B (after render, on what was drawn): the `make-static-ads-claims-extract` skill (`../../make-static-ads-claims-extract/SKILL.md`).
 
 Offers, prices and stock are checked against the **product record and the marketer's words**, not the claims list: price and currency exact, terms not narrowed ("first order" ≠ "first jar"), end date shown, no "was" price without a real prior price, no "limited" without a real limit. Re-read the product record just before handing over.
 
-Anything that fails: **cut it before the human sees the ad**, and list it in the hand-off as `cut line → the proof that would restore it` (e.g. "'clears breakouts in 7 days' → a study or confirmed claim stating the 7-day result for this product"). Confirming a new claim is the human's call: a claim the marketer confirms in this chat is saved in their words through the `save-learning` skill (`../../save-learning/SKILL.md`) before it is used.
+Anything that fails: **cut it before the human sees the ad**, and list it in the hand-off as `cut line → the proof that would restore it` (e.g. "'clears breakouts in 7 days' → a study or confirmed claim stating the 7-day result for this product"). Confirming a new claim is the human's call, through the `claims-gate` skill's sign-off (`../../claims-gate/SKILL.md` §4): a yes in chat counts only as that skill records it.
 
 ## 3. Platform, category and disclosure rules
 

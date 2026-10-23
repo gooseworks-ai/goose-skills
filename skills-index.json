@@ -1760,7 +1760,7 @@
       "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 to 5 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
       "tags": "brand",
       "path": "skills/marketing/claims-gate",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/claims-gate/SKILL.md",
         "skills/marketing/claims-gate/claim-types.md",
@@ -1772,7 +1772,7 @@
         "slug": "claims-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -4047,13 +4047,11 @@
       "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads/SKILL.md",
-        "skills/marketing/make-static-ads/references/angles-and-hooks.md",
         "skills/marketing/make-static-ads/references/brand-profile.md",
         "skills/marketing/make-static-ads/references/claims-and-policy.md",
-        "skills/marketing/make-static-ads/references/creative-taxonomy.md",
         "skills/marketing/make-static-ads/references/engine-notes.md",
         "skills/marketing/make-static-ads/references/fonts-and-color.md",
         "skills/marketing/make-static-ads/references/formats-and-placements.md",
@@ -4062,7 +4060,6 @@
         "skills/marketing/make-static-ads/references/levels.md",
         "skills/marketing/make-static-ads/references/prompts.md",
         "skills/marketing/make-static-ads/references/reading-the-brain.md",
-        "skills/marketing/make-static-ads/references/research.md",
         "skills/marketing/make-static-ads/references/review-rubric.md",
         "skills/marketing/make-static-ads/scripts/README.md",
         "skills/marketing/make-static-ads/scripts/repair_patch.py",
@@ -4073,7 +4070,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.7.0",
+        "version": "0.8.0",
         "tags": [
           "ads",
           "design"
@@ -4143,9 +4140,9 @@
         ],
         "writes": [
           "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
-          "lower-case creative tags (concept:c-n, angle:a-nn, persona, emotion, style, type, archetype, hook, stage, batch, mode, test, offer-ends, claims, src, structure-only, judge:*, try:*, superseded, picked) — read by analyze-performance (angle and concept ranking) and research-competitors (angle test status)",
+          "lower-case creative tags (concept, angle, type, level, template, batch, mode, test, offer-ends, claims, judge:*, try:*, superseded, picked) — read by analyze-performance and research-competitors",
           "the human's picks and verdicts: feedback in the human's words (rating happy only on their pick) + 'picked' tag + the batch file — read by run-paid-campaigns and the brand's learned rules",
-          "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: the concept board (what was read, each row's starting point and source, human situation, physical event, headline, protected choice, references and roles, critic notes), per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, font, palette, logo, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, cut list, flags — run-paid-campaigns launches from it verbatim",
+          "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: the concept board (what was read, level, each row's angle, message and source, visual idea, on-image text, template, protected choice, critic notes), per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, font, palette, logo, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, cut list, flags — run-paid-campaigns launches from it verbatim",
           "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run",
           "'Graphic ready:' answer lines under sibling request lines — read by email-lifecycle, run-organic-social, make-content on their next run",
           "brand learnings through the shared save-learning atom, on the human's own words (incl. claims the marketer confirms in chat) — read by every creative playbook",
@@ -4180,7 +4177,7 @@
             "gooseworks:job_get",
             "gooseworks:ads_creative_read",
             "gooseworks:ads_creative_update",
-            "gooseworks:ads_creative_edit",
+            "gooseworks:ads_creative_layerize",
             "gooseworks:automation_upsert",
             "gooseworks:ads_save"
           ]
@@ -4192,10 +4189,10 @@
       "name": "make-static-ads-ad-copy",
       "category": "capabilities",
       "domain": "marketing-agent",
-      "description": "Step of make-static-ads: writes the on-image headline and support line for each board row, then the primary texts, headline, description and CTA around the image, from usable facts and customer words. Run make-static-ads instead; not for direct use.",
+      "description": "Step of make-static-ads: writes the text for each slot the ad's template sets, then the primary texts, headline, description and CTA around the image, from usable facts and customer words. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-ad-copy",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads-ad-copy/SKILL.md",
         "skills/marketing/make-static-ads-ad-copy/skill.meta.json"
@@ -4204,7 +4201,7 @@
         "slug": "make-static-ads-ad-copy",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.7.0",
+        "version": "0.8.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4230,7 +4227,7 @@
       "description": "Step of the make-static-ads playbook: pulls every claim-bearing span out of an ad — the copy around the image, the on-image words in the prompt, badges, and what the picture implies — and keeps or cuts each by the brand-brain rule. Runs before spend on the finished prompt (Pass A) and on every render (Pass B). Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-claims-extract",
-      "version": "0.6.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads-claims-extract/SKILL.md",
         "skills/marketing/make-static-ads-claims-extract/skill.meta.json"
@@ -4239,7 +4236,7 @@
         "slug": "make-static-ads-claims-extract",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.6.0",
+        "version": "0.8.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4278,7 +4275,7 @@
       "description": "Step of make-static-ads: writes each ad's render prompt and ordered image list from its concept-board row, one per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-compose",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads-compose/SKILL.md",
         "skills/marketing/make-static-ads-compose/skill.meta.json"
@@ -4287,7 +4284,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.7.0",
+        "version": "0.8.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4326,7 +4323,7 @@
       "description": "Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-concept-grid",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads-concept-grid/SKILL.md",
         "skills/marketing/make-static-ads-concept-grid/skill.meta.json"
@@ -4335,7 +4332,7 @@
         "slug": "make-static-ads-concept-grid",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.7.0",
+        "version": "0.8.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4363,7 +4360,7 @@
       "description": "Step of the make-static-ads playbook: after an image is approved, makes more versions of the same picture with different hooks, headlines or fonts — by a quoted re-render with the approved render attached as the brand's own image, or by splitting the render into layers and resetting the text exactly — so copy can be tested without new visuals. Offered, never default. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-copy-variants",
-      "version": "0.6.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads-copy-variants/SKILL.md",
         "skills/marketing/make-static-ads-copy-variants/skill.meta.json"
@@ -4372,7 +4369,7 @@
         "slug": "make-static-ads-copy-variants",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.6.0",
+        "version": "0.8.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4412,7 +4409,7 @@
       "description": "Step of make-static-ads: picks a template for every ad after its visual idea is set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-find-references",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads-find-references/SKILL.md",
         "skills/marketing/make-static-ads-find-references/skill.meta.json"
@@ -4421,7 +4418,7 @@
         "slug": "make-static-ads-find-references",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.7.0",
+        "version": "0.8.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4497,7 +4494,7 @@
       "description": "Makes one simple non-ad brand graphic, such as an email header, social feed or story image, or a blog or link-preview image, in the brand's style with at most a short line of text, after claim and rights checks and a yes to the quote; returns the link and alt text. Not for carousels, decks or print. Use alone when you already have the purpose, placement and exact wording; otherwise run make-static-ads.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-graphic-request",
-      "version": "0.6.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads-graphic-request/SKILL.md",
         "skills/marketing/make-static-ads-graphic-request/skill.meta.json"
@@ -4506,7 +4503,7 @@
         "slug": "make-static-ads-graphic-request",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.6.0",
+        "version": "0.8.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4548,7 +4545,7 @@
       "description": "Step of make-static-ads: a fresh judge checks every render against its concept-board row and the official product photos, one retry inside the marketer's approval, then the claims and set checks; records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-render-review",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "files": [
         "skills/marketing/make-static-ads-render-review/SKILL.md",
         "skills/marketing/make-static-ads-render-review/skill.meta.json"
@@ -4557,7 +4554,7 @@
         "slug": "make-static-ads-render-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.7.0",
+        "version": "0.8.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4650,7 +4647,7 @@
       "description": "How every GooseWorks marketing playbook runs: connecting, picking the brand, where files go, the shared claims, money, research and schedule rules, and the index of what each playbook saves and who reads it. Load at the start of any playbook run. Not a marketer ask: for \"what should I do first?\" use where-to-start.",
       "tags": "brand",
       "path": "skills/marketing/marketing-guide",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "files": [
         "skills/marketing/marketing-guide/SKILL.md",
         "skills/marketing/marketing-guide/research-pattern.md",
@@ -4660,7 +4657,7 @@
         "slug": "marketing-guide",
         "category": "capabilities",
         "tier": "foundation",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "tags": [
           "brand"
         ],
@@ -8074,7 +8071,7 @@
       "description": "Shared step of the marketing playbooks (analyze-performance, run-paid-campaigns, research-competitors, email-lifecycle): reads the last run's record, checks whether its recommendations were done and whether they worked, and saves a short record of this run for the next one. Loaded by those playbooks; not for direct use.",
       "tags": "brand",
       "path": "skills/marketing/run-memory",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/run-memory/SKILL.md",
         "skills/marketing/run-memory/skill.meta.json"
@@ -8083,7 +8080,7 @@
         "slug": "run-memory",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -8740,7 +8737,7 @@
       "description": "Shared step of the marketing playbooks (make-static-ads, analyze-performance, email-lifecycle, write-outreach): saves a short brand rule or finding in the human's own words, one idea per rule, retires the playbook's own older rules it replaces, and reads the result back to confirm. Loaded by those playbooks; not for direct use.",
       "tags": "brand",
       "path": "skills/marketing/save-learning",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/save-learning/SKILL.md",
         "skills/marketing/save-learning/skill.meta.json"
@@ -8749,7 +8746,7 @@
         "slug": "save-learning",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",

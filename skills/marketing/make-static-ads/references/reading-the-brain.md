@@ -10,8 +10,7 @@ The rule is `claims-and-policy.md` §2 (hard rule 1). Read once at Step 1, free:
 - `gooseworks:brand_knowledge_browse` (`brand_id`) first — the brand's core rules and the parts of its brain.
 - `gooseworks:brand_knowledge_search` for this product's claims and proof (`product_id`, `source_types: ["claim","brand_kit","fact","product"]`), and again for offers, reviews and the founder story as the concepts need them. Each result carries a status: `confirmed`, `found`, `guess`, `unknown` (or `not_needed`) and its source.
 - `gooseworks:brand_knowledge_read` on a record whose wording or source the search result cuts short — the claim is used as recorded, so read it whole.
-- Write the claims part of the state note: each fact, its status, its source (brand website, kit, product record, press, review) and its qualifier.
-- `confirmed` → usable; `found` on the brand's website, kit or product record → usable; `found` in press or reviews → only as a quoted, attributed line; `guess`, `unknown` → not usable, listed with what would confirm it.
+- What counts as usable: `claims-and-policy.md` §2 and the `claims-gate` skill.
 - A server without the brain tools: the kit's proof points and value props and the product record count as `found`; nothing else is a claim source.
 - Always apply every `dont` and `must` learning (a lean `brand_read` returns them all).
 - Static-specific: a press quote must name or clearly describe this product.
@@ -53,7 +52,7 @@ Answer under the request (re-read the file, insert, write it all back): `Graphic
 
 ## 7. What this playbook writes for others
 
-- `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`). Per ad: creative id and render id per ratio, placements, on-image text as drawn, primary text A and B, headline, description, CTA, destination, angle (`A-NN`) and type, the concept id (`c1…`), the board row (starting point and source, human situation, physical event, protected choice, references and their roles), hook source, stage, font, palette, logo choice, the final prompt and image list per ratio, what was read for the board, the judge result per try and who judged, copy variants under their parent, claims line, policy line, special-ad-category flag, and `picked` once the human chooses. Then: the test question, the recommended test structure with the stated budget, the cut list with restore-proof, flags. The launch takes its copy from here verbatim (the server stores no copy on creatives).
+- `ads/batches/<YYYY-MM-DD>-<slug>.md` (`gooseworks:file_write`). Per ad: creative id and render id per ratio, placements, on-image text as drawn, primary text A and B, headline, description, CTA, destination, angle (`A-NN`) and type, the concept id (`c1…`), the board row (angle, message and its source, visual idea, template id, level, protected choice), hook source, stage, font, palette, logo choice, the final prompt and image list per ratio, what was read for the board, the judge result per try and who judged, copy variants under their parent, claims line, policy line, special-ad-category flag, and `picked` once the human chooses. Then: the test question, the recommended test structure with the stated budget, the cut list with restore-proof, flags. The launch takes its copy from here verbatim (the server stores no copy on creatives).
 - No product imagery request line: when a physical product has no usable photos, the marketer gives real ones or the goose-product-photos skill makes them first (SKILL.md).
-- Lower-case creative tags and the human's picks in GooseWorks (`handoff-format.md` §2).
+- Lower-case creative tags and the human's picks in GooseWorks (`handoff-format.md` §1).
 - Brand learnings only through the `save-learning` skill (`../../save-learning/SKILL.md`).

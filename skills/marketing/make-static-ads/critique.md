@@ -550,3 +550,38 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 - No repeats against live ads and the last 5–10 GooseWorks ads: something among message, visual idea and template must change; resizes and other platforms are exempt.
 
 **Change.** New `references/brand-profile.md` and `references/levels.md`; Steps 1–3 rewritten; concept-grid, find-references, ad-copy, compose, prompts, hand-off board, render review and rubric (check 30, brand fit) updated. Test 0 (the real loop on staging) added.
+
+
+## Round 30 — 23 Oct: what the 0.7.0 staging run still got wrong (0.7.1)
+
+**Summary.** The 0.7.0 run on the new Gooseworks brand produced on-brand ads, but Akhil found five problems: the creativity choice was easy to miss and silently defaulted; templates were never shown to pick from; the ads were creative but empty (a headline on blank space, a clapperboard standing in for video, headline + subhead in every ad); the logo was missing (the combined question had dropped it and the small file was left "to add later"); and the agent's own list of gaps.
+
+**Change.** Creativity is the first item of the combined question, with a one-line description of each level, and can be changed at the board. The board shows each ad's template and two alternates as images; swapping is free and needs no extra stop. Levels: fill every slot the template has, fill the frame, vary text patterns across the set, match the brand's information density. New show-it test (the real thing, not a symbol) and rubric check 31 (fills the frame). The logo file is attached to every render unless the marketer says none; a small file is still used. Also: each angle shows the claim line it needs; at most two critic rounds; a text-fit check before quoting; one rewording rule (voice headlines may express a fact's meaning, adding nothing). The old Fern & Field example in handoff-format was cut to keep the length flat.
+
+
+## Round 31 — 23 Oct: the rest of the gaps from the staging runs (0.7.2)
+
+**Summary.** Fixes every skill-side gap the 0.6.1 and 0.7.0 staging runs reported, in one change, before the next deploy.
+
+- **One claims rule.** The playbook said facts on the brand's own site and kit are usable; the shared claims-gate said the site is never approved. Now both say: what the product is and does, worded as the brand's own product record, kit or site says it, is a plain product fact; results, numbers, comparisons, customers and regulated words need the sign-off. This keeps the repo rule "claims only from the approved list" and Akhil's 19 Oct rule (kit facts usable) for plain descriptions.
+- **Brain tool names.** Skills test for `brain_*`; servers now list `brand_knowledge_*`. The marketing-guide maps the names once (browse = map, search, read = open, save), and claims-gate, save-learning and run-memory point to it. Their presence means the brain path, and `brand_knowledge_save` is the save tool.
+- **Software and services:** identity is real UI screenshots, logo and mascot; never a fake UI; never stop for missing packshots.
+- **Reads:** never the `sources` section in a brand read; save answers over ~50K characters to a file; poll `job_get` lightly.
+- **Retries:** the batch file links each retry to the try it replaces; the marketer gets one image per ad.
+- **Templates:** at least one per set from outside the GooseWorks library, or say what was tried.
+
+**Not skill-side (server or host), still open:** server hints "recommend one plan" / "one line and wait"; "Still indexing: N of N"; render settings echo shows brand colours on when sent off; new brands get no workspace (coworker id null); adding a founder's X account fails with a billing error; the browser can't open the Meta Ad Library.
+
+
+## Round 32 — 23 Oct: writing-for-agents review (0.8.0)
+
+**Summary.** A fresh agent reviewed the whole skill against the writing-for-agents standard. The core steps held; six old reference files still taught the pre-template system and contradicted the new rules. All findings applied in one change.
+
+- **Old layout default removed** from the ad-copy description, the board column, the formats copy limits and rubric checks 11–12. Positive rule only: fill every slot the template has.
+- **ideas.md:** Step A is now the material for the message step, per chosen angle; the repeated set and template sections cut. concept-grid reads §2 B–E and §3 only.
+- **Records:** tags and the batch file carry angle, message, visual idea, template, level (`level:` and `template:` tags); old lever tags, definitions and "cells" gone.
+- **Cut:** creative-taxonomy.md and angles-and-hooks.md (the type map moved to handoff-format, the hook formulas to ad-copy); research.md merged into brand-profile.md; formats-and-placements §1–2 (archetypes, company types) and fonts-and-color's question sections; the SaaS "UI letter by letter" rule moved to render-review.
+- **Done lines** on Steps 2, 4–8 and on ad-copy, compose, claims-extract and find-references. The Approval gates / Output / Done when sections stay: the marketing-agent AGENTS.md §5 requires them.
+- **One source each:** level table (levels.md), template description (find-references), alternates (find-references §5), usable facts (claims-and-policy §2), Pass A/B (claims-extract), polling (engine-notes), capability gate (SKILL.md), 9:16 safe zones (prompts.md §4), font rules (prompts.md §2), brand fit (rubric 15).
+- **Contradictions fixed:** unseen-image tag, chat-confirmed claims (claims-gate), colour default (the brand's ads), one new angle per five, the level applies to the whole set, `ads_creative_layerize`.
+- compose stays a separate step skill (AGENTS.md: every step is its own skill).

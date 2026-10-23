@@ -10,7 +10,7 @@ Every ad is built on a template. The level decides how much of it the ad keeps. 
 
 ## Close
 
-The fastest way to an ad that works: a proven layout, this brand's message. Describe the template exactly: where each block sits and its rough size, the background, the product's position and scale, each text slot's position, length and weight. Keep none of the source's product, words, logo or people. For another brand's template, run the side-by-side test (`research.md` §4) on the result.
+The fastest way to an ad that works: a proven layout, this brand's message. Describe the template as the find-references step records it. Keep none of the source's product, words, logo or people. If a buyer could mistake ours for theirs (cover both logos and look side by side), change the picture and the words.
 
 ## Balanced
 
@@ -20,6 +20,8 @@ The template sets the stage (layout, text slots, background treatment); the visu
 
 Today's most creative mode. The template is a source of a device ("an object crosses a screen") or a look (lighting, set). Text style comes from the brand's own ads, never from the agent's default. If the brand has no ads, use the website's headline style and say so on the board.
 
-## Text, at every level
+## Text and fullness, at every level
 
-Never default to the agent's own layout: headline on top, product in the middle, an explaining sentence at the bottom. Fill only the text slots the source has. If the template has just a headline, the ad has just a headline. A fact that doesn't fit goes in the post text around the image.
+Fill the text slots the source has, all of them: if the template carries a list, a price-free badge, UI, a quote card or a product grid, so does the ad (with this brand's true content). If it has just a headline, the ad has just a headline. Keep slot content short so it draws cleanly (list items of 2–4 words, a few large UI labels, a one-line quote): the build test rules out long or small text, not the slots. A fact with no slot goes in the post text.
+
+**Fill the frame.** A big headline floating on empty background is not a layout. Every area of the template does a job in the ad. Across a set, vary the structure: no two ads share the same text pattern; one repeated pattern reads as one template. Use at least two background tones across a set; keep text contrast at least 4.5:1. Pick templates whose information density matches the brand's own ads.

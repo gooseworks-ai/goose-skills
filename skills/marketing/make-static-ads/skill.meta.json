@@ -2,7 +2,7 @@
   "slug": "make-static-ads",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "tags": [
     "ads",
     "design"
@@ -72,9 +72,9 @@
   ],
   "writes": [
     "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
-    "lower-case creative tags (concept:c-n, angle:a-nn, persona, emotion, style, type, archetype, hook, stage, batch, mode, test, offer-ends, claims, src, structure-only, judge:*, try:*, superseded, picked) — read by analyze-performance (angle and concept ranking) and research-competitors (angle test status)",
+    "lower-case creative tags (concept, angle, type, level, template, batch, mode, test, offer-ends, claims, judge:*, try:*, superseded, picked) — read by analyze-performance and research-competitors",
     "the human's picks and verdicts: feedback in the human's words (rating happy only on their pick) + 'picked' tag + the batch file — read by run-paid-campaigns and the brand's learned rules",
-    "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: the concept board (what was read, each row's starting point and source, human situation, physical event, headline, protected choice, references and roles, critic notes), per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, font, palette, logo, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, cut list, flags — run-paid-campaigns launches from it verbatim",
+    "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: the concept board (what was read, level, each row's angle, message and source, visual idea, on-image text, template, protected choice, critic notes), per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, font, palette, logo, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, cut list, flags — run-paid-campaigns launches from it verbatim",
     "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run",
     "'Graphic ready:' answer lines under sibling request lines — read by email-lifecycle, run-organic-social, make-content on their next run",
     "brand learnings through the shared save-learning atom, on the human's own words (incl. claims the marketer confirms in chat) — read by every creative playbook",
@@ -109,7 +109,7 @@
       "gooseworks:job_get",
       "gooseworks:ads_creative_read",
       "gooseworks:ads_creative_update",
-      "gooseworks:ads_creative_edit",
+      "gooseworks:ads_creative_layerize",
       "gooseworks:automation_upsert",
       "gooseworks:ads_save"
     ]
