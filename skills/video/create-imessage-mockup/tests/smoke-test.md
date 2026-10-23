@@ -3,7 +3,7 @@
 Render every example fixture and confirm the PNGs are created without errors.
 
 ```bash
-cd skills/ads/capabilities/create-imessage-mockup
+cd skills/video/create-imessage-mockup
 bash tests/run-all.sh
 ```
 

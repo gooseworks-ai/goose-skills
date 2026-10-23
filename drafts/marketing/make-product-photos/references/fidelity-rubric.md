@@ -32,7 +32,7 @@ Output and the same-angle real photo side by side; zoom on the logo, the label a
 
 ## 4. When you cannot
 
-Follow `../../../skills/honest-review/SKILL.md` §1–3.
+Follow `../../../../skills/marketing/honest-review/SKILL.md` §1–3.
 - Run `gooseworks:media_analyze` (`action: "read"`) on the output's `media_asset_id` **and** on the same-angle reference photo — both free.
 - Compare the two reads **field by field** and report each mismatch specifically:
 

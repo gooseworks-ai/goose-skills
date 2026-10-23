@@ -9,7 +9,7 @@ binding + render-command wiring) and NOTE that a full render needs node/Remotion
 ## Setup
 
 ```bash
-cd skills/ads/capabilities/render-offer-ad
+cd skills/video/render-offer-ad
 mkdir -p /tmp/offer-ad-smoke
 # Copy the example config and REPLACE the placeholder paths:
 #  - product_hero_image : a REAL product photo (clean/transparent bg, any png/webp)

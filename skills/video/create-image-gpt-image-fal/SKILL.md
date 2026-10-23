@@ -45,7 +45,7 @@ the script never asks for a key or a sign-in.
 
 ```bash
 # Text-to-image, default model (gpt-image-1)
-python3 skills/ads/capabilities/create-image-gpt-image-fal/scripts/generate.py \
+python3 skills/video/create-image-gpt-image-fal/scripts/generate.py \
   --prompt "..." \
   --output /path/to/anchor.png \
   --aspect-ratio 9:16 \

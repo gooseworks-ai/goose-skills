@@ -6,7 +6,7 @@ import pytest
 from PIL import Image,ImageFont
 
 ROOT=pathlib.Path(__file__).resolve().parents[2]
-CAP=ROOT/'skills/ads/capabilities'
+CAP=ROOT/'skills/video'
 
 def module(skill,name):
     path=CAP/skill/'scripts'/f'{name}.py'

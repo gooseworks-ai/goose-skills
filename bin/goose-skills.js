@@ -21,6 +21,8 @@ const {
   placeForCursor,
 } = require('./lib/targets');
 const { getToolFiles } = require('./lib/tool-files');
+// requires_tools names that are programs on the user's machine, not shared files.
+const PROGRAM_TOOLS = new Set(['python3', 'python', 'ffmpeg', 'ffprobe', 'node', 'npm', 'npx', 'git', 'playwright', 'chromium']);
 
 const REPO = 'gooseworks-ai/goose-skills';
 const BRANCH = 'main';
@@ -92,6 +94,8 @@ async function downloadSkillFiles(skill, installDir) {
   const requiresTools = skill.metadata?.requires_tools || [];
   for (const toolName of requiresTools) {
     const toolFiles = getToolFiles(toolName);
+    // Programs the skill runs (python3, ffmpeg…) are the user's to have, not files to copy.
+    if (!toolFiles && PROGRAM_TOOLS.has(toolName)) continue;
     if (!toolFiles) {
       throw new Error(
         `Skill "${skill.slug}" requires unknown shared tool "${toolName}". ` +
@@ -178,7 +182,10 @@ async function installSkill(options) {
   const index = await fetchIndex();
 
   const retired = (index.retired_skills || []).find((entry) => entry.slug === slug);
-  if (retired) throw new Error(`Skill "${slug}" was retired. Use "${retired.replacement}" instead: ${successorInstallCommand(retired.replacement, options)}`);
+  if (retired) {
+    if (!retired.replacement) throw new Error(`Skill "${slug}" was removed from the catalog. ${retired.reason}`);
+    throw new Error(`Skill "${slug}" was retired. Use "${retired.replacement}" instead: ${successorInstallCommand(retired.replacement, options)}`);
+  }
 
   // Check packs first
   const pack = (index.packs || []).find((p) => p.slug === slug);
@@ -366,16 +373,16 @@ switch (command) {
     showInfo(args[0]);
     break;
   default:
-    console.log('goose-skills — GTM skills for Claude Code\n');
+    console.log('goose-skills — GooseWorks marketing playbooks and video skills for your coding agent\n');
     console.log('Commands:');
     console.log('  install <slug>   Install a skill or skill pack');
     console.log('  list             List available skills and packs');
     console.log('  info <slug>      Show skill or pack details');
     console.log('\nExamples:');
     console.log('  npx goose-skills list');
-    console.log('  npx goose-skills install reddit-post-finder');
-    console.log('  npx goose-skills install reddit-post-finder --codex');
-    console.log('  npx goose-skills install reddit-post-finder --cursor --project-dir /path/to/project');
-    console.log('  npx goose-skills install lead-gen-devtools          # Install a skill pack');
+    console.log('  npx goose-skills install research-competitors');
+    console.log('  npx goose-skills install make-static-ads --codex');
+    console.log('  npx goose-skills install research-market --cursor --project-dir /path/to/project');
+    console.log('  npx goose-skills install video-ad-formats          # Install a skill pack');
     break;
 }

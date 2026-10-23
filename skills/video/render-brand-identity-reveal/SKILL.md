@@ -50,7 +50,7 @@ from config. The worked example (Touchland) values are examples, never defaults.
 ## Workflow (free assembly)
 
 ```bash
-CAP=skills/ads/capabilities/render-brand-identity-reveal
+CAP=skills/video/render-brand-identity-reveal
 RUN=<project>/working    # holds scene.html + assets/ + the create-image-fal plate in bg/
 
 python3 $CAP/scripts/recrop.py 0.72 0.13      # camera distance (bigger frac = bigger frame); src = first bg/plate_*.png

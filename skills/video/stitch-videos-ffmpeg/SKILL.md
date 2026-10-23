@@ -1,7 +1,7 @@
 ---
 name: stitch-videos-ffmpeg
 description: Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.
-version: "1.3.0"
+version: "1.3.1"
 updated: 2026-10-06
 ---
 
@@ -147,7 +147,7 @@ under the VO (about 14 dB on the fixture), and the master is at -14 ±1 LUFS. It
 (`media-tests`) and locally:
 
 ```bash
-python3 -m pytest -q skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests
+python3 -m pytest -q skills/video/stitch-videos-ffmpeg/tests
 ```
 
 ### Related

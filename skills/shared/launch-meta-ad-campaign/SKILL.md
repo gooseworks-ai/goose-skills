@@ -32,7 +32,7 @@ never build a second context system when the adapter already provides one.
 <!-- shared:launch-journey start -->
 <!-- This block is maintained in ONE place and copied byte-for-byte into both the
      goose-lab skill (coworkers/marketing/launch-meta-ad-campaign/SKILL.md) and the
-     published skill (skills/ads/composites/launch-meta-ad-campaign/SKILL.md).
+     published skill (skills/shared/launch-meta-ad-campaign/SKILL.md).
      Edit one, copy to the other, and diff the block before shipping. -->
 
 ## How to talk to the user

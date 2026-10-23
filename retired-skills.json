@@ -992,6 +992,21 @@
       "slug": "youtube-watcher",
       "replacement": null,
       "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "extract-source-sample",
+      "replacement": null,
+      "reason": "Internal studio tool for turning a finished ad run into a remix template; it lives in goose-studio, not the public catalog."
+    },
+    {
+      "slug": "lead-gen-devtools",
+      "replacement": "research-audience",
+      "reason": "This developer-tools lead pack was retired with the old lead-generation skills; audience research now builds the lists and signals."
+    },
+    {
+      "slug": "video-production",
+      "replacement": null,
+      "reason": "This old local video pack was retired; video ads are made with the goose-video skill."
     }
   ],
   "retained": [

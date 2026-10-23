@@ -113,7 +113,7 @@ Default `<output>` is `./imessage-mockup-exports/` in the cwd.
 ## Setup (one-time)
 
 ```bash
-cd skills/ads/capabilities/create-imessage-mockup
+cd skills/video/create-imessage-mockup
 npm install
 npx playwright install chromium
 ```

@@ -3,7 +3,7 @@ name: create-video-seedance-2-fal
 description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.
 owner: team
 status: superseded
-version: "2.0.4"
+version: "2.0.5"
 created: 2026-05-26
 updated: 2026-10-16
 superseded_by: video-seedance-2@1.3.0
@@ -39,7 +39,7 @@ Use this atom when:
 ## Inputs
 
 Required:
-- `--prompt` — structured prompt block (see "Prompt template" below). Long, multi-block. Reference run example: `beauty-by-earth/video-01-three-product-grwm/working/fire_seedance_facewash.py`.
+- `--prompt` — structured prompt block (see "Prompt template" below). Long, multi-block.
 - `--output` — local MP4 destination.
 - `--image-url` (alias `--image-ref`) — at least one **PUBLIC** reference image URL (repeatable), passed as `image_urls`. Order matters — first = `@Image1` in prompt addressing. The proxy does NOT upload local files: host local refs via MCP `get_upload_url` → `get_download_url` and pass the URL (identical to `create-video-fal`).
 
@@ -210,7 +210,7 @@ NO music in the audio (we add music in post).
 - Image grain matches iPhone front camera
 ```
 
-Full template reference: `prompt-example.md` at the repo root, plus all four scripts in `beauty-by-earth/video-01-three-product-grwm/working/fire_seedance_*.py`.
+Full template reference: `prompt-example.md`.
 
 ## Quality Checks
 
@@ -258,11 +258,9 @@ Memory: `feedback_fal_helpers_timeout_bug.md`. Validated: Lineage Video 01 Call 
 ## References
 
 - FAL model page: https://fal.ai/models/bytedance/seedance-2.0/reference-to-video
-- Reference runs: `beauty-by-earth/video-01-three-product-grwm/working/fire_seedance_{facewash,deo_probe,hook,tanner}.py`
 - Proven prompt template: `prompt-example.md`
-- Sibling NB2 atom (avatar / product stills): `coworkers/video/atoms/image-generation/create-image-nano-banana-2-fal`
-- Composing molecule: `coworkers/video/molecules/ugc-ad/create-ugc-style-video`
-- Shared helpers: `coworkers/video/atoms/_shared/fal_helpers.py`
+- Sibling atom for avatar and product stills: `create-image-fal`
+- Shared helpers: `create-image-gpt-image-fal`'s `scripts/fal_helpers.py`
 
 ## Provider rejection and scene acceptance
 

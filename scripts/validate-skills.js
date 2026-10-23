@@ -73,13 +73,6 @@ for (const entry of isDir(skillsRoot) ? fs.readdirSync(skillsRoot) : []) {
   }
 }
 
-// Pack members (packs/<pack>.json) publish as capabilities whatever their own meta says.
-const packMembers = new Set();
-const packsDir = path.join(ROOT, 'packs');
-for (const file of isDir(packsDir) ? fs.readdirSync(packsDir).filter((f) => f.endsWith('.json')) : []) {
-  for (const slug of JSON.parse(fs.readFileSync(path.join(packsDir, file), 'utf8')).skills || []) packMembers.add(slug);
-}
-
 const published = [];
 for (const family of FAMILIES) {
   const familyDir = path.join(skillsRoot, family);
@@ -129,7 +122,7 @@ for (const family of FAMILIES) {
     }
     if (meta.catalog === false) continue;
 
-    if (!packMembers.has(slug) && !LEVELS.includes(meta.category)) {
+    if (!LEVELS.includes(meta.category)) {
       errors.push(`category must be one of ${LEVELS.join(', ')} in ${where}: ${meta.category}`);
     }
     const domain = meta.domain || FAMILY_DOMAIN[family];

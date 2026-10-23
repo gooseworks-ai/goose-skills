@@ -48,7 +48,7 @@ Concrete paths and shell commands belong in the install template, tool wrappers,
 
 ## Video atoms
 
-Video atoms are the skills under `skills/video/` whose `category` is not `composites` or `playbooks`. They hold craft: how to drive a model or tool and how to check the piece. CI runs three checks on every pull request:
+Video atoms are the skills under `skills/video/` whose `category` is not `composites` or `playbooks`. They hold craft: how to drive a model or tool and how to check the piece. CI runs these checks on every pull request:
 
 - **Version.** Each atom has a semver `version` in `skill.meta.json` (and the same number in any SKILL.md frontmatter `version`). A pull request that changes any file in an atom raises it: patch for a fix, minor for a new option, mode or model, major for a removed or renamed input or a new requirement. A new atom starts at `1.0.0`. Run `node scripts/check-atom-versions.js --base origin/<base branch>`.
 - **What an atom may say.** No dollar or credit amounts, no approval or spend-gate steps, no install or sign-in lines, no requests for provider keys, no AI app names, no removed action names, no retired model ids, no full copy of the billing helper, and SKILL.md under 16 KB. Old text warns; text a pull request adds fails. An atom marked `status: superseded` (replaced by a part) is skipped only when its frontmatter's `superseded_by` names published, not-withdrawn parts as `id@x.y.z` and its body opens with a one-paragraph `> **Superseded` note naming each of them. A true finding that is creative content (a mockup that draws a named app) goes in the atom's `lint_allow` with a reason. Run `node scripts/atom-lint.js --base origin/<base branch>`.

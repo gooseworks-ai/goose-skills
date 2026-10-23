@@ -32,7 +32,7 @@ Default stacks: store page → 1, 2, 3, 4, 5/6 (+7 apparel, +8 kits and bundles)
 
 ## 3. The house-style card
 
-Only when the agent can actually see the photos (a shell host downloads and views them): derive it from the kit, existing product photography and approved earlier outputs; confirm it with the marketer; save it as `brand/photo-style.md` and the brand document "Photo house style — <Brand> — <YYYY-MM-DD>" through `../../../skills/save-to-brain/SKILL.md` (`versioned: supersede`) — a card is longer than a learning may be. Without vision, coarse descriptions cannot fill it — the marketer's chosen anchor hero and the kit's aesthetic stand in, and nothing is saved.
+Only when the agent can actually see the photos (a shell host downloads and views them): derive it from the kit, existing product photography and approved earlier outputs; confirm it with the marketer; save it as `brand/photo-style.md` and the brand document "Photo house style — <Brand> — <YYYY-MM-DD>" through `../../../../skills/marketing/save-to-brain/SKILL.md` (`versioned: supersede`) — a card is longer than a learning may be. Without vision, coarse descriptions cannot fill it — the marketer's chosen anchor hero and the kit's aesthetic stand in, and nothing is saved.
 
 - Background (colour; seamless vs surface; true white vs warm off-white)
 - Key light direction and quality (e.g. large soft key camera-left ~45°, soft fill)

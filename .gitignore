@@ -7,10 +7,6 @@ node_modules/
 test/results/
 snapshots/
 
-# Skill eval harness — per-run output (traces, workspaces, manifests, judgments,
-# human labels). Local-only: large, run-specific, and may contain live data/PII.
-.eval-runs/
-
 # Eval fixtures — may contain REAL ad-account data captured from the Meta API.
 # Kept local for now (do not commit real account data to this public repo).
 **/eval/fixtures/

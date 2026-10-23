@@ -1,6 +1,6 @@
 # Brand record template
 
-Load at step 7 (`atoms/brain-write-back`). The Brand record is one versioned Markdown file per save, `brand/records/<YYYY-MM-DD>-v<N>.md` in the brand coworker scope, imported as a brand document through `../../../skills/save-to-brain/SKILL.md`. Playbooks read it with `file_read`, never through search snippets. It holds only what the brain has no typed field for and points to the typed fields for the rest. It is also the human-readable face the owner checks, and its first two sections are the sign-off sheet an agency forwards to its client.
+Load at step 7 (`atoms/brain-write-back`). The Brand record is one versioned Markdown file per save, `brand/records/<YYYY-MM-DD>-v<N>.md` in the brand coworker scope, imported as a brand document through `../../../../skills/marketing/save-to-brain/SKILL.md`. Playbooks read it with `file_read`, never through search snippets. It holds only what the brain has no typed field for and points to the typed fields for the rest. It is also the human-readable face the owner checks, and its first two sections are the sign-off sheet an agency forwards to its client.
 
 Rules:
 - Title: `Brand record — <brand> — <YYYY-MM-DD> v<N>`. Each save writes a complete new version built from the previous one read in full (never from search snippets), so no row is dropped; the sign-off marker names the current version. Never write a partial record.

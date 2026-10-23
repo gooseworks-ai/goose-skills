@@ -1,7 +1,7 @@
 ---
 name: make-custom-video
 description: "Create a custom video with sourced product accuracy, explicit sound routing and exact-final audiovisual review."
-version: 3.8.2
+version: 3.8.3
 requires_skills: [video-production-harness]
 harness_binding: gooseworks/video-actions/v1
 ---

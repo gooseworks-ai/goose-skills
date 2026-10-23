@@ -1,6 +1,6 @@
 """scripts/trim_clips.py cuts the windows it is asked for (free: local ffmpeg only, no network).
 
-Run: python3 -m pytest skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests -q
+Run: python3 -m pytest skills/video/stitch-videos-ffmpeg/tests -q
 """
 import json
 import shutil

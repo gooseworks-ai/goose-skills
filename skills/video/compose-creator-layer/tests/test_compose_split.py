@@ -1,7 +1,7 @@
 """compose.py split-screen options: the seam divider shows on split beats only, and a bad
 divider is refused before ffmpeg runs (free: local ffmpeg only, no network).
 
-Run: python3 -m pytest skills/ads/capabilities/compose-creator-layer/tests -q
+Run: python3 -m pytest skills/video/compose-creator-layer/tests -q
 """
 import json
 import shutil

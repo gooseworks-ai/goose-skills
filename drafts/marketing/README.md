@@ -22,7 +22,7 @@ These are **data formats**, not hand-offs. Records written earlier (by a full br
 - **The claims marker** — a `must` learning that starts `Claims sign-off (learn-my-brand, …`. The opening stays exactly as it is. the `claims-gate` skill reads it and, through its scoped sign-off (§4–5), still writes it.
 - **The `Claims you may use —`, `Never say —`, `Policy:`, `Banned words —` and `Not public —` learnings** — read by every playbook. Only the claims gate writes or retires the marker and the claims; nothing released writes the other openings.
 - **The Brand record** (`brand/records/<date>-v<N>.md`, tags `[learn-my-brand, brand-record]`) — the claims gate reads it for variants and proof and adds to it. The first tag is its fixed creator tag; keep it.
-- **`skills/claims-gate/claim-types.md`** names learn-my-brand's `references/claims-craft.md` as the full claims craft (no link: published skills never link here).
+- **`skills/marketing/claims-gate/claim-types.md`** names learn-my-brand's `references/claims-craft.md` as the full claims craft (no link: published skills never link here).
 - **Reserved, unused for now:** the learning sources `video` and `photos` (the `save-learning` skill), the `Product imagery` request kind, and the paths `ads/videos/<project_id>.md` and `brand/photo-style.md`.
 
 ## How to release one

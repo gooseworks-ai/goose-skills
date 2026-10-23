@@ -72,7 +72,7 @@ The agent (Sonnet) doing real research is most of the cost: a research run reads
 
 - **Brand isolation (added 19 Oct).** On 19 Oct arms read each other's saved work on the shared staging brand: the competitors skill arm re-delivered a same-day report in 4 minutes; where-to-start built its advice on a plan an earlier eval saved. Now each arm: (1) snapshots the brand (files in the brand and default workspaces, documents and other media, learnings, campaigns, competitors, automations, inspiration saves, onboarding answers, coworker notes, staging credits); (2) runs; (3) undoes what it changed — new files deleted, changed files written back, new documents and learnings deleted, new campaigns archived, new automations deleted, onboarding and notes restored; (4) checks nothing is left over. It only undoes changes the arm's own tool calls explain, so other people's work on staging during the arm is left alone. **What it can't undo** (no tool for it): competitor rows, inspiration saves, edits to a campaign that existed before. Those are listed in `run.json` → `brand_reset.flagged` and in the summary's "Reset" column. Turn it off with `--no-reset`.
 - **Why this design** (compared on 19 Oct): a new brand per arm needs `brand_setup` with a website to get a real kit, which runs research (time, possibly credits), gives each arm a slightly different brand, and leaves brands behind (there is no brand delete tool). A pool of pre-made test brands needs the same reset between uses plus work to keep the copies identical; it only pays off if arms run in parallel, which they can't (one staging account). Snapshot-and-undo on the real brand is free, deterministic (direct server calls, no model), keeps the real kit, products and competitors, and leaves an audit trail.
-- **The legacy arm (`--mode legacy`).** Installs, instead of the new playbooks, the old goose-skills a user would have used for the same job: `legacy/mapping.json` (2–4 per playbook, chosen from the router's routes, plus each one's `requires_skills`). They are copied from `skills/` in the goose-skills checkout above `marketing-agent/` (set `GOOSE_SKILLS_DIR` to use another checkout; it should be on `dev`). Check one without running an agent: `node run.mjs legacy-check all`. Many old skills need keys: `run.json` → `legacy.keys` lists what each needs and `legacy.key_failures` what actually failed for lack of a key or login. Those are findings about the old skills, not harness bugs.
+- **The legacy arm (`--mode legacy`).** Installs, instead of the new playbooks, the old goose-skills a user would have used for the same job: `legacy/mapping.json` (2–4 per playbook, chosen from the router's routes, plus each one's `requires_skills`). The old skills were deleted on 23 Oct, so they are read from the pinned `legacy_revision` in `retired-skills.json` (tag `legacy-gtm-final`); set `GOOSE_SKILLS_DIR` to a checkout of that revision to use your own copy. Check one without running an agent: `node run.mjs legacy-check all`. Many old skills need keys: `run.json` → `legacy.keys` lists what each needs and `legacy.key_failures` what actually failed for lack of a key or login. Those are findings about the old skills, not harness bugs.
 - **Every arm runs as a user logged in to staging.** The agent gets a sandbox home: the real Claude config and user-level skills, but `~/.gooseworks/credentials.json` points at the **staging** CLI login. So old skills that read the CLI login reach staging, never production (the real home's login is production and is blocked). Old skills that call the GooseWorks API through `curl` can spend **staging test credits**; the runner records staging credits before and after every arm (`brand_reset.credits_spent`).
 - **Old skills' paid data reads are blocked.** Skills that go through the GooseWorks data proxy hit a tool the evals switch off (no spending); the denials are in each turn's `permission_denials`.
 - **No browser.** Headless runs have web search and web fetch, not a real browser, in both arms. Steps that need a browser (ad libraries, logged-out ChatGPT) degrade the same way for both.
@@ -88,7 +88,7 @@ The agent (Sonnet) doing real research is most of the cost: a research run reads
 ## Layout
 
 ```
-evals/
+evals/marketing/
 ├── run.mjs                     CLI entry (routing | playbook | judge | all | brand-clean | legacy-check | list)
 ├── lib/claude.mjs              spawns `claude -p` with a clean env; ask() for no-tool model calls
 ├── lib/files.mjs               skill frontmatter reader, scenario/rubric parsers
@@ -103,7 +103,7 @@ evals/
 ├── prompts/subject-note.md     appended to the subject's system prompt (staging, no spend, no browser)
 ├── prompts/simulator.md        system prompt for the simulated marketer (hard rules: decline top-ups, never approve spend/publishing)
 ├── prompts/judge.md            system prompt for the judge
-├── routing/cases.jsonl         68 routing cases
+├── routing/cases.jsonl         87 routing cases
 ├── playbooks/<slug>/scenario.md, rubric.md
 └── results/                    gitignored output
 ```
@@ -124,7 +124,7 @@ evals/
 ```json
 {"id":"R22","ask":"Who should we target?","expected_playbook":"research-audience","acceptable_alternatives":["research-market"],"kind":"vague","source":"routing-review #22","note":"optional"}
 ```
-`expected_playbook` is a skill name or `"none"` (not covered yet). A pick is correct if it equals `expected_playbook` or is in `acceptable_alternatives`. The 60 original asks come from `reviews/2026-10-16-routing.md` §1b, updated for 18 Oct (listen-social folded into research-market; research-audience is now audience research, lists only on request); R61–R68 are added asks, mostly Akhil's hand-test openers. The picker sees every published `../skills/*/SKILL.md` description and `routing/external-skills.json`, read fresh on each run, plus a `none` option.
+`expected_playbook` is a skill name or `"none"` (not covered yet). A pick is correct if it equals `expected_playbook` or is in `acceptable_alternatives`. The 60 original asks come from `docs/marketing/reviews/2026-10-16-routing.md` §1b, updated for 18 Oct (listen-social folded into research-market; research-audience is now audience research, lists only on request); R61–R68 are added asks, mostly Akhil's hand-test openers. The picker sees every published `../skills/*/SKILL.md` description and `routing/external-skills.json`, read fresh on each run, plus a `none` option.
 
 **`playbooks/<slug>/scenario.md`** — sections the runner reads:
 - `## Opening ask` — the first ```` ```text ```` fence is sent verbatim as the first message.
@@ -137,7 +137,7 @@ evals/
 ## Add a behaviour eval
 
 1. `mkdir playbooks/<slug>` with the playbook's exact slug.
-2. Write `scenario.md`: brand (a staging brand), the opening ask (a real marketer's words where we have them — hand-test transcripts are in `~/.claude/projects/-Users-akhil-projects-marketing-agent-test/*.jsonl`), and a persona sheet with every fact the marketer might be asked. Keep the hard rules: decline paid top-ups, never approve publishing or spend.
+2. Write `scenario.md`: brand (a staging brand), the opening ask (a real marketer's words where we have them — hand-test transcripts are in your local Claude Code project folder for the hand-test workspace), and a persona sheet with every fact the marketer might be asked. Keep the hard rules: decline paid top-ups, never approve publishing or spend.
 3. Write `rubric.md` from the playbook's "Done when", its `tests/test-by-hand.md`, the four failure modes and write-report §3. Judge outcomes, never "followed step 4" — the baseline must be able to pass.
 4. Check it parses: `node run.mjs list`, then a cheap smoke run: `node run.mjs playbook <slug> --mode with-skill --subject-model haiku --judge-model sonnet --max-turns 1`.
 5. If the playbook needs a staging tool that is in `PAID_OR_PUBLISHING`, don't remove it from the list; record in the rubric that the step is out of reach in evals.

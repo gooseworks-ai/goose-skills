@@ -9,7 +9,7 @@ cutouts, an end card, a sine music bed, and a wired `config.json`.
 ## Setup
 
 ```bash
-DIR=skills/ads/capabilities/render-hand-swipe-flavor-listicle   # or /tmp/gooseworks-scripts/render-hand-swipe-flavor-listicle
+DIR=skills/video/render-hand-swipe-flavor-listicle   # or /tmp/gooseworks-scripts/render-hand-swipe-flavor-listicle
 python3 $DIR/tests/make_smoke_inputs.py /tmp/hs-smoke
 ```
 

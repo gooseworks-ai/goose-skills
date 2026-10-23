@@ -78,11 +78,11 @@ This atom encodes the protocol that landed and ships it as the default. Operator
 
 ```bash
 scripts/mix.sh \
-  --video peloton/ads/video-04-new-job/edits/master-no-audio.mp4 \
-  --vo "peloton/ads/video-04-new-job/audio/vo-scene-01.mp3,...,peloton/ads/video-04-new-job/audio/vo-scene-14.mp3" \
+  --video acme/ads/video-01/edits/master-no-audio.mp4 \
+  --vo "acme/ads/video-01/audio/vo-scene-01.mp3,...,acme/ads/video-01/audio/vo-scene-14.mp3" \
   --vo-starts "0,2000,3500,...,28000" \
-  --music peloton/ads/video-04-new-job/audio/music-cue-01.wav \
-  --output peloton/ads/video-04-new-job/edits/master-final.mp4 \
+  --music acme/ads/video-01/audio/music-cue-01.wav \
+  --output acme/ads/video-01/edits/master-final.mp4 \
   --total-duration 30.0 \
   --vo-boost-line 14
 ```

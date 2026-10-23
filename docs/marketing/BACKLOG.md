@@ -74,7 +74,7 @@ The original ticket says twelve partial examples, but its grouped list identifie
 
 ## Held back from the first release (decided 20 Oct 2026, Akhil)
 
-Three playbooks are built but not released, because they need server work before they can run or be tested properly. They live in [`unreleased/`](unreleased/README.md), which says what blocks each and how to bring one back. Until then the router and every released playbook say plainly "not covered yet".
+Three playbooks are built but not released, because they need server work before they can run or be tested properly. They live in [`drafts/marketing/`](../../drafts/marketing/README.md), which says what blocks each and how to bring one back. Until then the router and every released playbook say plainly "not covered yet".
 
 | Playbook | The job users can't get yet | Build when |
 |---|---|---|

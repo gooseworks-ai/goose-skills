@@ -47,7 +47,7 @@ Pick one playbook for the marketer's ask, then run it. Never chain playbooks you
 
 ## Not covered yet
 
-Say so plainly; details and triggers are in `../../BACKLOG.md`.
+Say so plainly; details and triggers are in `../../../docs/marketing/BACKLOG.md`.
 - Designing an offer or sale from margin (a playbook can price an offer the marketer already chose).
 - Landing pages, product pages, homepages, popups; sales one-pagers. Battlecards use research-competitors.
 - Google search-ad copy and keywords.

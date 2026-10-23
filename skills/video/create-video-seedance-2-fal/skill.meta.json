@@ -1,8 +1,8 @@
 {
   "slug": "create-video-seedance-2-fal",
-  "category": "packs/ugc-video-formats",
+  "category": "capabilities",
   "domain": "ads",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "tags": [
     "ads"
   ],

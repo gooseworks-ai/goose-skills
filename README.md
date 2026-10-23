@@ -25,7 +25,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 | Folder | What it holds | Count |
 |---|---|---:|
 | `skills/marketing/` | **14 marketing playbooks** (one marketer job each, end to end), the 70 steps they load, and 2 foundation skills | 86 |
-| `skills/video/` | **Video-ad skills**: render atoms, format renderers, mockups, voice, music and the production harness | 68 |
+| `skills/video/` | **Video-ad skills**: render atoms, format renderers, mockups, voice, music and the production harness | 67 |
 | `skills/shared/` | Older skills that a video skill, a playbook or the GooseWorks app still uses. Each one's user is listed in [retired-skills.json](retired-skills.json) | 29 |
 | `skills/entry/` | **The entry skills** `gooseworks install` puts in every agent: the `gooseworks` router, `goose-ads`, `goose-video`, `make-custom-video`, `goose-video-local`, `goose-product-photos`. Routing lives in `skills/entry/gooseworks/routes.json` | 6 |
 
@@ -176,7 +176,7 @@ node scripts/build-index.js      # Generate skills-index.json
 node scripts/validate-skills.js  # Validate SKILL.md + skill.meta.json contract
 node scripts/check-marketing-agent-links.js  # Every link in a marketing skill resolves
 npm test
-node bin/goose-skills.js list    # Test locally
+node bin/goose-skills.js list    # List the published catalog (reads main on GitHub)
 npm run test:parts               # Part tests (needs ffmpeg; browser tests need playwright-core)
 ```
 
@@ -197,9 +197,9 @@ Each skill folder (`skills/<family>/<slug>/`) must include:
 |-------|----------|-------------|
 | `slug` | Yes | Unique kebab-case identifier; the folder name |
 | `category` | Yes | `capabilities`, `composites`, or `playbooks` (the GooseWorks app only syncs these) |
-| `domain` | `shared` only | Catalog grouping; marketing skills default to `marketing-agent`, video skills to `ads` |
-| `tier` | Marketing only | `playbook`, `atom` (a step) or `foundation` |
-| `version` | Marketing and video | Semver; marketing skills repeat it in SKILL.md frontmatter |
+| `domain` | `shared` only | Catalog grouping; marketing skills default to `marketing-agent`, video skills to `ads`, entry skills to `gooseworks` |
+| `tier` | Marketing and entry | `playbook`, `atom` (a step) or `foundation`; `entry` for skills/entry |
+| `version` | Marketing, entry and video atoms | Semver; marketing and entry skills repeat it in SKILL.md frontmatter; raise it on every change |
 | `requires_skills` | No | Slugs this skill loads; each must exist |
 | `tags` | Yes | String array of category tags |
 | `installation.base_command` | Yes | Install command |
@@ -225,6 +225,12 @@ Found something that looks off? [Open an issue](https://github.com/gooseworks-ai
 
 ---
 
+## Agent catalog releases
+
+Feature PRs target `dev` and update staging after CI passes. Promote tested changes to `main` for production. See [deployment setup and recovery](DEPLOYMENT.md).
+
+---
+
 ## License
 
 MIT &mdash; see [LICENSE](LICENSE) for details.
@@ -238,7 +244,3 @@ The skill files and CLI in this repository are MIT-licensed. The GooseWorks API 
 [Get Started](https://app.gooseworks.ai) &middot; [Report an Issue](https://github.com/gooseworks-ai/goose-skills/issues)
 
 </div>
-
-## Agent catalog releases
-
-Feature PRs target `dev` and update staging after CI passes. Promote tested changes to `main` for production. See [deployment setup and recovery](DEPLOYMENT.md).

@@ -991,6 +991,21 @@
       "slug": "youtube-watcher",
       "replacement": null,
       "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "extract-source-sample",
+      "replacement": null,
+      "reason": "Internal studio tool for turning a finished ad run into a remix template; it lives in goose-studio, not the public catalog."
+    },
+    {
+      "slug": "lead-gen-devtools",
+      "replacement": "research-audience",
+      "reason": "This developer-tools lead pack was retired with the old lead-generation skills; audience research now builds the lists and signals."
+    },
+    {
+      "slug": "video-production",
+      "replacement": null,
+      "reason": "This old local video pack was retired; video ads are made with the goose-video skill."
     }
   ],
   "skills": [
@@ -1920,7 +1935,7 @@
       "description": "Composite a generated creator track into a product layer, per beat — in the creator's zone on split beats (either side of a seam), full frame on creator beats, hidden on product beats — with the creator's voice as the audio (loudness -14 LUFS) and an optional ducked music bed, or a music-only or silent master for voiceless formats. Free, local ffmpeg. Pairs with footage-cutlist (the layer) and create-creator-takes-h3 (the creator). Use for split-screen (with an optional zoom and brand-colour seam bar), screen-insert and any creator-over-product format.",
       "tags": "ads, content",
       "path": "skills/video/compose-creator-layer",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "files": [
         "skills/video/compose-creator-layer/SKILL.md",
         "skills/video/compose-creator-layer/scripts/compose.py",
@@ -1932,7 +1947,7 @@
         "slug": "compose-creator-layer",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "tags": [
           "ads",
           "content"
@@ -2056,7 +2071,7 @@
       "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/video/create-creator-takes-h3",
-      "version": "2.9.0",
+      "version": "2.9.1",
       "files": [
         "skills/video/create-creator-takes-h3/SKILL.md",
         "skills/video/create-creator-takes-h3/scripts/align_beats.py",
@@ -2082,7 +2097,7 @@
         "slug": "create-creator-takes-h3",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.9.0",
+        "version": "2.9.1",
         "tags": [
           "ads",
           "content"
@@ -2151,7 +2166,7 @@
       "description": "Generate a single photoreal or designed image with OpenAI gpt-image via fal.ai. Supports gpt-image-1 (default, fixed sizes — the FAL fallback for Higgsfield's `gpt_image_2`) and gpt-image-2 (`openai/gpt-image-2`, custom output sizes up to 3840px). Routes to text-to-image or the edit variant depending on whether a reference image is provided. Use for photoreal character anchors, scene keyframes, and designed sheets (e.g. storyboards) where precise layout and legible text matter.",
       "tags": "ads, design",
       "path": "skills/video/create-image-gpt-image-fal",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "files": [
         "skills/video/create-image-gpt-image-fal/SKILL.md",
         "skills/video/create-image-gpt-image-fal/scripts/fal_helpers.py",
@@ -2168,7 +2183,7 @@
         "slug": "create-image-gpt-image-fal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.1",
+        "version": "1.1.2",
         "tags": [
           "ads",
           "design"
@@ -2347,7 +2362,7 @@
     {
       "slug": "create-video-seedance-2-fal",
       "name": "create-video-seedance-2-fal",
-      "version": "2.0.4",
+      "version": "2.0.5",
       "category": "capabilities",
       "domain": "ads",
       "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
@@ -2369,7 +2384,7 @@
         "slug": "create-video-seedance-2-fal",
         "category": "capabilities",
         "pack": "ugc-video-formats",
-        "version": "2.0.4",
+        "version": "2.0.5",
         "tags": [
           "ads"
         ],
@@ -2739,38 +2754,6 @@
           "spend-gate",
           "write-report"
         ]
-      }
-    },
-    {
-      "slug": "extract-source-sample",
-      "name": "extract-source-sample",
-      "category": "composites",
-      "domain": "ads",
-      "description": "Given the path to a finished content-goose ad-run folder, extract everything that defines that ad — recipe shot list, VO script, characters, voices, world, atom-skills, master mp4 — and emit a `source-sample.json` in the exact shape the `upload-ad-sample` skill writes to the Goose Ads library. Also links every character and voice to the central character library at `<repo-root>/assets/character-library/` (repo-root derived from the run-dir, not a hardcoded path), and if a character isn't in the library yet, adds it first then links. Use when the user wants to remix one of their existing ads — this skill produces the source JSON that the script-rewriting step and `remix-ad` consume.",
-      "tags": "ads",
-      "path": "skills/video/extract-source-sample",
-      "files": [
-        "skills/video/extract-source-sample/README.md",
-        "skills/video/extract-source-sample/SKILL.md",
-        "skills/video/extract-source-sample/examples/extract-ladder-run.md",
-        "skills/video/extract-source-sample/references/source-sample-schema.md",
-        "skills/video/extract-source-sample/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "extract-source-sample",
-        "category": "composites",
-        "domain": "ads",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install extract-source-sample",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
       }
     },
     {
@@ -4012,7 +3995,7 @@
       "description": "Create a custom video with sourced product accuracy, explicit sound routing and exact-final audiovisual review.",
       "tags": "ads",
       "path": "skills/entry/make-custom-video",
-      "version": "3.8.2",
+      "version": "3.8.3",
       "files": [
         "skills/entry/make-custom-video/SKILL.md",
         "skills/entry/make-custom-video/skill.meta.json"
@@ -4022,7 +4005,7 @@
         "category": "playbooks",
         "domain": "gooseworks",
         "tier": "entry",
-        "version": "3.8.2",
+        "version": "3.8.3",
         "tags": [
           "ads"
         ],
@@ -4705,7 +4688,7 @@
       "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
       "tags": "ads",
       "path": "skills/video/media-proxy",
-      "version": "2.0.5",
+      "version": "2.0.6",
       "files": [
         "skills/video/media-proxy/SKILL.md",
         "skills/video/media-proxy/scripts/media_proxy.py",
@@ -4719,7 +4702,7 @@
         "slug": "media-proxy",
         "category": "capabilities",
         "domain": "ads",
-        "version": "2.0.5",
+        "version": "2.0.6",
         "tags": [
           "ads"
         ],
@@ -4839,7 +4822,6 @@
       "path": "skills/shared/meta-ads-analyzer",
       "files": [
         "skills/shared/meta-ads-analyzer/SKILL.md",
-        "skills/shared/meta-ads-analyzer/eval/eval.json",
         "skills/shared/meta-ads-analyzer/references/customer-journey-coverage.md",
         "skills/shared/meta-ads-analyzer/skill.meta.json"
       ],
@@ -4865,7 +4847,7 @@
     {
       "slug": "mix-master",
       "name": "mix-master",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "category": "capabilities",
       "domain": "ads",
       "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
@@ -4880,7 +4862,7 @@
         "slug": "mix-master",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "tags": [
           "ads"
         ],
@@ -5540,7 +5522,7 @@
       "description": "Render a 'brand identity reveal' video from a config — a single poster frame in a real, softly-lit space (real wall, soft-focus plant in the corner, dappled leaf shadow, illuminated poster) whose artwork HARD-CUTS through ~10 on-brand poster mockups (hero product, IG post, hanging banners, sticker sheet, logo lockup, poster, two lifestyle stills, packaging, big icon) then holds on a brand end card. The environment plate is one create-image-fal generation; the mockups are real-DOM HTML frame-stepped via Playwright, perspective-composited into the detected frame quad with the plate's real leaf-shadow multiplied back onto each poster (reads as behind glass), sequenced by FFmpeg. Deterministic assembly, FREE (the plate comes from create-image-fal, the bed from create-music-elevenlabs), music bed only and approved brand copy only. Use for the brand-identity-reveal format.",
       "tags": "ads",
       "path": "skills/video/render-brand-identity-reveal",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/video/render-brand-identity-reveal/SKILL.md",
         "skills/video/render-brand-identity-reveal/scripts/PIPELINE.md",
@@ -5558,7 +5540,7 @@
         "slug": "render-brand-identity-reveal",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -5974,7 +5956,7 @@
       "description": "Render a 'hand-swipe flavor listicle' video from a config — the brand's REAL product cutouts each float on a flat flavor-matched color field under a persistent title and slide RIGHT-TO-LEFT one to the next like a phone-feed scroll, while a green-screen hand clip (back of hand toward camera, index finger up) is trimmed to its clean finger-up window, looped once per flavor, keyed with a green-dominance alpha key, scaled down and anchored at the bottom, with an optional end card and an optional instrumental music bed — deterministic PIL plus FFmpeg assembly, FREE (the hand clip comes from create-video-fal and the bed from create-music-elevenlabs), so labels stay pixel-crisp. Use for the hand-swipe-flavor-listicle format.",
       "tags": "ads",
       "path": "skills/video/render-hand-swipe-flavor-listicle",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "files": [
         "skills/video/render-hand-swipe-flavor-listicle/SKILL.md",
         "skills/video/render-hand-swipe-flavor-listicle/scripts/build_hand_swipe_listicle.py",
@@ -5987,7 +5969,7 @@
         "slug": "render-hand-swipe-flavor-listicle",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "tags": [
           "ads"
         ],
@@ -6097,7 +6079,7 @@
       "description": "Render an 'Instagram-Live social-proof gallery' video from a config — ~5 real brand product stills each framed as an Instagram-LIVE card (IG gradient-ring avatar, username, verified check, red LIVE badge, viewer count, close X, a short claim-free live-comment feed, an empty 'Add a comment…' bar, and reaction hearts floating up the right edge), with a brand-approved benefit sentence building one phrase per slide and a clean logo endcard, rendered deterministically with PIL frames plus FFmpeg — FREE (the music bed comes from create-music-elevenlabs), products and wordmark stay crisp. Use for the ig-live-gallery format.",
       "tags": "ads",
       "path": "skills/video/render-ig-live-gallery",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/video/render-ig-live-gallery/SKILL.md",
         "skills/video/render-ig-live-gallery/scripts/build.py",
@@ -6109,7 +6091,7 @@
         "slug": "render-ig-live-gallery",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -6224,7 +6206,7 @@
     {
       "slug": "render-ios-keyboard",
       "name": "render-ios-keyboard",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).",
@@ -6246,7 +6228,7 @@
         "slug": "render-ios-keyboard",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "tags": [
           "ads"
         ],
@@ -6506,7 +6488,7 @@
       "description": "Render a punchy ~12s vertical (9:16) music-only direct-response OFFER ad as a 4-beat kinetic-typography film — HEADLINE slam → real PRODUCT drop → CLAIM/proof → CTA pill — from one config of copy slots, a real product photo, a brand palette, fonts, bpm, and beat split. DETERMINISTIC + FREE (a bundled Remotion project; springs + interpolate, no AI-gen for visuals). Backgrounds are engine gradient divs off the palette, props are inline SVG, the ONLY composited bitmap is the REAL product photo (objectFit:contain, never stretched), and ALL headline/claim/CTA/URL/wordmark text is typeset in the engine — never AI-rendered (the format's credibility guard). A driver binds the config to Remotion input props, renders the 9:16 master, and derives a 1:1 center-crop with ffmpeg. Two gating checks run before render (claim verbs must match the product's physical format; the claim beat needs an edge-entry mechanism prop). Use for the motion-graphics-offer-ad format.",
       "tags": "ads",
       "path": "skills/video/render-offer-ad",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/video/render-offer-ad/SKILL.md",
         "skills/video/render-offer-ad/project/.gitignore",
@@ -6533,7 +6515,7 @@
         "slug": "render-offer-ad",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
@@ -8033,7 +8015,7 @@
     {
       "slug": "review-ugc-render",
       "name": "review-ugc-render",
-      "version": "2.0.4",
+      "version": "2.0.5",
       "category": "capabilities",
       "domain": "ads",
       "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
@@ -8049,7 +8031,7 @@
         "slug": "review-ugc-render",
         "category": "capabilities",
         "pack": "ugc-video-formats",
-        "version": "2.0.4",
+        "version": "2.0.5",
         "tags": [
           "ads"
         ],
@@ -8936,7 +8918,7 @@
     {
       "slug": "stitch-videos-ffmpeg",
       "name": "stitch-videos-ffmpeg",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
@@ -8964,7 +8946,7 @@
         "slug": "stitch-videos-ffmpeg",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "1.3.0",
+        "version": "1.3.1",
         "tags": [
           "ads"
         ],
@@ -9233,7 +9215,7 @@
     {
       "slug": "watch",
       "name": "watch",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Observe actual video and sound over the whole file or named ranges, with timestamped evidence and honest coverage. Use complementary playback, listening and targeted frames; return observations without edits or verdicts.",
@@ -9253,7 +9235,7 @@
         "slug": "watch",
         "category": "capabilities",
         "pack": "video-ad-formats",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "tags": [
           "ads"
         ],
@@ -10043,7 +10025,7 @@
           "name": "create-video-seedance-2-fal",
           "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
           "path": "skills/video/create-video-seedance-2-fal",
-          "version": "2.0.4",
+          "version": "2.0.5",
           "files": [
             "skills/video/create-video-seedance-2-fal/SKILL.md",
             "skills/video/create-video-seedance-2-fal/scripts/generate.py",
@@ -10063,7 +10045,7 @@
           "name": "review-ugc-render",
           "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
           "path": "skills/video/review-ugc-render",
-          "version": "2.0.4",
+          "version": "2.0.5",
           "files": [
             "skills/video/review-ugc-render/SKILL.md",
             "skills/video/review-ugc-render/scripts/review_render.py",
@@ -10205,7 +10187,7 @@
           "name": "render-ios-keyboard",
           "description": "Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).",
           "path": "skills/video/render-ios-keyboard",
-          "version": "1.0.3",
+          "version": "1.0.4",
           "files": [
             "skills/video/render-ios-keyboard/SKILL.md",
             "skills/video/render-ios-keyboard/generate.js",
@@ -10225,7 +10207,7 @@
           "name": "stitch-videos-ffmpeg",
           "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
           "path": "skills/video/stitch-videos-ffmpeg",
-          "version": "1.3.0",
+          "version": "1.3.1",
           "files": [
             "skills/video/stitch-videos-ffmpeg/SKILL.md",
             "skills/video/stitch-videos-ffmpeg/scripts/composite.py",
@@ -10251,7 +10233,7 @@
           "name": "mix-master",
           "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
           "path": "skills/video/mix-master",
-          "version": "1.0.3",
+          "version": "1.0.4",
           "files": [
             "skills/video/mix-master/SKILL.md",
             "skills/video/mix-master/scripts/mix.sh",
@@ -10264,7 +10246,7 @@
           "name": "watch",
           "description": "Observe actual video and sound over the whole file or named ranges, with timestamped evidence and honest coverage. Use complementary playback, listening and targeted frames; return observations without edits or verdicts.",
           "path": "skills/video/watch",
-          "version": "2.0.0",
+          "version": "2.0.1",
           "files": [
             "skills/video/watch/SKILL.md",
             "skills/video/watch/references/parameters.md",

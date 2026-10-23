@@ -3,7 +3,7 @@ name: review-ugc-render
 description: Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved "human-vetted" spoken as "human witted"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently ("5mg" said "five milligrams", "30%" said "thirty percent", a spoken URL, "don't" said "do not", "braxleybands" said "braxley bands", a confirmed pronunciation like "AG1" said "A G one") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.
 owner: akhil
 status: superseded
-version: "2.0.4"
+version: "2.0.5"
 created: 2026-07-04
 updated: 2026-10-06
 superseded_by: check-layer@1.2.0
@@ -198,7 +198,7 @@ wording, and the CLI exit codes with transcription stubbed out.
 ## Relationship to the content-goose review engine
 
 This is the shipped, single-file, gating slice of the fuller
-`coworkers/video/molecules/review/review-loop` (18-axis rubric). Here we enforce
+review loop in GooseWorks' studio (18-axis rubric). Here we enforce
 the one axis that catches audio-vs-script defects at publish time
 (`review-transcript-integrity` / `brand_text_accuracy`). Deeper multi-axis review
 stays in the content-goose lab.

@@ -1,7 +1,7 @@
 ---
 name: watch
 description: Observe actual video and sound over the whole file or named ranges, with timestamped evidence and honest coverage. Use complementary playback, listening and targeted frames; return observations without edits or verdicts.
-version: "2.0.0"
+version: "2.0.1"
 ---
 
 # Human version

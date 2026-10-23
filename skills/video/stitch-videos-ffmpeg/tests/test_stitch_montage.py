@@ -1,6 +1,6 @@
 """Synthetic-clip fixture test for scripts/montage.py (free: local ffmpeg only, no network).
 
-Run: python3 -m pytest skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests -q
+Run: python3 -m pytest skills/video/stitch-videos-ffmpeg/tests -q
 
 Every input is generated here with ffmpeg lavfi (testsrc, smptebars, sine) at a tiny size,
 so each assertion names the behaviour it proves: exact EDL length, normalized format,

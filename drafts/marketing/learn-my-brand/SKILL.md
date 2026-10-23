@@ -14,7 +14,7 @@ description: >-
 
 # learn-my-brand
 
-The front door. GooseWorks' server researches the brand and stores the kit; this playbook does what only the owner can: confirm what is true, decide what may be claimed, say how the brand sounds, and record what nobody knows yet. Every other playbook reads what it saves, through `../../skills/claims-gate/SKILL.md` and `../../skills/voice-card/SKILL.md`.
+The front door. GooseWorks' server researches the brand and stores the kit; this playbook does what only the owner can: confirm what is true, decide what may be claimed, say how the brand sounds, and record what nobody knows yet. Every other playbook reads what it saves, through `../../../skills/marketing/claims-gate/SKILL.md` and `../../../skills/marketing/voice-card/SKILL.md`.
 
 Talk to the owner about their brand, never about tools, ids, fields or other playbooks.
 
@@ -67,7 +67,7 @@ Load `references/intake-craft.md`. Settle only its "settled here" facts, each as
 Run `atoms/claims-audit` (loads `references/claims-craft.md`). Every claim-shaped line in the brain is a candidate, wherever it sits; a research label of "approved" is not a sign-off. Triage to the budget: low-risk facts and current offers in one batch; medium in visible groups of 3–5; high-risk one at a time for the five or so with the most reach; every other high-risk line recorded "not approved yet" without asking. Draft the never-say list (law, platform, owner; each with a safe alternative); ask once what must never be said publicly, and until when; say once this is not legal advice. Nothing is approved without the approver's own words. **Save** (step 7).
 
 ### 5. Voice — approval gate 2
-Run `atoms/voice-calibrate` (loads `references/voice-craft.md`): start from the brain's voice read, the owner's earlier rules and 6–10 real lines, each screened against the claims and never-say lists; triad test, keep-or-kill, then the whole guide on one screen. The owner's explicit yes confirms it; a founder's personal account also gets a voice card (`../../skills/voice-card/SKILL.md`). **Save** (step 7).
+Run `atoms/voice-calibrate` (loads `references/voice-craft.md`): start from the brain's voice read, the owner's earlier rules and 6–10 real lines, each screened against the claims and never-say lists; triad test, keep-or-kill, then the whole guide on one screen. The owner's explicit yes confirms it; a founder's personal account also gets a voice card (`../../../skills/marketing/voice-card/SKILL.md`). **Save** (step 7).
 
 ### 6. Check the kit
 Show the logo (`logoConfidence`), palette and fonts; flag clashes (kit `fonts` vs `typography`). List only what is missing or wrong. Primary and accent colour via `gooseworks:brand_update` `patch.kit`; a logo file via `gooseworks:media_upload` (kind `logo`); the full palette and real fonts go in the brand record. Product photography gaps: mention, don't fix.
@@ -88,11 +88,11 @@ No money moves and nothing is published. Paid imports are optional and need a ye
 
 The brand brain, through `atoms/brain-write-back`:
 - **Kit and knowledge:** voice summary, audience, description, value props (only approved claims), brand type, positioning (the owner's one-liner), tagline; products' offers, notes and ad eligibility; onboarding role and platforms.
-- **Learnings, one idea each, through `../../skills/save-learning/SKILL.md`:** one `Claims you may use —` fact per approved claim (offers and policies the brand states in copy included), one `Never say —` fact per never-say line, `Not public —`, `Banned words —`, `Policy:` for operating rules, and the marker: `Claims sign-off (learn-my-brand, <date>, signed-off|pending-client|not-signed, approver: owner|client <name>, voice: confirmed|provisional, record "<title>")`. Full detail and proof live in the record.
+- **Learnings, one idea each, through `../../../skills/marketing/save-learning/SKILL.md`:** one `Claims you may use —` fact per approved claim (offers and policies the brand states in copy included), one `Never say —` fact per never-say line, `Not public —`, `Banned words —`, `Policy:` for operating rules, and the marker: `Claims sign-off (learn-my-brand, <date>, signed-off|pending-client|not-signed, approver: owner|client <name>, voice: confirmed|provisional, record "<title>")`. Full detail and proof live in the record.
 - **Brand record** (`brand/records/<YYYY-MM-DD>-v<N>.md`, imported as a brand document): approved claims with variants and proof, the sign-off sheet, not-approved and retired claims, voice status and the full banned list, never-say, business facts, contradiction decisions, palette and fonts, unknowns.
 - Tracked competitors and uploaded brand files.
 
-Readers: every playbook that writes copy or states facts, through `../../skills/claims-gate/SKILL.md` (claims) and the kit voice plus `../../skills/voice-card/SKILL.md` (voice); research-market from the confirmed audience; research-competitors from the tracked rivals; this playbook's own update, resume and sweep modes from the record. Where the server cannot store something yet, the record holds it; see `server-needs.md`.
+Readers: every playbook that writes copy or states facts, through `../../../skills/marketing/claims-gate/SKILL.md` (claims) and the kit voice plus `../../../skills/marketing/voice-card/SKILL.md` (voice); research-market from the confirmed audience; research-competitors from the tracked rivals; this playbook's own update, resume and sweep modes from the record. Where the server cannot store something yet, the record holds it; see `server-needs.md`.
 
 ## Done when
 

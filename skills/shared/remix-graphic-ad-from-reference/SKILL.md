@@ -70,8 +70,8 @@ look is the expected default.
 
 ## Composed Atoms
 
-- `goose-graphics` (`skills/design/composites/goose-graphics`) — renders the HTML-overlay path to PNG via the goose-graphics Playwright pipeline.
-- `create-image-gpt-image-fal` (`skills/ads/capabilities/create-image-gpt-image-fal`) — GPT Image 2, run in **edit mode on the reference** for the photographic path.
+- `goose-graphics` (`skills/shared/goose-graphics`) — renders the HTML-overlay path to PNG via the goose-graphics Playwright pipeline.
+- `create-image-gpt-image-fal` (`skills/video/create-image-gpt-image-fal`) — GPT Image 2, run in **edit mode on the reference** for the photographic path.
 - `product-photoshoot` — OPTIONAL: when no clean product render exists, generate one through the GooseWorks Product Photos workflow, ask before spending credits, and use only a result the user approves.
 
 ## Workflow
@@ -221,12 +221,12 @@ Research/setup dominates the agent cost for the first ad of a new brand; variant
 ## Tests
 
 See `tests/`. Smoke = route + render a known reference→product pair end-to-end and confirm a non-empty
-PNG at the right dimensions with correct copy. Verifier: `skills/ads/capabilities/verify-product-image/`.
+PNG at the right dimensions with correct copy. Verifier: `skills/video/verify-product-image/`.
 
 ## Skill Location & Related
 
-`skills/ads/composites/remix-graphic-ad-from-reference/` (goose-skills). Related:
-`skills/ads/composites/brand-research` (brand context), `skills/ads/capabilities/create-image-gpt-image-fal`
-(GPT Image 2 edit engine), `skills/ads/capabilities/verify-product-image` (QC), and
-`skills/design/composites/goose-graphics` (HTML→PNG renderer). The video analog `remix-ad` lives in the
+`skills/shared/remix-graphic-ad-from-reference/` (goose-skills). Related:
+`skills/shared/brand-research` (brand context), `skills/video/create-image-gpt-image-fal`
+(GPT Image 2 edit engine), `skills/video/verify-product-image` (QC), and
+`skills/shared/goose-graphics` (HTML→PNG renderer). The video analog `remix-ad` lives in the
 separate ads-video repo.

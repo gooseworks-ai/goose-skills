@@ -12,7 +12,7 @@
  *   node fetch-tweet.js <tweet-url-or-id>
  *
  * Examples:
- *   node fetch-tweet.js https://x.com/shivsakhuja/status/2039963598244716919
+ *   node fetch-tweet.js https://x.com/<handle>/status/<tweet-id>
  *   node fetch-tweet.js 2039963598244716919
  *
  * Output: JSON object with tweet data printed to stdout.

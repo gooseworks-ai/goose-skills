@@ -8,7 +8,7 @@ Point `--assets` at any dir with 5 product stills + a wordmark, and use the bund
 config (or your own). For a self-contained check, use the Glossier demo stills.
 
 ```bash
-DIR=skills/ads/capabilities/render-ig-live-gallery
+DIR=skills/video/render-ig-live-gallery
 ASSETS=<dir with 5 product stills + wordmark>   # e.g. the Glossier demo brand stills
 ```
 
