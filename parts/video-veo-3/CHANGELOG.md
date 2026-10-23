@@ -1,5 +1,9 @@
 # video-veo-3
 
+## 1.0.3
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. A template that cannot be read is named by its file name on Windows too (the whole path was shown). Nothing else changed from 1.0.2.
+
 ## 1.0.2
 
 - Dated warning: fal retires this endpoint on 17 Nov 2026. Logged on every run, in the summary, the README and `x-provider-retirement`. Requests are byte-for-byte those of 1.0.1.

@@ -1,5 +1,9 @@
 # image-gpt-image-2
 
+## 1.3.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. A template that cannot be read is named by its file name on Windows too (the whole path was shown). Nothing else changed from 1.3.0.
+
 ## 1.3.0
 
 - `quality_tier` (`standard`, the default, or `best`) sets the default quality: medium for Standard, high for Best. An explicit `quality` still wins for the whole step. 1.2.0 always defaulted to high.

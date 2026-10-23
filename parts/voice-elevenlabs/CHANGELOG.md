@@ -1,5 +1,9 @@
 # voice-elevenlabs
 
+## 1.3.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.3.0.
+
 ## 1.3.0
 
 - Default model `eleven_v4` (1.2.x defaulted to `eleven_v3`). A plan that locked v3 must name it.

@@ -1,5 +1,9 @@
 # sound-layer
 
+## 1.1.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.1.0.
+
 ## 1.1.0
 
 - Declares `timeline.assembly_timeline` (input and output), so the kit passes a custom video's source-linked edit and gets it back. The layer adds no music or sfx cue because it lays none; levelling is unchanged. A minor version: it reaches new quotes through layers.json.

@@ -52,7 +52,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-veo-3',
-  version: '1.0.2',
+  version: '1.0.3',
   kind: 'generate_video',
   title: 'Moving stills (Veo 3 image-to-video)',
   summary: 'Turns stills into short silent clips with Google Veo 3 / 3.1 image-to-video on fal, one piece per clip. Warning: fal retires this endpoint on 17 Nov 2026.',

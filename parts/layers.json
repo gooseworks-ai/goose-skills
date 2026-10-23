@@ -9,19 +9,19 @@
   "layers": {
     "brand": {
       "id": "brand-layer",
-      "version": "1.0.2"
+      "version": "1.0.3"
     },
     "captions": {
       "id": "captions-layer",
-      "version": "1.5.0"
+      "version": "1.5.1"
     },
     "sound": {
       "id": "sound-layer",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     "check": {
       "id": "check-layer",
-      "version": "1.8.0"
+      "version": "1.8.1"
     }
   }
 }

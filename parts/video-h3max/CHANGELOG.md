@@ -3,6 +3,10 @@
 This part provides H3 Max scene clips and timed takes for recipes that need native dialogue or first/last
 frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
+## 1.3.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. A template that cannot be read is named by its file name on Windows too (the whole path was shown). Nothing else changed from 1.3.0.
+
 ## 1.3.0
 
 - `quality_tier` (`standard`, the default, or `best`) is accepted; H3 is 768P in both. The default resolution is now 768P (1.2.0: 1080P). 1080P only when the customer asks, sent as an explicit `resolution`.

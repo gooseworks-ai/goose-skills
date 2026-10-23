@@ -4,7 +4,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'captions-layer',
-  version: '1.5.0',
+  version: '1.5.1',
   kind: 'caption',
   layer: 'captions',
   title: 'Captions layer',

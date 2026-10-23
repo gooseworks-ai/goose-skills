@@ -6,7 +6,7 @@
 //
 //   node parts/_tools/manifest.mjs <part-id> <version>
 import { existsSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PARTS = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -16,6 +16,9 @@ export async function manifestText(id) {
   const src = join(PARTS, id, 'src', 'manifest.mjs');
   if (!existsSync(src)) return null;
   const { manifest } = await import(pathToFileURL(src).href);
+  // A manifest lists its files with path.relative, which gives backslashes on Windows. The schema
+  // and the server want '/' paths, sorted as a Linux build sorts them.
+  if (Array.isArray(manifest.files)) manifest.files = manifest.files.map((f) => f.split(sep).join('/')).sort();
   return `${JSON.stringify(manifest, null, 2)}\n`;
 }
 

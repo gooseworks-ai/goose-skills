@@ -1,5 +1,9 @@
 # assemble
 
+## 1.2.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.2.0.
+
 ## 1.2.0
 
 - Shot recipes per scene tag: `shots` (still, clip, video, montage, freeze; seconds, fill, zoom, speed limits, `skip_first`), drawn from `sources` and matched to `scenes` and `products`. `clips` is no longer required.

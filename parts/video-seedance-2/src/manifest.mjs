@@ -49,7 +49,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-seedance-2',
-  version: '1.3.0',
+  version: '1.3.1',
   kind: 'generate_video',
   title: 'Clips with native audio (Seedance 2)',
   summary: 'Seedance 2.0 clips on fal with native voice: from reference images or a start frame, prompts from a template; or whole takes written from plan scenes as timed beats, joined into one video with a timeline.',

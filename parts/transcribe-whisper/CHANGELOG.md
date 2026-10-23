@@ -1,5 +1,9 @@
 # transcribe-whisper
 
+## 1.1.3
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.1.2.
+
 ## 1.1.2
 
 - Lines are placed on what was heard by one alignment of the whole script on the whole transcript, in scene order, that may skip heard words between lines (free) or inside a line (at a small cost). 1.1.1 looked for each word among the next five heard words from where the last line ended, so one repeated opening question left every later line unplaced and gave everything left to the last line (staging, 13 Oct 2026: speech-recut then refused the take as missing a line that was said).

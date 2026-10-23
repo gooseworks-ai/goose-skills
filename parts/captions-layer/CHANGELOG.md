@@ -1,5 +1,9 @@
 # captions-layer
 
+## 1.5.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.5.0.
+
 ## 1.5.0
 
 - Declares `timeline.assembly_timeline` (input and output) and passes it through unchanged. Captions, transcription requests and looks are as in 1.4.0. A minor version: it reaches new quotes through layers.json.

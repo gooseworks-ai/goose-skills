@@ -27,7 +27,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'cast-plate',
-  version: '1.1.0',
+  version: '1.1.1',
   kind: 'generate_image',
   title: 'Cast plate (GPT Image 2)',
   summary: 'One wide picture of two or three cast members in one room from GPT Image 2 on fal, plus one full-height single per person cut from it at a fixed seat, so every shot shares one set.',

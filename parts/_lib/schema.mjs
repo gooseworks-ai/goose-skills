@@ -7,6 +7,9 @@
 // name starts with `kit`.
 
 const kitSchemaSha256 = /^[a-f0-9]{64}$/;
+// Absolute on any system the kit runs on: /x on Linux and macOS, C:\x or C:/x on Windows.
+// Requiring a leading '/' refused every real path on Windows.
+const kitSchemaAbsolute = /^(?:\/|[A-Za-z]:[\\/])/;
 
 function kitSchemaType(value) {
   if (value === null) return 'null';
@@ -46,7 +49,7 @@ function kitSchemaFileErrors(value, spec, at) {
   if (kitSchemaType(value) !== 'object') return [`${at}: expected a file reference`];
   const errors = [];
   if (value.kind !== 'file') errors.push(`${at}.kind: expected "file"`);
-  if (typeof value.path !== 'string' || !value.path.startsWith('/')) errors.push(`${at}.path: expected an absolute path`);
+  if (typeof value.path !== 'string' || !kitSchemaAbsolute.test(value.path)) errors.push(`${at}.path: expected an absolute path`);
   if (typeof value.sha256 !== 'string' || !kitSchemaSha256.test(value.sha256)) errors.push(`${at}.sha256: expected a sha256`);
   if (!Number.isInteger(value.bytes) || value.bytes < 1) errors.push(`${at}.bytes: expected a positive integer`);
   if (typeof value.mime !== 'string') errors.push(`${at}.mime: expected a string`);

@@ -1,5 +1,9 @@
 # cut-footage
 
+## 1.2.2
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.2.1.
+
 ## 1.2.1
 
 - Inserts: no shot shorter than 0.4 s where a hold can avoid it. A full-frame creator stretch under 0.4 s between two inserts, or before the end of the video, is covered by holding the earlier insert's last frame; an insert under 0.4 s is held into the creator stretch after it, as far as that stretch keeps 0.4 s. A hold never changes an insert's speed or source window, and the talking track's sound is kept. Grid inserts are never held. A short shot no hold can fix (a creator stretch before the first insert, a grid neighbour) is logged as a warning. Everything else is 1.2.0.

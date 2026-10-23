@@ -1,5 +1,9 @@
 # end-card
 
+## 1.1.2
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Nothing else changed from 1.1.1.
+
 ## 1.1.1
 
 - The logo is fitted to the card in every layout that draws it: a flat white, grey or black background the file carries is made transparent (edge-connected only, never the mark), empty margins are trimmed, and the mark is scaled up or down into the layout's box by its shape (classic: a wide mark min(640 px, 0.58 W) wide, any other min(320 px, 0.17 H) tall). 1.1.0 drew a small logo at its file size, so a 130 px wordmark showed 130 px wide.
