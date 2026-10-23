@@ -28,11 +28,10 @@ from urllib.parse import parse_qs, urlparse
 try:
     import requests
 except ImportError:
-    print("Error: 'requests' library not installed.", file=sys.stderr)
-    sys.exit(1)
+    requests = None
 
 
-APIFY_ACTOR_ID = "pintostudio~youtube-transcript-scraper"
+APIFY_ACTOR_ID = "johnvc~YoutubeTranscripts"
 GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
 GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
 
@@ -45,11 +44,111 @@ CACHE_DIR = Path(os.environ.get("YT_TRANSCRIPT_CACHE_DIR", os.path.join(os.path.
 
 def get_api_token():
     """Get API token, preferring GooseWorks proxy key."""
+    if requests is None:
+        print("Error: 'requests' library not installed.", file=sys.stderr)
+        sys.exit(1)
     token = GOOSEWORKS_API_KEY or os.environ.get("APIFY_API_TOKEN")
     if not token:
         print("Error: Set GOOSEWORKS_API_KEY or APIFY_API_TOKEN env var.", file=sys.stderr)
         sys.exit(1)
     return token
+
+
+def _as_float(value, default=0.0):
+    """Coerce a timestamp or duration field to float.
+
+    Args:
+        value: Raw numeric, string, or missing field from an Actor row.
+        default: Fallback when the value cannot be parsed.
+
+    Returns:
+        A float suitable for the skill's start/dur JSON fields.
+    """
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _normalize_segment(segment):
+    """Map one transcript cue onto the skill's start/dur/text shape.
+
+    Args:
+        segment: A string cue or a dict from johnvc timestamped rows
+            (start/duration) or cached pintostudio rows (start/dur).
+
+    Returns:
+        Dict with start, dur, and text.
+    """
+    if isinstance(segment, str):
+        return {"start": 0.0, "dur": 0.0, "text": segment}
+    if not isinstance(segment, dict):
+        return {"start": 0.0, "dur": 0.0, "text": ""}
+    duration = segment.get("dur", segment.get("duration", 0))
+    return {
+        "start": _as_float(segment.get("start", 0)),
+        "dur": _as_float(duration),
+        "text": segment.get("text", "") or "",
+    }
+
+
+def build_actor_input(video_url, language=None):
+    """Build johnvc/YoutubeTranscripts run input.
+
+    Args:
+        video_url: Canonical YouTube watch URL.
+        language: Optional ISO 639-1 code from --lang.
+
+    Returns:
+        Actor input dict with youtube_url and optional languages.
+    """
+    payload = {"youtube_url": video_url}
+    if language:
+        payload["languages"] = [language]
+    return payload
+
+
+def normalize_transcript_result(result):
+    """Normalize an Apify dataset item to title/language/segments.
+
+    Accepts live johnvc/YoutubeTranscripts rows (timestamped + duration),
+    cached pintostudio rows (data + dur), and already-normalized cache
+    files that store segments.
+
+    Args:
+        result: One dataset item or a cached transcript dict.
+
+    Returns:
+        Dict with title, language, and segments (start/dur/text).
+
+    Raises:
+        ValueError: When the Actor row reports a failed fetch.
+    """
+    if not isinstance(result, dict):
+        return {"title": "Unknown", "language": "unknown", "segments": []}
+
+    if result.get("success") is False or result.get("error") is True:
+        message = result.get("error_message") or "transcript fetch failed"
+        if isinstance(message, bool):
+            message = "transcript fetch failed"
+        raise ValueError(str(message))
+
+    if isinstance(result.get("segments"), list):
+        raw_segments = result["segments"]
+    elif isinstance(result.get("timestamped"), list):
+        raw_segments = result["timestamped"]
+    elif isinstance(result.get("data"), list):
+        raw_segments = result["data"]
+    else:
+        raw_segments = []
+
+    language = result.get("language") or result.get("language_code") or "unknown"
+    title = result.get("title") or "Unknown"
+    return {
+        "title": title,
+        "language": language,
+        "segments": [_normalize_segment(item) for item in raw_segments],
+    }
 
 
 def extract_video_id(url):
@@ -201,12 +300,7 @@ def run_apify_actor(video_url, api_token, language=None):
     # Start the actor run
     run_url = f"{APIFY_API_BASE}/acts/{APIFY_ACTOR_ID}/runs"
 
-    input_data = {
-        "videoUrl": video_url
-    }
-
-    if language:
-        input_data["preferredLanguage"] = language
+    input_data = build_actor_input(video_url, language)
 
     headers = {
         "Content-Type": "application/json"
@@ -285,14 +379,18 @@ def run_apify_actor(video_url, api_token, language=None):
             sys.exit(1)
 
         result = results[0]
+        try:
+            normalized = normalize_transcript_result(result)
+        except ValueError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            sys.exit(1)
 
-        # Normalize output: extract segments from the `data` field
-        segments = result.get("data", [])
-        return {
-            "title": result.get("title", "Unknown"),
-            "language": result.get("language", "unknown"),
-            "segments": segments
-        }
+        if not normalized["segments"]:
+            print("Error: No transcript found for this video.", file=sys.stderr)
+            print("The video might not have captions available.", file=sys.stderr)
+            sys.exit(1)
+
+        return normalized
 
     except requests.exceptions.RequestException as e:
         print(f"Error fetching results: {e}", file=sys.stderr)
@@ -433,8 +531,6 @@ def process_batch(batch_file, api_token, use_cache, language, output_json):
     # Print summary
     print(f"\n{'='*40}", file=sys.stderr)
     print(f"Batch complete: {fetched} fetched, {cached} cached, {failed} failed", file=sys.stderr)
-    if fetched > 0:
-        print(f"[Cost: ~${fetched * 0.007:.3f} for {fetched} API call(s)]", file=sys.stderr)
 
     return results
 
@@ -570,9 +666,6 @@ def main():
         print(f"Transcript saved to: {args.output}", file=sys.stderr)
     else:
         print(output)
-
-    if not from_cache:
-        print("\n[Cost: ~$0.007 per video]", file=sys.stderr)
 
 
 if __name__ == "__main__":

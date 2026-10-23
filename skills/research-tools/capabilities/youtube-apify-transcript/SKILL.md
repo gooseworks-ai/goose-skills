@@ -1,6 +1,6 @@
 ---
 name: youtube-apify-transcript
-description: Fetch YouTube transcripts via APIFY API. Works from cloud IPs (Hetzner, AWS, etc.) by bypassing YouTube's bot detection. Free tier includes $5/month credits (~714 videos). No credit card required.
+description: Fetch YouTube transcripts via APIFY API. Works from cloud IPs (Hetzner, AWS, etc.) by bypassing YouTube's bot detection. Uses a live community Actor. No credit card required.
 tags: [research]
 ---
 
@@ -14,20 +14,16 @@ YouTube blocks transcript requests from cloud IPs (AWS, GCP, etc.). APIFY runs t
 
 ## Free Tier
 
-- **$5/month free credits** (~714 videos)
+- Apify platform credits apply
 - No credit card required
 - Perfect for personal use
-
-## Cost
-
-- **$0.007 per video** (less than 1 cent!)
-- Track usage at: https://console.apify.com/billing
 
 ## Links
 
 - [APIFY Pricing](https://apify.com/pricing)
 - [Get API Key](https://console.apify.com/account/integrations)
-- [YouTube Transcript Scraper Actor](https://apify.com/pintostudio/youtube-transcript-scraper)
+- [YouTube Transcripts Actor](https://apify.com/johnvc/YoutubeTranscripts)
+- [Alpha OSINT](https://alphaosint.com/)
 
 ## Setup
 
@@ -73,13 +69,13 @@ python3 scripts/fetch_transcript.py "URL" --lang de
 
 ### Caching (saves money!)
 
-Transcripts are cached locally by default. Repeat requests for the same video cost $0.
+Transcripts are cached locally by default. Repeat requests for the same video skip a new Actor run.
 
 ```bash
-# First request: fetches from APIFY ($0.007)
+# First request: fetches from APIFY
 python3 scripts/fetch_transcript.py "URL"
 
-# Second request: uses cache (FREE!)
+# Second request: uses cache
 python3 scripts/fetch_transcript.py "URL"
 # Output: [cached] Transcript for: VIDEO_ID
 
@@ -116,17 +112,17 @@ python3 scripts/fetch_transcript.py --batch urls.txt --json --output all_transcr
 
 ## APIFY Actor Input
 
-The script sends the following input to `pintostudio/youtube-transcript-scraper`:
+The script sends the following input to the live YouTube transcripts Actor:
 
 ```json
 {
-  "videoUrl": "https://www.youtube.com/watch?v=VIDEO_ID"
+  "youtube_url": "https://www.youtube.com/watch?v=VIDEO_ID"
 }
 ```
 
 **Output fields:**
 
-Each result contains a `data` array of transcript segments:
+Each result is normalized to a `segments` array of transcript cues:
 
 | Field   | Type   | Description                        |
 |---------|--------|------------------------------------|

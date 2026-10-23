@@ -14,9 +14,7 @@ Fetch YouTube video transcripts from anywhere — even cloud servers where YouTu
 
 ## 💰 Free Tier
 
-APIFY offers **$5/month free credits** — that's approximately **714 videos per month** at $0.007 each!
-
-No credit card required. [Sign up here](https://apify.com/)
+APIFY offers a monthly free-credit allowance. No credit card required. [Sign up here](https://apify.com/)
 
 ## 🚀 Quick Start
 
@@ -34,9 +32,10 @@ See [SKILL.md](skills/youtube-apify-transcript/SKILL.md) for full documentation,
 
 ## 🔗 Links
 
-- [APIFY Free Tier](https://apify.com/pricing) - $5/month free
+- [APIFY Free Tier](https://apify.com/pricing)
 - [Get API Key](https://console.apify.com/account/integrations)
-- [YouTube Transcripts Actor](https://apify.com/karamelo/youtube-transcripts)
+- [YouTube Transcripts Actor](https://apify.com/johnvc/YoutubeTranscripts)
+- [Alpha OSINT](https://alphaosint.com/)
 
 ## ⚙️ Requirements
 
