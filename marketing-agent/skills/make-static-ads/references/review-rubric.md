@@ -25,7 +25,7 @@ The checks the judge runs on every render (the `make-static-ads-render-review` s
 | 19 | Set diversity | `creative-taxonomy.md` §4 still holds after retries and drops: cover the text — no two ads look alike; no two share reason to buy + framework + visual style | REMAKE set |
 | 20 | Rights | No celebrity or lookalike, no third-party trademark, competitor ads used for structure only, creator/model permission on file | BLOCK |
 | 21 | Destination match | The destination shows the product, offer and promise of the ad | NOTE (flag to analyze-performance's page audit) |
-| 22 | Reference used, not copied | None of a reference's words, product, logo or people appear. For a direct competitor, the main agent puts the render beside the reference with both logos covered: could a buyer take ours for theirs? (`research.md` §4) | REMAKE / BLOCK if copied |
+| 22 | Template used as its level says, not copied | Close and balanced keep the template's layout and text slots; bold keeps only its device or look. None of a template's words, product, logo or people appear. For a direct competitor, the main agent puts the render beside the reference with both logos covered: could a buyer take ours for theirs? (`research.md` §4) | REMAKE / BLOCK if copied |
 | 23 | Prompt followed | Every on-image word in the composed prompt is drawn, and nothing else; type, colours and logo / no logo as the prompt says | REMAKE |
 | 24 | Logo matches the kit | Same shape, letters and colours as the kit logo file; recoloured or redrawn = fail | REMAKE |
 | 25 | Bodies and products in use | Feet and shoes face the right way, garments are worn correctly, hands look natural; a floating product has a believable shadow or is clearly a cut-out graphic | REMAKE |
@@ -33,10 +33,11 @@ The checks the judge runs on every render (the `make-static-ads-render-review` s
 | 27 | Text inside its panel | No line crosses a band or card edge; nothing is cut off at the canvas edge | REMAKE |
 | 28 | Idea intact | The board row's physical event happened and its protected choice is visible at thumbnail size. A polished image that lost the event is a failed ad | REMAKE |
 | 29 | Not a repeat | No example content (search query, names, on-screen numbers) copied from an ad on the made-before list | REMAKE |
+| 30 | Brand fit | Next to two of the brand's own ads (`profile.md`), it reads as the same brand: voice, look, text style | REMAKE |
 
 ## Order
 
-Check 28 first: if the idea didn't happen, nothing else matters. Then 3 (right product), 8 (spelling) and 1–2 (claims and invented marks).
+Check 28 first: if the idea didn't happen, nothing else matters. Then 30 (brand fit), 22 (template per level), 3 (right product), 8 (spelling) and 1–2 (claims and invented marks).
 
 **What juniors miss:** 1 (implied and imported claims), 2 (invented seals), 4 (second-person attributes), 7 (narrowed offer terms), 11 (illegible qualifier), 13 (a 9:16 headline under the Reels caption).
 

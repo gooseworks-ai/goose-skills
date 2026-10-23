@@ -21,10 +21,10 @@ Readable name for the human and the ad account: `brand_product_angle_stage_hook#
 
 Show the concept board from `board.md`, trimmed for the marketer:
 
-| # | The idea in one line | What you'll see | Headline / support | Why it's ours (fact or customer words, source) | Quote |
-|---|---|---|---|---|---|
+| # | Angle (yours / new) | The idea in one line | What you'll see | On-image text | Template it's built on | Why it's ours (fact or customer words, source) | Quote |
+|---|---|---|---|---|---|---|---|
 
-Above it: what was read ("Read: 14 reviews, 20 of ~300 live Meta ads, the product page; LinkedIn not checked") and what the brand already runs. Below it: the critic's main objection and what changed, cut lines with what would confirm them, open flags, the sentence "If an image fails my check I redo it once, at the same price.", and one question: "Go ahead with these quotes?" Prompts, fonts and palettes stay in the batch file; show them when asked.
+Above it: what was read ("Read: 14 reviews, 20 of ~300 live Meta ads, 15 X posts, the homepage; LinkedIn not checked"), the creativity level and who chose it, the angles and who chose them, and a short version of the brand profile (positioning, angles, look) so the marketer can see the ads were built to fit it. Below it: the critic's main objection and what changed, cut lines with what would confirm them, open flags, the sentence "If an image fails my check I redo it once, at the same price.", and one question: "Go ahead with these quotes?" Prompts, fonts and palettes stay in the batch file; show them when asked.
 
 ## 4. The finished set (Step 9)
 

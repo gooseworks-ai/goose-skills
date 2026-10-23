@@ -46,7 +46,7 @@ The event must have a **reason**. Advice crosses the screen because a parent is 
 
 ### Step D: write the headline last
 
-The headline **names the relationship**, not the effect, in words a person might say: "Mum has notes." "Sugar is a plus-one." "Sorry. Already booked." The image carries the joke. A short support line ties it to the product fact ("Unsweetened chai mix. Invite sugar if you like.").
+The headline **names the relationship**, not the effect, in words a person might say: "Mum has notes." "Sugar is a plus-one." "Sorry. Already booked." The image carries the joke. Other text only where the template or the brand's own style has a slot for it (`levels.md`); a fact that doesn't fit goes in the post text.
 
 ### Step E: name the choice worth protecting
 
@@ -62,15 +62,19 @@ One sentence per ad: the detail that, if lost, kills the idea. "The hand must vi
 
 ## 4. The set
 
+Every ad must be one **this brand would run**: it serves an angle from the brand profile (or is marked as a new one), sounds like the brand and fits its look (`brand-profile.md`). A brilliant idea in someone else's voice fails.
+
+No repeats: against the brand's live ads and its last 5–10 ads made in GooseWorks, a new ad may share an angle, but at least one of message, visual idea or template must change. The same ad resized or for another platform is not a repeat.
+
 Five ads should be **five different meanings**, not five looks. Kolkata covered family, convenience, personal time, home and sweetness. Ask: if I cover the headlines, do two images say the same thing? Two rows built on the same product fact (why Drizzle differs from Sizzle, shown two ways) are one meaning. Merge them and find another starting point.
 
 Start from the product's **main job** for its buyer, then the facts that only this brand has. Side features come last: they make good retargeting ads, not a first impression.
 
 At most one ad in five may be a straight demonstration, and only when watching the action answers the buyer's main question.
 
-## 5. Where references fit
+## 5. Where templates fit
 
-A reference ad from another brand can give you a **device**, not a layout. The Oatside image of a carton coming out of a laptop gave permission for "an object crosses a screen". That device was used directly in one ad, loosely in two and not at all in two more, where the product fact carried the idea. See the find-references step for roles.
+Every ad has a template, chosen after the idea; the creativity level decides how much of it the ad keeps (`levels.md`). At bold, a template from another brand gives you a **device**, not a layout. The Oatside image of a carton coming out of a laptop gave permission for "an object crosses a screen". That device was used directly in one ad, loosely in two and not at all in two more, where the product fact carried the idea. See the find-references step for roles.
 
 ## 6. The worked example (do not copy)
 

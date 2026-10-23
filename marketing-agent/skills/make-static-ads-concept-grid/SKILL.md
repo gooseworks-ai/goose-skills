@@ -1,62 +1,77 @@
 ---
 name: make-static-ads-concept-grid
 description: >-
-  Step of make-static-ads: turns product facts and customer situations into distinct visual ideas, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.
-version: 0.6.1
+  Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.
+version: 0.7.0
 ---
 
 # concept-grid
 
-**Read first, whole:** `../make-static-ads/references/ideas.md`. It is the method; this step is the order of work.
-**Reads:** what Step 1 of the playbook found (product facts, customer words, live ads, history, claims on file).
+**Read first, whole:** `../make-static-ads/references/ideas.md` (the method), `../make-static-ads/references/levels.md` (what each creativity level keeps from the template). This step is the order of work.
+**Reads:** `profile.md` and what Step 1 found (product facts, customer words, history); the angles and level chosen in Step 2.
 **Writes:** `board.md` (in the batch folder, or the batch file on a host with no files).
 
-## 1. Starting points (at least twice the ad count, never fewer than 10)
+The order is fixed: **angle → message → visual idea → template.** The template never decides the message.
 
-List product facts and human situations, one plain sentence each, with its source ("product page", "review, Amazon, 3 Oct", "voc V-07") or **(hypothesis)**. Keep the ones you drop, with why, at the bottom of the board. Don't start from the brand's own live ads; they tell you what's already said, not what to say next.
+## 1. Angle
 
-## 2. Ideas
+Each ad starts from the angle chosen in Step 2: one of the profile's angles, or a marked new one (at most one in five). Several ads may share an angle; they then need different messages.
 
-For each promising starting point: the tension (want / obstacle / why this product belongs), then a physical event that makes it visible (`ideas.md` §2 C). Draft two or three different events for the strongest starting points before choosing. Look at references now if you need more devices (the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`)).
+## 2. Message
 
-Run the five tests on each candidate (`ideas.md` §3: swap, stranger, thumbnail, build, truth). Fix or drop failures.
+For each ad, the one thing it says, as a plain sentence, grounded in a product fact or customer situation with its source, or labelled **(hypothesis)**. Draft two or three messages per angle and keep the strongest. The message must sound like the brand (the profile's voice and positioning), not like a generic ad.
 
-## 3. Choose the set
+## 3. Visual idea
 
-Pick the ads so each one says something different (`ideas.md` §4). At most one straight demonstration per five, and only if watching it answers the buyer's main question. Don't repeat a meaning from the brand's live ads or earlier batches; reusing a fact in a new event is fine.
+For each message: the tension (want / obstacle / why this product belongs), then the picture. At **bold**, a physical event (`ideas.md` §2 C). At **balanced**, an event or scene that fits a template's layout. At **close**, the template's own scene with this brand swapped in, so the idea is mostly in the message. Draft two or three for the strongest messages before choosing. Browse templates or references now if you need more devices.
 
-## 4. Write the board
+## 4. Template
+
+Every ad gets a template, picked after the visual idea so the layout fits it (the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`)). Record what the level keeps from it (`levels.md`).
+
+## 5. Tests
+
+Run on each candidate, fix or drop failures:
+- **Brand fit:** would this brand run it? It serves a profile angle (or is marked new), sounds like the brand, and its look fits the profile. An idea the brand's marketer would call "not us" fails, however clever.
+- **No repeat:** against the brand's live ads and its last 5–10 ads made in GooseWorks, and within this set: an ad may share an angle, but at least one of message, visual idea or template must change. The same ad resized or for another platform is not a repeat.
+- The five tests in `ideas.md` §3: swap, stranger, thumbnail, build, truth.
+
+## 6. Choose the set
+
+Five different messages, not five looks (`ideas.md` §4). At most one straight demonstration per five, and only if watching it answers the buyer's main question.
+
+## 7. Write the board
 
 ```markdown
 # Concept board — <brand>, <product>, <date>
 
 Read: <what you actually read, with counts; what was skimmed; what wasn't checked>
+Level: <close / balanced / bold> · Angles: <chosen, and who chose them>
 
-| # | Starting point (source) | Human situation | Physical event | Headline / support | Protect | References (role) |
+| # | Angle (profile / new) | Message (source) | Visual idea | Headline / support | Template (source, what it keeps) | Protect |
 |---|---|---|---|---|---|---|
 | 1 | ... | ... | ... | "..." / "..." | ... | ... |
 
 ## Critic notes and what changed
-## Dropped starting points and ideas (why)
+## Dropped ideas (why)
 ```
 
-- **Starting point:** the fact or situation and its source. A hypothesis is labelled.
-- **Physical event:** one sentence a stranger could picture.
-- **Headline / support:** a working line; the ad-copy step finalises it.
+- **Visual idea:** one sentence a stranger could picture.
+- **Headline / support:** in the text format the level sets; a working line the ad-copy step finalises.
+- **Template:** where it came from (brand's own ad, library, another brand's ad) and what this ad keeps from it.
 - **Protect:** the one detail that kills the idea if lost (`ideas.md` §2 E).
-- **References:** which reference contributed what (device / craft / layout), or "none".
 
-## 5. The critic
+## 8. The critic
 
-Give a **fresh subagent** only: the board (without the critic section), the product photos, the product records and claims on file as they came back (not your summary of them), and the brand's live ads you looked at. Not your reasoning. Ask it to:
-- run the swap test on every row and name any that a competitor could run;
-- run the stranger test: would someone who has never heard of the brand know what it sells and why they'd want it?
-- name rows that are demonstrations dressed up as ideas;
-- name pairs that say the same thing, including two rows built on one product fact;
+Give a **fresh subagent** only: the board (without the critic section), `profile.md`, the brand's own ads you looked at, the product photos, and the product records and claims on file as they came back (not your summary). Not your reasoning. Ask it to:
+- name any row this brand would not run, judged against the profile and its real ads;
+- name any row that repeats a live or recent ad, or another row, in message, visual idea and template together;
+- run the swap and stranger tests on every row;
+- name demonstrations dressed up as ideas;
 - check each event is buildable (no small handwriting, long in-scene text, many hands, crowds or fragile physics) and readable at thumbnail size;
-- check each starting point's source supports what the row implies;
+- check each source supports what the row implies;
 - pick the two weakest rows and say why.
 
-Fix or replace what it names, then write its notes and your changes into the board. A row you keep against its objection says why. **New or rewritten rows go back to a critic** (the same one or a fresh one) before you continue; an unreviewed replacement is the easiest place for a weak idea to slip through. No subagents on this host → show the board to the marketer and ask for their critique before going on; your own review does not count.
+Fix or replace what it names; write its notes and your changes into the board. A row you keep against its objection says why. **New or rewritten rows go back to a critic** before you continue. No subagents on this host → show the board to the marketer and ask for their critique; your own review does not count.
 
-**Done:** every row has a source or a hypothesis label, a physical event, a protected choice, and survived the critic or was changed.
+**Done:** every row has an angle, a sourced message, a visual idea, a template and a protected choice, passed the tests, and survived the critic or was changed.

@@ -18,7 +18,7 @@ Free, by eye, on a host with a browser. Up to 20 static ads per platform; note e
 - **No browser and nothing imported** → the proxy, on one yes to a ceiling (the `spend-gate` skill (`../../spend-gate/SKILL.md`) branch B): `gooseworks:data_call_provider` `provider: "scrapecreators"`, `/v1/facebook/adLibrary/search/companies` `{query}` for the page id, then `/v1/facebook/adLibrary/company/ads` `{pageId, status: "ACTIVE", media_type: "all", trim: "true"}`.
 - **Made before in GooseWorks:** `gooseworks:ads_creative_read` `tags: ["made-by:make-static-ads"]`, `limit: 20`; the three latest batch files in `ads/batches/`. Never page through an untagged creatives list (`engine-notes.md`).
 
-Write one line per distinct message the brand already runs ("authenticity: real Kolkata recipe", "20% off first order", "ingredients flat lay"). The board should not repeat those meanings.
+Look at the images, and write what you see into `profile.md` (`brand-profile.md`): the angles the brand runs, how its ads look and how it writes on-image text. These are both the brand's style to fit and the history a new ad must not repeat. Also read the brand's recent social posts (`brand_read` organic, the linked accounts in the browser).
 
 ## 3. Other brands, for references
 
