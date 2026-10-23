@@ -517,3 +517,22 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 **Open decision.** Other brands' ad images still never go to the image model (rights). The Kolkata run attached two other brands' ads as idea and craft references. If ideas suffer without them, revisit with the marketer's rights position. [[derived-from::kolkata-chai-creative-experiment-2026-10-22]] [[supersedes::round-26]]
 
 **Test 1 result (23 Oct, free, Anna and Sarah on staging).** Two fresh agents, same request ("Make 5 static ads… your choice… stop before spending"). Agent A used 0.6.0; agent B had no playbook. A blind creative-director agent compared the two boards unlabelled and chose A's to render: B's five were demonstrations that fail the swap test (seasonal product shots), and two carried risky sugar claims. A's best rows ("It was full on Monday." pencil marks down the jar; "The crouton has left the salad.") were rated real thumb-stoppers. Weaknesses it named: A's ideas mostly fit any snack in a clear jar, all five bet on one product, small handwriting may garble, and the office-supply row is a drab pun. A's critic cut three of five first drafts (four shared one miniature trick); its replacements were not re-critiqued, so the concept-grid step now sends new rows back to a critic. One brand, one run: evidence, not proof.
+
+
+## Round 28 — 23 Oct: two more brands; the stranger and build tests (0.6.1)
+
+**Summary.** The same free test as round 27 (one agent with the skill, one without, a blind judge) on two more staging brands. The skill won Graza and lost Gooseworks. Across all three brands: 2 wins of 3.
+
+| Brand | Judge's pick | Why |
+|---|---|---|
+| Anna and Sarah (snacks) | Skill | No-skill board was seasonal product shots |
+| Graza (olive oil) | Skill, not a runaway | Skill's ads were built from things only Graza has (one olive picked twice, the 24 vs 13 lb yield, oil in a beer can); the no-skill board would suit any premium olive oil. Best single ad: the Graza can among seltzer cans |
+| Gooseworks (B2B software) | No skill | The skill's ads were "clever riddles about side features" (API keys, creator search); none said what Gooseworks is, so a stranger would scroll on. The no-skill board told a stranger what the product does |
+
+**Change.**
+- New **stranger test**: someone who has never heard of the brand must know what it sells and why they'd want it. For new or unfamiliar categories, most of the set carries the main promise; side features are for retargeting.
+- New **build test**, flagged by all three judges: no small handwriting, long in-scene text, many hands, crowds or fragile physics.
+- Two rows built on one product fact count as one meaning (the Graza skill board told the Drizzle-vs-Sizzle story twice).
+- The critic gets the product records as they came back, not the agent's summary.
+
+**Not yet re-tested.** These fixes target the Gooseworks loss; a re-run on Gooseworks would show whether they close it.

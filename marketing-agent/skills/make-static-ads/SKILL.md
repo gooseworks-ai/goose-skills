@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.6.0
+version: 0.6.1
 ---
 
 # make-static-ads
@@ -45,7 +45,7 @@ One message, only for what the brand records don't settle: which product, how ma
 
 Run the `make-static-ads-concept-grid` skill (`../make-static-ads-concept-grid/SKILL.md`). It turns Step 1 into starting points, tensions and physical events (`references/ideas.md`), looks at references for devices (the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`)), and has a fresh critic attack the board.
 
-**Done:** `board.md` has one row per ad that passed the swap, thumbnail and truth tests, plus the critic's notes and what changed because of them.
+**Done:** `board.md` has one row per ad that passed the swap, stranger, thumbnail, build and truth tests, plus the critic's notes and what changed because of them.
 
 ### 4. Copy
 

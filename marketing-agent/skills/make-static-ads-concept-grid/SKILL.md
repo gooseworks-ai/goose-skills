@@ -2,7 +2,7 @@
 name: make-static-ads-concept-grid
 description: >-
   Step of make-static-ads: turns product facts and customer situations into distinct visual ideas, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.
-version: 0.6.0
+version: 0.6.1
 ---
 
 # concept-grid
@@ -19,7 +19,7 @@ List product facts and human situations, one plain sentence each, with its sourc
 
 For each promising starting point: the tension (want / obstacle / why this product belongs), then a physical event that makes it visible (`ideas.md` §2 C). Draft two or three different events for the strongest starting points before choosing. Look at references now if you need more devices (the `make-static-ads-find-references` skill (`../make-static-ads-find-references/SKILL.md`)).
 
-Run the three tests on each candidate (`ideas.md` §3: swap, thumbnail, truth). Fix or drop failures.
+Run the five tests on each candidate (`ideas.md` §3: swap, stranger, thumbnail, build, truth). Fix or drop failures.
 
 ## 3. Choose the set
 
@@ -48,11 +48,12 @@ Read: <what you actually read, with counts; what was skimmed; what wasn't checke
 
 ## 5. The critic
 
-Give a **fresh subagent** only: the board (without the critic section), the product photos, the product facts and claims on file, and the brand's live ads you looked at. Not your reasoning. Ask it to:
+Give a **fresh subagent** only: the board (without the critic section), the product photos, the product records and claims on file as they came back (not your summary of them), and the brand's live ads you looked at. Not your reasoning. Ask it to:
 - run the swap test on every row and name any that a competitor could run;
+- run the stranger test: would someone who has never heard of the brand know what it sells and why they'd want it?
 - name rows that are demonstrations dressed up as ideas;
-- name pairs that say the same thing;
-- check each event is buildable and readable at thumbnail size;
+- name pairs that say the same thing, including two rows built on one product fact;
+- check each event is buildable (no small handwriting, long in-scene text, many hands, crowds or fragile physics) and readable at thumbnail size;
 - check each starting point's source supports what the row implies;
 - pick the two weakest rows and say why.
 
