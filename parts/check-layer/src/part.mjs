@@ -43,6 +43,10 @@
 // final cut's distinct setups (shot keyframes clustered by dHash) fail more than 30 % below
 // the reference's. And repeated_shot no longer lets a callback: intent clear a repeat on its
 // own: the callback's name must be in expect.approved_callbacks.
+// 1.9.0 adds speech the script does not have (src/speech-gaps.mjs, GOOSE-4034): speech_extra_words
+// fails a transcript with words the script lacks (a repeated word or line, or made-up words), and the
+// style flag no_unscripted_speech fails a voice between the timed scripted words, which the transcript
+// never shows because Whisper drops sounds that are not words.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg } from '../../_lib/part.mjs';
@@ -53,6 +57,7 @@ import { chkLineLoss, chkScriptLoss } from './lines.mjs';
 import { fmMeasure, fmMessage, fmRecord } from './final-measure.mjs';
 import { chkSpeechRateVsReference } from './speech-rate.mjs';
 import { chkSetupCount } from './setups.mjs';
+import { CHK_GAP_WINDOW_S, chkExtraWords, chkUnscriptedVoice, chkVoiceBandLevels } from './speech-gaps.mjs';
 import { CHK_CONTRAST_MIN, CHK_CONTRAST_OFFSET_S, CHK_CONTRAST_WARN, CHK_CUE_GUARD_S, CHK_DISTINCT_MIN, CHK_FLOOR_MAX_DB, CHK_FLOOR_MIN_DB, CHK_FLOOR_SPEECH_GAP_DB, CHK_MIN_SHOT_S, chkAdjacentDiffs, chkCueAcrossCut, chkCutContrast, chkFloorWindows, chkJudgeAmbience, chkSceneOpenings, chkShortShot, chkShotSound, chkShots, chkSpeechSpans } from './shots.mjs';
 
 const TARGET_LUFS = -14;
@@ -87,7 +92,7 @@ const FOOTAGE_MIN_MOTION = 1.5;
 const NUM = '-?\\d+(?:\\.\\d+)?(?:e-?\\d+)?';
 // Flags a machine measures here; any other flag is reported not_applicable (one that needs eyes, or one a
 // later check layer measures: a style may declare a flag before its layer version is pinned).
-const MEASURED_FLAGS = new Set(['logo_visible', 'footage_moves', 'sounds_match_messages', 'text_led', 'read_rate', 'cuts_between_words', 'cut_rate', 'retained_body', 'captions_cross_cuts', 'min_shot', 'ambience_floor', 'cut_contrast', 'distinct_adjacent_shots']);
+const MEASURED_FLAGS = new Set(['logo_visible', 'footage_moves', 'sounds_match_messages', 'text_led', 'read_rate', 'cuts_between_words', 'cut_rate', 'retained_body', 'captions_cross_cuts', 'min_shot', 'ambience_floor', 'cut_contrast', 'distinct_adjacent_shots', 'no_unscripted_speech']);
 const EYES_FLAGS = new Set(['text_legible', 'products_visible']);
 // retained_body: the new opening starts the video (within this) and leaves at least this much kept body.
 const RETAINED_START_MAX_S = 0.05;
@@ -439,6 +444,26 @@ export async function run(inputs, ctx) {
         if (silentAt === undefined) add(code, 'pass', { found: starts.length });
         else add(code, 'fail', { message: `No sound when the message at ${silentAt.toFixed(2)} s appears.`, expected: 'a sound with every message', found: `${silentAt.toFixed(2)} s` });
       }
+    } else if (flag === 'no_unscripted_speech') {
+      // A voice where no scripted word is timed: babble the transcript cannot show (GOOSE-4034).
+      const timed = speech.flatMap((s) => s.words || []);
+      const untimed = speech.some((s) => !(s.words || []).length && /[\p{L}\p{N}]/u.test(typeof s.spoken === 'string' ? s.spoken : s.text || ''));
+      if (expect.speech !== 'on_camera') add(code, 'not_applicable', { found: 'no on-camera speech' });
+      else if (speechCrosses) add(code, 'not_applicable', { found: crossNote });
+      else if (!m.has_audio) add(code, 'not_applicable', { found: 'no audio track' });
+      else if (!timed.length || untimed) add(code, 'not_applicable', { found: 'no word timings for every line' });
+      else {
+        const found = chkUnscriptedVoice(await chkVoiceBandLevels(ctx, video.path, bodyEnd), CHK_GAP_WINDOW_S, timed, bodyEnd);
+        if (!found) add(code, 'not_applicable', { found: 'too little timed speech to set a voice level' });
+        else if (found.loud.length) {
+          const g = found.loud[0];
+          add(code, 'fail', {
+            message: `Someone speaks from ${g.start_s.toFixed(1)} to ${g.end_s.toFixed(1)} seconds, where the script has no words: the take adds words of its own.`,
+            expected: 'no voice outside the scripted words',
+            found: found.loud.map((l) => `${l.start_s.toFixed(1)}-${l.end_s.toFixed(1)} s`).join(', '),
+          });
+        } else add(code, 'pass', { found: found.gaps.length });
+      }
     } else if (flag === 'text_led') {
       // The blank stretches themselves are judged in black_frames; here, how much of the video is blank.
       if (!blank) {
@@ -589,6 +614,8 @@ export async function run(inputs, ctx) {
   // form), else its text for a voice that said exactly its line. On-camera speech must have been
   // transcribed by a step before the layers: this layer orders nothing.
   const untranscribed = expect.speech === 'on_camera' && (!speech.length || speech.some((s) => typeof s.spoken !== 'string'));
+  // The review speech_extra_words reads after the speech check, when that check compared anything.
+  let extraReview = null;
   if (!script.length || expect.speech === 'none') add('speech_matches_script', 'not_applicable');
   else if (speechCrosses) add('speech_matches_script', 'not_applicable', { found: crossNote });
   else if (retained && !speech.length) add('speech_matches_script', 'not_applicable', { found: notChecked });
@@ -610,6 +637,7 @@ export async function run(inputs, ctx) {
       const words = String(text).replace(/[.!?]+/g, '').split(/\s+/).filter(Boolean);
       return words.length > 6 ? `${words.slice(0, 6).join(' ')}…` : words.join(' ');
     };
+    extraReview = { verdict, scriptWords: speechTokenize(reviewed, aliases), heardWords: speechTokenize(heard, aliases), quote };
     if (lineLoss) {
       const want = speechTokenize(lineLoss.line, aliases).join(' ');
       const same = script.flatMap((l, i) => (speechTokenize(l, aliases).join(' ') === want ? [i] : []));
@@ -623,6 +651,24 @@ export async function run(inputs, ctx) {
         message: worst ? `The speech differs from the approved script: ${worst.note}` : 'The speech differs from the approved script.',
         expected: 'the approved lines, as written',
         found: +verdict.ratio.toFixed(3),
+      });
+    }
+  }
+
+  // Words heard that the script does not have (1.9.0, GOOSE-4034). The similarity bar lets a few through:
+  // a take that said "glugging" twice scored 0.984 and passed.
+  if (!extraReview) add('speech_extra_words', 'not_applicable', { found: untranscribed ? 'no transcript' : 'no speech checked against a script' });
+  else {
+    const { verdict, scriptWords, heardWords, quote } = extraReview;
+    const extra = chkExtraWords(verdict, scriptWords, heardWords);
+    if (!extra) add('speech_extra_words', 'pass');
+    else {
+      add('speech_extra_words', 'fail', {
+        message: extra.repeat
+          ? `The speech says "${quote(extra.text)}" again: the take repeats words the script says once.`
+          : `The speech has words that are not in the script: "${quote(extra.text)}".`,
+        expected: 'only the approved lines, each said once',
+        found: extra.text,
       });
     }
   }
