@@ -186,7 +186,7 @@ If <50% of signups are joinable, the skill stops the analysis and outputs:
 
 - **Will not write to ad accounts** — pure analysis. Action via Meta Ads Manager or whatever write tool the calling agent has available.
 - **Will not fix tracking for you** — it tells you what's broken and how to fix it; the fix is a code change in your app.
-- **Will not generate creative or copy variants** — use `messaging-ab-tester` and `ad-angle-miner`.
+- **Will not generate creative or copy variants** — use `make-static-ads` and `ad-angle-miner`.
 - **Will not diagnose Meta system mechanics** (Breakdown Effect, Learning Phase) — pass the output to `meta-ads-analyzer` for that layer.
 - **Will not compute true LTV** — uses first-payout / first-value as proxy. Multi-touch LTV modeling is a different skill.
 
@@ -195,4 +195,4 @@ If <50% of signups are joinable, the skill stops the analysis and outputs:
 - **`meta-ads-analyzer`** — Run after this skill to interpret *why* a creative's quality is low using Meta's system mechanics
 - **`ad-campaign-analyzer`** — Use for cross-channel budget reallocation once true CAC is known
 - **`ad-to-landing-page-auditor`** — Pair with this when "Click → Signup" drop-off is the leak
-- **`messaging-ab-tester`** — Use to generate replacement creatives for anything in the Cut bucket
+- **`make-static-ads`** — Use to generate replacement creatives for anything in the Cut bucket

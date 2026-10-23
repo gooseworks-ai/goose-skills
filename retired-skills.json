@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "legacy_revision": "b1725097a2d69c1c076388f87cf4e1cd231527ae",
-  "decision": "Keep old skills temporarily where released playbooks do not fully replace the job. Approved 2026-10-22.",
+  "legacy_revision": "caa9dbf17fa844adce5bba77acff9ca5d15b86ef",
+  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved by Akhil 2026-10-23. The old skills stay readable at tag legacy-gtm-final.",
   "retired": [
     {
       "slug": "battlecard-generator",
@@ -16,12 +16,12 @@
     {
       "slug": "competitive-pricing-intel",
       "replacement": "research-competitors",
-      "reason": "Rival-craft \u00a76 covers tiers, feature gates, buyer-scenario cost, hidden charges and Wayback history; watch-and-react diffs packaging and price changes."
+      "reason": "Rival-craft §6 covers tiers, feature gates, buyer-scenario cost, hidden charges and Wayback history; watch-and-react diffs packaging and price changes."
     },
     {
       "slug": "competitor-content-tracker",
       "replacement": "research-competitors",
-      "reason": "Rival-craft \u00a73 covers social/blog/newsletter/podcast cadence, content mix and normalized top posts; the weekly watch compares snapshots and feeds."
+      "reason": "Rival-craft §3 covers social/blog/newsletter/podcast cadence, content mix and normalized top posts; the weekly watch compares snapshots and feeds."
     },
     {
       "slug": "competitor-intel",
@@ -36,7 +36,7 @@
     {
       "slug": "competitor-social-research",
       "replacement": "research-competitors",
-      "reason": "Rival-craft \u00a73 compares platforms, cadence, content mix, series and normalized top posts; the report delivers formats, angles and brand-specific tests."
+      "reason": "Rival-craft §3 compares platforms, cadence, content mix, series and normalized top posts; the report delivers formats, angles and brand-specific tests."
     },
     {
       "slug": "create-html-carousel",
@@ -62,724 +62,1083 @@
       "slug": "social-media-scraping-scrapecreators",
       "replacement": "scrapecreators-api",
       "reason": "Already only a compatibility alias directing all provider operations to scrapecreators-api; adds no independent API capability."
+    },
+    {
+      "slug": "aeo",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "ai-video-calls-tavus",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "ai-web-scraping-scrapegraph",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "amazon-search",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "api-tester",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "apollo-lead-finder",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "audience-research",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "beat-sync-reel",
+      "replacement": null,
+      "reason": "Old local video recipe; no current recipe uses it. Video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "blog-feed-monitor",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "brand-intel-branddev",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "brand-voice-extractor",
+      "replacement": "voice-card",
+      "reason": "The shared voice card learns a brand or author voice from its writing."
+    },
+    {
+      "slug": "browser-automation-notte",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "buyer-persona-generator",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "champion-move-outreach",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "champion-tracker",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "churn-risk-detector",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "cold-email-outreach",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "community-signals",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "company-current-gtm-analysis",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "company-domain-lookup-logodev",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "company-funding-search",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "company-intel",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "competitor-post-engagers",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "competitor-research",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "competitor-signals",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "comprehensive-enrichment",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "conference-speaker-scraper",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "contact-cache",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "contact-finder-contactout",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "content-asset-creator",
+      "replacement": "make-content",
+      "reason": "Make content now writes briefs, posts, articles and repurposed pieces from a source."
+    },
+    {
+      "slug": "content-brief-factory",
+      "replacement": "make-content",
+      "reason": "Make content now writes briefs, posts, articles and repurposed pieces from a source."
+    },
+    {
+      "slug": "content-repurposing",
+      "replacement": "make-content",
+      "reason": "Make content now writes briefs, posts, articles and repurposed pieces from a source."
+    },
+    {
+      "slug": "create-dashboard",
+      "replacement": "goose-graphics",
+      "reason": "goose-graphics renders charts, slides, diagrams and branded graphics."
+    },
+    {
+      "slug": "create-html-slides",
+      "replacement": "goose-graphics",
+      "reason": "goose-graphics renders charts, slides, diagrams and branded graphics."
+    },
+    {
+      "slug": "create-linkedin-content",
+      "replacement": "make-content",
+      "reason": "Make content now writes briefs, posts, articles and repurposed pieces from a source."
+    },
+    {
+      "slug": "create-workflow-diagram",
+      "replacement": "goose-graphics",
+      "reason": "goose-graphics renders charts, slides, diagrams and branded graphics."
+    },
+    {
+      "slug": "create-x-content",
+      "replacement": "make-content",
+      "reason": "Make content now writes briefs, posts, articles and repurposed pieces from a source."
+    },
+    {
+      "slug": "creator-profile-teardown",
+      "replacement": "work-with-creators",
+      "reason": "Working with creators now covers discovery, vetting, briefs and rates."
+    },
+    {
+      "slug": "customer-discovery",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "customer-story-builder",
+      "replacement": "make-content",
+      "reason": "Make content now writes briefs, posts, articles and repurposed pieces from a source."
+    },
+    {
+      "slug": "customer-win-back-sequencer",
+      "replacement": "email-lifecycle",
+      "reason": "Email lifecycle now plans and writes broadcasts and flows, including win-back."
+    },
+    {
+      "slug": "data-charts-tako",
+      "replacement": "goose-graphics",
+      "reason": "goose-graphics renders charts, slides, diagrams and branded graphics."
+    },
+    {
+      "slug": "demo-builder",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "disqualification-handling",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "ebay-search",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "email-campaign",
+      "replacement": "email-lifecycle",
+      "reason": "Email lifecycle now plans and writes broadcasts and flows, including win-back."
+    },
+    {
+      "slug": "email-drafting",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "email-finder-hunter",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "email-finder-tomba",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "enrichment-nyne",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "event-prospecting-pipeline",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "event-signals",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "expansion-signal-spotter",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "extract-webpage-data",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "feature-launch-playbook",
+      "replacement": "plan-campaign",
+      "reason": "Campaign planning now picks channels, budgets, tests and the launch brief."
+    },
+    {
+      "slug": "find-email-by-name",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "find-skill",
+      "replacement": null,
+      "reason": "Removed: the gooseworks skill finds skills, and new skills are made in the goose-skills repo."
+    },
+    {
+      "slug": "find-twitter-influencers",
+      "replacement": "work-with-creators",
+      "reason": "Working with creators now covers discovery, vetting, briefs and rates."
+    },
+    {
+      "slug": "funding-signal-monitor",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "funding-signal-outreach",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "generate-voice-guide",
+      "replacement": "voice-card",
+      "reason": "The shared voice card learns a brand or author voice from its writing."
+    },
+    {
+      "slug": "get-qualified-leads-from-luma",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "github-repo-signals",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "google-search-ads-builder",
+      "replacement": "plan-campaign",
+      "reason": "Campaign planning now picks channels, budgets, tests and the launch brief."
+    },
+    {
+      "slug": "gtm-enrichment-deep",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "gtm-enrichment-smart",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "help-center-article-generator",
+      "replacement": "make-content",
+      "reason": "Make content now writes briefs, posts, articles and repurposed pieces from a source."
+    },
+    {
+      "slug": "hiring-signal-outreach",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "hyperlocal-weather-precip",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "icp-identification",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "icp-website-audit",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "icp-website-review",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "identity-verification-didit",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "image-analyzer",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "inbound-lead-enrichment",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "inbound-lead-qualification",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "inbound-lead-triage",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "industry-scanner",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "influencer-prospecting",
+      "replacement": "work-with-creators",
+      "reason": "Working with creators now covers discovery, vetting, briefs and rates."
+    },
+    {
+      "slug": "instagram-scraper",
+      "replacement": "marketing-data-access",
+      "reason": "Raw social data reads (posts, profiles, rankings) now go through GooseWorks data access."
+    },
+    {
+      "slug": "investor-call-prep",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "investor-research",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "job-scraper",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "job-search",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "kol-content-monitor",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "kol-discovery",
+      "replacement": "work-with-creators",
+      "reason": "Working with creators now covers discovery, vetting, briefs and rates."
+    },
+    {
+      "slug": "kol-engager-icp",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "landing-page-intel",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "lead-discovery",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "lead-enrichment",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "lead-enrichment-sixtyfour",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "leadership-change-outreach",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "linkedin-commenter-extractor",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "linkedin-influencer-discovery",
+      "replacement": "work-with-creators",
+      "reason": "Working with creators now covers discovery, vetting, briefs and rates."
+    },
+    {
+      "slug": "linkedin-job-scraper",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "linkedin-message-writer",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "linkedin-outreach",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "linkedin-post-research",
+      "replacement": "marketing-data-access",
+      "reason": "Raw social data reads (posts, profiles, rankings) now go through GooseWorks data access."
+    },
+    {
+      "slug": "linkedin-scraper",
+      "replacement": "marketing-data-access",
+      "reason": "Raw social data reads (posts, profiles, rankings) now go through GooseWorks data access."
+    },
+    {
+      "slug": "luma-event-attendees",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "market-research",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "meeting-brief",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "messaging-ab-tester",
+      "replacement": "make-static-ads",
+      "reason": "Static ads now include copy variants and fixes for rejected ads."
+    },
+    {
+      "slug": "meta-ad-scraper",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "multi-platform-search-searchapi",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "news-signal-outreach",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "newsletter-monitor",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "newsletter-signal-scanner",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "newsletter-sponsorship-finder",
+      "replacement": null,
+      "reason": "Removed: no current playbook buys newsletter sponsorships."
+    },
+    {
+      "slug": "outbound-prospecting-engine",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "outlier-post-finder",
+      "replacement": "run-organic-social",
+      "reason": "Organic social now researches each platform, plans the calendar and checks posts."
+    },
+    {
+      "slug": "paid-channel-prioritizer",
+      "replacement": "plan-campaign",
+      "reason": "Campaign planning now picks channels, budgets, tests and the launch brief."
+    },
+    {
+      "slug": "pain-language-engagers",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "pdf-processor",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "people-company-search-fiber",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "person-lookup",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "phone-verification",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "pipeline-review",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "prediction-market-odds",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "prediction-markets-dome",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "product-hunt-scraper",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "product-reel-generator",
+      "replacement": null,
+      "reason": "Old local video recipe; no current recipe uses it. Video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "programmatic-seo-planner",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "programmatic-seo-spy",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "remotion-best-practices",
+      "replacement": null,
+      "reason": "Old local video recipe; no current recipe uses it. Video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "restaurant-booking",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "review-intelligence-digest",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "review-scraper",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "review-site-scraper",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "sales-call-prep",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "sales-coaching",
+      "replacement": null,
+      "reason": "Removed: sales and investor work is outside the marketing catalog."
+    },
+    {
+      "slug": "sales-prospecting",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "send-sms-textbelt",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "seo-analyzer",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "seo-content-audit",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "seo-content-engine",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "seo-domain-analyzer",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "seo-opportunity-finder",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "seo-traffic-analyzer",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "sequence-performance",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "setup-outreach-campaign-smartlead",
+      "replacement": "write-outreach",
+      "reason": "Write outreach now writes email and LinkedIn sequences, first lines, replies and an import file; the marketer sends from their own tool."
+    },
+    {
+      "slug": "signal-detection-pipeline",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "signal-scanner",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "site-content-catalog",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "skill-creator",
+      "replacement": null,
+      "reason": "Removed: the gooseworks skill finds skills, and new skills are made in the goose-skills repo."
+    },
+    {
+      "slug": "social-kit",
+      "replacement": "run-organic-social",
+      "reason": "Organic social now researches each platform, plans the calendar and checks posts."
+    },
+    {
+      "slug": "social-listening",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "sponsored-newsletter-finder",
+      "replacement": null,
+      "reason": "Removed: no current playbook buys newsletter sponsorships."
+    },
+    {
+      "slug": "structured-scraping-riveter",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "talking-head-video",
+      "replacement": null,
+      "reason": "Old local video recipe; no current recipe uses it. Video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "tam-builder",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "targeted-prospecting",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "team-linkedin-profiles",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "tech-stack-teardown",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "terminal-gif-recordings",
+      "replacement": null,
+      "reason": "Old local video recipe; no current recipe uses it. Video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "tiktok-influencer-finder",
+      "replacement": "work-with-creators",
+      "reason": "Working with creators now covers discovery, vetting, briefs and rates."
+    },
+    {
+      "slug": "tiktok-search",
+      "replacement": "marketing-data-access",
+      "reason": "Raw social data reads (posts, profiles, rankings) now go through GooseWorks data access."
+    },
+    {
+      "slug": "topical-authority-mapper",
+      "replacement": "improve-search-visibility",
+      "reason": "Search visibility now covers SEO and AI-search checks, page fixes, topic gaps and page-set plans."
+    },
+    {
+      "slug": "trend-discovery",
+      "replacement": "run-organic-social",
+      "reason": "Organic social now researches each platform, plans the calendar and checks posts."
+    },
+    {
+      "slug": "trending-ad-hook-spotter",
+      "replacement": "research-competitors",
+      "reason": "Competitor research now covers rival profiles, their ads, pages, tools, posts and engagers."
+    },
+    {
+      "slug": "twitter-mention-tracker",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "twitter-profile-lookup",
+      "replacement": "marketing-data-access",
+      "reason": "Raw social data reads (posts, profiles, rankings) now go through GooseWorks data access."
+    },
+    {
+      "slug": "update-brand-kit",
+      "replacement": null,
+      "reason": "Removed: brand facts are saved with GooseWorks brand tools."
+    },
+    {
+      "slug": "uptime-monitor",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "verify-email",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "video-clipper",
+      "replacement": null,
+      "reason": "Old local video recipe; no current recipe uses it. Video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "video-polish",
+      "replacement": null,
+      "reason": "Old local video recipe; no current recipe uses it. Video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "visual-brand-extractor",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "voice-of-customer-synthesizer",
+      "replacement": "research-market",
+      "reason": "Market research now covers market size, trends, listening, reviews and what people say."
+    },
+    {
+      "slug": "weather",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-archive-scraper",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-research-parallel",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-scraping",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-scraping-olostep",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-search",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-search-andi",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-search-exa",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-search-jina",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-search-linkup",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-search-perplexity",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-search-tavily",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "web-search-valyu",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "website-screenshot-notte",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "yc-batch-evaluator",
+      "replacement": "research-audience",
+      "reason": "Audience research now builds fit definitions, account and people lists, signals and contacts through GooseWorks."
+    },
+    {
+      "slug": "youtube-apify-transcript",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
+    },
+    {
+      "slug": "youtube-watcher",
+      "replacement": null,
+      "reason": "Single-provider utility removed from the catalog. Ask the gooseworks skill; GooseWorks data tools cover web, social and company lookups."
     }
   ],
   "retained": [
     {
-      "slug": "aeo",
-      "reason": "Keep multi-engine CLI setup, persistent queries, metrics/dashboard and historical diff; sampled search visibility does not replace that API/tool contract."
+      "slug": "ad-angle-miner",
+      "reason": "Kept: write-video-ad-script requires it.",
+      "remove_when": "write-video-ad-script stops requiring it"
     },
     {
-      "slug": "ai-video-calls-tavus",
-      "reason": "Keep direct provider/API utility: AI video conversations - create real-time video calls with AI personas. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "ad-campaign-analyzer",
+      "reason": "Kept: gooseworks-app meta-ads-report validates it.",
+      "remove_when": "the meta-ads-report moves to analyze-performance"
     },
     {
-      "slug": "ai-web-scraping-scrapegraph",
-      "reason": "Keep direct provider/API utility: AI-powered web scraping - extract data using natural language prompts. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "ad-lead-quality-analyzer",
+      "reason": "Kept: gooseworks-app meta-ads-report validates it.",
+      "remove_when": "the meta-ads-report moves to analyze-performance"
     },
     {
-      "slug": "amazon-search",
-      "reason": "Keep direct provider/API utility: Search Amazon products - find items, compare prices, read reviews. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "ad-management-intake",
+      "reason": "Kept: meta-ad-manager hands off to it.",
+      "remove_when": "meta-ad-manager is removed"
     },
     {
-      "slug": "api-tester",
-      "reason": "Keep direct provider/API utility: Test and document API endpoints - validate responses, check status, generate examples. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "ad-to-landing-page-auditor",
+      "reason": "Kept: the Meta ad skills pair with it for landing-page message match.",
+      "remove_when": "the Meta ad skills are removed"
     },
     {
-      "slug": "apollo-lead-finder",
-      "reason": "Keep specialist job: Two-phase Apollo.io prospecting: free People Search to discover ICP-matching leads, then selective enrichment to reveal emails/phones (credits per contact). Creates Apollo lists. Deduplicates against existing contacts by LinkedIn URL. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "slug": "ads-north-star-strategy",
+      "reason": "Kept: meta-ad-manager hands off to it.",
+      "remove_when": "meta-ad-manager is removed"
     },
     {
-      "slug": "audience-research",
-      "reason": "Keep creator and brand-account aggregate audience-fit/demographic comparisons; work-with-creators covers only creator programmes. Required by retained influencer-prospecting."
+      "slug": "answer-ads-questions",
+      "reason": "Kept: meta-ad-manager hands off to it.",
+      "remove_when": "meta-ad-manager is removed"
     },
     {
-      "slug": "beat-sync-reel",
-      "reason": "Keep deterministic beat detection/Ken Burns MP4 production; no released rendering replacement. Preserve video-production fonts."
+      "slug": "brand-research",
+      "reason": "Kept: remix-graphic-ad-from-reference requires it; gooseworks-app brand research runs it in a sandbox.",
+      "remove_when": "both stop using it"
     },
     {
-      "slug": "blog-feed-monitor",
-      "reason": "Keep raw RSS/Atom parsing/discovery and filters; retained company-current-gtm-analysis and industry-scanner require it."
+      "slug": "comment-mining",
+      "reason": "Kept: ad-angle-miner requires it.",
+      "remove_when": "ad-angle-miner is removed"
     },
     {
-      "slug": "brand-intel-branddev",
-      "reason": "Keep direct provider/API utility: Brand intelligence - logos, colors, fonts, styleguides, and company data from any domain. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "company-contact-finder",
+      "reason": "Kept: gooseworks-app imports it as a workspace starter skill.",
+      "remove_when": "the starter list changes"
     },
     {
-      "slug": "brand-voice-extractor",
-      "reason": "Keep its structured extraction interface for retained seo-content-audit. Company-blog voice is now covered by voice-card; no separate company-blog job is required."
+      "slug": "competitor-ad-intelligence",
+      "reason": "Kept: ad-angle-miner requires it; gooseworks-app meta-ads-report validates it.",
+      "remove_when": "both stop using it"
     },
     {
-      "slug": "browser-automation-notte",
-      "reason": "Keep direct provider/API utility: Browser automation - control browser sessions, scrape pages, and run AI agents. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "get-brand-assets",
+      "reason": "Kept: goose-studio video recipes list it as an atom.",
+      "remove_when": "no recipe lists it"
     },
     {
-      "slug": "buyer-persona-generator",
-      "reason": "Keep synthetic persona JSON/Markdown outputs explicitly loaded by retained icp-website-audit and icp-website-review; buyer groups are a different contract."
+      "slug": "google-ad-scraper",
+      "reason": "Kept: ad-to-landing-page-auditor requires it.",
+      "remove_when": "ad-to-landing-page-auditor is removed"
     },
     {
-      "slug": "champion-move-outreach",
-      "reason": "Keep specialist job: End-to-end champion/buyer/user job change signal composite. Takes a set of known people (past buyers, champions, power users), detects when they move to a new company, researches the new company for ICP fit, and drafts personalized outreach leveraging the existing relationship. Tool-agnostic \u2014 works with any people source, detection method, and outreach platform. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "slug": "goose-graphics",
+      "reason": "Kept: remix-graphic-ad-from-reference and run-organic-social render with it; the CLI installs it with --with.",
+      "remove_when": "never: it is a current skill"
     },
     {
-      "slug": "champion-tracker",
-      "reason": "Keep saved person baselines and job-change detection, scoring and mover/contact CSVs; new audience lists do not replace persistent champion tracking."
+      "slug": "goose-graphics-create-format",
+      "reason": "Kept: goose-graphics companion for new canvases.",
+      "remove_when": "goose-graphics drops it"
     },
     {
-      "slug": "churn-risk-detector",
-      "reason": "Keep account-level support/Slack/NPS/usage risk scorecards and save plays; no released playbook covers customer-success risk detection."
+      "slug": "goose-graphics-create-style",
+      "reason": "Kept: goose-graphics companion for new styles.",
+      "remove_when": "goose-graphics drops it"
     },
     {
-      "slug": "cold-email-outreach",
-      "reason": "Keep actual campaign setup and launch; write-outreach explicitly drafts only. Required by retained sales and signal-outreach composites."
-    },
-    {
-      "slug": "community-signals",
-      "reason": "Keep forum user-level intent scoring/cross-platform dedup CSV; preserve lead-gen-devtools shared tools/resources."
-    },
-    {
-      "slug": "company-current-gtm-analysis",
-      "reason": "Keep full GTM scorecard including traffic/SEO, hiring, partnerships and acquisition channels; a capped rival profile only partly replaces it."
-    },
-    {
-      "slug": "company-domain-lookup-logodev",
-      "reason": "Keep direct provider/API utility: Logo.dev - search for company domains by brand name. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "company-funding-search",
-      "reason": "Keep direct provider/API utility: Find company funding history, investors, and investment details. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "company-intel",
-      "reason": "Keep direct provider/API utility: Full company intelligence report - overview, team, funding, products, news. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "competitor-post-engagers",
-      "reason": "Keep specialist job: Find leads by scraping engagers from a competitor's top LinkedIn posts. Given one or more company page URLs, scrapes recent posts, ranks by engagement, selects the top N, extracts all reactors and commenters, ICP-classifies, and exports CSV. Use when someone wants to \"find leads engaging with competitor content\" or \"scrape people who interact with [company]'s LinkedIn posts\". No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "competitor-research",
-      "reason": "Keep raw competitor/team/funding/customer API recipes; research-competitors report does not replace endpoint access."
-    },
-    {
-      "slug": "competitor-signals",
-      "reason": "Keep user-level PH/HN/case-study switching signals and scored CSV; preserve lead-gen-devtools resources."
-    },
-    {
-      "slug": "comprehensive-enrichment",
-      "reason": "Keep direct provider/API utility: Enrich any person or company from any identifier \u2014 email, name, LinkedIn URL, domain, company name, Twitter/X handle. Use when asked to enrich, look up, or research a lead, contact, person, or company. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "conference-speaker-scraper",
-      "reason": "Keep specialist job: Extract speaker names, titles, companies, and bios from conference websites. Supports direct HTML scraping and Apify web scraper fallback for JS-heavy sites. Use for pre-event research and outreach targeting. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "contact-cache",
-      "reason": "Keep CSV contact status/dedup interface required by retained funding-signal-monitor; outcomes-ledger is not a compatible caller replacement."
-    },
-    {
-      "slug": "contact-finder-contactout",
-      "reason": "Keep direct provider/API utility: Find emails, phone numbers, and enrich profiles using ContactOut. LinkedIn enrichment, people search, company enrichment, and batch operations. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "content-asset-creator",
-      "reason": "Keep general HTML/landing-page asset rendering as a supporting capability. Ordinary reports from supplied survey data require no dedicated public skill job."
-    },
-    {
-      "slug": "content-brief-factory",
-      "reason": "Keep 10\u201350 briefs per batch, per-keyword SERP feature targets and detailed internal-link plans; visibility page briefs only partly replace this."
-    },
-    {
-      "slug": "content-repurposing",
-      "reason": "Keep optional dated calendar/publishing sequence in the same run; make-content explicitly excludes calendars. Preserve its post-writer dependencies."
-    },
-    {
-      "slug": "create-dashboard",
-      "reason": "Keep specialist job: Create a custom web dashboard (React + Vite + Express) inside your sandbox to visualize the agent's Turso database. The dashboard is served on port 3847 and the user sees it live in the \"App\" tab in Gooseworks. Use when the user asks for a dashboard, visualization, chart, metric view, or any custom UI powered by their agent's data. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "create-html-slides",
-      "reason": "Keep PPT/PPTX conversion and animated HTML presentations despite deprecation; new playbooks lack conversion. visual-brand-extractor reads its STYLE_PRESETS.md."
-    },
-    {
-      "slug": "create-linkedin-content",
-      "reason": "Covered by make-content as writing, but retained content-repurposing/social-kit require its existing file/voice-guide contract; generate-voice-guide also references it."
-    },
-    {
-      "slug": "create-workflow-diagram",
-      "reason": "Keep arbitrary standalone workflow-to-PNG and geometry/style contract; social designed slots cover only part of that utility."
-    },
-    {
-      "slug": "create-x-content",
-      "reason": "Covered by make-content as writing, but retained content-repurposing/social-kit require its existing file/voice-guide contract; generate-voice-guide also references it."
-    },
-    {
-      "slug": "creator-profile-teardown",
-      "reason": "Covered by organic-social teardown, but retained influencer-prospecting/content-repurposing require this reusable skill and output contract."
-    },
-    {
-      "slug": "customer-discovery",
-      "reason": "Keep exhaustive multi-source named-customer discovery/dedup; new rival profiles only sample customers."
-    },
-    {
-      "slug": "customer-story-builder",
-      "reason": "Keep case studies plus sales one-pagers, deck slides and proof cards; make-content excludes one-pagers and decks."
-    },
-    {
-      "slug": "customer-win-back-sequencer",
-      "reason": "Keep churn-list change research, MRR-based recovery scoring and contact checks; write-outreach replaces only drafting."
-    },
-    {
-      "slug": "data-charts-tako",
-      "reason": "Keep direct provider/API utility: Search and visualize the world's data - get charts, insights, and embeddable knowledge cards for finance, economics, demographics, sports, and more. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "demo-builder",
-      "reason": "Keep working personalized product prototypes and live demo reports; preserve lead-gen-devtools resources."
-    },
-    {
-      "slug": "disqualification-handling",
-      "reason": "Keep disqualification classification plus referral/nurture destination routing; new outreach only replaces response drafting."
-    },
-    {
-      "slug": "ebay-search",
-      "reason": "Keep direct provider/API utility: Search eBay listings - find items, auctions, deals, and compare prices. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "email-campaign",
-      "reason": "Keep direct provider/API utility: Build email campaigns - find emails, verify them, and prepare outreach. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "email-drafting",
-      "reason": "Writing is covered by write-outreach, but retained cold-email-outreach, sales-coaching, sequence-performance and signal composites require this contract."
-    },
-    {
-      "slug": "email-finder-hunter",
-      "reason": "Keep direct provider/API utility: Email finder and verifier - find emails, verify deliverability, discover companies. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "email-finder-tomba",
-      "reason": "Keep direct provider/API utility: Email finder and verifier - find emails from domains, LinkedIn, or company search. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "enrichment-nyne",
-      "reason": "Keep direct provider/API utility: Intelligence and enrichment - person and company data, social profiles, events, and funding. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "event-prospecting-pipeline",
-      "reason": "Keep specialist job: Find attendees at conferences/events, research their companies, qualify against ICP, and launch outreach. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "event-signals",
-      "reason": "Keep event/speaker/sponsor/podcast/hackathon data and scoring; preserve lead-gen-devtools shared resources."
-    },
-    {
-      "slug": "expansion-signal-spotter",
-      "reason": "Keep existing-customer upsell/cross-sell opportunity/value scoring and talk tracks; no new customer-expansion operations playbook."
-    },
-    {
-      "slug": "extract-webpage-data",
-      "reason": "Keep direct provider/API utility: Extract structured data from web pages using AI. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "feature-launch-playbook",
-      "reason": "Keep combined changelog, in-app banner and sales enablement one-pager launch kit; make-content excludes sales one-pagers."
-    },
-    {
-      "slug": "find-email-by-name",
-      "reason": "Keep direct provider/API utility: Find someone's email address given their name and company. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "find-skill",
-      "reason": "Keep direct provider/API utility: Find and install skills from the Orthogonal skill library. Use when you need capabilities you don't have, want to discover available skills, or need to add new tools to your agent. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "find-twitter-influencers",
-      "reason": "Keep contact/email enrichment and underlying discovery pipeline; creator shortlists cover only part of its outputs."
-    },
-    {
-      "slug": "funding-signal-monitor",
-      "reason": "Keep specialist job: Monitor web sources for Series A-C funding announcements. Aggregates signals from TechCrunch, Crunchbase (via web search), Twitter, Hacker News, and LinkedIn. Filters by stage, amount, and industry. Returns qualified recently-funded companies ready for outreach. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "funding-signal-outreach",
-      "reason": "Keep specialist job: End-to-end funding signal composite. Takes any set of companies, detects recent funding events, qualifies against your company context, finds relevant people (buyers, champions, users), and drafts personalized outreach. Tool-agnostic \u2014 works with any company source, contact finder, and outreach platform. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "generate-voice-guide",
-      "reason": "Keep personal post-corpus calibration, feedback loop, voice Markdown and config paths; explicitly approved gap."
-    },
-    {
-      "slug": "get-qualified-leads-from-luma",
-      "reason": "Keep specialist job: End-to-end lead prospecting from Luma events. Searches Luma for events by topic and location, extracts all attendees/hosts, qualifies them against a qualification prompt, outputs results to a Google Sheet, and sends a Slack alert with top leads. Use this skill whenever someone wants to find qualified leads from events, prospect event attendees, or run an event-based lead gen workflow. Also triggers for \"find people at events and qualify them\" or \"who's attending X events that matches our ICP.\". No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "github-repo-signals",
-      "reason": "Keep GitHub interaction scoring and user CSV; preserve lead-gen-devtools shared tools/resources."
-    },
-    {
-      "slug": "gtm-enrichment-deep",
-      "reason": "Keep direct provider/API utility: AI-agent-powered lead enrichment using Sixtyfour as primary source. Takes an email (+ optional name) and returns comprehensive person + company data with funding, AI/B2B classification, and full error visibility. Higher cost (~$0.20/lead) but simpler architecture. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "gtm-enrichment-smart",
-      "reason": "Keep direct provider/API utility: Multi-provider waterfall lead enrichment. Takes an email (+ optional name) and returns person + company data by cross-referencing cheap APIs first, using expensive AI agents only as fallback. Cost-efficient (~$0.04-$0.10/lead) with confidence scoring and full error visibility. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "help-center-article-generator",
-      "reason": "Keep ticket clustering and batch procedural/troubleshooting help-centre articles; new content formats do not cover support documentation production."
-    },
-    {
-      "slug": "hiring-signal-outreach",
-      "reason": "Keep specialist job: End-to-end hiring signal composite. Takes any set of companies, detects job postings that your product augments or replaces, finds relevant people (the hiring manager, buyers, champions, users), and drafts personalized outreach using the job role as the hook. Tool-agnostic \u2014 works with any company source, job board, contact finder, and outreach platform. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "hyperlocal-weather-precip",
-      "reason": "Keep direct provider/API utility: Hyperlocal weather data - precipitation, temperature, wind, soil moisture and more. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "icp-identification",
-      "reason": "Keep precise search-filter/exclusion definition and handoff into retained TAM/lead-finding data contracts; new audience research does not migrate callers."
-    },
-    {
-      "slug": "icp-website-audit",
-      "reason": "Keep synthetic-persona scorecards and head-to-head website/positioning comparison with branded audit outputs; search checks are a different job."
-    },
-    {
-      "slug": "icp-website-review",
-      "reason": "Keep synthetic-persona scorecard, focus-group and head-to-head modes; new playbooks do not execute persona-based reviews."
-    },
-    {
-      "slug": "identity-verification-didit",
-      "reason": "Keep direct provider/API utility: Identity verification via phone/email OTP and AML screening using Didit API. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "image-analyzer",
-      "reason": "Keep direct provider/API utility: Analyze images with AI - extract text, describe content, detect objects. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "inbound-lead-enrichment",
-      "reason": "Keep CRM relationship checks, stakeholder discovery and lead-record updates; list scoring does not replace enrichment."
-    },
-    {
-      "slug": "inbound-lead-qualification",
-      "reason": "Keep CRM/pipeline dedup, use-case scoring and relationship-overlap flags; new list ranking covers only part of this."
-    },
-    {
-      "slug": "inbound-lead-triage",
-      "reason": "Keep CRM/form ingestion, urgency queue, enrichment and destination routing; new list scoring/reply writing covers only part."
-    },
-    {
-      "slug": "industry-scanner",
-      "reason": "Keep configured daily scans including private newsletter inbox, event/CFP discovery and strategic briefing; public market research only partly replaces it."
-    },
-    {
-      "slug": "influencer-prospecting",
-      "reason": "Keep affiliate and broader UGC-partner discovery; work-with-creators explicitly excludes affiliate programmes and UGC marketplaces. Preserve declared dependencies."
-    },
-    {
-      "slug": "instagram-scraper",
-      "reason": "Keep direct provider/API utility: Get Instagram profiles, posts, and reels. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "investor-call-prep",
-      "reason": "Keep direct provider/API utility: Prepare for investor calls by pulling upcoming meetings from Google Calendar, deeply researching each investor and their firm (website scraping, portfolio analysis, thesis extraction), checking for competitor conflicts, and outputting an honest prep sheet with compatibility assessments. Use when asked to prep for investor meetings, fundraising calls, VC meetings, or demo day. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "investor-research",
-      "reason": "Keep direct provider/API utility: Research VCs, angels, and investors - portfolio, thesis, contact info. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "hacker-news-scraper",
+      "reason": "Kept: gooseworks-app skill-matcher routes to it.",
+      "remove_when": "the matcher routes to marketing-data-access"
     },
     {
       "slug": "job-posting-intent",
-      "reason": "Keep specialist job: Detect buying intent from job postings. When a company posts a job in your problem area, they've allocated budget and are actively thinking about the problem. This skill finds those companies, qualifies them, extracts personalization context, and outputs everything to a Google Sheet. Does NOT do outreach \u2014 just delivers qualified leads with reasoning. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "reason": "Kept: gooseworks-app imports it as a workspace starter skill.",
+      "remove_when": "the starter list changes"
     },
     {
-      "slug": "job-scraper",
-      "reason": "Keep specialist job: Search for job postings across LinkedIn and Indeed. Use when users want to find open roles, monitor hiring signals, identify companies hiring for specific positions, or research competitor hiring activity. Returns job title, company, location, salary, description, seniority level, and direct apply URLs. No login or cookies required. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "job-search",
-      "reason": "Keep direct provider/API utility: Search for jobs matching your skills, experience, and preferences. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "kol-content-monitor",
-      "reason": "Keep a chosen-KOL watchlist and trigger-based content calendar; social refill reads voices only as one input."
-    },
-    {
-      "slug": "kol-discovery",
-      "reason": "Keep LinkedIn author discovery/export and declared dependency of retained kol-content-monitor."
-    },
-    {
-      "slug": "kol-engager-icp",
-      "reason": "Keep specialist job: Find ICP-fit leads from KOL audiences on LinkedIn. Given a list of KOLs, scrapes their most relevant high-engagement post from the last 30 days, extracts engagers (reactors + commenters), pre-filters by position, enriches top profiles, and ICP-classifies. Cost-controlled: 1 post per KOL. Use when someone wants to \"find leads from KOL audiences\" or \"scrape engagers from influencer posts\" or after running kol-discovery. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "landing-page-intel",
-      "reason": "Keep raw HTML tech stack, pixels/analytics, hidden elements and customer/logo reads; explicitly retained technical gap."
-    },
-    {
-      "slug": "lead-discovery",
-      "reason": "Keep routing/config contract for specialized devtools signal scanners; preserve lead-gen-devtools pack assets."
-    },
-    {
-      "slug": "lead-enrichment",
-      "reason": "Keep direct provider/API utility: Enrich leads with email, phone, company data using multiple data sources. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "lead-enrichment-sixtyfour",
-      "reason": "Keep direct provider/API utility: AI-powered lead enrichment - find emails, phones, and enrich company/lead data. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "launch-meta-ad-campaign",
+      "reason": "Kept: gooseworks-app skill-matcher and meta-ads-report use it.",
+      "remove_when": "the Ads coworker moves to run-paid-campaigns"
     },
     {
       "slug": "lead-qualification",
-      "reason": "Keep reusable custom qualification prompt, batch LinkedIn enrichment and export; retained Luma/inbound workflows require it."
+      "reason": "Kept: gooseworks-app skill-matcher routes to it.",
+      "remove_when": "the matcher routes to research-audience"
     },
     {
-      "slug": "leadership-change-outreach",
-      "reason": "Keep specialist job: End-to-end leadership change signal composite. Takes any set of companies, detects recent leadership changes (new VP+, C-suite hires and promotions), evaluates relevance to your product, and drafts personalized outreach. Uses Apollo People Search (free) for fast detection + Apollo Enrichment (1 credit/person) for employment history, start dates, LinkedIn URLs, and verified emails. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "slug": "linkedin-profile-post-scraper",
+      "reason": "Kept: gooseworks-app skill-matcher routes to it and imports it as a workspace starter skill.",
+      "remove_when": "the app stops using it"
     },
     {
-      "slug": "linkedin-commenter-extractor",
-      "reason": "Keep specialist job: Extract commenters from LinkedIn posts via Apify. Returns commenter names, titles, LinkedIn profile URLs, and comment text. Use to find warm leads engaging with relevant discussions. No LinkedIn cookies required. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "slug": "meta-ad-manager",
+      "reason": "Kept: gooseworks-app Ads coworker loads it for Meta launches (skill-matcher, ads-coworker-chat).",
+      "remove_when": "the Ads coworker moves to run-paid-campaigns"
     },
     {
-      "slug": "linkedin-influencer-discovery",
-      "reason": "Keep specialist job: Discover top LinkedIn influencers and voices by topic, industry, follower count, and country. Use when you need to find the top 100 voices in a space, build influencer lists for outreach, or identify thought leaders on LinkedIn. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "slug": "meta-ad-policy-checker",
+      "reason": "Kept: gooseworks-app meta-ads-report validates it.",
+      "remove_when": "the meta-ads-report moves to ad-policy-check"
     },
     {
-      "slug": "linkedin-job-scraper",
-      "reason": "Keep specialist job: Scrapes LinkedIn job postings using the JobSpy library (python-jobspy). Use this skill whenever the user wants to find jobs on LinkedIn, search for open roles, pull job listings, build a job pipeline, source job targets for GTM research, or monitor hiring signals. Even if the user just says \"find me some jobs\" or \"what roles is [company] hiring for\", use this skill. It runs a local Python script that outputs a CSV of job postings with title, company, location, salary, job type, description, and direct URLs. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "slug": "meta-ads-analyzer",
+      "reason": "Kept: gooseworks-app skill-matcher and meta-ads-report use it.",
+      "remove_when": "the meta-ads-report moves to analyze-performance"
     },
     {
-      "slug": "linkedin-message-writer",
-      "reason": "Keep all LinkedIn message types including comments/comment replies and tool-ready CSVs; organic-social reply drafting is parked."
+      "slug": "product-photoshoot",
+      "reason": "Kept: remix-graphic-ad-from-reference requires it.",
+      "remove_when": "remix-graphic-ad-from-reference stops requiring it"
     },
     {
-      "slug": "linkedin-outreach",
-      "reason": "Keep Supabase selection, cooldown, tool-specific exports and outreach_log writes; new outreach only replaces drafting. Retained composites require it."
+      "slug": "reddit-post-finder",
+      "reason": "Kept: ad-angle-miner requires it.",
+      "remove_when": "ad-angle-miner is removed"
     },
     {
-      "slug": "linkedin-post-research",
-      "reason": "Keep specialist job: Search LinkedIn posts by keywords, sorted by engagement or date. Use when researching what people are saying about a topic on LinkedIn, finding high-engagement content, identifying thought leaders, or discovering warm leads through post engagement. Returns author, post text, reactions, comments, shares, post URL, and date. No LinkedIn cookies or login required. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "slug": "remix-graphic-ad-from-reference",
+      "reason": "Kept: goose-studio video recipes make end cards with it; gooseworks-app ads remix chat loads it.",
+      "remove_when": "both stop using it"
     },
     {
-      "slug": "linkedin-scraper",
-      "reason": "Keep direct provider/API utility: Get LinkedIn profiles, company pages, and posts. Released playbooks do not replace its raw endpoint/output contract."
+      "slug": "scrapecreators-api",
+      "reason": "Kept: ad-angle-miner requires it.",
+      "remove_when": "ad-angle-miner is removed"
     },
     {
-      "slug": "luma-event-attendees",
-      "reason": "Keep specialist job: Find speakers, hosts, and guest profiles at conferences and events on Luma. Two modes - free direct scrape for hosts, or Apify-powered search for full guest profiles with LinkedIn/Twitter/bio. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "market-research",
-      "reason": "Keep direct research/company-search API recipes and raw records; research-market report does not replace endpoint access."
-    },
-    {
-      "slug": "meeting-brief",
-      "reason": "Keep calendar research and actual emailed meeting briefs; no new playbook does preparation or sending."
-    },
-    {
-      "slug": "multi-platform-search-searchapi",
-      "reason": "Keep direct provider/API utility: Multi-platform search - YouTube, Amazon, eBay, Walmart, TikTok, Instagram, and more. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "news-signal-outreach",
-      "reason": "Keep specialist job: End-to-end news-triggered signal composite. Takes any piece of news \u2014 an article, LinkedIn post, tweet, announcement, event, trend, regulation, product launch, acquisition, layoff, expansion, or any other public event \u2014 and evaluates whether the companies or people mentioned are ICP fits. If yes, identifies the connection between the news and your product, finds the right people to contact, and drafts personalized outreach using the news as the hook. Tool-agnostic. Accepts both company-level and person-level news triggers. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "newsletter-monitor",
-      "reason": "Keep AgentMail inbox scanning and structured keyword/message exports; public market listening does not read that inbox contract."
-    },
-    {
-      "slug": "newsletter-signal-scanner",
-      "reason": "Keep newsletter subscriptions, inbox ingestion and recurring buying-signal digest; new market report/content writing do not replace it."
-    },
-    {
-      "slug": "outbound-prospecting-engine",
-      "reason": "Keep specialist job: End-to-end outbound prospecting: detect intent signals, research companies, find decision-maker contacts, personalize messaging, launch campaign. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "outlier-post-finder",
-      "reason": "Keep declared dependency of retained creator-profile-teardown and trend-discovery; new playbook analysis does not migrate those callers."
-    },
-    {
-      "slug": "pain-language-engagers",
-      "reason": "Keep specialist job: Find warm leads by searching LinkedIn for pain-language posts \u2014 the frustrations, complaints, and operational struggles your ICP talks about publicly. Asks clarifying questions to understand your product, ICP, and their pain points, then generates pain-language search keywords, scrapes LinkedIn for posts and engagers, enriches profiles, and ICP-filters the results. Use when someone wants to \"find leads who are complaining about X\" or \"find people discussing problems we solve\" or \"LinkedIn pain-based prospecting.\". No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "pdf-processor",
-      "reason": "Keep direct provider/API utility: Process PDFs - extract text, tables, and structured data from documents. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "people-company-search-fiber",
-      "reason": "Keep direct provider/API utility: People, company, investor, and job search with LinkedIn data enrichment. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "person-lookup",
-      "reason": "Keep direct provider/API utility: Look up information about a person - work history, social profiles, contact info. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "phone-verification",
-      "reason": "Keep direct provider/API utility: Verify phone numbers using SMS one-time codes via the Didit API. Use when you need to confirm a user owns a phone number, implement SMS-based 2FA, or validate phone during signup/onboarding flows. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "pipeline-review",
-      "reason": "Keep sales stage velocity, stuck-deal, win/loss and forecast diagnostics; marketing performance only reads pipeline as an outcome."
-    },
-    {
-      "slug": "prediction-market-odds",
-      "reason": "Keep direct provider/API utility: Get prediction market odds and prices from Polymarket and Kalshi. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "prediction-markets-dome",
-      "reason": "Keep direct provider/API utility: Prediction markets data - Polymarket, Kalshi markets, prices, positions, and trades. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "product-hunt-scraper",
-      "reason": "Keep specialist job: Scrape Product Hunt trending products using Apify. Use when you need to discover new product launches, track competitors on Product Hunt, or monitor the startup ecosystem for relevant launches. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "product-reel-generator",
-      "reason": "Keep product URL-to-Higgsfield animated reel and audio composition; preserve video-production shared fonts."
-    },
-    {
-      "slug": "programmatic-seo-planner",
-      "reason": "Keep pSEO URL patterns, template data schema and variable-source blueprint; explicitly retained unsupported specialist work."
-    },
-    {
-      "slug": "programmatic-seo-spy",
-      "reason": "Keep competitor URL clustering, template quality and traffic inference; new sampled visibility is partial."
-    },
-    {
-      "slug": "remotion-best-practices",
-      "reason": "Keep Remotion code, captions/audio and rendering references needed by specialist video workflows."
-    },
-    {
-      "slug": "restaurant-booking",
-      "reason": "Keep direct provider/API utility: Book restaurant reservations via browser automation. Use when asked to make dinner reservations, book a table, or find availability at restaurants. Supports OpenTable, Resy, and direct restaurant booking sites. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "review-intelligence-digest",
-      "reason": "Keep recurring review-specific proof, objection and displacement libraries; broader market/audience reports do not guarantee its complete digest contract."
-    },
-    {
-      "slug": "review-scraper",
-      "reason": "Keep raw G2/Capterra/Trustpilot structured review exports; playbook reports do not replace provider data tools."
-    },
-    {
-      "slug": "review-site-scraper",
-      "reason": "Keep raw review data; required transitively by retained battlecard, positioning, SEO audit and brief workflows."
-    },
-    {
-      "slug": "sales-call-prep",
-      "reason": "Keep sales-specific person/company research, objections and call strategy; no released pre-call preparation replacement."
-    },
-    {
-      "slug": "sales-coaching",
-      "reason": "Keep call/transcript/email/deal coaching and individual 30-day improvement plan; outreach results cover messaging only."
-    },
-    {
-      "slug": "sales-prospecting",
-      "reason": "Keep direct provider/API utility: Build targeted prospect lists with verified contact information. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "send-sms-textbelt",
-      "reason": "Keep direct provider/API utility: Send SMS text messages to phone numbers. Use when the user asks to send a text, send an SMS, text someone, message a phone number, or send a notification via text message. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "seo-analyzer",
-      "reason": "Keep raw scraping/domain/keyword provider analysis recipes; visibility reports do not replace API access."
-    },
-    {
-      "slug": "seo-content-audit",
-      "reason": "Keep complete inventory, measured rankings/traffic, gap matrices and voice profile; new sampled visibility checks are partial."
-    },
-    {
-      "slug": "seo-content-engine",
-      "reason": "Keep full audit/keyword-architecture/calendar/drafting engine and retained specialist handoffs; no single new playbook replaces it."
-    },
-    {
-      "slug": "seo-opportunity-finder",
-      "reason": "Keep measured keyword/traffic-based competitor gaps and 90-day calendar; new visibility checks cannot promise those metrics."
-    },
-    {
-      "slug": "seo-traffic-analyzer",
-      "reason": "Keep indexation/ranking/traffic-estimate profile; new visibility checks are not a full SEO metrics tool."
-    },
-    {
-      "slug": "sequence-performance",
-      "reason": "Keep sending-platform campaign pulls and quantitative/copy/lead-quality diagnostic; new outreach reads pasted replies rather than this full data pipeline."
-    },
-    {
-      "slug": "setup-outreach-campaign-smartlead",
-      "reason": "Keep actual campaign/lead/sequence/schedule/mailbox creation; write-outreach never sends or schedules."
-    },
-    {
-      "slug": "signal-detection-pipeline",
-      "reason": "Keep specialist job: Detect buying signals from multiple sources, qualify leads, and generate outreach context. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "signal-scanner",
-      "reason": "Keep persistent TAM/person diffs, Supabase signal writes, lead_status updates and activation scoring; new list watch is a different contract."
-    },
-    {
-      "slug": "site-content-catalog",
-      "reason": "Keep complete sitemap/blog inventory and metadata export; required by retained programmatic SEO, content briefs and SEO audits."
-    },
-    {
-      "slug": "skill-creator",
-      "reason": "Keep direct provider/API utility: Create, structure, and package agent skills. Use when designing new skills, updating existing skills, or helping users build skills with scripts, references, and assets. Triggers on requests to create skills, write SKILL.md files, or structure skill directories. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "social-kit",
-      "reason": "Keep one-brief X and LinkedIn variants plus matching rendered graphic; make-content excludes rendering and organic-social is a different planning job."
-    },
-    {
-      "slug": "social-listening",
-      "reason": "Keep direct structured data-provider social/web mention queries; report playbooks do not replace raw provider access."
-    },
-    {
-      "slug": "structured-scraping-riveter",
-      "reason": "Keep direct provider/API utility: Web scraping with structured data extraction - define your output schema. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "talking-head-video",
-      "reason": "Keep HeyGen avatar narration/multi-scene rendering and config; preserve video-production resources."
-    },
-    {
-      "slug": "tam-builder",
-      "reason": "Keep Apollo company enumeration/refresh, scored account CSV and persona watchlist; market sizing is not the same database contract."
-    },
-    {
-      "slug": "targeted-prospecting",
-      "reason": "Keep direct provider/API utility: Build a prospect list of companies with decision makers, verified contact info, and hiring/intent signals. Use when asked to find leads by industry, build an account list with specific titles, prospect companies that are actively hiring, or create a targeted outreach list filtered by company size, location, and hiring activity. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "team-linkedin-profiles",
-      "reason": "Keep direct provider/API utility: Find LinkedIn profiles of a specific team or department at a company. Use when asked to get LinkedIn profiles, find team members, or look up people in a particular team/department/group at a company. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "tech-stack-teardown",
-      "reason": "Keep specialist job: Reverse-engineer a company's sales and marketing tech stack from public signals. Detects CRMs, cold email tools, people databases, ad pixels, email delivery services, and outbound sending domains via DNS records, website source inspection, Apify technology profiling, blacklist checks, and public spam complaint searches. Works on single companies or batches. Outputs a structured markdown report per company. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "terminal-gif-recordings",
-      "reason": "Keep direct provider/API utility: Create polished terminal GIF recordings using VHS (Video Hardware Software) by Charmbracelet. Use when asked to create terminal demos, CLI gifs, command-line recordings, or animated terminal screenshots for documentation, READMEs, or marketing. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "tiktok-influencer-finder",
-      "reason": "Keep specialist job: Find TikTok influencers using Apify's Influencer Discovery Agent. Use when the user wants to discover TikTok creators or influencers in any niche. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "tiktok-search",
-      "reason": "Keep direct provider/API utility: Search TikTok - find profiles, videos, hashtags, and trending content. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "topical-authority-mapper",
-      "reason": "Keep complete hub/spoke architecture, internal-link matrix and coverage map; a visibility roadmap only partly replaces this."
-    },
-    {
-      "slug": "trend-discovery",
-      "reason": "Keep song-linked videos/audio/format discovery, trend-feed acceleration and shelf-life tests; market listening only partly replaces that sound/format specialist contract."
-    },
-    {
-      "slug": "twitter-profile-lookup",
-      "reason": "Keep direct provider/API utility: Look up Twitter/X profiles - get bio, followers, tweets, and engagement. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "update-brand-kit",
-      "reason": "Supporting reference for existing direct brand/product tool semantics, not a dedicated public job. Product and photo updates use the tools directly."
-    },
-    {
-      "slug": "uptime-monitor",
-      "reason": "Keep direct provider/API utility: Monitor website uptime - check availability, response times, and status. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "verify-email",
-      "reason": "Keep direct provider/API utility: Verify if an email address is valid and deliverable. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "video-clipper",
-      "reason": "Keep podcast/interview transcription, moment selection, tracked vertical reframing and captioned clip rendering; no released replacement."
-    },
-    {
-      "slug": "video-polish",
-      "reason": "Keep narration-driven zoom/pan and Remotion screen-recording rendering; no released replacement."
-    },
-    {
-      "slug": "visual-brand-extractor",
-      "reason": "Keep CSS typography/layout extraction and compatible slide-preset/brand-config files; preserve referenced HTML-slides resources."
-    },
-    {
-      "slug": "voice-of-customer-synthesizer",
-      "reason": "Keep support/NPS/Slack/call/survey period trends and product/CS-specific actions; buyer quote research only partly replaces this full feedback synthesis."
-    },
-    {
-      "slug": "weather",
-      "reason": "Keep direct provider/API utility: Get current weather and forecasts using free APIs (no API key required). Use when asked about weather, temperature, forecasts, or climate conditions for any location. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-archive-scraper",
-      "reason": "Keep specialist job: Search the Wayback Machine for archived versions of websites. Extract cached pages, customer lists, testimonials, and partner directories from sites that have changed or gone offline. Uses the free CDX API \u2014 no API key needed. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "web-research-parallel",
-      "reason": "Keep direct provider/API utility: Web research API with OpenAI-compatible chat completions and async tasks. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-scraping",
-      "reason": "Keep direct provider/API utility: Scrape websites, extract structured data, and automate browsers. Use when asked to scrape, extract, crawl, parse, or pull data from web pages or any URL. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-scraping-olostep",
-      "reason": "Keep direct provider/API utility: Web scraping, crawling, and AI-powered answer extraction at scale. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-search",
-      "reason": "Keep direct provider/API utility: Search the web, platforms, and datasets. Use when asked to search, find, look up, research, or discover information from the web, YouTube, Amazon, eBay, news, academic sources, or any online platform. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-search-andi",
-      "reason": "Keep direct provider/API utility: Fast, high-quality web search with intelligent ranking and instant answers. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-search-exa",
-      "reason": "Keep direct provider/API utility: Neural web search - find similar content, extract pages, and run deep research. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-search-jina",
-      "reason": "Keep direct provider/API utility: Jina Search - fast web search returning SERP results. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-search-linkup",
-      "reason": "Keep direct provider/API utility: Web search and content fetching - search the web or extract content from URLs. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-search-perplexity",
-      "reason": "Keep direct provider/API utility: Perplexity AI search and chat completions with real-time web data. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-search-tavily",
-      "reason": "Keep direct provider/API utility: AI-powered web search, crawling, extraction, and deep research. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "web-search-valyu",
-      "reason": "Keep direct provider/API utility: Web search, AI answers, content extraction, and async deep research. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "website-screenshot-notte",
-      "reason": "Keep direct provider/API utility: Take screenshots of any website using Notte browser automation. Use when asked to screenshot, capture, or snap a webpage. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "yc-batch-evaluator",
-      "reason": "Keep direct provider/API utility: Evaluate YC batch companies for investment \u2014 scrapes the YC directory, researches each company and its founders (work history, LinkedIn, website), assesses founder-company fit, and exports to Google Sheets with priority rankings. Use when asked to evaluate YC companies, research a YC batch, screen startups, or do due diligence on YC companies. Released playbooks do not replace its raw endpoint/output contract."
-    },
-    {
-      "slug": "youtube-apify-transcript",
-      "reason": "Keep specialist job: Fetch YouTube transcripts via APIFY API. Works from cloud IPs (Hetzner, AWS, etc.) by bypassing YouTube's bot detection. Free tier includes $5/month credits (~714 videos). No credit card required. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
-    },
-    {
-      "slug": "youtube-watcher",
-      "reason": "Keep specialist job: Fetch and read transcripts from YouTube videos. Use when you need to summarize a video, answer questions about its content, or extract information from it. No released playbook covers this complete output; retaining the partly replaced job follows the approved scope."
+      "slug": "transcript-intelligence",
+      "reason": "Kept: ad-angle-miner requires it.",
+      "remove_when": "ad-angle-miner is removed"
     }
   ]
 }

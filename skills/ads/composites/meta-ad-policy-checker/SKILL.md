@@ -168,7 +168,7 @@ NOTES:
 
 This skill is built to be both standalone-runnable and callable from other skills. Recommended chain patterns:
 
-- **Variant generation:** `messaging-ab-tester` produces N variants → `meta-ad-policy-checker` runs on each → only PASS / FIX REQUIRED variants surface to the user
+- **Variant generation:** `make-static-ads` produces N variants → `meta-ad-policy-checker` runs on each → only PASS / FIX REQUIRED variants surface to the user
 - **Campaign launch:** `launch-meta-ad-campaign` prepares the exact paused launch plan → `meta-ad-policy-checker` runs on every ad → block launch if any return BLOCK
 - **Pre-write gate:** before any tool call that writes to Meta (via MCP, native API, or otherwise), the calling workflow checks the verdict and aborts on BLOCK
 - **Diagnostic on under-delivery:** `meta-ads-analyzer` flags an ad with near-zero delivery → suggest running `meta-ad-policy-checker` to rule out a silent disapproval
@@ -197,7 +197,7 @@ The list of policy slugs in Phase 1 is the only mutable piece of this skill. Met
 
 ## Related Skills
 
-- **`messaging-ab-tester`** — runs *upstream*; generates variants this skill should check
+- **`make-static-ads`** — runs *upstream*; generates variants this skill should check
 - **`launch-meta-ad-campaign`** — runs *upstream*; prepares the multi-ad plan this skill should validate before approval
 - **`ad-to-landing-page-auditor`** — *paired pre-flight*; different concern (message-match vs. policy compliance), same checkpoint
 - **`meta-ads-analyzer`** — runs *downstream*; if a live campaign shows symptoms of a silent disapproval (near-zero delivery, throttling), this skill is the diagnostic step

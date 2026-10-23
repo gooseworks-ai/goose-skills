@@ -280,7 +280,7 @@ Day-to-day CPA variation within 20–30% is normal. Weekend/weekday differences 
 ## What This Skill Will Not Do
 
 - **Will not write to your ad account.** Pure analysis. Use Meta Ads Manager or whatever write tool the calling agent has available for execution.
-- **Will not generate creative.** Use `messaging-ab-tester` for variants and `ad-angle-miner` for source material.
+- **Will not generate creative.** Use `make-static-ads` for variants and `ad-angle-miner` for source material.
 - **Will not analyze landing pages.** Use `ad-to-landing-page-auditor` — and use it whenever Conversion Rate Ranking is below average.
 - **Will not multi-platform compare.** Use `ad-campaign-analyzer` for cross-channel budget reallocation.
 - **Will not require separate TOF, MOF, and BOF campaigns.** It audits whether the customer journey is supported, regardless of whether the account is consolidated, segmented, or hybrid.
@@ -290,7 +290,7 @@ Day-to-day CPA variation within 20–30% is normal. Weekend/weekday differences 
 
 - **`ad-campaign-analyzer`** — Multi-platform performance review and budget reallocation. Run this first if you have multiple channels; run `meta-ads-analyzer` after for the Meta-specific deep dive.
 - **`ad-to-landing-page-auditor`** — Always pair with this when Conversion Rate Ranking is below average.
-- **`messaging-ab-tester`** — Generate variants when creative fatigue is the diagnosis.
+- **`make-static-ads`** — Generate variants when creative fatigue is the diagnosis.
 - **`launch-meta-ad-campaign`** — Prepare a new paused campaign when the diagnosis points to "rebuild, don't fix".
 
 ## Credit
