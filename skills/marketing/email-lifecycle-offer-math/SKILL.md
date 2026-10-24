@@ -5,7 +5,7 @@ description: >-
   per order, share of margin used, break-even lift, code leakage risks, and one recommended offer in
   two plain sentences. Use alone when you already have the offer, average order value and margin per
   product; otherwise run email-lifecycle.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # offer-math

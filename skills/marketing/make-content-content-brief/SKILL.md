@@ -5,7 +5,7 @@ description: >-
   results already say and what this piece adds, an outline, a proof inventory with gaps marked, voice,
   CTA and banned words, checked against six gates. Use alone when you already have the topic, format,
   audience and destination and want only the brief; otherwise run make-content.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Content brief

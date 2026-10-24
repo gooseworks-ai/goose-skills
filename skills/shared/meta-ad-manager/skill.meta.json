@@ -6,14 +6,6 @@
   "tags": [
     "ads"
   ],
-  "installation": {
-    "base_command": "npx goose-skills install meta-ad-manager",
-    "supports": [
-      "claude",
-      "cursor",
-      "codex"
-    ]
-  },
   "features": [
     "front door for running Meta ads: new campaigns, resume, scheduled checks",
     "keeps a small ads/ folder per brand: index, brand facts, and per-campaign strategy, state and an append-only decision log",

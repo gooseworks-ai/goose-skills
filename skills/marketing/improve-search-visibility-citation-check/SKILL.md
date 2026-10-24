@@ -4,7 +4,7 @@ description: >-
   Step of the improve-search-visibility playbook: runs the agreed buyer questions on AI and Google
   surfaces, records every run and scores how often the brand is named. Run improve-search-visibility
   instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # citation-check

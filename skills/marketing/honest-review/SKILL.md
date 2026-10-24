@@ -5,7 +5,7 @@ description: >-
   generated images and video honestly. Covers what was seen by eye versus read automatically, findings
   framed as things for the human to confirm, remakes only after a yes to the price, and at most two
   tries per item. Loaded by those playbooks; not for direct use.
-version: 0.1.2
+version: 0.1.3
 ---
 
 # honest-review

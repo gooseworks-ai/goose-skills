@@ -5,7 +5,7 @@ description: >-
   write-outreach): saves a short brand rule or finding in the human's own words, one idea per rule,
   retires the playbook's own older rules it replaces, and reads the result back to confirm. Loaded by
   those playbooks; not for direct use.
-version: 0.1.2
+version: 0.1.3
 ---
 
 # save-learning

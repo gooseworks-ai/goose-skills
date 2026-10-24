@@ -4,7 +4,7 @@ description: >-
   Step of the write-outreach playbook: sorts outreach replies by type, matches each to its prospect
   row, sets that person's status and keeps useful exact words. Run write-outreach instead; not for
   direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # reply-reader

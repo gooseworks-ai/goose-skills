@@ -4,7 +4,7 @@ description: >-
   Step of the plan-campaign playbook: writes angles per channel, the asset list, measurement plan,
   hand-offs and replan triggers, then assembles the plan. Run plan-campaign instead; not for direct
   use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Brief and asset list (atom)

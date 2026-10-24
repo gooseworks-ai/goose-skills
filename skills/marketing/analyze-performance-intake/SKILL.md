@@ -4,7 +4,7 @@ description: >-
   Step of the analyze-performance playbook: gathers the week's numbers from tools, exports and pastes,
   cleans them, and writes the coverage line or switches to claims-only mode. Run analyze-performance
   instead; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Intake, hygiene and coverage (atom)

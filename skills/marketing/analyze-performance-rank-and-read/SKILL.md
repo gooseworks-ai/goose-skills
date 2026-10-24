@@ -4,7 +4,7 @@ description: >-
   Step of the analyze-performance playbook: ranks creative by angle, hook and format with spend gates,
   writes short per-channel reads and drafts what to make next. Run analyze-performance instead; not
   for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Creative ranking and channel reads (atom)

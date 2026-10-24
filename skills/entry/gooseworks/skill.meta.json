@@ -9,13 +9,5 @@
     "ads",
     "lead-generation",
     "social"
-  ],
-  "installation": {
-    "base_command": "npx gooseworks@latest install --mcp",
-    "supports": [
-      "claude",
-      "cursor",
-      "codex"
-    ]
-  }
+  ]
 }

@@ -2,7 +2,7 @@
   "slug": "save-learning",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "used_by": [
     "analyze-performance",
     "email-lifecycle",
@@ -23,14 +23,6 @@
     "brand"
   ],
   "standalone": false,
-  "installation": {
-    "base_command": "npx goose-skills install save-learning",
-    "supports": [
-      "claude",
-      "cursor",
-      "codex"
-    ]
-  },
   "requires_skills": [
     "claims-gate",
     "marketing-data-access",

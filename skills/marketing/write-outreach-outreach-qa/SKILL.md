@@ -4,7 +4,7 @@ description: >-
   Step of the write-outreach playbook: the checks a finished outreach pack and send file must pass
   before delivery, covering facts, proof, compliance, length, asks and tone. Run write-outreach
   instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # outreach-qa

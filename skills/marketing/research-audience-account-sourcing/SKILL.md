@@ -3,7 +3,7 @@ name: research-audience-account-sourcing
 description: >-
   Step of the research-audience playbook: finds candidate accounts matching the fit definition,
   confirms gates, applies exclusions and dedupes. Run research-audience instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # account-sourcing

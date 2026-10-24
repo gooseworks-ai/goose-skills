@@ -3,11 +3,12 @@
   "category": "capabilities",
   "version": "1.0.0",
   "domain": "social",
-  "tags": ["social", "research"],
-  "installation": {
-    "base_command": "npx goose-skills install transcript-intelligence",
-    "supports": ["claude", "cursor", "codex"]
-  },
+  "tags": [
+    "social",
+    "research"
+  ],
   "example_prompt": "Analyze these ten product videos and extract their hooks, claims, proof, objections, calls to action, and reusable content atoms.",
-  "requires_skills": ["scrapecreators-api"]
+  "requires_skills": [
+    "scrapecreators-api"
+  ]
 }

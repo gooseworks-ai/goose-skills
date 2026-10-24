@@ -4,7 +4,7 @@ description: >-
   Step of the improve-search-visibility playbook: drafts and scores the buyer-question set in AI and
   Google forms and groups it into page clusters. Run improve-search-visibility instead; not for direct
   use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # question-set

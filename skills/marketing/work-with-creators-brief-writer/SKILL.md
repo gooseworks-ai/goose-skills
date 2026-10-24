@@ -6,7 +6,7 @@ description: >-
   timeline, the usage-rights ask and two examples. Adds a short first-message draft (gift and paid
   versions) for you to send. Use alone when you already have the creator, their best fitting post and
   the goal; otherwise run work-with-creators.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # brief-writer

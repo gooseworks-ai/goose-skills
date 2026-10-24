@@ -5,7 +5,7 @@ description: >-
   research-competitors, email-lifecycle): reads the last run's record, checks whether its
   recommendations were done and whether they worked, and saves a short record of this run for the next
   one. Loaded by those playbooks; not for direct use.
-version: 0.1.2
+version: 0.1.3
 ---
 
 # run-memory

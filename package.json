@@ -1,10 +1,8 @@
 {
   "name": "goose-skills",
+  "private": true,
   "version": "1.0.1",
-  "description": "GooseWorks skills catalog: marketing playbooks and video skills. Install with npx goose-skills install <slug>",
-  "bin": {
-    "goose-skills": "./bin/goose-skills.js"
-  },
+  "description": "GooseWorks skill catalog: marketing playbooks, video skills and the entry skills the gooseworks CLI installs. Not published to npm; install with npx gooseworks@latest install --with <slug>.",
   "repository": {
     "type": "git",
     "url": "https://github.com/gooseworks-ai/goose-skills"
@@ -28,10 +26,6 @@
   "author": "GooseWorks",
   "license": "MIT",
   "devDependencies": {
-    "@changesets/cli": "^2.29.6",
     "js-yaml": "^4.1.1"
-  },
-  "files": [
-    "bin/"
-  ]
+  }
 }

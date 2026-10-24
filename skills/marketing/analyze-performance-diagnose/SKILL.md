@@ -4,7 +4,7 @@ description: >-
   Step of the analyze-performance playbook: flags tracking breaks with fixes and explains each big
   metric move with evidence, confidence and ruled-out causes. Run analyze-performance instead; not for
   direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Plumbing and the why (atom)

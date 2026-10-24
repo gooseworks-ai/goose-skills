@@ -2,7 +2,7 @@
 name: make-static-ads-claims-extract
 description: >-
   Step of the make-static-ads playbook: pulls every claim-bearing span out of an ad — the copy around the image, the on-image words in the prompt, badges, and what the picture implies — and keeps or cuts each by the brand-brain rule. Runs before spend on the finished prompt (Pass A) and on every render (Pass B). Run make-static-ads instead; not for direct use.
-version: 0.9.0
+version: 0.9.1
 ---
 
 # claims-extract

@@ -3,7 +3,7 @@ name: research-audience-segment-pass
 description: >-
   Step of the research-audience playbook: the worker brief for researching one buyer group, returning
   notes in a fixed shape. Run research-audience instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # segment-pass

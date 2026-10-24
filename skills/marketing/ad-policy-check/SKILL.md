@@ -7,7 +7,7 @@ description: >-
   legal review, with one pass, fixed or flag line per ad and platform. Use alone when you already have
   the ad text or images and know where they will run; otherwise run the playbook for the job (e.g.
   make-static-ads, make-content, email-lifecycle).
-version: 0.1.2
+version: 0.1.3
 ---
 
 # ad-policy-check

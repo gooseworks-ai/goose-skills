@@ -5,7 +5,7 @@ description: >-
   leaders, hiring, launches), drops stale ones and noise, scores timing, and gives one personal hook
   per person from their recent public work. Facts only, no message copy. Use alone when you already
   have the company list and, for hooks, the people; otherwise run research-audience.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # signals-and-hooks

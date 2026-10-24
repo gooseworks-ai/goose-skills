@@ -4,7 +4,7 @@ description: >-
   Step of the plan-campaign playbook: splits the budget across chosen channels, checks per-channel
   minimums, and writes the test plan and paid structure. Run plan-campaign instead; not for direct
   use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Budget split, test plan, paid structure (atom)

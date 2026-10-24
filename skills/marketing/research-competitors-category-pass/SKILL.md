@@ -4,7 +4,7 @@ description: >-
   Step of the research-competitors playbook: the worker brief covering the whole category, including
   searches, AI answers, community threads and category ad winners. Run research-competitors instead;
   not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # category-pass

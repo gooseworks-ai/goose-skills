@@ -5,7 +5,7 @@ description: >-
   rising and fading, how small accounts get seen, recent changes) and finds what is getting watched in
   a given niche there, with linked examples and engagement read against each author's baseline. Use
   alone when you already have the platform and niche; otherwise run run-organic-social.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # platform-research

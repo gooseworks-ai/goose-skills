@@ -4,7 +4,7 @@ description: >-
   Step of the work-with-creators playbook: builds and screens a long list of creators from fans,
   category creators and search, and ranks finalists to vet next. Run work-with-creators instead; not
   for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # creator-discovery

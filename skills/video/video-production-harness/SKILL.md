@@ -3,7 +3,7 @@ name: video-production-harness
 description: Full video production sequence with script review, actual ingredient choices, controlled generation, editing, evidence-based quality review, polish, captions and delivery. A host binding supplies project storage, authentic approvals, provider access and billing.
 owner: team
 status: active
-version: "3.1.1"
+version: "3.1.2"
 level: orchestrator
 ---
 

@@ -129,7 +129,6 @@ Write for an agent: precise, imperative, no filler. Put long craft knowledge (fr
   "tags": ["<from schemas/skill-meta.schema.json>"],
   "collections": ["brand-growth"],
   "collection_stage": "research | analyze | create",
-  "installation": { "base_command": "npx goose-skills install <slug>", "supports": ["claude", "cursor", "codex"] },
   "requires_skills": ["<every skill it uses, flattened>"]
 }
 ```

@@ -3,7 +3,7 @@ name: research-audience-fit-definition
 description: >-
   Step of the research-audience playbook: drafts the searchable fit definition, exclusions and list
   size that the list run then searches on. Run research-audience instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # fit-definition

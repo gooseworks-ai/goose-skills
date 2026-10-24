@@ -2,7 +2,7 @@
 name: make-static-ads-fix-rejected
 description: >-
   Step of the make-static-ads playbook: fixes a static image ad the platform rejected — finds the ad, maps the platform's reason to the line or element at fault, fixes copy for free or re-composes the image text on a quote, re-runs the claims and policy checks, and answers the request. A rejected video is the video playbook's job. Run make-static-ads instead; not for direct use.
-version: 0.9.0
+version: 0.9.1
 ---
 
 # fix-rejected

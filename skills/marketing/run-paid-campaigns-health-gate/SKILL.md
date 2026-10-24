@@ -6,7 +6,7 @@ description: >-
   and no account or payment stop. Marks each pass, fail or unknown and turns fails into fixes. Use
   alone when you already have the live or planned ads and their landing pages; otherwise run
   run-paid-campaigns.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Health gate (atom)

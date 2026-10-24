@@ -3,7 +3,7 @@ name: run-paid-campaigns-apply-and-log
 description: >-
   Step of the run-paid-campaigns playbook: stages the week's approval items, applies only what the
   marketer approves and keeps the change log. Run run-paid-campaigns instead; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Stage, apply and log (atom)

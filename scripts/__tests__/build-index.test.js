@@ -54,10 +54,6 @@ const baseMeta = (slug, category, extra = {}) => ({
   slug,
   category,
   tags: ['ads'],
-  installation: {
-    base_command: `npx goose-skills install ${slug}`,
-    supports: ['claude', 'cursor', 'codex'],
-  },
   ...extra,
 });
 
@@ -103,7 +99,6 @@ test('every skill installs by its own slug: no packs', () => {
   assert.deepEqual(idx.skills.map((s) => s.slug), ['caption-burn', 'mix-master']);
   const member = idx.skills.find((s) => s.slug === 'mix-master');
   assert.equal(member.version, '1.2.0');
-  assert.equal(member.metadata.installation.base_command, 'npx goose-skills install mix-master');
   assert.deepEqual(member.metadata.requires_skills, ['caption-burn'], 'the meta is published as written');
   assert.deepEqual(idx.packs, [], 'the key stays, empty, for older CLIs');
   fs.rmSync(root, { recursive: true, force: true });
@@ -209,7 +204,6 @@ test('marketing skills: folded descriptions, builder files and hand tests left o
     { name: 'research-market', description: '>-\n  First line of the\n  description.', version: '0.2.0' },
     {
       slug: 'research-market', category: 'playbooks', tier: 'playbook', version: '0.2.0', tags: ['research'],
-      installation: { base_command: 'npx goose-skills install research-market', supports: ['claude'] },
       requires_skills: ['claims-gate'],
     },
     {

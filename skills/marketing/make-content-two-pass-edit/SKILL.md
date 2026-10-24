@@ -5,7 +5,7 @@ description: >-
   fit), a claims and fact check that cuts or softens unproven lines, a readability and voice-match
   pass, then an AI-tell sweep, with an edit note listing open gaps. Use alone when you already have a
   finished draft and the brand's voice samples and approved claims; otherwise run make-content.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Edit, check, edit

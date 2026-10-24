@@ -4,7 +4,7 @@ description: >-
   Step of the email-lifecycle playbook: audits list, consent, live flows, recent sends and sending
   setup, marking every item verified, from-you or unknown. Run email-lifecycle instead; not for direct
   use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # lifecycle-audit

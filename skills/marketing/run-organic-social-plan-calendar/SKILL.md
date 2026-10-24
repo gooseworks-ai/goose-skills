@@ -3,7 +3,7 @@ name: run-organic-social-plan-calendar
 description: >-
   Step of the run-organic-social playbook: turns the audit, research and dated moments into a two-week
   grid of empty post slots. Run run-organic-social instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Plan the calendar

@@ -4,7 +4,7 @@ description: >-
   Step of the improve-search-visibility playbook: turns one ranked fix into paste-ready site copy or
   code with owner, risk and undo, and writes page briefs. Run improve-search-visibility instead; not
   for direct use.
-version: 0.2.0
+version: 0.2.1
 ---
 
 # fix-writer

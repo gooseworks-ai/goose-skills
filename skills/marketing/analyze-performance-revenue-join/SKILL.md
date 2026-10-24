@@ -4,7 +4,7 @@ description: >-
   Step of the analyze-performance playbook: joins cleaned store or CRM numbers with ad spend to build
   the business-truth table, MER, new-customer cost and the overclaim ratio. Run analyze-performance
   instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Revenue join (atom)

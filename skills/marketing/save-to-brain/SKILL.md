@@ -5,7 +5,7 @@ description: >-
   analyze-performance): saves a finished file to the brand and makes it searchable. It either replaces
   older versions or keeps dated history, then checks that the file can be found. Loaded by those
   playbooks; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # save-to-brain

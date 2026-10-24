@@ -2,7 +2,7 @@
 name: make-static-ads-ad-copy
 description: >-
   Step of make-static-ads: writes the text for each slot the ad's template sets, then the primary texts, headline, description and CTA around the image, from usable facts and customer words. Run make-static-ads instead; not for direct use.
-version: 0.9.0
+version: 0.9.1
 ---
 
 # ad-copy

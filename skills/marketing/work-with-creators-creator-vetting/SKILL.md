@@ -6,7 +6,7 @@ description: >-
   audience fit with how sure it is, about 12 months of brand-safety checks, rival partnerships and
   rules for regulated categories. Gives a verdict with dated numbers for each one. Use alone when you
   already have the creator handles and the brand's goal; otherwise run work-with-creators.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # creator-vetting
