@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Checks the marketing agent's published skills as the catalog ships them.
+ * Checks every published skill (all families: marketing, video, shared, entry)
+ * as the catalog ships them.
  *
  * Each skill ships only its own folder, and an install puts skills side by side
  * (~/.agents/skills/<slug>/, the archive's agent-config/skills/<slug>/). So this
@@ -12,9 +13,15 @@
  *   - a reference into another skill names a skill listed in requires_skills (or,
  *     for a playbook's step, the playbook that runs it), because only listed
  *     dependencies are delivered with the skill;
- *   - no old-layout path (`ATOM.md`, `../../atoms/…`, `foundation/…`) is left.
+ *   - no old-layout path (`ATOM.md`, `../../atoms/…`, `foundation/…`) is left;
+ *   - requires_skills is flat: a skill also lists what each skill it requires
+ *     needs (a required playbook is not expanded).
  *
- * Usage: node scripts/check-marketing-agent-links.js   (run after build-index.js)
+ * A backticked folder path (`./exports/`) that does not exist in the repo is a
+ * folder the skill makes in the working directory, not a shipped file, so it is
+ * skipped. Markdown links are always checked.
+ *
+ * Usage: node scripts/check-skill-links.js   (run after build-index.js)
  */
 
 const fs = require('fs');
@@ -24,7 +31,7 @@ const ROOT = process.env.GOOSE_SKILLS_ROOT
   ? path.resolve(process.env.GOOSE_SKILLS_ROOT)
   : path.resolve(__dirname, '..');
 const index = JSON.parse(fs.readFileSync(path.join(ROOT, 'skills-index.json'), 'utf8'));
-const entries = index.skills.filter((s) => s.domain === 'marketing-agent');
+const entries = index.skills;
 
 const errors = [];
 const installed = new Set(); // "<slug>/<file>" and every parent dir
@@ -64,7 +71,12 @@ for (const e of entries) {
     }
     const targets = [];
     for (const m of text.matchAll(LINK)) targets.push(m[1]);
-    for (const m of text.matchAll(TICK)) targets.push(m[1]);
+    for (const m of text.matchAll(TICK)) {
+      const t = m[1];
+      const inRepo = path.join(ROOT, path.dirname(f), t);
+      if (t.endsWith('/') && !fs.existsSync(inRepo)) continue; // a working-directory folder
+      targets.push(t);
+    }
     for (let t of targets) {
       if (/^[a-z]+:/i.test(t) || t.startsWith('#') || PLACEHOLDER.test(t) || !/[./]/.test(t)) continue;
       t = t.split('#')[0].replace(/[.,;:]+$/, '');
@@ -83,25 +95,32 @@ for (const e of entries) {
   }
 }
 
-// Only one level of dependencies is delivered, so a skill also lists what each
-// step or foundation skill it requires needs (a required playbook is not expanded).
+// Some installers deliver only one level of dependencies, so a skill also lists
+// what each skill it requires needs (a required playbook is not expanded).
 const bySlug = new Map(entries.map((e) => [e.slug, e]));
+function needs(slug, seen = new Set()) {
+  // Everything a required skill brings with it; a required playbook's own list is not expanded.
+  for (const dep of bySlug.get(slug)?.metadata.requires_skills || []) {
+    if (seen.has(dep)) continue;
+    seen.add(dep);
+    const d = bySlug.get(dep);
+    if (d && d.metadata.tier !== 'playbook') needs(dep, seen);
+  }
+  return seen;
+}
 for (const e of entries) {
   const have = new Set([e.slug, ...(e.metadata.requires_skills || [])]);
-  for (const dep of e.metadata.requires_skills || []) {
-    const d = bySlug.get(dep);
-    if (!d || d.metadata.tier === 'playbook') continue;
-    for (const sub of d.metadata.requires_skills || []) {
-      if (!have.has(sub)) errors.push(`${e.slug}: requires ${dep}, which needs ${sub}; list ${sub} too`);
-    }
+  const missing = [...needs(e.slug)].filter((s) => !have.has(s)).sort();
+  if (missing.length) {
+    errors.push(`${e.slug}: requires_skills is not flat; also list ${missing.join(', ')}`);
   }
 }
 
 if (errors.length) {
-  console.error(`Marketing agent link check failed (${errors.length}):`);
+  console.error(`Skill link check failed (${errors.length}):`);
   for (const msg of errors) console.error(`- ${msg}`);
   process.exit(1);
 }
 console.log(
-  `Marketing agent link check passed: ${entries.length} skills, ${checked} references, 0 broken.`,
+  `Skill link check passed: ${entries.length} skills, ${checked} references, 0 broken.`,
 );

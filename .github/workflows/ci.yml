@@ -1,13 +1,12 @@
 name: CI
 
 on:
-  # Every pull request is checked, whatever its base: dev, main, the
-  # video-merged integration branch and video/** lane branches included.
+  # Every pull request is checked, whatever its base.
   pull_request:
   # Pushes run the same checks. Only dev and main deploy or publish (see the
-  # jobs' if: lines); video-merged is checked after each merge.
+  # jobs' if: lines).
   push:
-    branches: [dev, main, video-merged]
+    branches: [dev, main]
 
 jobs:
   validate:
@@ -31,9 +30,9 @@ jobs:
       - name: Verify generated index is committed
         run: git diff --exit-code skills-index.json
 
-      - name: Marketing agent skills resolve as published
-        # Every reference in skills/marketing resolves when skills sit side by side, names a listed dependency, and the lists are flat.
-        run: node scripts/check-marketing-agent-links.js
+      - name: Skill links resolve as published
+        # In every family, each reference resolves when skills sit side by side and names a listed dependency, and requires_skills lists are flat.
+        run: node scripts/check-skill-links.js
 
       - name: Router tables match skills/entry/gooseworks/routes.json
         run: node scripts/build-router.js --check
@@ -60,6 +59,12 @@ jobs:
         run: |
           python3 skills/video/render-street-interview/scripts/selftest.py
           python3 -m unittest discover -s skills/video/render-street-interview/tests -p 'test_prompt_budget.py' -v
+
+      - name: Test improve-search-visibility report fixtures
+        run: python3 skills/marketing/improve-search-visibility/tests/run-fixtures.py
+
+      - name: Test podcast-skit gates
+        run: python3 skills/video/render-podcast-skit/scripts/selftest.py
 
   atom-checks:
     # What video atoms may say, their version bumps, and the parts index.
@@ -170,21 +175,14 @@ jobs:
           brew install ffmpeg
           python -m pip install pytest pillow numpy requests
 
-      - name: Test video media helpers
-        run: >
-          python -m pytest -q
-          test/recipe-media-fixes
-          test/custom-video-regressions.py
-          skills/video/review-finished-ad/tests
-          skills/video/create-vo-elevenlabs/tests
-          skills/video/create-creator-takes-h3/tests
-          skills/video/create-image-fal/tests
-          skills/video/media-proxy/tests
-          skills/video/create-video-seedance-2-fal/tests
-          skills/video/render-street-interview/tests/test_single_gen_rejection.py
-          skills/video/stitch-videos-ffmpeg/tests
-          skills/video/compose-creator-layer/tests
-          skills/video/write-video-ad-script/tests
+      - name: Test every Python test under skills/ and test/
+        # Discovery, not a list: a new test_*.py runs without editing this file.
+        run: python -m pytest -q skills test
+
+      - name: Test custom-video regressions
+        # Its own run: named on one command line with test/, pytest drops the
+        # recipe-media-fixes tests.
+        run: python -m pytest -q test/custom-video-regressions.py
 
   deploy-catalog:
     # Ships only after every check passes, and only from dev or main.

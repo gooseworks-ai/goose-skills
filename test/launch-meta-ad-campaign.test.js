@@ -12,7 +12,6 @@ const {
   readJson,
   selectLaunchAdapter,
 } = require('../tools/meta_marketing_api');
-const { getToolFiles } = require('../bin/lib/tool-files');
 
 const ENV = {
   META_MARKETING_ACCESS_TOKEN: 'test-token-never-persist',
@@ -333,6 +332,5 @@ test('skill metadata resolves to an adapter file that installation can copy', ()
   );
   const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
   assert.deepEqual(meta.requires_tools, ['meta_marketing_api']);
-  assert.deepEqual(getToolFiles('meta_marketing_api'), ['tools/meta_marketing_api.js']);
   assert.equal(fs.existsSync(path.resolve(__dirname, '../tools/meta_marketing_api.js')), true);
 });

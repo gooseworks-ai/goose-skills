@@ -1,15 +1,9 @@
-node_modules/
+node_modules
 .env
 .DS_Store
 *.pyc
 .tmp/
 .cache/
-test/results/
-snapshots/
-
-# Eval fixtures — may contain REAL ad-account data captured from the Meta API.
-# Kept local for now (do not commit real account data to this public repo).
-**/eval/fixtures/
 
 # Local agent session state.
 .claude/

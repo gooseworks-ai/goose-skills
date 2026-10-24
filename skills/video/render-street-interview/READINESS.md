@@ -96,8 +96,6 @@ and `./takes/` does not exist.
   run-folder convention outright.
 - `check_cut.py` — same, plus it defaulted to `HERE.parents[0]/output/looks/`, and its
   `ffprobe` failure surfaced as `KeyError: 'streams'` rather than a message.
-- `phone_look_video.py` — its colour reference defaulted to `../refs/tools/arcads-1.mp4`
-  resolved inside the skill, where nothing exists.
 - `variants_gen.py` — the only one that dry-ran, and only because it defers the fal import. Its
   `CAN` path was still wrong, so `--yes` would have failed at upload after printing a price.
 

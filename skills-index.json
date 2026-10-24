@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-23",
+  "generated": "2026-10-24",
   "retired_skills": [
     {
       "slug": "battlecard-generator",
@@ -1991,8 +1991,7 @@
         "skills/video/create-apple-notes-mockup/tests/human-test.md",
         "skills/video/create-apple-notes-mockup/tests/run-all.sh",
         "skills/video/create-apple-notes-mockup/tests/sample-input.md",
-        "skills/video/create-apple-notes-mockup/tests/smoke-test.md",
-        "skills/video/create-apple-notes-mockup/tests/verifier.md"
+        "skills/video/create-apple-notes-mockup/tests/smoke-test.md"
       ],
       "metadata": {
         "slug": "create-apple-notes-mockup",
@@ -2042,8 +2041,7 @@
         "skills/video/create-chatgpt-mockup/tests/human-test.md",
         "skills/video/create-chatgpt-mockup/tests/run-all.sh",
         "skills/video/create-chatgpt-mockup/tests/sample-input.md",
-        "skills/video/create-chatgpt-mockup/tests/smoke-test.md",
-        "skills/video/create-chatgpt-mockup/tests/verifier.md"
+        "skills/video/create-chatgpt-mockup/tests/smoke-test.md"
       ],
       "metadata": {
         "slug": "create-chatgpt-mockup",
@@ -2176,8 +2174,7 @@
         "skills/video/create-image-gpt-image-fal/tests/expected-output.md",
         "skills/video/create-image-gpt-image-fal/tests/human-test.md",
         "skills/video/create-image-gpt-image-fal/tests/sample-input.md",
-        "skills/video/create-image-gpt-image-fal/tests/smoke-test.md",
-        "skills/video/create-image-gpt-image-fal/tests/verifier.md"
+        "skills/video/create-image-gpt-image-fal/tests/smoke-test.md"
       ],
       "metadata": {
         "slug": "create-image-gpt-image-fal",
@@ -2228,8 +2225,7 @@
         "skills/video/create-imessage-mockup/tests/human-test.md",
         "skills/video/create-imessage-mockup/tests/run-all.sh",
         "skills/video/create-imessage-mockup/tests/sample-input.md",
-        "skills/video/create-imessage-mockup/tests/smoke-test.md",
-        "skills/video/create-imessage-mockup/tests/verifier.md"
+        "skills/video/create-imessage-mockup/tests/smoke-test.md"
       ],
       "metadata": {
         "slug": "create-imessage-mockup",
@@ -2377,8 +2373,7 @@
         "skills/video/create-video-seedance-2-fal/tests/human-test.md",
         "skills/video/create-video-seedance-2-fal/tests/sample-input.md",
         "skills/video/create-video-seedance-2-fal/tests/smoke-test.md",
-        "skills/video/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py",
-        "skills/video/create-video-seedance-2-fal/tests/verifier.md"
+        "skills/video/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py"
       ],
       "metadata": {
         "slug": "create-video-seedance-2-fal",
@@ -6221,8 +6216,7 @@
         "skills/video/render-ios-keyboard/tests/expected-output.md",
         "skills/video/render-ios-keyboard/tests/human-test.md",
         "skills/video/render-ios-keyboard/tests/sample-input.md",
-        "skills/video/render-ios-keyboard/tests/smoke-test.md",
-        "skills/video/render-ios-keyboard/tests/verifier.md"
+        "skills/video/render-ios-keyboard/tests/smoke-test.md"
       ],
       "metadata": {
         "slug": "render-ios-keyboard",
@@ -8939,8 +8933,7 @@
         "skills/video/stitch-videos-ffmpeg/tests/sample-input.md",
         "skills/video/stitch-videos-ffmpeg/tests/smoke-test.md",
         "skills/video/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
-        "skills/video/stitch-videos-ffmpeg/tests/test_trim_clips.py",
-        "skills/video/stitch-videos-ffmpeg/tests/verifier.md"
+        "skills/video/stitch-videos-ffmpeg/tests/test_trim_clips.py"
       ],
       "metadata": {
         "slug": "stitch-videos-ffmpeg",
@@ -9228,8 +9221,7 @@
         "skills/video/watch/tests/expected-output.md",
         "skills/video/watch/tests/human-test.md",
         "skills/video/watch/tests/sample-input.md",
-        "skills/video/watch/tests/smoke-test.md",
-        "skills/video/watch/tests/verifier.md"
+        "skills/video/watch/tests/smoke-test.md"
       ],
       "metadata": {
         "slug": "watch",
@@ -10035,8 +10027,7 @@
             "skills/video/create-video-seedance-2-fal/tests/human-test.md",
             "skills/video/create-video-seedance-2-fal/tests/sample-input.md",
             "skills/video/create-video-seedance-2-fal/tests/smoke-test.md",
-            "skills/video/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py",
-            "skills/video/create-video-seedance-2-fal/tests/verifier.md"
+            "skills/video/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py"
           ],
           "source": "pack"
         },
@@ -10114,8 +10105,7 @@
             "skills/video/create-imessage-mockup/tests/human-test.md",
             "skills/video/create-imessage-mockup/tests/run-all.sh",
             "skills/video/create-imessage-mockup/tests/sample-input.md",
-            "skills/video/create-imessage-mockup/tests/smoke-test.md",
-            "skills/video/create-imessage-mockup/tests/verifier.md"
+            "skills/video/create-imessage-mockup/tests/smoke-test.md"
           ],
           "source": "pack"
         },
@@ -10146,8 +10136,7 @@
             "skills/video/create-chatgpt-mockup/tests/human-test.md",
             "skills/video/create-chatgpt-mockup/tests/run-all.sh",
             "skills/video/create-chatgpt-mockup/tests/sample-input.md",
-            "skills/video/create-chatgpt-mockup/tests/smoke-test.md",
-            "skills/video/create-chatgpt-mockup/tests/verifier.md"
+            "skills/video/create-chatgpt-mockup/tests/smoke-test.md"
           ],
           "source": "pack"
         },
@@ -10177,8 +10166,7 @@
             "skills/video/create-apple-notes-mockup/tests/human-test.md",
             "skills/video/create-apple-notes-mockup/tests/run-all.sh",
             "skills/video/create-apple-notes-mockup/tests/sample-input.md",
-            "skills/video/create-apple-notes-mockup/tests/smoke-test.md",
-            "skills/video/create-apple-notes-mockup/tests/verifier.md"
+            "skills/video/create-apple-notes-mockup/tests/smoke-test.md"
           ],
           "source": "pack"
         },
@@ -10197,8 +10185,7 @@
             "skills/video/render-ios-keyboard/tests/expected-output.md",
             "skills/video/render-ios-keyboard/tests/human-test.md",
             "skills/video/render-ios-keyboard/tests/sample-input.md",
-            "skills/video/render-ios-keyboard/tests/smoke-test.md",
-            "skills/video/render-ios-keyboard/tests/verifier.md"
+            "skills/video/render-ios-keyboard/tests/smoke-test.md"
           ],
           "source": "pack"
         },
@@ -10223,8 +10210,7 @@
             "skills/video/stitch-videos-ffmpeg/tests/sample-input.md",
             "skills/video/stitch-videos-ffmpeg/tests/smoke-test.md",
             "skills/video/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
-            "skills/video/stitch-videos-ffmpeg/tests/test_trim_clips.py",
-            "skills/video/stitch-videos-ffmpeg/tests/verifier.md"
+            "skills/video/stitch-videos-ffmpeg/tests/test_trim_clips.py"
           ],
           "source": "pack"
         },
@@ -10254,8 +10240,7 @@
             "skills/video/watch/tests/expected-output.md",
             "skills/video/watch/tests/human-test.md",
             "skills/video/watch/tests/sample-input.md",
-            "skills/video/watch/tests/smoke-test.md",
-            "skills/video/watch/tests/verifier.md"
+            "skills/video/watch/tests/smoke-test.md"
           ],
           "source": "pack"
         }

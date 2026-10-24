@@ -3,15 +3,26 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ask, parseJsonLoose, pool } from './claude.mjs';
-import { EVALS_DIR, listSkills, readJsonl, today } from './files.mjs';
+import { EVALS_DIR, REPO_ROOT, listSkills, readFrontmatter, readJsonl, today } from './files.mjs';
 
 const SYSTEM = fs.readFileSync(path.join(EVALS_DIR, 'prompts', 'routing.md'), 'utf8');
+
+// The GooseWorks entry skills the playbooks hand video and photo work to. Their
+// descriptions are read from skills/entry/<slug>/SKILL.md, so they never drift.
+const ENTRY_SKILLS = ['goose-video', 'goose-product-photos'];
+
+export function listEntrySkills() {
+  return ENTRY_SKILLS.map((slug) => {
+    const fm = readFrontmatter(fs.readFileSync(path.join(REPO_ROOT, 'skills', 'entry', slug, 'SKILL.md'), 'utf8'));
+    if (!fm.description) throw new Error(`skills/entry/${slug}/SKILL.md has no description`);
+    return { name: fm.name || slug, description: fm.description };
+  });
+}
 
 export async function runRouting({ model = 'haiku', limit, ids, concurrency = 4, outRoot }) {
   // What a marketer's agent sees: every published marketing skill (playbooks and their steps) plus the
   // GooseWorks entry skills the playbooks hand video and photo work to.
-  const external = JSON.parse(fs.readFileSync(path.join(EVALS_DIR, 'routing', 'external-skills.json'), 'utf8')).skills;
-  const skills = [...listSkills(), ...external];
+  const skills = [...listSkills(), ...listEntrySkills()];
   const names = new Set(skills.map((s) => s.name));
   let cases = readJsonl(path.join(EVALS_DIR, 'routing', 'cases.jsonl'));
   if (ids?.length) cases = cases.filter((c) => ids.includes(c.id));
