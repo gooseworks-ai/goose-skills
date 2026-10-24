@@ -6,7 +6,7 @@ description: >
   campaigns, ads, photos, graphics, video, content, email, SEO, social, leads and contacts.
   Use for brand facts or copy too, so offers, prices, rules, audience and bestsellers
   reach the brand's Marketing Brain.
-version: 2.2.2
+version: 2.2.3
 author: GooseWorks
 tags: [gooseworks, data, scraping, search, research, gtm, leads, prospecting, ads, video]
 ---

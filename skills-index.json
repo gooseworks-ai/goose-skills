@@ -2707,7 +2707,7 @@
       "description": "GooseWorks growth coworker and router for markets, competitors, audiences, creators, campaigns, ads, photos, graphics, video, content, email, SEO, social, leads and contacts. Use for brand facts or copy too, so offers, prices, rules, audience and bestsellers reach the brand's Marketing Brain.",
       "tags": "research, ads, lead-generation, social",
       "path": "skills/entry/gooseworks",
-      "version": "2.2.2",
+      "version": "2.2.3",
       "files": [
         "skills/entry/gooseworks/SKILL.md",
         "skills/entry/gooseworks/routes.json",
@@ -2718,7 +2718,7 @@
         "category": "playbooks",
         "domain": "gooseworks",
         "tier": "entry",
-        "version": "2.2.2",
+        "version": "2.2.3",
         "tags": [
           "research",
           "ads",
