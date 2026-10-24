@@ -63,9 +63,6 @@ jobs:
       - name: Test improve-search-visibility report fixtures
         run: python3 skills/marketing/improve-search-visibility/tests/run-fixtures.py
 
-      - name: Test podcast-skit gates
-        run: python3 skills/video/render-podcast-skit/scripts/selftest.py
-
   atom-checks:
     # What video atoms may say, their version bumps, and the parts index.
     # Old debt warns; debt a branch adds fails (scripts/atom-lint.js).
@@ -173,7 +170,8 @@ jobs:
       - name: Install ffmpeg and test deps
         run: |
           brew install ffmpeg
-          python -m pip install pytest pillow numpy requests
+          # opencv: make-static-ads' repair-patch test.
+          python -m pip install pytest pillow numpy requests opencv-python-headless
 
       - name: Test every Python test under skills/ and test/
         # Discovery, not a list: a new test_*.py runs without editing this file.
@@ -183,6 +181,10 @@ jobs:
         # Its own run: named on one command line with test/, pytest drops the
         # recipe-media-fixes tests.
         run: python -m pytest -q test/custom-video-regressions.py
+
+      - name: Test podcast-skit gates
+        # Each gate passes good input and fails its mutation; needs ffmpeg and Pillow.
+        run: python skills/video/render-podcast-skit/scripts/selftest.py
 
   deploy-catalog:
     # Ships only after every check passes, and only from dev or main.
