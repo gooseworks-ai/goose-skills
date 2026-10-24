@@ -1,13 +1,15 @@
 ---
 name: where-to-start
 description: >-
-  First-move advice for an open-ended marketing ask: looks at what GooseWorks already knows and at the
-  site, asks at most five plain questions, names the one thing in the way, and recommends the first
-  one or two moves. Use when the marketer says "help me with marketing", "where do I start", "we need
-  more customers", "sales are flat", "what should I focus on this month", or "I'm back, what's next?".
-  Recommends only; never runs the work. Not for a named job like "make me ads" (go straight to it);
-  not for why this week's numbers moved — use analyze-performance.
-version: 0.1.3
+  First-move advice for a broad growth or marketing ask with no job named: looks at what GooseWorks
+  already knows and at the site, asks a few short questions in one message, names the one thing in
+  the way, and sends the marketer to the right next job. Use when the marketer says "help me grow my
+  brand", "I need to grow my business", "how do I get more customers / sales", "help me with
+  marketing", "where do I start", "sales are flat", "what should I focus on this month", or "I'm back,
+  what's next?". Recommends only; never runs the work. Not for a named job like "make me ads" or "grow
+  my Instagram" (go straight to it); not for a campaign with a launch, budget or date — use
+  plan-campaign; not for why this week's numbers moved — use analyze-performance.
+version: 0.1.4
 ---
 
 # where-to-start
@@ -23,7 +25,7 @@ A first-move recommendation on one screen: the read of the situation, the one co
 ## Before you start
 
 1. **Setup first:** do the `marketing-guide` skill (`../marketing-guide/SKILL.md`) §1–2 (connect, brand, brain read) before anything else; the job line is "I look at what we already know about your business through it." Here: call `get_started` with `wants: "more"` and keep any card to one line; note each brand's `ad_library_ad_count` from the brand list. Never offer a partial list of brands as if it were all of them. A brand with no description and no research is an empty placeholder: treat it as no brand and don't write to it. Never start brand setup or research here.
-2. **Is this really the confused ask?** If they name an outcome one playbook owns, or ask why this week's numbers moved on channels already running, offer that job straight away in plain words (`references/playbook-map.md`) and stop. If the direct ask is plainly blocked by something they said ("do ads" with no budget), still offer it, but name the blocker in one line and offer the first-move check instead.
+2. **Is this really the confused ask?** A broad growth ask ("grow my brand", "get more customers or sales", "where do I start") is this playbook's job even when GooseWorks offers a campaign: never turn it into a campaign plan, ads or a calendar before these steps. If they name an outcome one playbook owns, or ask why this week's numbers moved on channels already running, offer that job straight away in plain words (`references/playbook-map.md`) and stop. If the direct ask is plainly blocked by something they said ("do ads" with no budget), still offer it, but name the blocker in one line and offer the first-move check instead.
 
 ## Steps
 
@@ -41,7 +43,7 @@ Map what you found against the five questions. The brain and the pages can answe
 Same output shape, with a first line on what changed. Never restart from zero.
 
 ### 2. Ask the marketer (always, before any advice)
-One message: "Here's what I already know: … Correct anything." Then the situation questions (`references/questions.md`), at most five asks in total, with options, plain words and an easy "don't know". **Questions 2, 4 and 5 — where it's stuck, what they can put in, and the goal and date — are the marketer's to answer and are always asked on a first visit**, however much the brain holds: saved documents describe what other jobs planned, not what the marketer wants now. Skip one only if the marketer already said it in this conversation, or confirmed it on an earlier visit (`brand/situation.md`, then ask "still true?"). Skip question 1 when the brain and site answer it. State what you can work out (the season from today's date, what the site shows). One follow-up round at most, only for a fact that would flip the answer. Never recommend in the same message as these questions; wait for the answers, then echo the situation back in one line.
+One message: "Here's what I already know: … Correct anything." Then the situation questions (`references/questions.md`): usually the three the marketer owns, at most five asks in total, with options, plain words and an easy "don't know". **Questions 2, 4 and 5 — where it's stuck, what they can put in, and the goal and date — are the marketer's to answer and are always asked on a first visit**, however much the brain holds: saved documents describe what other jobs planned, not what the marketer wants now. Skip one only if the marketer already said it in this conversation, or confirmed it on an earlier visit (`brand/situation.md`, then ask "still true?"). Skip question 1 when the brain and site answer it. State what you can work out (the season from today's date, what the site shows). One follow-up round at most, only for a fact that would flip the answer. Never recommend in the same message as these questions; wait for the answers, then echo the situation back in one line.
 
 ### 3. Place the company
 Load `references/situation-lens.md`. Place the stage by evidence and name the **one binding constraint** — a fact about customers or the business, from what the marketer told you — with the evidence in one clause. A missing setup step (claims not signed off, an account not connected, a list not pulled) is never the constraint; at most it is something to bring. **Check the product-side constraints before any marketing move** — fit, activation, retention, pricing: a brand whose sign-ups never reach a first result needs activation, not more acquisition. Weigh company type, sales motion, where it sells, budget, the marketer's hours and who does the work, existing assets, regulated claims, repeat purchase, and the next big date against today's date. Use `references/base-rates.md` to call an unrealistic target and to set the "worked if" number. Name the next big date for the business and for its customers (for a tool sold to consumer brands, their Black Friday rush is part of the calendar). If the constraint is not a marketing problem, say so.
@@ -55,7 +57,7 @@ Load `references/output-shape.md`. Read, constraint, first move (one, at most tw
 ### 6. Agree, save, hand off
 - If they disagree, ask what feels wrong and adjust once; their call stands.
 - **Save as soon as they agree** ("makes sense", "ok" counts) — never before, and never a buyer, audience or strategy line they haven't agreed to: their answers and the agreed recommendation with the `where-to-start-situation-save` skill (`../where-to-start-situation-save/SKILL.md`), so the next job reads them instead of asking. Say "saved" in one line only after the save comes back; if it failed or there is no brand, say plainly it isn't saved.
-- Then offer the chosen job in plain words. Never start another playbook yourself: their own request starts it, and it reads the saved answers.
+- Then send them on: offer the one job to do next in plain words, with what to say to start it ("When you're ready, ask me for your welcome emails"). Never start another playbook yourself: their own request starts it, and it reads the saved answers.
 
 ## Approval gates
 

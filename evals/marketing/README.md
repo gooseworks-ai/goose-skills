@@ -14,7 +14,7 @@
 From this folder (`evals/marketing/`), with Node 20+, the `claude` CLI signed in, and GooseWorks **staging** connected to it as the `gooseworks-staging` MCP server. No other setup: the workspace settings come from `settings.json` here.
 
 ```bash
-# Routing: all 87 asks, cheap (Haiku). About 3 minutes.
+# Routing: all 94 asks, cheap (Haiku). About 3 minutes.
 node run.mjs routing
 
 # One playbook, both arms, default models (Sonnet agent, Haiku marketer, Opus judge).
@@ -62,7 +62,7 @@ To check the judge, open the arm folder: `transcript.md` (the whole conversation
 
 | Eval | Time | Cost |
 |---|---|---|
-| Routing, 87 asks on Haiku | ~3 min | ~$1 |
+| Routing, 94 asks on Haiku | ~3 min | ~$1 |
 | One behaviour eval, both arms | 10–120 min (60 min cap per arm) | ~$3–45 (research-competitors with the skill: ~45 min, ~$35) |
 | The whole suite (7 playbooks + routing) | 5–12 hours, run unattended | ~$80–250 |
 
@@ -103,7 +103,7 @@ evals/marketing/
 ├── prompts/subject-note.md     appended to the subject's system prompt (staging, no spend, no browser)
 ├── prompts/simulator.md        system prompt for the simulated marketer (hard rules: decline top-ups, never approve spend/publishing)
 ├── prompts/judge.md            system prompt for the judge
-├── routing/cases.jsonl         87 routing cases
+├── routing/cases.jsonl         94 routing cases
 ├── settings.json               the workspace's .claude/settings.json (production GooseWorks denied)
 ├── playbooks/<slug>/scenario.md, rubric.md
 └── results/                    gitignored output
