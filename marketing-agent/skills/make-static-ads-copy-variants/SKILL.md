@@ -2,7 +2,7 @@
 name: make-static-ads-copy-variants
 description: >-
   Step of the make-static-ads playbook: after an image is approved, makes more versions of the same picture with different hooks, headlines or fonts — by a quoted re-render with the approved render attached as the brand's own image, or by splitting the render into layers and resetting the text exactly — so copy can be tested without new visuals. Offered, never default. Run make-static-ads instead; not for direct use.
-version: 0.8.0
+version: 0.8.1
 ---
 
 # copy-variants
@@ -21,6 +21,6 @@ No new board: the parent ad's row is the basis, linked in the batch file. Every 
      1. **Split.** `gooseworks:ads_creative_layerize` returns background, image, logo and text layers (about two minutes). It has no dry-run price: tell the marketer it costs credits and get their yes before sending `confirmed: true`. Read the layers (`include: ["layers"]`).
      2. **Build a text-free base from the original render.** Replace only the old text's box (plus a small, feathered margin) with the background and image layers composited. The split redraws the whole photo, so its background outside that box would change the picture (reflections, faces). Done when every pixel outside the box matches the original.
      3. **Set the new text.** An HTML page: the base, then the new text in the chosen Google Font, centred on the old text box at the old text's size. A longer line wraps to two lines (the box grows evenly up and down) rather than shrinking. Screenshot it with a headless browser at the render's exact pixel size.
-     4. **Save.** `gooseworks:media_upload` (`source: {type: "bytes"}`, `kind: "image"`, `scope: "brand"`), then `gooseworks:ads_save` (`media_id`, `parent_creative_id` = the original ad, a title, tags such as `copy-variant`, `variant:<n>`, `concept:<c-n>`). Free; the variant can then be tagged, reviewed and launched like any other ad.
+     4. **Save.** `gooseworks:media_upload` (`source: {type: "bytes"}`, `kind: "image"`, `scope: "brand"`), then `gooseworks:ads_save` (`media_id`, `parent_creative_id` = the original ad, a title, tags such as `copy-variant`, `variant:<n>`, `concept:<the parent's id>`). Free; the variant can then be tagged, reviewed and launched like any other ad.
 3. **Check each variant:** Pass A and B of the `make-static-ads-claims-extract` skill (`../make-static-ads-claims-extract/SKILL.md`); re-rendered variants are judged like any render (the `make-static-ads-render-review` skill (`../make-static-ads-render-review/SKILL.md`), one retry inside the yes); both kinds get rubric checks 1, 2, 8, 11, 12, 15 and 23 — spelling letter by letter, contrast, nothing covered, qualifier legible.
 4. **Hand over** each variant under its parent ad: the image, its text, its font. Suggest running them as text options inside one flexible ad, not as separate concepts.

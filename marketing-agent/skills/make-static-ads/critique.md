@@ -585,3 +585,10 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 - **One source each:** level table (levels.md), template description (find-references), alternates (find-references §5), usable facts (claims-and-policy §2), Pass A/B (claims-extract), polling (engine-notes), capability gate (SKILL.md), 9:16 safe zones (prompts.md §4), font rules (prompts.md §2), brand fit (rubric 15).
 - **Contradictions fixed:** unseen-image tag, chat-confirmed claims (claims-gate), colour default (the brand's ads), one new angle per five, the level applies to the whole set, `ads_creative_layerize`.
 - compose stays a separate step skill (AGENTS.md: every step is its own skill).
+
+
+## Round 33 — 24 Oct: every ad had the same look (0.8.1)
+
+**Summary.** Akhil saw that every brand's ads (Graza, Anna and Sarah, Gooseworks) came out in one look: staged, playful set-design still life, cartoonish with miniatures or a felt puppet. Cause: the prompt guide's shared foundation gave every ad the same finish ("real materials, believable cast shadows, a deliberately built and photographed set"), ideas.md asked for events "built on a real set and photographed", and the Kolkata example is five staged sets. The 0.8.0 cut of creative-taxonomy also removed the only list of visual styles.
+
+**Change.** A style per ad (levels.md: premium product photo, lifestyle, phone/UGC, 3D render, flat graphic or type, native format, editorial collage, illustration, conceptual still life), taken from the template and the brand's own ads; at least two styles per set; conceptual still life at most one per set unless it is the brand's look. The prompt describes each ad's own style; no shared finish. Template alternates on the board show other styles, so the marketer can switch the look. Board column and `style:` tag added. Also from the 0.8.0 run: anything shown inside an ad must look finished (no blank placeholder boxes); concept ids carry the batch date (`concept:<yyyymmdd>-c<n>`) so batches don't collide; rubric severities now match render-review (a REMAKE still failing after the retry is shown, not dropped).
