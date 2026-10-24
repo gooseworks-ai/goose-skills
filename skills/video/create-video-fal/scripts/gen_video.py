@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Image-to-video (or t2v) via any FAL video model, ROUTED THROUGH THE PROXY (bills the
-Ads agent). image_url must be a PUBLIC url (orchestrator hosts local frames via MCP
+"""Image-to-video (or t2v) via any FAL video model, ROUTED THROUGH THE PROXY (charged to your GooseWorks credits). image_url must be a PUBLIC url (orchestrator hosts local frames via MCP
 media_upload). Model + params come from the template recipe.
 
   gen_video.py --model fal-ai/kling-video/v3/pro/image-to-video \

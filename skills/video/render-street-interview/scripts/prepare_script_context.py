@@ -35,7 +35,7 @@ ALTERNATIVES = [
 # What going custom still forbids when the offering is not a physical product. make-custom-video
 # keeps "product-guess only with a physical product the brand sells", so a customer who picks
 # custom to hand over a mascot, a prop or a phone has picked a route that does not exist
-# (GOOSE-4018). Say so on the alternative, not after they choose it.
+#. Say so on the alternative, not after they choose it.
 CUSTOM_NO_GUESS = ("no guessing game: nothing stands in for a product, not a mascot, a prop, "
                    "a phone or a screen; ")
 NUMBER_WORDS = {1: "one", 2: "two", 3: "three", 4: "four"}

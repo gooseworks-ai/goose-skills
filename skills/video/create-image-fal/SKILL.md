@@ -1,6 +1,6 @@
 ---
 name: create-image-fal
-description: Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)
+description: Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), routed through the GooseWorks proxy, so the call is charged to your GooseWorks credits. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)
 status: active
 ---
 
@@ -10,10 +10,10 @@ status: active
 
 **Never hand-write a person prompt.** Any image with a person in it is made by create-creator-takes-h3's `scripts/make_character.py` (GPT Image 2, phone capture, deep focus, no retouching), unless the recipe prescribes its own creator still; read [the avatar-generation guide](references/avatar-generation.md) first. Nano Banana is for cartoons only, never for real people or real products, and never use Flux for a face.
 
-Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)
+Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), routed through the GooseWorks proxy, so the call is charged to your GooseWorks credits. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)
 
 ## Run
-gen_image.py --model fal-ai/nano-banana/edit --payload '{...}' --out keyframe.png — bills the agent; returns the *.fal.media URL.
+gen_image.py --model fal-ai/nano-banana/edit --payload '{...}' --out keyframe.png — charged to your GooseWorks credits; returns the *.fal.media URL.
 
 ## The brand's own product
 
@@ -43,7 +43,7 @@ gen_image.py --model openai/gpt-image-2/edit --brand-product held --product-imag
 ```
 
 ## Contract
-- Paid calls route through the GooseWorks proxies (bills the Ads agent) via the
+- Paid calls route through the GooseWorks proxies (charged to your GooseWorks credits) via the
   bundled `media_proxy.py` — never a provider SDK's default host.
 - The template recipe (DB) supplies the model + params; this capability is generic.
 

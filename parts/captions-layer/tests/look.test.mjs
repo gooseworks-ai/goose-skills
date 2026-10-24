@@ -83,15 +83,15 @@ test('no caption is drawn inside the end card; the held caption stops where it s
 test('stroke: up to five outlined words, no plate, the brand name in the highlight colour', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await cut(ctx, 3);
-  const words = timed([['Try', 0.2, 0.4], ['Drinkag1', 0.5, 0.9], ['today', 1.0, 1.3], ['for', 1.4, 1.5], ['free.', 1.6, 2.0], ['Seriously', 2.1, 2.6]]);
+  const words = timed([['Try', 0.2, 0.4], ['Drinkqx9', 0.5, 0.9], ['today', 1.0, 1.3], ['for', 1.4, 1.5], ['free.', 1.6, 2.0], ['Seriously', 2.1, 2.6]]);
   const inputs = await layerInputsFor(video, {
-    brand: { name: 'DrinkAG1', colors: {}, fonts: {}, pronunciations: [] },
+    brand: { name: 'DrinkQX9', colors: {}, fonts: {}, pronunciations: [] },
     expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'stroke', highlight: ['brand'] } },
-    timeline: { speech: [{ text: 'Try Drinkag1 today for free. Seriously', start_s: 0.2, end_s: 2.6, words }] },
+    timeline: { speech: [{ text: 'Try Drinkqx9 today for free. Seriously', start_s: 0.2, end_s: 2.6, words }] },
   });
   const out = await mod.run(inputs, ctx);
   const cues = cuesOf(readFileSync(out.captions.path, 'utf8'));
-  assert.deepEqual(cues.map((c) => c.text), ['Try Drinkag1 today for free.', 'Seriously'], 'a phrase ends at its full stop');
+  assert.deepEqual(cues.map((c) => c.text), ['Try Drinkqx9 today for free.', 'Seriously'], 'a phrase ends at its full stop');
   const frame = await framePixels(out.video.path, 1.0, 540, 960);
   const record = JSON.parse(readFileSync(out.words.path, 'utf8'));
   assert.ok(plateShare(frame, record.cues[0].box) < 0.05, 'no plate behind the words');

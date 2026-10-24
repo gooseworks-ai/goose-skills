@@ -72,7 +72,7 @@ text starts ~150px from the banner's left edge. Change one, change both.
 ## Requires
 
 `watch` (QC the final master). The recipe gates `create-image-fal` (plate clean) and
-`create-music-elevenlabs` (bed/pop) — both paid, proxy-routed, billed to the Ads agent.
+`create-music-elevenlabs` (bed/pop) — both paid, proxy-routed, charged to your GooseWorks credits.
 
 ## Wrapped notifications and software endings
 

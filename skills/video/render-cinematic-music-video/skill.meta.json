@@ -15,6 +15,7 @@
     ]
   },
   "requires_skills": [
-    "watch"
+    "watch",
+    "stitch-videos-ffmpeg"
   ]
 }

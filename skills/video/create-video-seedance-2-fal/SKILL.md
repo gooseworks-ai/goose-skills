@@ -1,6 +1,6 @@
 ---
 name: create-video-seedance-2-fal
-description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.
+description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (charged to your GooseWorks credits). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.
 owner: team
 status: superseded
 version: "2.0.5"
@@ -32,8 +32,8 @@ Use this atom when:
 **Do NOT use** for:
 - Any shot with a realistic face (a talking head, a creator, a stranger) → `creator-h3` or `video-h3max`
 - > 15s clips → split across multiple calls and stitch (`assembly/stitch-videos-ffmpeg`)
-- Pure cinematic camera moves without an on-screen person → `create-video-veo3` is often better
-- Product-only B-roll with no person → `create-product-videos-higgsfield-ms` or text-to-video Seedance
+- Pure cinematic camera moves without an on-screen person → Veo through `create-video-fal` is often better
+- Product-only B-roll with no person → text-to-video Seedance, or another model through `create-video-fal`
 - Clips that need video reference for continuity from a prior AI-gen scene → not supported (content_policy_violation)
 
 ## Inputs
@@ -53,7 +53,7 @@ Optional:
 - `--input-digest` — a stable id of the WHOLE request: `media_proxy.input_digest(model, payload)` over the full payload (prompt, resolution, duration, aspect ratio, audio, seed) with each ref URL replaced by its file's sha256 or ingredient key. Pass it when refs are re-hosted between runs: a recorded rejection then still matches, and the proxy re-attaches to a running job instead of paying twice. **It becomes a permanent refusal key after a policy rejection**, so it must cover every input: leave the prompt or an image out and a run that changed only that input is refused.
 
 Credentials:
-- **No FAL key.** Routes through the GooseWorks FAL proxy (`media_proxy.py`, bundled) and bills the Ads agent, using `~/.gooseworks/credentials.json` (written by the `gooseworks` CLI). Your `cal_`/agent token is not a FAL key — the old direct-key path 401'd; that's why this capability was rerouted through the proxy.
+- **No FAL key.** Routes through the GooseWorks FAL proxy (`media_proxy.py`, bundled) and is charged to your GooseWorks credits, using `~/.gooseworks/credentials.json` (written by the `gooseworks` CLI). Your `cal_`/agent token is not a FAL key — the old direct-key path 401'd; that's why this capability was rerouted through the proxy.
 
 ## Decision Rules
 
@@ -117,7 +117,7 @@ python3 scripts/generate.py \
 ```
 
 The script:
-1. Routes through the bundled `media_proxy.py` (GooseWorks FAL proxy) — no FAL key; bills the Ads agent via `~/.gooseworks/credentials.json`.
+1. Routes through the bundled `media_proxy.py` (GooseWorks FAL proxy) — no FAL key; charged to your GooseWorks credits via `~/.gooseworks/credentials.json`.
 2. Passes the `--image-url` values straight through as `image_urls` (they must already be PUBLIC URLs; the orchestrator hosts local refs via MCP).
 3. Submits `bytedance/seedance-2.0/reference-to-video` through the proxy and polls to completion with:
    ```python

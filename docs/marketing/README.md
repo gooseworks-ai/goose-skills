@@ -27,7 +27,7 @@
 
 ## What we are not building yet
 
-[BACKLOG.md](BACKLOG.md) lists the marketing jobs these playbooks do not cover yet, each with who needs it and what should make us build it. Decided 16 Oct: keep the surface at 17 until these are built and tested well. Decided 18 Oct: social listening became a step of research-market, so the surface is 16; drafting replies to comments and DMs is not covered yet (BACKLOG card "Reply drafts"). Decided 19 Oct (the owner): lead generation is completed — research-audience's list mode builds, scores and watches lists, and **write-outreach** writes the emails and LinkedIn messages; sending stays with the marketer (BACKLOG #6), so the surface was 17. Decided 20 Oct (the owner): learn-my-brand, make-video-ads and make-product-photos are held back from the first release until the server work they need exists, so the released surface is 14 ([drafts/marketing/README.md](../../drafts/marketing/README.md)).
+**Today: 14 released playbooks**, and no new playbooks until the gaps in [BACKLOG.md](BACKLOG.md) are built and tested. Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back until the server work they need exists ([drafts/marketing/README.md](../../drafts/marketing/README.md)). Not covered yet: drafting replies to comments and DMs, and sending outreach (write-outreach writes the emails and LinkedIn messages; the marketer sends them). Social listening is a step of research-market, not its own playbook. BACKLOG.md lists each gap with who needs it and what should make us build it.
 
 ## How to test a playbook
 

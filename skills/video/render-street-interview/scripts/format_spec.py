@@ -4,7 +4,7 @@
 Split out of `single_gen.py` on 2026-09-30. Before the split, one sample run's creative choices
 were frozen into the prompt as structural requirements: four specific lines of dialogue, four
 specific people, one named product, one street corner. Changing brand meant editing Python,
-which is the failure Linear GOOSE-3680 names and the format audit found in 44 of 61 recipes.
+which is the failure the format audit found in 44 of 61 recipes.
 
 The division of labour:
 

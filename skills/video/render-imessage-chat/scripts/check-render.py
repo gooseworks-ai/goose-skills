@@ -1,5 +1,5 @@
 """Check the encoded master: dimensions, audio, frame count, complete tail and
-the platform safe area (QA-60) recorded by record-chat.js.
+the platform safe area recorded by record-chat.js.
 
 `python3 check-render.py MASTER TIMELINE END` checks a full render.
 `python3 check-render.py --safe-area master-chat.safe-area.json` checks only the

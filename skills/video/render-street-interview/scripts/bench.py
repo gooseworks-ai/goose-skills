@@ -71,8 +71,8 @@ BANDS = {
 
 # -- the inventory --------------------------------------------------------------------------
 # Labelled and grouped so a row in the printed table can be traced back to a file. Anything
-# missing from disk is reported as missing rather than skipped silently: `projects/` is
-# gitignored, so a fresh checkout has none of this.
+# missing from disk is reported as missing rather than skipped silently: these takes live in the
+# run folder, which a new project does not have until it renders them.
 def inventory(run: Path):
     T, O, R = run / "working" / "takes", run / "output", run / "refs"
     inv = []
@@ -243,7 +243,7 @@ def measure(item, quick=False):
     row = dict(item)
     row["path"] = str(p)
     if not p.exists():
-        row["error"] = "MISSING on disk (projects/ is gitignored; re-fetch before trusting a row)"
+        row["error"] = "MISSING on disk (not in this run folder; render or copy it in before trusting a row)"
         return row
     if p.stat().st_size < 4096:
         row["error"] = f"{p.stat().st_size} bytes -- git-lfs pointer, not a video"

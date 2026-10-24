@@ -8,8 +8,7 @@
     "chatgpt-mockup": "render.js"
   },
   "scripts": {
-    "render": "node render.js",
-    "test": "bash tests/run-all.sh"
+    "render": "node render.js"
   },
   "dependencies": {
     "playwright": "^1.40.0"

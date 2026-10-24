@@ -4,7 +4,7 @@
 Endpoint: bytedance/seedance-2.0/reference-to-video  (a ByteDance third-party model —
 note NO `fal-ai/` prefix, same as bytedance/seedream/... and openai/gpt-image-2).
 
-Routed through media_proxy (bills the Ads agent). Your agent/`cal_` token is NOT a FAL
+Routed through media_proxy (charged to your GooseWorks credits). Your agent/`cal_` token is NOT a FAL
 key, so the old direct `load_fal_key()`/`subscribe()` path 401'd — this capability now
 uses the same proxy every other media capability does.
 
@@ -138,7 +138,7 @@ def main() -> int:
 
     try:
         # Default poll timeout for video (1800s). A timeout raises FalPollTimeout with the
-        # request_id — resume it (media-proxy resume.py), never resubmit (GOOSE-3729).
+        # request_id — resume it (media-proxy resume.py), never resubmit.
         # A request the provider already refused raises FalPolicyRejection before any
         # network call (media_proxy's rejected-request ledger).
         result = _fal_run(MODEL, payload, input_digest=args.input_digest, query=query)

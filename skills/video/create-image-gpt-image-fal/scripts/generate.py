@@ -27,7 +27,7 @@ import sys
 from pathlib import Path
 
 # media_proxy is bundled next to this script so the skill is self-contained AND
-# routes every paid call through the GooseWorks FAL proxy (bills the Ads agent).
+# routes every paid call through the GooseWorks FAL proxy (charged to your GooseWorks credits).
 # The old vendored fal_helpers used a raw FAL_KEY (load_fal_key/subscribe), which
 # 401s with an agent/`cal_` token — that key isn't a FAL key.
 sys.path.insert(0, str(Path(__file__).resolve().parent))

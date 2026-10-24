@@ -113,7 +113,7 @@ also supports even preview dimensions; the phone must fit with a margin.
 - Default outer canvas 1080×1920; zoom fits the 393×852 phone proportionally.
   Excess zoom fails rather than cropping the phone. `timing` can override the
   named pacing fields in record-chat.js; ending hold must be at least 0.5 seconds.
-- `safe_area` keeps the conversation clear of the platform controls (QA-60).
+- `safe_area` keeps the conversation clear of the platform controls.
   Omitted: **on** for 9:16 canvases, off for other shapes. `true` uses the
   review-finished-ad bands (top 220, bottom 400, right 140, left 0 px at
   1080×1920, scaled to the canvas). An object such as `{"bottom":480}` overrides
@@ -190,4 +190,4 @@ The current renderer combines the fixed-frame repair with the lessons from the l
 14. Read approved brand colours from the brand kit or site styling. Preserve the selected background and contact names.
 15. Keep the quieter audit mix with the existing peak limiter. Unsupported ratings remain absent unless approved proof is supplied.
 16. Inspect the actual encoded ending and sound alignment. Frame counts and a passing stream probe do not establish creative acceptance.
-17. Keep the newest message out of the platform controls (QA-60). A full-height phone put the punchline under the TikTok/Reels caption band. Fit the conversation viewport, not the whole phone, into the safe zone: the phone stays large and native. A future skin with bottom sheets must extend `PHONE.keep` to the screen bottom and mark sheets `data-safe-keep`.
+17. Keep the newest message out of the platform controls. A full-height phone put the punchline under the TikTok/Reels caption band. Fit the conversation viewport, not the whole phone, into the safe zone: the phone stays large and native. A future skin with bottom sheets must extend `PHONE.keep` to the screen bottom and mark sheets `data-safe-keep`.

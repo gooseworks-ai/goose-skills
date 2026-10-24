@@ -110,4 +110,4 @@ Invoke via `/goose-graphics` in Claude Code. The skill walks you through format 
 
 ## Testing
 
-Automated testing harness lives in a separate workstream (GOOSE-1357) — check the `testing/` subdirectory once that lands.
+There is no automated testing harness for this skill yet.

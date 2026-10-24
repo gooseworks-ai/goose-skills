@@ -122,6 +122,6 @@ The palette is a brand fact (brand kit), not a choice.
 - `watch` (QC the final master — the red strike crosses the vertical MIDDLE of EVERY wrapped
   myth line, the VO is intelligible, captions are legible with no card collision,
   suppression is correct on the proof + end-card beats, framerate is uniform 25/1, no
-  clipping, every claim is legible sound-off). The recipe gates the paid `create-vo-eleven`
+  clipping, every claim is legible sound-off). The recipe gates the paid `create-vo-elevenlabs`
   (VO), `create-music-elevenlabs` (bed), and FAL Whisper calls — this capability itself
   makes NO paid calls.

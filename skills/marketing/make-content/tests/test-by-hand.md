@@ -57,7 +57,7 @@ Brand: **Clearday** (`0e5b2fb0-…`, DTC acne-safe skincare). Ask: "Turn our lat
 | # | Call | What came back | What the playbook does with it |
 |---|---|---|---|
 | 1 | `brand_read` (list) | 8 brands, each with `coworker_agent_id` (Clearday → `9d554b73-…`) | Workspace scope for every file |
-| 2 | `brand_read` sections summary, kit, learnings, sources, organic | Kit voice (description, 3 site lines, Do/Don't); 1 learning: `dont` choppy script lines; own IG @personalday and TikTok @personaldayskin as `relationship: self` sources; 12 own posts (Oct 5–12) with metrics and `media_asset_id` | Platforms = IG + TikTok (from sources); the script learning applies to every video version |
+| 2 | `brand_read` sections summary, kit, learnings, sources, organic | Kit voice (description, 3 site lines, Do/Don't); 1 learning: `dont` choppy script lines; own IG @clearday and TikTok @cleardayskin as `relationship: self` sources; 12 own posts (Oct 5–12) with metrics and `media_asset_id` | Platforms = IG + TikTok (from sources); the script learning applies to every video version |
 | 3 | `brand_read` learnings (full) | No "Claims sign-off (learn-my-brand" marker | **Before sign-off: plain product facts only.** Positioning note sent before drafting ("'acne-safe' isn't signed off yet…") |
 | 4 | `knowledge_search` claim | 7 rows `claim_status: approved`, all research-created (4 press quotes, free returns, free shipping $45+, 4.9/234 reviews) | Treated as candidates under the claims gate's contract, not proof |
 | 5 | `knowledge_search` document "Brand record approved claims" | empty | Confirms no sign-off has run |

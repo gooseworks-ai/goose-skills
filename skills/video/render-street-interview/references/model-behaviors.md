@@ -10,7 +10,7 @@ This file is bundled with `render-street-interview`. It distils Studio's shared 
 
 ## Required reading and approval
 
-Read this guide and the renderer entry before any paid generation. If a required package/file cannot be opened, stop and name it. The current recipe and approved project brief govern production; `REFERENCE.md` and `READINESS.md` retain historical experiments that may describe older modes or untested proposals.
+Read this guide and the renderer entry before any paid generation. If a required package/file cannot be opened, stop and name it. The current recipe and approved project brief govern production; `REFERENCE.md` retains historical experiments that may describe older modes or untested proposals.
 
 Use the recipe's product reference and declared reference bindings. Do not add an avatar/person reference. A scene reference, when the selected mode supports one, must follow the current recipe's face-cropping and review rules. Earlier successes do not guarantee provider-policy acceptance. Terminal rejection stops the run; recover existing requests after transport timeouts instead of resubmitting.
 

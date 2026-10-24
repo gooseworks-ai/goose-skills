@@ -59,7 +59,7 @@ The record's header names the question set version actually asked this run, and 
 **The baseline is per cell.** For each question and engine, it is the newest record where that cell was actually checked the same way. It is not simply the newest record. A cell that wasn't checked this run is written `not checked; last: 0 of 3, 2026-09-18 (browser)`, so the value survives any number of runs that couldn't check it.
 
 Movement is judged only between like and like. Anything else is "not comparable", never a change.
-- **Same question.** Same id. A reworded question gets a **new id** (the question-set atom retires the old one: "reworded → Q14, v2"), so the same id always means the same words. A new id has no baseline yet. Keep swaps to the 3 the question-set atom allows, so most questions stay comparable.
+- **Same question.** Same id. A reworded question gets a **new id** (the `improve-search-visibility-question-set` step retires the old one: "reworded → Q14, v2"), so the same id always means the same words. A new id has no baseline yet. Keep swaps to the 3 that step allows, so most questions stay comparable.
 - **Same route and place.** Browser signed out against browser signed out, from the same browser location. Pasted answers compare only with pasted answers, and web search only with web search. The paid Google top-up compares only with an earlier top-up.
 - **Noise rule.** AI answer lists rarely repeat.
   - **Key questions (3 tries):** a change of 2 or more tries (0 → 2, 3 → 1) is "moved". A change of 1 is "wobbled, watch it".

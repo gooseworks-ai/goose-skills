@@ -24,7 +24,7 @@ captions, and end card.
 | Config field | Phase | Step (tool) | Paid? |
 |---|---|---|---|
 | `vo.script_md`, `vo.voice_id`, `vo.settings`, `vo.model` | 1 VO | ElevenLabs v3 render of the locked testimonial | **PAID** |
-| `vo.outputs.word_timings` | 1 VO | Whisper word-align (`transcribe-audio-fal`) → `audio/vo-final.words.json` | **PAID** (Whisper) |
+| `vo.outputs.word_timings` | 1 VO | Whisper word-align (`caption-burn`'s `transcribe.py`) → `audio/vo-final.words.json` | **PAID** (Whisper) |
 | `edl.*`, `edl.timeline[].t_in/t_out/role/source` | 2 EDL | `montage.py edl`: each cut's `word_range` snaps to the VO word boundaries → `edl.json` (~30 cuts) | free |
 | `character.descriptor`, `character.anchor`, `worlds[]` | 3 Creator/Worlds | `create-image-gpt-image-fal` gpt-image-2 anchor + `create-image-fal` 3 world wides | **PAID** |
 | `character.wardrobes` | 3 Creator | `create-image-gpt-image-fal` → 5 wardrobe edits chained off the anchor | **PAID** |

@@ -13,7 +13,7 @@ product-showcase format. The paid stages are separate capabilities:
 - **the bed** — `create-music-elevenlabs` (`force_instrumental` true).
 
 There is **no Higgsfield / Marketing Studio** in this format; every paid call routes through the
-fal-proxy / elevenlabs-proxy so it bills the Ads agent. This capability spends nothing: given the
+fal-proxy / elevenlabs-proxy so the call is charged to your GooseWorks credits. This capability spends nothing: given the
 four delivered beats + the brand wordmark it stitches the finished master. Re-cuts (a swapped end
 card, a re-timed beat, a re-mixed bed) reuse the existing beats and spend nothing.
 

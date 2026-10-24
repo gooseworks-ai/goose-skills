@@ -36,16 +36,16 @@ hook on the chorus drop and the real-asset end card are the format and stay fixe
 |---|---|---|---|
 | `song.prompt`, `song.structure[]`, `song.global_styles` | ElevenLabs `music_v1` call (music-gen atom) → `audio/music.mp3` + `audio/music_metadata.json` | 1 — Anthem | **PAID** |
 | `song.outputs.metadata` → `captions.source` | `build_word_timestamps.py` (adapter: `music_metadata.words_timestamps` ms → Whisper-shape `words.json` s) | 1 — Anthem | free |
-| `song.hook_line` / `hook_word` / `hook_target_sec` | derived from the returned word timings; drives the `stitch.py` `TIMELINE` snap | 1 — Anthem | free |
+| `song.hook_line` / `hook_word` / `hook_target_sec` | derived from the returned word timings; drives the beat-window snap | 1 — Anthem | free |
 | `look_pack.style_opener` (`STYLE_OPENER`), `look_pack.negative_tail` (`NEG`), `continuity_anchor` (`HV_GARMENT`) | `gen_keyframes.py` (prepend/append per prompt) | 2 — Keyframes | **PAID** |
 | `tableaux[].keyframe_prompt`, `keyframe_engine.model/resolution/aspect_ratio` | `gen_keyframes.py` `KEYFRAMES[]` → `higgsfield generate create gpt_image_2 --aspect_ratio 2:3 --resolution 2k` → `assets/keyframes/<id>.png` | 2 — Keyframes | **PAID** |
 | `keyframe_engine.batch_size` (3) | `gen_keyframes.py` `ThreadPoolExecutor` (burst-credit reserve) | 2 — Keyframes | — |
 | `clip_engine.motion_opener` (`MOTION_OPENER`) | `gen_clips.py` (prepend per motion hint) | 3 — Clips | **PAID** |
 | `tableaux[].motion_hint`, `clip_engine.model/duration_sec` | `gen_clips.py` `MOTION[]` → `higgsfield generate create kling3_0 --start-image assets/keyframes/<id>.png --duration 5` → `assets/clips/<id>.mp4` | 3 — Clips | **PAID** |
-| `tableaux[].t_start/t_end` | `stitch.py` `TIMELINE[]` — beat-locked windows snapped to the real lyric word-timestamps | 4 — Assembly | free |
-| `width`/`height`/`fps` | `stitch.py` `normalize_segment` (`scale=1080:1920 increase` + `crop`, `fps=30`, `tpad clone` to the window) | 4 — Assembly | free |
-| `song.outputs.audio`, `audio_mix.loudness_lufs`, `fade_in_sec`, `fade_out_sec` | `stitch.py` `mux_audio` (`atrim=0:28`, `afade` in/out, `loudnorm I=-14`) → `clips/master-no-captions.mp4` | 4 — Assembly | free |
-| `captions.source/style_preset/placement/chunk_words/accent_words`, `song.lyrics_md` | `stitch.py` `burn_captions` → the `sync-captions-to-music` atom (`--style-preset music-video --placement low --chunk-size 4 --accent-words …`) → `finals/master-final.ass` → `finals/master-final.mp4` | 4 — Assembly | free |
+| `tableaux[].t_start/t_end` | the beat-locked windows, snapped to the real lyric word-timestamps → the montage spec's cuts | 4 — Assembly | free |
+| `width`/`height`/`fps` | `stitch-videos-ffmpeg` `montage.py assemble` (scales and crops each cut to 1080×1920, 30 fps, exact frame counts) | 4 — Assembly | free |
+| `song.outputs.audio`, `audio_mix.loudness_lufs`, `fade_in_sec`, `fade_out_sec` | one ffmpeg mux (`atrim=0:28`, `afade` in/out, `loudnorm I=-14`) → `clips/master-no-captions.mp4` | 4 — Assembly | free |
+| `captions.source/style_preset/placement/chunk_words/accent_words`, `song.lyrics_md` | `stitch-videos-ffmpeg` `montage.py captions` (`--words audio/words.json`, 4 words a cue, low on the frame, a serif font); the accent words as a second captions pass in their own colour → `finals/master-final.mp4` | 4 — Assembly | free |
 | `end_card.*` | authored as the designed `T14` keyframe base (or a PIL/ffmpeg composite from the real wordmark); overlaid on `overlay_window_sec` | 4 — Assembly | free |
 | whole master | `watch` (`/watch` the final master end-to-end) | 5 — QC | free |
 
@@ -60,8 +60,8 @@ verse/pre-chorus/chorus/outro sections, each with `duration_ms`, per-section
   (word-level start/end in **ms**).
 
 Then run `build_word_timestamps.py` — it maps `music_metadata.words_timestamps` (ms) to a
-Whisper-shape `audio/words.json` (seconds) that the captions atom consumes. Derive the
-`stitch.py` `TIMELINE` — `(tableauId, tStart, tEnd)` per beat — by snapping each tableau
+Whisper-shape `audio/words.json` (seconds) that the captions step consumes. Derive the beat
+windows — `(tableauId, tStart, tEnd)` per beat — by snapping each tableau
 boundary to the lyric-phrase edges in the returned word timings. The hook line
 (`song.hook_line`; demo: "every day is game day" at ~14.4s) lands on the chorus drop; the
 `is_hook` tableau (demo: `HOOK_HERO` T08, a split-screen brand-range frame) is timed to it. No artist names
@@ -90,27 +90,31 @@ Kling 3.0 (not Seedance) holds the film register and the real faces through the 
 `MOTION_OPENER` demands handheld micro-drift + film-grain hold and NEGATES smooth AI-camera
 glide / CGI swoop.
 
-## 4. Assembly + captions + end card → `stitch.py`  (config: `tableaux[].t_start/t_end`, `audio_mix`, `captions`, `end_card`)
+## 4. Assembly + captions + end card  (config: `tableaux[].t_start/t_end`, `audio_mix`, `captions`, `end_card`)
 
-`stitch.py` is the single assembler; it runs four sub-steps:
-1. **`normalize_segment`** — per beat, cut the clip to its `TIMELINE` window (`t_start..t_end`),
-   `scale=1080:1920:force_original_aspect_ratio=increase` + `crop=1080:1920`, `fps=30`,
-   `setpts=PTS-STARTPTS`, and `tpad=stop_mode=clone` clone-pad to the exact window length
-   (crf 18). Note the mirror-family gotcha: pair `tpad` with an explicit `-t` clamp so the
-   segment is exactly the window (it is, via `-t {duration}`).
-2. **`concat_segments`** — hard-concat the beat segments (`-f concat -c copy`) →
-   `clips/master-silent.mp4` (video only, hard cuts on the beat).
-3. **`mux_audio`** — `[1:a]atrim=0:28, afade in 0.15s, afade out at 27.4s d 0.6s,
-   loudnorm I=-14:LRA=11:tp=-1.0` over the silent master → `clips/master-no-captions.mp4`.
-4. **`burn_captions`** — call the `sync-captions-to-music` atom's `sync.py` with
-   `--video clips/master-no-captions.mp4 --lyrics source/lyrics-locked.md --timestamps
-   audio/words.json --placement low --chunk-size 4 --style-preset music-video --accent-words
-   <captions.accent_words>` (demo: `every,day,game,HER,Rally,Rogue,girls,started,finish`) → cinematic lower-third serif captions
-   (rendered ASS uses a serif font, New York) burned → `finals/master-final.mp4`.
+This skill ships no assembler script. The demo run used its own `stitch.py`, which is not
+shipped. Do the four steps with the `stitch-videos-ffmpeg` skill's free `montage.py`
+(`../../stitch-videos-ffmpeg/SKILL.md`) and plain ffmpeg:
+1. **Cut each beat to its window** — one montage cut per tableau, `t_start..t_end`, scaled
+   and cropped to 1080×1920 at 30 fps. `montage.py assemble` gives each cut an exact frame
+   count, so a short clip must cover its window (re-roll it, or hold its last frame with
+   ffmpeg `tpad=stop_mode=clone` plus an explicit `-t` clamp before it goes in the spec).
+2. **Hard-concat on the beat** — the same `assemble` step joins the cuts in order with hard
+   cuts → `clips/master-silent.mp4` (video only).
+3. **Mux the anthem** — one ffmpeg pass: `[1:a]atrim=0:28, afade in 0.15s, afade out at 27.4s
+   d 0.6s, loudnorm I=-14:LRA=11:tp=-1.0` over the silent master →
+   `clips/master-no-captions.mp4`. (`montage.py mix` is for a VO over a ducked bed; the anthem
+   here is the only track.)
+4. **Burn the captions** — `montage.py captions --video clips/master-no-captions.mp4 --words
+   audio/words.json`, 4 words a cue (`per`), low on the frame (`y` about 0.85) in a serif font.
+   `montage.py` draws each cue in one colour, so burn the accent words
+   (`captions.accent_words`; demo: `every,day,game,HER,Rally,Rogue,girls,started,finish`) and
+   the hook line as a second `captions` pass from a cue file of just those words, in the accent
+   colour → `finals/master-final.mp4`.
 
 Captions come from the song's OWN `audio/words.json` (via `build_word_timestamps.py`), **not
 Whisper** — Whisper on sung audio returns "🎵 Music Playing 🎵". The chorus hook line gets the
-accent (bold-italic) treatment; the accent words are colored.
+accent colour, as do the accent words.
 
 The **end card** for H&V was authored as the designed `T14` keyframe base (cream cursive
 italic serif wordmark on a warm-dark background with the real garment). **Never AI-render the
