@@ -39,7 +39,7 @@ Conflicts: <source A says X, source B says Y> → ask the marketer
 |---|---|---|
 
 ## How their ads look
-Formats: <e.g. founder photo + one line; product on flat colour; screen recording>
+Formats and styles: <e.g. founder photo + one line; product on flat colour; screen recording; which styles from `levels.md` they use>
 Colours, type: <what the ads actually use; note where it differs from the kit>
 Recurring devices: <e.g. the mascot in a circle; handwritten notes; before/after>
 How they write on-image text: <length, case, voice, how many text elements, where they sit>

@@ -1,6 +1,6 @@
 # Review rubric — every render, every ratio
 
-The checks the judge runs on every render (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`)). Severity decides what happens: **BLOCK** — never ships (fixed by the render's one retry, or dropped); **REMAKE** — fixed by the one retry, else dropped or, for a taste call, shown as a NOTE; **NOTE** — label for the human. Reason codes in brackets are for the marketer's own verdicts only (render-review step 8).
+The checks the judge runs on every render (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`)). Severity decides what happens: **BLOCK**: never ships; fixed by the one retry, else dropped. **REMAKE**: fixed by the one retry, else shown to the marketer as needing their look. **NOTE**: a label for the marketer. Reason codes in brackets are for the marketer's own verdicts only (render-review step 8).
 
 | # | Check | How a senior checks | Severity |
 |---|---|---|---|
@@ -22,7 +22,7 @@ The checks the judge runs on every render (the `make-static-ads-render-review` s
 | 16 | AI tells | Waxy skin, extra or merged fingers, melted type, impossible reflections, nonsense background text [`ai_or_distorted`] | REMAKE |
 | 17 | CTA fits stage and destination | Usually Learn more for cold education, Shop now / Get offer for warm and offers — but Shop now often wins cold for low-price DTC; a CTA the brief wants tested is a test variable | NOTE |
 | 18 | Hook is tension, not feature | First line names the buyer's situation or a surprising specific, ideally in their words; "luxurious hydration" fails (our copy — fix it, no engine reason code) | REMAKE |
-| 19 | No repeats | No two ads in the set share a message; against live and recent ads, at least one of message, visual idea or template changed (the concept-grid step's tests) | REMAKE set |
+| 19 | No repeats | No two ads in the set share a message; the set follows the style rule in `levels.md`; against live and recent ads, at least one of message, visual idea or template changed (the concept-grid step's tests) | REMAKE set |
 | 20 | Rights | No celebrity or lookalike, no third-party trademark, competitor ads used for structure only, creator/model permission on file; app-store badges only per Apple/Google badge rules | BLOCK |
 | 21 | Destination match | The destination shows the product, offer and promise of the ad | NOTE (flag to analyze-performance's page audit) |
 | 22 | Template used as its level says, not copied | Close and balanced keep the template's layout and text slots; bold keeps only its device or look. None of a template's words, product, logo or people appear. For a direct competitor, the main agent puts the render beside the reference with both logos covered: could a buyer take ours for theirs? (the `make-static-ads-find-references` skill §4) | REMAKE / BLOCK if copied |
@@ -33,7 +33,7 @@ The checks the judge runs on every render (the `make-static-ads-render-review` s
 | 27 | Text inside its panel | No line crosses a band or card edge; nothing is cut off at the canvas edge | REMAKE |
 | 28 | Idea intact | The board row's physical event happened and its protected choice is visible at thumbnail size. A polished image that lost the event is a failed ad | REMAKE |
 | 29 | Example content not copied | No example content (search query, names, on-screen numbers) copied from an ad on the made-before list | REMAKE |
-| 30 | Fills the frame | No large empty areas the template doesn't have; the template's elements are all there with real content; not a symbol standing in for the real thing | REMAKE |
+| 30 | Fills the frame | No large empty areas the template doesn't have; the template's elements are all there with real content; not a symbol standing in for the real thing; any ad, screen or page shown inside it looks finished (no blank pills or placeholder bars) | REMAKE |
 
 ## Order
 
