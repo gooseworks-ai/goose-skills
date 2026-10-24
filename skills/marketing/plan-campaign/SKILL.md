@@ -3,12 +3,14 @@ name: plan-campaign
 description: >-
   Campaign planner: turns a product, offer, goal, budget and date into a plan the marketer can approve
   and a designer can start from today, with every channel kept or dropped for a reason. Zero paid is a
-  valid answer; it never spends. Use when: I have this budget and a launch date — what do I run,
-  where?; plan my launch, drop or Black Friday push; plan a campaign; should we even run ads, and
-  where?; how should I split $5k; plan next month; our CAC blew up — replan. Not for pausing ads on a
-  sold-out product — use run-paid-campaigns; not for an email-only send plan — use email-lifecycle;
-  not for reading this week's numbers — use analyze-performance.
-version: 0.1.2
+  valid answer; it never spends. Use when the ask names a campaign, a launch, drop or season push, a
+  budget or a date: I have this budget and a launch date — what do I run, where?; plan my launch, drop
+  or Black Friday push; plan a campaign; how should I split $5k; plan next month's campaign; our CAC
+  blew up — replan. Not for a broad "grow my brand", "get more customers" or "where do I start" with
+  no campaign, budget or date — use where-to-start; not for pausing ads on a sold-out product — use
+  run-paid-campaigns; not for an email-only send plan — use email-lifecycle; not for reading this
+  week's numbers — use analyze-performance.
+version: 0.1.3
 ---
 
 # plan-campaign

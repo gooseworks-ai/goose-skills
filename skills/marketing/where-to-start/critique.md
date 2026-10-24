@@ -222,3 +222,22 @@ Scored worse than no skill in one eval (weak evidence; causes fixed).
 |---|---|
 | B5 The gaps table said video ads and product photos "aren't covered yet" while the router sends them to goose-video and goose-product-photos | The two rows and the company-type table route them there (with a no-GooseWorks line). |
 | B10 `skill.meta.json` named `atoms/save-to-brain` | Now the save-to-brain skill reference. |
+
+## 2026-10-24 — "Grow my brand" went to campaign planning (Akhil)
+
+**Feedback.** "Help me grow my brand" was routed straight into campaign planning. A broad growth ask should come here, get a few short questions, then be sent to the right playbook.
+
+**Cause.** Nothing here claimed growth asks: this description never said "grow", the router row read "Not sure what to do first", and plan-campaign's triggers ("should we even run ads, and where?", "plan next month") were broad. The GooseWorks server made it worse: `get_started` offers only video, image, analyse, campaign or more ("what GooseWorks does"), so an agent filed "grow my brand" as `campaign`, and that answer hands over the campaign steps (brief, concepts, generation quote). Server fix in gooseworks-app (`get_started` sends broad growth asks here).
+
+**Independent marketer check (subagent, had not seen this playbook).**
+
+| Point | Verdict | Action |
+|---|---|---|
+| Broad "grow my brand" belongs here, not in the campaign planner | Right: with no goal, channel, offer or date the planner has to guess | Description and Before-you-start step 2 now claim broad growth asks; plan-campaign's description sends them here |
+| A growth ask that names a channel is concrete ("grow my Instagram", "grow my email list", "rank on Google") | Missed by the feedback | Description: "grow my Instagram" is a named job; router and eval R93 |
+| A campaign, launch, offer, budget or date still goes to plan-campaign | Missed by the feedback | plan-campaign description and router row name those signals; eval R94 |
+| Ask at most three questions | Partly: the three the marketer owns (where it's stuck, what they can put in, the goal and date) are already the ones always asked; the other two are skipped when the brain answers them | Step 2: "usually the three the marketer owns, at most five" — the cap stays |
+| Name the constraint, always end with a recommendation, carry the answers forward | Already done (steps 3, 5, 6 and the situation save) | Step 6 hand-off now says what to ask for next |
+| "Brand" can mean identity (logo, voice), not growth | Fair edge | Not changed: logo and identity design is not a playbook; step 2 already sends a named job elsewhere, and the map covers brand facts as the constraint ("Claims before copy") |
+
+Eval cases R88–R94 added.

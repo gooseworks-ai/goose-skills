@@ -2,7 +2,7 @@
   "slug": "where-to-start",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "tags": [
     "brand",
     "research"
@@ -32,6 +32,10 @@
   ],
   "pillar": "1 — Strategy and planning",
   "intents": [
+    "help me grow my brand",
+    "I need to grow my business",
+    "how do I get more customers",
+    "how do I get more sales",
     "help me with marketing",
     "where do I start",
     "what should I do first",

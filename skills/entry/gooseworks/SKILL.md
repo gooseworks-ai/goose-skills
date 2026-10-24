@@ -7,7 +7,7 @@ description: >
   Use for brand facts or copy too, so offers, prices, rules, audience and bestsellers
   reach the brand's Marketing Brain.
 category: general
-version: 2.2.1
+version: 2.2.2
 author: GooseWorks
 tags: [gooseworks, data, scraping, search, research, gtm, leads, prospecting, ads, video]
 ---
@@ -44,12 +44,12 @@ Route specialist jobs to their skills; use GooseWorks for web and social data.
 
 | Job | Playbook |
 | --- | --- |
-| Not sure what to do first | `where-to-start` |
+| Grow the brand, get more customers or sales, or not sure where to start | `where-to-start` |
 | Market size, trends, brand watch and launch positioning | `research-market` |
 | Competitor research, battlecards, landing-page tools and post engagers | `research-competitors` |
 | Who buys and why; prospect lists, lead enrichment and work contacts | `research-audience` |
 | Cold email and LinkedIn drafts, replies and an import file; you send | `write-outreach` |
-| A campaign plan from a budget and a date | `plan-campaign` |
+| A campaign plan from a launch, budget or date | `plan-campaign` |
 | New static image ads | `make-static-ads` |
 | Launch, scale or pause paid ads | `run-paid-campaigns` |
 | What worked; performance reports | `analyze-performance` |
@@ -61,8 +61,7 @@ Route specialist jobs to their skills; use GooseWorks for web and social data.
 
 Fetch playbook, dependencies and brand context. Static creation requires make-static-ads;
 fetch it or stop. Its research and selection run even for one ad or finals only.
-Raw lists: marketing-data-access; voice: voice-card. Supplied surveys use ordinary report
-writing. Skip unrelated calendar/campaign intake.
+Supplied surveys use ordinary report writing. Skip unrelated calendar/campaign intake.
 
 ## Data work
 
