@@ -101,7 +101,7 @@ To install it on its own with the GooseWorks CLI:
 npx gooseworks@latest install --claude --with goose-graphics
 ```
 
-See `skill.meta.json` for installation metadata.
+See `skill.meta.json` for the catalog metadata.
 
 ## Usage
 

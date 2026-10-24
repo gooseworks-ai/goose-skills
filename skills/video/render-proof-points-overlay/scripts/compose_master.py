@@ -94,7 +94,7 @@ def main():
     print(f"[composite] {composite}")
 
     # grain master + music mux. grain: eq + hqdn3d + noise; re-encode crf23/maxrate12M
-    # (noise inflates bitrate — see memory feedback_grain_pass_inflates_bitrate).
+    # (noise inflates bitrate).
     out = run / "master-final.mp4"
     grain = "[0:v]eq=contrast=1.06:saturation=0.93,hqdn3d=1.5:1.5:3:3,noise=alls=9:allf=t+u[v]"
     if args.no_music:

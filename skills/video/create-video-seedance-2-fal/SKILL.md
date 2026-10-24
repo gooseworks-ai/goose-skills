@@ -68,7 +68,7 @@ SCENE 3 (7-11s) — SIDESTEP / PROOF [framing + action + dialogue]
 SCENE 4 (11-15s) — REACTION + CTA [framing + action + dialogue]
 ```
 
-**Setting CAN vary across internal sub-scenes within one Seedance call.** Character identity is locked by the portrait reference image, not by the setting. Validated reference (ref-01 Brightbite UGC, 26s) shows the same creator across 5+ different room/background settings within a single multi-scene render. Don't artificially split into multiple calls just to change rooms — bake the setting changes INTO the SCENE N (X-Ys) sub-scene structure of a single call. Distribute calls based on STORY ARC and the 15s max-duration cap, not setting count. See `prompt-example.md` for the validated template. Memory: `feedback_seedance_long_calls_not_short.md`.
+**Setting CAN vary across internal sub-scenes within one Seedance call.** Character identity is locked by the portrait reference image, not by the setting. Validated reference (ref-01 Brightbite UGC, 26s) shows the same creator across 5+ different room/background settings within a single multi-scene render. Don't artificially split into multiple calls just to change rooms — bake the setting changes INTO the SCENE N (X-Ys) sub-scene structure of a single call. Distribute calls based on STORY ARC and the 15s max-duration cap, not setting count. See `prompt-example.md` for the validated template.
 
 **0a. WARDROBE must be FULLY specified — top + bottom + hair + accessories.** Validated 2026-05-23 (Brightbite): if only the top is specified ("cream sweatshirt"), Seedance hallucinates the bottom (denim shorts appeared from nowhere). Every prompt must lock all of:
 - Top (with negations)
@@ -76,25 +76,25 @@ SCENE 4 (11-15s) — REACTION + CTA [framing + action + dialogue]
 - Hair (specific styling — "loose low ponytail at the nape with face-framing strands" works better than vague "bun")
 - Accessories (e.g. "thin gold hoop earrings, nothing else")
 
-For confessional / single-sitting UGC, wardrobe should be IDENTICAL across all calls of the same ad (validated user preference + ref-01 + ad-03 patterns). Vary wardrobe across calls ONLY for GRWM / transformation / multi-day formats. Memory: `feedback_seedance_long_calls_not_short.md`.
+For confessional / single-sitting UGC, wardrobe should be IDENTICAL across all calls of the same ad (validated user preference + ref-01 + ad-03 patterns). Vary wardrobe across calls ONLY for GRWM / transformation / multi-day formats.
 
-**0b. PASS A BACKGROUND REFERENCE IMAGE as `image_urls[2]` for locked settings.** Validated 2026-05-23 (Brightbite). Text-only setting description yields generic-rental aesthetic — Seedance fills with its own room prior. A background hero image (generated via NB2 Pro at `fal-ai/nano-banana-pro`, $0.15/1K, text-to-image with "no bokeh, infinite focus, no people, no faces" directives) LOCKS the room across all sub-scenes. Use the SAME background image across all calls of the same ad — different bg image per call reads as "she moved." Memory: `feedback_seedance_long_calls_not_short.md`.
+**0b. PASS A BACKGROUND REFERENCE IMAGE as `image_urls[2]` for locked settings.** Validated 2026-05-23 (Brightbite). Text-only setting description yields generic-rental aesthetic — Seedance fills with its own room prior. A background hero image (generated via NB2 Pro at `fal-ai/nano-banana-pro`, $0.15/1K, text-to-image with "no bokeh, infinite focus, no people, no faces" directives) LOCKS the room across all sub-scenes. Use the SAME background image across all calls of the same ad — different bg image per call reads as "she moved."
 
-**0c. PRE-CLEAN PRODUCT REFERENCE IMAGES via NB2 edit if they contain accessories.** Validated 2026-05-23 (Brightbite hi_res-12 had vials + funnel beside the box; Seedance fused them onto the box face). Inspect source product images at intake. If accessories / secondary products / score badges / lifestyle elements visible, route through `fal-ai/nano-banana/edit` (quote the current proxy price first) to isolate the hero product before passing to Seedance. Approve the cleanup cost before calling it; compare with the current quoted cost of a Seedance retry. Memory: `feedback_nb2_clean_product_refs.md`.
+**0c. PRE-CLEAN PRODUCT REFERENCE IMAGES via NB2 edit if they contain accessories.** Validated 2026-05-23 (Brightbite hi_res-12 had vials + funnel beside the box; Seedance fused them onto the box face). Inspect source product images at intake. If accessories / secondary products / score badges / lifestyle elements visible, route through `fal-ai/nano-banana/edit` (quote the current proxy price first) to isolate the hero product before passing to Seedance. Approve the cleanup cost before calling it; compare with the current quoted cost of a Seedance retry.
 
-**0d. SEQUENTIAL CALL CONTINUITY — use seed reuse, NOT video_urls.** Validated 2026-05-23 (Brightbite Variant A/B test). For Call N>1 in a multi-call ad, pass the prior call's `seed` (via `--seed`) with the same `image_urls`. NEVER pass the prior call's mp4 as `video_urls` for sequential continuity — it HURTS continuity (model tries to "continue" prior video; wardrobe/product drift more than they otherwise would). `video_urls` is ONLY for style transfer from a REAL HUMAN reference video (e.g. take a real-creator UGC ad and recreate with AI creator). Memory: `feedback_seedance_video_urls_vs_seed.md`.
+**0d. SEQUENTIAL CALL CONTINUITY — use seed reuse, NOT video_urls.** Validated 2026-05-23 (Brightbite Variant A/B test). For Call N>1 in a multi-call ad, pass the prior call's `seed` (via `--seed`) with the same `image_urls`. NEVER pass the prior call's mp4 as `video_urls` for sequential continuity — it HURTS continuity (model tries to "continue" prior video; wardrobe/product drift more than they otherwise would). `video_urls` is ONLY for style transfer from a REAL HUMAN reference video (e.g. take a real-creator UGC ad and recreate with AI creator).
 
 **0e. WHEN USING `video_urls` (style transfer from real reference): set client timeout to 30+ min AND trim reference to ≤15s.** Validated 2026-05-23:
 - Render time: ~18-20 min (vs ~10 min for image-only). The default `fal_client.subscribe()` 10-min timeout will fail. Use `fal_client.submit()` + manual polling.
 - **Combined `video_urls` duration cap: 15s.** FAL rejects with `input_value_error: Combined video duration must not exceed 15.0s`. Trim reference videos with ffmpeg `-t 15` before upload.
-- **Combined files cap: 50 MB total.** Our `fal_helpers.upload_file()` cap bumped from 10 MB to 50 MB on 2026-05-23.
+- **Combined files cap: 50 MB total.** Local files go up through the media proxy's `fal_upload`.
 - Detect validation errors (`input_value_error` / "must not exceed") in polling exceptions and bail after 1-2 retries — terminal errors don't surface via `status=Failed`.
 - **Video reference transfers MORE than style/pacing — it transfers wardrobe styling, accessories, hair to a non-trivial degree** (validated 2026-05-23 Probiotic Recreation: hair flipped to match reference; tablets appeared despite cleaned product image). Text-side overrides are PARTIALLY effective; pick a reference whose visuals already align with your target.
-- FAL DOES accept AI-gen video as input (the old "instant content_policy_violation" assumption from BBE 2026-05 early is outdated). Memory: `feedback_seedance_video_urls_vs_seed.md`.
+- FAL DOES accept AI-gen video as input (the older belief that it is always refused with content_policy_violation is outdated).
 
-**1. NEVER pass AI-generated video as `video_urls`.** FAL's content-policy validator rejects this with `partner_validation_failed`. The 60% video-input discount is real but only applies to REAL HUMAN reference video. For AI-avatar continuity across multiple scenes, use the same identity portrait as `image_urls` in every scene. Validated on BBE.
+**1. NEVER pass AI-generated video as `video_urls`.** FAL's content-policy validator rejects this with `partner_validation_failed`. The 60% video-input discount is real but only applies to REAL HUMAN reference video. For AI-avatar continuity across multiple scenes, use the same identity portrait as `image_urls` in every scene.
 
-**2. NSFW reject → STOP and surface, do not auto-retry (exit 4).** Body-application + female + water/lather hits the classifier reliably. If FAL returns `content_policy_violation` or `status: failed` with `nsfw` reason, do NOT retry the same prompt. Surface to the caller with 3 options: rewrite the application beat as smell-test / fingertips-show, reframe as POV (no face), or skip the scene. Follows the project-wide moderation policy (see memory `feedback_hf_moderation_surface.md`).
+**2. NSFW reject → STOP and surface, do not auto-retry (exit 4).** Body-application + female + water/lather hits the classifier reliably. If FAL returns `content_policy_violation` or `status: failed` with `nsfw` reason, do NOT retry the same prompt. Surface to the caller with 3 options: rewrite the application beat as smell-test / fingertips-show, reframe as POV (no face), or skip the scene. Follows the project-wide moderation policy.
 
 **3. `duration` as an INT.** Pass `15`, not `"15"`. `seedance-2.0/reference-to-video` rejects a string duration with `invalid_request` (validated 2026-07-18; the old "string only" note was the deprecated v1 i2v endpoint).
 
@@ -158,7 +158,7 @@ Fast tier is ~20% cheaper but caps at 720p.
 
 > **History, not a recipe for faces.** This template was written for a creator face as `@Image1`, which Seedance now refuses (2026-09-29). For a face-free shot, `@Image1` is the product and `@Image2` the empty set: keep the scene beats, the camera and the product lock, and drop the IDENTITY, WARDROBE, skin and lip blocks.
 
-The prompt is the single biggest quality lever. Use the proven BBE template structure:
+The prompt is the single biggest quality lever. Use this proven template structure:
 
 ```
 📱 UGC INFLUENCER [PRODUCT] REVIEW REEL (SELFIE-STYLE, NOT A COMMERCIAL)
@@ -235,32 +235,25 @@ Full template reference: `prompt-example.md`.
 | Mouth moving when not speaking | Default Seedance behavior | Add to Global Rules: "Lips remain CLOSED between dialogue beats — no mouth movement when not speaking." |
 | Cinematic slow pacing despite "iPhone selfie" prompt | Seedance prior leans cinematic | Strengthen anti-pattern block: "Casual real-time pace, NOT slow-motion, NOT dolly moves, NOT cinematic." Optionally post-process with `ffmpeg setpts=0.66*PTS` for 1.5x speed. |
 | Heavy freckles / blotchy skin | Block B language too aggressive | Use v8 soft-skin language. Drop "freckles prominent", "real-person imperfections". Replace with "tiny natural imperfections, subtle peach fuzz, faint fine lines". |
-| Wrapper RuntimeError "fal subscribe exceeded timeout" AFTER long elapse (>600s on 1080p) | Shared `fal_helpers.subscribe()` post-call timeout check raises even when the result returned successfully (latent bug; default bumped to 2400s on 2026-05-26 but recovery still applies for older runs) | **The render likely completed on FAL — DO NOT re-fire.** See Recovery Workflow below. |
+| `FalPollTimeout` after a long wait (1080p renders can run past 30 min) | The poller gave up; the paid job is still running | **DO NOT re-fire** (that pays twice). Re-attach to the same job: see Recovery below. |
 | FAL `downstream_service_unavailable` after long wait (~30 min) | Seedance backend overloaded / transient infra issue | Not billed (FAL bills on completion). Retry once. If retry also fails, wait 30 min then retry. Don't change prompt — it's infra, not your input. |
 | **Brand name mispronounced in native-audio output** (validated 2026-06-08 on Veloru A3: rendered "Veloru" as "vel-roo" instead of "veh-LOR-oo") | Seedance picks its own voice + interprets non-English / made-up brand names phonetically without dictionary knowledge | **Preflight:** use phonetic spelling directly in the dialogue (NOT a parenthetical). E.g. `SPOKEN LINE: "Veh-lor-oo does the engineering for you."` Avoid `Dialogue: "Veloru (pronounced veh-LOR-oo)"` — Seedance reads the parenthetical out loud (see next row). **Post-render QC:** /watch:watch and confirm the Whisper transcript matches expected pronunciation. **Recovery:** re-roll the affected sub-scene with phonetic spelling baked into the line, OR splice an ElevenLabs reading of the brand-name beat over the Seedance visual. |
 | **Prompt metadata leaks into spoken line** (validated 2026-06-08 on Veloru A3 v2: rendered "Veloru, pronounced Ve-lo-ru, three syllables, does the engineering for you" — Seedance read the parenthetical voice-coaching out loud as if it were part of the dialogue) | Seedance does not distinguish "spoken text" from "voice coaching" inside a `Dialogue:` field. Parentheticals, notes, "(pronounced X)", "(softly)", "(stage whisper)" all get verbalized. | **Prevention:** keep voice-coaching OUTSIDE the dialogue field entirely. Use a separate `SPOKEN LINE:` heading whose content is the EXACT verbatim utterance, no parens, no notes. Put coaching under `NEGATIONS:` as "DO NOT say X / DO NOT explain pronunciation". Bake phonetic intent into the dialogue spelling itself (`Veh-lor-oo` not `Veloru`). |
 
-## Recovery Workflow — recover a lost result via FAL share URL
+## Recovery — re-attach to a paid job, never re-fire
 
-When a Seedance render is paid for but the result was discarded by the wrapper / shell / timeout, the mp4 is still accessible via FAL's dashboard for 24-48+ hours.
+A Seedance submit is billed as soon as it is accepted. The media proxy saves every submit's `request_id` (in `~/.gooseworks/pending-fal-jobs/`) before it starts polling, so a lost poller or a crashed shell never loses the render.
 
-1. **Ask the user** to open `https://fal.ai/dashboard/requests` (or the share-link view of the model: `https://fal.ai/models/bytedance/seedance-2.0/reference-to-video?share=<uuid>`) signed in to the FAL account that holds `FAL_API_KEY`.
-2. Filter by model = `bytedance/seedance-2.0/reference-to-video` and look for the request matching the lost run's timestamp.
-3. The user copies the share URL (contains `?share=<uuid>`) and pastes it back.
-4. `WebFetch` the share URL extracting "the v3.fal.media/files/.../*.mp4 URL plus the seed and any other metadata". The page renders all of this verbatim.
-5. `curl -sSL -o <output>.mp4 "<extracted-mp4-url>"` to grab the file. Zero extra cost.
-6. Save metadata to `<output>.mp4.meta.json` (seed, share URL, mp4 URL, recovery note) so downstream calls can use the seed for continuity.
-
-**Prevention:** Fire long Seedance calls with `--with-logs` so queue-update messages including the request_id stream to the atom's stdout. If the wrapper later errors, the request_id is recoverable from the background task output file at `/private/tmp/claude-501/.../tasks/<id>.output` and can be passed to `fal_client.result(request_id)` directly.
-
-Memory: `feedback_fal_helpers_timeout_bug.md`. Validated: Hearthline Video 01 Call 1 (2026-05-26) — recovered $8.83 render via share URL.
+1. List what can be resumed: `media-proxy`'s `resume.py --list`.
+2. Re-attach and download: `resume.py --request-id <id> --out <output>.mp4` (or `resume_fal(request_id)` in Python). It never re-submits, so it can't charge twice.
+3. Save the seed and request id next to the clip (`<output>.mp4.meta.json`) so later calls can reuse the seed for continuity.
 
 ## References
 
 - FAL model page: https://fal.ai/models/bytedance/seedance-2.0/reference-to-video
 - Proven prompt template: `prompt-example.md`
 - Sibling atom for avatar and product stills: `create-image-fal`
-- Shared helpers: `create-image-gpt-image-fal`'s `scripts/fal_helpers.py`
+- Shared helper: `media-proxy`'s `scripts/media_proxy.py` (bundled here as `scripts/media_proxy.py`)
 
 ## Provider rejection and scene acceptance
 

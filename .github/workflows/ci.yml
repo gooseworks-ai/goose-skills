@@ -96,9 +96,7 @@ jobs:
           echo "BASE=$base" >> "$GITHUB_ENV"
 
       - name: Install dependencies
-        # npm install, not npm ci: the lockfile predates this Node's npm, which
-        # refuses it for ci (the npm release step installs the same way).
-        run: npm install --ignore-scripts --no-audit --no-fund
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Test the atom, version and part checks
         run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-skill-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js
@@ -172,8 +170,8 @@ jobs:
         run: node --test --test-concurrency=1 tests/test_safe_area.js tests/test_chat.js
 
   media-tests:
-    # The media helpers are pinned to macOS system fonts (render-imessage-cascade), so these
-    # run on macOS. Local ffmpeg fixtures only; no provider calls.
+    # Some media tests are pinned to macOS system fonts (review-finished-ad's Arial checks), so
+    # these run on macOS. Local ffmpeg fixtures only; no provider calls.
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4

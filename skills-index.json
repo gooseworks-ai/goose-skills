@@ -1026,6 +1026,26 @@
       "slug": "video-ad-formats",
       "replacement": null,
       "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug (npx gooseworks@latest install --with <slug>): create-imessage-mockup, create-chatgpt-mockup, create-apple-notes-mockup, render-ios-keyboard, stitch-videos-ffmpeg, mix-master, watch."
+    },
+    {
+      "slug": "render-apple-notes-chat",
+      "replacement": null,
+      "reason": "Ported into the phone-chat part (skin apple-notes); goose-studio's apple-notes style renders it. No recipe or app runs this renderer."
+    },
+    {
+      "slug": "render-imessage-cascade",
+      "replacement": null,
+      "reason": "Ported into the phone-chat part (skin notification-cascade); goose-studio's imessage-notification-cascade style renders it. No recipe or app runs this renderer."
+    },
+    {
+      "slug": "render-search-grid",
+      "replacement": null,
+      "reason": "Ported into the html-frames part. No recipe, app or skill runs this renderer."
+    },
+    {
+      "slug": "render-photo-grid-card",
+      "replacement": null,
+      "reason": "Ported into the html-frames part; goose-studio's photo-grid-promo-card style renders it. No recipe or app runs this renderer."
     }
   ],
   "skills": [
@@ -1958,7 +1978,6 @@
       "version": "1.1.2",
       "files": [
         "skills/video/create-image-gpt-image-fal/SKILL.md",
-        "skills/video/create-image-gpt-image-fal/scripts/fal_helpers.py",
         "skills/video/create-image-gpt-image-fal/scripts/generate.py",
         "skills/video/create-image-gpt-image-fal/scripts/media_proxy.py",
         "skills/video/create-image-gpt-image-fal/skill.meta.json"
@@ -4661,42 +4680,6 @@
       }
     },
     {
-      "slug": "render-apple-notes-chat",
-      "name": "render-apple-notes-chat",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Assemble an Apple Notes list video ad from a note + end-card JSON — a frame-accurate fake iPhone screen recording of a short list being typed into Apple Notes (character by character, key pops, blinking caret, the note scrolling up as it fills) crossfaded into a checklist end card (the note's picks as ticked rows, real product photos, logo, CTA, in the brand's colours and fonts), with an optional music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand note + end card and gates the paid music call to its own capability. The Apple Notes sibling of render-imessage-chat and render-chatgpt-chat. Use for the apple-notes format.",
-      "tags": "ads",
-      "path": "skills/video/render-apple-notes-chat",
-      "version": "1.1.2",
-      "files": [
-        "skills/video/render-apple-notes-chat/SKILL.md",
-        "skills/video/render-apple-notes-chat/scripts/config.example.json",
-        "skills/video/render-apple-notes-chat/scripts/end-card.template.html",
-        "skills/video/render-apple-notes-chat/scripts/mockup/generate.js",
-        "skills/video/render-apple-notes-chat/scripts/mockup/templates/icons.js",
-        "skills/video/render-apple-notes-chat/scripts/mockup/templates/note.css",
-        "skills/video/render-apple-notes-chat/scripts/package-lock.json",
-        "skills/video/render-apple-notes-chat/scripts/package.json",
-        "skills/video/render-apple-notes-chat/scripts/record-notes.js",
-        "skills/video/render-apple-notes-chat/scripts/render-end-card.js",
-        "skills/video/render-apple-notes-chat/scripts/stitch.sh",
-        "skills/video/render-apple-notes-chat/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "render-apple-notes-chat",
-        "category": "capabilities",
-        "domain": "ads",
-        "version": "1.1.2",
-        "tags": [
-          "ads"
-        ],
-        "requires_skills": [
-          "watch"
-        ]
-      }
-    },
-    {
       "slug": "render-brand-identity-reveal",
       "name": "render-brand-identity-reveal",
       "category": "capabilities",
@@ -5155,36 +5138,6 @@
       }
     },
     {
-      "slug": "render-imessage-cascade",
-      "name": "render-imessage-cascade",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Assemble an iMessage notification-cascade video ad (≈14s, 9:16) from a plate of a phone lying face-up (setting chosen by the user) + 3–5 messages — authentic Apple Messages banners composited in PIL (SF Pro text, green Messages icon, warm translucent-greige fill, soft shadow) spring in one-by-one at the BOTTOM and push the stack UP, a right-aligned Show-less/X pill rides above, the X clears the stack, then a serif end card resolves. FREE assembly (PIL + ffmpeg); the recipe supplies the per-brand plate, notifications, and end-card config and gates the paid plate-clean/music calls to their own capabilities. Use for the imessage-notification-cascade format.",
-      "tags": "ads",
-      "path": "skills/video/render-imessage-cascade",
-      "version": "1.0.4",
-      "files": [
-        "skills/video/render-imessage-cascade/SKILL.md",
-        "skills/video/render-imessage-cascade/scripts/build_assets.py",
-        "skills/video/render-imessage-cascade/scripts/compose.py",
-        "skills/video/render-imessage-cascade/scripts/config.example.json",
-        "skills/video/render-imessage-cascade/scripts/layout.py",
-        "skills/video/render-imessage-cascade/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "render-imessage-cascade",
-        "category": "capabilities",
-        "domain": "ads",
-        "version": "1.0.4",
-        "tags": [
-          "ads"
-        ],
-        "requires_skills": [
-          "watch"
-        ]
-      }
-    },
-    {
       "slug": "render-imessage-chat",
       "name": "render-imessage-chat",
       "category": "capabilities",
@@ -5391,6 +5344,7 @@
         "skills/video/render-myth-vs-fact/scripts/hyperframes/beat-punch.html",
         "skills/video/render-myth-vs-fact/scripts/hyperframes/beat-turn.html",
         "skills/video/render-myth-vs-fact/scripts/make_captions.py",
+        "skills/video/render-myth-vs-fact/scripts/media_proxy.py",
         "skills/video/render-myth-vs-fact/scripts/render_beats.py",
         "skills/video/render-myth-vs-fact/skill.meta.json"
       ],
@@ -5469,35 +5423,6 @@
       ],
       "metadata": {
         "slug": "render-offer-ad",
-        "category": "capabilities",
-        "domain": "ads",
-        "version": "1.0.1",
-        "tags": [
-          "ads"
-        ],
-        "requires_skills": [
-          "watch"
-        ]
-      }
-    },
-    {
-      "slug": "render-photo-grid-card",
-      "name": "render-photo-grid-card",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Render a 'photo-grid promo card' video from a config — a real-DOM card with a FIXED header/footer and a CONTINUOUSLY SCROLLING 2-row grid of MIXED tiles (video clips, product/lifestyle stills, big-serif %-OFF, dark promo-code or CTA) + feature chips, frame-stepped via Playwright with real-time <video> playback and encoded with FFmpeg — deterministic assembly, FREE (the clips + music come from create-video-fal + create-music-elevenlabs), text stays pixel-crisp. Use for the photo-grid-promo-card format.",
-      "tags": "ads",
-      "path": "skills/video/render-photo-grid-card",
-      "version": "1.0.1",
-      "files": [
-        "skills/video/render-photo-grid-card/SKILL.md",
-        "skills/video/render-photo-grid-card/scripts/_shared.js",
-        "skills/video/render-photo-grid-card/scripts/build_card.py",
-        "skills/video/render-photo-grid-card/scripts/render.py",
-        "skills/video/render-photo-grid-card/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "render-photo-grid-card",
         "category": "capabilities",
         "domain": "ads",
         "version": "1.0.1",
@@ -5595,37 +5520,6 @@
       ],
       "metadata": {
         "slug": "render-proof-points-overlay",
-        "category": "capabilities",
-        "domain": "ads",
-        "version": "1.0.1",
-        "tags": [
-          "ads"
-        ],
-        "requires_skills": [
-          "watch"
-        ]
-      }
-    },
-    {
-      "slug": "render-search-grid",
-      "name": "render-search-grid",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Render a 'search-grid' (Pinterest search-moodboard) video from a config — a real-DOM page with four continuous beats (masonry search grid + typing hook with counter-drift columns → 3 cards slide in from the right and stack → the top card box-grows to fullscreen then swipe-left ×2 through captioned feature shots → end card), frame-stepped via Chromium and encoded with FFmpeg — deterministic assembly, FREE (real brand photos + logo; the optional music bed comes from create-music-elevenlabs), so type/logo/photos stay pixel-crisp. Use for the search-grid format.",
-      "tags": "ads",
-      "path": "skills/video/render-search-grid",
-      "version": "1.0.1",
-      "files": [
-        "skills/video/render-search-grid/SKILL.md",
-        "skills/video/render-search-grid/scripts/build_html.py",
-        "skills/video/render-search-grid/scripts/capture.js",
-        "skills/video/render-search-grid/scripts/config.example.json",
-        "skills/video/render-search-grid/scripts/prep_assets.py",
-        "skills/video/render-search-grid/scripts/render.py",
-        "skills/video/render-search-grid/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "render-search-grid",
         "category": "capabilities",
         "domain": "ads",
         "version": "1.0.1",
@@ -5862,6 +5756,7 @@
       "files": [
         "skills/video/render-vignette/SKILL.md",
         "skills/video/render-vignette/scripts/composite_variants.py",
+        "skills/video/render-vignette/scripts/media_proxy.py",
         "skills/video/render-vignette/scripts/music_and_mux.py",
         "skills/video/render-vignette/scripts/render_overlays.py",
         "skills/video/render-vignette/scripts/strip_product_backgrounds.py",

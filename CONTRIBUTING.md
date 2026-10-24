@@ -25,7 +25,7 @@
 **Where tests go.** A skill's `tests/` folder stays in this repo and is never published to an install, so a SKILL.md never tells the agent to run it. What CI finds on its own:
 
 - **Python tests** in a skill's `tests/` folder: CI runs `python3 -m pytest -q skills test`, which finds every `test_*.py`.
-- **Node tests** are found only in the repo's `test/` folder (`npm test` runs `test/*.test.js`) and, for parts, in `parts/<id>/tests/` (`npm run test:parts`). `npm test` does not look in `skills/*/*/tests/`, so a Node test kept there never runs in CI: put it in `test/`.
+- **Node tests** run from three places: the repo's `test/` folder (`npm test` runs `test/*.test.js`), a skill's `tests/` folder when the file is named `*.test.js` or `*.test.mjs` (`npm test` runs them through `scripts/run-skill-node-tests.js`), and `parts/<id>/tests/` (`npm run test:parts`). Keep a test next to the skill it checks.
 - **Hand tests and fixtures** (`tests/*.md`, sample inputs) can live in the skill's `tests/` folder.
 
 **Then run:**

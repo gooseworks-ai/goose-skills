@@ -1,11 +1,11 @@
-"""Generate one music bed via fal-ai/elevenlabs/music, then mux it into every composited variant.
+"""Generate one music bed through the GooseWorks ElevenLabs proxy, then mux it into every composited variant.
 
 The brief comes from config.music.prompt (the recipe's `music` choice).
 
-Per memory:
-  feedback_ffmpeg_map_directive: when ffmpeg has two -i inputs, always pass -map 0:v -map 1:a
-  feedback_ffmpeg_lcut_endcard_recipe: build video + audio in SEPARATE ffmpeg passes, not one
-  feedback_elevenlabs_music_decay: if music tapers in 2nd half, loop-and-flatten instead of regen
+Rules:
+  - when ffmpeg has two -i inputs, always pass -map 0:v -map 1:a
+  - build video and audio in SEPARATE ffmpeg passes, not one
+  - if the music tapers in its second half, loop and flatten it instead of regenerating
 """
 from __future__ import annotations
 
@@ -15,10 +15,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-SHARED = PROJECT_ROOT.parent.parent.parent / "skills" / "atoms" / "_shared"
-sys.path.insert(0, str(SHARED))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from fal_helpers import download, load_fal_key, subscribe  # noqa: E402
+# Paid calls go through the GooseWorks media proxy (charged to your GooseWorks credits).
+from media_proxy import eleven_music  # noqa: E402
 
 FINALS = PROJECT_ROOT / "finals"
 MUSIC_DIR = PROJECT_ROOT / "assets" / "music"
@@ -76,22 +76,10 @@ VARIANTS = sorted(p.stem.replace("master-9x16-", "") for p in FINALS.glob("maste
 
 
 def generate_music():
-    """Fire fal-ai/elevenlabs/music."""
-    print("generating music bed via fal-ai/elevenlabs/music…")
+    """One instrumental ElevenLabs music bed, through the GooseWorks proxy."""
+    print("generating music bed via the ElevenLabs proxy…")
     print(f"  brief: {MUSIC_BRIEF[:120]}…")
-    result = subscribe(
-        "fal-ai/elevenlabs/music",
-        {
-            "prompt": MUSIC_BRIEF,
-            "music_length_ms": int(TARGET_MUSIC_DUR * 1000),
-            "output_format": "mp3_44100_192",
-        },
-        timeout_sec=600,
-    )
-    if not result or "audio" not in result:
-        raise RuntimeError(f"music gen failed: {result}")
-    url = result["audio"]["url"]
-    download(url, MUSIC_RAW)
+    eleven_music(MUSIC_BRIEF, int(TARGET_MUSIC_DUR * 1000), MUSIC_RAW, force_instrumental=True, timeout_s=600)
     print(f"  ✓ raw music: {MUSIC_RAW.relative_to(PROJECT_ROOT)} ({MUSIC_RAW.stat().st_size // 1024} KB)")
     return MUSIC_RAW
 
@@ -116,7 +104,7 @@ def trim_and_normalize(src: Path):
 
 
 def mux_one(variant: str) -> dict:
-    """Mux music into one variant. Use -map 0:v -map 1:a per memory rule."""
+    """Mux music into one variant. Map video and audio explicitly (-map 0:v -map 1:a)."""
     src_video = FINALS / f"master-9x16-{variant}.mp4"
     if not src_video.exists():
         return {"variant": variant, "status": "VIDEO_MISSING"}
@@ -151,7 +139,6 @@ def mux_one(variant: str) -> dict:
 
 
 def main():
-    load_fal_key()
 
     # 1. Generate music (skip if cached)
     if not MUSIC_RAW.exists():

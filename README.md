@@ -12,7 +12,6 @@ Browse all skills at https://skills.gooseworks.ai
 
 Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https://cursor.sh) &middot; [Codex](https://openai.com/codex)
 
-[![npm version](https://img.shields.io/npm/v/goose-skills?color=blue)](https://www.npmjs.com/package/goose-skills)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-marketing-orange)]()
 
@@ -223,7 +222,7 @@ Each skill folder (`skills/<family>/<slug>/`) must include:
 
 | Fields | Who uses them |
 |---|---|
-| `slug`, `category` (`capabilities`, `composites` or `playbooks`), `version`, `tags`, `installation` | **Required** for every skill |
+| `slug`, `category` (`capabilities`, `composites` or `playbooks`), `version`, `tags` | **Required** for every skill |
 | `domain`, `requires_skills`, `requires_tools`, `features`, `example_prompt`, `author`, `collections`, `collection_stage` | Any skill (a shared skill must name its `domain`) |
 | `lint_allow` | Video atoms: lint findings that are creative content |
 | `tier`, `playbook`, `standalone`, `used_by`, `pillar`, `intents`, `reads`, `writes`, `needs` | Marketing skills (`tier: entry` for entry skills) |
@@ -259,7 +258,7 @@ Feature PRs target `dev` and update staging after CI passes. Promote tested chan
 
 MIT &mdash; see [LICENSE](LICENSE) for details.
 
-The skill files and CLI in this repository are MIT-licensed. The GooseWorks API they connect to is a separate paid service governed by its own [terms](https://gooseworks.ai/terms).
+The skill files and scripts in this repository are MIT-licensed. The GooseWorks API they connect to is a separate paid service governed by its own [terms](https://gooseworks.ai/terms).
 
 <div align="center">
 

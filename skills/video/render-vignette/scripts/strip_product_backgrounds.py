@@ -1,4 +1,4 @@
-"""Strip product backgrounds via fal-ai/birefnet/v2.
+"""Strip product backgrounds via fal-ai/birefnet/v2, through the GooseWorks media proxy.
 
 Reads PNGs from ../source/scraped-product-images/, fires birefnet-v2 in parallel,
 saves cutouts to ../assets/product-cutouts/, validates alpha quality, writes
@@ -15,10 +15,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-SHARED = PROJECT_ROOT.parent.parent.parent / "skills" / "atoms" / "_shared"
-sys.path.insert(0, str(SHARED))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from fal_helpers import download, load_fal_key, subscribe, upload_file  # noqa: E402
+# Paid calls go through the GooseWorks media proxy (charged to your GooseWorks credits).
+from media_proxy import _fal_run, download, fal_upload  # noqa: E402
 
 SOURCE_DIR = PROJECT_ROOT / "source" / "scraped-product-images"
 OUTPUT_DIR = PROJECT_ROOT / "assets" / "product-cutouts"
@@ -76,14 +76,10 @@ def strip_one(filename: str) -> dict:
         return {"file": filename, "status": "ERROR_MISSING_SOURCE"}
 
     print(f"[{filename}] uploading {src.stat().st_size // 1024} KB…", flush=True)
-    image_url = upload_file(src)
+    image_url = fal_upload(src)
 
     print(f"[{filename}] running birefnet-v2…", flush=True)
-    result = subscribe(
-        "fal-ai/birefnet/v2",
-        {"image_url": image_url},
-        timeout_sec=300,
-    )
+    result = _fal_run("fal-ai/birefnet/v2", {"image_url": image_url}, timeout_s=300)
 
     if not result or "image" not in result:
         return {"file": filename, "status": "ERROR_NO_IMAGE_IN_RESULT", "result": result}
@@ -130,7 +126,6 @@ def strip_one(filename: str) -> dict:
 
 def main() -> int:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    load_fal_key()
     print(f"running birefnet/v2 on {len(PRODUCTS)} PNGs in parallel…", flush=True)
 
     results = []
