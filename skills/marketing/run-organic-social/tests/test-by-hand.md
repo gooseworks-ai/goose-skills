@@ -97,7 +97,7 @@ Brand: **Clearday**. Ask: "Fill my social calendar for the next two weeks and wr
 - Any paid scrape for more posts (`data_call_provider`, credits). The playbook would show the price and ask first.
 
 **Not verified on staging:**
-- `social_post_update patch.status: "posted"` on a V0 draft, because there is no managed account to create one on. The playbook falls back to recording the status in the calendar file.
+- `social_post_patch patch.status: "posted"` on a V0 draft, because there is no managed account to create one on. The playbook falls back to recording the status in the calendar file.
 - The documents import of a reconciled calendar.
 
 **Cleanup:** the TEST RUN files written in this run (`content/repurposed/ig-2026-10-12-lili-spray/2026-10-16.md`, `social/calendar/2026-10-19.md`) were deleted from the Clearday workspace afterwards (`file_delete`, success), so the next real run starts clean.

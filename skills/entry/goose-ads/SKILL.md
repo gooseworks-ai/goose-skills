@@ -2,7 +2,7 @@
 name: goose-ads
 slug: goose-ads
 description: Edit, resize, animate and study image ads with GooseWorks in this chat. New static or image ads go to the make-static-ads skill when it is installed or catalog_fetch opens it. Read the brand and follow the active playbook, preserving factual prerequisites and approvals.
-version: 3.2.1
+version: 3.2.2
 author: GooseWorks
 ---
 
@@ -16,13 +16,14 @@ is unavailable on this connection and stop. The server generator is a different 
 not a fallback for the missing playbook.
 
 - Save lasting human brand facts with the connection's listed knowledge action in their words.
-- A batch on its way: job_get. Finished ads: ads_read.
-- One finished ad: a new size, an animation, its tags or the customer's rating, all with ads_edit.
-- The customer's own image as a template: ads_template_save. Their files: media_upload.
+- A batch on its way: job_get. Finished ads: ads_creative_read.
+- One finished ad: a new size with ads_creative_resize, an animation with ads_creative_animate
+  (price it with ads_creative_animation_quote), its tags or rating with ads_creative_update.
+- The customer's own image as a template: ads_template_create. Their files: media_upload.
 - Campaign planning/launch requests use their matching marketing playbook. Static creation for
   a campaign still uses make-static-ads; a campaign record is input, not a generation fallback.
 - How ads are doing: meta_read, or an analysis skill found with catalog_search, whose data comes
-  through data_get and data_post.
+  through data_call_provider and data_post_provider.
 
 For these existing-ad actions, follow the actual execution next_step.
 

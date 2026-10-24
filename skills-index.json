@@ -2500,7 +2500,7 @@
       "description": "Edit, resize, animate and study image ads with GooseWorks in this chat. New static or image ads go to the make-static-ads skill when it is installed or catalog_fetch opens it. Read the brand and follow the active playbook, preserving factual prerequisites and approvals.",
       "tags": "ads",
       "path": "skills/entry/goose-ads",
-      "version": "3.2.1",
+      "version": "3.2.2",
       "files": [
         "skills/entry/goose-ads/SKILL.md",
         "skills/entry/goose-ads/skill.meta.json"
@@ -2510,7 +2510,7 @@
         "category": "playbooks",
         "domain": "gooseworks",
         "tier": "entry",
-        "version": "3.2.1",
+        "version": "3.2.2",
         "tags": [
           "ads"
         ]
@@ -6757,7 +6757,7 @@
           "brand learnings via the shared save-learning atom: rules the marketer stated or confirmed, prefix [social YYYY-MM-DD]",
           "social_strategy_upsert: pillars/voice/rules for managed TikTok/IG accounts, after a yes (the product's own generator)",
           "social_post_create render:false: free draft posts on managed TikTok/IG accounts, optional, after a yes (the human in the product)",
-          "social_post_update patch status posted: record of what the human posted on managed accounts (analytics placements)",
+          "social_post_patch patch status posted: record of what the human posted on managed accounts (analytics placements)",
           "workspace social/calendar/<start-date>-sheet.csv posting sheet, with a file_url download link in hosted chats (the marketer's own scheduler)",
           "workspace research/credits-log/<YYYY-MM>.md: one line per paid proxy read (spend-gate; shared price history)",
           "the social plan report via write-report: a local file with a link (or an artifact in hosted chat) plus a brand document via save-to-brain, 'Social plan — <Brand> — <date>' (the marketer; analyze-performance)",
@@ -6781,7 +6781,7 @@
             "gooseworks:social_analytics_get",
             "gooseworks:social_inspiration_search",
             "gooseworks:social_post_create",
-            "gooseworks:social_post_update",
+            "gooseworks:social_post_patch",
             "gooseworks:social_post_list",
             "gooseworks:campaign_read",
             "gooseworks:media_upload",

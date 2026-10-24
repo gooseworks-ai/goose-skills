@@ -103,7 +103,7 @@ For brand voice, read an existing company guide at `brand/voices/blog-<brand-slu
 
 **5. Check and remake** (the `run-organic-social-post-check` skill, `../run-organic-social-post-check/SKILL.md`): voice match, the "would a person post this?" test, AI-tells, claims through the claims gate, disclosure and rights, the person gate, trend expiry. A weak draft is remade or the slot is dropped. Never pad.
 - Optional, managed TikTok/IG accounts only, after a yes: free draft posts (`gooseworks:social_post_create` `render: false`).
-- Never `render: true`. Never `social_post_update` `approve`. Never `organic_creative_queue`. Posting stays parked. A hand-built `carousel` draft from already-rendered slides is allowed on a managed account only after a yes (references/graphics.md §6).
+- Never `render: true`. Never `social_post_approve`. Never `organic_creative_queue`. Posting stays parked. A hand-built `carousel` draft from already-rendered slides is allowed on a managed account only after a yes (references/graphics.md §6).
 
 **6. Deliver the final report** through the `write-report` skill (`../write-report/SKILL.md`), shaped by references/report-shape.md:
 - a local file with a clickable link (or an artifact or the full report in a hosted chat);
@@ -161,7 +161,7 @@ In chat, at most 3 lines (on a refill, the one "since last time" result that mat
   - `research/credits-log/<YYYY-MM>.md` (spend-gate)
   - `runs/run-organic-social/social-calendar/<YYYY-MM-DD>.md`: the run record, through run-memory (also saved to the brand, keep-history)
 - **Learnings** only through the `save-learning` skill (`../save-learning/SKILL.md`), with the marketer's own words, prefix `[social YYYY-MM-DD]`.
-- **Managed TikTok/IG accounts:** strategy via `social_strategy_upsert` after a yes; the posted status as a record via `social_post_update` `patch.status`.
+- **Managed TikTok/IG accounts:** strategy via `social_strategy_upsert` after a yes; the posted status as a record via `social_post_patch` `patch.status`.
 - **Read downstream by:** analyze-performance (what went out, and the tests); the next refill (the run record).
 
 ## Done when

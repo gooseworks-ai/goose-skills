@@ -64,8 +64,8 @@ Supplied surveys use ordinary report writing. Skip unrelated calendar/campaign i
 
 ## Data work
 
-In chat, catalog_search finds skills, catalog_fetch opens them, data_get/data_post run paid
-data calls and account_whoami shows credits.
+In chat: catalog_search finds skills, catalog_fetch opens them, data_call_provider and
+data_post_provider run paid data calls, account_whoami shows credits.
 
 In a terminal:
 

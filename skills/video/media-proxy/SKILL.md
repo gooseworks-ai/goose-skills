@@ -185,15 +185,15 @@ authoritative. Either way every paid call is **relayed through the agent**:
 1. The script writes the exact MCP tool call to `working/mcp-requests/<kind>-<hash>.json`
    and exits with code **3**, printing what to do.
 2. The agent makes that call through the connector:
-   - fal → `data_post { provider: "fal", path: <model>, body, project_id }`, then
+   - fal → `data_post_provider { provider: "fal", path: <model>, body, project_id }`, then
      `job_get { job_id }` until `complete`; save `result.output` (fal's JSON).
-   - ElevenLabs → `data_post { provider: "elevenlabs", ... }`; save the reply
+   - ElevenLabs → `data_post_provider { provider: "elevenlabs", ... }`; save the reply
      (it carries `download_url`).
    - A local file → `media_upload { scope: "video_project", ... }` with the bytes of
      `local_file`; save `{ "url": <its url> }`.
 3. It saves that JSON to `save_result_to` and **re-runs the same command**. The script finds
    the result and continues; the next paid call relays the same way.
-4. If `data_post` returns a `provider_validation_failed` error, or `job_get`
+4. If `data_post_provider` returns a `provider_validation_failed` error, or `job_get`
    returns `status: failed`, the agent saves that error JSON (the whole `job_get` reply) as
    the result instead. The script then reports it: a policy rejection raises
    `FalPolicyRejection` and is recorded, like the HTTP path. Any saved error is moved aside
@@ -209,7 +209,7 @@ through the same server proxy code, so price and project attribution are identic
 ## Large request bodies without prompt copying
 
 The relay writes a `.body.json` file for request bodies over 8 KB and adds `body_file` plus
-`compact_call` to its request record. When `data_post` advertises `body_asset_id`, hand that
+`compact_call` to its request record. When `data_post_provider` advertises `body_asset_id`, hand that
 file over instead of its contents:
 
 1. `media_upload` with scope `video_project`, scope_id `GW_PROJECT_ID`, path
