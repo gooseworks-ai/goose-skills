@@ -240,9 +240,10 @@ jobs:
 
   npm-release:
     # The npm package publishes from main only, after every check passes.
-    # The npm-release environment holds NPM_TOKEN and is limited to main in
-    # the repository settings. On other changes it opens or updates the
-    # release pull request.
+    # It needs NPM_TOKEN in the npm-release environment (or npm trusted
+    # publishing); neither is set up yet, so this job fails until the owner
+    # does (DEPLOYMENT.md, "Owner setup needed"). On other changes it opens or
+    # updates the release pull request.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [validate, atom-checks, part-tests, imessage-chat-browser-tests, media-tests]
     runs-on: ubuntu-latest

@@ -2,7 +2,7 @@
 """Cross-model review of a Seedance 2.0 reference-to-video prompt by GPT — a
 deliberately NON-Claude second opinion before you spend the render.
 
-Portable: routes through the GooseWorks **openai-proxy** (bills the Ads agent, real
+Portable: routes through the GooseWorks **openai-proxy** (charged to your GooseWorks credits, real
 key never touches this machine) — never a direct api.openai.com call. Creds: the cloud
 sandbox's GW_MEDIA_PROXY_TOKEN + GW_API_BASE env when set, else
 ~/.gooseworks/credentials.json (the CLI writes it). Takes the prompt to review

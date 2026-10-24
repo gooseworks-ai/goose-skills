@@ -12,7 +12,7 @@ version: 2
 
 The narrative-arc check (Track A of the script lock) scores the skeleton: Hook, Vulnerability, Action, Tension, Reveal, Win, Climax, CTA. This rubric catches the craft problems that kill short-form ads even when the arc is fine: a weak hook, a missing **OUTCOME** beat (the most common paid-social failure), keyword-stack sentences, drug claims in regulated categories, action-only CTAs, non-sequiturs, the wrong word count, a fade-out landing, ad-speak, overlong captions, and acronyms, prices or URLs in VO.
 
-Both checks run in State 2.5; neither is enough alone. The script-writing skill writes to this rubric; this review catches what slipped through.
+Both checks run in State 2.5; neither is enough alone. The write-video-ad-script skill writes to this rubric; this review catches what slipped through.
 
 ## When to use
 

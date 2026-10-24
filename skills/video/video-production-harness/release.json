@@ -3,7 +3,7 @@
     "SKILL.md": {
       "bytes": 6170,
       "catalog_sha256": "b8dad753ab5276f6a27d2bc42849f877d5fbda70545c3ddc81a2b91802a6c39b",
-      "sha256": "82497e67a4df85decfd02b49d28a08c816db3af3576b4127e35c640296498993"
+      "sha256": "e196f389e5434a18ab5ac9e8f224537b4cdf855aa78881780220fc02635c1bee"
     },
     "auto-fix-from-review-notes.md": {
       "bytes": 6629,
@@ -156,9 +156,9 @@
       "sha256": "4a4cf82e859663659c7a8fee7d3a00e0e39f38a127be4ff09c11fa880dc126e7"
     },
     "references/review-script-shortform.md": {
-      "bytes": 12021,
-      "catalog_sha256": "4ac7da771547c0c6c6f33fae652d35c25ddcd1ee35c3508523f130fbe43389cb",
-      "sha256": "4ac7da771547c0c6c6f33fae652d35c25ddcd1ee35c3508523f130fbe43389cb"
+      "bytes": 12028,
+      "catalog_sha256": "6c0f3861a2609fa13a2d02efb9e64e2f764b683e6ea4e833982017af3c8faff1",
+      "sha256": "6c0f3861a2609fa13a2d02efb9e64e2f764b683e6ea4e833982017af3c8faff1"
     },
     "references/shot-routing.md": {
       "bytes": 15298,
@@ -247,8 +247,8 @@
     },
     "skill.meta.json": {
       "bytes": 879,
-      "catalog_sha256": "ffcb47c8b036700d05d9cd4ede0c85ae66f8d25c77b10741e463f1e5af5e178d",
-      "sha256": "ffcb47c8b036700d05d9cd4ede0c85ae66f8d25c77b10741e463f1e5af5e178d"
+      "catalog_sha256": "715259a21b339c67ecc4060c8ec719a3a09fbc9e07e7058b870d8078b04a0982",
+      "sha256": "715259a21b339c67ecc4060c8ec719a3a09fbc9e07e7058b870d8078b04a0982"
     },
     "states/edit-to-delivery.md": {
       "bytes": 8440,
@@ -292,10 +292,10 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "c7cf7b68ccaea76293ffe4f639f6e94b78c30a44",
+  "source_commit": "65a2eed34701839d699ad0cafa43a8418f09a1c8",
   "source_files": {
     "SKILL.md": {
-      "sha256": "82497e67a4df85decfd02b49d28a08c816db3af3576b4127e35c640296498993",
+      "sha256": "e196f389e5434a18ab5ac9e8f224537b4cdf855aa78881780220fc02635c1bee",
       "source": "public-entry.md"
     },
     "auto-fix-from-review-notes.md": {
@@ -419,7 +419,7 @@
       "source": "references/recipe-format.md"
     },
     "references/review-script-shortform.md": {
-      "sha256": "4ac7da771547c0c6c6f33fae652d35c25ddcd1ee35c3508523f130fbe43389cb",
+      "sha256": "6c0f3861a2609fa13a2d02efb9e64e2f764b683e6ea4e833982017af3c8faff1",
       "source": "references/review-script-shortform.md"
     },
     "references/shot-routing.md": {
@@ -507,6 +507,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "596087081442f3ae9d754a70f4b950b2642b293583f3df51e3cfa13713843a10",
-  "source_version": "5-596087081442"
+  "source_hash": "e92d4bcfd21efda1d27cdeeaa70dda7e312edba91d6c2583b650fd5bf2f47539",
+  "source_version": "5-e92d4bcfd21e"
 }

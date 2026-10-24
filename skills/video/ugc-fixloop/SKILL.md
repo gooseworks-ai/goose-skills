@@ -1,6 +1,6 @@
 ---
 name: ugc-fixloop
-description: the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py, pure FFmpeg) and GPT cross-model review a Seedance prompt before render (vet_seedance_prompt.py, routed through the openai-proxy). Fetch it into a one-shot UGC recipe so both scripts resolve on any machine and the vet call bills the Ads agent.
+description: the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py, pure FFmpeg) and GPT cross-model review a Seedance prompt before render (vet_seedance_prompt.py, routed through the openai-proxy). Fetch it into a one-shot UGC recipe so both scripts resolve on any machine and the vet call charged to your GooseWorks credits.
 status: active
 ---
 
@@ -16,7 +16,7 @@ machine (fetched into `/tmp/gooseworks-scripts/ugc-fixloop/`).
 
 ## Env / deps
 - **`stitch_replacement.py`** — no API key, no network. Needs **`ffmpeg` + `ffprobe` on PATH** (all local FFmpeg).
-- **`vet_seedance_prompt.py`** — routes through the GooseWorks **openai-proxy** (`<api_base>/api/internal/openai-proxy/v1/chat/completions`), reading creds from `~/.gooseworks/credentials.json` — **no direct OpenAI call, no local key**; the call **bills the Ads agent**. Exits 3 if the proxy/creds are unavailable so the recipe can fall back to an inline self-review (the vet is advisory, not a gate).
+- **`vet_seedance_prompt.py`** — routes through the GooseWorks **openai-proxy** (`<api_base>/api/internal/openai-proxy/v1/chat/completions`), reading creds from `~/.gooseworks/credentials.json` — **no direct OpenAI call, no local key**; the call **charged to your GooseWorks credits**. Exits 3 if the proxy/creds are unavailable so the recipe can fall back to an inline self-review (the vet is advisory, not a gate).
 
 ## Run — vet_seedance_prompt.py (GPT cross-model prompt review)
 A second opinion from a different model family on the Seedance prompt before you spend the

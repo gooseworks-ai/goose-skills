@@ -21,8 +21,10 @@
  *     approved videos pin them, so a fix means a new part version;
  *   - parts/_lib/: it is copied into every frozen part version when one is
  *     cut, so it changes only with new part versions too.
- * Their sources (parts/<id>/ outside the version folders, tests, skills) are
- * scanned, so every new part version is cut clean.
+ *   - parts/<id>/src/: the newest frozen version is built from it byte for
+ *     byte, so it too changes only with a new part version.
+ * Part tests and everything else are scanned. When a part gets a new version,
+ * clean its src/ and _lib/ text first.
  *
  * GOOSE_SKILLS_ROOT points the scan at another checkout (tests).
  */
@@ -40,6 +42,7 @@ const HASHES = path.join(__dirname, 'lib', 'client-name-hashes.json');
 const SKIP = [
   /^parts\/[^/]+\/\d+\.\d+\.\d+\//, // frozen part versions
   /^parts\/_lib\//, // bundled into frozen part versions
+  /^parts\/[^/]+\/src\//, // the build source of the newest frozen version; changes only with a new version
 ];
 const MAX_BYTES = 8 * 1024 * 1024;
 
