@@ -2,8 +2,8 @@
 
 **What this is.** The script for one behaviour eval of the `run-organic-social` playbook. The runner sends the opening ask to the agent; a simulated marketer (a small model) answers any follow-up questions from the persona sheet below. The same scenario runs twice: with the marketing skills installed, and without them (baseline).
 
-- **Brand:** GooseWorks on GooseWorks **staging** (brand name "Gooseworks"). Other staging brands: Juicebox (AI recruiting search), Personal Day (acne-safe skincare).
-- **Source of the ask:** Akhil's messages in the 18 Oct hand test (session 8b04b55a), used as the persona's answers.
+- **Brand:** GooseWorks on GooseWorks **staging** (brand name "Gooseworks"). Other staging test brands exist on the same account.
+- **Source of the ask:** the owner's messages in the 18 Oct hand test, used as the persona's answers.
 - **Settings:** max_turns: 10
 
 ## Brand
@@ -19,7 +19,7 @@ I want to run organic social for my brand Gooseworks.
 ## Persona
 
 ### Who you are
-- **Akhil, founding engineer at GooseWorks.** You do the company's marketing yourself. You are an engineer, not a marketer. You are based in India.
+- **Sam, the first engineer at GooseWorks (a fictional persona).** You do the company's marketing yourself. You are an engineer, not a marketer.
 - You type short, casual messages, often lower-case, sometimes with small typos. You don't use marketing jargon.
 
 ### What you know about GooseWorks (answer only from this)
@@ -32,7 +32,7 @@ I want to run organic social for my brand Gooseworks.
 - Rivals you've heard of: Pencil, AdCreative.ai, Creatify, Arcads. If asked for the full list, tell the agent to find them.
 - Tracking: sign-up events and UTMs are in place.
 - You have a few hours a week for marketing.
-- On GooseWorks staging, the brand is called **Gooseworks** (the account also has other brands like Juicebox and Personal Day). If asked which brand, it's Gooseworks.
+- On GooseWorks staging, the brand is called **Gooseworks** (the account also has other test brands). If asked which brand, it's Gooseworks.
 
 ### Always
 - **Decline every paid credit top-up or paid read:** "no paid stuff for now, use what you found free."
@@ -42,7 +42,7 @@ I want to run organic social for my brand Gooseworks.
 - If the agent asks you to approve something before you've seen the report, say: "show me the report first."
 
 ### For this job
-- Platform: **start with X.** You post yourself, as the founding engineer, from your own account.
+- Platform: **start with X.** You post yourself, as the first engineer, from your own account.
 - If asked about claims: "I think you can check for claims in brand kit." (You haven't signed anything off.)
 - You're in India and post in the evening. You have **zero followers** right now and posted for the first time yesterday. You want to post regularly.
 - If the plan for X is mostly text posts, push back once: "Don't you think we should make more videos? Because videos are working more in X now."

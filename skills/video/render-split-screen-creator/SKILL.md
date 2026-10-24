@@ -15,7 +15,7 @@ This capability is the **FREE, deterministic assembly + captions** — the two-z
 composite (contain-fit + blurred-cover fill + divider + creator slice), the
 hard-concat, the end card, and the word-level caption burn from the assembled cut.
 
-`scripts/config.example.json` is one worked example (Perplexity concept-10
+`scripts/config.example.json` is one worked example (Askwell concept-10
 "Bloomberg terminal", ~40s 1080×1920 9:16, 6 scenes + an end card) — copy its
 structure, never its creative values;
 `scripts/PIPELINE.md` maps every config block to its source step and
@@ -49,13 +49,12 @@ ElevenLabs `eleven_v3` with-timestamps, sliced into per-scene windows), the
 `gpt-image-2`) — shot at a natural webcam distance (headroom + shoulders, real
 room), **not** a plain-background close-up headshot (see the anchor note below), and
 the whole-VO lip-sync (a **paid VEED Fabric 1.0 @ 720p take — a no-atom step**,
-`image_url` = the anchor, `audio_url` = the vo mp3, ~$0.15/sec, ~$5.90 for a 39s
-VO; run its calls sequentially, `veed/fabric-1.0` storage-auths 403 under
+`image_url` = the anchor, `audio_url` = the vo mp3, billed per second of VO and the largest spend; run its calls sequentially, `veed/fabric-1.0` storage-auths 403 under
 parallel load). Given the creator lip-sync take + the per-scene VO timing + one
 16:9 top clip per scene + the scene-1 hook graphic + the end-card clip,
 `render-split-screen-creator` composites the two zones, hard-concats the scenes,
 appends the end card, transcribes the assembled cut, and burns the captions → the
-master. Re-cuts reuse the existing VO / lip-sync / clips and cost **$0**.
+master. Re-cuts reuse the existing VO / lip-sync / clips and spend nothing.
 
 ## Contract (the free assembly)
 

@@ -1,6 +1,6 @@
 {
-  "_comment": "Worked example (the Everself 'doctor-educator' build) — copy its STRUCTURE and field names, never its creative values. Creative fields — voice.mode / voice.voice_id / voice.reference_sample (choices.narrator), the script + beats[].headline/body/callout (choices.list_angle + choices.tone), design.name / design.callout_style / design.accents / design.background_tiles (choices.visual_style; palette + fonts from the brand kit), music.prompt (choices.music), broll[].ai_prompt, brand_name / campaign / title / wordmark — come from the recipe's choices and the brand; never copy them as defaults. A ~66s 9:16 (1080x1920, 25fps, h264 crf18 + aac 192k) EXPERT motion-graphic LISTICLE where a CLONED authoritative clinician VO narrates a numbered listicle and every beat reveal is anchored to the VO's word-level timestamps. Pipeline: (1) lock the VO (ElevenLabs clone, eleven_v3, atempo) — it sets the timeline; (2) Groq whisper-large-v3 word-level -> working/whisper/words-flat.json; (3) author N hyperframe beats (HTML + Web Animations window.renderAt(t)) in ONE design system (_shared.css / _shared.js); (4) periodic color-graded B-roll windows for breath; (5) render each beat frame-by-frame via Playwright (render_hf.py, ALL beats fps 25), concat, mix the VO under a low music bed, composite + burn window-masked captions (build_master_v4.py) -> finals/everself-v4-master.mp4. NO lipsync — the still headshot is kept only for a future lipsync variant. See scripts/PIPELINE.md for the source scripts.",
-  "brand_name": "Everself",
+  "_comment": "Worked example (the Truehour 'doctor-educator' build) — copy its STRUCTURE and field names, never its creative values. Creative fields — voice.mode / voice.voice_id / voice.reference_sample (choices.narrator), the script + beats[].headline/body/callout (choices.list_angle + choices.tone), design.name / design.callout_style / design.accents / design.background_tiles (choices.visual_style; palette + fonts from the brand kit), music.prompt (choices.music), broll[].ai_prompt, brand_name / campaign / title / wordmark — come from the recipe's choices and the brand; never copy them as defaults. A ~66s 9:16 (1080x1920, 25fps, h264 crf18 + aac 192k) EXPERT motion-graphic LISTICLE where a CLONED authoritative clinician VO narrates a numbered listicle and every beat reveal is anchored to the VO's word-level timestamps. Pipeline: (1) lock the VO (ElevenLabs clone, eleven_v3, atempo) — it sets the timeline; (2) Groq whisper-large-v3 word-level -> working/whisper/words-flat.json; (3) author N hyperframe beats (HTML + Web Animations window.renderAt(t)) in ONE design system (_shared.css / _shared.js); (4) periodic color-graded B-roll windows for breath; (5) render each beat frame-by-frame via Playwright (render_hf.py, ALL beats fps 25), concat, mix the VO under a low music bed, composite + burn window-masked captions (build_master_v4.py) -> finals/truehour-v4-master.mp4. NO lipsync — the still headshot is kept only for a future lipsync variant. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Truehour",
   "campaign": "doctor-educator listicle",
   "title": "What your dermatologist wishes you knew",
   "width": 1080,
@@ -11,24 +11,24 @@
   "video_codec": "h264 crf18",
   "audio_codec": "aac 192k",
   "voice": {
-    "_comment": "Locked FIRST — the VO sets the timeline. mode 'clone' here: an ElevenLabs voice cloned from a short reference sample of the clinician (Dr. McGowan), then narrated over the listicle script with eleven_v3, then atempo'd to the target pace. Word-level timestamps come from Groq whisper-large-v3 on the RENDERED VO. The clinician headshot is retained only for a FUTURE lipsync variant — this master has NO lipsync.",
+    "_comment": "Locked FIRST — the VO sets the timeline. mode 'clone' here: an ElevenLabs voice cloned from a short reference sample of the clinician (Dr. Hale, a fictional clinician), then narrated over the listicle script with eleven_v3, then atempo'd to the target pace. Word-level timestamps come from Groq whisper-large-v3 on the RENDERED VO. The clinician headshot is retained only for a FUTURE lipsync variant — this master has NO lipsync.",
     "mode": "clone",
     "provider": "elevenlabs",
     "model": "eleven_v3",
-    "voice_id": "cloned-mcgowan",
+    "voice_id": "cloned-hale",
     "atempo": 1.06,
-    "reference_sample": "voice/dr-mcgowan-all-shorts.mp3",
+    "reference_sample": "voice/dr-hale-all-shorts.mp3",
     "clone_script": "voice/clone_voice.py",
     "narrate_script": "voice/render_listicle_v2.py",
     "outputs": {
-      "audio": "voice/listicle-mcgowan-v2-render.mp3",
-      "raw": "voice/listicle-mcgowan-v2-raw.mp3",
+      "audio": "voice/listicle-hale-v2-render.mp3",
+      "raw": "voice/listicle-hale-v2-raw.mp3",
       "word_timings": "working/whisper/words-flat.json"
     }
   },
   "design": {
-    "_comment": "ONE branded design system for all N beats. Demo look (EVERSELF_EDUCATOR, glass-pill callouts) — the look comes from choices.visual_style, colours/fonts from the brand kit. _shared.css holds the tokens (palette, type, alternating background tiles, decorative accents, callout style); _shared.js holds initRenderer + revealWords + easing. Alternate ONLY the background tile per beat; keep the big hero numerals, body type, accents, and callouts CONSISTENT so the reel reads as one designed piece.",
-    "name": "EVERSELF_EDUCATOR",
+    "_comment": "ONE branded design system for all N beats. Demo look (TRUEHOUR_EDUCATOR, glass-pill callouts) — the look comes from choices.visual_style, colours/fonts from the brand kit. _shared.css holds the tokens (palette, type, alternating background tiles, decorative accents, callout style); _shared.js holds initRenderer + revealWords + easing. Alternate ONLY the background tile per beat; keep the big hero numerals, body type, accents, and callouts CONSISTENT so the reel reads as one designed piece.",
+    "name": "TRUEHOUR_EDUCATOR",
     "heading_font": "Editorial serif (heading)",
     "body_font": "Grotesk sans (body)",
     "numeral_style": "big hero numeral in the brand accent color, top-left of each point beat",
@@ -48,7 +48,7 @@
     { "id": "BR02", "role": "broll", "anchor_word": "", "anchor_t": 32.0, "broll_ref": "broll[1]", "_comment": "Second B-roll breath window." },
     { "id": "B05", "role": "point", "anchor_word": "fourth", "anchor_t": 36.6, "hero_numeral": "4", "headline": "Fragrance is the hidden irritant", "body": "It's the first thing to cut.", "callout": "Cut fragrance", "accent": "cream-tile" },
     { "id": "B06", "role": "point", "anchor_word": "fifth", "anchor_t": 44.9, "hero_numeral": "5", "headline": "Consistency beats the fancy routine", "body": "Three steps you'll actually do.", "callout": "3 steps", "accent": "teal-tile" },
-    { "id": "BCTA", "role": "cta", "anchor_word": "start", "anchor_t": 58.0, "hero_numeral": "", "headline": "Build a routine that actually works", "body": "", "callout": "everself.com", "wordmark": "brand-assets/logos/everself-wordmark.svg", "accent": "cream-tile", "_comment": "CTA / end beat — Everself wordmark composited from the real SVG (NEVER AI-rendered text)." }
+    { "id": "BCTA", "role": "cta", "anchor_word": "start", "anchor_t": 58.0, "hero_numeral": "", "headline": "Build a routine that actually works", "body": "", "callout": "truehour.example", "wordmark": "brand-assets/logos/truehour-wordmark.svg", "accent": "cream-tile", "_comment": "CTA / end beat — Truehour wordmark composited from the real SVG (NEVER AI-rendered text)." }
   ],
   "broll": [
     { "id": "broll[0]", "source": "ai-video", "ai_prompt": "screen-free candid clinician in a bright modern clinic, shallow depth of field, no text", "query": "", "brand_clip": "", "t_start": 12.2, "t_end": 16.8, "graded": true, "captioned": true, "_comment": "Breather window. source is brand-clip | ai-video (create-video-fal, PAID — gate it) | motion-graphic. NO free stock source exists (media-proxy only wraps FAL/ElevenLabs/Whisper). If ai-video: SCREEN-FREE footage only (AI garbles on-screen UI text). Trim + color-grade to the palette. Captions burn ONLY inside this window. HOW MANY / WHERE = taste calls, not fixed." },
@@ -82,7 +82,7 @@
   },
   "headshot": {
     "_comment": "The still clinician headshot is kept for a FUTURE lipsync variant. The shipped motion-graphic + VO master does NOT use it.",
-    "asset": "source/mcgowan-headshot.png",
+    "asset": "source/hale-headshot.png",
     "used_in_master": false
   },
   "render_engine": {

@@ -110,7 +110,7 @@ street test exposed this: both aggregate labels said usable with less than 30% c
 while required dialogue dimensions remained below 4/5. Six agreeing rejection labels
 without accepted controls did not establish a reliable positive acceptance gate.
 
-The next operator review also rejected the Som Sleep premise despite Jev's high product
+The next operator review also rejected the Hushwell Sleep premise despite Jev's high product
 integration score. The draft answered a warm-water preparation question without explaining
 the offering's relevant sleep role or a reason to choose it. This is a brand-message defect,
 not just a wording defect. Preserve the frozen rubric and scores; do not reinterpret them

@@ -2,7 +2,7 @@
 
 How `config.example.json` maps to the real production steps. This capability
 ships a **config + this map** — the FREE assembly + captions stage. The worked
-example (Perplexity concept-10 "Bloomberg terminal") was produced by the per-scene
+example (Askwell concept-10 "Bloomberg terminal") was produced by the per-scene
 paid steps plus the split-screen assembler + the caption burn.
 
 The steps run **in order** because each depends on the last: the script sets the
@@ -12,7 +12,7 @@ fill the top zone, assembly stitches the two zones, and captions come from the
 ASSEMBLED cut (not the raw VO).
 
 The creator (gender, age, look), setting, tone and caption style are the user's
-choices, made upstream. The Perplexity values in `config.example.json` (creator,
+choices, made upstream. The Askwell values in `config.example.json` (creator,
 `arlo` voice, script, `#20808D` divider, `serif-accent`) are the worked example's
 build — never defaults.
 
@@ -20,10 +20,10 @@ build — never defaults.
 
 | Config field | Phase | Source step | Paid? |
 |---|---|---|---|
-| `voiceover.*`, `scenes[].vo` | 1 VO | ElevenLabs `eleven_v3` with-timestamps (`create-vo-elevenlabs`) → vo mp3 + timestamp JSON | **PAID** (~$0.06) |
+| `voiceover.*`, `scenes[].vo` | 1 VO | ElevenLabs `eleven_v3` with-timestamps (`create-vo-elevenlabs`) → vo mp3 + timestamp JSON | **PAID** |
 | `scenes[].start/end`, `voiceover.outputs.timing` | 1 VO | slice per-scene start/end from the char timestamps → `timing.json` | free |
-| `creator.anchor` | 2 Creator | photoreal MEDIUM chest-up anchor, `gpt-image-2` (`create-image-gpt-image-fal`) | **PAID** (~$0.10) |
-| `creator.lipsync_*` | 2 Creator | **VEED Fabric 1.0 @ 720p — a NO-ATOM paid step** (`image_url` = anchor, `audio_url` = vo mp3) → creator lip-sync mp4 | **PAID** (~$5.90 / 39s) |
+| `creator.anchor` | 2 Creator | photoreal MEDIUM chest-up anchor, `gpt-image-2` (`create-image-gpt-image-fal`) | **PAID** |
+| `creator.lipsync_*` | 2 Creator | **VEED Fabric 1.0 @ 720p — a NO-ATOM paid step** (`image_url` = anchor, `audio_url` = vo mp3) → creator lip-sync mp4 | **PAID** (per second of VO; the largest spend) |
 | `scenes[].top_clip` + `top_start/top_end` | 3 Top | brand-owned 16:9 UI screen-recordings (S02–SN) + the scene-1 hook graphic | (brand-supplied) |
 | `layout.*`, `endcard.*`, assembly | 4 Assembly | the split-screen assembler — two-zone composite + hard-concat + end card → `master-precaption.mp4` | free |
 | `captions.*` | 5 Captions | transcribe the ASSEMBLED cut (local `faster-whisper`) → word-level ASS burn → `concept-<n>-final-ad.mp4` | free |
@@ -49,7 +49,7 @@ lip-sync, since a too-close image can't be reframed in the composite. Then the
 **whole VO** lip-synced in **one VEED Fabric 1.0 take @ 720p** (`veed/fabric-1.0`,
 `image_url` = the portrait, `audio_url` = the vo mp3) → the creator lip-sync mp4.
 **VEED Fabric is a no-atom paid step** — there is no `create-lipsync-*` atom; it's
-an external FAL call (~$0.15/sec, ~$5.90 for a 39s VO). Always 720p — 480p reads
+an external FAL call, billed per second of VO and the largest spend. Always 720p — 480p reads
 soft in the bottom zone. Run the lip-sync call(s) **sequentially with a `sleep`** —
 `veed/fabric-1.0` storage-auths 403 under parallel load. Upstream of the capability;
 the lip-sync take is a supplied input.
@@ -74,7 +74,7 @@ offset so the face is upper-middle and the shoulders enter — NOT a plain crop-
 which cuts the shoulders). Tune zoom/offset visually (free re-assemble). **Never loop a
 short clip** — window it and the assembler speed-fits it. Hard-concat the scenes; body audio =
 the concatenated creator VO slices; append the end card holding the last sharp frame
-~3s → `master-precaption.mp4`. Deterministic, $0.
+~3s → `master-precaption.mp4`. Deterministic and free.
 
 ## 5. Captions (config `captions`) — FREE
 
@@ -88,5 +88,5 @@ re-rendering the composite. If the host ffmpeg lacks libass, render the cues as 
 PIL PNG overlays composited with ffmpeg `overlay=…:enable='between(t,st,en)'` instead.
 
 Re-cuts (re-timed windows, a swapped blurred-fill, new caption chunking, a restyle, a
-longer end-card hold) reuse the existing VO / lip-sync / clips and cost **$0** — only
+longer end-card hold) reuse the existing VO / lip-sync / clips and spend nothing — only
 steps 1–2 spend.

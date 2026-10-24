@@ -7,7 +7,7 @@
 
 ## The test
 
-Ask, on the GooseWorks brand: **"i want to do the audience research for gooseworks"** (Akhil's words in the 18 Oct hand test).
+Ask, on the GooseWorks brand: **"i want to do the audience research for gooseworks"** (the owner's words in the 18 Oct hand test).
 
 It passes if:
 

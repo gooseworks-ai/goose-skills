@@ -1,6 +1,6 @@
 {
-  "_comment": "Lo\u00f3na 'Fall In Love With Sleep Again' song-driven music-video \u2014 Worked example (the Lo\u00f3na paper-craft lullaby build). Creative fields \u2014 song.prompt, song.bpm, song.structure[].lines / lyrics_md / hook_line / hook_word, look_pack (name, style_opener incl. the protagonist, palette_anchors, negative_tail), clip_engine.motion_opener, tableaux[] (keyframe_prompt, motion_hint, caption), captions.accent_words, audio_mix.climax_beat_id (plus brand_name/title/campaign/end_card, which come from the brand) \u2014 come from the recipe's choices (visual_style, song_genre, vocalist, mood, protagonist, setting); never copy them as defaults. Copy to config.json and edit. A ~28s paper-craft (DREAMSCAPE_NIGHT) 9:16 music video where a GENERATED SUNG SONG carries the whole narrative (NO separate VO). Pipeline: (1) ElevenLabs music_v1 song from song.structure -> mp3 + words.json; (2) one Higgsfield gpt_image_2 keyframe per tableau (2k 9:16, one look_pack); (3) one Higgsfield kling3_0 i2v clip per tableau; (4) captions from the song's WORD timings, hook word landing on the chorus drop; (5) hard-cut assembly + PIL brand end card + song mux, -14 LUFS. Master 1080x1920 (keyframes rendered at 2k ~= 1520x2688 then downscaled in assembly). See scripts/PIPELINE.md for the source scripts.",
-  "brand_name": "Lo\u00f3na",
+  "_comment": "Driftlume 'Fall In Love With Sleep Again' song-driven music-video \u2014 Worked example (the Driftlume paper-craft lullaby build). Creative fields \u2014 song.prompt, song.bpm, song.structure[].lines / lyrics_md / hook_line / hook_word, look_pack (name, style_opener incl. the protagonist, palette_anchors, negative_tail), clip_engine.motion_opener, tableaux[] (keyframe_prompt, motion_hint, caption), captions.accent_words, audio_mix.climax_beat_id (plus brand_name/title/campaign/end_card, which come from the brand) \u2014 come from the recipe's choices (visual_style, song_genre, vocalist, mood, protagonist, setting); never copy them as defaults. Copy to config.json and edit. A ~28s paper-craft (DREAMSCAPE_NIGHT) 9:16 music video where a GENERATED SUNG SONG carries the whole narrative (NO separate VO). Pipeline: (1) ElevenLabs music_v1 song from song.structure -> mp3 + words.json; (2) one Higgsfield gpt_image_2 keyframe per tableau (2k 9:16, one look_pack); (3) one Higgsfield kling3_0 i2v clip per tableau; (4) captions from the song's WORD timings, hook word landing on the chorus drop; (5) hard-cut assembly + PIL brand end card + song mux, -14 LUFS. Master 1080x1920 (keyframes rendered at 2k ~= 1520x2688 then downscaled in assembly). See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Driftlume",
   "campaign": "fall in love with sleep again",
   "title": "Fall In Love With Sleep Again",
   "width": 1080,
@@ -165,7 +165,7 @@
       "t_end": 12.639,
       "lyric_anchor": "then i tap, into something soft",
       "caption": "then i tap / into something soft",
-      "keyframe_prompt": "Tight close-up of the paper thumb pressing down on a paper Lo\u00f3na app icon (a tiny cream-colored crescent moon on a deep night-blue square) on the paper phone screen. A small ripple of paper sparkle radiates outward from the tap point.",
+      "keyframe_prompt": "Tight close-up of the paper thumb pressing down on a paper Driftlume app icon (a tiny cream-colored crescent moon on a deep night-blue square) on the paper phone screen. A small ripple of paper sparkle radiates outward from the tap point.",
       "motion_hint": "The thumb presses, the icon flexes inward then releases. Sparkle ripple expands outward."
     },
     {
@@ -214,9 +214,9 @@
       "role": "PRODUCT_HERO",
       "t_start": 20.459,
       "t_end": 22.34,
-      "lyric_anchor": "lo\u00f3na, lo\u00f3na",
+      "lyric_anchor": "driftlume, driftlume",
       "caption": "the dreaming ends",
-      "keyframe_prompt": "PRODUCT HERO \u2014 the paper phone alone, centered, floating in soft moonlight against a deep night-blue paper background. On the phone screen, the paper-craft sleepscape from T08-T09 is rendered in tiny precise detail. A paper Lo\u00f3na wordmark hovers in soft cream above the phone. Single key-light from above.",
+      "keyframe_prompt": "PRODUCT HERO \u2014 the paper phone alone, centered, floating in soft moonlight against a deep night-blue paper background. On the phone screen, the paper-craft sleepscape from T08-T09 is rendered in tiny precise detail. A paper Driftlume wordmark hovers in soft cream above the phone. Single key-light from above.",
       "motion_hint": "The phone rotates a few degrees on its axis. The sleepscape on screen glows softly. Moonlight shifts angle gently."
     },
     {
@@ -225,7 +225,7 @@
       "t_start": 22.34,
       "t_end": 23.279,
       "lyric_anchor": "take me in",
-      "caption": "lo\u00f3na, lo\u00f3na",
+      "caption": "driftlume, driftlume",
       "keyframe_prompt": "4-quadrant paper-craft contact sheet, each panel a different paper-craft sleepscape: TOP-LEFT a snowy paper cabin with paper smoke; TOP-RIGHT a paper lighthouse on a paper cliff at night; BOTTOM-LEFT a paper koi pond under a paper bridge; BOTTOM-RIGHT a paper treehouse in a paper canopy. Each panel a different pastel palette tone.",
       "motion_hint": "Each panel pulses warm-window glow in alternation to the music-box arpeggio. Subtle motion inside each."
     },
@@ -261,11 +261,11 @@
     }
   ],
   "end_card": {
-    "_comment": "Brand lockup composited via PIL from the REAL brand asset (the Lo\u00f3na app icon pulled from iTunes Search API) \u2014 NEVER AI-rendered text (LEARNINGS L4). Overlaid on the final tableau window.",
+    "_comment": "Brand lockup composited via PIL from the REAL brand asset (the Driftlume app icon pulled from iTunes Search API) \u2014 NEVER AI-rendered text (LEARNINGS L4). Overlaid on the final tableau window.",
     "engine": "pil",
     "script": "build_end_card.py",
     "brand_asset": "brand-assets/app-icon-1024.jpg",
-    "wordmark_text": "Lo\u00f3na",
+    "wordmark_text": "Driftlume",
     "wordmark_font": "Georgia Bold",
     "tagline_text": "fall in love with sleep again",
     "tagline_font": "Georgia Italic",

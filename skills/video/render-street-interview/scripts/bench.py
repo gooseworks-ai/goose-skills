@@ -90,23 +90,23 @@ def inventory(run: Path):
     # this was `range(4801, 4816)` and it silently omitted seed 4816 the moment it existed,
     # so the one take the benchmark was built to judge was the one row missing from the table.
     # A benchmark that cannot see the newest take is worse than no benchmark.
-    for p in sorted(T.glob("ld-single-seed*.mp4")):
-        seed = p.stem.replace("ld-single-seed", "")
+    for p in sorted(T.glob("gw-single-seed*.mp4")):
+        seed = p.stem.replace("gw-single-seed", "")
         add("ours-raw", f"g{seed}", p)
     # the pre-single-generation era, kept because the stitching rejections are the baseline
     for s in (4501, 4502, 4503):
-        add("ours-raw-old", f"ms{s}", T / f"ld-multishot-t2v-seed{s}.mp4")
-    add("ours-raw-old", "long4601", T / "ld-long-seed4601.mp4")
-    add("ours-raw-old", "broll4701", T / "ld-broll-seed4701.mp4")
+        add("ours-raw-old", f"ms{s}", T / f"gw-multishot-t2v-seed{s}.mp4")
+    add("ours-raw-old", "long4601", T / "gw-long-seed4601.mp4")
+    add("ours-raw-old", "broll4701", T / "gw-broll-seed4701.mp4")
 
     for look in ("bare", "subway", "clean", "karaoke", "doc"):
-        add("ours-final", f"look-{look}", O / "looks" / f"street-ld-{look}.mp4")
+        add("ours-final", f"look-{look}", O / "looks" / f"street-gw-{look}.mp4")
     add("ours-final", "4812-final", O / "looks" / "street-4812-final.mp4")
     add("ours-final", "4814-final", O / "looks" / "street-seed4814-final.mp4")
-    add("ours-final", "LD-FINAL", O / "street-interview-liquid-death-FINAL.mp4")
+    add("ours-final", "GW-FINAL", O / "street-interview-grimwater-FINAL.mp4")
     # the REJECTED assembled cut. It is in the table on purpose: it is the only row where a
     # measured axis (ambience floor -13 dB) matches a rejection the operator actually gave.
-    add("ours-rejected", "assembled", O / "street-liquid-death.mp4")
+    add("ours-rejected", "assembled", O / "street-grimwater.mp4")
     return inv
 
 

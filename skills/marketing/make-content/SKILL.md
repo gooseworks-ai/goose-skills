@@ -9,7 +9,7 @@ description: >-
   published. Not for a dated posting calendar — use run-organic-social; not ad copy (make-static-ads)
   or promo emails (email-lifecycle). Press releases, landing and product pages, and sales decks are
   not covered.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # make-content
@@ -130,7 +130,7 @@ Attach the edit note and one claims block per piece or set.
   - Drafts are never imported; they aren't brand facts.
   - When the marketer says a piece is published at a public URL, import it as content inventory (`gooseworks:knowledge_import` `url`, then `gooseworks:job_get` `kind: "knowledge_ingest"`). If the answer quotes a price, stop and ask.
 - **Learnings** only via the shared save-learning atom (`../save-learning/SKILL.md`). Write only writing rules the marketer stated or confirmed in their own words: prefix `[content YYYY-MM-DD]`, one idea each, superseded own learnings retired. An inferred rule is asked as a question first.
-- **Not yet stored in the brain:** a content library, a story bank (server-needs.md). The workspace files are the interim store.
+- **Not yet stored in the brain:** a content library, a story bank. The workspace files are the interim store.
 
 ## Done when
 

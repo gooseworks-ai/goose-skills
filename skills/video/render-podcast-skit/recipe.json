@@ -181,7 +181,7 @@
     "stills": {
       "default": "openai/gpt-image-2@high",
       "usd_per_image": 0.19,
-      "note": "Quality-driven choice, not a cost one. Nano Banana faces read as AI stock. Seedream v5 lite is cheaper at $0.04 and is a legitimate swap on cost, but it does NOT fix the Seedance refusal, so do not swap for that reason."
+      "note": "Quality-driven choice, not a cost one. Nano Banana faces read as AI stock. Seedream v5 lite is cheaper and is a legitimate swap on cost, but it does NOT fix the Seedance refusal, so do not swap for that reason."
     },
     "lipsync": {
       "default": "veed-fabric-1.0@720p",
@@ -235,7 +235,7 @@
     "high_usd": 6.29,
     "basis": "measured",
     "as_of": "2026-10-04",
-    "note": "Measured across three brands built end to end: Marrow $5.62, Coppice $5.99, Fathom $6.29. One landscape two-shot plate $0.19, voiceover $0.12-0.14, two idle listener clips for the split $1.80, lipsync at 720p $3.51-$4.16. low_usd is the same episode WITHOUT the split layer, which drops the two idle clips. Everything else is free: planning, cropping, captions, grade, brand card, room tone and every gate. The earlier $4.67 predates the split layer and the landscape plate."
+    "note": "Measured across three brands built end to end (Marrow, Coppice, Fathom). The paid parts are one landscape two-shot plate, the voiceover, two idle listener clips for the split and lipsync at 720p, which is the largest share. low_usd is the same episode WITHOUT the split layer, which drops the two idle clips. Everything else is free: planning, cropping, captions, grade, brand card, room tone and every gate. The earlier figure predates the split layer and the landscape plate."
   },
   "card": {
     "title": "Podcast skit",

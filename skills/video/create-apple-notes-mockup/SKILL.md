@@ -130,7 +130,7 @@ A symlink to `create-imessage-mockup/node_modules` ships with the repo, so on a 
 | `templates/note.css` | All visual styling (status bar, toolbar, body, checklist, image, keyboard) |
 | `templates/icons.js` | Inline SVG icons (back chevron, undo, share, more, done check, signal, wifi, battery, format toolbar icons, keyboard glyphs) |
 | `examples/*.json` | 6 reference notes covering every variation (title-only, mid-typing, long multi-paragraph, with checklist, with image, frame-1 lowercase-keyboard) |
-| `tests/run-all.sh` | Render every example into `tests/output/` for visual review |
+| `tests/run-all.sh` | Builders only, in the goose-skills repo (installs have no `tests/`): render every example into `tests/output/` for visual review |
 | `apple-notes-skill-build.html` | Side-by-side review board comparing reference video frames to generated PNGs |
 
 ## Quality Checks

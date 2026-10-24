@@ -1,8 +1,8 @@
 # PIPELINE — config → source steps
 
 This molecule ships the **recipe** (`config.example.json`), not a re-built runnable
-pipeline. The engine is the working scripts from the source run
-`clients/masterclass/ad-runs/run-03-run-03/working/` (plus its `edits/` finalize).
+pipeline. The engine is the working scripts from the source run's own
+`working/` folder (plus its `edits/` finalize).
 This maps each config field to the step that consumes it.
 
 **The demo's creative values are examples, not defaults.** The studio look, phone finish,

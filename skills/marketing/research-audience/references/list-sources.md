@@ -4,7 +4,7 @@ Load at list-mode step 2. The source decides how warm the list is. Pick one or t
 
 | Source | Best when | How warm | Free today? |
 |---|---|---|---|
-| **People and company database** (title, function, size, industry, region) | Broad lists fast; "50 VPs of X at Y-size companies" | Cold — pair with a signal | Only when the connector has the route (server-needs); else the free pass below |
+| **People and company database** (title, function, size, industry, region) | Broad lists fast; "50 VPs of X at Y-size companies" | Cold — pair with a signal | Only when the connector has the route (not yet); else the free pass below |
 | **Switch intent** — people saying "alternative to X", "moving off X" | Known rivals; the warmest cold list | Hot (days) | Yes — web search, Hacker News, public forum threads |
 | **Hiring** — job posts for a role the product replaces or supports | Urgency and budget | Warm (weeks) | Yes — careers pages, job boards via web search |
 | **New leader in the buying role** | Any B2B motion | Warm (2–8 weeks in) | Partly — announcements, press, public posts; most moves are never announced (a database route sees them) |

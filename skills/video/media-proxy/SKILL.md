@@ -21,7 +21,9 @@ render. Two built-in protections (automatic for every capability that imports th
 - **Poll-through-outage** — `_fal_run`'s poll loop re-attaches to the same status/result
   URL through `connection refused` / timeout blips instead of crashing.
 - **Persist + resume** — each submit's `request_id` + poll URLs are written to
-  `~/.gooseworks/pending-fal-jobs/`. If the poller still dies, **re-attach instead of
+  `~/.gooseworks/pending-fal-jobs/` (`GW_FAL_PENDING_DIR` overrides, for tests). A caller that
+  keeps its own manifest passes `on_submit=` to `fal_generate*`: it is called with the
+  `request_id` right after the submit is saved. If the poller still dies, **re-attach instead of
   re-firing** (re-firing double-bills): `resume_fal(request_id)` in Python, or the CLI:
 
   ```bash

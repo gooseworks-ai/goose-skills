@@ -8,7 +8,7 @@
 
 ## Test 1 — core category (beauty / apparel)
 
-Brand with real product photos on file (staging: Personal Day moisturiser, or a Braxley Bands watch band). Say: **"I need three studio shots and two lifestyle shots of the moisturiser for the store page."**
+Brand with real product photos on file (staging: Clearday moisturiser, or a Braxley Bands watch band). Say: **"I need three studio shots and two lifestyle shots of the moisturiser for the store page."**
 
 It should:
 1. Check fit (beauty → core); sort the real photos (on staging: one full-size bottle, one 15 mL mini, two claim graphics) and ask **which size the page sells**; use only product-only photos of that size; say which shots they support.
@@ -49,14 +49,14 @@ Braxley Bands: "photos for the new colourway". → finds the newest product by `
 
 ## Staging run — 2026-10-16 (stopped before the first paid call)
 
-Brand Personal Day, product Dive Deep Mevalonic Moisturizer (beauty → core fit).
+Brand Clearday, product Dive Deep Mevalonic Moisturizer (beauty → core fit).
 
 | Step | Call | What came back |
 |---|---|---|
 | Entitlement | `account_whoami` | `features.product_photos: true`, 4,165 credits |
 | Product | `brand_read` `product_ids` | 4 image URLs, no variants, no dimensions, price 16.00 |
 | Real photos | `media_list` `scope: "product"` | 4 `product_photo` assets (2000×2000), rights `unverified`, allowed uses reference + generation input |
-| Audit | `media_analyze` on the front photo | "Green cylindrical bottle with a white cap labelled PERSONAL DAY"; visible text "Dermatologist Developed Made for Acne-Prone Skin … DIVE DEEP MEVALONIC MOISTURIZER Mevalonic Acid Zinc Hyaluronate Azelaic Acid Squalane 51.4 ML 1.8 FL. OZ." — the size the product record lacks, and the exact label text to check outputs against |
+| Audit | `media_analyze` on the front photo | "Green cylindrical bottle with a white cap labelled CLEARDAY"; visible text "Dermatologist Developed Made for Acne-Prone Skin … DIVE DEEP MEVALONIC MOISTURIZER Mevalonic Acid Zinc Hyaluronate Azelaic Acid Squalane 51.4 ML 1.8 FL. OZ." — the size the product record lacks, and the exact label text to check outputs against |
 | Prior outputs | `photos_read` (Braxley Bands) | None yet |
 | **Quote (stop)** | `photos_generate` `dry_run: true`, `category: "beauty"`, `count: 2`, hero prompt + front photo as reference | **2 outputs × 60 credits = 120 credits, 4 retries included** |
 

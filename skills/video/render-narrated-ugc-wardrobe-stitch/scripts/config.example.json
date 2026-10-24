@@ -1,8 +1,8 @@
 {
-  "_comment": "Worked example (the Bioma 'Do NOT buy Bioma Probiotics' build). Creative fields — character.descriptor, character.name, vo.voice_id, vo.settings, vo.hook_line, vo.payoff_line, vo.script_md / vo.sentences, worlds.briefs, audio_mix.music_brief (plus brand_name/title/product/landing_page/end_card, which come from the brand) — come from the recipe's choices; never copy them as defaults. Copy to config.json and edit. A ~37s (34.8s body + ~2s end card) fast-cut narrated UGC 'stitch reply' where a single synthetic VO carries a verbatim ~13-sentence testimonial (this demo: the 'don't buy X... here's why you SHOULD' reversal hook; the angle is choices.hook_angle) across ONE creator in 5 wardrobes + ~3 rooms, interspersed with product B-roll (capsule macro, unboxing, landing-page scroll). Pipeline: (1) lock the VO FIRST (ElevenLabs v3 + Whisper word-align — the word boundaries set the cut grid); (2) build a ~30-cut role-tagged EDL from the word boundaries; (3) lock the creator (gpt-image-2 anchor + 5 wardrobe edits chained off the anchor) + 3 world wides; (4) one start-frame per cut (gpt-image-2 creator + product composites + a Playwright landing-page); (5) one Veo 3.1 i2v clip per cut (verb-led, ~4s); (6) trim + filter_complex concat, VO+music sidechain-ducked mix, karaoke-pop captions throughout, brand end-card append. Master 1080x1920 h264+aac, ~36.8s. See scripts/PIPELINE.md for the source scripts.",
-  "brand_name": "Bioma",
+  "_comment": "Worked example (the Gutwise 'Do NOT buy Gutwise Probiotics' build). Creative fields — character.descriptor, character.name, vo.voice_id, vo.settings, vo.hook_line, vo.payoff_line, vo.script_md / vo.sentences, worlds.briefs, audio_mix.music_brief (plus brand_name/title/product/landing_page/end_card, which come from the brand) — come from the recipe's choices; never copy them as defaults. Copy to config.json and edit. A ~37s (34.8s body + ~2s end card) fast-cut narrated UGC 'stitch reply' where a single synthetic VO carries a verbatim ~13-sentence testimonial (this demo: the 'don't buy X... here's why you SHOULD' reversal hook; the angle is choices.hook_angle) across ONE creator in 5 wardrobes + ~3 rooms, interspersed with product B-roll (capsule macro, unboxing, landing-page scroll). Pipeline: (1) lock the VO FIRST (ElevenLabs v3 + Whisper word-align — the word boundaries set the cut grid); (2) build a ~30-cut role-tagged EDL from the word boundaries; (3) lock the creator (gpt-image-2 anchor + 5 wardrobe edits chained off the anchor) + 3 world wides; (4) one start-frame per cut (gpt-image-2 creator + product composites + a Playwright landing-page); (5) one Veo 3.1 i2v clip per cut (verb-led, ~4s); (6) trim + filter_complex concat, VO+music sidechain-ducked mix, karaoke-pop captions throughout, brand end-card append. Master 1080x1920 h264+aac, ~36.8s. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Gutwise",
   "campaign": "Do NOT buy (recreation)",
-  "title": "Do NOT buy Bioma Probiotics",
+  "title": "Do NOT buy Gutwise Probiotics",
   "width": 1080,
   "height": 1920,
   "fps": 30,
@@ -16,7 +16,7 @@
     "model": "eleven_v3",
     "voice_id": "Fc5CaIGWKvLHapoOSM2K",
     "script_md": "script/script-locked.md",
-    "hook_line": "Do not buy Bioma Probiotics.",
+    "hook_line": "Do not buy Gutwise Probiotics.",
     "payoff_line": "and just look at my belly.",
     "target_duration_s": 30,
     "target_wpm": 180,
@@ -27,7 +27,7 @@
       "word_timings": "audio/vo-final.words.json"
     },
     "sentences": [
-      { "n": "S01", "t_in": 0.0, "t_out": 1.8, "role": "hook · pattern-interrupt", "text": "Do not buy Bioma Probiotics." },
+      { "n": "S01", "t_in": 0.0, "t_out": 1.8, "role": "hook · pattern-interrupt", "text": "Do not buy Gutwise Probiotics." },
       { "n": "S02", "t_in": 1.8, "t_out": 4.8, "role": "feature", "text": "They said it would reduce bloating and improve digestion." },
       { "n": "S03", "t_in": 4.8, "t_out": 7.4, "role": "feature", "text": "Okay, but they did not warn me how fast it would work." },
       { "n": "S04", "t_in": 7.4, "t_out": 10.5, "role": "feature · b-roll-insert", "text": "I've been taking these little capsules daily for only one week," },
@@ -37,7 +37,7 @@
       { "n": "S08", "t_in": 18.0, "t_out": 20.5, "role": "feature", "text": "And I thought it was going to take at least three months," },
       { "n": "S09", "t_in": 20.5, "t_out": 22.5, "role": "feature", "text": "but I started seeing changes after week one." },
       { "n": "S10", "t_in": 22.5, "t_out": 25.5, "role": "reaction-insert", "text": "Y'all keep doing your crunches," },
-      { "n": "S11", "t_in": 25.5, "t_out": 26.5, "role": "feature", "text": "I'ma keep taking my Bioma." },
+      { "n": "S11", "t_in": 25.5, "t_out": 26.5, "role": "feature", "text": "I'ma keep taking my Gutwise." },
       { "n": "S12", "t_in": 26.5, "t_out": 30.0, "role": "b-roll-insert · landing-page", "text": "Oh, and they're running a huge sale with free shipping and free gifts with your first order." },
       { "n": "S13", "t_in": 30.0, "t_out": 32.5, "role": "feature · multi-bottle unboxing", "text": "I put the link below — go grab yours now before they're sold out again." }
     ]
@@ -71,13 +71,13 @@
     ]
   },
   "product": {
-    "_comment": "The real Bioma bottle hero drives the B-roll composites (capsule pile macro, single-capsule, label, unboxing flatlay). Ground on the real hero — never an AI-hallucinated bottle.",
-    "hero_png": "../../brand-assets/product-photos/bioma-probiotics-bottle.png",
-    "unboxing_ref": "../../brand-assets/product-photos/bioma-multi-bottle-unboxing.png"
+    "_comment": "The real Gutwise bottle hero drives the B-roll composites (capsule pile macro, single-capsule, label, unboxing flatlay). Ground on the real hero — never an AI-hallucinated bottle.",
+    "hero_png": "../../brand-assets/product-photos/gutwise-probiotics-bottle.png",
+    "unboxing_ref": "../../brand-assets/product-photos/gutwise-multi-bottle-unboxing.png"
   },
   "landing_page": {
-    "_comment": "The sale/CTA scroll cuts (s24-s26) are a Playwright render of the real Bioma landing page (2160x3840 @ 2x DSR) -> FFmpeg zoompan. NOT i2v. Zoom targets: wide -> Best Value $26.14 card -> Order-now button.",
-    "url": "https://www.bioma.health/",
+    "_comment": "The sale/CTA scroll cuts (s24-s26) are a Playwright render of the real Gutwise landing page (2160x3840 @ 2x DSR) -> FFmpeg zoompan. NOT i2v. Zoom targets: wide -> Best Value price card -> Order-now button.",
+    "url": "https://www.gutwise.example/",
     "render_png": "assets/overlays/landing-page.png",
     "method": "playwright + ffmpeg-zoompan"
   },
@@ -145,8 +145,8 @@
     "loudness_lufs": -14
   },
   "end_card": {
-    "_comment": "The real Bioma end-card PNG appended ~2s on the tail — NEVER AI-rendered text. Captions suppressed over the card.",
-    "brand_png": "../../brand-assets/bioma-end-card.png",
+    "_comment": "The real Gutwise end-card PNG appended ~2s on the tail — NEVER AI-rendered text. Captions suppressed over the card.",
+    "brand_png": "../../brand-assets/gutwise-end-card.png",
     "hold_sec": 2.0,
     "suppress_captions": true
   },
@@ -154,6 +154,6 @@
     "vo": { "default": "on", "note": "the synthetic VO IS the narration; the whole ad is cut to its word timings" },
     "music": { "default": "on", "note": "instrumental bed sidechain-ducked under the VO (-20dB, 20:1), VO clearly on top" },
     "captions": { "default": "on", "note": "karaoke-pop captions on every word, throughout, re-spelled against the locked script" },
-    "end_card": { "default": "on", "note": "the real Bioma end-card PNG appended ~2s on the tail, captions suppressed, never AI-rendered" }
+    "end_card": { "default": "on", "note": "the real Gutwise end-card PNG appended ~2s on the tail, captions suppressed, never AI-rendered" }
   }
 }

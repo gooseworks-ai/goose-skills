@@ -10,8 +10,8 @@ export const SKILLS_DIR = path.join(REPO_ROOT, 'skills', 'marketing');
 
 /**
  * Every marketing skill the catalog publishes (skills/marketing/<slug>/, flat by slug): the 14 playbooks,
- * their steps, the shared steps and the two foundation skills. A folder whose skill.meta.json says
- * "catalog": false (the marketing-agent router) and drafts/marketing/ are never listed.
+ * their steps, the shared steps and the two foundation skills. drafts/marketing/ and any folder whose
+ * skill.meta.json says "catalog": false are never listed.
  * Each entry: { slug, tier ('playbook' | 'atom' | 'foundation'), dir, name, description }.
  */
 export function listSkills({ tiers } = {}) {
@@ -30,8 +30,8 @@ export function listSkills({ tiers } = {}) {
   return out;
 }
 
-/** Kept in a skill folder for its builders and not published (scripts/build-index.js). */
-export const BUILDER_FILES = new Set(['critique.md', 'server-needs.md']);
+/** Folders inside a skill that the catalog never publishes (scripts/build-index.js): tests are for builders. */
+export const NOT_PUBLISHED_DIRS = new Set(['tests']);
 
 /** Minimal frontmatter reader: `key: value` and folded `key: >-` blocks. Enough for our SKILL.md files. */
 export function readFrontmatter(text) {

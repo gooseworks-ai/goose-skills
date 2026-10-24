@@ -19,5 +19,5 @@ Pass when the assembly runs to a valid MP4 and:
 - the end card is a static PIL composite (real logo PNG + real product PNG + a serif headline + CTA)
   — never AI-rendered text;
 - **no paid call is made** — the keyframes, clips, and music come from the paid capabilities
-  (create-image-fal / create-video-fal / create-music-elevenlabs); this assembly is $0 and a re-cut
+  (create-image-fal / create-video-fal / create-music-elevenlabs); this assembly is free and a re-cut
   reuses the existing assets.

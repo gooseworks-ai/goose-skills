@@ -68,7 +68,7 @@ Each creative may instead use exactly one of `image_hash`, `video_id`, or `meta_
 
 ## Commands
 
-Resolve the installed skill directory, then use its bundled tool:
+Run these from the installed skill's folder; the adapter ships in it at `tools/meta_marketing_api.js`:
 
 ```bash
 node tools/meta_marketing_api.js prepare --plan /absolute/path/plan.json --state /absolute/path/state.json

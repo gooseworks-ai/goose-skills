@@ -1,10 +1,9 @@
 {
   "slug": "scrapecreators-api",
   "category": "capabilities",
+  "version": "1.0.0",
   "domain": "social",
-  "visibility": "dependency",
   "tags": ["social", "research-tools"],
-  "source": "scrapecreators",
   "installation": {
     "base_command": "npx goose-skills install scrapecreators-api",
     "supports": ["claude", "cursor", "codex"]

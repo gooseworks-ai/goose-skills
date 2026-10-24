@@ -12,7 +12,7 @@ script and one recurring animated character carries every shot, cut to the bar w
 line on the drop. This capability is the **FREE, deterministic assembly** — cut-to-bar,
 hard-concat, the logo bug + captions burn, and the solid-color end card.
 
-`scripts/config.example.json` is the worked example (Coinbase "Bet on anything", ~55s 1080×1920
+`scripts/config.example.json` is the worked example (Coinmesa "Bet on anything", ~55s 1080×1920
 9:16, 16 body bars + a 3s end card — its felt look, character, story and song are that demo's
 picks, never defaults); `scripts/PIPELINE.md` maps every config block to its source
 step and `scripts/README.md` documents the free assembly.
@@ -37,7 +37,7 @@ Seedance i2v clip per bar (`create-video-fal`). Given the song + `word-timestamp
 `bars.json` + one clip per bar + the brand wordmark SVG, `render-cartoon-music-video` cuts each
 clip to its bar window, hard-concats on the bar, burns the logo bug + captions, appends the
 solid-color end card, and muxes the song under it → the master. Re-cuts reuse the existing song /
-keyframes / clips and cost **$0**.
+keyframes / clips and spend nothing.
 
 ## Contract (the free assembly)
 

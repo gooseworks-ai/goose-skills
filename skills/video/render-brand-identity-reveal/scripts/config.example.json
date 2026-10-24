@@ -1,5 +1,5 @@
 {
-  "_comment": "Worked example (the Touchland build). Creative fields — plate.setting, plate.wall_style, music.direction — come from the recipe's choices (setting, wall_style, music); never copy them as defaults. Brand fields (end_card, assets) come from the brand kit.",
+  "_comment": "Worked example (the Palmglow build). Creative fields — plate.setting, plate.wall_style, music.direction — come from the recipe's choices (setting, wall_style, music); never copy them as defaults. Brand fields (end_card, assets) come from the brand kit.",
   "canvas": { "width": 1080, "height": 1920, "fps": 30 },
 
   "plate": {

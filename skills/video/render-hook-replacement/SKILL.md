@@ -3,11 +3,10 @@ name: render-hook-replacement
 description: Replace an existing video's opening with a supplied clip or free kinetic text hook while retaining and verifying every original body frame, audio, captions and ending. Use for surgical hook tests rather than regenerating the complete ad.
 owner: team
 status: active
-version: "1.0.1"
+version: "1.0.2"
 created: 2026-10-05
 updated: 2026-10-05
 level: atom
-category: editing
 variant-of: null
 tags: [video, editing, hooks]
 ---

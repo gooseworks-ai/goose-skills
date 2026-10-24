@@ -8,7 +8,7 @@ hard-concat on the VO cadence via `filter_complex concat`, burn karaoke-pop capt
 over the ducked bed, close on the brand end-card PNG → 1080×1920 h264+aac (~37s).
 
 Use any creator / worlds / hook / music (the recipe's `choices`) — the test must not depend on the
-Bioma demo's blonde woman, bedroom / kitchen / bathroom, or "Do not buy" hook.
+Gutwise demo's blonde woman, bedroom / kitchen / bathroom, or "Do not buy" hook.
 
 Pass when the assembly runs to a valid MP4 and:
 - one shot per EDL cut, hard-cut on the VO cadence via `filter_complex concat` (no crossfades, no
@@ -25,7 +25,7 @@ Pass when the assembly runs to a valid MP4 and:
   no silent tail;
 - **no paid call is made** — the VO, creator, start-frames, and clips come from the paid
   capabilities (create-vo-elevenlabs / create-image-gpt-image-fal / create-image-fal /
-  create-video-fal); this assembly is $0 and a re-cut reuses the existing assets.
+  create-video-fal); this assembly is free and a re-cut reuses the existing assets.
 
 Free check of the assembler itself (no keys, no paid assets): the shared helper installs with this
 package, and its fixture test cuts synthetic clips through the same EDL → concat → captions → ducked

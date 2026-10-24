@@ -10,10 +10,10 @@
     "url": "https://github.com/gooseworks-ai/goose-skills"
   },
   "scripts": {
-    "test": "node --test test/brand-growth-collection.test.js test/brand-growth-routes.test.js test/goose-skills-targets.test.js test/goose-skills-packs.test.js test/launch-meta-ad-campaign.test.js test/meta-ad-harness.test.js scripts/__tests__/build-index.test.js scripts/__tests__/validate-skills.test.js test/shared-video-harness.test.js test/podcast-package.test.js test/retired-skills.test.js test/entry-skills.test.js",
+    "test": "node --test test/*.test.js scripts/__tests__/build-index.test.js scripts/__tests__/validate-skills.test.js",
     "build:index": "node scripts/build-index.js",
     "validate:skills": "node scripts/validate-skills.js",
-    "ci": "npm run validate:skills && npm run build:index && npm test",
+    "ci": "node --test scripts/__tests__/deploy-catalog.test.mjs && node scripts/validate-skills.js && node scripts/build-index.js && git diff --exit-code skills-index.json && node scripts/check-skill-links.js && node scripts/build-router.js --check && node --test scripts/__tests__/check-lfs-pointers.test.js && node scripts/check-lfs-pointers.js && npm test && python3 skills/video/write-video-ad-script/scripts/verify_handoff.py && python3 skills/video/review-ugc-render/tests/test_review_render.py && python3 skills/video/render-street-interview/scripts/selftest.py && python3 -m unittest discover -s skills/video/render-street-interview/tests -p test_prompt_budget.py && python3 skills/marketing/improve-search-visibility/tests/run-fixtures.py",
     "test:parts": "node --test parts/_tools/*.test.mjs parts/_lib/*.test.mjs parts/*/tests/*.test.mjs"
   },
   "keywords": [
@@ -24,7 +24,7 @@
     "ads",
     "gooseworks"
   ],
-  "author": "Athina AI",
+  "author": "GooseWorks",
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.29.6",

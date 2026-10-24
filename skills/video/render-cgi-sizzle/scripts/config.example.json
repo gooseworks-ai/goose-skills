@@ -1,6 +1,6 @@
 {
-  "_comment": "Worked example (the MasterClass 'App Sizzle (3D CGI)' build). Creative fields \u2014 studio_look.{background_hex,rim_light_hex,phone,bokeh}, cgi_plate.base_prompt (studio/phone/bokeh words), beats[].kling_motion + plate_element_layer (amaranth/bokeh words), end_card.canvas_hex, end_card.amaranth_bar.hex, voiceover.{voice,voice_id,direction}, music.prompt \u2014 come from the recipe's choices (studio_look, phone, narrator_voice, vo_delivery, music); never copy them as defaults. Beats, VO lines, screens, wordmark and tagline are MasterClass brand content: rebuild them from the new brand's real App Store screens. Source run: clients/masterclass/ad-runs/run-03-run-03. Copy the STRUCTURE to config.json. A ~22.6s premium 3D-CGI app-demo sizzle: a phone floats in a CGI studio (demo: gold phone, smoky-black studio); 6 app features demo in sequence \u2014 each bursts REAL App Store UI elements outward in 3D with rim-light + bokeh, then settles back into the phone at the climax. 1080x1920 9:16. ALL on-screen UI is composited via PIL from real App Store screenshots \u2014 NEVER AI-rendered. Per beat: a nano_banana_2 CGI plate (blank-glow phone + placeholder burst-out shapes) -> PIL screen composite (real screenshot onto the bezel) -> kling3_0 i2v steady-float clip (Ken-Burns FFmpeg fallback if Kling garbles the burst-out UI). VO durations are LOCKED from the rendered ElevenLabs audio before the timeline is cut. Final is sped 1.15x + anti-AI grain.",
-  "brand_name": "MasterClass",
+  "_comment": "Worked example (the Lumenclass 'App Sizzle (3D CGI)' build). Creative fields \u2014 studio_look.{background_hex,rim_light_hex,phone,bokeh}, cgi_plate.base_prompt (studio/phone/bokeh words), beats[].kling_motion + plate_element_layer (amaranth/bokeh words), end_card.canvas_hex, end_card.amaranth_bar.hex, voiceover.{voice,voice_id,direction}, music.prompt \u2014 come from the recipe's choices (studio_look, phone, narrator_voice, vo_delivery, music); never copy them as defaults. Beats, VO lines, screens, wordmark and tagline are Lumenclass brand content: rebuild them from the new brand's real App Store screens. Copy the STRUCTURE to config.json. A ~22.6s premium 3D-CGI app-demo sizzle: a phone floats in a CGI studio (demo: gold phone, smoky-black studio); 6 app features demo in sequence \u2014 each bursts REAL App Store UI elements outward in 3D with rim-light + bokeh, then settles back into the phone at the climax. 1080x1920 9:16. ALL on-screen UI is composited via PIL from real App Store screenshots \u2014 NEVER AI-rendered. Per beat: a nano_banana_2 CGI plate (blank-glow phone + placeholder burst-out shapes) -> PIL screen composite (real screenshot onto the bezel) -> kling3_0 i2v steady-float clip (Ken-Burns FFmpeg fallback if Kling garbles the burst-out UI). VO durations are LOCKED from the rendered ElevenLabs audio before the timeline is cut. Final is sped 1.15x + anti-AI grain.",
+  "brand_name": "Lumenclass",
   "width": 1080,
   "height": 1920,
   "fps": 24,
@@ -23,7 +23,7 @@
   },
   "screen_composite": {
     "method": "PIL \u2014 auto-detect the bright warm phone-screen bbox in the plate, resize the real App Store PNG to fit, warm-tint 6%, brightness +5%, feather into a rounded-rect mask so it sits inside the bezel",
-    "hard_rule": "the on-screen UI (faces, cards, video tiles, brand poster) is ALWAYS the real App Store screenshot \u2014 never AI-rendered. Any faces are the real ones from the screenshots (demo: the MasterClass instructor faces)."
+    "hard_rule": "the on-screen UI (faces, cards, video tiles, brand poster) is ALWAYS the real App Store screenshot \u2014 never AI-rendered. Any faces are the real ones from the screenshots (demo: the Lumenclass instructor faces)."
   },
   "beats": [
     {
@@ -31,7 +31,7 @@
       "label": "Discovery \u2014 For You feed",
       "screen": "screen-01.png",
       "screen_role": "MC 'For You' tab",
-      "burst_out": "3 glass-morphic instructor portrait tiles (Cuban, Ramsay, Perel \u2014 REAL faces from screen-01) 3D-pop out toward camera at three depths with parallax",
+      "burst_out": "3 glass-morphic instructor portrait tiles (REAL faces from screen-01) 3D-pop out toward camera at three depths with parallax",
       "burst_out_source": "real_screenshot_pil",
       "plate_element_layer": "placeholder rectangular glass-morphic tiles popping out toward camera at different depths; real portraits composited in PIL post",
       "kling_motion": "Steady cinematic locked-tripod 3D camera, no shake no wobble. Phone holds centered; three instructor portrait tiles gently 3D-pop outward toward camera, settling at three depths with parallax. Warm amaranth bokeh drifts upward. Phone screen content stays exactly as shown.",
@@ -129,7 +129,7 @@
       "y": 960
     },
     "wordmark": {
-      "asset": "masterclass-wordmark.svg",
+      "asset": "lumenclass-wordmark.svg",
       "width_px": 480,
       "baseline_y": 900
     },

@@ -13,7 +13,7 @@ rotation, a macro push-in on the surface detail, a physics reveal (`exploded_vie
 close. This capability is the **FREE, deterministic assembly** that stitches the delivered
 beats into the master; it spends nothing.
 
-`scripts/config.example.json` is the worked example (DIBS Beauty "Desert Island Duo", ~15s
+`scripts/config.example.json` is the worked example (Solenne Beauty "Dune Duo", ~15s
 720×1280 9:16); `scripts/build_endcard.py` + `scripts/build_masters.py` are the runnable free
 assembly; `scripts/PIPELINE.md` maps every config block to its source step; `scripts/README.md`
 documents the assembly.
@@ -49,7 +49,7 @@ Given those beats + the brand wordmark, this capability:
 2. `build_masters.py --config config.json --clips working/clips --endcard endcard.png --music music.mp3 --out master.mp4`
    — trims each beat to its window, normalizes to the brand canvas, hard-concats, mixes the bed.
 
-Re-cuts reuse the existing beats and cost **$0**.
+Re-cuts reuse the existing beats and spend nothing.
 
 ## Contract (the free assembly)
 

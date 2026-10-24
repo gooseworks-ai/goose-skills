@@ -12,7 +12,7 @@ The delivered song sets the timeline; N tableaux (one keyframe → one image-to-
 lyric beat, all in a single look pack) are cut to their lyric windows and hard-concatenated
 on the beat, captions are built from the song's OWN word timings with the hook line landing
 on the chorus drop, and the spot closes on a PIL brand end card. It reads like a tiny animated
-music video, not a demo. `scripts/config.example.json` is one worked example (Loóna "Fall In
+music video, not a demo. `scripts/config.example.json` is one worked example (Driftlume "Fall In
 Love With Sleep Again", 28s paper-craft 9:16) — its style, song, vocalist, mood, protagonist and
 setting are that demo's answers, not defaults; `scripts/PIPELINE.md` maps every config block
 to its step and `scripts/README.md` documents the free assembly.
@@ -39,7 +39,7 @@ keyframe per tableau (`create-image-fal`), and one Kling 3.0 i2v clip per tablea
 (`create-video-fal`). Given the delivered song + `words.json` + one clip per beat,
 `render-song-mv` cuts each clip to its lyric window, hard-concats on the beat, builds the
 lyric-synced captions, composites the PIL end card, and muxes → the master. Re-cuts reuse
-the existing song / keyframes / clips and cost **$0**.
+the existing song / keyframes / clips and spend nothing.
 
 ## Contract (the free assembly)
 

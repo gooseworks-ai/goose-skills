@@ -16,7 +16,7 @@ original receive/send sounds and Sample Goods on the end card. Stars are absent.
 The final message remains visible before the end card. Output is 1080×1920.
 The newest message sits above the bottom 400 px and left of the right 140 px
 (`master-chat.safe-area.json`; check-render prints the measured range).
-Change participant name to Akhil and theme to light; check the header/initial,
+Change participant name to Ravi and theme to light; check the header/initial,
 visible black header controls, hardware inset and frame margins again.
 
 Repeat from a copied package without `assets/`: the embedded original sounds

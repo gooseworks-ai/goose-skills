@@ -16,14 +16,15 @@
  * caught too.
  *
  * Ported from the gooseworks CLI (tests/skills/skill-lint.ts) when the entry
- * skills moved here. Fixtures: test/fixtures/entry-lint/.
+ * skills moved here. Fixtures: test/fixtures/entry-lint/. Action names: ./action-names.json,
+ * the list atom-lint.js reads too.
  */
 const { readFileSync } = require('fs');
 const { join } = require('path');
 
 const fixture = (name) => JSON.parse(readFileSync(join(__dirname, '..', '..', 'test', 'fixtures', 'entry-lint', name), 'utf8'));
 
-const ACTION_NAMES = fixture('action-names.json').actions;
+const ACTION_NAMES = require('./action-names.json').actions;
 const RECIPE_SLUGS = fixture('video-recipe-slugs.json').recipes;
 
 /** Documented request/answer fields, entry metadata and reference-viewing enum values. */

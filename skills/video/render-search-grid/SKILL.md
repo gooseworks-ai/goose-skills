@@ -34,13 +34,13 @@ by `create-music-elevenlabs` and passed to `render.py --music`.
   chromium, or pass `--exe`).
 - `scripts/render.py --config config.json [--music bed.m4a] --out master.mp4` — orchestrates
   build → capture → FFmpeg (muxes the bed with `-map 0:v:0 -map 1:a:0` when `--music` is
-  given; `$0` silent pass without it).
+  given; a free silent pass without it).
 - `scripts/prep_assets.py crop in.jpg out.jpg` / `logo logo.jpg wordmark.png` — the two
   fixes this format needs almost every time: crop baked-in white L/R margins off heroes, and
   key the white out of a black-on-white logo JPG to a transparent PNG.
 
-See `scripts/config.example.json` for the full config shape (a real worked example — the
-Ruggable build; its warm beige backdrop, red caret and lo-fi music prompt are that demo's
+See `scripts/config.example.json` for the full config shape (a worked example — the
+fictional Loomwash build; its warm beige backdrop, red caret and lo-fi music prompt are that demo's
 picks, never defaults).
 
 ## Choices

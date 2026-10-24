@@ -5,7 +5,7 @@
 - An LLM judge (Opus by default) scores every criterion **pass** or **fail** with a one-line evidence quote, once for the run with the skill and once for the baseline.
 - **A run passes only if every must-pass criterion passes.** Should-pass criteria show quality beyond the bar.
 - Criteria judge what the marketer received, not which method the agent used, so the baseline can pass too.
-- Sources: playbooks/research-competitors/SKILL.md "Done when"; playbooks/research-competitors/tests/test-by-hand.md (18 Oct rebuild, Juicebox case); the four failure modes from the 17–18 Oct hand tests (asked before doing free work; stopped after one source; procedure over craft; chat summary instead of a document); `atoms/write-report/ATOM.md` §3.
+- Sources: playbooks/research-competitors/SKILL.md "Done when"; playbooks/research-competitors/tests/test-by-hand.md (18 Oct rebuild, Talentloop case); the four failure modes from the 17–18 Oct hand tests (asked before doing free work; stopped after one source; procedure over craft; chat summary instead of a document); `atoms/write-report/ATOM.md` §3.
 
 Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M = must, S = should, E = expert (an E line containing "(must)" counts as must).
 
@@ -38,7 +38,7 @@ Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M
 
 ## Expert criteria (from marketer review)
 
-Merged from `marketing-agent-test/results/reviews/research-review.md` §5 (senior-marketer review, 18 Oct 2026). Items marked **(must)** fail the run when they fail. Items marked *new* need a playbook change first, so they are scored but not must-pass yet. Where these overlap the criteria above, both are kept: the judge scores each.
+Merged from goose-lab `plan/marketing-agent/reviews/2026-10-18-research-review.md` §5 (senior-marketer review, 18 Oct 2026). Items marked **(must)** fail the run when they fail. Items marked *new* need a playbook change first, so they are scored but not must-pass yet. Where these overlap the criteria above, both are kept: the judge scores each.
 
 - **E1** — (must) **Traceable.** Pick 8 facts from the report (numbers, dates, quotes). Each appears in a tool result in the transcript; none is from memory or a mistyped copy.
 - **E2** — (must) **Sourced.** Every fact has an inline link and a date. The named source matches the link's site (no "TechCrunch" linking to an aggregator). Inferences use "likely" or "a guess, because…".

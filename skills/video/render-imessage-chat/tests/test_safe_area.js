@@ -48,7 +48,7 @@ test('the default 1080x1920 layout is the largest safe phone that sits in the mi
   const L = doc.layout;
   assert.deepEqual(L.zone, { left: 0, top: 220, right: 940, bottom: 1520 });
   assert.ok(L.zoom < LEGACY_ZOOM && L.zoom > 1.6 && L.zoom < 1.7, `zoom ${L.zoom}`);
-  // Brightland clean run, 2026-10-07: the largest safe phone sat 16 px from the
+  // Sunmere clean run, 2026-10-07: the largest safe phone sat 16 px from the
   // top with 272 px under it, and read as a layout mistake.
   const above = L.top, below = 1920 - (L.top + PHONE.height * L.zoom);
   assert.ok(Math.abs(above - below) < 1, `phone must be vertically centred: ${above} above, ${below} below`);

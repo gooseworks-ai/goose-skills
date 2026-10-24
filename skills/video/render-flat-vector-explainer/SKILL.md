@@ -20,7 +20,7 @@ Creative calls the user makes (the recipe's `choices`, asked in one round before
 - **`narrator_voice`** — the VO voice -> `voice.voice_id`. Asked; the demo used ElevenLabs "Eryn".
 - **`music`** — the bed -> `music.prompt` (or none). Asked; the demo used lo-fi pop, 95-105 BPM.
 
-`scripts/config.example.json` is the Spoiled Child worked example: copy its structure, never its creative values or its brand palette.
+`scripts/config.example.json` is the Little Wilder worked example: copy its structure, never its creative values or its brand palette.
 
 ## The two non-negotiable separations
 
@@ -29,7 +29,7 @@ Creative calls the user makes (the recipe's `choices`, asked in one round before
 
 ## Free assembly steps (this capability)
 
-The agent runs these deterministic, $0 steps by hand — see `scripts/README.md` for the ffmpeg/Remotion/PIL detail:
+The agent runs these deterministic, free steps by hand — see `scripts/README.md` for the ffmpeg/Remotion/PIL detail:
 
 - **Remotion overlay** — import each Kling clip as the moving base; composite chips / numerals / taglines / slate / grid / CTA as animated DOM on top -> the animated silent master. Slate/grid/CTA beats are Remotion text with no i2v.
 - **PIL product grid** — composite the N real product webps on the brand ground for the closing lockup; preserve each aspect (never stretch, never AI-dupe).

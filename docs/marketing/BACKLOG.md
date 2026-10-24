@@ -2,16 +2,16 @@
 
 **In short**
 - This records coverage decisions and deferred marketing jobs for the 14 released playbooks. Each genuine gap has an owner, an output and a trigger or implementation ticket.
-- **Decision (Akhil, 16 Oct 2026): the wider backlog stays deferred.** The specific 22 October decisions below supersede that freeze for the named outputs only. Keep the existing playbook set; reuse its steps.
+- **Decision (the owner, 16 Oct 2026): the wider backlog stays deferred.** The specific 22 October decisions below supersede that freeze for the named outputs only. Keep the existing playbook set; reuse its steps.
 - The list comes from the plan's backlog plus the 16 Oct coverage review (`reviews/2026-10-16-coverage.md`), which ran five company types through a full quarter using only these playbooks.
 - Until an approved output is implemented and checked, playbooks state the actual limit. A decision or ticket is not a working capability.
-- **Held back (Akhil, 20 Oct 2026):** learn-my-brand, make-video-ads and make-product-photos are built but wait for server work; see the section below.
+- **Held back (the owner, 20 Oct 2026):** learn-my-brand, make-video-ads and make-product-photos are built but wait for server work; see the section below.
 
 ## Coverage decisions — 22 October 2026
 
 **The choice:** extend existing methods for the genuine gaps; keep existing capabilities where they already cover the request. Product updates and survey reports do not need a dedicated skill job. Outreach remains finished writing plus an import file; the user loads and sends from their own tool.
 
-These decisions follow [GOOSE-4052](https://linear.app/gooseworks/issue/GOOSE-4052), a per-job interview with Akhil and independent reading of the old skills, current playbooks and relevant steps. Source baseline: `b4c6ec04e623df61f83014e4481f884477ed953c`. The approved changes are now implemented below. Acceptance distinguishes local source/fixture checks from paid live execution.
+These decisions follow GOOSE-4052, a per-job interview with the owner and independent reading of the old skills, current playbooks and relevant steps. Source baseline: `b4c6ec04e623df61f83014e4481f884477ed953c`. The approved changes are now implemented below. Acceptance distinguishes local source/fixture checks from paid live execution.
 
 ### Implementation and verification — 22 October 2026
 
@@ -25,16 +25,16 @@ Public cards and CLI routing describe the same fourteen playbooks and focused jo
 
 | Job | Decision and existing owner | Output or next check |
 |---|---|---|
-| 1. Battlecard | **Add output:** research-competitors | Sales-ready quick reference from existing rival evidence: where we win/lose, questions, objections, comparison and replies. [GOOSE-4056](https://linear.app/gooseworks/issue/GOOSE-4056). Do not wait for the broader sales-collateral card. |
-| 2. Brand voice from blogs | **Extend step:** voice-card; brand learning owns the concept | Read company blog samples and save a sourced reusable voice guide; content/social consume it. Do not wait for the full unreleased brand-learning workflow. [GOOSE-4057](https://linear.app/gooseworks/issue/GOOSE-4057). |
+| 1. Battlecard | **Add output:** research-competitors | Sales-ready quick reference from existing rival evidence: where we win/lose, questions, objections, comparison and replies. GOOSE-4056. Do not wait for the broader sales-collateral card. |
+| 2. Brand voice from blogs | **Extend step:** voice-card; brand learning owns the concept | Read company blog samples and save a sourced reusable voice guide; content/social consume it. Do not wait for the full unreleased brand-learning workflow. GOOSE-4057. |
 | 3. Add product/photos to brand kit | **Drop as a separate skill job** | Use the existing brand/product capability directly. Preserve that capability; no new maintenance playbook. |
-| 4. Launch positioning | **Add output:** research-market | Positioning choices, trade-offs, recommendation and finished messages based on buyer/product/competitor evidence; campaign planning consumes the result. [GOOSE-4058](https://linear.app/gooseworks/issue/GOOSE-4058). This replaces card #5's proposed new standalone playbook for this job. |
-| 5. Competitor page tools/pixels | **Extend step:** research-competitors | Add only the missing technology/tag evidence to the existing page analysis. Detection is not proof a pixel fires or that the rival spends on ads. [GOOSE-4059](https://linear.app/gooseworks/issue/GOOSE-4059). |
-| 6. Programmatic SEO page sets | **Add planning output:** improve-search-visibility | Extend existing rival-pattern work into the data/template/linking/pilot/quality blueprint. No new SEO playbook or implicit CMS publication. [GOOSE-4060](https://linear.app/gooseworks/issue/GOOSE-4060). |
-| 7. SEO domain metrics | **Add acquisition/output:** improve-search-visibility | Obtain and show comparable sourced, dated metrics for the requested domains. Missing managed data access is part of this deficiency, not grounds to declare a prose report complete. [GOOSE-4061](https://linear.app/gooseworks/issue/GOOSE-4061). |
+| 4. Launch positioning | **Add output:** research-market | Positioning choices, trade-offs, recommendation and finished messages based on buyer/product/competitor evidence; campaign planning consumes the result. GOOSE-4058. This replaces card #5's proposed new standalone playbook for this job. |
+| 5. Competitor page tools/pixels | **Extend step:** research-competitors | Add only the missing technology/tag evidence to the existing page analysis. Detection is not proof a pixel fires or that the rival spends on ads. GOOSE-4059. |
+| 6. Programmatic SEO page sets | **Add planning output:** improve-search-visibility | Extend existing rival-pattern work into the data/template/linking/pilot/quality blueprint. No new SEO playbook or implicit CMS publication. GOOSE-4060. |
+| 7. SEO domain metrics | **Add acquisition/output:** improve-search-visibility | Obtain and show comparable sourced, dated metrics for the requested domains. Missing managed data access is part of this deficiency, not grounds to declare a prose report complete. GOOSE-4061. |
 | 8. Branded survey report | **Drop as a dedicated skill job** | The agent can make an ordinary report from supplied results; existing content/report writing already supports that. No survey-running workflow or special branded one-page renderer is being added. |
-| 9. Signup-email enrichment | **Keep existing list workflow; repair access:** research-audience | Its list/scoring/contact steps already own this work. Connect the minimum reliable business-identity routes and let outreach read the result; do not duplicate enrichment inside email broadcasts. [GOOSE-4064](https://linear.app/gooseworks/issue/GOOSE-4064). |
-| 10. Competitor LinkedIn engagers | **Add source/output:** research-competitors | Verify current managed commenter/reactor access and explicitly reconcile today's collection exclusion. Reuse audience list mode if qualified prospects are requested. [GOOSE-4062](https://linear.app/gooseworks/issue/GOOSE-4062). Posts alone do not establish engager support. |
+| 9. Signup-email enrichment | **Keep existing list workflow; repair access:** research-audience | Its list/scoring/contact steps already own this work. Connect the minimum reliable business-identity routes and let outreach read the result; do not duplicate enrichment inside email broadcasts. GOOSE-4064. |
+| 10. Competitor LinkedIn engagers | **Add source/output:** research-competitors | Verify current managed commenter/reactor access and explicitly reconcile today's collection exclusion. Reuse audience list mode if qualified prospects are requested. GOOSE-4062. Posts alone do not establish engager support. |
 | 11. Product photos cut to a song | **Keep existing video route; retain legacy bridge pending qualification** | Test exact supplied audio, beat-aligned photo cuts and a finished reviewed file before claiming coverage or building another engine. Ads or organic supplies the purpose; video owns production. |
 | 12. Podcast to vertical clips | **Keep existing video route; retain legacy bridge pending qualification** | Test moment selection, source context/audio, suitable vertical framing, captions and actual finished clips. Transcript scripts alone do not fulfill it. Do not classify every clip as an ad. |
 
@@ -51,19 +51,19 @@ The original ticket says twelve partial examples, but its grouped list identifie
 | Most-liked LinkedIn topic posts this month | Existing post search and organic platform research. Verify the period, dedupe and metric; do not relabel total reactions as LIKE-only counts. |
 | Top 50 LinkedIn voices in a topic/country | Existing organic voice discovery. A sampled author list is not an exhaustive directory. State ranking criteria and coverage; creator recruitment is a different job. |
 | People complaining on LinkedIn | Already covered by market listening and audience pain-language prospecting. Themes go to market research; named fitting post authors go to list mode. No new listening playbook. |
-| SEO audit and top ten fixes | Existing technical checks; fix arbitrary five-fix/3–6-page limits so the request controls scope and count. [GOOSE-4063](https://linear.app/gooseworks/issue/GOOSE-4063). |
-| Topics rivals rank for that we lack | Extend the existing SEO inventory into topic/query gaps with actual ranking evidence. [GOOSE-4063](https://linear.app/gooseworks/issue/GOOSE-4063). |
-| Topic cluster for a supplied subject | Reuse SEO question clusters/page maps with a clear subject-led path. Basic planning does not require volume/difficulty numbers. [GOOSE-4063](https://linear.app/gooseworks/issue/GOOSE-4063). |
+| SEO audit and top ten fixes | Existing technical checks; fix arbitrary five-fix/3–6-page limits so the request controls scope and count. GOOSE-4063. |
+| Topics rivals rank for that we lack | Extend the existing SEO inventory into topic/query gaps with actual ranking evidence. GOOSE-4063. |
+| Topic cluster for a supplied subject | Reuse SEO question clusters/page maps with a clear subject-led path. Basic planning does not require volume/difficulty numbers. GOOSE-4063. |
 | Ten keyword content briefs | Repeat the existing standalone make-content-content-brief step. No hard one-brief cap was found; no batch engine is needed. Add routing wording only if a focused run exposes a failure. |
-| Find 100 heads of marketing at US beverage brands | Audience list mode already owns prospecting. The original ask did not request emails; do not add them as an acceptance requirement. Check actual named-person count, not just company count. Existing find/check routes are repaired separately in [GOOSE-4064](https://linear.app/gooseworks/issue/GOOSE-4064). |
-| Write and set up a three-step campaign for 200 leads | Outreach already writes sequences, first lines, replies and an import-ready file. **Keep that boundary** (Akhil confirmed): actual import, configuration and sending stay with the user. No sending integration is added by this decision. |
+| Find 100 heads of marketing at US beverage brands | Audience list mode already owns prospecting. The original ask did not request emails; do not add them as an acceptance requirement. Check actual named-person count, not just company count. Existing find/check routes are repaired separately in GOOSE-4064. |
+| Write and set up a three-step campaign for 200 leads | Outreach already writes sequences, first lines, replies and an import-ready file. **Keep that boundary** (the owner confirmed): actual import, configuration and sending stay with the user. No sending integration is added by this decision. |
 
 ### Execution and review
 
 - Seven missing outputs have their own tickets; two additional tickets repair existing SEO/list workflows. Keep implementation scoped to their named owners.
 - First run existing-capability examples before adding behavior. Inspect required method reads and the actual requested output; source inspection alone is not a runtime pass.
 - For the two video jobs, use the existing production harness and normal quote/approval rules. A failed qualification identifies the smallest missing operation; it does not authorize a new engine.
-- Review surface: this decision PR plus GOOSE-4052 for Akhil and Shiv; implementation PRs and example outputs are linked from each follow-up. No new provider subscription, paid test, production release or legacy deletion follows from merging this document.
+- Review surface: this decision PR plus GOOSE-4052 for the owners; implementation PRs and example outputs are linked from each follow-up. No new provider subscription, paid test, production release or legacy deletion follows from merging this document.
 
 ## How to read a card
 
@@ -72,7 +72,7 @@ The original ticket says twelve partial examples, but its grouped list identifie
 - **Build when:** a trigger we can check. "Someday" is not a trigger.
 - **Shape:** a new playbook, or a mode added to an existing one.
 
-## Held back from the first release (decided 20 Oct 2026, Akhil)
+## Held back from the first release (decided 20 Oct 2026 by the owner)
 
 Three playbooks are built but not released, because they need server work before they can run or be tested properly. They live in [`drafts/marketing/`](../../drafts/marketing/README.md), which says what blocks each and how to bring one back. Until then the router and every released playbook say plainly "not covered yet".
 

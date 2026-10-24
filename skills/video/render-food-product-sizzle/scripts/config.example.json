@@ -1,6 +1,6 @@
 {
-  "_comment": "Lineage Provisions 'Beef Sticks Sizzle' food-product sizzle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~14s warm-tungsten macro-tabletop 9:16 sizzle for a physical grass-fed beef-stick product: WORDLESS (no VO), driven by a non-diegetic bluegrass bed + diegetic snap/tear SFX. Pipeline: (1) ~4 photographic macro keyframes via create-image-fal (the box hero grounds on the REAL product PNG); (2) one locked-off anti-shake create-video-fal i2v clip per keyframe (tear / flat-lay / bite / box-hero); (3) an ElevenLabs Music ~22s bluegrass bed trimmed of its 2.5s sparse intro + two ffmpeg-lavfi diegetic SFX; (4) a STATIC PIL end card (real Lineage logo PNG + real product PNG + serif headline + CTA) + ffmpeg filter_complex concat + anti-AI grain pass + audio composite + 5 serif stat-callout pills. Master 1080x1920 h264+aac, ~14.04s (24fps). See scripts/PIPELINE.md for the source scripts. Worked example (the Lineage beef-stick build). Creative fields — look_pack.style_descriptor, look_pack.palette_anchors, scenes[].keyframe_prompt, scenes[].motion_hint, end_card.background, music.prompt — come from the recipe's choices (setting, light, hands, music); never copy them as defaults. The warm-tungsten kitchen, the man's weathered hands and the bluegrass bed are this demo's picks, not the format.",
-  "brand_name": "Lineage Provisions",
+  "_comment": "Hearthline Provisions 'Beef Sticks Sizzle' food-product sizzle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~14s warm-tungsten macro-tabletop 9:16 sizzle for a physical grass-fed beef-stick product: WORDLESS (no VO), driven by a non-diegetic bluegrass bed + diegetic snap/tear SFX. Pipeline: (1) ~4 photographic macro keyframes via create-image-fal (the box hero grounds on the REAL product PNG); (2) one locked-off anti-shake create-video-fal i2v clip per keyframe (tear / flat-lay / bite / box-hero); (3) an ElevenLabs Music ~22s bluegrass bed trimmed of its 2.5s sparse intro + two ffmpeg-lavfi diegetic SFX; (4) a STATIC PIL end card (real Hearthline logo PNG + real product PNG + serif headline + CTA) + ffmpeg filter_complex concat + anti-AI grain pass + audio composite + 5 serif stat-callout pills. Master 1080x1920 h264+aac, ~14.04s (24fps). See scripts/PIPELINE.md for the source scripts. Worked example (the Hearthline beef-stick build). Creative fields — look_pack.style_descriptor, look_pack.palette_anchors, scenes[].keyframe_prompt, scenes[].motion_hint, end_card.background, music.prompt — come from the recipe's choices (setting, light, hands, music); never copy them as defaults. The warm-tungsten kitchen, the man's weathered hands and the bluegrass bed are this demo's picks, not the format.",
+  "brand_name": "Hearthline Provisions",
   "campaign": "Beef Sticks Sizzle",
   "title": "Grass-fed. Air-dried. Nothing else.",
   "width": 1080,
@@ -20,7 +20,7 @@
     ],
     "style_descriptor": "Tactile macro-tabletop food photography, warm tungsten kitchen register, linen + wood + butcher paper + cast iron surfaces, warm window daylight raking from camera-left, slight 35mm film grain. Photographic, NOT cinematic, NOT smooth. iPhone-shot daytime kitchen feel, NOT studio polish. Sharp focus on the product. 1080x1920 vertical.",
     "negative_tail": "NO studio polish, NO bokeh, NOT shallow DOF, NO smooth digital 3D render, NO AI-illustration look. NO invented label text, NO captions, NO brand wordmarks rendered by the model (the brand appears only on the composited end card). NO faces beyond a partial jaw / hands crop. Vertical 9:16 composition.",
-    "_note": "ONE look pack drives all 4 keyframes so the sizzle reads as one spot. Palette sampled from the Lineage packaging + site (brand-research/visual-identity.md). The 'no invented label text' negative is load-bearing — the box hero grounds on the real product PNG so the label is real."
+    "_note": "ONE look pack drives all 4 keyframes so the sizzle reads as one spot. Palette sampled from the Hearthline packaging + site (brand-research/visual-identity.md). The 'no invented label text' negative is load-bearing — the box hero grounds on the real product PNG so the label is real."
   },
   "keyframe_engine": {
     "atom": "create-image-fal",
@@ -68,21 +68,21 @@
     { "id": "S01", "role": "MACRO_TEAR", "t_start": 0.0, "t_end": 3.0, "uses_product_ref": false, "keyframe_prompt": "Slow-motion macro: two weathered hands hold a dark grass-fed beef stick at a break line on butcher paper, coarse meat fibers visible, a few crumbs. Warm window daylight from camera-left.", "motion_hint": "The two weathered hands tear the dark grass-fed beef stick apart; real coarse meat fibers stretch and separate at the break line; a few crumbs fall straight down with gravity; hands stay in frame, daylight steady from camera-left." },
     { "id": "S02", "role": "FLAT_LAY", "t_start": 3.0, "t_end": 6.0, "uses_product_ref": false, "keyframe_prompt": "Top-down flat lay of three beef sticks fanned on butcher paper next to a single sprig of rosemary and flaky salt. Warm daylight, slight film grain.", "motion_hint": "Gentle slow 2% top-down push-in on the flat lay; a tiny breath of air moves one rosemary leaf slightly; salt grains catch the light; otherwise still life." },
     { "id": "S03", "role": "BITE", "t_start": 6.0, "t_end": 10.0, "uses_product_ref": false, "keyframe_prompt": "Side profile, ONLY the jaw and lower lip in frame (eyes and forehead cropped OUT), a man about to bite a beef stick. Background defocused warm ivory-brown, consistent stubble shadow.", "motion_hint": "The man bites cleanly into the beef stick — a clean tear, then a slow chew; background stays defocused warm ivory-brown; stubble shadow stays consistent." },
-    { "id": "S04", "role": "BOX_HERO", "t_start": 10.0, "t_end": 14.04, "uses_product_ref": true, "keyframe_prompt": "Locked medium shot. The EXACT Lineage Provisions 100% Grass-Fed Beef Sticks Original box (from the reference PNG) stands upright on a light oak kitchen counter with a linen runner. A man's hand enters from the right edge, fingers reaching to lift one beef stick out. A second variety pack box (from the reference) sits in soft focus behind. Reproduce the box label EXACTLY as in the reference — invent no text, no captions, no stickers.", "motion_hint": "The hand enters from the right, fingers gently grasp one beef stick and lift it slowly straight up out of the box; the box itself stays put; the variety pack stays still in soft focus behind; daylight from camera-left holds steady." }
+    { "id": "S04", "role": "BOX_HERO", "t_start": 10.0, "t_end": 14.04, "uses_product_ref": true, "keyframe_prompt": "Locked medium shot. The EXACT Hearthline Provisions 100% Grass-Fed Beef Sticks Original box (from the reference PNG) stands upright on a light oak kitchen counter with a linen runner. A man's hand enters from the right edge, fingers reaching to lift one beef stick out. A second variety pack box (from the reference) sits in soft focus behind. Reproduce the box label EXACTLY as in the reference — invent no text, no captions, no stickers.", "motion_hint": "The hand enters from the right, fingers gently grasp one beef stick and lift it slowly straight up out of the box; the box itself stays put; the variety pack stays still in soft focus behind; daylight from camera-left holds steady." }
   ],
   "end_card": {
     "engine": "pil",
     "script": "make_end_card.py",
     "background": "#F6F1E7",
-    "brand_logo_png": "brand-assets/logo/lineage-logo.png",
+    "brand_logo_png": "brand-assets/logo/hearthline-logo.png",
     "product_png": "brand-assets/products/meat-sticks-classic.png",
     "logo_scale": 0.62,
     "product_scale": 0.62,
     "headline": "Grass-fed. Air-dried. Nothing else.",
     "headline_font": "Times New Roman / Georgia (serif heritage)",
-    "cta": "30% off your first subscription  ·  lineageprovisions.com",
+    "cta": "30% off your first subscription  ·  hearthlineprovisions.example",
     "hold_sec": 3.0,
-    "_note": "make_end_card.py composes scene-S05.png entirely in PIL — ivory #F6F1E7 bg + the real Lineage wordmark PNG (upper third) + the real meat-sticks-classic product PNG (centered, soft shadow) + the serif headline + the CTA. NEVER AI-rendered. The demo's Memorial-Day promo added the '30% off' tag. Uses a middle dot ' · ' (macOS serif em-dash gap)."
+    "_note": "make_end_card.py composes scene-S05.png entirely in PIL — ivory #F6F1E7 bg + the real Hearthline wordmark PNG (upper third) + the real meat-sticks-classic product PNG (centered, soft shadow) + the serif headline + the CTA. NEVER AI-rendered. The demo's Memorial-Day promo added the '30% off' tag. Uses a middle dot ' · ' (macOS serif em-dash gap)."
   },
   "stat_callouts": {
     "enabled": true,

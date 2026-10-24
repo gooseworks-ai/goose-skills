@@ -35,7 +35,7 @@ Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M
 
 ## Expert criteria (from marketer review)
 
-Merged from `marketing-agent-test/results/reviews/social-plan-search-review.md` §4 (senior-marketer review, 18 Oct 2026). Items marked **(must)** fail the run when they fail. Items marked *new* need a playbook change first, so they are scored but not must-pass yet. Where these overlap the criteria above, both are kept: the judge scores each.
+Merged from goose-lab `plan/marketing-agent/reviews/2026-10-18-social-plan-search-review.md` §4 (senior-marketer review, 18 Oct 2026). Items marked **(must)** fail the run when they fail. Items marked *new* need a playbook change first, so they are scored but not must-pass yet. Where these overlap the criteria above, both are kept: the judge scores each.
 
 - **E1** — (must) The first message to the marketer contains a draft plan (link or full text). Any question in it is one that public sources could not answer, at most one blocking fact (for example, the handle).
 - **E2** — (must) Every platform fact in the report has a date and a link. No fact rests only on a vendor "algorithm guide". At least one source per platform is the platform's own statement or a study that states its sample size.

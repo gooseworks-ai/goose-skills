@@ -127,7 +127,7 @@ Common disapproval reason: ad claims that aren't substantiated on the LP, or LP 
 - Does the LP make any claim that, *if it were on the ad*, would be flagged?
 - Is the LP functional (load, render, no broken redirects)? — this is a separate Meta policy (`non-functional-landing-pages`)
 
-This is policy-specific cross-check — not message-match. For message-match (does the LP feel like a continuation of the ad?), use `ad-to-landing-page-auditor`.
+This is policy-specific cross-check — not message-match. For message-match (does the LP feel like a continuation of the ad?), use `analyze-performance`, whose diagnosis checks page and message match.
 
 ## Phase 5: Produce the Output
 
@@ -199,6 +199,6 @@ The list of policy slugs in Phase 1 is the only mutable piece of this skill. Met
 
 - **`make-static-ads`** — runs *upstream*; generates variants this skill should check
 - **`launch-meta-ad-campaign`** — runs *upstream*; prepares the multi-ad plan this skill should validate before approval
-- **`ad-to-landing-page-auditor`** — *paired pre-flight*; different concern (message-match vs. policy compliance), same checkpoint
+- **`analyze-performance`** — *different concern*: its diagnosis checks page and message match, where this skill checks policy compliance
 - **`meta-ads-analyzer`** — runs *downstream*; if a live campaign shows symptoms of a silent disapproval (near-zero delivery, throttling), this skill is the diagnostic step
 - **`ad-campaign-analyzer`** — *loose link*; disapprovals show up as underdelivery in performance data, so cross-reference when a creative shows zero delivery

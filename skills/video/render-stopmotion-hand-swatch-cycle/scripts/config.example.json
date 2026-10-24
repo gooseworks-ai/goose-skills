@@ -1,8 +1,8 @@
 {
-  "_comment": "DIBS Beauty 'Pick Your Match' stop-motion hand-swatch-cycle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~16.6s vertical 9:16 stop-motion where a fair hand swipes the Desert Island Duo cream stick across a cream skin-patch on a saturated bubblegum-pink background, cycling through the shade family (~10 shades), exiting frame to reveal all 10 swatches, then returning on the hero pick (shade 3), closing on a DIBS end card. NO voiceover — a pre-sourced music track carries it. Pipeline: (1) ONE gpt-image-2 master-anchor plate (hand + barrel + EMPTY cream patch on pink BG); (2) each shade plate in gpt-image-2 EDIT mode anchored to [master-anchor, shade-swatch, shade-hero] — NEVER chained; (3) motion / half-painted transition plates + finale plates (hand-exits -> all-swatches -> hero-pick); (4) PNG->mp4 loop-encode at each plate's hold, concat-demux -> silent master; (5) Playwright HTML end card + brand music mux. Master 1080x1920 h264+aac, ~16.6s (13.6s body + 3.0s end card). See scripts/PIPELINE.md for the source scripts. Creative fields -- background.hand, background.bg_hex/bg_desc, background.skin_patch (the test surface), anchor.prompt, the hero-pick plate and music.prompt/track -- come from the recipe's choices (hand, background, surface, hero variant, music); never copy them as defaults. Copy the structure and field names only.",
-  "brand_name": "DIBS Beauty",
+  "_comment": "Solenne Beauty 'Pick Your Match' stop-motion hand-swatch-cycle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~16.6s vertical 9:16 stop-motion where a fair hand swipes the Dune Duo cream stick across a cream skin-patch on a saturated bubblegum-pink background, cycling through the shade family (~10 shades), exiting frame to reveal all 10 swatches, then returning on the hero pick (shade 3), closing on a Solenne end card. NO voiceover — a pre-sourced music track carries it. Pipeline: (1) ONE gpt-image-2 master-anchor plate (hand + barrel + EMPTY cream patch on pink BG); (2) each shade plate in gpt-image-2 EDIT mode anchored to [master-anchor, shade-swatch, shade-hero] — NEVER chained; (3) motion / half-painted transition plates + finale plates (hand-exits -> all-swatches -> hero-pick); (4) PNG->mp4 loop-encode at each plate's hold, concat-demux -> silent master; (5) Playwright HTML end card + brand music mux. Master 1080x1920 h264+aac, ~16.6s (13.6s body + 3.0s end card). See scripts/PIPELINE.md for the source scripts. Creative fields -- background.hand, background.bg_hex/bg_desc, background.skin_patch (the test surface), anchor.prompt, the hero-pick plate and music.prompt/track -- come from the recipe's choices (hand, background, surface, hero variant, music); never copy them as defaults. Copy the structure and field names only.",
+  "brand_name": "Solenne Beauty",
   "campaign": "Pick Your Match",
-  "title": "Find your Desert Island Duo shade",
+  "title": "Find your Dune Duo shade",
   "width": 1080,
   "height": 1920,
   "fps": 30,
@@ -13,7 +13,7 @@
     "_comment": "Format constants held VERBATIM in EVERY plate prompt so the frame never moves — only the barrel shade + the painted swatch stripe change per plate.",
     "bg_hex": "#F4B3C4",
     "bg_desc": "saturated bubblegum-pink (#F4B3C4) seamless paper background",
-    "hand": "single fair-skinned hand (fingers + thumb, palm down, glossy pale-pink long-shaped nails) entering from the bottom edge in the LOWER-LEFT third, holding the Desert Island Duo cream stick by its mid-section (cream-and-black ridged barrel, lowercase 'dibs.' wordmark crisp, cap on)",
+    "hand": "single fair-skinned hand (fingers + thumb, palm down, glossy pale-pink long-shaped nails) entering from the bottom edge in the LOWER-LEFT third, holding the Dune Duo cream stick by its mid-section (cream-and-black ridged barrel, lowercase 'solenne.' wordmark crisp, cap on)",
     "skin_patch": "a soft round cream-colored 'skin patch' surface (~400px wide) in the UPPER-RIGHT third — a curved warm cream-toned section of clean skin that swatches are tested on, flat, smooth, soft-shadowed, no markings",
     "lighting": "editorial soft daylight, glossy gentle highlights, top-down macro, 9:16 vertical, photorealistic beauty editorial, no text overlay",
     "camera": "top-down editorial macro, LOCKED — no camera move, no zoom, no pan"
@@ -24,7 +24,7 @@
     "out": "assets/plates-v3/v2-p01-hand-anchor.png",
     "hero_ref": "source/product-photos/did-shade-03-hero.png",
     "pose_hold_ms": 1600,
-    "prompt": "Top-down editorial macro on a saturated bubblegum-pink (#F4B3C4) seamless paper background. In the LOWER-LEFT third, a single fair-skinned hand enters from the bottom holding a Desert Island Duo cream stick by its mid-section (cream-and-black ridged barrel, lowercase 'dibs.' wordmark crisp, cap on, blush-pink tip toward upper-right). In the UPPER-RIGHT third, a soft round cream-colored 'skin patch' (~400px wide, flat, smooth, soft-shadowed, no markings) — the surface swatches are tested on. Editorial soft daylight, glossy highlights. 9:16 vertical. Photorealistic beauty editorial. No text overlay."
+    "prompt": "Top-down editorial macro on a saturated bubblegum-pink (#F4B3C4) seamless paper background. In the LOWER-LEFT third, a single fair-skinned hand enters from the bottom holding a Dune Duo cream stick by its mid-section (cream-and-black ridged barrel, lowercase 'solenne.' wordmark crisp, cap on, blush-pink tip toward upper-right). In the UPPER-RIGHT third, a soft round cream-colored 'skin patch' (~400px wide, flat, smooth, soft-shadowed, no markings) — the surface swatches are tested on. Editorial soft daylight, glossy highlights. 9:16 vertical. Photorealistic beauty editorial. No text overlay."
   },
   "plate_engine": {
     "_comment": "All plates + the end-card BG are gpt-image-2 via fal. EDIT mode: each shade / motion / finale plate passes the master-anchor (`v2-p01-hand-anchor.png`) as the first EDIT anchor so the hand + crop + BG stay frozen; shade plates ALSO pass that variant's real swatch + hero refs. NEVER pass a prior plate as the anchor.",
@@ -37,7 +37,7 @@
     "batch_size": 4
   },
   "cadence": {
-    "_comment": "DIBS v3 holds: half-painted / mid-swipe motion plates ~180ms; per-shade plates ~380ms (v3 stretched some to ~1000ms for a slower, more scannable cycle); the anchor + finale hero beats 1100-1800ms. HARD cuts between plates. Average ~380ms hold. 27 plate clips across the run.",
+    "_comment": "Solenne v3 holds: half-painted / mid-swipe motion plates ~180ms; per-shade plates ~380ms (v3 stretched some to ~1000ms for a slower, more scannable cycle); the anchor + finale hero beats 1100-1800ms. HARD cuts between plates. Average ~380ms hold. 27 plate clips across the run.",
     "motion_hold_ms": [
       150,
       250
@@ -130,7 +130,7 @@
         "source/swatches/did-shade-N-swatch.jpg",
         "source/product-photos/did-shade-N-hero.png"
       ],
-      "prompt": "Repeat one {shade plate + half-painted-transition} pair per shade in the family (DIBS ran ~10 shades: 01, 015, 02, 025, 03, 04, 05, 055, 06, 07 → ~24 cycle plates). Same locked frame throughout, each shade EDIT-anchored to the master-anchor + its own swatch + hero. (plates-v3.json v2-p04…v2-p11 + v33-swipe-*)"
+      "prompt": "Repeat one {shade plate + half-painted-transition} pair per shade in the family (Solenne ran ~10 shades: 01, 015, 02, 025, 03, 04, 05, 055, 06, 07 → ~24 cycle plates). Same locked frame throughout, each shade EDIT-anchored to the master-anchor + its own swatch + hero. (plates-v3.json v2-p04…v2-p11 + v33-swipe-*)"
     },
     {
       "id": "hand-exits",
@@ -173,22 +173,22 @@
     }
   ],
   "end_card": {
-    "_comment": "A DIBS end card: a gpt-image-2 hero BG (endcard-bgs/match-hero.png) + a Playwright render of end-card-template-v3.html (serif tagline + sans subtitle + the DIBS logo SVG) — NEVER AI-rendered text. Holds 3.0s WITH the music still playing under it, fade at the tail (no silent tail).",
+    "_comment": "A Solenne end card: a gpt-image-2 hero BG (endcard-bgs/match-hero.png) + a Playwright render of end-card-template-v3.html (serif tagline + sans subtitle + the Solenne logo SVG) — NEVER AI-rendered text. Holds 3.0s WITH the music still playing under it, fade at the tail (no silent tail).",
     "engine": "gpt-image-2-bg + playwright-html",
     "bg_image": "assets/endcard-bgs/match-hero.png",
     "template": "working/end-card-template-v3.html",
-    "logo_svg": "source/dibs-logo-black.svg",
+    "logo_svg": "source/solenne-logo-black.svg",
     "tagline": "Pick your match.",
-    "subtitle": "Desert Island Duo · dibsbeauty.com",
+    "subtitle": "Dune Duo · solennebeauty.example",
     "hold_sec": 3.0,
     "audio_fade_out_sec": 0.5
   },
   "music": {
-    "_comment": "Pre-sourced DIBS brand track (dibs-on-me-4.mp3, ~128 BPM instrumental). Volume 0.4, fade in/out. NO VO. `source` = generate would call create-music-elevenlabs music_v1 from `prompt` (no artist names — ElevenLabs ToS filter).",
+    "_comment": "Pre-sourced Solenne brand track (brand-track.mp3, ~128 BPM instrumental). Volume 0.4, fade in/out. NO VO. `source` = generate would call create-music-elevenlabs music_v1 from `prompt` (no artist names — ElevenLabs ToS filter).",
     "source": "brand_supplied",
     "provider": "elevenlabs",
     "model": "music_v1",
-    "track": "clients/dibsbeauty/music/dibs-on-me-4.mp3",
+    "track": "source/music/brand-track.mp3",
     "prompt": "Upbeat, bright, playful instrumental pop, ~128 BPM, light percussion, clean modern beauty-brand energy. No vocals.",
     "volume": 0.4,
     "fade_in_sec": 0.3,
@@ -205,7 +205,7 @@
   "post_production": {
     "music": {
       "default": "on",
-      "note": "the pre-sourced dibs-on-me-4 track IS the bed (no VO), volume 0.4, fade in/out"
+      "note": "the pre-sourced brand-track track IS the bed (no VO), volume 0.4, fade in/out"
     },
     "captions": {
       "default": "off",
@@ -213,7 +213,7 @@
     },
     "end_card": {
       "default": "on",
-      "note": "hero-BG + HTML-template card (serif 'Pick your match.' + sans subtitle + DIBS logo SVG), music under it, fade tail (no silent tail)"
+      "note": "hero-BG + HTML-template card (serif 'Pick your match.' + sans subtitle + Solenne logo SVG), music under it, fade tail (no silent tail)"
     }
   }
 }

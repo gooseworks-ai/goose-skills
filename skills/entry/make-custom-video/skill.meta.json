@@ -16,6 +16,14 @@
     ]
   },
   "requires_skills": [
-    "video-production-harness"
+    "video-production-harness",
+    "ad-angle-miner",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "reddit-post-finder",
+    "scrapecreators-api",
+    "transcript-intelligence",
+    "watch",
+    "write-video-ad-script"
   ]
 }

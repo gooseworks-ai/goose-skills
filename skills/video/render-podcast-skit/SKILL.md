@@ -3,7 +3,7 @@ name: render-podcast-skit
 description: Render a two-host podcast ad from a brand config and dialogue script. Includes the working planner, full-frame and split-screen assembly, captions from measured character timings, brand end card, approved paid-step adapters, and 65 quality-check falsification cases. Use for short conversational ads with two stable hosts in one room.
 owner: team
 status: active
-version: "2.0.0"
+version: "2.0.1"
 updated: 2026-10-05
 ---
 
@@ -52,8 +52,8 @@ it can propose matches without reading account credentials.
 
 ## Non-negotiables
 
-Paid commands print cost by default. Both confirmation and execution flags
-are required after explicit approval. Preserve completed audio and timing
+Paid commands only print their plan by default. Paid steps run only on an
+approved order, with both the confirmation and execution flags. Preserve completed audio and timing
 responses when resuming. Never re-bill a completed beat to recover a missing
 local file. Motion inserts are unimplemented and fail explicitly if enabled.
 

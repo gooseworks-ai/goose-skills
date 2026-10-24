@@ -62,7 +62,7 @@ def tile_html(t):
     raise SystemExit(f"unknown tile type: {kind}")
 
 # Neutral fallback only -- the palette is a BRAND FACT: bind config.palette from the brand kit.
-# (The Hume worked example used ink #0E1B22 / bg #E6EEF3 / accent #31ABE8.)
+# (The worked example used ink #0E1B22 / bg #E6EEF3 / accent #31ABE8.)
 DEFAULT_PALETTE = {"ink":"#111111","ink_soft":"#555555","bg":"#F2F2F2",
                    "bg_tile":"#FAFAFA","bg_band":"#E6E6E6","accent":"#333333"}
 

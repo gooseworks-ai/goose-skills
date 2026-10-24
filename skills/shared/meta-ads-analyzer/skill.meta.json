@@ -1,7 +1,7 @@
 {
   "slug": "meta-ads-analyzer",
   "category": "composites",
-  "description": "Diagnose Meta Ads performance and account gaps using customer-journey coverage, Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Audits TOF/MOF/BOF coverage without forcing separate funnel campaigns or assigning every ad to one stage, then produces novice-friendly, testable recommendations.",
+  "version": "1.0.0",
   "domain": "ads",
   "tags": ["ads", "research"],
   "installation": {

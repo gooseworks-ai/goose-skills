@@ -8,7 +8,7 @@ description: >-
   rejected or the account got restricted; we're in a brand crisis — hold the ads; give me the Google,
   TikTok or LinkedIn changes to make. Not for how the ads did or which ad won — use
   analyze-performance; not for rewriting a rejected image ad — use make-static-ads.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # run-paid-campaigns

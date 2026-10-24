@@ -1,6 +1,6 @@
 {
-  "_comment": "Worked example (the DIBS Beauty '5-Step Glassy Matte Routine' build). Creative fields — assets.creator_anchor + assets._note_creator + scene_clips.clips[].beat (choices.creator), assets.vanity_world (choices.setting), vo.voice_id + vo.voice_name + vo.source (choices.voice), vo.script + vo.style (choices.tone), music.prompt (choices.music) — come from the recipe's choices; never copy them as defaults. palette + products + cards come from the brand kit / PDPs, not this file. Copy to config.json and edit. A ~32s 9:16 (1080x1920, 30fps) MULTI-SCENE GRWM beauty demo where a locked-identity creator applies 5 DIBS products step-by-step at a sage vanity, a SEPARATE locked ElevenLabs Karri VO narrates the routine, and every scene cut is snapped to the VO's 'step N' / product-name word-starts (Whisper), with 5 Playwright product overlay cards (real PDP taglines) on the product-name beats, a warm acoustic music bed ducked under the VO, clean-white 3-words/cue captions, closing on a gpt-image-2 flat-lay end card. Pipeline: (1) lock creator anchor + sage-vanity world + hook keyframe + Karri VO (atempo 1.15x -> ~27.5s); (2) 7 Seedance 2.0 scene clips (720p, --no-audio) + the flat-lay still; (3) Groq whisper-large-v3 word-level on the VO; (4) re-cut + hard-concat to the 12 VO cuts (build_v4.py, -crf 20 re-encode); (5) 5 white-bg gpt-image-2 product cutouts (PDP-verified taglines) + Playwright cards (render_cards.py); (6) composite cards on the product-name beats (composite_cards.py, -loop 1 -t) + mix VO/music + burn captions + flat-lay end card (build_master.py). Master 1080x1920 h264+aac, ~32s. See scripts/PIPELINE.md for the source scripts.",
-  "brand_name": "DIBS Beauty",
+  "_comment": "Worked example (the Solenne Beauty '5-Step Glassy Matte Routine' build). Creative fields — assets.creator_anchor + assets._note_creator + scene_clips.clips[].beat (choices.creator), assets.vanity_world (choices.setting), vo.voice_id + vo.voice_name + vo.source (choices.voice), vo.script + vo.style (choices.tone), music.prompt (choices.music) — come from the recipe's choices; never copy them as defaults. palette + products + cards come from the brand kit / PDPs, not this file. Copy to config.json and edit. A ~32s 9:16 (1080x1920, 30fps) MULTI-SCENE GRWM beauty demo where a locked-identity creator applies 5 Solenne products step-by-step at a sage vanity, a SEPARATE locked ElevenLabs Karri VO narrates the routine, and every scene cut is snapped to the VO's 'step N' / product-name word-starts (Whisper), with 5 Playwright product overlay cards (real PDP taglines) on the product-name beats, a warm acoustic music bed ducked under the VO, clean-white 3-words/cue captions, closing on a gpt-image-2 flat-lay end card. Pipeline: (1) lock creator anchor + sage-vanity world + hook keyframe + Karri VO (atempo 1.15x -> ~27.5s); (2) 7 Seedance 2.0 scene clips (720p, --no-audio) + the flat-lay still; (3) Groq whisper-large-v3 word-level on the VO; (4) re-cut + hard-concat to the 12 VO cuts (build_v4.py, -crf 20 re-encode); (5) 5 white-bg gpt-image-2 product cutouts (PDP-verified taglines) + Playwright cards (render_cards.py); (6) composite cards on the product-name beats (composite_cards.py, -loop 1 -t) + mix VO/music + burn captions + flat-lay end card (build_master.py). Master 1080x1920 h264+aac, ~32s. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Solenne Beauty",
   "campaign": "5-Step Glassy Matte Routine",
   "title": "5 products, one finish",
   "width": 1080,
@@ -17,7 +17,7 @@
     "_note_creator": "EXAMPLE ONLY (set from choices.creator + choices.setting). Demo creator: 26yo brunette w/ caramel highlights, black satin headband, white ribbed tank, in a sage-green bathroom. Identity + wardrobe + setting held across every scene clip.",
     "vanity_world": "assets/worlds/sage-vanity.png",
     "hook_keyframe": "assets/keyframes/five-pink-barrels.png",
-    "_note_hook": "Creator holding the ~5 products fanned near the face (demo: 5 pink DIBS barrels). Doubles as the payoff-smile beat (s07a)."
+    "_note_hook": "Creator holding the ~5 products fanned near the face (demo: 5 pink Solenne barrels). Doubles as the payoff-smile beat (s07a)."
   },
   "vo": {
     "_comment": "SEPARATE locked ElevenLabs VO (voice from choices.voice, delivery from choices.tone; the demo used Karri) — NOT a native Seedance take. Whispered FIRST; the word-starts set the timeline. atempo 1.15x makes it end at ~27.5s (NOT 45s). Script written clean (no eleven_v3 audio tags).",
@@ -30,7 +30,7 @@
     "similarity_boost": 0.75,
     "style": 0.25,
     "atempo": 1.15,
-    "script": "okay, my five-step glassy matte routine. step one, Love Beam Perfector. it's basically skincare you put on first. step two, Desert Island Duo. blush and bronzer in one stick. step three, Glow Tour for contour. step four, Love Beam Powder. it brightens and blurs. step five, Setting Mist. that's the lock. five products, one finish. about three minutes.",
+    "script": "okay, my five-step glassy matte routine. step one, Halo Perfector. it's basically skincare you put on first. step two, Dune Duo. blush and bronzer in one stick. step three, Glow Trip for contour. step four, Halo Powder. it brightens and blurs. step five, Setting Mist. that's the lock. five products, one finish. about three minutes.",
     "actual_duration_s": 27.5,
     "outputs": {
       "audio": "working/voiceovers/locked/vo-full-atempo115.mp3",
@@ -38,29 +38,29 @@
     },
     "_word_starts": {
       "_comment": "Whisper-verified word-starts for this exact atempo'd mp3. Scene cuts snap to the 'step N' starts; cards snap to the product-NAME starts.",
-      "step_one": 3.32, "Love Beam Perfector": 4.34,
-      "step_two": 8.64, "Desert Island Duo": 9.56,
-      "step_three": 13.82, "Glow Tour": 14.86,
-      "step_four": 17.00, "Love Beam Powder": 17.94,
+      "step_one": 3.32, "Halo Perfector": 4.34,
+      "step_two": 8.64, "Dune Duo": 9.56,
+      "step_three": 13.82, "Glow Trip": 14.86,
+      "step_four": 17.00, "Halo Powder": 17.94,
       "step_five": 21.48, "Setting Mist": 22.42,
       "five_products_one_finish": 24.62, "about_three_minutes": 26.50
     }
   },
   "scene_clips": {
-    "_beat_rule": "beat = THIS brand's product N applied by the creator from choices.creator (soft verbs: dabs / swirls / dusts). The beats below are the DIBS demo's.",
-    "_comment": "7 Seedance 2.0 clips (create-video-seedance-fal, Fal direct, 720p, 9:16, --no-audio) off the locked anchor + world. Softer verbs — s05 powder used 'swirls'/'dusts' after a 422 on 'press'/'brush her face'. ~$12.60 total.",
+    "_beat_rule": "beat = THIS brand's product N applied by the creator from choices.creator (soft verbs: dabs / swirls / dusts). The beats below are the Solenne demo's.",
+    "_comment": "7 Seedance 2.0 clips (create-video-seedance-fal, Fal direct, 720p, 9:16, --no-audio) off the locked anchor + world. Softer verbs — s05 powder used 'swirls'/'dusts' after a 422 on 'press'/'brush her face'. All 7 are paid calls.",
     "provider": "fal",
     "model": "seedance_2_0",
     "resolution": "720p",
     "aspect_ratio": "9:16",
     "audio": false,
     "clips": [
-      { "id": "s01-hook",      "role": "HOOK",   "duration_sec": 4, "ref": ["hook_keyframe"],               "beat": "holds five glossy pink DIBS cream-sticks fanned near her face, eye contact with selfie camera, playful smile" },
-      { "id": "s02-perfector", "role": "STEP_1", "duration_sec": 7, "ref": ["creator_anchor", "vanity_world"], "beat": "dabs a few pearls of pink LoveBeam Perfector onto cheekbones + forehead with fingertips, taps them in" },
-      { "id": "s03-did",       "role": "STEP_2", "duration_sec": 8, "ref": ["creator_anchor"],              "beat": "swipes the Desert Island Duo cream-stick on cheeks/nose/forehead, presses in with a dense face brush" },
-      { "id": "s04-glowtour",  "role": "STEP_3", "duration_sec": 7, "ref": ["creator_anchor"],              "beat": "stripes the Glow Tour contour stick along cheekbone hollow + jawline, blends down with fingertips" },
+      { "id": "s01-hook",      "role": "HOOK",   "duration_sec": 4, "ref": ["hook_keyframe"],               "beat": "holds five glossy pink Solenne cream-sticks fanned near her face, eye contact with selfie camera, playful smile" },
+      { "id": "s02-perfector", "role": "STEP_1", "duration_sec": 7, "ref": ["creator_anchor", "vanity_world"], "beat": "dabs a few pearls of pink Halo Perfector onto cheekbones + forehead with fingertips, taps them in" },
+      { "id": "s03-dune",       "role": "STEP_2", "duration_sec": 8, "ref": ["creator_anchor"],              "beat": "swipes the Dune Duo cream-stick on cheeks/nose/forehead, presses in with a dense face brush" },
+      { "id": "s04-glowtrip",  "role": "STEP_3", "duration_sec": 7, "ref": ["creator_anchor"],              "beat": "stripes the Glow Trip contour stick along cheekbone hollow + jawline, blends down with fingertips" },
       { "id": "s05-powder",    "role": "STEP_4", "duration_sec": 6, "ref": ["creator_anchor"], "tier": "fast", "beat": "swirls a soft brush in the pink compact, taps it, dusts across her T-zone (softer verbs — 'press'/'brush her face' 422'd)" },
-      { "id": "s06-mist",      "role": "STEP_5", "duration_sec": 6, "ref": ["creator_anchor"],              "beat": "holds the LoveBeam Setting Mist ~8in from her face and sprays a fine even mist; skin gains a glassy glow" },
+      { "id": "s06-mist",      "role": "STEP_5", "duration_sec": 6, "ref": ["creator_anchor"],              "beat": "holds the Halo Setting Mist ~8in from her face and sprays a fine even mist; skin gains a glassy glow" },
       { "id": "s07a-payoff",   "role": "PAYOFF", "duration_sec": 4, "ref": ["hook_keyframe"],               "beat": "smiles fully into the selfie camera, fresh glassy-matte makeup on, warm confident expression" }
     ]
   },
@@ -73,10 +73,10 @@
     "windows": [
       { "t_start": 0.00,  "t_end": 3.00,  "clip": "s01-hook",      "src_in": 0.0, "dur": 3.00, "why": "hook ends as 'step one' begins" },
       { "t_start": 3.00,  "t_end": 6.00,  "clip": "s02-perfector", "src_in": 0.0, "dur": 3.00, "why": "perfector first half" },
-      { "t_start": 6.00,  "t_end": 9.56,  "clip": "s02-perfector", "src_in": 3.0, "dur": 3.56, "why": "perfector second half — ends as 'Desert Island Duo' begins" },
-      { "t_start": 9.56,  "t_end": 12.00, "clip": "s03-did",       "src_in": 0.0, "dur": 2.44, "why": "DID swipe begin" },
-      { "t_start": 12.00, "t_end": 13.82, "clip": "s03-did",       "src_in": 2.5, "dur": 1.82, "why": "DID continuation — ends as 'step three' begins" },
-      { "t_start": 13.82, "t_end": 17.00, "clip": "s04-glowtour",  "src_in": 0.0, "dur": 3.18, "why": "glowtour — ends as 'step four' begins" },
+      { "t_start": 6.00,  "t_end": 9.56,  "clip": "s02-perfector", "src_in": 3.0, "dur": 3.56, "why": "perfector second half — ends as 'Dune Duo' begins" },
+      { "t_start": 9.56,  "t_end": 12.00, "clip": "s03-dune",       "src_in": 0.0, "dur": 2.44, "why": "Dune Duo swipe begin" },
+      { "t_start": 12.00, "t_end": 13.82, "clip": "s03-dune",       "src_in": 2.5, "dur": 1.82, "why": "Dune Duo continuation — ends as 'step three' begins" },
+      { "t_start": 13.82, "t_end": 17.00, "clip": "s04-glowtrip",  "src_in": 0.0, "dur": 3.18, "why": "glowtrip — ends as 'step four' begins" },
       { "t_start": 17.00, "t_end": 19.22, "clip": "s05-powder",    "src_in": 0.0, "dur": 2.22, "why": "powder swirl" },
       { "t_start": 19.22, "t_end": 21.48, "clip": "s05-powder",    "src_in": 2.3, "dur": 2.26, "why": "powder application — ends as 'step five' begins" },
       { "t_start": 21.48, "t_end": 24.52, "clip": "s06-mist",      "src_in": 0.0, "dur": 3.04, "why": "mist — ends as 'five products' payoff begins" },
@@ -85,12 +85,12 @@
     ]
   },
   "products": {
-    "_comment": "5 white-bg standalone gpt-image-2 cutouts (gen-product-cutouts.sh). Taglines VERIFIED against dibsbeauty.com PDPs — the gpt-image-2 flat-lay renders WRONG sublines ('SCULPT + GLOW' on DID, 'BLUSH + HIGHLIGHT' on GlowTour). LoveBeam Perfector is a slim liquid bottle, NOT a wide cream stick (even though the Seedance s02 clip shows a wide barrel — the card shows the REAL product).",
+    "_comment": "5 white-bg standalone gpt-image-2 cutouts (gen-product-cutouts.sh). Taglines VERIFIED against solennebeauty.example PDPs — the gpt-image-2 flat-lay renders WRONG sublines ('SCULPT + GLOW' on Dune Duo, 'BLUSH + HIGHLIGHT' on GlowTrip). Halo Perfector is a slim liquid bottle, NOT a wide cream stick (even though the Seedance s02 clip shows a wide barrel — the card shows the REAL product).",
     "cutouts": [
-      { "id": "perfector", "name": "LoveBeam Perfector",   "tagline": "GLOW SERUM",       "cutout": "working/products/perfector.png", "vo_name_start_s": 4.34 },
-      { "id": "did",       "name": "Desert Island Duo",    "tagline": "BLUSH + BRONZER",  "cutout": "working/products/did.png",       "vo_name_start_s": 9.56 },
-      { "id": "glowtour",  "name": "Glow Tour Duo",        "tagline": "CONTOUR + BLUSH",  "cutout": "working/products/glowtour.png",  "vo_name_start_s": 14.86 },
-      { "id": "powder",    "name": "LoveBeam Powder",      "tagline": "BRIGHTEN + BLUR",  "cutout": "working/products/powder.png",    "vo_name_start_s": 17.94 },
+      { "id": "perfector", "name": "Halo Perfector",   "tagline": "GLOW SERUM",       "cutout": "working/products/perfector.png", "vo_name_start_s": 4.34 },
+      { "id": "dune",       "name": "Dune Duo",    "tagline": "BLUSH + BRONZER",  "cutout": "working/products/dune.png",       "vo_name_start_s": 9.56 },
+      { "id": "glowtrip",  "name": "Glow Trip Duo",        "tagline": "CONTOUR + BLUSH",  "cutout": "working/products/glowtrip.png",  "vo_name_start_s": 14.86 },
+      { "id": "powder",    "name": "Halo Powder",      "tagline": "BRIGHTEN + BLUR",  "cutout": "working/products/powder.png",    "vo_name_start_s": 17.94 },
       { "id": "mist",      "name": "Setting Mist",         "tagline": "LOCK IT IN",       "cutout": "working/products/mist.png",      "vo_name_start_s": 22.42 }
     ],
     "_note_taglines": "Taglines above are the card lines used in the worked example; ALWAYS re-verify against the live PDP before shipping a new brand — do not carry these forward."
@@ -102,10 +102,10 @@
     "fade_in_s": 1.0,
     "loop_flag_required": true,
     "timing": [
-      { "card": "perfector", "start": 4.34,  "end": 9.56,  "matches": "'Love Beam Perfector' -> 'Desert Island Duo'" },
-      { "card": "did",       "start": 9.56,  "end": 13.82, "matches": "'Desert Island Duo' -> 'step three'" },
-      { "card": "glowtour",  "start": 14.86, "end": 17.94, "matches": "'Glow Tour for contour' -> 'Love Beam Powder'" },
-      { "card": "powder",    "start": 17.94, "end": 22.42, "matches": "'Love Beam Powder' -> 'Setting Mist'" },
+      { "card": "perfector", "start": 4.34,  "end": 9.56,  "matches": "'Halo Perfector' -> 'Dune Duo'" },
+      { "card": "dune",       "start": 9.56,  "end": 13.82, "matches": "'Dune Duo' -> 'step three'" },
+      { "card": "glowtrip",  "start": 14.86, "end": 17.94, "matches": "'Glow Trip for contour' -> 'Halo Powder'" },
+      { "card": "powder",    "start": 17.94, "end": 22.42, "matches": "'Halo Powder' -> 'Setting Mist'" },
       { "card": "mist",      "start": 22.42, "end": 27.80, "matches": "'Setting Mist' -> payoff" }
     ]
   },

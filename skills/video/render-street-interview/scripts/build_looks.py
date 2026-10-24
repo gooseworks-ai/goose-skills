@@ -166,7 +166,7 @@ def t_subway(text, style, job, sent):
             rows.append(cur)
             cur = wd
     rows.append(cur)
-    # brand_layer.caption_centre_y (opt-in) moves the plate off the product. Olipop seed 6101: at the
+    # brand_layer.caption_centre_y (opt-in) moves the plate off the product. Fizzroot seed 6101: at the
     # default 1330 the plate covered the can's label in every speaking shot.
     top = int(CFG["brand_layer"].get("caption_centre_y", 1330)) - len(rows) * 34
     plate(c, (80, top - 26, W - 80, top + len(rows) * 66 + 18))
@@ -540,7 +540,7 @@ def resolve(run=None, brand=None, edit_map=None, word_times=None, pregraded=Fals
 
 if __name__ == "__main__":
     ap = paths.add_run_arg(argparse.ArgumentParser())
-    ap.add_argument("--brand", default=None, help="brand slug in brands/ (default liquid-death)")
+    ap.add_argument("--brand", default=None, help="brand slug in brands/ (default grimwater)")
     ap.add_argument("--looks", default=",".join(TREAT))
     ap.add_argument("--edit-map", type=Path, help="recut.py source-span .plan.json; uses its edited output")
     ap.add_argument("--word-times", type=Path, help="measured original-source words JSON; required for partial spoken spans")

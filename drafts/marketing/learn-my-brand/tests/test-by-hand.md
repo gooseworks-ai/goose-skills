@@ -3,7 +3,7 @@
 ## Setup
 1. Connect GooseWorks **staging** to your agent.
 2. Link the playbook: `ln -s "$PWD/drafts/marketing/learn-my-brand" ~/.claude/skills/learn-my-brand`
-3. Pick a brand the team knows deeply, with the documents and links the founder would really hand over. Run it twice more on: one regulated brand (skincare or supplements; staging's Personal Day works) and one B2B brand. Not only a well-known DTC brand.
+3. Pick a brand the team knows deeply, with the documents and links the founder would really hand over. Run it twice more on: one regulated brand (skincare or supplements; staging's Clearday works) and one B2B brand. Not only a well-known DTC brand.
 
 ## Part 1: the intake run
 
@@ -13,7 +13,7 @@ It must:
 - Read the brain first and ask for documents before any question; import what you hand over.
 - Ask only gaps, as drafts to confirm; about 15–20 decisions and 20–30 minutes in total (basics 5–8 decisions); under time pressure, the shortcuts in SKILL.md's time budget. Never ask a fact the site, the brain or a document already holds.
 - Surface at least one contradiction if one exists (site vs ads, old vs new) with both sides and a source; never resolve it silently.
-- Treat research's "approved" claims as candidates: on Personal Day, flag at least "Rated 4.9 out of 5 stars 234 Reviews" (needs a capture date and review-by), the press quotes (need article and date), and the value props "100% free of acne-triggering ingredients" and "Dermatologist-developed & 6x award-winning" (need proof or rewording).
+- Treat research's "approved" claims as candidates: on Clearday, flag at least "Rated 4.9 out of 5 stars 234 Reviews" (needs a capture date and review-by), the press quotes (need article and date), and the value props "100% free of acne-triggering ingredients" and "Dermatologist-developed & 6x award-winning" (need proof or rewording).
 - Load the skincare rule pack and say once that this is not legal advice.
 - Stop twice for sign-off: claims (by risk tier, high-risk one at a time with proof or "no proof on file") and voice (triad test, keep-or-kill, then the whole guide).
 - Record unknowns with the playbook that will ask, and never guess.
@@ -67,7 +67,7 @@ See the bottom of this file (filled in by the builder session).
 
 ---
 
-## Staging run log — 2026-10-16 (builder session, GooseWorks staging, brand: Personal Day)
+## Staging run log — 2026-10-16 (builder session, GooseWorks staging, brand: Clearday)
 
 Ran steps 1–2 for real (all free reads). Stopped before the first write (step 7), because writes would change a staging brand that other sessions are testing against. The writes are listed below as "would have run".
 
@@ -93,6 +93,6 @@ Ran steps 1–2 for real (all free reads). Stopped before the first write (step 
 **Would have run (writes, not executed):**
 - `brand_update` `knowledge_intent: user_correction` + owner's words: `patch.kit` {voice, audience, description, value_props (rewritten), brand_type}; `patch.knowledge` {positioning, tagline}; `patch.products` offers; `patch.onboarding` {role, platforms}.
 - `brand_update` `patch.facts`, one call through `../../../../skills/marketing/save-learning/SKILL.md`: retire superseded facts; add `Not public —` (dont), `Banned words —` (dont, owner's words first), `Policy:` (must, operating rules only), one `Claims you may use — C<n> …` (must) per approved claim (free shipping and free returns included), one `Never say —` (dont) per never-say line, and the marker (`Claims sign-off (learn-my-brand, <date>, signed-off, approver: owner, voice: provisional, record "…")`). One idea per fact, read back and compared.
-- Brand record through `../../../../skills/marketing/save-to-brain/SKILL.md`: `file_write` (`brand/records/2026-10-16-v1.md`, brand coworker scope) + `media_upload` (scope brand, kind document, source workspace) + `knowledge_import` (`media_asset_id`, title "Brand record — Personal Day — 2026-10-16 v1") + `job_get` (`kind: knowledge_ingest`). (Route changed from inline bytes to the workspace after round 3, for hosts with no shell.)
+- Brand record through `../../../../skills/marketing/save-to-brain/SKILL.md`: `file_write` (`brand/records/2026-10-16-v1.md`, brand coworker scope) + `media_upload` (scope brand, kind document, source workspace) + `knowledge_import` (`media_asset_id`, title "Brand record — Clearday — 2026-10-16 v1") + `job_get` (`kind: knowledge_ingest`). (Route changed from inline bytes to the workspace after round 3, for hosts with no shell.)
 
 **Not verified on staging.** Creating a throwaway staging brand for a write test was blocked by this session's permission check (shared resource). Settled since by the cross-set contracts review (server code): facts need `knowledge_intent: user_correction` (refused without it), are stored as the user's and never overwritten by the distiller; deleted media drops out of search. (Today's text-length cut is handled inside `../../../../skills/marketing/save-learning/SKILL.md` until the Brand Brain rebuild removes it.) Still unverified: whether retired facts are hidden from every read, and which voice field `kit.voice` shows.

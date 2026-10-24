@@ -2,7 +2,7 @@
 name: make-custom-video
 description: "Create a custom video with sourced product accuracy, explicit sound routing and exact-final audiovisual review."
 version: 3.8.3
-requires_skills: [video-production-harness]
+requires_skills: [video-production-harness, ad-angle-miner, comment-mining, competitor-ad-intelligence, reddit-post-finder, scrapecreators-api, transcript-intelligence, watch, write-video-ad-script]
 harness_binding: gooseworks/video-actions/v1
 ---
 

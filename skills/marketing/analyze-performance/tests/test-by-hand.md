@@ -47,14 +47,14 @@ After Test 8 of run-paid-campaigns, run the Monday read. Pass if it reads its ow
 
 ## Staging run — 2026-10-16
 
-Ask simulated: "What worked this week across our channels, and what should I make next?" on Personal Day and Spellbound.
+Ask simulated: "What worked this week across our channels, and what should I make next?" on Clearday and Inkwhisper.
 
 | Step | Call | What came back | Playbook consequence |
 |---|---|---|---|
-| Brain | `brand_read` (Personal Day) learnings, accounts | 1 learning; `accounts: []` | Organic row: "no accounts connected". |
-| Plan | `campaign_read` | none (Personal Day) | No targets/test criteria → report vs last week only; tests section "no plan on file". |
+| Brain | `brand_read` (Clearday) learnings, accounts | 1 learning; `accounts: []` | Organic row: "no accounts connected". |
+| Plan | `campaign_read` | none (Clearday) | No targets/test criteria → report vs last week only; tests section "no plan on file". |
 | Meta | `meta_read` performance | `not_connected` | Meta row from the human's export, or "not measured". |
-| Organic | `social_account_list` (Cumin Club), `social_analytics_get` overview (Spellbound) | 0 accounts; totals all null, no sync | Row "not measured — no accounts linked". |
+| Organic | `social_account_list` (Saffron Table), `social_analytics_get` overview (Inkwhisper) | 0 accounts; totals all null, no sync | Row "not measured — no accounts linked". |
 | Store revenue | — (no tool exists) | — | Ask once; claims-only mode if not provided. With no platform data either, the report is the input ask plus the measurement-contract draft. |
 | Report path | `file_write` `reports/performance/_builder-test-…md` in the brand coworker workspace, then `file_delete` | write ok, delete ok | Report storage path works. |
 | Learnings write | `brand_update` patch.facts, `knowledge_intent: agent_proposal`, on a QA brand | **refused** `knowledge_confirmation_required` — learnings need `user_correction` + the human's own `user_statement` | Playbook fixed: learnings are written only with the human's quoted yes. Not retried with an invented statement. |

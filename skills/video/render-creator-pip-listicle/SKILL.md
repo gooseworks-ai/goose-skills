@@ -31,7 +31,7 @@ renders whatever the config holds.
 - **tone** — bubbly, calm and honest, dry and funny, or fast expert → `beats[].dialogue`. *The demo
   was chatty and enthusiastic.*
 
-`scripts/config.example.json` is the worked example (DIBS Beauty "5 products that replaced my whole
+`scripts/config.example.json` is the worked example (Solenne Beauty "5 products that replaced my whole
 makeup bag", ~46s 1080×1920 9:16, a hook + 5 product beats + a CTA) — copy its structure, never its
 creative values; `scripts/PIPELINE.md` maps
 every config block to its source step and `scripts/README.md` documents the free assembly.
@@ -49,7 +49,7 @@ recordings) + the real product photos + the brand palette + the title copy,
 always; + demo PiP top-right + bottom product card + rank number on product beats), cover-scales the
 creator clip to 1080×1920 and overlays the beat's overlay PNG for the **whole beat** while keeping the
 native audio, concats all beats, and burns the captions last → the master. Re-cuts reuse the existing
-native clips + overlays and cost **$0**.
+native clips + overlays and spend nothing.
 
 **Anchor gotcha (Seedream v5 Pro, not gpt-image-2/Seedream-v4).** Seedance 2.0's partner-validation
 gate REJECTS photoreal faces from **gpt-image-2 AND Seedream v4** ("may contain likenesses of real

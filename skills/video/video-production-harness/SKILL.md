@@ -5,7 +5,6 @@ owner: team
 status: active
 version: "3.1.0"
 level: orchestrator
-category: video
 ---
 
 ## Non-negotiables (every state, every host)

@@ -1,14 +1,14 @@
 # render-food-product-sizzle scripts — the FREE assembly
 
-`render-food-product-sizzle` is the **deterministic, $0 assembly stage** of the food-product sizzle
+`render-food-product-sizzle` is the **deterministic, free assembly stage** of the food-product sizzle
 format. The paid stages (the ~4 photographic macro keyframes, the ~4 locked-off i2v clips, the
 non-diegetic music bed) are separate capabilities — `create-image-fal`, `create-video-fal`,
 `create-music-elevenlabs`. This capability spends nothing: it takes the ~4 clips + the music bed +
 the diegetic SFX + the real logo PNG + the real product PNG and stitches the finished master.
 Re-cuts (new callout timing, a swapped end card, re-timed SFX cues, a grain-pass toggle) reuse the
-existing keyframes / clips / music and cost **$0**.
+existing keyframes / clips / music and spend nothing.
 
-`config.example.json` is the worked example (Lineage Provisions "Beef Sticks Sizzle", ~14s
+`config.example.json` is the worked example (Hearthline Provisions "Beef Sticks Sizzle", ~14s
 1080×1920). `PIPELINE.md` maps every config block to its source step. This README documents the FREE
 assembly pieces that `render-food-product-sizzle` owns.
 

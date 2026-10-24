@@ -22,7 +22,7 @@ them.
 ## Choices
 
 The calling recipe asks the user these before any paid step; this capability only assembles
-what they produced. The worked example (Primally Pure) values are examples, never defaults.
+what they produced. The worked example (the fictional brand Wildroot Pure) values are examples, never defaults.
 
 - **worlds** — the three places toured → `config.worlds`, `config.scene_grid` (demo: pilates
   studio / spa anteroom / farmers market).

@@ -1,6 +1,7 @@
 {
   "slug": "goose-graphics",
   "category": "composites",
+  "version": "1.0.0",
   "domain": "design",
   "tags": ["content", "design", "social", "brand"],
   "installation": {

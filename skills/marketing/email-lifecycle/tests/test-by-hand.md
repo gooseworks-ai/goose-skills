@@ -44,13 +44,13 @@ Edge cases (one message each, on the same setup):
 
 **Optional, free, real load:** load one flow into a free Loops or Brevo account, add yourself with Gmail plus-aliases (`you+t1@gmail.com`, `you+t2@…`), fire the events by hand, and check each email arrives, skips and exits as written.
 
-## Staging run — 2026-10-16, brand Personal Day (DTC acne-safe skincare)
+## Staging run — 2026-10-16, brand Clearday (DTC acne-safe skincare)
 
 This playbook makes no paid calls at all (no generation, no paid data); the run goes until the first human input.
 
 | Step | Call | What came back |
 |---|---|---|
-| Connection | `account_whoami`, `brand_read` (list) | staging; Personal Day coworker agent `9d554b73-…` |
+| Connection | `account_whoami`, `brand_read` (list) | staging; Clearday coworker agent `9d554b73-…` |
 | Brain read | `brand_read` summary, products, onboarding, learnings | voice-relevant description, 20 products (names and tags only in lean mode; `product_ids` gives price and `offers`), 1 learning (a video-script rule), no email/SMS facts |
 | Claims | `brand_read` `sections: ["learnings"]` (lean) | no `Claims sign-off (learn-my-brand,` marker, so status is not `signed-off`; the 7 research-created "approved" claims returned by a claim search are **not usable** under the contract. The run would put the 3–5 lines the welcome and checkout flows need (e.g. "Free returns", "Free shipping over $45") to the human in intake message 2 through the claims gate's scoped sign-off. *(Re-done in the 16 Oct cross-set fix pass; the original run read claims through search, now never-approved.)* |
 | Program sheet | `file_read` `lifecycle/program.md` | `not_found` → first run (build mode) |

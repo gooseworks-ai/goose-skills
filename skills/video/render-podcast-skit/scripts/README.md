@@ -5,8 +5,8 @@ example inputs and its quality checks. Version 8 uses the existing public
 voice, image and video skills. A private Studio checkout is no longer required.
 
 Prepare the brand script, two host appearances, matched voices, a logo and
-fonts. Preview the edit for free, approve each paid step, then check the finished
-video. Choose the full-frame or split edit before generation; the split needs
+fonts. Preview the edit for free, run the paid steps (only on an approved order),
+then check the finished video. Choose the full-frame or split edit before generation; the split needs
 two additional silent listener clips.
 
 ---
@@ -51,7 +51,7 @@ script, pacing and layout here.
 ## Approved paid inputs and final render
 
 Each generation command defaults to printing cost without calling a provider.
-Add **both** `--confirm --execute` only after approval of that step.
+Add **both** `--confirm --execute` to run it; paid steps run only on an approved order.
 
 ```bash
 python3 scripts/gen_paid.py vo --config <brand-config> --run-dir <run>

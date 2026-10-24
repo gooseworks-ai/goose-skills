@@ -5,14 +5,14 @@ This capability ships the **recipe** (`config.example.json`) + a config→step m
 **FREE, deterministic assembly** — everything between the paid model calls. The paid
 steps (the six per-world clips, the NB2 end-card background, the ElevenLabs music bed)
 are separate capabilities; the recipe orchestrates and gates them. Everything below is
-$0 (Playwright + PIL/HTML + FFmpeg), keeps the end-card text pixel-crisp, and never makes
+free (Playwright + PIL/HTML + FFmpeg), keeps the end-card text pixel-crisp, and never makes
 an AI or paid call.
 
 ## The format in one line
 
 A silent, music-led tour of three "third-place" worlds — one per product/variant; the
 worlds, their look and the music are the user's choices (recipe `choices`), the demo's
-Primally Pure values are only a worked example. Each world is a **two-shot pair**: a WIDE
+Wildroot Pure values are only a worked example. Each world is a **two-shot pair**: a WIDE
 kinetic-calm ARRIVAL (environment dominates, product stays small) hard-cutting to a
 top-down MACRO product MOMENT (the sealed product nested with its companion prop). The six clips land on a Pinterest-style brand end card.
 720×1280, ≈27.0s = `3×(arrival 4.5 + macro 3.5) + end-card 3.0`.

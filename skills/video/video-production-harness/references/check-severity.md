@@ -12,7 +12,7 @@ When the customer says "just make it" (`review_mode: auto`), the agent decides t
 
 # Agent version
 
-Rules decided by Akhil on 16 Oct 2026. Every check in this harness uses this grade, and so do the host's own checks.
+Rules set by the GooseWorks team on 16 Oct 2026. Every check in this harness uses this grade, and so do the host's own checks.
 
 ## The three grades
 
@@ -35,7 +35,7 @@ When a finding fits two rows, the higher one wins. One check can grade different
 
 - **Redo only must_fix,** plus the `ask` items the customer picks (or that you pick in `auto`). Never redo a `fine` item.
 - **Redo the smallest piece that fixes it,** on the cheapest layer that can ([shot routing](shot-routing.md)): an edit or re-assembly before a new still, and a new still before a new clip.
-- **Never drop a scene.** If a redo still has a must_fix, keep the best take, flagged, and tell the customer. They can pay for another redo or say "keep it anyway" (Akhil, 16 Oct: a video with an open must_fix is saved as needing a fix, and sharing or pinning it as final needs the fix or the customer's "keep anyway"). You never deliver a must_fix on your own, in either mode; only the customer's own words, recorded, release it.
+- **Never drop a scene.** If a redo still has a must_fix, keep the best take, flagged, and tell the customer. They can pay for another redo or say "keep it anyway" (decided 16 Oct: a video with an open must_fix is saved as needing a fix, and sharing or pinning it as final needs the fix or the customer's "keep anyway"). You never deliver a must_fix on your own, in either mode; only the customer's own words, recorded, release it.
 - **The customer pays for a redo.** First price it with the free price check (`data_price_provider` on GooseWorks), exactly as you will send it.
   - **It fits** when what is already charged plus this price stays inside the approved total. Make it, paid from that total, and tell them in one line.
   - **It doesn't fit:** ask for a new yes, showing the price and the new total. Don't make it before they say yes.

@@ -53,7 +53,7 @@ class H3RouteTests(unittest.TestCase):
         self.proxy.close()
         shutil.rmtree(self.tmp, ignore_errors=True)
     def invoke(self, *extra, seed="0"):
-        return subprocess.run([sys.executable, str(SCRIPTS / "single_gen.py"), "--brand", "liquid-death", "--run", str(self.tmp / "run"),
+        return subprocess.run([sys.executable, str(SCRIPTS / "single_gen.py"), "--brand", "grimwater", "--run", str(self.tmp / "run"),
                                "--model", MODEL, "--resolution", "1080P", "--seed", seed, *extra], env=self.env,
                               capture_output=True, text=True, timeout=60)
     def test_actual_recipe_route_uses_h3_and_finish_manifest(self):
@@ -72,7 +72,7 @@ class H3RouteTests(unittest.TestCase):
         self.assertNotIn("generate_audio", body)
         self.assertIn("Image 1", body["prompt"])
         self.assertNotIn("@Image1", body["prompt"])
-        video = self.tmp / "run/working/takes/ld-single-seed0.mp4"
+        video = self.tmp / "run/working/takes/gw-single-seed0.mp4"
         spec = importlib.util.spec_from_file_location("check_cut", SCRIPTS / "check-cut.py")
         gate = importlib.util.module_from_spec(spec);spec.loader.exec_module(gate)
         manifest = gate.find_manifest(video)
@@ -99,7 +99,7 @@ class H3RouteTests(unittest.TestCase):
         self.env["GW_FAL_POLL_TIMEOUT_S"] = "0.01"
         first = self.invoke("--yes", "--pace", "--guards")
         self.assertNotEqual(first.returncode, 0)
-        manifest = self.tmp / "run/working/takes/ld-single-seed0.json"
+        manifest = self.tmp / "run/working/takes/gw-single-seed0.json"
         pending = json.loads(manifest.read_text())
         self.assertEqual(pending["request_id"], "ok")
         self.assertEqual(pending["state"], "pending")
@@ -118,7 +118,7 @@ class H3RouteTests(unittest.TestCase):
         self.proxy.download_failures = 2
         first = self.invoke("--yes", "--pace", "--guards")
         self.assertNotEqual(first.returncode, 0)
-        video = self.tmp / "run/working/takes/ld-single-seed0.mp4"
+        video = self.tmp / "run/working/takes/gw-single-seed0.mp4"
         manifest = video.with_suffix(".json")
         saved = json.loads(manifest.read_text())
         self.assertEqual(saved["state"], "download_pending")
@@ -150,12 +150,12 @@ class H3RouteTests(unittest.TestCase):
         self.assertEqual(dest.with_name(dest.name + ".part").read_bytes(), b"PARTIAL")
 
     def test_invalid_h3_resolution_stops_before_upload(self):
-        result = subprocess.run([sys.executable, str(SCRIPTS / "single_gen.py"), "--brand", "liquid-death", "--run", str(self.tmp / "run"),
+        result = subprocess.run([sys.executable, str(SCRIPTS / "single_gen.py"), "--brand", "grimwater", "--run", str(self.tmp / "run"),
                                  "--model", MODEL, "--resolution", "720p", "--yes"], env=self.env, capture_output=True, text=True)
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual((self.proxy.uploads, len(self.proxy.submits)), (0, 0))
     def test_historical_provider_payload_is_unchanged(self):
-        cfg = brandkit.load("liquid-death")
+        cfg = brandkit.load("grimwater")
         prompt = format_spec.build_prompt(cfg)
         settings, field, rate = single_gen.provider_settings(format_spec.MODEL, prompt, 12, 4815)
         self.assertEqual(field, "image_urls")
@@ -164,7 +164,7 @@ class H3RouteTests(unittest.TestCase):
         self.assertTrue(settings["generate_audio"])
         self.assertEqual(rate, format_spec.RATE)
     def test_raw_prompt_lint_still_rejects_missing_camera_clause(self):
-        cfg = brandkit.load("liquid-death")
+        cfg = brandkit.load("grimwater")
         prompt = format_spec.build_prompt(cfg)
         broken = re.sub(re.escape(next(iter(format_spec.REQUIRED_CLAUSES))), "", prompt, flags=re.IGNORECASE)
         self.assertTrue(format_spec.lint(broken))

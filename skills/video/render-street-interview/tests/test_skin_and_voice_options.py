@@ -19,7 +19,7 @@ FLAGS = dict(pace=True, guards=True, plain=True, upright=True, one_mic=True, pro
 
 
 def cfg():
-    return brandkit.load("graza-ep1-a2")
+    return brandkit.load("oleara-ep1-a2")
 
 
 class SkinAndVoiceOptionTests(unittest.TestCase):

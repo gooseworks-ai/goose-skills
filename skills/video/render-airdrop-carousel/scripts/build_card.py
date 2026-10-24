@@ -64,9 +64,9 @@ html,body{{background:{GREEN};}}
 
 def main():
     ap = argparse.ArgumentParser(description="Generate keyable AirDrop card HTML (normal + pressed).")
-    ap.add_argument("--brand", required=True, help='sender name, bold in the line, e.g. "dibs."')
+    ap.add_argument("--brand", required=True, help='sender name, bold in the line, e.g. "solenne."')
     ap.add_argument("--message", required=True, help='rest of the line, e.g. "would like to share a blush"')
-    ap.add_argument("--tagline", default="", help='band tagline, e.g. "The viral Desert Island Duo - 1M+ sold"')
+    ap.add_argument("--tagline", default="", help='band tagline, e.g. "The viral Dune Duo - 1M+ sold"')
     ap.add_argument("--wordmark-svg", default="", help="path to brand wordmark SVG (inlined); falls back to --wordmark-text")
     ap.add_argument("--wordmark-text", default="", help="text wordmark when no SVG (defaults to --brand)")
     ap.add_argument("--accent", default="#0A84FF", help="Accept-button color: pass the BRAND accent from the brand kit (neutral iOS-blue fallback)")

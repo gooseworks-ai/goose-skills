@@ -1,4 +1,4 @@
-"""Opt-in hold and handover grammar (2026-10-06, Olipop and Graza second-brand tests).
+"""Opt-in hold and handover grammar (2026-10-06, Fizzroot and Oleara second-brand tests).
 
 Every flag lives in `generation` on the brand config and is off by default, so the legacy
 snapshots in test_prompt_budget.py are the proof that nothing else moved."""
@@ -33,12 +33,12 @@ def _build(cfg):
 
 class OptInHoldGrammar(unittest.TestCase):
     def setUp(self):
-        self.can = brandkit.load("olipop-ep3-a")
-        self.bottle = brandkit.load("graza-ep1-b")
+        self.can = brandkit.load("fizzroot-ep3-a")
+        self.bottle = brandkit.load("oleara-ep1-b")
 
     def test_the_shipped_configs_lint_clean(self):
-        for name in ("olipop-ep3-a", "olipop-ep3-b", "olipop-ep3-c",
-                     "graza-ep1-a2", "graza-ep1-b", "graza-ep1-c"):
+        for name in ("fizzroot-ep3-a", "fizzroot-ep3-b", "fizzroot-ep3-c",
+                     "oleara-ep1-a2", "oleara-ep1-b", "oleara-ep1-c"):
             with self.subTest(config=name):
                 self.assertEqual(_build(brandkit.load(name))[1], [])
 
@@ -86,7 +86,7 @@ class OptInHoldGrammar(unittest.TestCase):
         self.assertNotIn("ring pull", prompt)
 
     def test_a_payoff_that_reads_looks_at_the_side_facing_the_reader(self):
-        cfg = copy.deepcopy(brandkit.load("olipop-ep3-c"))
+        cfg = copy.deepcopy(brandkit.load("fizzroot-ep3-c"))
         cfg["shots"][-1]["reads"] = True
         prompt, errors = _build(cfg)
         self.assertEqual(errors, [])
@@ -95,7 +95,7 @@ class OptInHoldGrammar(unittest.TestCase):
     def test_the_paid_prompts_are_pinned(self):
         rows = {r["config"]: r for r in json.loads(
             (PACKAGE / "tests/fixtures/prompt-snapshots.json").read_text())}
-        for name in ("olipop-ep3-a", "graza-ep1-a2"):
+        for name in ("fizzroot-ep3-a", "oleara-ep1-a2"):
             with self.subTest(config=name):
                 prompt, _ = _build(brandkit.load(name))
                 self.assertEqual(hashlib.sha256(prompt.encode()).hexdigest(), rows[name]["sha256"])

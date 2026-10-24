@@ -14,7 +14,7 @@ drawn; this works out where it all goes and refuses to emit a layout that breaks
 `beats.json`:
 
     {
-      "title":    "ONE SCOOP OF AG1",      # lettered on the first board
+      "title":    "ONE SCOOP OF GREENSHOT", # lettered on the first board
       "subtitle": "WHAT IS IN IT",
       "payoff":   "IN ONE SCOOP",          # lettered on the last board, on its own anchor
       "payoff_say": "In", "payoff_n": 3,

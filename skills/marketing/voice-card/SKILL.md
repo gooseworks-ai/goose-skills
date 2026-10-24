@@ -8,7 +8,7 @@ description: >-
   draft against the card. The brand's rules always beat the card. Use alone when you already have the
   account's posts or the person on hand; otherwise run the playbook for the job (e.g.
   run-organic-social, write-outreach, email-lifecycle).
-version: 0.2.0
+version: 0.2.1
 ---
 
 # voice-card

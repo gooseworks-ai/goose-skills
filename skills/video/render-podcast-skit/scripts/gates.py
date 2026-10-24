@@ -40,13 +40,32 @@ NARRATIVE_WORDS = [
     "convert arc", "the mismatch is the joke",
 ]
 
-# Real client names that must never survive into a shipped example config.
-# Extend, never shrink.
-REAL_BRAND_TOKENS = [
-    "ladder", "joinladder", "brittney", "brad", "ramp", "dutch", "mindtrip",
-    "hume health", "hume-health", "closefly", "alitu", "dibsbeauty",
-    "masterclass", "lululemon", "liquid death", "som sleep", "ag1",
-    "kolkata chai",
+# Client names that must never survive into a shipped example config, kept
+# as SHA-256 hex digests of the lower-cased token (so the published file does
+# not list them) with the token length for the substring scan. Extend, never
+# shrink: add (len(token), hashlib.sha256(token.encode()).hexdigest()). The
+# last entry is the fictional canary token "gw-canary-brand" that selftest.py
+# uses to prove the gate can fail; it is not a brand.
+REAL_BRAND_TOKEN_HASHES = [
+    (6, "5605a516a7ebf33bbfc1189be3b201f380d9c721b124098eda2894544e2771d7"),
+    (10, "c177118a839041aa83ef42d1eab2d388f107a4223cde7f4b56245bd7cf13d275"),
+    (8, "30962bab156745e04ce95daf4a29a59529e3f9e64570fe791e23baa2df85da3e"),
+    (4, "322f965a2919f46725dece842eb487fc569656d59bf3e1d35cc33cf8a9dcdfec"),
+    (4, "f7d9f5a90479d6328a5534fdf3f28a1944280bd7332d4816dfec528e3f7f0db3"),
+    (5, "ccb36736d8720940a0f3299a386c4ac1d6757bdbfff5eff408b9a847f9108641"),
+    (8, "68db67984f64e7c4c9db6c5f13a5fb87ee53b40e401449e658037eaf5cda2b1f"),
+    (11, "7d16310cb226e895cbd0216c1a3a116f76cfb43162546c97c8aa4dfba9ec453a"),
+    (11, "3afe3851f9d9ae183394b55f898fa24c864ec2784b4d49710c31ea6aacdc55c6"),
+    (8, "baeadb32e7dba1e38f659bfe2142696f4fc514957047235f1b36dd3ab8e9b93c"),
+    (5, "d27c35e5e263660559c496370763a2a4eb3e179ee8702f41047d6f2b1715f64b"),
+    (10, "3cb1cd9ebfd13001312aac1ef0da1a6556c2b640a44203612f84b5b5b37e6e76"),
+    (11, "22cfdf386b9da44a9a9df04c246bf0d325efba71c88ad9c8a637d411241a6e67"),
+    (9, "5d88f45050c26f7cd3d7908f8a652cfd79eb0e6c3a6a052a8207ac2768c3b68c"),
+    (12, "b05ac3c8eb3322ac7a513ad5cfb5b7b70330ace3e73645d7374d66af37d37e2c"),
+    (9, "5bb56648baa77acf5cf20b3b4c2acb023d5fecfc94229bd0635066909eb4ca48"),
+    (3, "801013174f32ac0c7e7769f3c9b560765fc38bd246f15f01edee9d80f94ebf47"),
+    (12, "2e40d9b98fa73236c7041d4c3409eb3afb0b78c165181eff61bebac84cdced03"),
+    (15, "7624a28194e60ee44857c92b73ffc9df04b0350d39125d84042b288beb799c65"),
 ]
 
 ACRONYM_ALLOW = {"I", "A", "OK", "TV"}
@@ -449,10 +468,20 @@ def gate_no_real_brand(cfg: dict) -> list[str]:
     """An example config must never name a real client."""
     out: list[str] = []
     blob = json.dumps(cfg, ensure_ascii=False).lower()
-    for tok in REAL_BRAND_TOKENS:
-        if tok in blob:
+    # Same check as a plain substring search for each token, done on digests:
+    # hash every window of each token length and look the digest up.
+    wanted = {h for _, h in REAL_BRAND_TOKEN_HASHES}
+    seen: dict[str, str] = {}
+    for size in sorted({n for n, _ in REAL_BRAND_TOKEN_HASHES}):
+        for i in range(len(blob) - size + 1):
+            window = blob[i:i + size]
+            digest = hashlib.sha256(window.encode()).hexdigest()
+            if digest in wanted and digest not in seen:
+                seen[digest] = window
+    for _, digest in REAL_BRAND_TOKEN_HASHES:
+        if digest in seen:
             _fail(out, "no_real_brand",
-                  f"real client token {tok!r} appears in the config")
+                  f"real client token {seen[digest]!r} appears in the config")
     return out
 
 

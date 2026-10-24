@@ -3,9 +3,8 @@
   - end-card-annotated-9x16.png   specimen-sheet end card: config.end_card.lines[0] above the
                                   brand logo SVG, the remaining lines stacked below it
 
-All copy comes from config.json (bound from the brand kit — never invented). The demo build
-(Mother Science: "100% / PROVEN / RESULTS", "EST 2023 … 10× MORE POWERFUL…") lives only in
-scripts/config.example.json as a worked example.
+All copy comes from config.json (bound from the brand kit — never invented); the script
+holds no demo copy.
 """
 import subprocess
 import sys

@@ -3,7 +3,7 @@
 Run it for a brand whose voice you know cold. Your own is best, because voice is the whole bar. Connect GooseWorks **staging**. The default path spends no credits and posts nothing.
 
 ## Test 1: the founder's ask (the 18 Oct hand test)
-Ask: **"I want to run organic social for my brand <brand>."** Then, after its first message: **"Let's start with X. I'll post myself (I'm the founding engineer). I'm in India, I post in the evening, zero followers, posted yesterday, I want to post regularly. Don't you think we should make more videos?"**
+Ask: **"I want to run organic social for my brand <brand>."** Then, after its first message: **"Let's start with X. I'll post myself (I'm the first engineer). I'm in India, I post in the evening, zero followers, posted yesterday, I want to post regularly. Don't you think we should make more videos?"**
 
 It should:
 - **ask nothing before researching.** Its first message comes with a draft report. It has already web-searched how each candidate platform works right now (dated sources), looked at what gets watched in the brand's niche there, and read the brand's and founder's own accounts.
@@ -22,7 +22,7 @@ It should:
 ## Test 2: gates
 - Every draft that speaks as, or for, a named person (founder, a celebrity founder quoted on the brand account, an employee) carries PERSON YES NEEDED. The draft-report message asks that person for raw material (one prompt per planned slot). No first-person story or habit appears that the person didn't give. A `[NAME: …]` slot appears only for a prompt left unanswered, and a slot with no material is cut or swapped.
 - Every trend draft carries an expiry, a tone-risk tier with the specific risk, and a recommendation.
-- No line carries a claim that isn't on your approved list. On Personal Day, "100% free of acne-triggering ingredients" and "dermatologist-developed, 6x award-winning" must not appear as facts, because they are not approved claims.
+- No line carries a claim that isn't on your approved list. On Clearday, "100% free of acne-triggering ingredients" and "dermatologist-developed, 6x award-winning" must not appear as facts, because they are not approved claims.
 
 ## Test 3: second run (refill two weeks later)
 Ask two weeks later: **"Refill the calendar."** Then a third time, two weeks after that.
@@ -60,13 +60,13 @@ Ask: **"Write a post on this trend"** or **"a Reel script to shoot on my phone"*
 
 ## Staging run log (2026-10-16, GooseWorks staging; nothing spent, nothing posted)
 
-Brand: **Personal Day**. Ask: "Fill my social calendar for the next two weeks and write every post." Window: Mon 2026-10-19 to Sun 2026-11-01.
+Brand: **Clearday**. Ask: "Fill my social calendar for the next two weeks and write every post." Window: Mon 2026-10-19 to Sun 2026-11-01.
 
 | # | Call | What came back | What the playbook does with it |
 |---|---|---|---|
 | 1 | `brand_read` (list) | coworker `9d554b73-…` | Workspace scope |
 | 2 | `brand_read` accounts, sources, organic, kit, learnings | `accounts: []`; own IG @personalday and TikTok @personaldayskin as self sources; 12 own posts Oct 5–12 (7 IG, 5 TikTok) with views, likes, comments and `posted_at` (all 16:00–20:20 UTC); 4 IG captions cut off; 10 competitor top posts | Audit window stated as "8 days"; top/bottom 3 rule (under 15 posts); cut-off captions left out of the voice measurements; own posting times are the starting guess |
-| 3 | `social_account_list` (Personal Day, Cumin Club, Braxley) | 0 managed accounts on every staging brand | `social_strategy_*` and `social_post_create` paths do not apply; everything lives in the workspace |
+| 3 | `social_account_list` (Clearday, Saffron Table, Braxley) | 0 managed accounts on every staging brand | `social_strategy_*` and `social_post_create` paths do not apply; everything lives in the workspace |
 | 4 | `brand_read` learnings (full) | No claims sign-off marker | Plain product facts only; efficacy lines from past captions ("kills acne causing bacteria") are flagged and never copied |
 | 5 | `knowledge_search` document "Brand record approved claims" | empty | Confirms no sign-off |
 | 6 | `file_read research/audience/voc-bank.md` | not_found | Says "no buyer evidence on file"; press quotes are not buyer words |
@@ -100,4 +100,4 @@ Brand: **Personal Day**. Ask: "Fill my social calendar for the next two weeks an
 - `social_post_update patch.status: "posted"` on a V0 draft, because there is no managed account to create one on. The playbook falls back to recording the status in the calendar file.
 - The documents import of a reconciled calendar.
 
-**Cleanup:** the TEST RUN files written in this run (`content/repurposed/ig-2026-10-12-lili-spray/2026-10-16.md`, `social/calendar/2026-10-19.md`) were deleted from the Personal Day workspace afterwards (`file_delete`, success), so the next real run starts clean.
+**Cleanup:** the TEST RUN files written in this run (`content/repurposed/ig-2026-10-12-lili-spray/2026-10-16.md`, `social/calendar/2026-10-19.md`) were deleted from the Clearday workspace afterwards (`file_delete`, success), so the next real run starts clean.

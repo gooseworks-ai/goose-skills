@@ -9,7 +9,7 @@ description: >-
   what's next?". Recommends only; never runs the work. Not for a named job like "make me ads" or "grow
   my Instagram" (go straight to it); not for a campaign with a launch, budget or date — use
   plan-campaign; not for why this week's numbers moved — use analyze-performance.
-version: 0.1.3
+version: 0.1.4
 ---
 
 # where-to-start
@@ -75,7 +75,7 @@ None: nothing here spends money, makes a claim or sends anything. The only write
 - One or two moves (or a named step of their own), each with its reason, and a "worked if" with an outcome number and a date.
 - The recommendation is at most 250 words.
 - Saved only after the marketer agreed, with "saved" said only once the save came back — or "not saved" stated plainly.
-- A reviewer who knows the brand would genuinely start where it points (`tests/test-by-hand.md`).
+- A reviewer who knows the brand would genuinely start where it points (the hand test in the goose-skills repo, `tests/test-by-hand.md`).
 
 ## Out of scope
 

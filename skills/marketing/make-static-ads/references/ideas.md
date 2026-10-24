@@ -29,14 +29,14 @@ For each starting point ask: **what does the person want, what gets in the way, 
 
 ### Step C: make the tension physical
 
-Turn the tension into **one visible event**: something that could be built on a real set and photographed, even if it is impossible. Useful relationships:
+Turn the tension into **one visible event**, shown in whatever style the ad uses (photo, 3D render, graphic, native format). Useful relationships:
 
-| Relationship | Kolkata Chai example |
+| Relationship | Example (a fictional chai brand) |
 |---|---|
 | Someone interferes | Mum's hand reaches out of the video call to point at the pot |
 | Something gets in the way | Browser tabs become a paper maze around the saucepan |
 | Something claims space | The cup sits inside a recessed calendar appointment |
-| Two places connect | A miniature Kolkata balcony rises out of the saucepan |
+| Two places connect | A miniature balcony from back home rises out of the saucepan |
 | Someone gets invited, or left out | Spices sit at a tiny table; sugar gets the optional plus-one chair |
 | A flat thing becomes real (or the reverse) | |
 | Scale changes the meaning | |
@@ -54,7 +54,7 @@ One sentence per ad: the detail that, if lost, kills the idea. "The hand must vi
 
 ## 3. Six tests before an idea is kept
 
-1. **Swap test.** Replace our product with a competitor's. Does the ad still work? If yes, it is generic. Push it until the idea needs this product's fact or this brand's customer. ("Booked for chai" was the weakest Kolkata idea by this test: any drink brand could run it.)
+1. **Swap test.** Replace our product with a competitor's. Does the ad still work? If yes, it is generic. Push it until the idea needs this product's fact or this brand's customer. ("Booked for chai" was the weakest chai idea below by this test: any drink brand could run it.)
 2. **Stranger test.** Someone who has never heard of the brand sees only this ad. Do they know what the product is and what it does for them? A chai pouch explains itself; a new kind of product doesn't. A clever ad about a side feature ("skip the API keys") makes a stranger smile and scroll on. For a product in a new or unfamiliar category, most of the set must carry the **main promise**, with the surprise built on it, not beside it.
 3. **Thumbnail test.** Describe the image in one sentence a stranger understands. If you need two sentences, the scene is too busy.
 4. **Show-it test.** Show the real thing, not a symbol of it: an ad about video ads shows a frame of one playing on a phone, not a clapperboard; an ad about making ads shows the finished ads. Symbols read as stock and leave the frame empty.
@@ -63,14 +63,14 @@ One sentence per ad: the detail that, if lost, kills the idea. "The hand must vi
 
 ## 4. The worked example (do not copy)
 
-Kolkata Chai, Signature Masala Chai Mix, 22 Oct 2026. Five concepts, all from their first render:
+Masala Lane Chai (a fictional brand), Signature Masala Chai Mix. Five concepts, all from their first render:
 
 | Starting point | Human situation | Physical event | Headline | Protect |
 |---|---|---|---|---|
 | Family involvement in making chai | A parent has advice, even from far away | Mum's hand reaches out of a video call toward the pot | Mum has notes. | Hand crosses the screen |
 | Tea and spices already blended | Recipe research never ends | Browser tabs turn into a paper maze around the saucepan | Close the tabs. Put the chai on. | The tabs are physical paper |
 | Chai as a daily ritual | Work fills every moment | A cup sits inside a recessed calendar appointment | Sorry. Already booked. | The cup is in the slot, not beside it |
-| Chai and home | A routine carries home with it | A miniature Kolkata balcony rises from the saucepan | Home is a stovetop away. | The pot is the doorway |
+| Chai and home | A routine carries home with it | A miniature balcony from back home rises from the saucepan | Home is a stovetop away. | The pot is the doorway |
 | Unsweetened mix | You choose the sweetness | Spices at a tiny table; sugar on an extra chair | Sugar is a plus-one. | Sugar's chair sits apart |
 
-These ideas belong to that brand. The method transfers; the jokes don't.
+These ideas belong to that brand. The method transfers; the jokes don't. All five were one style, conceptual still life; a real set varies its style (`levels.md`, Style).

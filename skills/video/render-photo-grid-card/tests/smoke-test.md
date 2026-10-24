@@ -1,6 +1,6 @@
 # Smoke Test
 
-build_card.py --config config.json --out hyperframe.html ; render.py --config config.json --html hyperframe.html --out master-silent.mp4 — 1080x1920 scrolling 2-row grid, deterministic, $0.
+build_card.py --config config.json --out hyperframe.html ; render.py --config config.json --html hyperframe.html --out master-silent.mp4 — 1080x1920 scrolling 2-row grid, deterministic, no paid calls.
 
 Pass when:
 - the scripts run to a valid 1080x1920 mp4 at the config fps/duration;

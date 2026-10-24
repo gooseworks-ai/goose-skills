@@ -75,7 +75,7 @@ For every ad / ad set / campaign with statistical volume (default ≥30 signups 
 |---|---|---|---|
 | Impressions | n | — | — |
 | Link Clicks | n | CTR | Hook / placement issue |
-| Signups | n | Click → Signup | LP / form friction (use `ad-to-landing-page-auditor`) |
+| Signups | n | Click → Signup | LP / form friction (use `analyze-performance`, whose diagnosis checks page and message match) |
 | Qualified action started | n | Signup → Started | **Vanity signups** — wrong promise in the ad |
 | Qualified action approved | n | Started → Approved | Wrong audience or fraud |
 | Payout / value event | n | Approved → Paid | The "real" conversion |
@@ -194,5 +194,5 @@ If <50% of signups are joinable, the skill stops the analysis and outputs:
 
 - **`meta-ads-analyzer`** — Run after this skill to interpret *why* a creative's quality is low using Meta's system mechanics
 - **`ad-campaign-analyzer`** — Use for cross-channel budget reallocation once true CAC is known
-- **`ad-to-landing-page-auditor`** — Pair with this when "Click → Signup" drop-off is the leak
+- **`analyze-performance`** — Pair with this when "Click → Signup" drop-off is the leak: its diagnosis checks whether the landing page matches the ad
 - **`make-static-ads`** — Use to generate replacement creatives for anything in the Cut bucket

@@ -6,11 +6,11 @@ status: active
 
 # render-value-prop
 
-Render a designed 'value prop' video from a config: a hook sticker, then one beat per short noun-phrase benefit claim (<=4 words each — "Drug-Free", "Zero Sugar", "NSF Certified"), each pairing the claim headline with a per-SKU product visual (the hero SKU rotates beat to beat so the eye anchor shifts), then a brand-wordmark end card. Text + product carry the spot — no narration, no talking head — and it is built to be legible sound-off. Every beat is a pure function of beat-local time `t` (deterministic PIL start frames + Playwright hyperframes + FFmpeg); no CSS keyframes, no setTimeout. FREE (no paid calls); music is a separate capability (create-music-elevenlabs), or ship silent for $0.
+Render a designed 'value prop' video from a config: a hook sticker, then one beat per short noun-phrase benefit claim (<=4 words each — "Drug-Free", "Zero Sugar", "NSF Certified"), each pairing the claim headline with a per-SKU product visual (the hero SKU rotates beat to beat so the eye anchor shifts), then a brand-wordmark end card. Text + product carry the spot — no narration, no talking head — and it is built to be legible sound-off. Every beat is a pure function of beat-local time `t` (deterministic PIL start frames + Playwright hyperframes + FFmpeg); no CSS keyframes, no setTimeout. FREE (no paid calls); music is a separate capability (create-music-elevenlabs), or ship silent for free.
 
 ## Run
 `render_master.py --config config.json --project <dir>` -> `<dir>/finals/master-clean.mp4` (silent),
-1080x1920, deterministic, $0. The renderer is **fully config-driven** — palette, copy, SKUs,
+1080x1920, deterministic, no paid calls. The renderer is **fully config-driven** — palette, copy, SKUs,
 pacing, hook, logo and end card all come from `config.json` (schema = `ad_sample.recipe.config`;
 see `config.example.json`). Nothing is hardcoded to one brand. `build_storyboard_preview.py` is an
 optional free preview gallery for the gate; `build_text_overlays.py` is optional (transparent

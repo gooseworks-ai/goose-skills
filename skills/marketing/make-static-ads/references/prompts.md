@@ -10,7 +10,7 @@ The idea survives generation only if the prompt **describes the event concretely
 
 Name every attached image's job in the prompt, in the same order:
 
-1. **Product identity** (always first; for software, the real UI screenshot, or the logo or mascot when no UI fits): "Image 1 is the official product. Reproduce this exact pouch: yellow top, dark teal bottom, black KOLKATA CHAI CO. wordmark, label layout and proportions. Never substitute another package."
+1. **Product identity** (always first; for software, the real UI screenshot, or the logo or mascot when no UI fits): "Image 1 is the official product. Reproduce this exact pouch: yellow top, dark teal bottom, black MASALA LANE wordmark, label layout and proportions. Never substitute another package."
 2. **The logo file**, on every ad unless the marketer said none: "Image 2 is our logo: place it exactly as given at <position>, at about <size>; never redraw or recolour it." A small file is still attached; never leave an empty space to add it later. It keeps its own colours: when the background would hide it, move it or change that ad's background, never recolour it. More product angles follow if needed.
 3. **The template**, only at **close** and only when the brand owns it (its own past ad): "Image 3 is the layout to follow: keep its composition, block positions and text slots; replace its product, words and colours with ours." At every other level, or for any other brand's template, describe the layout in words (§3).
 
@@ -22,7 +22,7 @@ Write it once, reuse it word for word at the top of each prompt:
 
 - Format: one finished static ad, the ratio, portrait/square/landscape.
 - Product: recognisable, label facing camera, part of the scene, never a packshot pasted in a corner.
-- Finish: real materials, believable cast shadows, a deliberately built and photographed set.
+- Anything shown inside the ad (an ad, a phone screen, a page) looks finished: real-looking words or a clear product, never blank pills, grey bars or placeholder boxes.
 - Look: from `profile.md` (how the brand's ads actually look: colours, type, recurring devices). Where the ads and the kit differ, the ads win unless the marketer said otherwise.
 - Typography: the font family by name and its look ("a heavy condensed serif, black"); exact spelling; type inside a safe margin. Never name a font the model can't know (describe its look); never Inter, Arial, Helvetica or Roboto as a designed headline unless the marketer chose it; at most two families; no light weights for the headline. Pairings and free matches: `fonts-and-color.md`.
 - Text control: "Render only the text given below, plus the real packaging label." The model invents badges, stars and prices when you don't forbid them.
@@ -33,15 +33,16 @@ Write it once, reuse it word for word at the top of each prompt:
 
 Write these, in this order, as plain sentences:
 
-1. **The layout** (close and balanced): the template described exactly, as the find-references step recorded it: block positions and rough sizes, background, product position and scale, each text slot's position, length and weight.
-2. **The event:** what physically happens. Use the board's visual-idea line, expanded. At close, this is the template's own scene with our product in it.
-3. **Setting and camera:** where, from what height or angle, what surface and backdrop.
-4. **Props that explain the situation**, and only those. "No generic spice piles."
-5. **Where the product sits and how big** ("standing right foreground, about a third of the image height, label facing camera").
-6. **People**, if any: age range, look, expression, what they are doing. A generated person is never presented as a customer.
-7. **Exact copy, in its slots:** each line in quotes, placed where its slot is: the template's text slots at close and balanced, the brand's own text style at bold (`levels.md`). Only the slots the source has.
-8. **Tone:** affectionate humour, dry humour, warmth. Say what it must not become ("not an angry caricature").
-9. **The protected choice**, word for word from the board: "The hand must visibly cross the screen boundary."
+1. **The style:** this ad's own style from its board row (`levels.md`, Style), described concretely: medium, lighting, finish ("glossy 3D render, soft studio light, glass and chrome"; "phone photo, daylight, slightly off-centre"). Never carried over from another ad.
+2. **The layout** (close and balanced): the template described exactly, as the find-references step recorded it: block positions and rough sizes, background, product position and scale, each text slot's position, length and weight.
+3. **The event:** what physically happens. Use the board's visual-idea line, expanded. At close, this is the template's own scene with our product in it.
+4. **Setting and camera**, as the style needs: where, from what angle, what surface or background.
+5. **Props that explain the situation**, if the style uses any, and only those. "No generic spice piles."
+6. **Where the product sits and how big** ("standing right foreground, about a third of the image height, label facing camera").
+7. **People**, if any: age range, look, expression, what they are doing. A generated person is never presented as a customer.
+8. **Exact copy, in its slots:** each line in quotes, placed where its slot is: the template's text slots at close and balanced, the brand's own text style at bold (`levels.md`). Only the slots the source has.
+9. **Tone:** affectionate humour, dry humour, warmth. Say what it must not become ("not an angry caricature").
+10. **The protected choice**, word for word from the board: "The hand must visibly cross the screen boundary."
 
 ## 4. Ratios
 

@@ -10,7 +10,7 @@ checks, fix-and-adjust) follows it.
 | [templates/](templates/) | One template for each harness file. Comments explain every field. The templates are also the schema the validator checks against |
 | [validate.py](validate.py) | Checks an `ads/` folder against the templates and rules. Python standard library only |
 | [examples/sample-brand/ads/](examples/sample-brand/ads/) | A fictional brand with one live campaign and one in strategy. It validates |
-| [tests/](tests/) | `python3 -m unittest discover tests`. The sample passes, and each rule has fixtures that must fail |
+| `tests/` (goose-skills repo only; not installed) | `python3 -m unittest discover tests`. The sample passes, and each rule has fixtures that must fail |
 
 The harness layout, wherever the mode's adapter keeps the brand's `ads/` folder:
 

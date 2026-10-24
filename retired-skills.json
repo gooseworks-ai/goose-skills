@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "legacy_revision": "caa9dbf17fa844adce5bba77acff9ca5d15b86ef",
-  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved by Akhil 2026-10-23. The old skills stay readable at tag legacy-gtm-final.",
+  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved 2026-10-23. The old skills stay readable at tag legacy-gtm-final. Shared skills (skills/shared/) are the skills used across families: current_shared lists the current ones, retained the older ones still needed, each with its users (used_by) and when it can go (remove_when). Approved 2026-10-24.",
   "retired": [
     {
       "slug": "battlecard-generator",
@@ -1007,153 +1007,340 @@
       "slug": "video-production",
       "replacement": null,
       "reason": "This old local video pack was retired; video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "ad-to-landing-page-auditor",
+      "replacement": "analyze-performance",
+      "reason": "Retired 24 Oct 2026: only the prose of three Meta skills mentioned it. analyze-performance's diagnose step checks page and message match (product, promise, offer, price) for the top winners and losers, and run-paid-campaigns' health gate checks landing pages before spend."
+    },
+    {
+      "slug": "google-ad-scraper",
+      "replacement": "research-competitors",
+      "reason": "Retired 24 Oct 2026: it existed only for ad-to-landing-page-auditor. research-competitors searches every ad library (Google's Ads Transparency Center included) for each main rival."
+    },
+    {
+      "slug": "ugc-video-formats",
+      "replacement": null,
+      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug: npx goose-skills install create-video-seedance-2-fal, npx goose-skills install review-ugc-render."
+    },
+    {
+      "slug": "video-ad-formats",
+      "replacement": null,
+      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug (npx goose-skills install <slug>): create-imessage-mockup, create-chatgpt-mockup, create-apple-notes-mockup, render-ios-keyboard, stitch-videos-ffmpeg, mix-master, watch."
     }
   ],
   "retained": [
     {
       "slug": "ad-angle-miner",
-      "reason": "Kept: write-video-ad-script requires it.",
+      "reason": "write-video-ad-script requires it to mine ad angles before it writes a script.",
+      "used_by": [
+        {
+          "skill": "write-video-ad-script"
+        }
+      ],
       "remove_when": "write-video-ad-script stops requiring it"
     },
     {
       "slug": "ad-campaign-analyzer",
-      "reason": "Kept: gooseworks-app meta-ads-report validates it.",
-      "remove_when": "the meta-ads-report moves to analyze-performance"
+      "reason": "gooseworks-app's meta-ads-report playbook installs it (its skills: list).",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/playbooks/meta-ads-report/playbook.yaml"
+        }
+      ],
+      "remove_when": "the meta-ads-report playbook stops listing it (it moves to analyze-performance)"
     },
     {
       "slug": "ad-lead-quality-analyzer",
-      "reason": "Kept: gooseworks-app meta-ads-report validates it.",
-      "remove_when": "the meta-ads-report moves to analyze-performance"
+      "reason": "gooseworks-app's meta-ads-report playbook installs it (its skills: list).",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/playbooks/meta-ads-report/playbook.yaml"
+        }
+      ],
+      "remove_when": "the meta-ads-report playbook stops listing it (it moves to analyze-performance)"
     },
     {
       "slug": "ad-management-intake",
-      "reason": "Kept: meta-ad-manager hands off to it.",
+      "reason": "meta-ad-manager requires it for the launch intake.",
+      "used_by": [
+        {
+          "skill": "meta-ad-manager"
+        }
+      ],
       "remove_when": "meta-ad-manager is removed"
     },
     {
-      "slug": "ad-to-landing-page-auditor",
-      "reason": "Kept: the Meta ad skills pair with it for landing-page message match.",
-      "remove_when": "the Meta ad skills are removed"
-    },
-    {
       "slug": "ads-north-star-strategy",
-      "reason": "Kept: meta-ad-manager hands off to it.",
+      "reason": "meta-ad-manager requires it for the account strategy.",
+      "used_by": [
+        {
+          "skill": "meta-ad-manager"
+        }
+      ],
       "remove_when": "meta-ad-manager is removed"
     },
     {
       "slug": "answer-ads-questions",
-      "reason": "Kept: meta-ad-manager hands off to it.",
+      "reason": "meta-ad-manager requires it for account questions.",
+      "used_by": [
+        {
+          "skill": "meta-ad-manager"
+        }
+      ],
       "remove_when": "meta-ad-manager is removed"
     },
     {
       "slug": "brand-research",
-      "reason": "Kept: remix-graphic-ad-from-reference requires it; gooseworks-app brand research runs it in a sandbox.",
+      "reason": "remix-graphic-ad-from-reference requires it; gooseworks-app's deep brand research runs it in the sandbox.",
+      "used_by": [
+        {
+          "skill": "remix-graphic-ad-from-reference"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/ad-brand-research.service.ts"
+        }
+      ],
       "remove_when": "both stop using it"
     },
     {
       "slug": "comment-mining",
-      "reason": "Kept: ad-angle-miner requires it.",
-      "remove_when": "ad-angle-miner is removed"
+      "reason": "ad-angle-miner and brand-research require it.",
+      "used_by": [
+        {
+          "skill": "ad-angle-miner"
+        },
+        {
+          "skill": "brand-research"
+        }
+      ],
+      "remove_when": "neither requires it"
     },
     {
       "slug": "company-contact-finder",
-      "reason": "Kept: gooseworks-app imports it as a workspace starter skill.",
-      "remove_when": "the starter list changes"
+      "reason": "gooseworks-app imports it as a workspace starter skill.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/predefined-skills.service.ts"
+        }
+      ],
+      "remove_when": "the starter list drops it"
     },
     {
       "slug": "competitor-ad-intelligence",
-      "reason": "Kept: ad-angle-miner requires it; gooseworks-app meta-ads-report validates it.",
-      "remove_when": "both stop using it"
+      "reason": "ad-angle-miner and brand-research require it; gooseworks-app's meta-ads-report playbook installs it.",
+      "used_by": [
+        {
+          "skill": "ad-angle-miner"
+        },
+        {
+          "skill": "brand-research"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/playbooks/meta-ads-report/playbook.yaml"
+        }
+      ],
+      "remove_when": "all three stop using it"
     },
     {
       "slug": "get-brand-assets",
-      "reason": "Kept: goose-studio video recipes list it as an atom.",
-      "remove_when": "no recipe lists it"
-    },
-    {
-      "slug": "google-ad-scraper",
-      "reason": "Kept: ad-to-landing-page-auditor requires it.",
-      "remove_when": "ad-to-landing-page-auditor is removed"
-    },
-    {
-      "slug": "goose-graphics",
-      "reason": "Kept: remix-graphic-ad-from-reference and run-organic-social render with it; the CLI installs it with --with.",
-      "remove_when": "never: it is a current skill"
-    },
-    {
-      "slug": "goose-graphics-create-format",
-      "reason": "Kept: goose-graphics companion for new canvases.",
-      "remove_when": "goose-graphics drops it"
-    },
-    {
-      "slug": "goose-graphics-create-style",
-      "reason": "Kept: goose-graphics companion for new styles.",
-      "remove_when": "goose-graphics drops it"
+      "reason": "goose-studio video recipes list it as an atom.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "file": "one-shot-videos/create-ai-testimonial-montage-video-from-refs/recipe.json"
+        }
+      ],
+      "remove_when": "no goose-studio recipe lists it"
     },
     {
       "slug": "hacker-news-scraper",
-      "reason": "Kept: gooseworks-app skill-matcher routes to it.",
+      "reason": "gooseworks-app's skill-matcher routes to it.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/skill-matcher.service.ts"
+        }
+      ],
       "remove_when": "the matcher routes to marketing-data-access"
     },
     {
       "slug": "job-posting-intent",
-      "reason": "Kept: gooseworks-app imports it as a workspace starter skill.",
-      "remove_when": "the starter list changes"
+      "reason": "gooseworks-app imports it as a workspace starter skill.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/predefined-skills.service.ts"
+        }
+      ],
+      "remove_when": "the starter list drops it"
     },
     {
       "slug": "launch-meta-ad-campaign",
-      "reason": "Kept: gooseworks-app skill-matcher and meta-ads-report use it.",
+      "reason": "meta-ad-manager and ads-north-star-strategy require it; gooseworks-app's skill-matcher routes to it.",
+      "used_by": [
+        {
+          "skill": "meta-ad-manager"
+        },
+        {
+          "skill": "ads-north-star-strategy"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/skill-matcher.service.ts"
+        }
+      ],
       "remove_when": "the Ads coworker moves to run-paid-campaigns"
     },
     {
       "slug": "lead-qualification",
-      "reason": "Kept: gooseworks-app skill-matcher routes to it.",
+      "reason": "gooseworks-app's skill-matcher routes to it.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/skill-matcher.service.ts"
+        }
+      ],
       "remove_when": "the matcher routes to research-audience"
     },
     {
       "slug": "linkedin-profile-post-scraper",
-      "reason": "Kept: gooseworks-app skill-matcher routes to it and imports it as a workspace starter skill.",
+      "reason": "gooseworks-app's skill-matcher routes to it and imports it as a workspace starter skill.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/skill-matcher.service.ts"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/predefined-skills.service.ts"
+        }
+      ],
       "remove_when": "the app stops using it"
     },
     {
       "slug": "meta-ad-manager",
-      "reason": "Kept: gooseworks-app Ads coworker loads it for Meta launches (skill-matcher, ads-coworker-chat).",
+      "reason": "gooseworks-app's Ads coworker loads it for Meta launches.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/ads-coworker-chat.service.ts"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/skill-matcher.service.ts"
+        }
+      ],
       "remove_when": "the Ads coworker moves to run-paid-campaigns"
     },
     {
       "slug": "meta-ad-policy-checker",
-      "reason": "Kept: gooseworks-app meta-ads-report validates it.",
-      "remove_when": "the meta-ads-report moves to ad-policy-check"
+      "reason": "gooseworks-app's meta-ads-report playbook installs it (its skills: list).",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/playbooks/meta-ads-report/playbook.yaml"
+        }
+      ],
+      "remove_when": "the meta-ads-report playbook stops listing it (it moves to ad-policy-check)"
     },
     {
       "slug": "meta-ads-analyzer",
-      "reason": "Kept: gooseworks-app skill-matcher and meta-ads-report use it.",
-      "remove_when": "the meta-ads-report moves to analyze-performance"
+      "reason": "gooseworks-app's meta-ads-report playbook installs it and its skill-matcher routes to it.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/playbooks/meta-ads-report/playbook.yaml"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/skill-matcher.service.ts"
+        }
+      ],
+      "remove_when": "the meta-ads-report playbook moves to analyze-performance"
     },
     {
       "slug": "product-photoshoot",
-      "reason": "Kept: remix-graphic-ad-from-reference requires it.",
+      "reason": "remix-graphic-ad-from-reference requires it.",
+      "used_by": [
+        {
+          "skill": "remix-graphic-ad-from-reference"
+        }
+      ],
       "remove_when": "remix-graphic-ad-from-reference stops requiring it"
     },
     {
       "slug": "reddit-post-finder",
-      "reason": "Kept: ad-angle-miner requires it.",
+      "reason": "ad-angle-miner requires it.",
+      "used_by": [
+        {
+          "skill": "ad-angle-miner"
+        }
+      ],
       "remove_when": "ad-angle-miner is removed"
     },
     {
       "slug": "remix-graphic-ad-from-reference",
-      "reason": "Kept: goose-studio video recipes make end cards with it; gooseworks-app ads remix chat loads it.",
+      "reason": "goose-studio video recipes make end cards with it; gooseworks-app's ads remix chat loads it.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "file": "one-shot-videos/create-ugc-product-video-from-refs/recipe.json"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/ads-remix-chat.service.ts"
+        }
+      ],
       "remove_when": "both stop using it"
     },
     {
       "slug": "scrapecreators-api",
-      "reason": "Kept: ad-angle-miner requires it.",
-      "remove_when": "ad-angle-miner is removed"
+      "reason": "ad-angle-miner, comment-mining, competitor-ad-intelligence and transcript-intelligence require it.",
+      "used_by": [
+        {
+          "skill": "ad-angle-miner"
+        },
+        {
+          "skill": "comment-mining"
+        },
+        {
+          "skill": "competitor-ad-intelligence"
+        },
+        {
+          "skill": "transcript-intelligence"
+        }
+      ],
+      "remove_when": "none of them requires it"
     },
     {
       "slug": "transcript-intelligence",
-      "reason": "Kept: ad-angle-miner requires it.",
-      "remove_when": "ad-angle-miner is removed"
+      "reason": "competitor-ad-intelligence requires it for video-ad transcripts.",
+      "used_by": [
+        {
+          "skill": "competitor-ad-intelligence"
+        }
+      ],
+      "remove_when": "competitor-ad-intelligence stops requiring it"
+    }
+  ],
+  "current_shared": [
+    {
+      "slug": "goose-graphics",
+      "reason": "The HTML-to-PNG graphics renderer: remix-graphic-ad-from-reference requires it, the gooseworks router routes to it and run-organic-social renders with it."
+    },
+    {
+      "slug": "goose-graphics-create-format",
+      "reason": "goose-graphics companion that adds a new canvas format."
+    },
+    {
+      "slug": "goose-graphics-create-style",
+      "reason": "goose-graphics companion that adds a new visual style."
     }
   ]
 }

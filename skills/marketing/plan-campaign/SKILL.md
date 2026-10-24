@@ -10,7 +10,7 @@ description: >-
   no campaign, budget or date — use where-to-start; not for pausing ads on a sold-out product — use
   run-paid-campaigns; not for an email-only send plan — use email-lifecycle; not for reading this
   week's numbers — use analyze-performance.
-version: 0.1.3
+version: 0.1.4
 ---
 
 # plan-campaign

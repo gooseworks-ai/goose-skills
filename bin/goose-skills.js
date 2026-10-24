@@ -12,38 +12,32 @@
  */
 
 const https = require('https');
-const fs = require('fs');
-const path = require('path');
-const {
-  parseInstallOptions,
-  successorInstallCommand,
-  placeForCodex,
-  placeForCursor,
-} = require('./lib/targets');
-const { getToolFiles } = require('./lib/tool-files');
-// requires_tools names that are programs on the user's machine, not shared files.
-const PROGRAM_TOOLS = new Set(['python3', 'python', 'ffmpeg', 'ffprobe', 'node', 'npm', 'npx', 'git', 'playwright', 'chromium']);
+const { parseInstallOptions } = require('./lib/targets');
+const { installSkill } = require('./lib/install');
 
 const REPO = 'gooseworks-ai/goose-skills';
 const BRANCH = 'main';
 const RAW_BASE = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
-const INDEX_URL = `${RAW_BASE}/skills-index.json`;
 
+// Resolves with the response body as a Buffer: files are written byte for byte,
+// so images, fonts and audio survive.
 function fetch(url) {
   return new Promise((resolve, reject) => {
     const get = (u) => {
       https.get(u, { headers: { 'User-Agent': 'goose-skills-cli' } }, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-          get(res.headers.location);
+          res.resume();
+          get(new URL(res.headers.location, u).toString());
           return;
         }
         if (res.statusCode !== 200) {
+          res.resume();
           reject(new Error(`HTTP ${res.statusCode} for ${u}`));
           return;
         }
-        let data = '';
-        res.on('data', (chunk) => (data += chunk));
-        res.on('end', () => resolve(data));
+        const chunks = [];
+        res.on('data', (chunk) => chunks.push(chunk));
+        res.on('end', () => resolve(Buffer.concat(chunks)));
       }).on('error', reject);
     };
     get(url);
@@ -52,8 +46,7 @@ function fetch(url) {
 
 async function fetchIndex() {
   try {
-    const data = await fetch(INDEX_URL);
-    return JSON.parse(data);
+    return JSON.parse((await fetch(`${RAW_BASE}/skills-index.json`)).toString('utf8'));
   } catch (err) {
     console.error(`Failed to fetch skill index: ${err.message}`);
     console.error('Make sure you have internet access.');
@@ -61,230 +54,10 @@ async function fetchIndex() {
   }
 }
 
-function getInstallDir(slug) {
-  const home = process.env.HOME || process.env.USERPROFILE;
-  return path.join(home, '.claude', 'skills', slug);
-}
-
-function getCodexSkillsRoot() {
-  const home = process.env.HOME || process.env.USERPROFILE;
-  return path.join(home, '.codex', 'skills');
-}
-
-async function downloadSkillFiles(skill, installDir) {
-  let downloaded = 0;
-  for (const filePath of skill.files) {
-    const url = `${RAW_BASE}/${filePath}`;
-    const localPath = path.join(installDir, path.relative(skill.path, filePath));
-    const localDir = path.dirname(localPath);
-
-    fs.mkdirSync(localDir, { recursive: true });
-
-    try {
-      const content = await fetch(url);
-      fs.writeFileSync(localPath, content);
-      downloaded++;
-      console.log(`    ${path.relative(installDir, localPath)}`);
-    } catch (err) {
-      console.error(`    [FAILED] ${filePath}: ${err.message}`);
-    }
-  }
-
-  // Download shared tools if requires_tools is declared
-  const requiresTools = skill.metadata?.requires_tools || [];
-  for (const toolName of requiresTools) {
-    const toolFiles = getToolFiles(toolName);
-    // Programs the skill runs (python3, ffmpeg…) are the user's to have, not files to copy.
-    if (!toolFiles && PROGRAM_TOOLS.has(toolName)) continue;
-    if (!toolFiles) {
-      throw new Error(
-        `Skill "${skill.slug}" requires unknown shared tool "${toolName}". ` +
-        'Add it to bin/lib/tool-files.js before publishing the skill.',
-      );
-    }
-    for (const toolPath of toolFiles) {
-      const url = `${RAW_BASE}/${toolPath}`;
-      const localPath = path.join(installDir, toolPath);
-      const localDir = path.dirname(localPath);
-      fs.mkdirSync(localDir, { recursive: true });
-      try {
-        const content = await fetch(url);
-        fs.writeFileSync(localPath, content);
-        downloaded++;
-        console.log(`    ${toolPath} (shared tool)`);
-      } catch (err) {
-        console.error(`    [FAILED] ${toolPath}: ${err.message}`);
-      }
-    }
-  }
-
-  return downloaded;
-}
-
-async function installPack(pack, options) {
-  const { target, projectDir } = options;
-
-  console.log(`Installing pack "${pack.name}" (${pack.skills.length} skills)...\n`);
-
-  // Download shared files once
-  const sharedContents = {};
-  for (const sharedPath of pack.shared_files || []) {
-    const url = `${RAW_BASE}/${sharedPath}`;
-    try {
-      sharedContents[path.basename(sharedPath)] = await fetch(url);
-    } catch (err) {
-      console.error(`  [WARN] Could not fetch shared file ${sharedPath}: ${err.message}`);
-    }
-  }
-
-  for (const subSkill of pack.skills) {
-    const installDir = getInstallDir(subSkill.slug);
-    const isRegistry = subSkill.source === 'registry';
-    const label = isRegistry ? `${subSkill.slug} (registry)` : subSkill.slug;
-    console.log(`  ${label} → ${installDir}`);
-    fs.mkdirSync(installDir, { recursive: true });
-
-    await downloadSkillFiles(subSkill, installDir);
-
-    // Copy shared files into pack-local skills only (registry skills are self-contained)
-    if (!isRegistry) {
-      for (const [filename, content] of Object.entries(sharedContents)) {
-        fs.writeFileSync(path.join(installDir, filename), content);
-        console.log(`    ${filename} (shared)`);
-      }
-    }
-
-    if (target === 'codex') {
-      placeForCodex(installDir, getCodexSkillsRoot());
-    } else if (target === 'cursor') {
-      placeForCursor(installDir, projectDir);
-    }
-  }
-
-  console.log(`\nInstalled ${pack.skills.length} skills from pack "${pack.name}".`);
-
-  if (target === 'codex') {
-    console.log('\nNext step (Codex):');
-    console.log('  Restart Codex to pick up the new skills.');
-  } else if (target === 'cursor') {
-    console.log('\nNext step (Cursor):');
-    console.log('  Open Cursor in that project to load the new rules.');
-  } else {
-    console.log(`\nNext step (Claude Code):`);
-    for (const subSkill of pack.skills) {
-      console.log(`  cp -r ${getInstallDir(subSkill.slug)}/SKILL.md .claude/skills/${subSkill.slug}.md`);
-    }
-  }
-}
-
-async function installSkill(options) {
-  const { slug, target, projectDir } = options;
-  const index = await fetchIndex();
-
-  const retired = (index.retired_skills || []).find((entry) => entry.slug === slug);
-  if (retired) {
-    if (!retired.replacement) throw new Error(`Skill "${slug}" was removed from the catalog. ${retired.reason}`);
-    throw new Error(`Skill "${slug}" was retired. Use "${retired.replacement}" instead: ${successorInstallCommand(retired.replacement, options)}`);
-  }
-
-  // Check packs first
-  const pack = (index.packs || []).find((p) => p.slug === slug);
-  if (pack) {
-    return installPack(pack, options);
-  }
-
-  const skill = index.skills.find((s) => s.slug === slug);
-
-  if (!skill) {
-    console.error(`Skill "${slug}" not found.`);
-    console.error(`Run "npx goose-skills list" to see available skills.`);
-    process.exit(1);
-  }
-
-  // Auto-install dependency skills (requires_skills)
-  const requiresSkills = skill.metadata?.requires_skills || [];
-  const installedDeps = [];
-  if (requiresSkills.length > 0) {
-    console.log(`\nInstalling ${requiresSkills.length} dependency skill(s) first...\n`);
-    for (const depSlug of requiresSkills) {
-      const depSkill = index.skills.find((s) => s.slug === depSlug);
-      if (!depSkill) {
-        console.error(`  [WARN] Dependency "${depSlug}" not found in index, skipping.`);
-        continue;
-      }
-      const depDir = getInstallDir(depSlug);
-      if (fs.existsSync(path.join(depDir, 'SKILL.md'))) {
-        console.log(`  ${depSlug} — already installed`);
-        installedDeps.push(depSlug);
-        continue;
-      }
-      console.log(`  ${depSlug} → ${depDir}`);
-      fs.mkdirSync(depDir, { recursive: true });
-      await downloadSkillFiles(depSkill, depDir);
-      installedDeps.push(depSlug);
-
-      if (target === 'codex') {
-        placeForCodex(depDir, getCodexSkillsRoot());
-      } else if (target === 'cursor') {
-        placeForCursor(depDir, projectDir);
-      }
-    }
-    console.log('');
-  }
-
-  const installDir = getInstallDir(slug);
-  console.log(`Installing ${skill.name} to ${installDir}...`);
-
-  // Create install directory
-  fs.mkdirSync(installDir, { recursive: true });
-
-  const downloaded = await downloadSkillFiles(skill, installDir);
-
-  console.log(`\nInstalled ${downloaded}/${skill.files.length} files.`);
-  if (installedDeps.length > 0) {
-    console.log(`Dependencies installed: ${installedDeps.join(', ')}`);
-  }
-  console.log(`Primary location: ${installDir}`);
-
-  if (target === 'codex') {
-    const codexDir = placeForCodex(installDir, getCodexSkillsRoot());
-    console.log(`Codex location: ${codexDir}`);
-    console.log('\nNext step (Codex):');
-    console.log('  Restart Codex to pick up the new skill.');
-    return;
-  }
-
-  if (target === 'cursor') {
-    const cursorRule = placeForCursor(installDir, projectDir);
-    console.log(`Cursor rule: ${cursorRule}`);
-    console.log('\nNext step (Cursor):');
-    console.log('  Open Cursor in that project so it can load the new rule.');
-    return;
-  }
-
-  console.log(`\nNext step (Claude Code):`);
-  console.log(`  cp -r ${installDir}/SKILL.md .claude/skills/${slug}.md`);
-  console.log(`  # Or reference directly: ${installDir}/SKILL.md`);
-}
-
 async function listSkills() {
   const index = await fetchIndex();
-  const packs = index.packs || [];
 
-  console.log(`Available skills (${index.skills.length}) and packs (${packs.length}):\n`);
-
-  // List packs first
-  if (packs.length > 0) {
-    console.log(`  PACKS (${packs.length})`);
-    for (const pack of packs) {
-      const desc = pack.description.length > 70
-        ? pack.description.slice(0, 67) + '...'
-        : pack.description;
-      console.log(`    ${pack.slug.padEnd(35)} ${desc}`);
-      console.log(`      Skills: ${pack.skills.map((s) => s.slug).join(', ')}`);
-    }
-    console.log('');
-  }
+  console.log(`Available skills (${index.skills.length}):\n`);
 
   const categories = {};
   for (const skill of index.skills) {
@@ -309,30 +82,10 @@ async function listSkills() {
 async function showInfo(slug) {
   const index = await fetchIndex();
   const skill = index.skills.find((s) => s.slug === slug);
-  const pack = (index.packs || []).find((p) => p.slug === slug);
 
-  if (!skill && !pack) {
+  if (!skill) {
     console.error(`Skill "${slug}" not found.`);
     process.exit(1);
-  }
-
-  if (pack) {
-    const totalFiles = pack.skills.reduce((sum, s) => sum + s.files.length, 0);
-    console.log(`${pack.name} (pack)`);
-    console.log(`${'='.repeat(pack.name.length + 7)}`);
-    console.log(`Description: ${pack.description}`);
-    if (pack.tags) console.log(`Tags: ${pack.tags}`);
-    console.log(`Files: ${totalFiles} across ${pack.skills.length} skills`);
-    console.log(`\nSkills (${pack.skills.length}):`);
-    for (const s of pack.skills) {
-      const desc = s.description.length > 60
-        ? s.description.slice(0, 57) + '...'
-        : s.description;
-      console.log(`  ${s.slug.padEnd(25)} ${desc}`);
-    }
-    console.log(`\nInstall all: npx goose-skills install ${pack.slug}`);
-    console.log(`GitHub: https://github.com/${REPO}/tree/${BRANCH}/${pack.path}`);
-    return;
   }
 
   console.log(`${skill.name}`);
@@ -352,10 +105,19 @@ switch (command) {
   case 'install':
     try {
       const options = parseInstallOptions(args);
-      installSkill(options).catch((err) => {
-        console.error(err.message);
-        process.exit(1);
-      });
+      installSkill(options, { fetch, rawBase: RAW_BASE, home: process.env.HOME || process.env.USERPROFILE })
+        .then((result) => {
+          if (!result) {
+            console.error(`Skill "${options.slug}" not found.`);
+            console.error('Run "npx goose-skills list" to see available skills.');
+            process.exit(1);
+          }
+          if (result.failed) process.exitCode = 1;
+        })
+        .catch((err) => {
+          console.error(err.message);
+          process.exit(1);
+        });
     } catch (err) {
       console.error(err.message);
       console.error('Usage: npx goose-skills install <slug> [--claude|--codex|--cursor] [--project-dir <path>]');
@@ -375,14 +137,13 @@ switch (command) {
   default:
     console.log('goose-skills — GooseWorks marketing playbooks and video skills for your coding agent\n');
     console.log('Commands:');
-    console.log('  install <slug>   Install a skill or skill pack');
-    console.log('  list             List available skills and packs');
-    console.log('  info <slug>      Show skill or pack details');
+    console.log('  install <slug>   Install a skill and the skills it requires');
+    console.log('  list             List available skills');
+    console.log('  info <slug>      Show skill details');
     console.log('\nExamples:');
     console.log('  npx goose-skills list');
     console.log('  npx goose-skills install research-competitors');
     console.log('  npx goose-skills install make-static-ads --codex');
     console.log('  npx goose-skills install research-market --cursor --project-dir /path/to/project');
-    console.log('  npx goose-skills install video-ad-formats          # Install a skill pack');
     break;
 }

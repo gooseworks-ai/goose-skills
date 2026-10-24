@@ -12,7 +12,7 @@ python3 -m pip install pillow            # if not present
 mkdir -p /tmp/imsg-cascade-smoke
 # Point config.json at a real plate: copy config.example.json → config.json and set
 # "plate" to any 1080x1920 PNG of a phone lying face-up (lock screen on, no notification), and
-# fill in end_card.{line1,line2,wordmark_text,url,accent}. Run --no-audio to stay $0.
+# fill in end_card.{line1,line2,wordmark_text,url,accent}. Run --no-audio to stay free.
 cp config.example.json /tmp/imsg-cascade-smoke/config.json
 ```
 

@@ -1,6 +1,6 @@
 # render-split-screen-creator scripts — the FREE assembly
 
-`render-split-screen-creator` is the **deterministic, $0 assembly + captions
+`render-split-screen-creator` is the **deterministic, free assembly + captions
 stage** of the split-screen creator format. The paid stages (the VO, the
 gpt-image creator anchor, and the VEED Fabric 1.0 whole-VO lip-sync) are separate,
 upstream steps — `create-vo-elevenlabs`, `create-image-gpt-image-fal`, and a
@@ -8,10 +8,10 @@ paid **VEED Fabric lip-sync (a no-atom step)**. This capability spends nothing �
 it takes the creator lip-sync take + the per-scene VO timing + one 16:9 top clip
 per scene + the scene-1 hook graphic + the end-card clip and stitches the finished
 master. Re-cuts (re-timed windows, a swapped blurred-fill, new caption chunking, a
-restyle, a longer end-card hold) reuse the existing VO / lip-sync / clips and cost
-**$0**.
+restyle, a longer end-card hold) reuse the existing VO / lip-sync / clips and spend
+nothing.
 
-`config.example.json` is one worked example (Perplexity concept-10 "Bloomberg
+`config.example.json` is one worked example (Askwell concept-10 "Bloomberg
 terminal", ~40s 1080×1920). Its creator, voice, script, divider colour and
 caption style were that build's choices — copy the structure, not the values. `PIPELINE.md` maps every config block to its source
 step. This README documents the FREE assembly pieces that

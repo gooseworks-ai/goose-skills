@@ -4,11 +4,11 @@ How each `config.example.json` field maps to the source generation step. This mo
 ships as **config + documentation**, not a rebuilt runnable Higgsfield harness — the six
 clips are fired through Higgsfield Marketing Studio (CLI/MCP), which reserves credits
 server-side. The real render/assembly scripts live in the source project:
-`clients/Primally pure/ad-runs/run-03-run-03/working/` (`render_clips.py`,
+the source run's `working/` (`render_clips.py`,
 `render_endcard.py`, `build_master.py`) and `production/` (`scene-contract.json`,
 `generation-jobs.json`, `audio-plan.json`).
 
-> **Worked example, not the format.** Everything named below — Primally Pure, the three
+> **Worked example, not the format.** Everything named below — Wildroot Pure, the three
 > scents, the pilates / spa / farmers-market worlds, the "FIND YOUR DAILY." headline, the
 > acoustic music — is the demo's build. For a new video the worlds, look and music come from
 > the recipe's `choices` (`worlds`, `visual_style`, `music`); product names, copy and URL
@@ -20,7 +20,7 @@ server-side. The real render/assembly scripts live in the source project:
 > `product_image`) → `create-video-fal` (Kling 3.0 i2v); its `config.keyframe` / `config.i2v`
 > / `config.worlds[*].*_keyframe_prompt` / `*_i2v_prompt` fields are the live schema.
 
-## The 3×3 grid — worked example (Primally Pure, from `idea-brief.md`)
+## The 3×3 grid — worked example (Wildroot Pure, from `idea-brief.md`)
 
 The format's core IP: three products/variants, each locked to its own **world + palette +
 companion prop**, so variant identity is carried by the *set*, not by product color. The
@@ -68,7 +68,7 @@ so the two worlds don't read as the same scent.
     `-webkit-text-stroke`, rise-in animation. Approved brand copy only.
   - `overlay.scent_labels[]` — three handwritten Caveat-font product/variant labels, each with a
     hand-drawn SVG arrow (staggered `drawArrow` animation) pointing to its bottle.
-  - `overlay.wordmark` (demo: "PRIMALLY / PURE") (Playfair Display, two rows) + `url`.
+  - `overlay.wordmark` (demo: "WILDROOT / PURE") (Playfair Display, two rows) + `url`.
   - Text animates across ~0–2.4s, then a ~0.6s hold (`scene-contract.json` S07).
 - **Rule:** the end-card text is HTML-composited, NEVER AI-rendered. NB2 = background only.
 
@@ -103,4 +103,4 @@ so the two worlds don't read as the same scent.
   the imported product refs (UUIDs + CloudFront media).
 - `working/endcard/{endcard.html, nb2_result.json}` — the overlay + the NB2 background job.
 - `working/{render_clips,render_endcard,build_master}.py` — the real render/assembly code.
-- `idea-brief.md` — the 3×3 grid + guardrails + the Touchland-departure table.
+- `idea-brief.md` — the 3×3 grid + guardrails + the departure-from-reference table.

@@ -1,8 +1,8 @@
 {
-  "_comment": "Worked example (the Perplexity concept-10 'Bloomberg terminal' build). Creative fields — creator.brief.*, creator.voice, creator.lipsync_output, voiceover.outputs.*, scenes[].vo / top_visual, captions.style / ass_sidecar, plus the brand identity (brand_name, campaign, title, layout.divider_color, endcard) — come from the calling recipe's choices (creator_gender, creator_age, creator_look, setting, tone, caption_style) and the user's brand; never copy them as defaults. Copy the STRUCTURE to config.json and fill it for this brand. A ~40s 9:16 two-zone ad where an AI creator anchor (VEED Fabric lip-sync) fills the bottom ~48% and real Perplexity Computer UI screen-recordings run uncropped in the top ~52%, a 3px brand-color divider between. The creator delivers the WHOLE VO cold-to-camera and each top clip PROVES its VO line's claim. Pipeline: (1) lock the script into 6 scenes + ElevenLabs eleven_v3 with-timestamps VO + per-scene timing.json; (2) gpt-image creator anchor + ONE VEED Fabric 1.0 @720p lip-sync take of the whole VO (~$5.90); (3) source 16:9 top clips + the scene-1 hook graphic; (4) assemble.py two-zone composite (contain-fit + blurred-cover fill + 3px divider + creator slice), hard-concat + end card; (5) transcribe the ASSEMBLED cut + burn serif-accent word captions. Master 1080x1920 h264+aac 30fps, ~40.37s. See scripts/PIPELINE.md + clients/perplexity/ads/concept-10-bloomberg-terminal/HOW_TO.md.",
-  "brand_name": "Perplexity",
-  "campaign": "Perplexity Computer",
-  "title": "Perplexity Computer — the analyst that just does it",
+  "_comment": "Worked example (the Askwell concept-10 'Bloomberg terminal' build). Creative fields — creator.brief.*, creator.voice, creator.lipsync_output, voiceover.outputs.*, scenes[].vo / top_visual, captions.style / ass_sidecar, plus the brand identity (brand_name, campaign, title, layout.divider_color, endcard) — come from the calling recipe's choices (creator_gender, creator_age, creator_look, setting, tone, caption_style) and the user's brand; never copy them as defaults. Copy the STRUCTURE to config.json and fill it for this brand. A ~40s 9:16 two-zone ad where an AI creator anchor (VEED Fabric lip-sync) fills the bottom ~48% and real Askwell Computer UI screen-recordings run uncropped in the top ~52%, a 3px brand-color divider between. The creator delivers the WHOLE VO cold-to-camera and each top clip PROVES its VO line's claim. Pipeline: (1) lock the script into 6 scenes + ElevenLabs eleven_v3 with-timestamps VO + per-scene timing.json; (2) gpt-image creator anchor + ONE VEED Fabric 1.0 @720p lip-sync take of the whole VO (paid, the largest spend); (3) source 16:9 top clips + the scene-1 hook graphic; (4) assemble.py two-zone composite (contain-fit + blurred-cover fill + 3px divider + creator slice), hard-concat + end card; (5) transcribe the ASSEMBLED cut + burn serif-accent word captions. Master 1080x1920 h264+aac 30fps, ~40.37s. See scripts/PIPELINE.md.",
+  "brand_name": "Askwell",
+  "campaign": "Askwell Computer",
+  "title": "Askwell Computer — the analyst that just does it",
   "width": 1080,
   "height": 1920,
   "fps": 30,
@@ -21,7 +21,7 @@
     "bottom_fit": "cover-crop-top"
   },
   "creator": {
-    "_comment": "ONE AI-creator anchor lip-synced to the WHOLE VO in ONE VEED Fabric 1.0 take @ 720p (480p reads soft). THE ANCHOR MUST BE a PHOTOREAL, candid MEDIUM chest-up shot at natural webcam distance (whole head with headroom + shoulders + upper chest, real lived-in room, anti-AI skin cues) — NOT a plain-background close-up headshot (reads as AI) and NOT a phone-selfie / arm-extended pose copied from another format (wrong for a fixed talking-head, and too-close can't be reframed). Watch the source video and match its creator distance. gpt-image-2, quality high, 1024x1536. VEED handles photoreal fine. VEED Fabric is a NO-ATOM paid step: image_url = the anchor, audio_url = voiceover/vo-arlo.mp3; ~$0.15/sec (~$5.90 for the 39s VO). Run its calls SEQUENTIALLY with sleep 3 — veed/fabric-1.0 storage-auth 403s under parallel load (trap L1). The example explored a 2nd voice (Brad) which DOUBLED the lip-sync spend (~+$6) — lock the voice first. Re-run VEED only when the anchor IMAGE changes; a crop/zoom tweak is a free re-assemble.",
+    "_comment": "ONE AI-creator anchor lip-synced to the WHOLE VO in ONE VEED Fabric 1.0 take @ 720p (480p reads soft). THE ANCHOR MUST BE a PHOTOREAL, candid MEDIUM chest-up shot at natural webcam distance (whole head with headroom + shoulders + upper chest, real lived-in room, anti-AI skin cues) — NOT a plain-background close-up headshot (reads as AI) and NOT a phone-selfie / arm-extended pose copied from another format (wrong for a fixed talking-head, and too-close can't be reframed). Watch the source video and match its creator distance. gpt-image-2, quality high, 1024x1536. VEED handles photoreal fine. VEED Fabric is a NO-ATOM paid step: image_url = the anchor, audio_url = voiceover/vo-arlo.mp3; billed per second of VO, the largest spend. Run its calls SEQUENTIALLY with sleep 3 — veed/fabric-1.0 storage-auth 403s under parallel load (trap L1). The example explored a 2nd voice, which DOUBLED the lip-sync spend — lock the voice first. Re-run VEED only when the anchor IMAGE changes; a crop/zoom tweak is a free re-assemble.",
     "anchor": "avatar/creator-anchor.png",
     "brief": {
       "_comment": "Asked of the user upstream (choices creator_gender / creator_age / creator_look / setting). These are the demo's answers — never reuse the demo creator.",
@@ -72,8 +72,8 @@
       "start": 6.105,
       "end": 14.725,
       "uses_top_clip": true,
-      "vo": "I gave Perplexity Computer one prompt — basically, is NVIDIA undervalued, pull the comps, build the model, make it visual. And it just went.",
-      "top_visual": "Perplexity Computer taking the one prompt and kicking off — the UI accepts the request and starts working.",
+      "vo": "I gave Askwell Computer one prompt — basically, is NVIDIA undervalued, pull the comps, build the model, make it visual. And it just went.",
+      "top_visual": "Askwell Computer taking the one prompt and kicking off — the UI accepts the request and starts working.",
       "top_clip": "assets/scene-02-clip.mp4",
       "top_start": 0.0,
       "top_end": 8.6,
@@ -124,8 +124,8 @@
       "start": 31.55,
       "end": 39.358,
       "uses_top_clip": true,
-      "vo": "Like, look at that. It didn't explain how I could do the analysis. It didn't give me steps. It just did the whole thing. That's Perplexity Computer.",
-      "top_visual": "The finished dashboard into the Perplexity Computer end card (held on the last SHARP frame ~3s).",
+      "vo": "Like, look at that. It didn't explain how I could do the analysis. It didn't give me steps. It just did the whole thing. That's Askwell Computer.",
+      "top_visual": "The finished dashboard into the Askwell Computer end card (held on the last SHARP frame ~3s).",
       "top_clip": "assets/scene-06-clip.mp4",
       "top_start": 0.0,
       "top_end": 7.8,
@@ -134,7 +134,7 @@
     }
   ],
   "endcard": {
-    "_comment": "The Perplexity Computer end card held on the last SHARP frame ~3s. If the end-card clip fades to black, hold the last sharp second (clip_end), NOT the black tail (trap L4).",
+    "_comment": "The Askwell Computer end card held on the last SHARP frame ~3s. If the end-card clip fades to black, hold the last sharp second (clip_end), NOT the black tail (trap L4).",
     "clip": "assets/scene-06-clip.mp4",
     "clip_end": 7.8,
     "hold_sec": 3.0
@@ -159,6 +159,6 @@
     "vo": { "default": "on", "note": "the creator's ElevenLabs VO IS the audio bed; the lip-sync drives the mouth (no music)" },
     "captions": { "default": "on", "note": "word-level captions burned from the ASSEMBLED cut (in captions.style), tracking the ad timeline not the raw VO" },
     "divider": { "default": "on", "note": "a 3px brand-color divider between the two zones" },
-    "endcard": { "default": "on", "note": "the brand's end card (Perplexity Computer in the demo) held on the last sharp frame ~3s" }
+    "endcard": { "default": "on", "note": "the brand's end card (Askwell Computer in the demo) held on the last sharp frame ~3s" }
   }
 }

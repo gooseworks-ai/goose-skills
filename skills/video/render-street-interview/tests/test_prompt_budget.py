@@ -97,7 +97,7 @@ class PromptBudgetTests(unittest.TestCase):
                 self.assertTrue(any("never blurred and never bokeh" in e for e in
                                     format_spec.lint(missing, guards=guards, prompt_version=3)))
                 self.assertEqual(format_spec.lint(v2, guards=guards, prompt_version=2), [])
-        pouch = brandkit.load("liquid-death-4828")
+        pouch = brandkit.load("grimwater-4828")
         pouch["product"]["noun"] = "pouch"
         pouch["product"]["phrase"] = "product pouch"
         repaired = format_spec.build_prompt(pouch, upright=True, one_mic=True, prompt_version=3)

@@ -1,14 +1,14 @@
 # render-editorial-motion-podcast scripts — the FREE assembly
 
-`render-editorial-motion-podcast` is the **deterministic, $0 assembly stage** of the
-editorial-motion podcast-clip format. The paid stages — the two Whisper calls (~$0.04 each) and
+`render-editorial-motion-podcast` is the **deterministic, free assembly stage** of the
+editorial-motion podcast-clip format. The paid stages — the two Whisper calls and
 the per-beat Nano Banana keyframes — are upstream (`create-image-fal` + a transcription step);
 the real podcast MP3 is clipped from source with free ffmpeg. This capability spends nothing on
 the motion layer: it takes the clipped audio + `words.json` + the per-beat keyframes + the real
 brand wordmark PNG and stitches the finished master. Re-cuts (new beat windows, added micro-cuts,
-re-timed caption ranges, a swapped end card) reuse the existing audio / keyframes and cost **$0**.
+re-timed caption ranges, a swapped end card) reuse the existing audio / keyframes and spend nothing.
 
-`config.example.json` is the worked example (Klarify "Rat Park", ~40.8s 1080×1920; its look pack,
+`config.example.json` is the worked example (Claritude "Rat Park", ~40.8s 1080×1920; its look pack,
 palette and Rat Park metaphor are that demo's answers to the recipe choices — never defaults). `PIPELINE.md`
 maps every config block to its source step. This README documents the FREE assembly pieces that
 `render-editorial-motion-podcast` owns.

@@ -313,7 +313,7 @@ def check_realism(path, n_frames=5):
 def main(argv=None):
     ap = paths.add_run_arg(argparse.ArgumentParser())
     ap.add_argument("--brand", default=None,
-                    help="brand slug in brands/ (default liquid-death). Supplies the scripted "
+                    help="brand slug in brands/ (default grimwater). Supplies the scripted "
                          "lines check I listens for and the take/render names.")
     ap.add_argument("--look", default="subway", help="which of the five treatments to gate")
     ap.add_argument("--edit-map", type=Path, help="single-take recut .plan.json used by build_looks.py")
@@ -833,7 +833,7 @@ def main(argv=None):
         # FALSIFIED by falsify-all.py, which mutes a scripted line and asserts I still fires.
         import difflib
         # Whisper writes spoken numbers as digits. "It has to be at least 30 grams" failed this
-        # check on Olipop episode 1 (0.79 against a scripted "thirty") with the line clearly said.
+        # check on Fizzroot episode 1 (0.79 against a scripted "thirty") with the line clearly said.
         # Spell 0-99 out first, the same fix build_episode._norm carries for captions.
         import re as _re
         import build_episode as _be_num

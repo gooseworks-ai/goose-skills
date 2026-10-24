@@ -3,7 +3,7 @@
 ## Setup
 
 1. Connect GooseWorks **staging** to your agent and link this folder into your agent's skills folder (see the marketing-agent README).
-2. Use a brand in a creator-heavy niche. On staging: **Personal Day** (acne-safe skincare, 7 server-"approved" claims and no sign-off marker, 5 tracked competitors with organic feeds). A pet-supplements brand is the spec's example; any creator-heavy DTC brand works.
+2. Use a brand in a creator-heavy niche. On staging: **Clearday** (acne-safe skincare, 7 server-"approved" claims and no sign-off marker, 5 tracked competitors with organic feeds). A pet-supplements brand is the spec's example; any creator-heavy DTC brand works.
 
 ## The test
 
@@ -28,11 +28,11 @@ Edge tests:
 
 ## Staging run log
 
-### 2026-10-16 — Personal Day (0e5b2fb0…), up to the first paid step
+### 2026-10-16 — Clearday (0e5b2fb0…), up to the first paid step
 
 What ran (all free):
 - `brand_read` summary, accounts, organic, competitors → own accounts @personalday (IG), @personaldayskin (TikTok) with recent posts and numbers (e.g. IG reel 40,397 views / 1,462 likes / 31 comments); competitors Prequel Skin, CeraVe, CLEARSTEM, The Ordinary, Paula's Choice. **Competitor collabs visible for free** in the competitors' organic captions: The Ordinary × @recess_therapy (10th-anniversary series), Paula's Choice × @hannah_waddingham. Both are celebrity/large accounts — conflict notes for discovery, not picks for a micro wave.
-- `knowledge_search` claims → 7 "approved" (server research approves them without review — the claims gate's contract treats them as candidates until a sign-off marker exists; `knowledge_search` learning "Claims sign-off" → empty, so no marker on Personal Day yet): four are **press quotes** (Allure, Byrdie, NewBeauty), plus "Free Returns", "Free Shipping on Orders $45+", "Rated 4.9 out of 5 stars 234 Reviews". The kit's value props ("100% free of acne-triggering ingredients", "dermatologist-developed") are **context, not approved claims**.
+- `knowledge_search` claims → 7 "approved" (server research approves them without review — the claims gate's contract treats them as candidates until a sign-off marker exists; `knowledge_search` learning "Claims sign-off" → empty, so no marker on Clearday yet): four are **press quotes** (Allure, Byrdie, NewBeauty), plus "Free Returns", "Free Shipping on Orders $45+", "Rated 4.9 out of 5 stars 234 Reviews". The kit's value props ("100% free of acne-triggering ingredients", "dermatologist-developed") are **context, not approved claims**.
 - `knowledge_search` creators / disclosure / banned words → nothing on file: no creators in talks, no disclosure rules, no banned-word list beyond the kit voice "don'ts".
 - `brand_read` kit, products, learnings → 20 products; the spray's record has **price $12.00, no unit cost or margin**; one learning (a video-script "don't").
 - `brand_read` product record → the product description carries efficacy language ("bacteria-fighting", "daily defense against breakouts").

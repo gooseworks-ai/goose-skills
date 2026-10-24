@@ -6,7 +6,7 @@ to its lyric window, hard-concat on the beat, build lyric-synced captions, compo
 end card, mux the song → 1080×1920 h264+aac (~28s).
 
 Use any visual style / song / protagonist (the recipe's `choices`) — the test must not depend on
-the Loóna demo's paper-craft look, lullaby, or young-woman paper-doll.
+the Driftlume demo's paper-craft look, lullaby, or young-woman paper-doll.
 
 Pass when the assembly runs to a valid MP4 and:
 - captions are built from the song's OWN `words.json` (script-window, NOT Whisper) and every
@@ -18,6 +18,6 @@ Pass when the assembly runs to a valid MP4 and:
 - the end card is composited via PIL from the brand's real asset (no AI-rendered brand text);
 - the sung track carries with no separate VO, loudnormed to −14 LUFS;
 - **no paid call is made** — the song / keyframes / clips come from the paid capabilities
-  (create-music-elevenlabs / create-image-fal / create-video-fal); this assembly is $0 and a
+  (create-music-elevenlabs / create-image-fal / create-video-fal); this assembly is free and a
   re-cut reuses the existing assets. For the paid caps the call is proxy-routed (bills the
   agent, no direct provider host).

@@ -1,6 +1,7 @@
 {
   "slug": "remix-graphic-ad-from-reference",
   "category": "composites",
+  "version": "1.0.0",
   "domain": "ads",
   "tags": ["ads", "design", "brand"],
   "installation": {
@@ -12,6 +13,10 @@
     "create-image-gpt-image-fal",
     "verify-product-image",
     "brand-research",
-    "product-photoshoot"
+    "product-photoshoot",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "scrapecreators-api",
+    "transcript-intelligence"
   ]
 }

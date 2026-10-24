@@ -9,7 +9,7 @@ is NEVER AI-rendered — a diffusion model garbles a wordmark, so the lockup is
 composited from the real asset every time.
 
   build_endcard.py --bg beat1_last_frame.png --headline "YOUR SANCTUARY AT HOME" \
-      --wordmark casablui-logo.svg --out endcard.png \
+      --wordmark brand-logo.svg --out endcard.png \
       [--headline-size 86] [--headline-color auto|#F6F1E7|#2A1F26] [--bg-is dark|light]
 
 Requires: a Playwright Chromium (via scripts/shoot.js) and ffmpeg. If the npx

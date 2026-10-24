@@ -12,7 +12,7 @@ saturated color field + a persistent title + the brand's REAL product cutout wit
 contact shadow. Cards change by sliding **right-to-left** (a phone-feed scroll), while a
 real-looking hand sweeps at the bottom of the frame. Music-only, no VO.
 
-This capability is the **FREE, deterministic assembly** ($0, no keys). It never generates
+This capability is the **FREE, deterministic assembly** (no paid calls, no keys). It never generates
 or edits the product — the cutouts are composited as-is, so labels stay crisp. It needs
 four kinds of input, gathered first (see **Getting the inputs**): product cutouts, a title
 TTF, a green-screen hand clip, and (optionally) a music bed.
@@ -34,7 +34,7 @@ Render `--stills` first: it is instant and shows the title, colors and cutouts b
 
 ## Getting the inputs
 
-| Input | Free route | Paid route (gated: confirm with the user first) |
+| Input | Free route | Paid route (paid step; runs only on an approved order) |
 |---|---|---|
 | Product cutouts | The brand's transparent PNGs (PDP/press kit). | A brand-site photo is usually NOT a cutout. Remove its background with `create-image-fal`, model `fal-ai/birefnet/v2` (see below). |
 | Title TTF | Download a TTF matching `choices.title_style` (table below). | — |
@@ -66,7 +66,7 @@ underline follows the drawn text, so long brand names never clip on the edges.
 
 ## Config
 
-`scripts/config.example.json` is the worked example (Lucky Energy "5 Flavors of Lucky").
+`scripts/config.example.json` is the worked example (the fictional Fortuna Energy "5 Flavors of Fortuna").
 Copy its structure, never its creative values.
 
 | Field | What it is |

@@ -2,7 +2,7 @@
 name: render-imessage-chat
 description: Render a configurable iMessage conversation inside a properly framed phone, then a brand end card. Uses the original send/receive sounds and a shared frame timeline for text, typing, scrolling and sound. Free local Playwright + ffmpeg assembly; optional image/music generation belongs to separate gated capabilities.
 status: superseded
-version: "2.1.1"
+version: "2.1.2"
 updated: 2026-10-06
 superseded_by: phone-chat@1.2.0
 ---
@@ -16,7 +16,7 @@ proportional phone, an inset Dynamic Island and the original iMessage sounds.
 The brand, story and background can change. Images are optional and can appear
 anywhere in the conversation; product links and music are optional too.
 
-This rebuild preserves the shell and sounds from the approved Clinikally Goa
+This rebuild preserves the shell and sounds from the approved Dermwise Goa
 build. It fixes missing identity binding, the island touching the screen edge,
 light-mode header colors, early/missing group names and capture timing drift.
 Every movie frame and sound cue uses the same timeline; browser startup cannot
@@ -138,7 +138,7 @@ also supports even preview dimensions; the phone must fit with a margin.
 
 ## Original sound contract
 
-The send/receive MP3s are byte-identical to both archived Clinikally and Wonderbly
+The send/receive MP3s are byte-identical to both archived Dermwise and Wonderloom
 builds. Keep them. No substitute ringtone, notification-cascade sound or generated
 pop. One cue per real text/attachment; none for typing or composer keystrokes.
 Picture reveals and cues share fixed output-frame times; the audible onset follows
@@ -147,12 +147,13 @@ the first visible reveal frame. The mixer strips leading silence and limits peak
 Full checkouts use `assets/sfx`. Text-only catalog packages use the hash-checked
 `scripts/sfx-embedded.json` fallback. Keep that file byte for byte. `--sfx-dir`
 can override the source explicitly. Missing, silent, corrupt or LFS-pointer audio
-stops the render. After an intentional MP3 replacement, regenerate the embedded
-copy with `python3 tests/test_stitch.py --write-embedded`.
+stops the render. After an intentional MP3 replacement, a builder regenerates the embedded
+copy in the goose-skills repo with `python3 tests/test_stitch.py --write-embedded`.
 
 ## Verification and failures
 
-Run `node --test tests/test_chat.js`, `node --test tests/test_safe_area.js` and
+The tests live in the goose-skills repo, not in installed copies. There, run
+`node --test tests/test_chat.js`, `node --test tests/test_safe_area.js` and
 `python3 -m pytest tests/test_stitch.py`. Run one test file at a time; each test
 opens and closes one Chromium.
 Browser tests cover changing names/time/background, text-only chats, attachment

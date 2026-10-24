@@ -1,7 +1,7 @@
 # Pipeline — creator-pip-listicle
 
 How `config.example.json` maps to the real production steps. This capability ships a
-**config + this map**, not a bundled runner: the worked example (DIBS Beauty "5 products that
+**config + this map**, not a bundled runner: the worked example (Solenne Beauty "5 products that
 replaced my whole makeup bag") was produced by the video-orchestrator's per-state steps plus a set
 of per-project drivers (`render_product_cards.py`, `composite_pip.py`) and the shared
 native-Seedance driver (`gen_seedance_native.py`).
@@ -38,7 +38,7 @@ whole on its beat.
 One **Seedream v5 Pro** candid portrait — `create-image-fal`, model
 `bytedance/seedream/v5/pro/text-to-image` (**no `fal-ai/` prefix**). A plain, calm, candid
 head-and-shoulders portrait of the creator from `choices.creator` in the place from
-`choices.setting` (the DIBS demo: a young woman on a neutral wall) — un-retouched (pores, fine
+`choices.setting` (the Solenne demo: a young woman on a neutral wall) — un-retouched (pores, fine
 lines, no perfect teeth), soft natural light. AVOID "beautiful/perfect/8k/hyperreal/studio". Gate on realism →
 `anchor.png`. **CRITICAL:** Seedance 2.0's partner-validation gate REJECTS photoreal faces from
 **gpt-image-2 AND Seedream v4** ("may contain likenesses of real people") — Seedream v5 Pro **passes**.
@@ -101,5 +101,5 @@ Hook + CTA are the full-frame creator with the title pill only (no PiP/card).
   it. The known script is the brand-correct source, so brand tokens are always spelled right.
 
 Re-cuts (new beat durations, a swapped card, a re-cropped demo, a caption re-chunk, toggled overlays)
-reuse the existing native clips + overlays and cost **$0** — only the anchor and the N native clips
+reuse the existing native clips + overlays and spend nothing — only the anchor and the N native clips
 spend.

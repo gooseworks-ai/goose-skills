@@ -26,7 +26,7 @@ Never put the brand's name in a non-brand question.
 | Brand / trust (accuracy) | ~15–20%, always 3–6 | "what is [brand]", "[brand] pricing", "is [brand] legit", "[brand] reviews", "does [brand] ship to [country]" |
 | Local | when physical | "[service] near me", "[service] in [city] open Sunday" |
 
-**Brand names that are common words** ("Personal Day", "Notion", "Halo"): every brand question carries the category ("Personal Day skincare"), and the namesake is confirmed with the human, so brand rows never read as false misses.
+**Brand names that are common words** ("Clearday", "Notion", "Halo"): every brand question carries the category ("Clearday skincare"), and the namesake is confirmed with the human, so brand rows never read as false misses.
 
 ## Value and winnability (non-brand questions: value 1–5 × winnability 1–3)
 Scored provisionally before the check (some signals only the check reveals) and re-scored after it; tell the human which battles changed.

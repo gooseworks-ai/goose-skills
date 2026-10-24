@@ -1,6 +1,7 @@
 {
   "slug": "meta-ad-manager",
   "category": "playbooks",
+  "version": "1.0.0",
   "domain": "ads",
   "tags": [
     "ads"

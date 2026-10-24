@@ -2,7 +2,7 @@
 name: write-video-ad-script
 description: Write or revise a short-form ad from a sourced angle and reference. Plan connected words, product proof and sound; expose production gaps before script review.
 status: active
-version: "2.0.2"
+version: "2.0.3"
 ---
 
 # Human version

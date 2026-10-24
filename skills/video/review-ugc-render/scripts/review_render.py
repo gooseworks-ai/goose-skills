@@ -16,7 +16,7 @@ Usage:
     review_render.py --video working/final.mp4 --script-file working/approved-script.txt
     review_render.py --video final.mp4 --script "Okay, real talk..." --expect-music
     review_render.py --video final.mp4 --script-file s.txt \
-        --brand-term "AG1" --alias "AG1=A G one" --pronunciations working/pronunciations.json
+        --brand-term "TG1" --alias "TG1=T G one" --pronunciations working/pronunciations.json
 
 Exit codes:
     0  PASS  — safe to pin the final render (video_project_upsert patch.final_render_id)
@@ -36,7 +36,7 @@ is not a defect:
   - contractions: "don't" == "do not", "can't" == "cannot" == "can not"
   - fused/split words: "braxleybands" == "braxley bands" (exact concatenation of
     2-3 words only, never fuzzy; letters spelled one by one are NOT fused)
-  - confirmed spoken aliases (--alias / --pronunciations): "AG1" == "A G one"
+  - confirmed spoken aliases (--alias / --pronunciations): "TG1" == "T G one"
 Always a HIGH failure: a different, added or dropped number, unit or negation;
 a brand name not heard as approved (named by --brand-term or a confirmed
 pronunciation); a similar-looking word swapped 1:1 ("vetted" → "witted").
@@ -65,7 +65,7 @@ from difflib import SequenceMatcher
 DEFAULT_MIN_RATIO = 0.90      # transcript↔script token similarity to pass
 SILENCE_MEAN_DB = -45.0       # quieter mean volume than this ⇒ effectively silent
 # A substitution between two short, similarly-spelled words is almost always a
-# mis-voicing (vetted→witted, Hume→Hune), not a paraphrase. Flag it HIGH.
+# mis-voicing (vetted→witted, Brume→Brune), not a paraphrase. Flag it HIGH.
 MISVOICE_MAX_LEN_DELTA = 3
 MISVOICE_MIN_CHAR_SIM = 0.5
 # Spoken form vs brand spelling made only of declared --brand-term words ("ak mee" vs
@@ -552,9 +552,9 @@ def build_aliases(aliases) -> list[tuple[tuple[str, ...], tuple[str, ...]]]:
 
     `aliases`: {term: say_as | [say_as, ...]}, [(term, say_as), ...] or
     [{"term", "say_as"}, ...] (the read_pronunciations.py `pronunciations` list).
-    An alias may respell a name, digits and number-like syllables included ("AG1" said
-    "A G one", "Tenzing" said "ten-zing"). It is refused when the written term has a
-    number, unit or negation the spoken form changes ("AG1" = "A G two"), or when the
+    An alias may respell a name, digits and number-like syllables included ("TG1" said
+    "T G one", "Tenzeal" said "ten-zeal"). It is refused when the written term has a
+    number, unit or negation the spoken form changes ("TG1" = "T G two"), or when the
     spoken form is nothing but numbers, units or negations ("Decagon" = "five").
     Raises ValueError on a bad alias."""
     rules: dict[tuple[str, ...], tuple[str, ...]] = {}
@@ -728,7 +728,7 @@ def _classify(tag: str, sw_t: list[_Tok], hw_t: list[_Tok], brand_hit: bool,
     # Backward compatibility with callers that pass --brand-term for the brand AND for each
     # word of its spoken form: a span of ONLY declared, alphabetic brand-term words on BOTH
     # sides that also sound alike (script "ak mee" vs heard "Acme") is the same brand.
-    # Different declared names ("Hims" vs "Hers", "Body Pod" vs "Band") still fail.
+    # Different declared names ("Hale" vs "Hart", "Body Pod" vs "Band") still fail.
     if tag == "replace" and declared and all(w in declared and w.isalpha() for w in sw + hw) \
             and _char_sim("".join(sw), "".join(hw)) >= BRAND_SWAP_MIN_CHAR_SIM:
         return "low", "declared brand terms on both sides (spoken form vs brand spelling) — accepted", True
@@ -766,7 +766,7 @@ def review_transcript(script: str, transcript: str, min_ratio: float = DEFAULT_M
     brand_terms: brand names. They are NEVER removed from the diff; a brand word not
         heard as approved is a HIGH failure. Fused/split spellings are equal, and a span
         made only of declared brand-term tokens on both sides is accepted.
-    aliases: confirmed spoken forms, e.g. {"AG1": "A G one"} or the read_pronunciations
+    aliases: confirmed spoken forms, e.g. {"TG1": "T G one"} or the read_pronunciations
         `pronunciations` list. Raises ValueError on a bad alias (see build_aliases)."""
     rules = build_aliases(aliases)
     pairs = _alias_pairs(aliases)
@@ -818,7 +818,7 @@ def review_transcript(script: str, transcript: str, min_ratio: float = DEFAULT_M
 
 # ── Confirmed pronunciations ────────────────────────────────────────────────
 def parse_alias_arg(arg: str) -> tuple[str, str]:
-    """'AG1=A G one' → ('AG1', 'A G one')."""
+    """'TG1=T G one' → ('TG1', 'T G one')."""
     term, sep, form = (arg or "").partition("=")
     if not sep or not term.strip() or not form.strip():
         raise ValueError(f'--alias must look like "TERM=SPOKEN FORM", got: {arg!r}')
@@ -1051,7 +1051,7 @@ def main(argv: list[str] | None = None) -> int:
                          "word not heard as approved is a HIGH failure; fused/split spellings "
                          "(braxleybands = braxley bands) count as equal.")
     ap.add_argument("--alias", action="append", default=[], dest="aliases",
-                    help='confirmed spoken form, "TERM=SPOKEN" (repeatable), e.g. --alias "AG1=A G one". '
+                    help='confirmed spoken form, "TERM=SPOKEN" (repeatable), e.g. --alias "TG1=T G one". '
                          "Only pass forms the user confirmed; never infer one from the transcript.")
     ap.add_argument("--pronunciations",
                     help="confirmed pronunciations the voice-over used: read_pronunciations.py output or "

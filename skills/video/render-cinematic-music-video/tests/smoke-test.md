@@ -6,7 +6,7 @@ cut each clip to its beat window, hard-cut on the beat, build cinematic lower-th
 mux the anthem → 1080×1920 h264+aac (~28s).
 
 Use any cast, setting and song style for the placeholder inputs — they are user choices, not
-part of the format (the Hype and Vice demo is one example). Nothing in the assembly may assume
+part of the format (the Rally & Rogue demo is one example). Nothing in the assembly may assume
 the demo's people, place, vocalist or accent words.
 
 Pass when the assembly runs to a valid MP4 and:
@@ -15,5 +15,5 @@ Pass when the assembly runs to a valid MP4 and:
 - captions are cinematic serif lower-thirds synced to the anthem's own word timings;
 - the sung anthem carries with no separate VO, loudnormed to −14 LUFS;
 - **no paid call is made** — the anthem, keyframes, and clips come from the paid capabilities
-  (create-music-elevenlabs / create-image-gpt-image-fal / create-video-fal); this assembly is $0
+  (create-music-elevenlabs / create-image-gpt-image-fal / create-video-fal); this assembly is free
   and a re-cut reuses the existing assets.

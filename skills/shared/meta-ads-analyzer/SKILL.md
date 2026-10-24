@@ -110,7 +110,7 @@ For each ad with sufficient impressions (~500+), check the three rankings:
 |---|---|---|
 | **Quality Ranking** | Creative is the problem | Test new creative formats / hooks |
 | **Engagement Rate Ranking** | Hook isn't pulling | Test new opener / first 3 seconds |
-| **Conversion Rate Ranking** | Post-click is leaking | Audit landing page (use `ad-to-landing-page-auditor`) |
+| **Conversion Rate Ranking** | Post-click is leaking | Check the landing page against the ad (use `analyze-performance`) |
 
 Two below average + one average = creative refresh. All three below average = scrap and rebuild.
 
@@ -281,7 +281,7 @@ Day-to-day CPA variation within 20–30% is normal. Weekend/weekday differences 
 
 - **Will not write to your ad account.** Pure analysis. Use Meta Ads Manager or whatever write tool the calling agent has available for execution.
 - **Will not generate creative.** Use `make-static-ads` for variants and `ad-angle-miner` for source material.
-- **Will not analyze landing pages.** Use `ad-to-landing-page-auditor` — and use it whenever Conversion Rate Ranking is below average.
+- **Will not analyze landing pages.** Use `analyze-performance`, whose diagnosis checks page and message match, whenever Conversion Rate Ranking is below average.
 - **Will not multi-platform compare.** Use `ad-campaign-analyzer` for cross-channel budget reallocation.
 - **Will not require separate TOF, MOF, and BOF campaigns.** It audits whether the customer journey is supported, regardless of whether the account is consolidated, segmented, or hybrid.
 - **Will not classify every ad into one funnel stage.** Individual ads are evidence and may support multiple customer jobs.
@@ -289,7 +289,7 @@ Day-to-day CPA variation within 20–30% is normal. Weekend/weekday differences 
 ## Related Skills
 
 - **`ad-campaign-analyzer`** — Multi-platform performance review and budget reallocation. Run this first if you have multiple channels; run `meta-ads-analyzer` after for the Meta-specific deep dive.
-- **`ad-to-landing-page-auditor`** — Always pair with this when Conversion Rate Ranking is below average.
+- **`analyze-performance`** — Pair with this when Conversion Rate Ranking is below average: its diagnosis checks whether the landing page matches the ad.
 - **`make-static-ads`** — Generate variants when creative fatigue is the diagnosis.
 - **`launch-meta-ad-campaign`** — Prepare a new paused campaign when the diagnosis points to "rebuild, don't fix".
 

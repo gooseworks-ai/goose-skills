@@ -16,14 +16,22 @@
     ]
   },
   "requires_skills": [
+    "ad-angle-miner",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "reddit-post-finder",
+    "scrapecreators-api",
+    "transcript-intelligence",
+    "watch",
     "write-video-ad-script"
   ],
   "slug": "video-production-harness",
-  "source_commit": "8086ff15daaceac0e21bcfc7e0d52c6a3b10ed52",
-  "source_hash": "83a8dd5111ced20a673a3b300139baa3ca0ee7149836210f3c5436edd0cc0652",
-  "source_version": "5-83a8dd5111ce",
+  "source_commit": "c7cf7b68ccaea76293ffe4f639f6e94b78c30a44",
+  "source_hash": "596087081442f3ae9d754a70f4b950b2642b293583f3df51e3cfa13713843a10",
+  "source_version": "5-596087081442",
   "tags": [
     "ads",
     "content"
-  ]
+  ],
+  "version": "3.1.0"
 }

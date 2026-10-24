@@ -3,7 +3,7 @@
 **What this is.** The script for one behaviour eval of research-audience's **list mode**, the job old lead-gen users came for. The 19 Oct audience scenario always declined the list, so this mode had never been tested. The runner sends the opening ask; a simulated marketer answers follow-ups from the persona below. Runs with the skills installed and without (baseline); the legacy arm uses the old lead-gen skills (`legacy/mapping.json` → `research-audience-list`).
 
 - **Brand:** GooseWorks on GooseWorks **staging** (brand name "Gooseworks").
-- **Source of the ask:** how the router and the old library describe the job ("find 50 right-fit people with emails"), on the brand Akhil hand-tests.
+- **Source of the ask:** how the router and the old library describe the job ("find 50 right-fit people with emails"), on the brand the owner hand-tests.
 - **Settings:** max_turns: 8
 
 ## Brand
@@ -19,7 +19,7 @@ find me 50 right-fit people to pitch gooseworks to, with emails. growth or marke
 ## Persona
 
 ### Who you are
-- **Akhil, founding engineer at GooseWorks.** You do the company's marketing yourself. Engineer, not a marketer. Based in India.
+- **Sam, the first engineer at GooseWorks (a fictional persona).** You do the company's marketing yourself. Engineer, not a marketer.
 - Short, casual, lower-case messages; no jargon.
 
 ### What you know about GooseWorks (answer only from this)

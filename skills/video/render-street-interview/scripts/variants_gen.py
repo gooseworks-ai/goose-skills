@@ -29,8 +29,8 @@ HERE = paths.HERE
 ROOT = paths.ROOT
 
 MODEL = "bytedance/seedance-2.0/reference-to-video"
-CAN = ROOT / "clients" / "liquid-death" / "brand-assets" / "reference-photos" / \
-    "mountain-water-still-19oz-tallboy-official.png"
+CAN = ROOT / "assets" / "grimwater" / "reference-photos" / \
+    "grimwater-still-19oz-tallboy.png"
 DURATION = 12
 RATE = 0.3034          # 2.0 at 480-720p. 2.0/fast is 0.2419 and is the cheaper sweep option.
 
@@ -68,7 +68,7 @@ OPEN = ("Shot 1: the interviewer's left hand holds the can from @Image1 up towar
         "can). ")
 
 VARIANTS = {
-    # The proven one is `ld-single-seed4802`; it is not repeated here.
+    # The proven one is `gw-single-seed4802`; it is not repeated here.
     "night": dict(seed=4810, why="Night, neon and a crowd. The reference sweep's clearest "
                   "finding was that a Veo street clip which reads plausible does so because "
                   "night, density and motion hide the tells that flat daylight exposes.",
@@ -156,7 +156,7 @@ def main():
     ap.add_argument("--only", default=None)
     ap.add_argument("--yes", action="store_true")
     ap.add_argument("--brand", default=None,
-                    help="brand slug in brands/ (default liquid-death)")
+                    help="brand slug in brands/ (default grimwater)")
     ap.add_argument("--fast", action="store_true", help="seedance-2.0/fast, $0.2419/s")
     A = ap.parse_args()
 

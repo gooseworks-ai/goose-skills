@@ -34,5 +34,5 @@ The other examples in `examples/` each isolate a different variant:
 | `02-sleep-apnea-long.json` | `title-only` header, DND moon, long assistant markdown with `##` heading, `[[icon:💡]]`, `[[cite:…]]` chip, `---` rule, bullet list; composer `streaming: true`; `feedback: false` |
 | `03-poem-iphone-mac.json` | `title-only` header; assistant `title` heading + multi-stanza poem (single-`\n` soft breaks, blank-line stanza breaks); composer `streaming: true` |
 | `04-empty-typing.json` | `plain-title` "Get Plus" header; empty `messages` → OpenAI spiral empty state; composer with typed `text` + caret (active black send button) |
-| `05-seatgeek-gpt-chip.json` | `title-only` header; assistant `title`; Apps-SDK GPT chip (`composer.chip.name: "SeatGeek"`) inside the composer |
+| `05-seatfinch-gpt-chip.json` | `title-only` header; assistant `title`; Apps-SDK GPT chip (`composer.chip.name: "Seatfinch"`) inside the composer |
 | `06-short-howto.json` | `model-tag` header; assistant reply with a **bold** lead-in and an ordered list |

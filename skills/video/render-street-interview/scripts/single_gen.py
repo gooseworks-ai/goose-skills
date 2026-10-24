@@ -3,7 +3,7 @@
 
     python single_gen.py                                 # dry run, default brand
     python single_gen.py --brand demo-tallgrass          # dry run, another brand
-    python single_gen.py --brand liquid-death --yes      # 12s at 720p, ~$3.64 (0.3034/s)
+    python single_gen.py --brand grimwater --yes      # 12s at 720p, ~$3.64 (0.3034/s)
 
 Every fault the user has reported traces to assembling separate generations: different locations
 per stranger, a room-tone jump at every cut, b-roll shot somewhere else, seasons and light that
@@ -23,7 +23,7 @@ editing Python. It is now two layers and neither one holds the other's job:
                          rejected takes, and linted by check-cut.py against the same dict.
     brands/<slug>.json   product, reference image, location, question, cast, dialogue, seed.
 
-`selftest.py` asserts that `brands/liquid-death.json` through this scaffold reproduces the
+`selftest.py` asserts that `brands/grimwater.json` through this scaffold reproduces the
 approved seed-4815 prompt BYTE FOR BYTE, so the split provably did not reword anything that was
 paid for.
 """
@@ -125,7 +125,7 @@ def save_download(url, dest, manifest, record):
 def main():
     ap = paths.add_run_arg(argparse.ArgumentParser())
     ap.add_argument("--brand", default=None,
-                    help="brand slug in brands/, or a path to a .json (default liquid-death, or "
+                    help="brand slug in brands/, or a path to a .json (default grimwater, or "
                          "$STREET_INTERVIEW_BRAND)")
     ap.add_argument("--seed", type=int, default=None, help="override the config's seed")
     # The pace grammar, restored from seed 4809. OFF by default so the approved seed-4815 payload

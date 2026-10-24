@@ -2,7 +2,7 @@
 name: make-static-ads-concept-grid
 description: >-
   Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.
-version: 0.8.0
+version: 0.8.2
 ---
 
 # concept-grid
@@ -33,7 +33,7 @@ Every ad gets a template, picked after the visual idea so the layout fits it (th
 
 Run on each candidate, fix or drop failures:
 - **Brand fit:** would this brand run it? It serves a profile angle (or is marked new), sounds like the brand, and its look fits the profile. An idea the brand's marketer would call "not us" fails, however clever.
-- **No repeat:** against the brand's live ads and its last 5–10 ads made in GooseWorks, an ad may share an angle, but at least one of message, visual idea or template must change. Within this set, every ad has its own message. The same ad resized or for another platform is not a repeat.
+- **No repeat:** against the brand's live ads and its last 5–10 ads made in GooseWorks, an ad may share an angle, but at least one of message, visual idea or template must change. Within this set, every ad has its own message, and the set follows the style rule in `levels.md` (Style). The same ad resized or for another platform is not a repeat.
 - The six tests in `ideas.md` §3: swap, stranger, thumbnail, show-it, build, truth.
 
 ## 6. Choose the set
@@ -48,9 +48,9 @@ Five different messages, not five looks. At most one straight demonstration per 
 Read: <what you actually read, with counts; what was skimmed; what wasn't checked>
 Level: <close / balanced / bold> · Angles: <chosen, and who chose them> · Templates from outside the library: <which, or what was tried>
 
-| # | Angle (profile / new) | Message (source) | Visual idea | On-image text (per slot) | Template (source, what it keeps) | Protect |
-|---|---|---|---|---|---|---|
-| 1 | ... | ... | ... | "..." / "..." | ... | ... |
+| # | Angle (profile / new) | Message (source) | Visual idea | Style | On-image text (per slot) | Template (source, what it keeps) | Protect |
+|---|---|---|---|---|---|---|---|
+| 1 | ... | ... | ... | ... | "..." / "..." | ... | ... |
 
 ## Critic notes and what changed
 ## Dropped ideas (why)
@@ -69,6 +69,7 @@ Give a **fresh subagent** only: the board (without the critic section), `profile
 - run the swap and stranger tests on every row;
 - name demonstrations dressed up as ideas;
 - check each event is buildable (no small handwriting, long in-scene text, many hands, crowds or fragile physics) and readable at thumbnail size;
+- name a style used by most of the set, or a set that reads as one look (for example all staged props or miniatures);
 - name rows that look empty or bland: a headline on blank space, a symbol instead of the real thing, or the same text pattern as another row;
 - check each source supports what the row implies;
 - pick the two weakest rows and say why.

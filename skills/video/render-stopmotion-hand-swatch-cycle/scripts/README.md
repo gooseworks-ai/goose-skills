@@ -1,14 +1,14 @@
 # render-stopmotion-hand-swatch-cycle scripts — the FREE assembly
 
-`render-stopmotion-hand-swatch-cycle` is the **deterministic, $0 assembly stage** of the stop-motion
+`render-stopmotion-hand-swatch-cycle` is the **deterministic, free assembly stage** of the stop-motion
 hand-swatch-cycle format. The paid stages (the master-anchor plate, the N per-shade / motion / finale
 plates, the end-card hero BG, the music track) are separate capabilities —
 `create-image-gpt-image-fal` and `create-music-elevenlabs`. This capability spends nothing: it takes
 the ordered plate PNGs + per-plate holds + the end-card hero BG + the brand logo SVG + the music
 track and stitches the finished master. Re-cuts (re-timed holds, a re-ordered cycle, a swapped end
-card, a different track) reuse the existing plates and cost **$0**.
+card, a different track) reuse the existing plates and spend nothing.
 
-`config.example.json` is the worked example (DIBS Beauty "Pick Your Match", ~16.6s 1080×1920) —
+`config.example.json` is the worked example (Solenne Beauty "Pick Your Match", ~16.6s 1080×1920) —
 its hand, background, surface and music are the demo's; the recipe's choices supply yours.
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE assembly
 pieces that `render-stopmotion-hand-swatch-cycle` owns.
@@ -26,7 +26,7 @@ beats 1100–1800ms. Average ~380ms gives the tactile frame-swap feel.
 Concat-**demux** the plate mp4s in order (`ffmpeg -f concat` over the ordered plate list) with HARD
 cuts — no dissolves. The frame-swap tactility is the whole point of stop-motion; a crossfade erases
 it. Concat-demux (not `filter_complex`) is correct because the plates are silent stills with no audio
-to reconcile. DIBS v3 ran 27 plate clips into a ~13.6s silent body master.
+to reconcile. Solenne v3 ran 27 plate clips into a ~13.6s silent body master.
 
 ## 3. End card — Playwright HTML from the real logo SVG, no AI text
 

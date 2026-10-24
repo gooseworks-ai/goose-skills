@@ -2,7 +2,7 @@
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
 status: draft
-version: "2.0.6"
+version: "2.0.7"
 updated: 2026-10-12
 ---
 
@@ -90,7 +90,7 @@ intermediates and `output/` for deliverables.
 ```bash
 python scripts/selftest.py                                   # free: the format and the lint hold
 python scripts/single_gen.py --brand <slug>                   # dry run: price + the full prompt
-python scripts/single_gen.py --brand <slug> --seed <n> --yes  # PAID: one take (~$3.64 at 12 s, 720p)
+python scripts/single_gen.py --brand <slug> --seed <n> --yes  # PAID: one take (12 s, 720p)
 python scripts/build_episode.py --episode <name>              # free: grade, re-cut, captions, end card
 python scripts/check-cut.py --episode <render>.episode.json   # free: the ship gate
 ```
@@ -142,9 +142,9 @@ Review actual video adherence through the normal gate and full watch/listen pass
 
 ## Cost
 
-A product-guess take is about **$3.64** (12 s at 720p, $0.3034/s); a 30 s episode is three takes, about
-**$10.92**. Grading, re-cut, captions, looks and every gate are free. Staging prices move, so
-price the first call of a run and quote from that.
+A product-guess take is one **paid** generation (12 s at 720p); a 30 s episode is three paid
+takes. Grading, re-cut, captions, looks and every gate are free. GooseWorks quotes the price;
+paid steps run only on an approved order.
 Conversation prompt previews send no media call; no conversation media price is verified.
 
 ## Local finishing
@@ -207,8 +207,8 @@ python -m unittest discover -s tests -p 'test_*.py' -v
 ## Opt-in hold and handover settings
 
 Six `generation` keys on the brand config, all off by default, so every recorded prompt and its
-hash are unchanged. They were paid for on Olipop and Graza (REFERENCE.md items 37-42); start a new
-brand from `brands/olipop-ep3-a.json` (a can) or `brands/graza-ep1-a2.json` (a bottle).
+hash are unchanged. They were paid for on Fizzroot and Oleara (REFERENCE.md items 37-42); start a new
+brand from `brands/fizzroot-ep3-a.json` (a can) or `brands/oleara-ep1-a2.json` (a bottle).
 
 | key | what it does |
 |---|---|

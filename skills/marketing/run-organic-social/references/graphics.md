@@ -8,7 +8,7 @@ Load at step 4 for any slot whose asset is designed rather than shot: an Instagr
 2. **Not installed, host has a shell:** fetch it with `gooseworks:catalog_fetch` (`type: "skill"`, `slug: "goose-graphics"`, `delivery: "archive"`). Verify the hashes the answer gives, unpack it into the host's skills folder, and load it.
    - It needs Node and Playwright, which it sets up on first run (its "First-Run Setup").
    - It also needs the GooseWorks CLI for its style and format catalog. With no CLI, use its `--ref` route (below), which doesn't need the catalog.
-3. **No shell** (hosted chat): it can't run. Hand over the slide table (references/slot-anatomy.md) and say plainly: "I can't render slides here. Here's the slide-by-slide copy; it takes about 45 minutes in Canva or Figma." The server fix is in server-needs.md.
+3. **No shell** (hosted chat): it can't run. Hand over the slide table (references/slot-anatomy.md) and say plainly: "I can't render slides here. Here's the slide-by-slide copy; it takes about 45 minutes in Canva or Figma."
 
 Rendering is local and free, so it needs no credit yes. Never use the community "surprise me" style.
 

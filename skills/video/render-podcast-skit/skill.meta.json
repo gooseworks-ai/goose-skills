@@ -17,9 +17,10 @@
     "create-vo-elevenlabs",
     "create-image-gpt-image-fal",
     "create-video-fal",
-    "watch"
+    "watch",
+    "media-proxy"
   ],
-  "version": "2.0.0",
+  "version": "2.0.1",
   "features": [
     "Two-host dialogue rendering",
     "Measured audio timeline",

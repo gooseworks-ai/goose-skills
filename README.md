@@ -24,24 +24,26 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 | Folder | What it holds | Count |
 |---|---|---:|
-| `skills/marketing/` | **14 marketing playbooks** (one marketer job each, end to end), the 70 steps they load, and 2 foundation skills | 86 |
+| `skills/marketing/` | **14 marketing playbooks** (one marketer job each, end to end), the 70 steps they load, and 2 foundation skills. Every folder is published | 86 |
 | `skills/video/` | **Video-ad skills**: render atoms, format renderers, mockups, voice, music and the production harness | 67 |
-| `skills/shared/` | Older skills that a video skill, a playbook or the GooseWorks app still uses. Each one's user is listed in [retired-skills.json](retired-skills.json) | 29 |
-| `skills/entry/` | **The entry skills** `gooseworks install` puts in every agent: the `gooseworks` router, `goose-ads`, `goose-video`, `make-custom-video`, `goose-video-local`, `goose-product-photos`. Routing lives in `skills/entry/gooseworks/routes.json` | 6 |
+| `skills/shared/` | Skills used across families: the 3 current goose-graphics skills, and 24 older skills that a video skill, a playbook or the GooseWorks app still uses. [retired-skills.json](retired-skills.json) lists each one and its user | 27 |
+| `skills/entry/` | **The entry skills** `gooseworks install` puts in every agent: the `gooseworks` router, `goose-ads`, `goose-video`, `make-custom-video`, `goose-video-local`, `goose-product-photos`. Routing lives in `skills/entry/gooseworks/routes.json`. The same folder is the Claude Code and Codex plugin (see [Entry skills and the plugin](#entry-skills-and-the-plugin)) | 6 |
 
 The old GTM library was deleted on 23 Oct 2026. [retired-skills.json](retired-skills.json) maps every retired name to the playbook that replaced it (or says why none did), and the old source stays readable at tag `legacy-gtm-final`.
 
 ## Contents
 
-- [Quick Start](#-quick-start)
-- [Brand Growth collection](#-brand-growth-collection)
-- [Commands](#-commands)
-- [Repo layout](#-repo-layout)
-- [Usage Examples](#-usage-examples)
-- [Building from Source](#-building-from-source)
-- [Skill Metadata Contract](#-skill-metadata-contract)
-- [Security & Trust](#-security--trust)
-- [License](#-license)
+- [Quick Start](#quick-start)
+- [Brand Growth collection](#brand-growth-collection)
+- [Commands](#commands)
+- [Repo layout](#repo-layout)
+- [Usage Examples](#usage-examples)
+- [Building from Source](#building-from-source)
+- [Entry skills and the plugin](#entry-skills-and-the-plugin)
+- [Skill Metadata Contract](#skill-metadata-contract)
+- [Security & Trust](#security--trust)
+- [Agent catalog releases](#agent-catalog-releases)
+- [License](#license)
 
 ---
 
@@ -118,11 +120,27 @@ The agent will collect the useful company context for future growth work and fin
 
 ## Commands
 
+Two command-line tools work with this catalog.
+
+**`gooseworks`** is the GooseWorks CLI: it installs the entry skills and the MCP server, and works with your account.
+
 ```bash
 npx gooseworks search "reddit scraping"   # Search the skill catalog
 npx gooseworks credits                     # Check your credit balance
 npx gooseworks update                      # Update to latest skill version
 ```
+
+**`goose-skills`** is this repo's own npm package. It installs one catalog skill, and every skill it requires, without a GooseWorks account. It reads `skills-index.json` from the `main` branch on GitHub, so it always installs what production serves.
+
+```bash
+npx goose-skills list                          # Every published skill
+npx goose-skills info make-static-ads          # One skill's details and dependencies
+npx goose-skills install make-static-ads       # Into ~/.claude/skills/<slug>/ (default: Claude Code)
+npx goose-skills install make-static-ads --codex
+npx goose-skills install make-static-ads --cursor --project-dir /path/to/project
+```
+
+A retired slug is refused with its replacement's install command. Most skills still need the GooseWorks MCP server for paid media and live data.
 
 ---
 
@@ -132,18 +150,22 @@ npx gooseworks update                      # Update to latest skill version
 skills/
   marketing/<slug>/    marketing playbooks, their steps, foundation skills
   video/<slug>/        video-ad skills
-  shared/<slug>/       older skills still in use (see retired-skills.json)
+  shared/<slug>/       skills used across families (see retired-skills.json)
   entry/<slug>/        the skills every GooseWorks install starts with; routes.json is the routing source
-packs/<pack>.json      install bundles of video skills
+  entry/.claude-plugin/, entry/.codex-plugin/   the plugin manifests for those same skills
 parts/<id>/<x.y.z>/    versioned video building blocks the GooseWorks kit loads (never edited once published)
 collections/           curated paths through the catalog (Brand Growth)
-docs/marketing/        the marketing build guide, backlog and reviews
+docs/marketing/        the marketing build guide and backlog
 evals/marketing/       routing and behaviour evals for the playbooks
 drafts/marketing/      playbooks built but not released yet
+schemas/               the skill.meta.json schema
 scripts/, test/        index builder, validators and tests
+bin/                   the goose-skills npm CLI
 skills-index.json      the generated catalog every consumer reads
 retired-skills.json    retired names, their replacements, and why kept skills stay
 ```
+
+A skill's own `tests/` folder is for builders: it stays in this repo and is never published to an install.
 
 One flat folder per skill, so a link to another skill is always `../<slug>/SKILL.md`. Skill names are unique across the whole catalog and never change: recipes, the GooseWorks app and installed copies refer to skills by name. See [CONTRIBUTING.md](CONTRIBUTING.md) to add one.
 
@@ -174,13 +196,25 @@ git clone https://github.com/gooseworks-ai/goose-skills.git
 cd goose-skills
 node scripts/build-index.js      # Generate skills-index.json
 node scripts/validate-skills.js  # Validate SKILL.md + skill.meta.json contract
-node scripts/check-marketing-agent-links.js  # Every link in a marketing skill resolves
+node scripts/check-skill-links.js     # Every link in every skill resolves as installed
 npm test
+npm run ci                       # The checks above in one command (see CONTRIBUTING.md)
 node bin/goose-skills.js list    # List the published catalog (reads main on GitHub)
 npm run test:parts               # Part tests (needs ffmpeg; browser tests need playwright-core)
 ```
 
 The part tests run on the GooseWorks kit's own ffmpeg build when it is installed (`~/.gooseworks/kit/bin/ffmpeg-b<version>`), else the one on your PATH; set `KIT_FFMPEG` to a binary path (or `ffmpeg` for the PATH one, with `KIT_FFPROBE` if ffprobe is elsewhere) to choose. Every run prints the ffmpeg it used. The browser tests take `PLAYWRIGHT_CORE_PATH` (a playwright-core folder) and `KIT_CHROMIUM` (a Chromium binary). CI sets `KIT_FFMPEG=ffmpeg`.
+
+---
+
+## Entry skills and the plugin
+
+`skills/entry/` is published two ways:
+
+- **The catalog.** `gooseworks install` and `gooseworks update` read the entry skills from `skills-index.json` on `main`, and the GooseWorks app serves the synced copy.
+- **The plugin.** `skills/entry/.claude-plugin/plugin.json` and `skills/entry/.codex-plugin/plugin.json` make the folder a Claude Code and Codex plugin. The GooseWorks plugin marketplace points at this folder on `main`.
+
+**When you change an entry skill, raise the plugin `version` in both manifests** (and the skill's own `version`). Plugin hosts only update when that number rises. `test/entry-skills.test.js` checks that both manifests list exactly the entry skills and carry a valid version.
 
 ---
 
@@ -199,7 +233,7 @@ Each skill folder (`skills/<family>/<slug>/`) must include:
 | `category` | Yes | `capabilities`, `composites`, or `playbooks` (the GooseWorks app only syncs these) |
 | `domain` | `shared` only | Catalog grouping; marketing skills default to `marketing-agent`, video skills to `ads`, entry skills to `gooseworks` |
 | `tier` | Marketing and entry | `playbook`, `atom` (a step) or `foundation`; `entry` for skills/entry |
-| `version` | Marketing, entry and video atoms | Semver; marketing and entry skills repeat it in SKILL.md frontmatter; raise it on every change |
+| `version` | Yes | Semver; marketing and entry skills repeat it in SKILL.md frontmatter; raise it on every change |
 | `requires_skills` | No | Slugs this skill loads; each must exist |
 | `tags` | Yes | String array of category tags |
 | `installation.base_command` | Yes | Install command |
@@ -227,7 +261,7 @@ Found something that looks off? [Open an issue](https://github.com/gooseworks-ai
 
 ## Agent catalog releases
 
-Feature PRs target `dev` and update staging after CI passes. Promote tested changes to `main` for production. See [deployment setup and recovery](DEPLOYMENT.md).
+Feature PRs target `dev` and update staging after CI passes. Promote tested changes to `main` for production; that switches every customer's entry skills and the plugin too. See [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ---
 
@@ -239,7 +273,7 @@ The skill files and CLI in this repository are MIT-licensed. The GooseWorks API 
 
 <div align="center">
 
-**Built by [GooseWorks](https://gooseworks.sh)**
+**Built by [GooseWorks](https://gooseworks.ai)**
 
 [Get Started](https://app.gooseworks.ai) &middot; [Report an Issue](https://github.com/gooseworks-ai/goose-skills/issues)
 
