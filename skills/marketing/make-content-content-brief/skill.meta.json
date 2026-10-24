@@ -1,0 +1,22 @@
+{
+  "slug": "make-content-content-brief",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "make-content",
+  "tags": [
+    "content"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "claims-gate",
+    "make-content",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

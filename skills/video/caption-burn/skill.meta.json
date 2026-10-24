@@ -1,0 +1,13 @@
+{
+  "slug": "caption-burn",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.0.3",
+  "tags": [
+    "ads",
+    "content"
+  ],
+  "requires_skills": [
+    "media-proxy"
+  ]
+}

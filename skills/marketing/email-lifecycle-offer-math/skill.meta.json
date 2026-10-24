@@ -1,0 +1,15 @@
+{
+  "slug": "email-lifecycle-offer-math",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "email-lifecycle",
+  "tags": [
+    "content",
+    "outreach"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "email-lifecycle"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "slug": "make-custom-video",
+  "category": "playbooks",
+  "domain": "gooseworks",
+  "tier": "entry",
+  "version": "3.8.3",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "video-production-harness",
+    "ad-angle-miner",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "reddit-post-finder",
+    "scrapecreators-api",
+    "transcript-intelligence",
+    "watch",
+    "write-video-ad-script"
+  ]
+}

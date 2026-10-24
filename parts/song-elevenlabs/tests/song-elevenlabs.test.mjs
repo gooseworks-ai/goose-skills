@@ -132,9 +132,9 @@ test('hook gate: a hook sung 0.5 s off the drop orders one more song with a new 
   assert.equal(out.scenes.length, 14);
   assert.equal(out.scenes[7].start_s, 15.1, 'the hook scene starts on the hook word');
   assert.deepEqual(out.speech.map((s) => s.scene_id), ['s2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12', 's13'], 'the ending scene is sung, not captioned');
-  const loona = out.speech.find((s) => s.scene_id === 's11');
-  assert.equal(loona.spoken, 'Loo nah takes me there.');
-  assert.equal(loona.words[0].text, 'Loona');
+  const lunah = out.speech.find((s) => s.scene_id === 's11');
+  assert.equal(lunah.spoken, 'Loo nah takes me there.');
+  assert.equal(lunah.words[0].text, 'Lunah');
   assert.equal(out.scenes[13].end_s, out.seconds);
   assert.ok(out.ending_seconds > 0 && Math.abs(out.ending_seconds - (out.seconds - out.scenes[13].start_s)) < 1e-6, String(out.ending_seconds));
 });

@@ -43,7 +43,7 @@ function pyConstant(py, name) {
 }
 
 test('the prompt is the atom\'s template word for word', () => {
-  const py = readFileSync(join(PARTS_ROOT, '..', 'skills/ads/capabilities/create-creator-takes-h3/scripts/plan_takes.py'), 'utf8');
+  const py = readFileSync(join(PARTS_ROOT, '..', 'skills/video/create-creator-takes-h3/scripts/plan_takes.py'), 'utf8');
   const src = readFileSync(join(dir, 'part.mjs'), 'utf8');
   assert.ok(src.includes(JSON.stringify(pyConstant(py, 'TEMPLATE'))), 'the bundled template equals plan_takes.py TEMPLATE');
   assert.ok(src.includes(JSON.stringify(pyConstant(py, 'DEFAULT_DELIVERY'))), 'the bundled default delivery equals plan_takes.py DEFAULT_DELIVERY');

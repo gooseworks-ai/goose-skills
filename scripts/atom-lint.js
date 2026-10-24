@@ -17,12 +17,11 @@
  *
  * Old debt warns; new debt fails. With --base, a finding fails when the
  * branch adds it: it is in an atom the branch changed and was not there on
- * the base. Atoms listed in atom-lint/config.json strict_atoms fail on any
- * finding, so a cleaned atom stays clean. --strict fails on every finding
- * (the final switch, GV-73). Without --base nothing is compared, so only
- * strict atoms can fail. --direct compares with <ref> itself instead of its
- * merge base with HEAD (CI). An atom moved between capabilities/ and packs/
- * is compared with its old folder.
+ * the base. --strict fails on every finding; CI always runs it, since the old
+ * debt is cleared. Without --base or --strict, only the structural rules fail
+ * (frontmatter, a superseded pointer, a broken lint_allow). --direct compares with <ref> itself instead of its merge base
+ * with HEAD (CI). An atom that moved from the old layout is compared with its
+ * old folder.
  *
  * Atoms with status: superseded are skipped, apart from their pointer
  * (atom.superseded_pointer).
@@ -36,7 +35,7 @@ const fs = require('fs');
 const path = require('path');
 const lib = require('./lib/atoms');
 const yaml = require('js-yaml');
-const ACTION_NAMES = require('./atom-lint/action-names.json');
+const ACTION_NAMES = require('./lib/action-names.json');
 
 const { ROOT, CONFIG } = lib;
 
@@ -54,7 +53,7 @@ function wordList(names) {
   return new RegExp(`\\b(?:${names.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'g');
 }
 
-const LIVE_ACTIONS = new Set(ACTION_NAMES.live);
+const LIVE_ACTIONS = new Set([...ACTION_NAMES.actions, ...ACTION_NAMES.outside_contract]);
 
 /**
  * Text rules. `scope` says which file kinds a rule reads: prose (markdown),
@@ -169,6 +168,16 @@ WHAT['atom.superseded_pointer'] =
 WHAT['atom.frontmatter'] = 'SKILL.md frontmatter must be valid YAML';
 
 const SEMVER_REF = /^([a-z][a-z0-9]*(?:-[a-z0-9]+)*)@((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))$/;
+
+let homeBytes;
+/** The canonical billing helper's bytes (the one in CONFIG.billing_helper.home), or an empty buffer. */
+function billingHelperHome() {
+  if (homeBytes === undefined) {
+    const file = path.join(ROOT, 'skills', 'video', CONFIG.billing_helper.home, 'scripts', CONFIG.billing_helper.file);
+    homeBytes = fs.existsSync(file) ? fs.readFileSync(file) : Buffer.alloc(0);
+  }
+  return homeBytes;
+}
 
 /** Published part versions ("id@x.y.z") that are not withdrawn, from the parts registry. */
 function liveParts() {
@@ -313,7 +322,8 @@ function lintAtom(atom, files) {
     const base = path.posix.basename(rel);
 
     if (base === CONFIG.billing_helper.file && atom.slug !== CONFIG.billing_helper.home) {
-      if (bytes.length > CONFIG.billing_helper.shim_max_bytes) {
+      // A byte-identical copy cannot drift (test/media-proxy-copies.test.js keeps them equal).
+      if (bytes.length > CONFIG.billing_helper.shim_max_bytes && !bytes.equals(billingHelperHome())) {
         findings.push({ rule: 'atom.one_billing_helper', file, line: 1, match: `${base} copy` });
       }
     }
@@ -441,7 +451,6 @@ function run(argv) {
   const base = lib.resolveBase(ROOT, args.base, { direct: args.direct });
   const changed = base ? lib.changedFiles(ROOT, base) : new Set();
   const atoms = lib.listAtoms(ROOT);
-  const strictAtoms = new Set(CONFIG.strict_atoms);
 
   const results = [];
   let allowed = 0;
@@ -477,7 +486,7 @@ function run(argv) {
       if (touched) markNew(head, baseDir ? lintAtom(atom, baseFiles(base, atom, baseDir)) : []);
     }
     for (const f of [...problems, ...head]) {
-      const fails = args.strict || strictAtoms.has(atom.slug) || f.rule === 'atom.lint_allow' || f.isNew === true;
+      const fails = args.strict || f.rule === 'atom.lint_allow' || f.isNew === true;
       results.push({ ...f, atom: atom.slug, severity: fails ? 'error' : 'warning' });
     }
   }

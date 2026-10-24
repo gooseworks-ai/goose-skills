@@ -1,0 +1,12 @@
+{
+  "slug": "render-chatgpt-chat",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.0.4",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "watch"
+  ]
+}

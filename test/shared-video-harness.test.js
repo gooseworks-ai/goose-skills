@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 
-const root = path.join(__dirname, '..', 'skills', 'ads', 'playbooks', 'video-production-harness');
+const root = path.join(__dirname, '..', 'skills', 'video', 'video-production-harness');
 const read = rel => fs.readFileSync(path.join(root, rel), 'utf8');
 const hash = data => createHash('sha256').update(data).digest('hex');
 

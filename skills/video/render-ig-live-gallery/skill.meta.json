@@ -1,0 +1,12 @@
+{
+  "slug": "render-ig-live-gallery",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.0.1",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "watch"
+  ]
+}

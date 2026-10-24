@@ -1,0 +1,12 @@
+{
+  "slug": "run-paid-campaigns-apply-and-log",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.2",
+  "playbook": "run-paid-campaigns",
+  "tags": [
+    "ads"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

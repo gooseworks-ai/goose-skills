@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { makeRepo, commitAll, run } = require('./atom-checks.helpers');
 
-const SKILL = path.join('skills', 'ads', 'capabilities', 'clip-maker', 'SKILL.md');
+const SKILL = path.join('skills', 'video', 'clip-maker', 'SKILL.md');
 const clean = '# clip-maker\n\nWrite the prompt as one shot with one camera move.\n';
 
 function branchAdds(text) {
@@ -154,4 +154,22 @@ test('the status is read as YAML: a malformed or non-string status exempts nothi
   assert.match(res.out, /error atom\.frontmatter: .*clip-maker\/SKILL\.md:1/);
   assert.match(res.out, /error atom\.superseded_pointer: .*other-maker\/SKILL\.md:1 "pointer paragraph without status: superseded"/);
   assert.match(res.out, /0 superseded/);
+});
+
+test('a byte-identical copy of the billing helper passes; a copy that differs fails', () => {
+  const helper = `# media proxy\n${'x = 1\n'.repeat(1200)}`;
+  const { root, base } = makeRepo({
+    'media-proxy': { files: { 'scripts/media_proxy.py': helper } },
+    'clip-maker': { skill: clean },
+  });
+  const copy = path.join(root, 'skills', 'video', 'clip-maker', 'scripts', 'media_proxy.py');
+  fs.mkdirSync(path.dirname(copy), { recursive: true });
+  fs.writeFileSync(copy, helper);
+  commitAll(root);
+  assert.equal(run('atom-lint.js', root, ['--base', base, '--strict']).code, 0);
+  fs.writeFileSync(copy, `${helper}y = 2\n`);
+  commitAll(root);
+  const drifted = run('atom-lint.js', root, ['--base', base, '--strict']);
+  assert.equal(drifted.code, 1, drifted.out);
+  assert.match(drifted.out, /atom\.one_billing_helper/);
 });

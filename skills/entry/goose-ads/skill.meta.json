@@ -1,0 +1,10 @@
+{
+  "slug": "goose-ads",
+  "category": "playbooks",
+  "domain": "gooseworks",
+  "tier": "entry",
+  "version": "3.2.1",
+  "tags": [
+    "ads"
+  ]
+}

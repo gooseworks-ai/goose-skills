@@ -1,0 +1,20 @@
+{
+  "slug": "write-video-ad-script",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "2.0.3",
+  "tags": [
+    "ads",
+    "content"
+  ],
+  "example_prompt": "Write a reference-led product ad with connected speech, truthful visible proof and an explicit sound plan",
+  "requires_skills": [
+    "ad-angle-miner",
+    "watch",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "reddit-post-finder",
+    "scrapecreators-api",
+    "transcript-intelligence"
+  ]
+}

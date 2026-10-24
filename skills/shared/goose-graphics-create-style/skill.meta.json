@@ -1,0 +1,19 @@
+{
+  "slug": "goose-graphics-create-style",
+  "category": "composites",
+  "version": "1.0.0",
+  "tags": [
+    "design",
+    "content"
+  ],
+  "requires_skills": [
+    "goose-graphics"
+  ],
+  "features": [
+    "Reference image → fully installed style preset in one command",
+    "Generates all 7 format examples (poster, infographic, carousel, slides, story, chart, tweet) using a standard brief",
+    "Auto-renders PNGs via the goose-graphics Playwright pipeline",
+    "Registers the new style in styles/index.json and examples/manifest.json"
+  ],
+  "domain": "design"
+}

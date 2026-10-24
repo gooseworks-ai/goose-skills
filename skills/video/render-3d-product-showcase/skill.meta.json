@@ -1,0 +1,12 @@
+{
+  "slug": "render-3d-product-showcase",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.0.2",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "watch"
+  ]
+}

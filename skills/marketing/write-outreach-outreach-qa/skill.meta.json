@@ -1,0 +1,13 @@
+{
+  "slug": "write-outreach-outreach-qa",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "write-outreach",
+  "tags": [
+    "outreach",
+    "sales"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

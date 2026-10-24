@@ -45,14 +45,14 @@ test('orders one timestamped line per spoken scene, with the brand pronunciation
   assert.deepEqual(
     orders.map((o) => [o.provider, o.path, o.body]),
     [
-      ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'Meet drink A G one today.', model_id: 'eleven_v4' }],
+      ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'Meet drink Q X nine today.', model_id: 'eleven_v4' }],
       ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'It tastes great.', model_id: 'eleven_v4' }],
     ],
   );
   assert.deepEqual(orders.map((o) => o.piece), ['line-s1', 'line-s3']);
-  // Captions keep the written name: the swapped words map back to "Drinkag1".
-  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkag1', 'today.']);
-  assert.equal(out.speech[0].spoken, 'Meet drink A G one today.');
+  // Captions keep the written name: the swapped words map back to "Drinkqx9".
+  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkqx9', 'today.']);
+  assert.equal(out.speech[0].spoken, 'Meet drink Q X nine today.');
   // The second line starts after the first line's length plus the default gap (0.08 s since 1.2.0; each line ends a sentence).
   const first = out.speech[0].end_s - out.speech[0].start_s;
   assert.ok(Math.abs(out.speech[1].start_s - (first + 0.08)) < 0.01, `second line at ${out.speech[1].start_s}`);
@@ -178,11 +178,11 @@ test('eleven_multilingual_v2 is sent as the model and strips audio tags by defau
 
 test('eleven_v3 keeps audio tags in what is sent, and captions never show them', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
   // A tagged read is timed only from a reviewed alignment of its tag-free speech.
-  const { out, orders } = await reviewedRun({ scenes: [{ id: 's1', line: '[whispers] Meet Drinkag1 [laughs] today.' }], voice_id: A, model: 'eleven_v3', pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }] });
-  assert.equal(orders[0].body.text, '[whispers] Meet drink A G one [laughs] today.');
-  assert.equal(out.speech[0].text, 'Meet Drinkag1 today.');
-  assert.equal(out.speech[0].spoken, 'Meet drink A G one today.');
-  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkag1', 'today.']);
+  const { out, orders } = await reviewedRun({ scenes: [{ id: 's1', line: '[whispers] Meet Drinkqx9 [laughs] today.' }], voice_id: A, model: 'eleven_v3', pronunciations: [{ term: 'Drinkqx9', say_as: 'drink Q X nine' }] });
+  assert.equal(orders[0].body.text, '[whispers] Meet drink Q X nine [laughs] today.');
+  assert.equal(out.speech[0].text, 'Meet Drinkqx9 today.');
+  assert.equal(out.speech[0].spoken, 'Meet drink Q X nine today.');
+  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkqx9', 'today.']);
   const [meet, name, today] = out.speech[0].words;
   assert.ok(meet.start_s > 0, 'the opening tag is not timed as part of the first word');
   assert.ok(name.start_s >= meet.end_s && today.start_s >= name.end_s, 'words run forward');
@@ -303,18 +303,18 @@ test('join: sentence starts a new request where the speaker changes', { skip: !f
 test('join: one sends the whole read once, with tags and pronunciations, and captions keep the written words', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
   const { out, orders } = await reviewedRun({
     scenes: [
-      { id: 'a', line: '[soft] Meet Drinkag1.' },
+      { id: 'a', line: '[soft] Meet Drinkqx9.' },
       { id: 'b', line: null },
       { id: 'c', line: 'It tastes great.' },
     ],
     voice_id: A,
     join: 'one',
-    pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }],
+    pronunciations: [{ term: 'Drinkqx9', say_as: 'drink Q X nine' }],
   });
   assert.equal(orders.length, 1);
-  assert.equal(orders[0].body.text, '[soft] Meet drink A G one. It tastes great.');
-  assert.deepEqual(out.speech.map((s) => s.text), ['Meet Drinkag1.', 'It tastes great.']);
-  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkag1.']);
+  assert.equal(orders[0].body.text, '[soft] Meet drink Q X nine. It tastes great.');
+  assert.deepEqual(out.speech.map((s) => s.text), ['Meet Drinkqx9.', 'It tastes great.']);
+  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkqx9.']);
   assert.ok(out.speech[0].words[0].start_s > 0, 'the tag is not timed as the first word');
   assert.deepEqual(out.scenes.map((s) => s.id), ['a', 'c']);
   assert.equal(out.scenes[1].start_s, out.speech[1].words[0].start_s);

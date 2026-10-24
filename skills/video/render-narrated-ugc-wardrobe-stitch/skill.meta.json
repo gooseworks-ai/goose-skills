@@ -1,0 +1,13 @@
+{
+  "slug": "render-narrated-ugc-wardrobe-stitch",
+  "category": "capabilities",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "version": "1.0.2",
+  "requires_skills": [
+    "watch",
+    "stitch-videos-ffmpeg"
+  ]
+}

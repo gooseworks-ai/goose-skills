@@ -6,7 +6,7 @@ import pytest
 from PIL import Image,ImageFont
 
 ROOT=pathlib.Path(__file__).resolve().parents[2]
-CAP=ROOT/'skills/ads/capabilities'
+CAP=ROOT/'skills/video'
 
 def module(skill,name):
     path=CAP/skill/'scripts'/f'{name}.py'
@@ -170,8 +170,8 @@ def test_pronunciation_reads_live_entry_format_and_mcp_shapes(wrap):
                                         'fact_id': '0d874c21-342e-4381-aba4-2dffea4363f0'}]
 
 def test_pronunciation_formats_agree_and_unrelated_facts_ignored():
-    assert pron.parse_fact('Pronounce "Drinkag1" as "drink A G one"') == ('Drinkag1', 'drink A G one')
-    assert pron.parse_fact('Pronounce “Hume” as “hyoom”.') == ('Hume', 'hyoom')
+    assert pron.parse_fact('Pronounce "Drinkqx9" as "drink Q X nine"') == ('Drinkqx9', 'drink Q X nine')
+    assert pron.parse_fact('Pronounce “Hune” as “hyoon”.') == ('Hune', 'hyoon')
     assert pron.parse_fact('Pronunciation: Demo => dee mo') == ('Demo', 'dee mo')
     for text in ['Never say or imply: GooseWorks has named customers', 'Pronounce it carefully', '']:
         assert pron.parse_fact(text) is None

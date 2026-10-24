@@ -12,19 +12,19 @@ const { spawnSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 
 const HARNESS = {
-  'meta-ad-manager': 'skills/ads/playbooks/meta-ad-manager',
-  'ad-management-intake': 'skills/ads/composites/ad-management-intake',
-  'ads-north-star-strategy': 'skills/ads/composites/ads-north-star-strategy',
-  'answer-ads-questions': 'skills/ads/capabilities/answer-ads-questions',
+  'meta-ad-manager': 'skills/shared/meta-ad-manager',
+  'ad-management-intake': 'skills/shared/ad-management-intake',
+  'ads-north-star-strategy': 'skills/shared/ads-north-star-strategy',
+  'answer-ads-questions': 'skills/shared/answer-ads-questions',
 };
 
 // Blocks that must appear exactly once, by file.
 const BLOCKS = [
-  ['skills/ads/playbooks/meta-ad-manager/SKILL.md', 'meta-ad-manager'],
-  ['skills/ads/playbooks/meta-ad-manager/contract/RULES.md', 'harness-contract'],
-  ['skills/ads/composites/ad-management-intake/SKILL.md', 'ad-management-intake'],
-  ['skills/ads/composites/ads-north-star-strategy/SKILL.md', 'ads-north-star-strategy'],
-  ['skills/ads/capabilities/answer-ads-questions/SKILL.md', 'answer-ads-questions'],
+  ['skills/shared/meta-ad-manager/SKILL.md', 'meta-ad-manager'],
+  ['skills/shared/meta-ad-manager/contract/RULES.md', 'harness-contract'],
+  ['skills/shared/ad-management-intake/SKILL.md', 'ad-management-intake'],
+  ['skills/shared/ads-north-star-strategy/SKILL.md', 'ads-north-star-strategy'],
+  ['skills/shared/answer-ads-questions/SKILL.md', 'answer-ads-questions'],
 ];
 
 // Couplings a public skill must not carry (mirrors the publisher's lint).

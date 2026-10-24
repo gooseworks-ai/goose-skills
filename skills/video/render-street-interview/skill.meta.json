@@ -1,0 +1,23 @@
+{
+  "slug": "render-street-interview",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "2.0.7",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Make a street interview ad for this brand: an interviewer asks passers-by what the product is, they guess wrong, one gets it right.",
+  "requires_skills": [
+    "watch",
+    "create-video-seedance-2-fal",
+    "write-video-ad-script",
+    "create-video-fal",
+    "ad-angle-miner",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "media-proxy",
+    "reddit-post-finder",
+    "scrapecreators-api",
+    "transcript-intelligence"
+  ]
+}
