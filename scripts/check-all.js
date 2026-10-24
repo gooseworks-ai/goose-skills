@@ -46,9 +46,9 @@ function parseArgs(argv) {
   return args;
 }
 
-function sh(cmd, { cwd = ROOT, env = {} } = {}) {
+function sh(cmd, { cwd = ROOT, env = {}, shell = true } = {}) {
   console.log(`\n$ ${cmd}`);
-  const res = spawnSync(cmd, { cwd, env: { ...process.env, ...env }, stdio: 'inherit', shell: true });
+  const res = spawnSync(cmd, { cwd, env: { ...process.env, ...env }, stdio: 'inherit', shell });
   return res.status === 0;
 }
 
@@ -91,8 +91,12 @@ const groups = [
     run: () => {
       const ffmpeg = process.env.KIT_FFMPEG || 'ffmpeg';
       if (ffmpeg === 'ffmpeg' && !has('ffmpeg')) return { skip: 'no ffmpeg on PATH (or set KIT_FFMPEG)' };
+      // The kit's own answer to "can the browser tests run here?", so they are skipped up front, not run half.
+      const probe = spawnSync(process.execPath, ['--input-type=module', '-e', "const m = await import('./parts/_tools/kit-harness.mjs'); const why = m.browserMissing(); if (why) { console.log(why); process.exit(1); }"], { cwd: ROOT, encoding: 'utf8' });
+      if (probe.status !== 0) return { skip: (probe.stdout || probe.stderr).trim() || 'no browser for the part tests' };
       const log = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'gs-part-tests-')), 'part-tests.log');
-      const ran = sh(`set -o pipefail; npm run test:parts 2>&1 | tee "${log}"`, { env: { KIT_FFMPEG: ffmpeg } });
+      // bash, for pipefail (as CI's shell: bash step).
+      const ran = sh(`set -o pipefail; npm run test:parts 2>&1 | tee "${log}"`, { env: { KIT_FFMPEG: ffmpeg }, shell: 'bash' });
       return sh(`node scripts/require-all-tests-ran.js "${log}"`) && ran;
     },
   },
