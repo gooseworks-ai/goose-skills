@@ -7,7 +7,7 @@
 # The music bed is optional (pass --music); with no bed you still get the SFX.
 # The send/receive SFX ship with this capability twice: as mp3s in assets/sfx
 # (full checkouts) and as base64 text in scripts/sfx-embedded.json, because a
-# catalog fetch ships text files only and drops assets/sfx (GOOSE-3767). Generate
+# catalog fetch ships text files only and drops assets/sfx. Generate
 # a bed via the create-music-elevenlabs capability (paid, gated) and pass it in.
 #
 # Usage:
@@ -164,7 +164,7 @@ for n, c in enumerate(cues):
 n = len(mix_labels)
 # normalize=0 so amix doesn't divide each input by N (preserves SFX peaks).
 # No fixed boost after the mix: the old volume=2.5 into an auto-levelling
-# limiter flat-topped stacked chimes at 0 dBFS (QA-13). The gain sits on each
+# limiter flat-topped stacked chimes at 0 dBFS. The gain sits on each
 # cue instead, and a peak limiter at -2 dBFS (auto-level off), run at 4x the
 # sample rate so it also catches inter-sample peaks, keeps the AAC master below
 # -1 dBTP. A lone cue loses little; overlapping cues are held down.

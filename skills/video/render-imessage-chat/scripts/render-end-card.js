@@ -4,7 +4,7 @@
  *
  * Reads the recipe's `end_card` config (from config.json) and fills
  * end-card.template.html, then Playwright-screenshots it and makes a short MP4.
- * This is the "make the end card better" fix (QA GOOSE-2481): a designed card —
+ * This is the "make the end card better" fix: a designed card —
  * wordmark + ⭐ proof row + trust trio + CTA pill — not a bare logo.
  *
  * Output: <out-dir>/end-card.png  +  <out-dir>/scene-end-endcard.mp4

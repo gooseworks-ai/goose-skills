@@ -314,8 +314,8 @@ if (fs.existsSync(OUTPUT)) {
 
 const retirementFile = path.join(ROOT, 'retired-skills.json');
 const retirementManifest = fs.existsSync(retirementFile) ? JSON.parse(fs.readFileSync(retirementFile, 'utf8')) : {};
-const { validateRetirements } = require('./lib/retirements');
-const retiredSkills = validateRetirements(retirementManifest, skills);
+const { validateRetirements, supersededOnDisk } = require('./lib/retirements');
+const retiredSkills = validateRetirements(retirementManifest, skills, { superseded: supersededOnDisk(ROOT, skills) });
 
 const index = {
   version: '1.4.0',

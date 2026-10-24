@@ -5,7 +5,7 @@ description: >-
   generated images and video honestly. Covers what was seen by eye versus read automatically, findings
   framed as things for the human to confirm, remakes only after a yes to the price, and at most two
   tries per item. Loaded by those playbooks; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # honest-review
@@ -39,11 +39,11 @@ Decide the mode at the start and label every item with how it was checked. Never
 ## 4. Remakes
 
 - Only for a defect that is real (seen by eye, or confirmed by the human).
-- Only on a yes to the engine's quote for that remake, shown as given; never an unquoted paid edit, never your own price.
+- Only on a yes to the engine's quote for that remake, shown as given; never an unquoted paid edit, never your own price. A playbook may say its earlier yes already covers one retry at the quoted price; then that yes is enough for that one retry.
 - At most two tries per item; then drop it (or hand the choice to the human) and say why.
 - Changed words or claims in a remake are shown before it is made, even when an earlier yes covers the money.
 
 ## 5. Record
 
-- Feedback to the engine (where the tool takes it): negative ratings and reason codes only for engine faults (garbled text, wrong product, distortion); strategy choices go in the comment.
+- Feedback to the engine (where the tool takes it): only the human's own words, and reason codes only for engine faults the human names (garbled text, wrong product, distortion); your own verdicts go in your record, not the feedback; strategy choices go in the comment.
 - A durable lesson the human states becomes a brand rule only through the `save-learning` skill (`../save-learning/SKILL.md`).

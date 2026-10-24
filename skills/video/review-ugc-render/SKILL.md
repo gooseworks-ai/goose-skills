@@ -1,6 +1,6 @@
 ---
 name: review-ugc-render
-description: Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved "human-vetted" spoken as "human witted"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently ("5mg" said "five milligrams", "30%" said "thirty percent", a spoken URL, "don't" said "do not", "braxleybands" said "braxley bands", a confirmed pronunciation like "TG1" said "T G one") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.
+description: Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates keeping the render as the final version (video_review) — blocking a render whose generated audio mis-voices a word (e.g. the approved "human-vetted" spoken as "human witted"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently ("5mg" said "five milligrams", "30%" said "thirty percent", a spoken URL, "don't" said "do not", "braxleybands" said "braxley bands", a confirmed pronunciation like "TG1" said "T G one") passes. Runnable, gating counterpart to GooseWorks' fuller transcript-integrity review. Every ugc-video-formats recipe runs this after render and BEFORE keeping the final version.
 status: superseded
 version: "2.0.5"
 created: 2026-07-04
@@ -14,8 +14,8 @@ superseded_by: check-layer@1.2.0
 
 > The QC gate every UGC video recipe MUST clear before it publishes. Not an
 > eyeball `/watch` — a deterministic transcript-vs-script diff that exits non-zero
-> on a defect so the recipe can hard-stop pinning the final render
-> (`video_project_upsert` `patch.final_render_id`).
+> on a defect so the recipe can hard-stop keeping the render as the final version
+> (`video_review`).
 
 **In short:** it compares what the render actually SAYS with the script the user
 approved. Correct speech that is only written differently passes (numbers, units,
@@ -37,7 +37,7 @@ This gate does exactly that, deterministically, and refuses to publish on a miss
 
 - **MANDATORY** in every `remix-ugc-*-from-sample` and `create-ugc-*-video-from-refs`
   recipe, in the QC phase, **after** the master render exists and **before**
-  pinning it as the final render (`video_project_upsert` `patch.final_render_id`).
+  keeping it as the final version (`video_review`).
 - Re-run after every fix / re-roll until it PASSES.
 
 ## Contract
@@ -58,8 +58,8 @@ read (its `--rules` brand-rules.json, or the `read_pronunciations.py` output; bo
 carry a `pronunciations: [{term, say_as}]` list). Leave the flag out when there is
 no such file: a missing file is an ERROR (exit 3).
 
-- **exit 0 → PASS** — proceed: pin the final render (`video_project_upsert` `patch.final_render_id`).
-- **exit 2 → FAIL** — do NOT pin it. Read the report, fix, re-run.
+- **exit 0 → PASS** — proceed: keep the render as the final version (`video_review`).
+- **exit 2 → FAIL** — do NOT keep it. Read the report, fix, re-run.
 - **exit 3 → ERROR** — the check could not run (see below); fix the environment or
   the input, do not publish blind.
 
@@ -189,17 +189,17 @@ In the goose-skills repo (in the goose-skills repo only; installed copies have n
 python3 tests/test_review_render.py    # or: python3 -m pytest tests/
 ```
 
-Pure Python, no audio, network or paid call. Covers the QA-71 audit fixture table
+Pure Python, no audio, network or paid call. Covers the audit fixture table
 (units, URL, numbers, percent, contractions, fused brands, wrong price, negation,
 Brume→Brune), number words, units (including added/dropped units in long lines), URLs,
 negation flips, fused/split words, CLI-style brand terms, confirmed TG1 aliases and
 saved pronunciations with number-like syllables, omission, extra speech, the report
 wording, and the CLI exit codes with transcription stubbed out.
 
-## Relationship to the content-goose review engine
+## Relationship to the fuller review
 
 This is the shipped, single-file, gating slice of the fuller
 review loop in GooseWorks' studio (18-axis rubric). Here we enforce
 the one axis that catches audio-vs-script defects at publish time
 (`review-transcript-integrity` / `brand_text_accuracy`). Deeper multi-axis review
-stays in the content-goose lab.
+is not part of this skill.

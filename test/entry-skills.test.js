@@ -109,3 +109,15 @@ test('the Claude and Codex plugins ship exactly the entry skills from skills/ent
     assert.match(manifest.version, /^\d+\.\d+\.\d+$/, `${host}: raise the version so plugin users get updates`);
   }
 });
+
+test('the recipe-slug snapshot matches goose-studio when a checkout is at hand', (t) => {
+  const studio = process.env.GOOSE_STUDIO_DIR;
+  if (!studio) return t.skip('set GOOSE_STUDIO_DIR to a goose-studio checkout to compare');
+  const dir = path.join(studio, 'one-shot-videos');
+  const live = fs
+    .readdirSync(dir)
+    .filter((d) => !d.startsWith('_') && fs.existsSync(path.join(dir, d, 'recipe.json')))
+    .sort();
+  const snapshot = require('./fixtures/entry-lint/video-recipe-slugs.json').recipes;
+  assert.deepEqual(snapshot, live, 'refresh test/fixtures/entry-lint/video-recipe-slugs.json from one-shot-videos/*/recipe.json');
+});

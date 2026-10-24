@@ -32,7 +32,17 @@ jobs:
 
       - name: Skill links resolve as published
         # In every family, each reference resolves when skills sit side by side and names a listed dependency, and requires_skills lists are flat.
+        # Also: a skill named in prose exists here (or is retired), and the relative links in docs/, drafts/, evals/ and the top-level docs resolve.
         run: node scripts/check-skill-links.js
+
+      - name: No internal ticket ids in published files
+        # GOOSE-/GV-/QA-… ids mean nothing to a reader outside the team.
+        run: node scripts/check-internal-ids.js
+
+      - name: No real client or person names in the repo
+        # Every tracked text file, against SHA-256 digests (scripts/lib/client-name-hashes.json).
+        # Frozen part versions and parts/_lib/ are skipped (accepted risk, see the script).
+        run: node scripts/check-client-names.js
 
       - name: Router tables match skills/entry/gooseworks/routes.json
         run: node scripts/build-router.js --check
@@ -45,7 +55,7 @@ jobs:
         # Reads the indexed blobs through git, so the working tree cannot hide one.
         run: node scripts/check-lfs-pointers.js
 
-      - name: Test CLI
+      - name: Test CLI, scripts and the Node tests in skill folders
         run: npm test
 
       - name: Verify packaged writer handoff
@@ -64,7 +74,7 @@ jobs:
         run: python3 skills/marketing/improve-search-visibility/tests/run-fixtures.py
 
   atom-checks:
-    # What video atoms may say, their version bumps, and the parts index.
+    # What video atoms may say, every skill's version bumps, and the parts index.
     # Every finding fails (--strict): the old debt is cleared (scripts/atom-lint.js).
     runs-on: ubuntu-latest
     steps:
@@ -90,14 +100,19 @@ jobs:
         # refuses it for ci (the npm release step installs the same way).
         run: npm install --ignore-scripts --no-audit --no-fund
 
-      - name: Test the atom and part checks
-        run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js
+      - name: Test the atom, version and part checks
+        run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-skill-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js
 
       - name: Atom lint
         run: node scripts/atom-lint.js --base "$BASE" --direct --strict
 
       - name: Atom version bumps
         run: node scripts/check-atom-versions.js --base "$BASE" --direct
+
+      - name: Skill version bumps (every family, and the entry plugin manifests)
+        # A changed marketing, shared, entry or non-atom video skill raises its version;
+        # a changed entry skill also raises the version in both plugin manifests.
+        run: node scripts/check-skill-versions.js --base "$BASE" --direct
 
       - name: Parts index and frozen versions
         run: node scripts/check-parts.js --base "$BASE" --direct
@@ -225,9 +240,10 @@ jobs:
 
   npm-release:
     # The npm package publishes from main only, after every check passes.
-    # The npm-release environment holds NPM_TOKEN and is limited to main in
-    # the repository settings. On other changes it opens or updates the
-    # release pull request.
+    # It needs NPM_TOKEN in the npm-release environment (or npm trusted
+    # publishing); neither is set up yet, so this job fails until the owner
+    # does (DEPLOYMENT.md, "Owner setup needed"). On other changes it opens or
+    # updates the release pull request.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [validate, atom-checks, part-tests, imessage-chat-browser-tests, media-tests]
     runs-on: ubuntu-latest

@@ -56,7 +56,7 @@ been mistaken for "this is good" before:
   * whether the faces read as AI. Four rounds were rejected for exactly that and no automated
     check caught any of them. Seed 4813 passed every check in this file while rendering
     visibly soft and plasticky with malformed hands. R is a two-number proxy for the GRADE, not
-    a judgement of a face, a hand or a body. See READINESS.md.
+    a judgement of a face, a hand or a body. Watch the cut.
   * whether a viewer can follow the video. Every metric in an earlier scorecard passed while the
     cut was incomprehensible, because the can was not shown until 19s in. D checks that the can
     is in the opening and the payoff shot; a human still has to watch it (`/watch`).

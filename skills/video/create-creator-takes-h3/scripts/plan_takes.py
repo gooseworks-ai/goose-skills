@@ -38,7 +38,7 @@ same person the same way; nothing about a person is written here. Square bracket
 line are refused: H3 speaks them aloud.
 
 PACE: --reference-wps (or the beats file's `reference_wps`) is the reference's words per
-second from goose-studio's reference_rate.py (real words: sub-word tokens joined, punctuation
+second (real words from a word-timestamped transcript: sub-word tokens joined, punctuation
 skipped). Lines are counted the same way: a token with no letter or digit is not a word. Takes are then sized from the words at that rate, capped at 3.2 words a second,
 the fastest H3 speaks natively. Without it, takes follow the beat times.
 

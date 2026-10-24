@@ -542,7 +542,8 @@ def test_report_quotes_original_words_and_new_pin_wording():
     v = review_transcript("Take 5mg daily", "Take six milligrams daily")
     report = render_report(v)
     assert '"5mg"' in report and '"six"' in report, report
-    assert "video_project_upsert patch.final_render_id" in report
+    assert "final version (video_review)" in report
+    assert "video_project_upsert" not in report
     assert "set_final" + "_render" not in report
 
 

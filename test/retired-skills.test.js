@@ -2,7 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { validateRetirements } = require('../scripts/lib/retirements');
+const { validateRetirements, supersededOnDisk, readSupersededFrontmatter } = require('../scripts/lib/retirements');
 const index = require('../skills-index.json');
 const manifest = require('../retired-skills.json');
 
@@ -99,4 +99,84 @@ test('retired skill instructions are deleted rather than kept in an archive', ()
     }
   }
   assert.deepEqual(remaining, [], 'Git history preserves retired instructions; working copies must be removed');
+});
+
+// ── superseded video atoms ────────────────────────────────────────────────
+
+const REPO = path.resolve(__dirname, '..');
+
+test('every superseded atom is listed with its replacement parts, its users and when it can go', () => {
+  const onDisk = supersededOnDisk(REPO, index.skills);
+  assert.equal(onDisk.size, 16, 'the 16 superseded video atoms');
+  assert.doesNotThrow(() => validateRetirements(manifest, index.skills, { superseded: onDisk }));
+  assert.deepEqual(manifest.superseded.map(e => e.slug).sort(), [...onDisk.keys()].sort());
+  const parts = new Set(require('../parts/index.json').parts.map(p => `${p.id}@${p.version}`));
+  for (const entry of manifest.superseded) {
+    assert.ok(entry.reason && entry.remove_when, entry.slug);
+    for (const ref of entry.replaced_by) assert.ok(parts.has(ref), `${entry.slug}: ${ref} is a published part version`);
+  }
+  // Nothing uses these any more; their remove_when says to retire them.
+  const unused = manifest.superseded.filter(e => e.used_by.length === 0).map(e => e.slug).sort();
+  assert.deepEqual(unused, ['render-apple-notes-chat', 'render-imessage-cascade']);
+  for (const slug of unused) assert.match(manifest.superseded.find(e => e.slug === slug).remove_when, /^now: retire/);
+});
+
+test('a superseded atom\'s users are real (recipes and files checked when a checkout is at hand)', () => {
+  const bySlug = new Map(index.skills.map(s => [s.slug, s]));
+  const recipes = new Set(require('./fixtures/entry-lint/video-recipe-slugs.json').recipes);
+  for (const entry of manifest.superseded) {
+    for (const user of entry.used_by) {
+      if (user.skill) {
+        assert.ok((bySlug.get(user.skill).metadata.requires_skills || []).includes(entry.slug), `${entry.slug}: ${user.skill} does not require it`);
+      } else if (user.recipes) {
+        assert.equal(user.repo, 'goose-studio');
+        for (const r of user.recipes) {
+          assert.ok(recipes.has(r), `${entry.slug}: ${r} is not a recipe in the snapshot`);
+          if (process.env.GOOSE_STUDIO_DIR) {
+            const text = fs.readFileSync(path.join(process.env.GOOSE_STUDIO_DIR, 'one-shot-videos', r, 'recipe.json'), 'utf8');
+            assert.match(text, new RegExp(`(?<![\\w-])${entry.slug}(?![\\w-])`), `${entry.slug}: recipe ${r} does not name it`);
+          }
+        }
+      } else {
+        assert.ok(['gooseworks-app', 'goose-studio'].includes(user.repo), `${entry.slug}: unknown repo ${user.repo}`);
+        const checkout = user.repo === 'gooseworks-app' ? process.env.GOOSEWORKS_APP_DIR : process.env.GOOSE_STUDIO_DIR;
+        if (checkout) {
+          assert.ok(fs.readFileSync(path.join(checkout, user.file), 'utf8').includes(entry.slug), `${entry.slug}: ${user.repo} ${user.file} does not mention it`);
+        }
+      }
+    }
+  }
+});
+
+test('rejects an unlisted superseded atom, a listed atom that is not superseded, and replacement parts that differ', () => {
+  const atom = { slug: 'old-captions', path: 'skills/video/old-captions', metadata: {} };
+  const entry = { slug: 'old-captions', replaced_by: ['captions-layer@1.1.0'], reason: 'Recipes use it.', remove_when: 'they move', used_by: [] };
+  const superseded = new Map([['old-captions', ['captions-layer@1.1.0']]]);
+  assert.doesNotThrow(() => validateRetirements({ superseded: [entry] }, [atom], { superseded }));
+  assert.throws(() => validateRetirements({}, [atom], { superseded }), /add it to retired-skills\.json superseded/);
+  assert.throws(() => validateRetirements({ superseded: [entry] }, [atom], { superseded: new Map() }), /does not say status: superseded/);
+  assert.throws(
+    () => validateRetirements({ superseded: [{ ...entry, replaced_by: ['captions-layer@1.0.0'] }] }, [atom], { superseded }),
+    /must match the SKILL\.md superseded_by/,
+  );
+  assert.throws(() => validateRetirements({ superseded: [{ ...entry, remove_when: '' }] }, [atom], { superseded }), /reason and remove_when/);
+  assert.throws(() => validateRetirements({ superseded: [{ ...entry, used_by: undefined }] }, [atom], { superseded }), /needs used_by/);
+  assert.throws(
+    () => validateRetirements({ superseded: [{ ...entry, used_by: [{ skill: 'render-x' }] }] }, [atom, { slug: 'render-x', metadata: {} }], { superseded }),
+    /does not list it in requires_skills/,
+  );
+  assert.throws(() => validateRetirements({ superseded: [{ ...entry, used_by: [{ repo: 'goose-studio', recipes: [] }] }] }, [atom], { superseded }), /non-empty list of recipe slugs/);
+  assert.doesNotThrow(() => validateRetirements(
+    { superseded: [{ ...entry, used_by: [{ repo: 'goose-studio', recipes: ['create-demo-video-from-refs'] }, { repo: 'gooseworks-app', file: 'apps/api/x.ts' }] }] },
+    [atom],
+    { superseded },
+  ));
+});
+
+test('superseded_by is read as one id, a comma list, a flow list or a block list', () => {
+  assert.deepEqual(readSupersededFrontmatter('---\nname: a\nstatus: superseded\nsuperseded_by: phone-chat@1.2.0\n---\n'), ['phone-chat@1.2.0']);
+  assert.deepEqual(readSupersededFrontmatter('---\nstatus: superseded\nsuperseded_by: audio-mix@1.0.1, sound-layer@1.0.4\n---\n'), ['audio-mix@1.0.1', 'sound-layer@1.0.4']);
+  assert.deepEqual(readSupersededFrontmatter('---\nstatus: superseded\nsuperseded_by: [a@1.0.0, "b@2.0.0"]\n---\n'), ['a@1.0.0', 'b@2.0.0']);
+  assert.deepEqual(readSupersededFrontmatter('---\nstatus: superseded\nsuperseded_by:\n  - a@1.0.0\n  - b@2.0.0\n---\n'), ['a@1.0.0', 'b@2.0.0']);
+  assert.equal(readSupersededFrontmatter('---\nstatus: active\n---\n'), null);
 });

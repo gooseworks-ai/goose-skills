@@ -17,12 +17,11 @@
  *
  * Old debt warns; new debt fails. With --base, a finding fails when the
  * branch adds it: it is in an atom the branch changed and was not there on
- * the base. Atoms listed in atom-lint/config.json strict_atoms fail on any
- * finding, so a cleaned atom stays clean. --strict fails on every finding
- * (the final switch, GV-73). Without --base nothing is compared, so only
- * strict atoms can fail. --direct compares with <ref> itself instead of its
- * merge base with HEAD (CI). An atom moved between capabilities/ and packs/
- * is compared with its old folder.
+ * the base. --strict fails on every finding; CI always runs it, since the old
+ * debt is cleared. Without --base or --strict, only the structural rules fail
+ * (frontmatter, a superseded pointer, a broken lint_allow). --direct compares with <ref> itself instead of its merge base
+ * with HEAD (CI). An atom that moved from the old layout is compared with its
+ * old folder.
  *
  * Atoms with status: superseded are skipped, apart from their pointer
  * (atom.superseded_pointer).
@@ -452,7 +451,6 @@ function run(argv) {
   const base = lib.resolveBase(ROOT, args.base, { direct: args.direct });
   const changed = base ? lib.changedFiles(ROOT, base) : new Set();
   const atoms = lib.listAtoms(ROOT);
-  const strictAtoms = new Set(CONFIG.strict_atoms);
 
   const results = [];
   let allowed = 0;
@@ -488,7 +486,7 @@ function run(argv) {
       if (touched) markNew(head, baseDir ? lintAtom(atom, baseFiles(base, atom, baseDir)) : []);
     }
     for (const f of [...problems, ...head]) {
-      const fails = args.strict || strictAtoms.has(atom.slug) || f.rule === 'atom.lint_allow' || f.isNew === true;
+      const fails = args.strict || f.rule === 'atom.lint_allow' || f.isNew === true;
       results.push({ ...f, atom: atom.slug, severity: fails ? 'error' : 'warning' });
     }
   }

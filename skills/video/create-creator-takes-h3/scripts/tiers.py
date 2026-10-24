@@ -66,7 +66,7 @@ def upgrade(a, setting, chosen):
     rank, base = RANK[setting], default(a, setting)
     if (setting == "image_quality" and chosen == base == "high" and a.upgrade_reason == "failed_attempt"):
         # Best's picture already at high failed its check: a retry at high with the failed attempt is a
-        # still_retry the server pays from the picture allowance (#2085). Without the params it is an
+        # still_retry the server pays from the picture allowance. Without the params it is an
         # ordinary call paid from the approved budget.
         attempt, why = ((v or "").strip() for v in (a.upgrade_attempt, a.upgrade_why))
         if not attempt or not why:

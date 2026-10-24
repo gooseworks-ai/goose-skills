@@ -75,10 +75,10 @@ test('null, missing and blank lines are silent pictures: no words, no section li
 });
 
 test('pronunciations: the singer gets the say_as spelling, and every sung word maps back to the written word', () => {
-  const w = songWordPlan([{ id: 'a', line: 'Meet Drinkag1 today.' }], [{ term: 'drinkag1', say_as: 'drink A G one' }]);
-  assert.equal(w.sung[0].spoken, 'Meet drink A G one today.');
-  assert.deepEqual(w.sent.map((s) => [s.text, s.written]), [['Meet', [0]], ['drink', [1]], ['A', [1]], ['G', [1]], ['one', [1]], ['today.', [2]]]);
-  assert.deepEqual(w.written.map((x) => [x.text, x.sent]), [['Meet', [0]], ['Drinkag1', [1, 2, 3, 4]], ['today.', [5]]]);
+  const w = songWordPlan([{ id: 'a', line: 'Meet Drinkqx9 today.' }], [{ term: 'drinkqx9', say_as: 'drink Q X nine' }]);
+  assert.equal(w.sung[0].spoken, 'Meet drink Q X nine today.');
+  assert.deepEqual(w.sent.map((s) => [s.text, s.written]), [['Meet', [0]], ['drink', [1]], ['Q', [1]], ['X', [1]], ['nine', [1]], ['today.', [2]]]);
+  assert.deepEqual(w.written.map((x) => [x.text, x.sent]), [['Meet', [0]], ['Drinkqx9', [1, 2, 3, 4]], ['today.', [5]]]);
 });
 
 test('a line over 200 characters is split at a comma, never losing a word', () => {

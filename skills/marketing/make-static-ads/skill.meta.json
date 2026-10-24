@@ -2,7 +2,7 @@
   "slug": "make-static-ads",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.8.2",
+  "version": "0.9.1",
   "tags": [
     "ads",
     "design"
@@ -71,8 +71,7 @@
     "run-memory: previous run and open recommendation outcomes at start; missing first run is explicit"
   ],
   "writes": [
-    "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
-    "lower-case creative tags (concept, angle, type, level, template, batch, mode, test, offer-ends, claims, judge:*, try:*, superseded, picked) — read by analyze-performance and research-competitors",
+    "lower-case creative tags (concept, style, angle, type, level, template, batch, mode, test, offer-ends, claims, judge:*, try:*, superseded, picked) — read by analyze-performance and research-competitors",
     "the human's picks and verdicts: feedback in the human's words (rating happy only on their pick) + 'picked' tag + the batch file — read by run-paid-campaigns and the brand's learned rules",
     "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: the concept board (what was read, level, each row's angle, message and source, visual idea, on-image text, template, protected choice, critic notes), per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, font, palette, logo, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, cut list, flags — run-paid-campaigns launches from it verbatim",
     "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run",
@@ -80,7 +79,8 @@
     "brand learnings through the shared save-learning atom, on the human's own words (incl. claims the marketer confirms in chat) — read by every creative playbook",
     "ad-library charges in research/credits-log/<YYYY-MM>.md (spend-gate branch B) — read by every playbook that estimates proxy spend",
     "board.md: the concept board, shown to the marketer with the quotes",
-    "profile.md: the brand profile (positioning, angles it uses, how its ads look and read, what it never does), shown with the board"
+    "profile.md: the brand profile (positioning, angles it uses, how its ads look and read, what it never does), shown with the board",
+    "logo-placed versions of each render (media_upload + ads_save with the render as parent) — the version the marketer receives"
   ],
   "needs": {
     "mcp": [
@@ -101,7 +101,6 @@
       "gooseworks:social_inspiration_search",
       "gooseworks:photos_read",
       "gooseworks:ads_template_read",
-      "gooseworks:ads_template_create",
       "gooseworks:ads_library_scrape",
       "gooseworks:media_upload",
       "gooseworks:data_call_provider",
@@ -109,7 +108,6 @@
       "gooseworks:job_get",
       "gooseworks:ads_creative_read",
       "gooseworks:ads_creative_update",
-      "gooseworks:ads_creative_layerize",
       "gooseworks:automation_upsert",
       "gooseworks:ads_save"
     ]

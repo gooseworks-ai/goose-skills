@@ -72,7 +72,7 @@ support. Product-sample uses a prepared plain cup; it cannot bind an exact packa
 Mic-only may explain a service without a device. Concept-challenge uses only described
 non-UI props. No conversation subtype accepts a phone, screen, UI or scene-image binding.
 
-Read the renderer's `SKILL.md`, `REFERENCE.md` and `READINESS.md`. Load
+Read the renderer's `SKILL.md` and `REFERENCE.md`. Load
 [[composes::write-video-ad-script]] with the scoped [[derived-from::ad-angle-miner]] angle
 and current brand facts. Preserve the legacy product-guess scaffold and its regression
 checks; do not transplant its handover, wrong answers or winner into a conversation.

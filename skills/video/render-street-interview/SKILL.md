@@ -1,7 +1,7 @@
 ---
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
-status: draft
+status: active
 version: "2.0.7"
 updated: 2026-10-12
 ---
@@ -10,8 +10,7 @@ updated: 2026-10-12
 
 ## render-street-interview
 
-**Summary.** This is the renderer for the **street-interview** ad format (goose-studio
-recipe `one-shot-videos/create-street-interview-video`). Product guessing retains its
+**Summary.** This is the renderer for the **street-interview** ad format. Product guessing retains its
 visible object and reveal. Conversation supports mic-only, prepared-sample and visible-task
 **script/prompt previews**. Choose a coherent situation and earned ad connection before
 writing words. People are generated; conversation media delivery remains unverified.
@@ -238,4 +237,4 @@ Ported from goose-studio `skills/molecules/create-street-interview-video` on 202
 including the episode-2 v3 fixes (hook caption, the mispronounced line, the silent end card).
 The port changed only path resolution and routed the paid calls through the proxy.
 `selftest.py` passes from an empty folder, and episode 2 v3 rebuilds identically
-(11 shots, 22.64 s).
+(11 shots, 22.64 s); its takes are repo-only fixtures (`tests/fixtures/`).

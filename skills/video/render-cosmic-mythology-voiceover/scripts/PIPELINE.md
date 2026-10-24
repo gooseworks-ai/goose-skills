@@ -23,7 +23,7 @@ them + composites the VO + fades the hook on + burns the captions.
 | `look_pack.style_descriptor`, `look_pack.palette_anchors` | 2 Stills | threaded verbatim into every image prompt | (defines cost) |
 | `shots[].prompt`, `image_engine` | 2 Stills | `working/gen_images2.py` → `fal-ai/flux-pro/v1.1`, `portrait_16_9`, `safety_tolerance 5` → `assets/img*.png` | **PAID** |
 | `sequence.cuts[].still/zoom_out/weight`, `sequence.zoom_end` | 3 Assembly | `working/build_video2.py` weighted formula `cut_dur = VO_dur × weight / Σweights` | free |
-| `sequence.fade_in_first_s`, `.fade_out_last_s`, Ken-Burns clips | 3 Assembly | `working/build_video2.py` calls the ken-burns-clip atom `render.py` (scale 2×, zoompan) → `working/kb_NN.mp4` | free |
+| `sequence.fade_in_first_s`, `.fade_out_last_s`, Ken-Burns clips | 3 Assembly | `working/build_video2.py` (not shipped) renders each still as a Ken Burns move with ffmpeg (scale 2×, zoompan) → `working/kb_NN.mp4` | free |
 | `hook.text`, `hook.fade_in_s`, `.hold_until_s`, `.fade_out_s` | 3 Assembly | `working/build_video2.py` ffmpeg `drawtext` alpha window | free |
 | assembly (`fps`, `crf`, dims) | 3 Assembly | `working/build_video2.py` ffmpeg concat → composite BG + VO (libx264 crf18, aac 192k) → `working/draft2.mp4` | free |
 | `captions` | 3 Assembly | VEED/Whisper subtitle burn on `working/draft2.mp4` → `finals/saturn-myth-v2.mp4` (free local Whisper + ffmpeg fallback) | ~$ (VEED) / free (local) |

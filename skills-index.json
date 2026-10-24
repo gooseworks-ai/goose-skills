@@ -1192,7 +1192,7 @@
       "description": "Checks paid ads against the ad platform's rules (Meta, TikTok, Google, LinkedIn and others) and the brand's category rules: the copy, on-image or on-screen text, pictures and people. Rewrites what can be fixed honestly, adds the disclosures that are needed, and flags anything that needs a human or legal review, with one pass, fixed or flag line per ad and platform. Use alone when you already have the ad text or images and know where they will run; otherwise run the playbook for the job (e.g. make-static-ads, make-content, email-lifecycle).",
       "tags": "ads",
       "path": "skills/marketing/ad-policy-check",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/ad-policy-check/SKILL.md",
         "skills/marketing/ad-policy-check/disclosure.md",
@@ -1202,7 +1202,7 @@
         "slug": "ad-policy-check",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "email-lifecycle",
           "make-content",
@@ -1742,7 +1742,7 @@
       "name": "caption-burn",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Burned-in captions for a finished vertical video, three kinds. transcribe.py gets word timings from the video's own audio through the GooseWorks proxy (fal Whisper, bills the Ads agent, cents); captions.py burns one to three words at a time with Pillow + ffmpeg (no libass needed), either pinned to a split-screen seam (plate 25% above / 75% below) or at a fixed height, in a plate, outline or one-word serif style, with an optional red hook card; plates.py burns per-beat caption blocks (black, one union silhouette, placed in the emptiest band) for formats with no voice. The last caption (the CTA) holds to the final frame. Use as the last step of any video ad.",
+      "description": "Burned-in captions for a finished vertical video, three kinds. transcribe.py gets word timings from the video's own audio through the GooseWorks proxy (fal Whisper, charged to your GooseWorks credits, cents); captions.py burns one to three words at a time with Pillow + ffmpeg (no libass needed), either pinned to a split-screen seam (plate 25% above / 75% below) or at a fixed height, in a plate, outline or one-word serif style, with an optional red hook card; plates.py burns per-beat caption blocks (black, one union silhouette, placed in the emptiest band) for formats with no voice. The last caption (the CTA) holds to the final frame. Use as the last step of any video ad.",
       "tags": "ads, content",
       "path": "skills/video/caption-burn",
       "version": "1.0.3",
@@ -1786,7 +1786,7 @@
       "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 to 5 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
       "tags": "brand",
       "path": "skills/marketing/claims-gate",
-      "version": "0.1.2",
+      "version": "0.1.4",
       "files": [
         "skills/marketing/claims-gate/SKILL.md",
         "skills/marketing/claims-gate/claim-types.md",
@@ -1798,7 +1798,7 @@
         "slug": "claims-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.2",
+        "version": "0.1.4",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -1986,7 +1986,6 @@
       "version": "1.0.5",
       "files": [
         "skills/video/create-apple-notes-mockup/SKILL.md",
-        "skills/video/create-apple-notes-mockup/apple-notes-skill-build.html",
         "skills/video/create-apple-notes-mockup/examples/frame-1-title-only.json",
         "skills/video/create-apple-notes-mockup/examples/long.json",
         "skills/video/create-apple-notes-mockup/examples/mid.json",
@@ -2030,7 +2029,6 @@
       "version": "1.0.5",
       "files": [
         "skills/video/create-chatgpt-mockup/SKILL.md",
-        "skills/video/create-chatgpt-mockup/build-review.html",
         "skills/video/create-chatgpt-mockup/examples/01-sunscreen-image.json",
         "skills/video/create-chatgpt-mockup/examples/02-sleep-apnea-long.json",
         "skills/video/create-chatgpt-mockup/examples/03-poem-iphone-mac.json",
@@ -2069,7 +2067,7 @@
       "name": "create-creator-takes-h3",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (bills the Ads agent). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
+      "description": "Generate an AI creator talking to camera, saying an approved script, as one continuous track — H3 Max reference-to-video through the GooseWorks fal-proxy (charged to your GooseWorks credits). Plans takes on line boundaries under H3's 15s cap, dry-runs a cost estimate, generates the first take alone so its voice can be locked and passed to every later take, joins takes with measured 0.10s dissolves, and moves each line's timing onto the words actually spoken. Use for any format with a generated creator speaking a script (split-screen, screen inserts, talking-head ads).",
       "tags": "ads, content",
       "path": "skills/video/create-creator-takes-h3",
       "version": "2.9.1",
@@ -2115,7 +2113,7 @@
       "name": "create-image-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), ROUTED THROUGH THE fal-proxy so it bills the Ads agent. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
+      "description": "Generate or edit an image via any FAL image model (nano-banana edit, gpt-image, flux, ...), routed through the GooseWorks proxy, so the call is charged to your GooseWorks credits. image_urls must be public URLs; --image puts a local file on the fal CDN first. The recipe names the model + prompt. Use for keyframes, flat-cover transforms, product hero edits. (For the OpenAI gpt-image family specifically, create-image-gpt-image-fal also exists.)",
       "tags": "ads",
       "path": "skills/video/create-image-fal",
       "version": "1.4.1",
@@ -2270,7 +2268,7 @@
       "name": "create-music-elevenlabs",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate an instrumental music bed via ElevenLabs Music, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
+      "description": "Generate an instrumental music bed via ElevenLabs Music, routed through the GooseWorks proxy, so the call is charged to your GooseWorks credits. Trims any sparse intro, loudnorm, fades the tail. Prompt + length from the template recipe. Use for the music layer of any video-ad format.",
       "tags": "ads",
       "path": "skills/video/create-music-elevenlabs",
       "version": "1.1.5",
@@ -2306,7 +2304,7 @@
       "name": "create-video-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
+      "description": "Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), routed through the GooseWorks proxy, so the call is charged to your GooseWorks credits. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.",
       "tags": "ads",
       "path": "skills/video/create-video-fal",
       "version": "1.1.2",
@@ -2342,7 +2340,7 @@
       "name": "create-video-seedance-2-fal",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
+      "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (charged to your GooseWorks credits). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
       "tags": "ads",
       "path": "skills/video/create-video-seedance-2-fal",
       "version": "2.0.5",
@@ -2376,7 +2374,7 @@
       "name": "create-vo-elevenlabs",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, ROUTED THROUGH THE elevenlabs-proxy so it bills the Ads agent. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
+      "description": "Generate a voiceover (VO) clip via ElevenLabs text-to-speech, routed through the GooseWorks proxy, so the call is charged to your GooseWorks credits. Voice id + script text come from the template recipe. Use for the spoken narration of VO-driven video-ad formats (cgi-app-sizzle, flat-vector-explainer, hypermotion). Never call ElevenLabs directly — the proxy attribution is required.",
       "tags": "ads",
       "path": "skills/video/create-vo-elevenlabs",
       "version": "1.3.1",
@@ -3134,7 +3132,7 @@
       "description": "Shared step of the marketing playbooks (make-static-ads, run-organic-social): how to review generated images and video honestly. Covers what was seen by eye versus read automatically, findings framed as things for the human to confirm, remakes only after a yes to the price, and at most two tries per item. Loaded by those playbooks; not for direct use.",
       "tags": "design, ads",
       "path": "skills/marketing/honest-review",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/honest-review/SKILL.md",
         "skills/marketing/honest-review/skill.meta.json"
@@ -3143,7 +3141,7 @@
         "slug": "honest-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "make-static-ads",
           "run-organic-social"
@@ -3548,7 +3546,7 @@
       "description": "Detect buying intent from job postings. When a company posts a job in your problem area, they've allocated budget and are actively thinking about the problem. This skill finds those companies, qualifies them, extracts personalization context, and outputs everything to a Google Sheet. Does NOT do outreach — just delivers qualified leads with reasoning.",
       "tags": "lead-generation, outreach",
       "path": "skills/shared/job-posting-intent",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "files": [
         "skills/shared/job-posting-intent/SKILL.md",
         "skills/shared/job-posting-intent/scripts/create_sheet.py",
@@ -3559,7 +3557,7 @@
       "metadata": {
         "slug": "job-posting-intent",
         "category": "capabilities",
-        "version": "1.1.0",
+        "version": "1.1.1",
         "tags": [
           "lead-generation",
           "outreach"
@@ -3989,7 +3987,7 @@
       "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads",
-      "version": "0.8.2",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads/SKILL.md",
         "skills/marketing/make-static-ads/references/brand-profile.md",
@@ -4004,7 +4002,10 @@
         "skills/marketing/make-static-ads/references/reading-the-brain.md",
         "skills/marketing/make-static-ads/references/review-rubric.md",
         "skills/marketing/make-static-ads/scripts/README.md",
+        "skills/marketing/make-static-ads/scripts/place_logo.py",
+        "skills/marketing/make-static-ads/scripts/repair_patch.md",
         "skills/marketing/make-static-ads/scripts/repair_patch.py",
+        "skills/marketing/make-static-ads/scripts/test_place_logo.py",
         "skills/marketing/make-static-ads/scripts/test_repair_patch.py",
         "skills/marketing/make-static-ads/skill.meta.json"
       ],
@@ -4012,7 +4013,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.8.2",
+        "version": "0.9.1",
         "tags": [
           "ads",
           "design"
@@ -4081,8 +4082,7 @@
           "run-memory: previous run and open recommendation outcomes at start; missing first run is explicit"
         ],
         "writes": [
-          "templates registered from Meta ads with ads_template_create (tags ref:meta, src:<advertiser-slug>) — reused by later runs of this playbook",
-          "lower-case creative tags (concept, angle, type, level, template, batch, mode, test, offer-ends, claims, judge:*, try:*, superseded, picked) — read by analyze-performance and research-competitors",
+          "lower-case creative tags (concept, style, angle, type, level, template, batch, mode, test, offer-ends, claims, judge:*, try:*, superseded, picked) — read by analyze-performance and research-competitors",
           "the human's picks and verdicts: feedback in the human's words (rating happy only on their pick) + 'picked' tag + the batch file — read by run-paid-campaigns and the brand's learned rules",
           "batch file ads/batches/<YYYY-MM-DD>-<slug>.md: the concept board (what was read, level, each row's angle, message and source, visual idea, on-image text, template, protected choice, critic notes), per-ad copy (primary A/B, headline, description, CTA, destination), creative and render ids per ratio, font, palette, logo, the final prompt and image list per ratio, the judge result per try, copy variants, claims and policy lines, special-category flag, picks, cut list, flags — run-paid-campaigns launches from it verbatim",
           "'Rotation ready:' / 'Fix ready:' answers under run-paid-campaigns' request lines — read by run-paid-campaigns on its next run",
@@ -4090,7 +4090,8 @@
           "brand learnings through the shared save-learning atom, on the human's own words (incl. claims the marketer confirms in chat) — read by every creative playbook",
           "ad-library charges in research/credits-log/<YYYY-MM>.md (spend-gate branch B) — read by every playbook that estimates proxy spend",
           "board.md: the concept board, shown to the marketer with the quotes",
-          "profile.md: the brand profile (positioning, angles it uses, how its ads look and read, what it never does), shown with the board"
+          "profile.md: the brand profile (positioning, angles it uses, how its ads look and read, what it never does), shown with the board",
+          "logo-placed versions of each render (media_upload + ads_save with the render as parent) — the version the marketer receives"
         ],
         "needs": {
           "mcp": [
@@ -4111,7 +4112,6 @@
             "gooseworks:social_inspiration_search",
             "gooseworks:photos_read",
             "gooseworks:ads_template_read",
-            "gooseworks:ads_template_create",
             "gooseworks:ads_library_scrape",
             "gooseworks:media_upload",
             "gooseworks:data_call_provider",
@@ -4119,7 +4119,6 @@
             "gooseworks:job_get",
             "gooseworks:ads_creative_read",
             "gooseworks:ads_creative_update",
-            "gooseworks:ads_creative_layerize",
             "gooseworks:automation_upsert",
             "gooseworks:ads_save"
           ]
@@ -4134,7 +4133,7 @@
       "description": "Step of make-static-ads: writes the text for each slot the ad's template sets, then the primary texts, headline, description and CTA around the image, from usable facts and customer words. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-ad-copy",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "files": [
         "skills/marketing/make-static-ads-ad-copy/SKILL.md",
         "skills/marketing/make-static-ads-ad-copy/skill.meta.json"
@@ -4143,7 +4142,7 @@
         "slug": "make-static-ads-ad-copy",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.8.0",
+        "version": "0.9.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4169,7 +4168,7 @@
       "description": "Step of the make-static-ads playbook: pulls every claim-bearing span out of an ad — the copy around the image, the on-image words in the prompt, badges, and what the picture implies — and keeps or cuts each by the brand-brain rule. Runs before spend on the finished prompt (Pass A) and on every render (Pass B). Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-claims-extract",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "files": [
         "skills/marketing/make-static-ads-claims-extract/SKILL.md",
         "skills/marketing/make-static-ads-claims-extract/skill.meta.json"
@@ -4178,7 +4177,7 @@
         "slug": "make-static-ads-claims-extract",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.8.0",
+        "version": "0.9.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4217,7 +4216,7 @@
       "description": "Step of make-static-ads: writes each ad's render prompt and ordered image list from its concept-board row, one per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-compose",
-      "version": "0.8.2",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-compose/SKILL.md",
         "skills/marketing/make-static-ads-compose/skill.meta.json"
@@ -4226,7 +4225,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.8.2",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4265,7 +4264,7 @@
       "description": "Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-concept-grid",
-      "version": "0.8.2",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-concept-grid/SKILL.md",
         "skills/marketing/make-static-ads-concept-grid/skill.meta.json"
@@ -4274,7 +4273,7 @@
         "slug": "make-static-ads-concept-grid",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.8.2",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4299,10 +4298,10 @@
       "name": "make-static-ads-copy-variants",
       "category": "capabilities",
       "domain": "marketing-agent",
-      "description": "Step of the make-static-ads playbook: after an image is approved, makes more versions of the same picture with different hooks, headlines or fonts — by a quoted re-render with the approved render attached as the brand's own image, or by splitting the render into layers and resetting the text exactly — so copy can be tested without new visuals. Offered, never default. Run make-static-ads instead; not for direct use.",
+      "description": "Step of the make-static-ads playbook: after an image is approved, makes more versions of the same picture with different hooks, headlines or fonts by a quoted re-render with the approved render attached as the brand's own image, so copy can be tested without new visuals. Offered, never default. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-copy-variants",
-      "version": "0.8.2",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-copy-variants/SKILL.md",
         "skills/marketing/make-static-ads-copy-variants/skill.meta.json"
@@ -4311,7 +4310,7 @@
         "slug": "make-static-ads-copy-variants",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.8.2",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4348,10 +4347,10 @@
       "name": "make-static-ads-find-references",
       "category": "capabilities",
       "domain": "marketing-agent",
-      "description": "Step of make-static-ads: picks a template for every ad after its visual idea is set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.",
+      "description": "Step of make-static-ads: picks a template for every ad in its chosen style, after its visual idea and style are set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-find-references",
-      "version": "0.8.2",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-find-references/SKILL.md",
         "skills/marketing/make-static-ads-find-references/skill.meta.json"
@@ -4360,7 +4359,7 @@
         "slug": "make-static-ads-find-references",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.8.2",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4386,7 +4385,7 @@
       "description": "Step of the make-static-ads playbook: fixes a static image ad the platform rejected — finds the ad, maps the platform's reason to the line or element at fault, fixes copy for free or re-composes the image text on a quote, re-runs the claims and policy checks, and answers the request. A rejected video is the video playbook's job. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-fix-rejected",
-      "version": "0.6.0",
+      "version": "0.9.0",
       "files": [
         "skills/marketing/make-static-ads-fix-rejected/SKILL.md",
         "skills/marketing/make-static-ads-fix-rejected/skill.meta.json"
@@ -4395,7 +4394,7 @@
         "slug": "make-static-ads-fix-rejected",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.6.0",
+        "version": "0.9.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4436,7 +4435,7 @@
       "description": "Makes one simple non-ad brand graphic, such as an email header, social feed or story image, or a blog or link-preview image, in the brand's style with at most a short line of text, after claim and rights checks and a yes to the quote; returns the link and alt text. Not for carousels, decks or print. Use alone when you already have the purpose, placement and exact wording; otherwise run make-static-ads.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-graphic-request",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "files": [
         "skills/marketing/make-static-ads-graphic-request/SKILL.md",
         "skills/marketing/make-static-ads-graphic-request/skill.meta.json"
@@ -4445,7 +4444,7 @@
         "slug": "make-static-ads-graphic-request",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.8.0",
+        "version": "0.9.0",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4487,7 +4486,7 @@
       "description": "Step of make-static-ads: a fresh judge checks every render against its concept-board row and the official product photos, one retry inside the marketer's approval, then the claims and set checks; records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-render-review",
-      "version": "0.8.2",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-render-review/SKILL.md",
         "skills/marketing/make-static-ads-render-review/skill.meta.json"
@@ -4496,7 +4495,7 @@
         "slug": "make-static-ads-render-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.8.2",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4644,7 +4643,7 @@
       "name": "media-proxy",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
+      "description": "Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call is charged to your GooseWorks credits — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.",
       "tags": "ads",
       "path": "skills/video/media-proxy",
       "version": "2.0.6",
@@ -5669,7 +5668,8 @@
           ]
         },
         "requires_skills": [
-          "watch"
+          "watch",
+          "stitch-videos-ffmpeg"
         ]
       }
     },
@@ -6766,7 +6766,6 @@
       "path": "skills/video/render-street-interview",
       "version": "2.0.7",
       "files": [
-        "skills/video/render-street-interview/READINESS.md",
         "skills/video/render-street-interview/REFERENCE.md",
         "skills/video/render-street-interview/SKILL.md",
         "skills/video/render-street-interview/TAKES.md",
@@ -6774,38 +6773,11 @@
         "skills/video/render-street-interview/brands/fizzroot-ep3-a.json",
         "skills/video/render-street-interview/brands/fizzroot-ep3-b.json",
         "skills/video/render-street-interview/brands/fizzroot-ep3-c.json",
-        "skills/video/render-street-interview/brands/grimwater-4816.json",
-        "skills/video/render-street-interview/brands/grimwater-4817.json",
-        "skills/video/render-street-interview/brands/grimwater-4818.json",
-        "skills/video/render-street-interview/brands/grimwater-4819.json",
-        "skills/video/render-street-interview/brands/grimwater-4820.json",
-        "skills/video/render-street-interview/brands/grimwater-4821.json",
-        "skills/video/render-street-interview/brands/grimwater-4822.json",
-        "skills/video/render-street-interview/brands/grimwater-4823.json",
-        "skills/video/render-street-interview/brands/grimwater-4824.json",
-        "skills/video/render-street-interview/brands/grimwater-4827.json",
-        "skills/video/render-street-interview/brands/grimwater-4828.json",
-        "skills/video/render-street-interview/brands/grimwater-4829.json",
-        "skills/video/render-street-interview/brands/grimwater-4830.json",
-        "skills/video/render-street-interview/brands/grimwater-4831.json",
-        "skills/video/render-street-interview/brands/grimwater-4832.json",
-        "skills/video/render-street-interview/brands/grimwater-4833.json",
-        "skills/video/render-street-interview/brands/grimwater-4834.json",
-        "skills/video/render-street-interview/brands/grimwater-4835.json",
         "skills/video/render-street-interview/brands/grimwater.json",
         "skills/video/render-street-interview/brands/oleara-ep1-a2.json",
         "skills/video/render-street-interview/brands/oleara-ep1-b.json",
         "skills/video/render-street-interview/brands/oleara-ep1-c.json",
         "skills/video/render-street-interview/episodes/fizzroot-ep3.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep1.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep2.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep2fix-v2.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep2fix-v3.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep2fix.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep3.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep3b.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep3c.json",
-        "skills/video/render-street-interview/episodes/grimwater-ep4.json",
         "skills/video/render-street-interview/episodes/oleara-ep1.json",
         "skills/video/render-street-interview/references/cast-writing.md",
         "skills/video/render-street-interview/references/h3-generation.md",
@@ -7925,7 +7897,7 @@
       "name": "review-ugc-render",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"TG1\" said \"T G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
+      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates keeping the render as the final version (video_review) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"TG1\" said \"T G one\") passes. Runnable, gating counterpart to GooseWorks' fuller transcript-integrity review. Every ugc-video-formats recipe runs this after render and BEFORE keeping the final version.",
       "tags": "ads",
       "path": "skills/video/review-ugc-render",
       "version": "2.0.5",
@@ -8902,10 +8874,10 @@
       "name": "ugc-fixloop",
       "category": "capabilities",
       "domain": "ads",
-      "description": "the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py, pure FFmpeg) and GPT cross-model review a Seedance prompt before render (vet_seedance_prompt.py, routed through the openai-proxy). Fetch it into a one-shot UGC recipe so both scripts resolve on any machine and the vet call bills the Ads agent.",
+      "description": "the UGC fix-loop toolkit — surgically re-render a bad window/beat of a single-take UGC master (stitch_replacement.py, pure FFmpeg) and GPT cross-model review a Seedance prompt before render (vet_seedance_prompt.py, routed through the openai-proxy). Fetch it into a one-shot UGC recipe so both scripts resolve on any machine and the vet call charged to your GooseWorks credits.",
       "tags": "ads",
       "path": "skills/video/ugc-fixloop",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "files": [
         "skills/video/ugc-fixloop/SKILL.md",
         "skills/video/ugc-fixloop/scripts/stitch_replacement.py",
@@ -8916,7 +8888,7 @@
         "slug": "ugc-fixloop",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "tags": [
           "ads"
         ],
@@ -8973,7 +8945,7 @@
       "description": "Full video production sequence with script review, actual ingredient choices, controlled generation, editing, evidence-based quality review, polish, captions and delivery. A host binding supplies project storage, authentic approvals, provider access and billing.",
       "tags": "ads, content",
       "path": "skills/video/video-production-harness",
-      "version": "3.1.0",
+      "version": "3.1.1",
       "files": [
         "skills/video/video-production-harness/SKILL.md",
         "skills/video/video-production-harness/auto-fix-from-review-notes.md",
@@ -9059,14 +9031,14 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "c7cf7b68ccaea76293ffe4f639f6e94b78c30a44",
-        "source_hash": "596087081442f3ae9d754a70f4b950b2642b293583f3df51e3cfa13713843a10",
-        "source_version": "5-596087081442",
+        "source_commit": "65a2eed34701839d699ad0cafa43a8418f09a1c8",
+        "source_hash": "e92d4bcfd21efda1d27cdeeaa70dda7e312edba91d6c2583b650fd5bf2f47539",
+        "source_version": "5-e92d4bcfd21e",
         "tags": [
           "ads",
           "content"
         ],
-        "version": "3.1.0"
+        "version": "3.1.1"
       }
     },
     {

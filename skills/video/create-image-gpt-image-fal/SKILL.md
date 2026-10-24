@@ -13,7 +13,7 @@ Generate one image via fal.ai's OpenAI gpt-image endpoints. Two model families a
   - `video-orchestrator/lock-character` Phase 0 (anchor portrait) and Phase 1 (angle keyframes via `/edit`)
   - `video-orchestrator/create-clips` Phase 1 for photoreal scenes
   - the orchestrator's `generate_with_fallback.py` router on Higgsfield failure
-- **`gpt-image-2`** — `openai/gpt-image-2`. The newer model; accepts **custom output sizes** (any multiple of 16, up to 3840px) and renders dense text/layouts well. Used for designed sheets such as ad storyboards (`create-storyboard-sheets-fal`).
+- **`gpt-image-2`** — `openai/gpt-image-2`. The newer model; accepts **custom output sizes** (any multiple of 16, up to 3840px) and renders dense text/layouts well. Used for designed sheets such as ad storyboards.
 
 The default stays `gpt-image-1` so existing callers and the lock-character anchor-parity contract are unaffected. Opt into the newer model with `--model gpt-image-2`.
 
@@ -32,7 +32,7 @@ Optional:
 - `--with-logs` — stream fal queue logs.
 
 Credentials (proxy-routed — NOT a raw FAL key):
-- The bundled `scripts/media_proxy.py` routes every call through the GooseWorks **fal-proxy**, which **bills the Ads agent**. It reads `~/.gooseworks/credentials.json` (`api_base`, `api_key`, `agent_id`), written by the GooseWorks CLI. Do **not** set `FAL_API_KEY`: an agent (`cal_`) token is not a FAL key and 401s against fal directly.
+- The bundled `scripts/media_proxy.py` routes every call through the GooseWorks **fal-proxy**, so every call **is charged to your GooseWorks credits**. It reads `~/.gooseworks/credentials.json` (`api_base`, `api_key`, `agent_id`), written by the GooseWorks CLI. Do **not** set `FAL_API_KEY`: an agent (`cal_`) token is not a FAL key and 401s against fal directly.
 - Set `GW_PROJECT_ID=<ad project id>` in the env so the generation's spend attributes to that ad project (per-project cost shows in the app).
 
 ## Credentials at run time
@@ -69,7 +69,7 @@ python3 .../generate.py \
 ```
 
 The script:
-1. Loads the agent credentials from `~/.gooseworks/credentials.json` via the bundled `media_proxy.py` (proxy-routed; bills the Ads agent).
+1. Loads the agent credentials from `~/.gooseworks/credentials.json` via the bundled `media_proxy.py` (proxy-routed; charged to your GooseWorks credits).
 2. Resolves the model family (`--model`) and output size (`--image-size` if given and supported, else the aspect-ratio mapping).
 3. If one or more `--ref-image` / `--ref-url` flags are set, passes them as `image_urls=[url1, url2, ...]` (they must already be PUBLIC URLs) and routes to the model's `/edit` variant. Otherwise routes to the `/text-to-image` variant.
 4. Submits through the GooseWorks **fal-proxy** and polls the queue to completion — host-swapping the `queue.fal.run` status/response URLs to the proxy base (see `media_proxy.py`); never polls `queue.fal.run` directly.
@@ -123,5 +123,5 @@ When this atom generates a character anchor (lock-character Phase 0), the anchor
 - [fal.ai/models/fal-ai/gpt-image-1](https://fal.ai/models/fal-ai/gpt-image-1)
 - [fal.ai/models/openai/gpt-image-2](https://fal.ai/models/openai/gpt-image-2)
 - Sibling Higgsfield path: `mcp__higgsfield__generate_image` with `model="gpt_image_2"`
-- Shared helper: `scripts/media_proxy.py` (proxy-routed FAL/ElevenLabs; bills the Ads agent — the helper `generate.py` actually imports). `scripts/fal_helpers.py` is a LEGACY raw-FAL helper kept for reference only; `generate.py` does **not** use it (it would need a real `FAL_KEY`).
-- Storyboard-sheet consumer: `create-storyboard-sheets-fal` (video flow, in the separate ads-video repo)
+- Shared helper: `scripts/media_proxy.py` (proxy-routed FAL/ElevenLabs; charged to your GooseWorks credits — the helper `generate.py` actually imports). `scripts/fal_helpers.py` is a LEGACY raw-FAL helper kept for reference only; `generate.py` does **not** use it (it would need a real `FAL_KEY`).
+- Storyboard sheets for video ads are made with this skill's `gpt-image-2` mode.

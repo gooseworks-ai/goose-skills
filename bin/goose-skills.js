@@ -8,12 +8,13 @@
  * Usage:
  *   npx goose-skills install <slug> [--claude|--codex|--cursor] [--project-dir <path>]
  *   npx goose-skills list             # List available skills
- *   npx goose-skills info <slug>      # Show skill details
+ *   npx goose-skills info <slug>      # Show skill details, the skills it requires, or what replaced a retired one
  */
 
 const https = require('https');
 const { parseInstallOptions } = require('./lib/targets');
 const { installSkill } = require('./lib/install');
+const { describeSkill } = require('./lib/info');
 
 const REPO = 'gooseworks-ai/goose-skills';
 const BRANCH = 'main';
@@ -81,21 +82,9 @@ async function listSkills() {
 
 async function showInfo(slug) {
   const index = await fetchIndex();
-  const skill = index.skills.find((s) => s.slug === slug);
-
-  if (!skill) {
-    console.error(`Skill "${slug}" not found.`);
-    process.exit(1);
-  }
-
-  console.log(`${skill.name}`);
-  console.log(`${'='.repeat(skill.name.length)}`);
-  console.log(`Category: ${skill.category}`);
-  console.log(`Description: ${skill.description}`);
-  if (skill.tags) console.log(`Tags: ${skill.tags}`);
-  console.log(`Files: ${skill.files.length}`);
-  console.log(`\nInstall: npx goose-skills install ${skill.slug}`);
-  console.log(`GitHub: https://github.com/${REPO}/tree/${BRANCH}/${skill.path}`);
+  const { ok, lines } = describeSkill(index, slug, { repo: REPO, branch: BRANCH });
+  (ok ? console.log : console.error)(lines.join('\n'));
+  if (!ok) process.exit(1);
 }
 
 // CLI routing
@@ -139,7 +128,7 @@ switch (command) {
     console.log('Commands:');
     console.log('  install <slug>   Install a skill and the skills it requires');
     console.log('  list             List available skills');
-    console.log('  info <slug>      Show skill details');
+    console.log('  info <slug>      Show a skill, the skills it requires, or what replaced a retired one');
     console.log('\nExamples:');
     console.log('  npx goose-skills list');
     console.log('  npx goose-skills install research-competitors');

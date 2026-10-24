@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Generate/edit an image via any FAL image model (nano-banana, gpt-image, flux, ...),
-ROUTED THROUGH THE PROXY (bills the Ads agent). image_urls entries must be PUBLIC urls.
+ROUTED THROUGH THE PROXY (charged to your GooseWorks credits). image_urls entries must be PUBLIC urls.
 
   gen_image.py --model fal-ai/nano-banana/edit \
       --payload '{"prompt":"...","image_urls":["https://..."],"aspect_ratio":"9:16"}' \

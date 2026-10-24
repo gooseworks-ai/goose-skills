@@ -1,6 +1,6 @@
 # Fonts — pairings and free matches
 
-Fonts go into the prompt as words (`prompts.md` §2). Use this file when the brand font is a plain system face or a paid font the image model won't know, and for copy-variant font options.
+Fonts go into the prompt as words (`prompts.md` §2). Use this file when the brand font is a plain system face, a guessed kit font or a paid font the image model won't know, and for copy-variant font options.
 
 ## 1. Pairings by brand type (headline / body)
 
@@ -21,7 +21,7 @@ Pick by the ad's visual style too: a lo-fi native ad wants a plain or system-lik
 
 ## 2. Close free matches for common paid brand fonts
 
-Use when the brand's font isn't on Google Fonts, and for the layers method of copy variants.
+Use when the brand's font isn't on Google Fonts.
 
 | Paid font | Free match |
 |---|---|

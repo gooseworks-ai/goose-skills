@@ -336,7 +336,7 @@ def main():
     # The input digest names EVERY input by content: the exact payload with each uploaded
     # image replaced by its file's sha256. media_proxy re-attaches a resumed run to the job it
     # already paid for by this digest, and after a policy rejection it refuses the same digest
-    # for good (QA-14). It used to hash only prompt, seed, duration and the scene-ref PATH, so
+    # for good. It used to hash only prompt, seed, duration and the scene-ref PATH, so
     # after one likeness rejection a run with a different, acceptable product image was
     # refused forever.
     sources = [Path(ref)] + ([sref] if sref else [])

@@ -79,7 +79,7 @@
       d.style.opacity = 0.45 + 0.5 * (1 + Math.sin(now * 7 - i * 1.5)) / 2;
     });
   };
-  // Platform-safe zone report (QA-60), in output-canvas pixels: the visible part
+  // Platform-safe zone report, in output-canvas pixels: the visible part
   // of the newest row (rows clip to the conversation) and every shown sheet or
   // dialog. A skin that adds sheets marks them data-safe-keep.
   const box = r => ({ left:r.left, top:r.top, right:r.right, bottom:r.bottom });

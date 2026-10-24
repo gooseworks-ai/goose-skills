@@ -85,7 +85,7 @@ def main():
     take = Path(A.take) if A.take else (
         L["takes"] / f"{brandkit.take_name(cfg, cfg['generation']['seed'])}.mp4")
     if not take.exists():
-        sys.exit(f"no take at {take}. projects/ is gitignored; re-fetch it (READINESS.md).")
+        sys.exit(f"no take at {take}. Render the take first, or pass --take <path>.")
     lo, hi = bench.BANDS["face_sat"]
     tsat = A.target_sat if A.target_sat is not None else (lo + hi) / 2
 

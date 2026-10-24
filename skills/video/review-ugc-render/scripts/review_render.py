@@ -2,15 +2,15 @@
 """Pre-publish review gate for UGC video renders.
 
 Transcribes a finished render's AUDIO with Whisper, word-diffs the transcript
-against the approved spoken script, and gates pinning the final render
-(video_project_upsert patch.final_render_id). This catches the failure mode
+against the approved spoken script, and gates keeping the render as the final
+version (video_review). This catches the failure mode
 where Seedance mis-voices a word in the generated audio (e.g. the approved line
 "human-vetted" is spoken as "human witted") — a defect the render carries in its
 audio, which an eyeball `/watch` QC routinely misses and which a caption pass
 then faithfully bakes in.
 
-It is the runnable, gating counterpart to the content-goose
-`coworkers/video/atoms/review/review-transcript-integrity` atom.
+It is the runnable, gating counterpart to GooseWorks' fuller
+transcript-integrity review.
 
 Usage:
     review_render.py --video working/final.mp4 --script-file working/approved-script.txt
@@ -19,8 +19,8 @@ Usage:
         --brand-term "TG1" --alias "TG1=T G one" --pronunciations working/pronunciations.json
 
 Exit codes:
-    0  PASS  — safe to pin the final render (video_project_upsert patch.final_render_id)
-    2  FAIL  — do NOT pin it; fix (usually re-roll a new seed) and re-run
+    0  PASS  — safe to keep the render as the final version (video_review)
+    2  FAIL  — do NOT keep it; fix (usually re-roll a new seed) and re-run
     3  ERROR — could not run the check (no transcription backend / bad input)
 
 Bounded equivalence. Before the diff, the script and the transcript are put in
@@ -890,7 +890,7 @@ def _gw_creds():
 
 
 def _transcribe_gw_whisper_proxy(audio: str) -> str | None:
-    """GooseWorks whisper-proxy (bills the Ads agent). The proxy authenticates the
+    """GooseWorks whisper-proxy (charged to your GooseWorks credits). The proxy authenticates the
     session token via `?token=` OR Bearer, but a USER-scoped `cal_` token has no
     pinned agent, so `?agent_id=` is REQUIRED or the billable call 403s — this is
     exactly why plain `Authorization: Bearer` alone returned 403 before."""
@@ -1030,7 +1030,7 @@ def render_report(v: Verdict) -> str:
         else:
             lines.append(f"  [{i.severity}] {i.note}")
     if not v.passed:
-        lines.append("  → Do NOT pin this render as final (video_project_upsert patch.final_render_id). "
+        lines.append("  → Do NOT keep this render as the final version (video_review). "
                      "Fix (usually re-roll a new seed for an audio defect), then re-run this gate.")
     return "\n".join(lines)
 

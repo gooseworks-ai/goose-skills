@@ -19,8 +19,8 @@ pieces that `render-cinematic-music-video` owns.
 Captions come from `audio/words.json` — derived from the music model's `words_timestamps` (ms →
 s) — never from Whisper (Whisper on sung audio returns "🎵 Music Playing 🎵"). The builder chunks
 ~4 words at lyric boundaries, times each event, and burns cinematic lower-third serif captions
-(`--placement low`, serif font) via the captions atom, with the chorus hook line accent-treated
-(bold-italic). The hero/hook chunk is timed so the load-bearing line lands on the chorus drop.
+(low on the frame, serif font) with the `stitch-videos-ffmpeg` skill's `montage.py captions`; the
+chorus hook line and accent words go on in a second pass in the accent colour. The hero/hook chunk is timed so the load-bearing line lands on the chorus drop.
 
 ## 2. Per-beat clip assembly to the anthem timeline
 
@@ -41,6 +41,6 @@ free diffusion text — a diffusion model garbles a wordmark ("therapits").
 
 FFmpeg stitches the master: cut each clip to its lyric window, hard-concat on the beat →
 `master-silent.mp4`; mux the anthem (`atrim`, `afade` in 0.15s / out 0.6s + `loudnorm I=-14`) →
-`master-no-captions.mp4`; burn the cinematic lower-third caption ASS via the captions atom →
+`master-no-captions.mp4`; burn the cinematic lower-third captions with `montage.py captions` →
 `master-final.mp4`. The sung anthem IS the bed — no separate VO. Output is a 1080×1920 h264 + aac
 master. Deterministic, no paid calls, no keys.

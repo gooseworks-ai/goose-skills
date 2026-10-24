@@ -84,7 +84,7 @@ Paths are relative to the spec file. Times are seconds or a timecode string (`"S
 - `word_range: [i, j]` cuts on the VO's word boundaries. It needs a top-level `words` file,
   used as the transcriber wrote it: a flat `[{text|word, start, end}]` list, `{words: [...]}`
   (OpenAI, ElevenLabs; `spacing` entries are skipped), Whisper's `{segments: [{words: [...]}]}`
-  (goose-studio's `transcribe-audio-fal`), or fal's `{chunks: [{text, timestamp: [s, e]}]}`.
+  (what fal's Whisper returns), or fal's `{chunks: [{text, timestamp: [s, e]}]}`.
   Words with no time are skipped, and leading spaces are stripped. The cut runs from the start of word `i` to the start of word
   `j + 1`, or to the last word's end. The first cut starts at 0 so it covers the lead-in.
   Consecutive ranges tile the VO with no gaps.

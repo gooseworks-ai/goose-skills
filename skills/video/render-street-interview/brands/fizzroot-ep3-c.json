@@ -16,7 +16,7 @@
   "description": "a wide pavement on one street corner beside a park, with black iron railings and tall trees behind, a plain red brick wall to the left and parked cars along the kerb",
   "landmarks": "The same railings, trees and brick wall"
  },
- "_comment": "Fizzroot episode 3 (GOOSE-3746). Same approved script. level_camera on: no glance-down beat. Payoff no longer reads the can on camera (option 1, approved 2026-10-06). Seed and prompt are the paid take exactly.",
+ "_comment": "Fizzroot episode 3. Same approved script. level_camera on: no glance-down beat. Payoff no longer reads the can on camera (option 1, approved 2026-10-06). Seed and prompt are the paid take exactly.",
  "episode_role": "payoff",
  "episode": "fizzroot-ep3",
  "props": "a plain satchel, a folded jacket",

@@ -60,7 +60,7 @@ Part of the street-interview development record, split out of [`REFERENCE.md`](.
    `scripts/format_spec.py` holds the scaffold and the shot grammar (format knowledge, each
    clause paid for by a named take); `brands/<slug>.json` holds the creative (product, location,
    question, cast, dialogue, seed, caption copy, end card). Editing the composed prompt puts a
-   brand's choice back into the format, which is the failure Linear GOOSE-3680 names. Copy
+   brand's choice back into the format, the failure the format audit found. Copy
    `brands/demo-tallgrass-oat.json`, which is an invented brand that exists to be copied, and
    never `brands/grimwater.json`'s creative values.
 
@@ -156,7 +156,7 @@ Part of the street-interview development record, split out of [`REFERENCE.md`](.
     with a 1.30s final shot**, 12.10s down to 6.90s, with all four scripted lines still clearing
     the Whisper check. Against the 1.54-1.62s reference band that is ~86% of the median gap
     closed and the final shot overshot slightly short. **The remaining ~0.1s needs a take with
-    more internal shots** -- see item 16, and `READINESS.md` for the priced experiment.
+    more internal shots** -- see item 16.
     The dead end, because it looks obviously right: splitting a shot in the plan does NOT add a
     shot. The two halves are contiguous source, there is no picture change at the join, and a
     scene detector correctly counts one shot. Measured three ways, all 4 shots on the render:

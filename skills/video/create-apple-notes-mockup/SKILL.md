@@ -13,12 +13,12 @@ Generate Apple Notes screens that look like real iPhone screenshots — correct 
 
 ## Purpose
 
-Turn a JSON note spec into a pixel-accurate Apple Notes (iPhone, light mode) screenshot — HTML + PNG at the native 1180×2556 (DPR 2). It is the deterministic, no-LLM renderer that the `create-apple-notes-video-ad` molecule drives frame-by-frame to fake a typing animation, and a standalone tool for one-off "noted to self" beats in ads, social posts, and storyboards. The orchestrating agent owns the copy; this atom owns the fidelity (status bar, smart punctuation, cursor, autocorrect underline, toolbar, keyboard chrome).
+Turn a JSON note spec into a pixel-accurate Apple Notes (iPhone, light mode) screenshot — HTML + PNG at the native 1180×2556 (DPR 2). It is the deterministic, no-LLM renderer that an Apple Notes video ad drives frame-by-frame to fake a typing animation, and a standalone tool for one-off "noted to self" beats in ads, social posts, and storyboards. The orchestrating agent owns the copy; this atom owns the fidelity (status bar, smart punctuation, cursor, autocorrect underline, toolbar, keyboard chrome).
 
 ## When to use
 
 - Need a fake Apple Notes screenshot for an ad, social post, video scene, or product mockup.
-- Need a sequence of Apple Notes frames (title-only → adding paragraphs → cursor moves) to drive a typing-animation video — used by `create-apple-notes-video-ad`.
+- Need a sequence of Apple Notes frames (title-only → adding paragraphs → cursor moves) to drive a typing-animation video ad.
 - Need a static "noted to self" beat in a storyboard.
 
 If you're rendering an iMessage thread, use the `create-imessage-mockup` skill instead.
@@ -118,7 +118,7 @@ npm install
 npx playwright install chromium
 ```
 
-A symlink to `create-imessage-mockup/node_modules` ships with the repo, so on a fresh clone `npm install` is only needed if you want this skill to be self-contained.
+Nothing ships preinstalled: run both commands once in this skill's folder before the first render.
 
 ## Files
 
@@ -131,7 +131,6 @@ A symlink to `create-imessage-mockup/node_modules` ships with the repo, so on a 
 | `templates/icons.js` | Inline SVG icons (back chevron, undo, share, more, done check, signal, wifi, battery, format toolbar icons, keyboard glyphs) |
 | `examples/*.json` | 6 reference notes covering every variation (title-only, mid-typing, long multi-paragraph, with checklist, with image, frame-1 lowercase-keyboard) |
 | `tests/run-all.sh` | Builders only, in the goose-skills repo (installs have no `tests/`): render every example into `tests/output/` for visual review |
-| `apple-notes-skill-build.html` | Side-by-side review board comparing reference video frames to generated PNGs |
 
 ## Quality Checks
 
@@ -164,4 +163,4 @@ Before declaring a note shippable:
 
 ## Reference
 
-The visual spec was extracted from `apple-notes-typing.MP4` (a 36-second iPhone screen recording of typing into Apple Notes in light mode). See `apple-notes-skill-build.html` in this folder for the side-by-side proof — each example is shown alongside the reference frame it targets.
+The visual spec was extracted from a 36-second iPhone screen recording of typing into Apple Notes in light mode. The recording is not shipped; the examples in `examples/` cover each state it showed.

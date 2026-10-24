@@ -128,7 +128,7 @@ beat" send-tap and the streamed list answer are both wired there).
 ## Gaps / routing notes
 
 - **Music bed** is an input, not generated here — the recipe gates it to
-  `create-music-elevenlabs` (paid, proxy-routed, billed to the Ads agent) and passes
+  `create-music-elevenlabs` (paid, proxy-routed, charged to your GooseWorks credits) and passes
   the file into `stitch.sh --music`.
 - **Bundled SFX are synthesized stand-ins.** The original four wavs
   (`key-tap`/`send-tap`/`stream-tick`/`response-done`) were lost from Git LFS (the

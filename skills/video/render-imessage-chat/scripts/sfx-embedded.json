@@ -1,5 +1,5 @@
 {
-  "_comment": "The iMessage send/receive SFX as base64 text, byte-identical to assets/sfx/*.mp3. A catalog fetch of this capability ships text files only, so assets/sfx never arrives; stitch.sh decodes these into a temp dir when assets/sfx is missing (GOOSE-3767). Regenerate after changing an mp3: python3 tests/test_stitch.py --write-embedded",
+  "_comment": "The iMessage send/receive SFX as base64 text, byte-identical to assets/sfx/*.mp3. A catalog fetch of this capability ships text files only, so assets/sfx never arrives; stitch.sh decodes these into a temp dir when assets/sfx is missing. Regenerate after changing an mp3: python3 tests/test_stitch.py --write-embedded",
   "files": {
     "imessage-receive.mp3": {
       "bytes": 11812,

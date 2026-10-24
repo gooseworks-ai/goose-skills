@@ -28,7 +28,7 @@ import paths
 
 # sha256 of the prompt recorded in projects/street-interview/working/takes/gw-single-seed4815.json,
 # the approved base. 948 words, 5306 characters. Recorded here on 2026-09-30 so the assertion
-# survives a checkout without projects/, which is gitignored.
+# survives a project folder that has no takes yet.
 APPROVED = {
     "brand": "grimwater",
     "seed": 4815,
@@ -114,7 +114,7 @@ def main():
            "identical" if old == pr else "DIFFERS")
     else:
         print(f"  SKIPPED (not a pass) full text against the manifest on disk: {man} is not "
-              f"there. projects/ is gitignored, so a fresh checkout has no manifest. The "
+              f"there. A project folder has no manifest until it renders this take. The "
               f"sha256, word and character assertions above cover the same claim and DID run; "
               f"this line exists so a reader is never left guessing which of the two happened.")
 
@@ -276,6 +276,11 @@ def main():
         for banned in ("pulls the tab", "pulling the tab", "pulls the ring pull",
                        "hooks a finger under"):
             ok(f"the prompt never asks for {banned!r}", banned not in cp.lower())
+    elif not brandkit.DEV_BRANDS.exists():
+        # Only the development takes in tests/fixtures/brands/ set can_grammar, and an installed
+        # copy has no tests/. The goose-skills repo runs this check in CI.
+        print("  SKIPPED (not a pass) CAN_CLAUSES falsification: no can_grammar config is "
+              "installed; the goose-skills repo checks it against tests/fixtures/brands/.")
     else:
         ok("a can_grammar config exists to falsify CAN_CLAUSES against", False,
            "no brand config sets can_grammar, so CAN_CLAUSES is never proved load-bearing")

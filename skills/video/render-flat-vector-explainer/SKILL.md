@@ -8,7 +8,7 @@ status: active
 
 Assembles a flat-vector product-routine explainer: one illustrated host character walks through a countable N-step routine (e.g. the demo's collagen -> serum -> eye cream -> hair), one step per beat, each beat carrying a large corner numeral, a labelled chip + one-line tagline, and the step's real product photo, closing on an "N products" grid + brand CTA. It reads as a premium DTC explainer (Spotify/Anchor flat-vector lineage), not UGC.
 
-This capability is **documentation-grade**. The content-goose molecule is a documented recipe, not a runnable end-to-end app, so this capability ships the **config schema** (`scripts/config.example.json`), the **field-to-script map** (`scripts/PIPELINE.md`), and a **README** (`scripts/README.md`) describing the FREE assembly steps the agent runs by hand with ffmpeg + Remotion + PIL. The paid generative steps are separate capabilities the recipe orchestrates and gates.
+This capability is **documentation-grade**. The format's source recipe is a documented recipe, not a runnable end-to-end app, so this capability ships the **config schema** (`scripts/config.example.json`), the **field-to-script map** (`scripts/PIPELINE.md`), and a **README** (`scripts/README.md`) describing the FREE assembly steps the agent runs by hand with ffmpeg + Remotion + PIL. The paid generative steps are separate capabilities the recipe orchestrates and gates.
 
 ## Choices
 
