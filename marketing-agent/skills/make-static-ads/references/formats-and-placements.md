@@ -15,7 +15,7 @@ Specs below are conventions as of 2026; platforms change them. When a number dec
 | Email header (graphic request) | ~600–1200 px wide, roughly 2:1 or 3:1 | Not a render ratio — use 16:9 and flag (the email tool crops or scales); mobile-legible; check dark mode |
 | Blog / OG image | 1200×630 (~1.91:1) | Use 16:9 and flag |
 
-**Render ratios** (`gooseworks:ads_render`): `1:1`, `4:5`, `9:16`, `16:9`, `3:4`. Each ratio is its own prompt and its own call (`prompts.md` §4): one dry run per ad and ratio. For a Meta-only set ask whether 1:1 is needed. Extra placements on an approved render (LinkedIn or Google landscape, a 9:16 added later): a new prompt for that ratio and a quoted `ads_render` call, judged like any render (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`)). `resize` and `precision_edit` are not used until their own dry run returns credits.
+**Render ratios** (`gooseworks:ads_render`): `1:1`, `4:5`, `9:16`, `16:9`, `3:4`. Each ratio is its own prompt and its own call (`prompts.md` §4): one dry run per ad and ratio. Extra placements on an approved render (LinkedIn or Google landscape, a 9:16 added later): a new prompt for that ratio and a quoted `ads_render` call, judged like any render (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`)). Unpriced edits: `engine-notes.md`.
 
 ## 2. Copy limits (visible before truncation, approximate)
 
@@ -26,6 +26,6 @@ Specs below are conventions as of 2026; platforms change them. When a number dec
 | Google Demand Gen | — | 40 | 90 |
 | TikTok | ~100 | — | — |
 
-On-image text: every slot the template has, each line readable at 375 px wide; qualifiers legible.
+On-image text: each line readable at 375 px wide; qualifiers legible.
 
 Meta flexible ads take up to ~10 media and ~5 primary texts/headlines per ad, so a set can be handed over as one flexible ad per angle — mention it to run-paid-campaigns as an option; the structure is theirs to choose.

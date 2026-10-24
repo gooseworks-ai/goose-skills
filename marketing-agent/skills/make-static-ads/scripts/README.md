@@ -1,34 +1,17 @@
 # Scripts
 
-One helper, for shell hosts. The playbook never needs a script to write prompts or pass a gate.
+Two helpers, for shell hosts. The playbook never needs a script to write prompts or pass a gate.
+
+## `place_logo.py`: put the real logo on a finished render
+
+The image model redraws logos, so the prompt leaves a clear corner and this places the brand's real file there. No model or network calls; the render is never overwritten.
+
+```bash
+python3 place_logo.py render.png logo.png render-logo.png --corner br --width 0.18 --plate auto
+```
+
+`--corner` tl, tr, bl, br, tc or bc (match the area the prompt left clear); `--width` the logo's share of the render width; `--plate auto` adds a rounded white or near-black plate that contrasts with the logo, `none` places it bare, or give a hex colour. It prints the box it used; record it in the batch file. Uploading and saving the result: the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`) step 1. Needs Pillow.
 
 ## `repair_patch.py`: free official-label pixel repair
 
-`repair_patch.py` copies a real label into a manually verified compatible label band. It makes no model or network call. It does not remove backgrounds, match poses, reconstruct a product, invent lettering or fix a wrong silhouette. Review the actual source and candidate by eye; a passed numerical invariant is not an image-quality verdict.
-
-Write a manifest with distinct new paths and explicit confirmations based on the brand's media rights and your visual inspection:
-
-```json
-{
-  "source_image": "official-product.jpg",
-  "base_image": "failed-render.png",
-  "output_image": "repair/candidate.png",
-  "mask_image": "repair/mask.png",
-  "evidence_json": "repair/evidence.json",
-  "source_rights_confirmed": true,
-  "compatible_pose_reviewed": true,
-  "source_band": {"left": [120, 120], "right": [360, 360], "top": [200, 205, 200], "bottom": [600, 605, 600]},
-  "target_band": {"left": [80, 75], "right": [200, 195], "top": [150, 153, 150], "bottom": [350, 353, 350]},
-  "feather_px": 1.5
-}
-```
-
-Coordinates are pixels in the full source/base image. `left`/`right` are x coordinates at the top and bottom ends. `top`/`bottom` are y coordinates across the label at left, center and right. The three y guides define each curved boundary; inspect them against the real label edges. The example numbers are illustrative, not a usable brand preset. Use near-front-facing, unoccluded labels with compatible shape and lighting; a severely oblique or differently wrapped label needs another approach.
-
-```bash
-python3 repair_patch.py repair-manifest.json
-```
-
-The helper validates finite in-bounds, non-crossing geometry and inverse convergence, anti-aliases the source before remapping, feathers within the target boundary and saves a lossless candidate, mask and provenance. It refuses to overwrite the original/source/manifest paths. Every pixel outside the saved mask must remain identical. RGB inputs only; transparent-cutout handling is outside this helper. The agent still checks lettering, edge seams, geometry and lighting at full size.
-
-After a fresh judge passes the full image, upload and save it through the existing GooseWorks tools with its failed creative as parent. Keep both versions and the repair evidence; verify saved media bytes and lineage. This is free local processing plus a free save. Any paid extraction/edit/generation still needs its own applicable quote and approval. An exhausted generation ceiling does not authorize another paid attempt.
+Used only for label drift (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`) step 4): read `repair_patch.md` next to this file.

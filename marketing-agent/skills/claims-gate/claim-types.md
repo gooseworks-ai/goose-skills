@@ -1,6 +1,6 @@
 # Claim types, risk and the proof each needs
 
-Loaded by `SKILL.md` §2 and §4. The full craft (with law and platform references) belongs to learn-my-brand, which is held back for now; this is the short version every job needs. Not legal advice.
+Loaded by `SKILL.md` §2 and §4. The short version every job needs. Not legal advice.
 
 | Type | Examples | Risk | Proof that makes it usable |
 |---|---|---|---|
@@ -19,5 +19,6 @@ Loaded by `SKILL.md` §2 and §4. The full craft (with law and platform referenc
 | Environmental | "eco-friendly", "carbon neutral", "recyclable" | high | specific certification; generic green claims are banned in the EU from 27 Sep 2026 |
 | Health / medical | "treats acne", "reduces anxiety", "boosts immunity" | high | depends on the regulator; for cosmetics and supplements usually never |
 | "Natural", "clean", "free-from", "non-toxic" | "100% free of …", "chemical-free" | high | a definition the brand can prove; "non-toxic" and "chemical-free": never |
+| Food and nutrition | "unsweetened", "no seed oils", "high protein", "20 g protein", "low sugar" | medium–high | the label or nutrition panel, worded as the market's rules allow ("high protein" and "low sugar" have legal thresholds in the EU, UK and US); a sign-off (§4) before it goes into ad text |
 
 Puffery ("the comfiest tee you'll own") needs no proof but must not imply a measurable result. A product name is used verbatim as a name only, never stretched into a promise.

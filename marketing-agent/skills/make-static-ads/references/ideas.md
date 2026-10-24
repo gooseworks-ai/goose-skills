@@ -2,15 +2,13 @@
 
 An ad idea is **a real product fact or human situation, turned into one small physical event the viewer understands at a glance.** Lighting, type and colour make a good idea easy to read. They cannot rescue a missing one.
 
-This file is the craft behind the concept-grid step, which says which parts to read.
+This file is the craft behind the `make-static-ads-concept-grid` skill (`../../make-static-ads-concept-grid/SKILL.md`), which says which parts to read.
 
 ## 1. The failure this prevents
 
-Left alone, agents build ads from the feature list: product + headline + the product in use.
+Left alone, agents build ads from the feature list: product + headline + the product in use. An olive-oil batch came out as two bottles, oil on pasta, a refill pour, a bottle beside cookies, a gift box: polished, accurate, and any olive oil could run four of them.
 
-> A batch for an olive-oil brand came out as "Two oils. Different jobs." (two bottles), "Dinner. Finished." (oil drizzled on pasta), "Same bottle. Next chapter." (refill pour), "Cookies. Meet Frizzle." (bottle beside cookies), "Bring something for the cook." (gift box). Polished, accurate, and forgettable. Any olive oil could run four of them.
-
-Every one of those is a **demonstration**: it shows the product doing its normal job. A demonstration is a valid ad when watching the action answers the buyer's real question. It is not an idea, and a batch of five demonstrations is one idea five times.
+Each was a **demonstration**: the product doing its normal job. A demonstration is a valid ad when watching it answers the buyer's real question. It is not an idea, and five demonstrations are one idea five times.
 
 ## 2. The method
 
@@ -18,7 +16,7 @@ Every one of those is a **demonstration**: it shows the product doing its normal
 
 In the message step, for each angle the marketer chose, list what is true about the product or the people who use it, one plain sentence each with its source. Start from the product's main job for its buyer, then what only this brand has; side features last.
 
-- **Product facts:** what it is, what's already done for you, what it leaves out, how it's made, how it's used. ("Tea and whole spices already blended." "Unsweetened.")
+- **Product facts:** what it is, what's already done for you, what it leaves out, how it's made, how it's used. ("Tea and whole spices already blended." "Unsweetened." A fact can carry a scene; free-from words like "unsweetened" still need a sign-off before they are printed on the ad, `../../claims-gate/SKILL.md` §1.7.)
 - **Human situations around the product:** the moment of use, who else is involved, what gets in the way, what it means to people. ("A parent has opinions about how you make chai." "Recipe research spirals." "It tastes like home to people who moved away.")
 
 Situations come from customer words (reviews, the voice-of-customer bank, comments) when you have them. When you author one yourself, mark it **(hypothesis)**. A hypothesis can carry a scene. It cannot carry a factual claim.
@@ -38,9 +36,9 @@ Turn the tension into **one visible event**, shown in whatever style the ad uses
 | Something claims space | The cup sits inside a recessed calendar appointment |
 | Two places connect | A miniature Kolkata balcony rises out of the saucepan |
 | Someone gets invited, or left out | Spices sit at a tiny table; sugar gets the optional plus-one chair |
-| A flat thing becomes real (or the reverse) | |
-| Scale changes the meaning | |
-| An object behaves like a person | |
+| A flat thing becomes real (or the reverse) | The recipe card's steps fold up into a paper staircase to the cup |
+| Scale changes the meaning | A giant cardamom pod is carried up the stairs like a sofa |
+| An object behaves like a person | The saucepan taps its watch at 4 pm |
 
 The event must have a **reason**. Advice crosses the screen because a parent is getting involved. Tabs become a maze because research got confusing. Sugar becomes a guest because adding it is optional. A strange image with no reason is decoration.
 
@@ -61,16 +59,8 @@ One sentence per ad: the detail that, if lost, kills the idea. "The hand must vi
 5. **Build test.** Can the image model draw it reliably? It fails at small handwriting, long text inside the scene (paragraphs on notes, screens or lists; a template's short slots are fine), many hands, crowds, and precise physics (an unbroken oil line, keys mid-fall). Keep the event big and simple; put words in the headline, not inside the picture.
 6. **Truth test.** What would a buyer take away as fact? That takeaway must be a usable fact (`claims-and-policy.md` §2). A visibly imagined scene is not a claim that it happened; a promised result is.
 
-## 4. The worked example (do not copy)
+## 4. Examples (do not copy)
 
-Kolkata Chai, Signature Masala Chai Mix, 22 Oct 2026. Five concepts, all from their first render:
+The Kolkata Chai examples in §2 C and D (Signature Masala Chai Mix, 22 Oct 2026) were five concepts, all good on their first render. These ideas belong to that brand. The method transfers; the jokes don't. All five were one style, conceptual still life; a real set varies its style (`levels.md`, Style).
 
-| Starting point | Human situation | Physical event | Headline | Protect |
-|---|---|---|---|---|
-| Family involvement in making chai | A parent has advice, even from far away | Mum's hand reaches out of a video call toward the pot | Mum has notes. | Hand crosses the screen |
-| Tea and spices already blended | Recipe research never ends | Browser tabs turn into a paper maze around the saucepan | Close the tabs. Put the chai on. | The tabs are physical paper |
-| Chai as a daily ritual | Work fills every moment | A cup sits inside a recessed calendar appointment | Sorry. Already booked. | The cup is in the slot, not beside it |
-| Chai and home | A routine carries home with it | A miniature Kolkata balcony rises from the saucepan | Home is a stovetop away. | The pot is the doorway |
-| Unsweetened mix | You choose the sweetness | Spices at a tiny table; sugar on an extra chair | Sugar is a plus-one. | Sugar's chair sits apart |
-
-These ideas belong to that brand. The method transfers; the jokes don't. All five were one style, conceptual still life; a real set varies its style (`levels.md`, Style).
+Software works the same way. GooseWorks (makes ads from a brand's own facts and look): the situation "generic ads don't fit my brand" → the goose mascot as a tailor, an ad pinned out on the table like a dress pattern → "Ads made to measure for your brand." Protect: the ad is the pattern being cut, not a picture on the wall.
