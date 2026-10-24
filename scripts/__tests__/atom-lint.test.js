@@ -35,11 +35,11 @@ test('fails when a touched atom names a removed action', () => {
 
 test('fails when a removed action shows up in an atom script', () => {
   const { root, base } = makeRepo({ 'clip-maker': { skill: clean } });
-  fs.writeFileSync(path.join(root, path.dirname(SKILL), 'relay.py'), 'TOOL = "data_post_provider"\n');
+  fs.writeFileSync(path.join(root, path.dirname(SKILL), 'relay.py'), 'TOOL = "data_post"\n');
   commitAll(root);
   const res = run('atom-lint.js', root, ['--base', base]);
   assert.equal(res.code, 1, res.out);
-  assert.match(res.out, /error action\.real_names_only: .*relay\.py:1 "data_post_provider"/);
+  assert.match(res.out, /error action\.real_names_only: .*relay\.py:1 "data_post"/);
 });
 
 test('fails when a touched atom gains an install line', () => {

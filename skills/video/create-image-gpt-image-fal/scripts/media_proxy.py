@@ -36,7 +36,7 @@ MCP RELAY (no credentials at all). A session that only has the GooseWorks MCP co
 (no GW_MEDIA_PROXY_TOKEN and no ~/.gooseworks/credentials.json) cannot call the proxies
 over HTTP. Then (or when GW_MEDIA_VIA=mcp) every paid call is RELAYED through the agent:
 the script writes the exact MCP tool call to working/mcp-requests/<kind>-<hash>.json and
-exits with code 3; the agent makes it (data_post [+ job_get] for fal/ElevenLabs,
+exits with code 3; the agent makes it (data_post_provider [+ job_get] for fal/ElevenLabs,
 media_upload for a local file), saves the result JSON where the request says, and
 re-runs the same command. Same server proxy, same price, billed to GW_PROJECT_ID.
 GW_MEDIA_VIA=proxy forces the HTTP path.
@@ -866,10 +866,10 @@ def _fal_run_once(model_path, payload, timeout_s, poll_s, new_take, input_digest
             args["idempotency_key"] = input_digest
         if extra:
             args["query"] = extra
-        return _relay("fal", "data_post", args,
+        return _relay("fal", "data_post_provider", args,
                       "poll job_get { job_id } from the reply until status is complete; the result is "
                       "job_get's result.output (fal's JSON with the media URLs). If "
-                      "data_post returns a provider_validation_failed error, save that "
+                      "data_post_provider returns a provider_validation_failed error, save that "
                       "error JSON instead; if job_get returns status failed, save that whole "
                       "job_get reply instead. The script reports either and stops",
                       check=lambda out: _raise_if_fal_error(out, model_path, stage="relay"))
@@ -1010,7 +1010,7 @@ def fal_whisper(audio_url, language="en", **kw):
 def eleven_music(prompt, music_length_ms, out_path, force_instrumental=True, timeout_s=180):
     """ElevenLabs Music through the proxy → writes the mp3 to out_path, returns it."""
     if relay_mode():
-        r = _relay("elevenlabs", "data_post",
+        r = _relay("elevenlabs", "data_post_provider",
                    {"provider": "elevenlabs", "path": "/v1/music", "body": {"prompt": prompt, "music_length_ms": int(music_length_ms), "force_instrumental": force_instrumental}},
                    "the result is the tool's JSON reply (it carries download_url)")
         return download(r["download_url"], out_path)
@@ -1082,7 +1082,7 @@ def download(url, out_path):
 def eleven_tts(text, voice_id, out_path, model_id="eleven_v3", timeout_s=180):
     """ElevenLabs text-to-speech (VO) through the proxy → writes mp3 to out_path."""
     if relay_mode():
-        r = _relay("elevenlabs", "data_post",
+        r = _relay("elevenlabs", "data_post_provider",
                    {"provider": "elevenlabs", "path": "/v1/text-to-speech/%s" % voice_id, "body": {"text": text, "model_id": model_id}},
                    "the result is the tool's JSON reply (it carries download_url)")
         return download(r["download_url"], out_path)

@@ -6,7 +6,7 @@ description: >
   campaigns, ads, photos, graphics, video, content, email, SEO, social, leads and contacts.
   Use for brand facts or copy too, so offers, prices, rules, audience and bestsellers
   reach the brand's Marketing Brain.
-version: 2.2.1
+version: 2.2.2
 author: GooseWorks
 tags: [gooseworks, data, scraping, search, research, gtm, leads, prospecting, ads, video]
 ---
@@ -65,8 +65,8 @@ writing. Skip unrelated calendar/campaign intake.
 
 ## Data work
 
-In chat, catalog_search finds skills, catalog_fetch opens them, data_get/data_post run paid
-data calls and account_whoami shows credits.
+In chat: catalog_search finds skills, catalog_fetch opens them, data_call_provider and
+data_post_provider run paid data calls, account_whoami shows credits.
 
 In a terminal:
 
