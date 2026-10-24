@@ -29,7 +29,7 @@ For each starting point ask: **what does the person want, what gets in the way, 
 
 ### Step C: make the tension physical
 
-Turn the tension into **one visible event**: something that could be built on a real set and photographed, even if it is impossible. Useful relationships:
+Turn the tension into **one visible event**, shown in whatever style the ad uses (photo, 3D render, graphic, native format). Useful relationships:
 
 | Relationship | Kolkata Chai example |
 |---|---|
@@ -73,4 +73,4 @@ Kolkata Chai, Signature Masala Chai Mix, 22 Oct 2026. Five concepts, all from th
 | Chai and home | A routine carries home with it | A miniature Kolkata balcony rises from the saucepan | Home is a stovetop away. | The pot is the doorway |
 | Unsweetened mix | You choose the sweetness | Spices at a tiny table; sugar on an extra chair | Sugar is a plus-one. | Sugar's chair sits apart |
 
-These ideas belong to that brand. The method transfers; the jokes don't.
+These ideas belong to that brand. The method transfers; the jokes don't. All five were one style, conceptual still life; a real set varies its style (`levels.md`, Style).
