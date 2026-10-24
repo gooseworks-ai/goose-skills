@@ -4,7 +4,7 @@ This capability ships the **recipe** (`config.example.json`) + a config→step m
 (`PIPELINE.md`) for the product-hypermotion + kinetic-typography format, plus this note
 documenting the **FREE, deterministic assembly** — everything between the two paid model
 calls. The paid steps (ONE Seedance 2.0 hypermotion i2v + one ElevenLabs music bed) are
-separate capabilities; the recipe orchestrates and gates them. Everything below is $0
+separate capabilities; the recipe orchestrates and gates them. Everything below is free
 (PIL + FFmpeg), keeps the real logo + spec typography pixel-crisp, and never makes an AI
 or paid call.
 
@@ -72,7 +72,7 @@ Verify `ffprobe` audio bit_rate ≈ 192000 (NOT 1000).
 
 - Deterministic + FREE (PIL + FFmpeg); no paid calls, no AI-rendered logo or spec text.
 - ONE hypermotion clip, diced into 5–6 segments — never a paid call per segment. Cheaper
-  ($4.54 vs ~$22) AND identity-consistent (same camera/grade/subject in one call).
+  (one paid call instead of one per segment) AND identity-consistent (same camera/grade/subject in one call).
 - The end card is the brand's **real logo PNG**, base64-decoded from the SVG — never
   typeset. It must micro-move for the full hold (never freeze).
 - Spec cards carry every fact (no VO); outline echoes stay ≤1.08× so nothing bleeds off

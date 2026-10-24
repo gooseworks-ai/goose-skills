@@ -6,15 +6,18 @@ import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { ask, parseJsonLoose, runClaude } from './claude.mjs';
-import { BUILDER_FILES, EVALS_DIR, listSkills, loadScenario, loadRubric, today } from './files.mjs';
+import { NOT_PUBLISHED_DIRS, EVALS_DIR, listSkills, loadScenario, loadRubric, today } from './files.mjs';
 import { judgeArmSafe, writePlaybookSummary } from './judge.mjs';
 import { installLegacy, keyFailures } from './legacy.mjs';
 import { connectBrand, snapshot, planReset, applyPlan, attributeToArm } from './brandstate.mjs';
 
 export const ARMS = ['baseline', 'legacy', 'with-skill'];
 
-// The hand-test folder: we copy its .claude/settings.json (production GooseWorks denied, staging allowed).
-export const TEST_DIR = process.env.GOOSE_EVAL_TEST_DIR || path.join(os.homedir(), 'projects', 'marketing-agent-test');
+// The workspace's .claude/settings.json (production GooseWorks denied, staging allowed). Default: the copy
+// committed next to run.mjs. GOOSE_EVAL_SETTINGS names another file; GOOSE_EVAL_TEST_DIR a hand-test folder
+// whose .claude/settings.json is used (for example one that also denies a connector's own tool prefix).
+export const SETTINGS_FILE = process.env.GOOSE_EVAL_SETTINGS
+  || (process.env.GOOSE_EVAL_TEST_DIR ? path.join(process.env.GOOSE_EVAL_TEST_DIR, '.claude', 'settings.json') : path.join(EVALS_DIR, 'settings.json'));
 
 // GooseWorks staging tools that spend credits, publish, or touch ad accounts.
 // Blocked for the subject in both arms so an eval can never spend.
@@ -69,16 +72,16 @@ function sandboxHome(root) {
 }
 
 /**
- * A fresh temp copy of the hand-test folder plus a sandbox home.
+ * A fresh workspace (README + .claude/settings.json) plus a sandbox home.
  * with-skill copies every published marketing skill flat by slug into .claude/skills/<slug>/ (what the catalog ships: no
- * builder files, no router, nothing from drafts/marketing/); legacy copies the old skills from legacy/mapping.json; baseline adds nothing.
+ * tests/, nothing from drafts/marketing/); legacy copies the old skills from legacy/mapping.json; baseline adds nothing.
  */
 function prepareWorkspace(slug, mode) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), `goose-eval-${slug}-${mode}-`));
   const dir = path.join(root, 'ws');
   fs.mkdirSync(path.join(dir, '.claude'), { recursive: true });
   const home = sandboxHome(root);
-  const settings = path.join(TEST_DIR, '.claude', 'settings.json');
+  const settings = SETTINGS_FILE;
   if (fs.existsSync(settings)) fs.copyFileSync(settings, path.join(dir, '.claude', 'settings.json'));
   else console.warn(`warning: ${settings} not found; relying on --disallowedTools only`);
   // Same README for both arms; it must not mention the skills.
@@ -91,7 +94,7 @@ function prepareWorkspace(slug, mode) {
     for (const s of listSkills()) {
       fs.cpSync(s.dir, path.join(skillsDir, s.slug), {
         recursive: true,
-        filter: (src) => !(path.dirname(src) === s.dir && BUILDER_FILES.has(path.basename(src))),
+        filter: (src) => !(path.dirname(src) === s.dir && NOT_PUBLISHED_DIRS.has(path.basename(src))),
       });
     }
   }

@@ -136,7 +136,7 @@ class EditTimelineTests(unittest.TestCase):
 
     def test_resolve_keeps_original_ambience_and_separate_recut_outputs(self):
         import brandkit
-        cfg = brandkit.load("liquid-death")
+        cfg = brandkit.load("grimwater")
         cfg["brand_layer"].update({"logo": None, "cuts": [0.5, 2.5, 3.5], "captions": self.rows})
         brand = self.root / "brand.json"
         brand.write_text(json.dumps(cfg))

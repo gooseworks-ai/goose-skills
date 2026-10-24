@@ -9,8 +9,8 @@ The HTML composition MUST expose a global ``window.renderAt(t_seconds)`` that
 sets every animation's ``currentTime`` to the supplied time. See the skill's
 SKILL.md for the contract. (Older versions of this script mutated
 ``document.timeline.currentTime`` directly, which is read-only in modern
-Chromium and silently no-ops — that bug shipped klarify/run-04 with
-identical frames at every time step before being caught in run-05's review.)
+Chromium and silently no-ops — that bug shipped a past run with
+identical frames at every time step before being caught in the next run's review.)
 
 Usage:
     render_hyperframe.py <input.html> <output.mp4> <duration_sec>

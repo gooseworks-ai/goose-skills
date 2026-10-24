@@ -144,8 +144,8 @@ def test_stacked_chimes_do_not_clip(clips, tmp_path):
     assert_cues_audible(out)
     # A lone receive chime stays clearly audible. The level is the one approved in the
     # GOOSE-3741 audit renders (about -10.4 dB mean in this window, -11.4 LUFS on a
-    # full Graza render); the old +4 dB mix was heard as too loud next to them.
-    # 2026-10-07: on the Brightland run the same listener heard the receive as too
+    # full Oleara render); the old +4 dB mix was heard as too loud next to them.
+    # 2026-10-07: on the Sunmere run the same listener heard the receive as too
     # loud again, this time against the send. It rings three times as long, so at one
     # gain it sat 3.2 LU above the send. NAME_TRIM levels the two; the floor moves
     # from -12 to -15.5 dB with it (about -14.2 dB mean in this window).
@@ -214,7 +214,7 @@ def thread_clips(clips, tmp_path):
 
 
 def test_onset_check_passes_over_a_bed_with_its_own_attacks(clips, tmp_path):
-    """The Brightland clean run (2026-10-07): a correct render with a guitar bed
+    """The Sunmere clean run (2026-10-07): a correct render with a guitar bed
     failed "Missing or shifted sound" because a note just before a cue read as
     the cue arriving early. A plucked bed (a hit every 0.37 s) stands in for it."""
     bed = tmp_path / "plucked.mp3"

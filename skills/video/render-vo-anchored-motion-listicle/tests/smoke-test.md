@@ -8,7 +8,7 @@ captions, mix the VO under the low music bed, composite → 1080×1920 h264 crf1
 
 Pass when the assembly runs to a valid MP4 and:
 - (placeholder narrator / list angle / visual style / music are arbitrary — any `choices` values
-  must assemble; the Everself look is not required)
+  must assemble; the Truehour look is not required)
 - every beat reveal is anchored to the VO's word-level timestamps; the ONE design system holds across
   every beat (tiles alternate; numerals / body / accents / pills consistent);
 - all beats and B-roll windows share fps 25 (no concat-seam stutter);
@@ -19,5 +19,5 @@ Pass when the assembly runs to a valid MP4 and:
 - there is NO lipsync / talking head in the master (the still headshot is a future-variant input, not
   used here);
 - **no paid call is made** — the VO, the music bed, and any AI breather clips come from the
-  paid/metered capabilities (create-vo-elevenlabs / create-music-elevenlabs / create-video-fal); this assembly is $0 and
+  paid/metered capabilities (create-vo-elevenlabs / create-music-elevenlabs / create-video-fal); this assembly is free and
   a re-cut reuses the existing VO / beats / B-roll.

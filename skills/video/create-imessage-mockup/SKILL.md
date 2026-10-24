@@ -128,9 +128,11 @@ npx playwright install chromium
 | `templates/chat.css` | All visual styling (bubbles, tails, keyboard, iPhone frame) |
 | `templates/icons.js` | Inline SVG icons (plus, camera, mic, signal, wifi, battery, chevron) |
 | `examples/*.json` | 6 reference threads exercising every flag combination |
-| `tests/run-all.sh` | Render every example into `tests/output/` for visual review |
+| `tests/run-all.sh` | Builders only, in the goose-skills repo (installs have no `tests/`): render every example into `tests/output/` for visual review |
 
 ## Testing
+
+Builders, in the goose-skills repo (installed copies have no `tests/` folder):
 
 ```bash
 bash tests/run-all.sh
@@ -192,7 +194,7 @@ Before treating a render as final, verify against the iOS look:
 - **Typing / emoji / link beats** — `typing` renders three dots in a received bubble; emoji-only messages render enlarged; `[[link:CODE]]` markers render as an underlined iOS link-detector span.
 - **No renderer errors** — the process exits 0 and prints the `✓ <png path>` line.
 
-The canonical visual review is `bash tests/run-all.sh`, which renders all six example fixtures into `tests/output/` for side-by-side inspection.
+The canonical visual review renders all six `examples/*.json` fixtures for side-by-side inspection (`bash tests/run-all.sh` in the goose-skills repo; an installed copy renders them one by one with `render.js`).
 
 ## Failure Modes
 

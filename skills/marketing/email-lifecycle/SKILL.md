@@ -75,7 +75,7 @@ Save with `gooseworks:file_write` (read before write): `lifecycle/program.md` (o
 
 ## Output and write-back
 
-Paths and readers: step 9 and the marketing-guide's §4 lifecycle row. Results live in the brand's own tool; each week the marketer hands an export to analyze-performance, whose email rows come back here at step 1 and reweight the flows. The typed brain home the program needs is in `server-needs.md`.
+Paths and readers: step 9 and the marketing-guide's §4 lifecycle row. Results live in the brand's own tool; each week the marketer hands an export to analyze-performance, whose email rows come back here at step 1 and reweight the flows. The brain has no typed home for the program yet.
 
 ## Done when
 

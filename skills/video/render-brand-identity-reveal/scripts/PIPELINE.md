@@ -1,7 +1,7 @@
 # PIPELINE — brand-identity-reveal free assembly
 
 The free renderer is **documentation-grade**: `scene.html` is brand-specific (the shipped
-reference is the Touchland instance), and the Python scripts drive Playwright + PIL + FFmpeg
+reference is the Palmglow instance), and the Python scripts drive Playwright + PIL + FFmpeg
 around it. Adapt `scene.html` per brand; the scripts are generic.
 
 ## Working-dir layout (per project)
@@ -25,7 +25,7 @@ working/
 1. **Plate [PAID]** — `create-image-fal` (flux-pro ultra, 9:16) → `bg/plate_1.png`.
    `gen_plate.py` is the reference wrapper (loads FAL_KEY, prompt in `config.plate`; `--dry-run`
    prints the prompt). `plate.setting` and `plate.wall_style` come from the recipe's `setting` and
-   `wall_style` choices (the Touchland demo used a boutique interior + sage subway tile — an
+   `wall_style` choices (the Palmglow demo used a boutique interior + sage subway tile — an
    example, not a default). Tune the wall colour to complement the brand's dominant hue so the
    posters pop.
 2. **Camera** — `recrop.py <interior_width_frac> <top_frac> [plate.png]` → `bg/plate_final.png`

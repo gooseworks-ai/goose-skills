@@ -1,6 +1,6 @@
 {
-  "_comment": "WORKED EXAMPLE ONLY (the Soundboks build). Creative fields \u2014 brand_voice, hypermotion_i2v.prompt_blocks.1_style_anchor / 2_cinematography / 3_subject_environment / 4_multi_shot_timecodes, music.prompt, music.bpm \u2014 come from the recipe's choices (energy, environment, lighting, music); brand fields (brand_name, product_image, logo_png, accent/bg hex, spec_callouts, text_cards.*.text, end_card copy) come from the brand kit. Never copy them as defaults. Card labels equal their text_cards keys (spec_1..spec_5, cta) so beat_structure.concat_order resolves. Soundboks 'product hypermotion + specs' \u2014 the worked example (GOOSE-1783, V10 shipped 2026-05-28, $17.43 total / $4.99 marginal). Copy to config.json and edit. ONE 12-15s Seedance 2.0 i2v hypermotion clip of the hero product, diced into 5-6 segments, INTERCUT with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo end card, over a 124 BPM bass bed. 1080x1920 9:16. Two PAID model calls total (Seedance i2v + ElevenLabs Music); every text card + all assembly is free PIL/ffmpeg. Guard both paid calls with skip-if-exists so re-runs never re-bill.",
-  "brand_name": "Soundboks",
+  "_comment": "WORKED EXAMPLE ONLY (the Boomcrate build). Creative fields \u2014 brand_voice, hypermotion_i2v.prompt_blocks.1_style_anchor / 2_cinematography / 3_subject_environment / 4_multi_shot_timecodes, music.prompt, music.bpm \u2014 come from the recipe's choices (energy, environment, lighting, music); brand fields (brand_name, product_image, logo_png, accent/bg hex, spec_callouts, text_cards.*.text, end_card copy) come from the brand kit. Never copy them as defaults. Card labels equal their text_cards keys (spec_1..spec_5, cta) so beat_structure.concat_order resolves. Boomcrate 'product hypermotion + specs' \u2014 the worked example (GOOSE-1783, V10 shipped 2026-05-28). Copy to config.json and edit. ONE 12-15s Seedance 2.0 i2v hypermotion clip of the hero product, diced into 5-6 segments, INTERCUT with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo end card, over a 124 BPM bass bed. 1080x1920 9:16. Two PAID model calls total (Seedance i2v + ElevenLabs Music); every text card + all assembly is free PIL/ffmpeg. Guard both paid calls with skip-if-exists so re-runs never re-bill.",
+  "brand_name": "Boomcrate",
   "brand_voice": "party",
   "width": 1080,
   "height": 1920,
@@ -8,8 +8,8 @@
   "duration_s": 25.0,
   "accent_color_hex": "#FF6B1A",
   "bg_color_hex": "#0C0C0C",
-  "product_image": "assets/product/soundboks_4_black_float.png",
-  "logo_png": "assets/logo/soundboks_logo_white.png",
+  "product_image": "assets/product/boomcrate_4_black_float.png",
+  "logo_png": "assets/logo/boomcrate_logo_white.png",
   "font_bold": "assets/fonts/SpaceGrotesk-Bold.ttf",
   "spec_callouts": [
     "126 dB SPL",
@@ -29,9 +29,9 @@
     "prompt_blocks": {
       "1_style_anchor": "STYLE ANCHOR: hypermotion product film, 124 BPM cuts, raw festival energy, modern.",
       "2_cinematography": "CINEMATOGRAPHY: ARRI Alexa, 50mm anamorphic, deep-focus, slight handheld, dusk lighting with magenta/blue rim, slight lens flare.",
-      "3_subject_environment": "SUBJECT + ENVIRONMENT: Soundboks 4 (black) on beach festival deck, salt air, dusk lighting with magenta/blue rim, distant crowd silhouettes.",
+      "3_subject_environment": "SUBJECT + ENVIRONMENT: Boomcrate 4 (black) on beach festival deck, salt air, dusk lighting with magenta/blue rim, distant crowd silhouettes.",
       "4_multi_shot_timecodes": "MULTI-SHOT TIMECODES:\n  - 0-3s: crash-zoom from 6m wide to product hero\n  - 3-6s: lateral orbit 180 degrees around the speaker\n  - 6-10s: slow-mo dust kick from bass thump (dust in air, NOT on product)\n  - 10-13s: pull-back to wide hero\n  - 13-15s: final stillness hero",
-      "5_absolute_constraints": "ABSOLUTE CONSTRAINTS:\n  - Locked label geometry: Soundboks wordmark stays sharp + horizontal across all cuts\n  - No character contact: no hands, no people, no body parts touching product\n  - No multi-product: only the one speaker, no clutter, no secondary items\n  - Physics effects (dust, heat-shimmer, salt mist) in environment only, NOT on product surface\n  - No text overlays inside the clip\n  - Single product identity preserved across all camera moves (no shape morph, no color shift)"
+      "5_absolute_constraints": "ABSOLUTE CONSTRAINTS:\n  - Locked label geometry: Boomcrate wordmark stays sharp + horizontal across all cuts\n  - No character contact: no hands, no people, no body parts touching product\n  - No multi-product: only the one speaker, no clutter, no secondary items\n  - Physics effects (dust, heat-shimmer, salt mist) in environment only, NOT on product surface\n  - No text overlays inside the clip\n  - Single product identity preserved across all camera moves (no shape morph, no color shift)"
     }
   },
   "text_cards": {
@@ -82,7 +82,7 @@
   "end_card": {
     "label": "endcard",
     "duration_s": 3.5,
-    "logo_png": "assets/logo/soundboks_logo_white.png",
+    "logo_png": "assets/logo/boomcrate_logo_white.png",
     "logo_target_w": 920,
     "subtitle": "126 dB \u00b7 40 HRS \u00b7 IP65",
     "cta": "OWN THE PARTY.",

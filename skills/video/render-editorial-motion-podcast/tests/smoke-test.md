@@ -14,4 +14,4 @@ Pass when the assembly runs to a valid MP4 and:
   (no AI-rendered brand text);
 - the REAL podcast audio carries with no generated song and no VO;
 - **no paid call is made** — the keyframes come from the paid capability (create-image-fal); this
-  assembly is $0 and a re-cut reuses the existing audio/keyframes.
+  assembly is free and a re-cut reuses the existing audio/keyframes.

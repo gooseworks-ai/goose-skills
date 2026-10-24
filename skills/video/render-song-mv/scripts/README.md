@@ -1,14 +1,14 @@
 # render-song-mv scripts — the FREE assembly
 
-`render-song-mv` is the **deterministic, $0 assembly stage** of the song-driven
+`render-song-mv` is the **deterministic, free assembly stage** of the song-driven
 music-video format. The three paid stages (the sung song, the N keyframes, the N i2v
 clips) are separate capabilities — `create-music-elevenlabs`, `create-image-fal`,
 `create-video-fal`. This capability spends nothing: it takes the delivered song +
 `words.json` + one clip per tableau and stitches the finished master. Re-cuts (new
 caption chunking, a swapped end card, re-timed windows) reuse the existing song / keyframes
-/ clips and cost **$0** — only the paid capabilities spend.
+/ clips and spend nothing — only the paid capabilities spend.
 
-`config.example.json` is one worked example (Loóna "Fall In Love With Sleep Again", 28s
+`config.example.json` is one worked example (Driftlume "Fall In Love With Sleep Again", 28s
 paper-craft 9:16). Its visual style, song, vocalist, mood, protagonist and setting are the demo's
 answers to the recipe's `choices` — never copy them as defaults. `PIPELINE.md` maps every config block to its source step. This README
 documents the four FREE assembly pieces that `render-song-mv` owns.

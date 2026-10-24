@@ -73,7 +73,7 @@ None: nothing here spends money, makes a claim or sends anything. The only write
 - One or two moves (or a named step of their own), each with its reason, and a "worked if" with an outcome number and a date.
 - The recommendation is at most 250 words.
 - Saved only after the marketer agreed, with "saved" said only once the save came back — or "not saved" stated plainly.
-- A reviewer who knows the brand would genuinely start where it points (`tests/test-by-hand.md`).
+- A reviewer who knows the brand would genuinely start where it points (the hand test in the goose-skills repo, `tests/test-by-hand.md`).
 
 ## Out of scope
 

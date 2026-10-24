@@ -1,14 +1,14 @@
 # render-cosmic-mythology-voiceover scripts — the FREE assembly
 
-`render-cosmic-mythology-voiceover` is the **deterministic, $0 assembly stage** of the
+`render-cosmic-mythology-voiceover` is the **deterministic, free assembly stage** of the
 cosmic-mythology-voiceover format. The paid stages (the spoken VO, the N hero stills) are
 separate capabilities — `create-vo-elevenlabs`, `create-image-fal`. This capability spends nothing
 (the caption burn has a free local Whisper + ffmpeg fallback): it takes the atempo VO + the stills
 + the per-cut weight array + the hook line and stitches the finished master. Re-cuts (re-weighted
-windows, new hook timing, caption chunking, zoom params) reuse the existing VO / stills and cost
-**$0**.
+windows, new hook timing, caption chunking, zoom params) reuse the existing VO / stills and spend
+nothing.
 
-`config.example.json` is the worked example (WishAstro "Saturn isn't your villain", ~31s
+`config.example.json` is the worked example (Starwhim "Saturn isn't your villain", ~31s
 1080×1920) — its script, voice, look and shots are the demo's; the recipe's choices supply yours. `PIPELINE.md` maps every config block to its source step. This README documents the
 FREE assembly pieces that `render-cosmic-mythology-voiceover` owns.
 
@@ -32,7 +32,7 @@ Deps: **ffmpeg + Pillow only** — NO API keys, and NO `drawtext`/`libass` requi
 captions burn as timed PIL PNG overlays; see §3–4). `--words` is any word-level timing list
 (`[{word|text,start,end}]`, groq/fal shapes both accepted) — the orchestrator makes it from the VO
 via the proxy Whisper. A re-cut (new weights/hook timing/caption chunking/zoom) reuses the same VO +
-stills for **$0**.
+stills for free.
 
 ## 1. Weighted beat-sync sequencing
 

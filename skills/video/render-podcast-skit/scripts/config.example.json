@@ -290,7 +290,7 @@
       "margin_px": 40,
       "opacity": 0.9,
       "persistent": true,
-      "_note": "BRAND THE FRAME, NOT THE DIALOGUE. Seven sponsor-tagged New Heights shorts were downloaded and transcribed end to end: in every one the sponsorship is a persistent corner lockup beside the show wordmark, and in NOT ONE of the seven is the brand spoken (references/REFERENCES.md, technique 26 and 'The sponsor-read finding'). The Expedia clip is about brunch. Five of nine references never name a product at all and one of those five is a sponsored clip. compose_master.py composites this file over the whole runtime for $0; gates.gate_frame_brand_asset fails if it is enabled and the file is not on disk. The file is operator-supplied real brand type, never drawn by a generator. Set enabled:false if the brand will not supply one."
+      "_note": "BRAND THE FRAME, NOT THE DIALOGUE. Seven sponsor-tagged New Heights shorts were downloaded and transcribed end to end: in every one the sponsorship is a persistent corner lockup beside the show wordmark, and in NOT ONE of the seven is the brand spoken (references/REFERENCES.md, technique 26 and 'The sponsor-read finding'). The Expedia clip is about brunch. Five of nine references never name a product at all and one of those five is a sponsored clip. compose_master.py composites this file over the whole runtime for free; gates.gate_frame_brand_asset fails if it is enabled and the file is not on disk. The file is operator-supplied real brand type, never drawn by a generator. Set enabled:false if the brand will not supply one."
     },
     "inserts": {
       "enabled": false,

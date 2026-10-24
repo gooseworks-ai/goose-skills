@@ -1,26 +1,56 @@
-# Skills releases
+# Releasing the skills catalog
 
-**Summary.** Merge feature work to `dev` to publish the staging agent catalog. Promote tested changes to `main` to publish the production catalog, then update the public CMS and docs. GitHub CI validates the catalog before either deployment and waits for the Trigger run to complete.
+**In short**
+- **`dev` is staging, `main` is production.** A merge to `dev` publishes the staging catalog. A merge to `main` publishes the production catalog, then updates the public skills site and docs, then releases the npm package.
+- **A `main` merge reaches every customer.** The production catalog is what the GooseWorks app serves, what `gooseworks install` and `gooseworks update` install (they read `skills-index.json` on `main`), and what the GooseWorks plugin loads (its marketplace points at `skills/entry/` on `main`). A change to an entry skill on `main` changes every customer's entry skills at once.
+- **So test on staging first.** Merge to `dev`, check the change on staging, then promote `dev` to `main`.
+- Nothing deploys unless every required check passes.
 
-| Branch | GitHub environment | Catalog source | Public CMS/docs |
+## The two branches
+
+| Branch | Environment | What publishes | Who sees it |
 |---|---|---|---|
-| dev | staging | Exact merged dev commit | Unchanged |
-| main | production | Exact merged main commit | Updated after catalog success |
+| `dev` | staging | The staging catalog, synced from the exact merged `dev` commit | The staging app and the staging MCP server (`gooseworks-staging`) |
+| `main` | production | The production catalog from the exact merged `main` commit; then the public skills site and docs; then the npm package | Every customer: the app, the production MCP server, `gooseworks install` / `update`, the plugin, `npx goose-skills` |
 
-## One-time setup
+Feature PRs go into `dev`. A release is a PR from `dev` into `main`.
 
-1. Deploy the environment-aware `sync-predefined-skills-catalog` worker in the main GooseWorks app Trigger project to staging and production before merging this workflow change. It must accept `sourceRef` and `sourceRevision`, reject branch/environment mismatches, and throw when a skill fails.
-2. Create GitHub environments `staging` and `production`. Set `TRIGGER_SECRET_KEY` in each environment to its corresponding Trigger project/environment secret key. Do not use the personal deploy access token, local development key, or render-project key.
-3. Restrict staging deployment to dev and production deployment to main. Require validation on PRs to both branches.
-4. Keep `GOOSEWORKS_APP_REPO_TOKEN` and `GOOSEWORKS_APP_REPO` configured for the production CMS/docs dispatch.
-5. Create the GitHub environment `npm-release`, limit its deployment branches to main, and move `NPM_TOKEN` into it. Make the check jobs (validate, atom-checks, part-tests, imessage-chat-browser-tests, media-tests) required on dev, main and video-merged, so a red check blocks the merge.
-6. Merge the workflow change into main, then propagate it to dev. The initial main merge republishes the existing production catalog.
-7. Retire old daily catalog schedules in Trigger.dev. The updated worker keeps the legacy task ID as a no-op until schedules are removed.
+## How a release runs
 
-## Testing and recovery
+All of it is in `.github/workflows/ci.yml`.
 
-Inspect the CI deployment job and Trigger run. A release is successful only when the task completes with zero failed skills. Fetch a changed skill from staging and production to verify isolation, including its source revision.
+1. **Checks** run on every pull request and on every push to `dev` or `main`: `validate`, `atom-checks`, `part-tests`, `imessage-chat-browser-tests`, `media-tests`.
+2. **`deploy-catalog`** runs on a push to `dev` or `main`, only after every check passes. It starts the `sync-predefined-skills-catalog` task in the GooseWorks app's Trigger.dev project for that environment, passing the branch and the exact commit, and waits for it to finish. It fails if any skill fails to sync.
+3. **`dispatch-public-sync`** (`main` only, after the catalog succeeds) asks the GooseWorks app repo to rebuild the public skills site and docs.
+4. **`npm-release`** (`main` only, after every check passes) opens or updates the changesets release PR, or publishes the `goose-skills` npm package when that PR merges. It does not publish the GooseWorks CLI.
 
-Superseded merge jobs fail before they start a sync. Deploy the newest successful CI run instead. If a full sync fails, it may have applied some per-skill writes; CI marks it failed. Fix the source or credentials and rerun the intended release. A revert must be merged to the affected branch to publish restored content.
+## Test an entry-skill change on staging first
 
-The npm package release is the `npm-release` job in the same CI workflow. Like the catalog deploy, it runs only after every check passes, and only on main. It is separate from agent catalog publication and does not publish the GooseWorks CLI or switch its entry skills.
+Entry skills are the riskiest change: on `main` they switch for every customer at once.
+
+1. **Before you merge:** raise the skill's `version` (SKILL.md and skill.meta.json) and the plugin `version` in both `skills/entry/.claude-plugin/plugin.json` and `skills/entry/.codex-plugin/plugin.json`. Run `npm run ci`.
+2. **Try the files locally.** Copy the changed `skills/entry/<slug>/` folder over the installed copy in your agent's skills folder (for Claude Code, `~/.claude/skills/<slug>/`), restart the agent and run the asks the change is for. Afterwards, run `npx gooseworks@latest update` to restore the released copy.
+3. **Merge to `dev`.** Wait for `deploy-catalog` to pass. Then check the change through the staging app, or through an agent connected to the staging MCP server (`catalog_fetch` returns the synced skill and its source revision).
+4. **Promote `dev` to `main`.** After the production catalog syncs, run `npx gooseworks@latest update` in a test agent and check the installed version. Plugin users get the change on their next plugin update, because the plugin version rose.
+
+The GooseWorks CLI has its own staging release (`gooseworks@next`); see `docs/staging-and-releases.md` in the `gooseworks-ai/gooseworks` repo.
+
+## Required checks
+
+Branch protection on `dev` and `main` requires these jobs, so a red check blocks the merge: `validate`, `atom-checks`, `part-tests`, `imessage-chat-browser-tests`, `media-tests`.
+
+## Settings this depends on
+
+| Setting | Where | What it is |
+|---|---|---|
+| `TRIGGER_SECRET_KEY` | GitHub environments `staging` and `production` | The secret key of that environment in the app's main Trigger.dev project. Staging deploys are limited to `dev`, production to `main`. |
+| `GOOSEWORKS_APP_REPO_TOKEN`, `GOOSEWORKS_APP_REPO` | Repository secrets | Let `dispatch-public-sync` reach the app repo. |
+| `NPM_TOKEN` | GitHub environment `npm-release` (limited to `main`) | Publishes the npm package. |
+
+## When something fails
+
+- **A release counts only when the Trigger task completes with zero failed skills.** Open the `deploy-catalog` job log and the Trigger run it names.
+- **A failed sync may have written some skills.** Fix the source or the credentials, then rerun the release for that branch.
+- **A superseded release stops before it syncs.** When a newer merge landed on the branch, the older run fails with "Release was superseded". Rerun the newest successful CI run instead.
+- **To undo a change, merge a revert** to the affected branch. The revert publishes the restored content like any other change.
+- **Check what an environment serves:** fetch a changed skill from staging and from production (`catalog_fetch`) and compare its source revision with the commit you expect.

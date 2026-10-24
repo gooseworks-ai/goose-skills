@@ -48,7 +48,7 @@ const ICONS = {
   battery: `<svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#0D0D0D" stroke-opacity="0.35"/><rect x="2" y="2" width="19" height="9" rx="2" fill="#0D0D0D"/><rect x="23.5" y="4" width="2" height="5" rx="1" fill="#0D0D0D" fill-opacity="0.35"/></svg>`,
 
   // Moon glyph that shows next to the time when Focus / Do-Not-Disturb is on.
-  // The reference Bioma screenshot shows "08:18 ☾" — render that subtle moon.
+  // The reference screenshot shows "08:18 ☾" — render that subtle moon.
   moonDND: `<svg width="13" height="13" viewBox="0 0 13 13" fill="#0D0D0D"><path d="M11.5 8.2a4.7 4.7 0 1 1-6.7-5.7 5 5 0 1 0 6.7 5.7z"/></svg>`,
 
   // Stop / square icon shown inside the send button while a response is streaming.

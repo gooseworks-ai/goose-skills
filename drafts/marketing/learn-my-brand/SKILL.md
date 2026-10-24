@@ -92,7 +92,7 @@ The brand brain, through `atoms/brain-write-back`:
 - **Brand record** (`brand/records/<YYYY-MM-DD>-v<N>.md`, imported as a brand document): approved claims with variants and proof, the sign-off sheet, not-approved and retired claims, voice status and the full banned list, never-say, business facts, contradiction decisions, palette and fonts, unknowns.
 - Tracked competitors and uploaded brand files.
 
-Readers: every playbook that writes copy or states facts, through `../../../skills/marketing/claims-gate/SKILL.md` (claims) and the kit voice plus `../../../skills/marketing/voice-card/SKILL.md` (voice); research-market from the confirmed audience; research-competitors from the tracked rivals; this playbook's own update, resume and sweep modes from the record. Where the server cannot store something yet, the record holds it; see `server-needs.md`.
+Readers: every playbook that writes copy or states facts, through `../../../skills/marketing/claims-gate/SKILL.md` (claims) and the kit voice plus `../../../skills/marketing/voice-card/SKILL.md` (voice); research-market from the confirmed audience; research-competitors from the tracked rivals; this playbook's own update, resume and sweep modes from the record. Where the server cannot store something yet, the record holds it.
 
 ## Done when
 

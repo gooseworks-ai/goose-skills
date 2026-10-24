@@ -18,8 +18,8 @@ A brand name or product name the voice gets wrong is spoken from its phonetic
 spelling, never from a `(pronounced …)` note (the voice reads notes aloud):
 
 ```bash
-gen_vo.py --text "Meet Drinkag1." --voice <id> --out vo.mp3 --rules working/brand-rules.json
-# or: --say-as "Drinkag1=drink A G one"
+gen_vo.py --text "Meet Brewq2." --voice <id> --out vo.mp3 --rules working/brand-rules.json
+# or: --say-as "Brewq2=brew Q two"
 ```
 
 Only the SPOKEN text changes. Captions, on-screen text and the approved script

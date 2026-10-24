@@ -26,7 +26,7 @@ a flipped negation, a mis-voiced word or brand, a dropped phrase or silence fail
 
 Seedance generates the audio natively. It sometimes **mis-voices a word** — the
 approved line `human-vetted` comes back spoken as `human witted`; documented
-siblings: `Hume`→`Hune`, `Alitu`→`al-too`. The defect lives in the render's
+siblings: `Brume`→`Brune`, `Avitu`→`av-too`. The defect lives in the render's
 audio, so an eyeball `/watch` ("dialogue matches the script") slips it through,
 and a downstream caption pass then bakes the wrong word in verbatim. Nothing was
 comparing the **actual spoken audio** against the **script the user approved**.
@@ -85,15 +85,15 @@ diff. The rules are **bounded** — each is an exact rewrite, never a fuzzy matc
 | `$49`, `$49.99` | `forty nine dollars`, `forty nine dollars and ninety nine cents` | money |
 | `braxleybands.com`, `www.example.com` | `braxleybands dot com`, `w w w dot example dot com`, `example dot com` | URL; `www.` is optional |
 | `don't`, `can't`, `it's`, `you're` | `do not`, `cannot` / `can not`, `it is`, `you are` | contractions |
-| `Braxleybands`, `Gooseworks`, `everyone`, `OneSkin` | `Braxley Bands`, `goose works`, `every one`, `One Skin` | fused/split: exact join of 2–3 words |
-| `AG1` | `AG1`, `AG one`, `A.G. one` | written forms, no alias needed |
-| `AG1` | `A G one`, `A G 1` (letters spaced out) | **only** with a confirmed alias |
+| `Braxleybands`, `Gooseworks`, `everyone`, `OneGlow` | `Braxley Bands`, `goose works`, `every one`, `One Glow` | fused/split: exact join of 2–3 words |
+| `TG1` | `TG1`, `TG one`, `T.G. one` | written forms, no alias needed |
+| `TG1` | `T G one`, `T G 1` (letters spaced out) | **only** with a confirmed alias |
 
 Guards that keep the rules honest:
 
 - A unit word **not** after a quantity is left alone — a brand "MG" never becomes
   "milligrams".
-- Letters spelled one by one ("A G") are **not** fused into a word. That needs a
+- Letters spelled one by one ("T G") are **not** fused into a word. That needs a
   confirmed pronunciation.
 - Fusion is exact concatenation. "Braxly Bands" is not "Braxleybands".
 - A join never swallows a negation: "no table" is not "notable" ("no thing" is "nothing").
@@ -107,7 +107,7 @@ Guards that keep the rules honest:
 | `[high] said "59" where script has "49" — number differs…` | Wrong, added or dropped number | **Re-roll.** A number is never a benign paraphrase. |
 | `[high] dropped "5mg" — unit differs…` | A unit after a number was changed, added or dropped ("5mg" said "five") | **Re-roll.** Only a dropped `dollars`/`euros`/`pounds` alone ("$9.99" said "nine ninety-nine") is not HIGH; dropped `cents` is. |
 | `[high] extra "doesn't" … negation changed` | A `not`/`never`/`no`/`without` was added or lost — the claim flips | Re-roll. |
-| `[high] said "Hune" where script has "Hume" — brand name not heard as approved` | Brand mis-voiced or dropped (`--brand-term` / confirmed pronunciation) | Re-roll; spell it phonetically in the `SPOKEN LINE` (e.g. `Ali-too`, never a `(pronounced …)` parenthetical). See `create-video-seedance-2-fal` Failure Modes. |
+| `[high] said "Brune" where script has "Brume" — brand name not heard as approved` | Brand mis-voiced or dropped (`--brand-term` / confirmed pronunciation) | Re-roll; spell it phonetically in the `SPOKEN LINE` (e.g. `Avi-too`, never a `(pronounced …)` parenthetical). See `create-video-seedance-2-fal` Failure Modes. |
 | `[high] said "witted" where script has "vetted" — audio likely mis-voices…` | Seedance mis-voiced a similar-looking word | **Re-roll a new seed.** |
 | `[medium] dropped "…"` / low similarity | Seedance dropped an approved phrase | Re-roll; if only a tail word, a surgical `stitch_replacement.py` window fix may recover it. |
 | `[low] extra "…"` + low similarity | Extra speech beyond benign filler | Re-roll. A single filler word ("so", "okay") in a normal-length line is LOW and passes. |
@@ -125,7 +125,7 @@ word in a long line can pass).
 ## Brand names and confirmed pronunciations
 
 **Brand words are never removed from the diff.** (Before 2026-10-06, `--brand-term`
-fuzzily stripped brand-like words, which let "Hune" pass for "Hume". That is gone.)
+fuzzily stripped brand-like words, which let "Brune" pass for "Brume". That is gone.)
 
 - **`--pronunciations PATH` (recommended when the voice-over used one)** — the
   confirmed pronunciations file: `create-vo-elevenlabs`'s `brand-rules.json` or the
@@ -135,7 +135,7 @@ fuzzily stripped brand-like words, which let "Hune" pass for "Hume". That is gon
   (see alias rules) is skipped with a `WARNING`, never fatal. A missing or unreadable
   file is an ERROR (exit 3), so pass the flag only when the file exists.
 - `--alias "TERM=SPOKEN"` (repeatable) — one confirmed spoken form, e.g.
-  `--alias "AG1=A G one"`. The term also becomes a brand term. A bad `--alias` is an
+  `--alias "TG1=T G one"`. The term also becomes a brand term. A bad `--alias` is an
   ERROR (exit 3), checked before any transcription is spent.
 - `--brand-term TERM` (repeatable) — marks a brand name. Exactly:
   1. Where the term's words appear in the script, a substitution or drop there is
@@ -148,8 +148,8 @@ fuzzily stripped brand-like words, which let "Hune" pass for "Hume". That is gon
      (`Try ak-mee today`) with `--brand-term Acme --brand-term ak --brand-term mee`
      passes when Whisper writes `Try Acme today` ("ak mee" vs "acme" = 0.67).
      Everything else still fails HIGH: a heard word that is not a declared term
-     (`Hume` heard `Hune`), two different declared names (`Hims` vs `Hers`, `Hume Body
-     Pod` vs `Hume Band`), a truncation (`Acme` heard `ak`), or a number inside a term
+     (`Brume` heard `Brune`), two different declared names (`Hale` vs `Hart`, `Brume Body
+     Pod` vs `Brume Band`), a truncation (`Acme` heard `ak`), or a number inside a term
      (`Pod 4` vs `Pod 5`, `7-Eleven`: `7 days` vs `11 days`).
   Prefer `--pronunciations` over passing `say_as` words as `--brand-term`.
 
@@ -157,11 +157,11 @@ Rules for aliases:
 
 - Only pass spoken forms the **user confirmed** (saved brand pronunciations, or a form
   they confirmed in chat). Never invent one from the transcript to make the gate pass.
-- An alias may respell a name, digits and number-like syllables included ("AG1" =
-  "A G one", "Tenzing" = "ten-zing", "Notion" = "NO-shun"). It is refused when the
-  written term has a number, unit or negation that the spoken form changes ("AG1" =
-  "A G two"), when the spoken form adds `not`, `never`, `without`, `none`, `nothing`
-  or `nobody` ("Hume" = "never Hume"; `no` and `nor` are fine as syllables, "Nomad" =
+- An alias may respell a name, digits and number-like syllables included ("TG1" =
+  "T G one", "Tenzeal" = "ten-zeal", "Nosha" = "NO-shuh"). It is refused when the
+  written term has a number, unit or negation that the spoken form changes ("TG1" =
+  "T G two"), when the spoken form adds `not`, `never`, `without`, `none`, `nothing`
+  or `nobody` ("Brume" = "never Brume"; `no` and `nor` are fine as syllables, "Nomad" =
   "no-mad"), or when the spoken form is only numbers, units or negations ("Decagon" =
   "five").
 - If you listened and the audio is right but Whisper spelled a coined brand name in a
@@ -183,14 +183,16 @@ Rules for aliases:
 
 ## Tests
 
+In the goose-skills repo (in the goose-skills repo only; installed copies have no `tests/` folder):
+
 ```bash
 python3 tests/test_review_render.py    # or: python3 -m pytest tests/
 ```
 
 Pure Python, no audio, network or paid call. Covers the QA-71 audit fixture table
 (units, URL, numbers, percent, contractions, fused brands, wrong price, negation,
-Hume→Hune), number words, units (including added/dropped units in long lines), URLs,
-negation flips, fused/split words, CLI-style brand terms, confirmed AG1 aliases and
+Brume→Brune), number words, units (including added/dropped units in long lines), URLs,
+negation flips, fused/split words, CLI-style brand terms, confirmed TG1 aliases and
 saved pronunciations with number-like syllables, omission, extra speech, the report
 wording, and the CLI exit codes with transcription stubbed out.
 

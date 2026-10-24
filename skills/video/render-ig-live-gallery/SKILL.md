@@ -25,7 +25,7 @@ python3 scripts/build.py --config config.json --assets <stills-dir> --out master
 python3 scripts/build.py --config config.json --assets <stills-dir> --stills <dir>
 ```
 
-`config.example.json` is a full worked config (Glossier) — its phrases, comments, payoff and
+`config.example.json` is a full worked config (the fictional brand Dewlark) — its phrases, comments, payoff and
 music prompt are that demo's creative answers, not defaults. Config shape:
 
 - `username`, `verified`, `palette`, `slide_dur`, `endcard_dur`, `crossfade`

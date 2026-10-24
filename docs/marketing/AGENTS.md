@@ -1,13 +1,13 @@
 # Human version
 
-**What this folder is.** The GooseWorks marketing agent's skills, rebuilt from scratch: 14 released playbooks, their steps ("atoms"), the shared steps and 2 foundation skills, all published to the GooseWorks catalog as separate skills, plus the `marketing-agent` router (kept for evals, not published). Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back in `drafts/marketing/` until their server work exists (Akhil, 20 Oct; see `drafts/marketing/README.md`). A playbook is one marketer want, done end to end ("fill my email flows", "which ad won and what do I make next").
+**What this folder is.** The GooseWorks marketing agent's skills, rebuilt from scratch: 14 released playbooks, their steps ("atoms"), the shared steps and 2 foundation skills, all published to the GooseWorks catalog as separate skills. Customers reach them through the `gooseworks` entry skill's router (`skills/entry/gooseworks/routes.json`). Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back in `drafts/marketing/` until their server work exists (the owner, 20 Oct; see `drafts/marketing/README.md`). A playbook is one marketer want, done end to end ("fill my email flows", "which ad won and what do I make next").
 
-**Where things live.** The skills are in `skills/marketing/<slug>/` (published: `scripts/build-index.js` lists every folder there in `skills-index.json`, domain `marketing-agent`, and a merge to `dev` syncs them to staging). This guide, the backlog and the review reports are in `docs/marketing/`; evals in `evals/marketing/`; held-back playbooks in `drafts/marketing/`. The old 295-skill library was deleted on 23 Oct; we built these from scratch rather than patch it.
+**Where things live.** The skills are in `skills/marketing/<slug>/` (published: `scripts/build-index.js` lists every folder there in `skills-index.json`, domain `marketing-agent`, and a merge to `dev` syncs them to staging). This guide and the backlog are in `docs/marketing/`; evals in `evals/marketing/`; held-back playbooks in `drafts/marketing/`. **Critique logs, server gaps and review reports are private:** they live in goose-lab under `plan/marketing-agent/` (§3). The old GTM library was deleted on 23 Oct (`retired-skills.json`, tag `legacy-gtm-final`); we built these from scratch rather than patch it.
 
 **The rules in one breath.**
 - Never read `skills/video/`, `skills/shared/`, `parts/` or `collections/`. Build from the specs and from first principles of marketing.
-- Never edit anything outside `skills/marketing/`, `docs/marketing/`, `evals/marketing/` and `drafts/marketing/`.
-- Critique hard and often, with subagents: **scope** (did we miss work a marketer does?) and **depth** (would a senior marketer accept this output?).
+- Never edit anything outside `skills/marketing/`, `docs/marketing/`, `evals/marketing/` and `drafts/marketing/` here, and `plan/marketing-agent/` in goose-lab.
+- Critique hard and often, with subagents: **scope** (did we miss work a marketer does?) and **depth** (would a senior marketer accept this output?). Log every round in goose-lab, `plan/marketing-agent/critiques/<slug>.md`.
 - Each builder owns its own folders only. No git writes. One PR at the end.
 
 ---
@@ -27,33 +27,31 @@ All in the GooseWorks Company OS repo (goose-lab, private) under `plan/marketing
 | `01a-source-maps-by-section.md` | Where each kind of knowledge comes from. Large; grep your pillar, don't read it whole. |
 | `decisions-and-parking-lot.md` | Every decision (D1–D5) and what was rejected. Respect the decisions. |
 
-The visual map: https://claude.ai/artifact/6PAQXoadLzETsFd57vP79a (the same content as the files above).
-
-**Do not read** `skills/`, `parts/`, `collections/`, `skillopt/`, or old skills anywhere (goose-studio, content-goose `coworkers/`). This is a deliberate rebuild; old skills pollute the design. The one exception: the GooseWorks MCP tool descriptions (see §4) are the server contract, and you must read them.
+**Do not read** `skills/video/`, `skills/shared/`, `parts/`, `collections/`, or old skills anywhere (the `legacy-gtm-final` tag, goose-studio, goose-lab `coworkers/`). This is a deliberate rebuild; old skills pollute the design. Read `skills/marketing/` freely: the playbooks, steps and foundation skills are what you build on. The other exception: the GooseWorks MCP tool descriptions (see §4) are the server contract, and you must read them.
 
 ## 2. Architecture rules (decided; do not re-litigate)
 
-From Shiv's goose-skills rebuild plan and Akhil's marketing-twin decisions:
+From the goose-skills rebuild plan and the marketing-twin decisions (both in goose-lab):
 
 1. **The user is an AI agent with a computer** (Claude Code, Codex, Cursor…) doing a founder's or marketer's work. Hosted chat connectors (Claude.ai, ChatGPT) have no shell: every playbook must still work there using MCP-only steps.
 2. **Playbooks are listed and user-invoked. Atoms are hidden** and loaded by a playbook. Users only ever see playbooks.
 3. **Media, money and state live on the GooseWorks MCP.** Reference a tool by name as `gooseworks:<tool>`. Never re-describe its parameters (the live schema is the truth). Never invent a tool.
 4. **No vendor keys, ever.** Public data goes through the GooseWorks data proxy (`gooseworks:data_call_provider` and friends). No `APIFY_API_TOKEN`, `FAL_KEY`, `APOLLO_API_KEY`, `ELEVENLABS_API_KEY`, `OPENAI_API_KEY` in any file.
-5. **The brand brain is the single memory** (D5). Read it first (`brand_read`, `knowledge_search`, or whatever the live MCP exposes). Write durable results back into it (claims list, competitor set, voice-of-customer bank, learnings). If the write-back tool does not exist yet, say so in `server-needs.md`; do not fake it with a local file pretending to be memory (except local mode, `skills/marketing/marketing-guide/SKILL.md` §5, in the playbooks that declare it).
+5. **The brand brain is the single memory** (D5). Read it first (`brand_read`, `knowledge_search`, or whatever the live MCP exposes). Write durable results back into it (claims list, competitor set, voice-of-customer bank, learnings). If the write-back tool does not exist yet, record it in goose-lab `plan/marketing-agent/server-needs/<slug>.md`; do not fake it with a local file pretending to be memory (except local mode, `skills/marketing/marketing-guide/SKILL.md` §5, in the playbooks that declare it).
 6. **Without the GooseWorks connection a playbook stops** with one clear sentence telling the user to connect GooseWorks, except local mode (`skills/marketing/marketing-guide/SKILL.md` §5) in the playbooks that declare it. It never half-runs.
 7. **Never invent facts.** No made-up offers, claims, proof, customers or numbers. Claims come only from the brand's approved-claims list; anything else is cut and shown to the human.
 8. **Money moves and publishing are human decisions.** Spend, launches, sends and posts are proposals the human approves. Paid generation needs the user's yes to the credit total first.
 9. **Workflows never call other playbooks.** They chain through written artifacts: one playbook writes, the next reads (see each spec's "from sibling playbooks"). A playbook may **offer** the next job to the human in plain words; it never starts another playbook itself — the human's own request does.
-10. **Do not grow the surface** (Akhil, 16 Oct). No new playbooks, and no new jobs inside a playbook, beyond its spec and the review fixes. A missing job goes on `BACKLOG.md` with a checkable trigger; the playbook says plainly "this isn't covered yet".
+10. **Do not grow the surface** (the owner, 16 Oct). No new playbooks, and no new jobs inside a playbook, beyond its spec and the review fixes. A missing job goes on `BACKLOG.md` with a checkable trigger; the playbook says plainly "this isn't covered yet".
 11. **Judgment stays with the model** (D2). Encode craft and process, not decision trees. A playbook that only makes the model slightly better is a guide, not a playbook; say so in your critique if you find one.
 
-## 2b. Operator feedback is input, not orders (Akhil, 18 Oct)
+## 2b. Operator feedback is input, not orders (decided 18 Oct)
 
-Akhil is an engineer, not a marketer. His hand-test feedback is valuable signal about what feels wrong, but it is not marketing truth. Before changing a playbook because of operator feedback:
+The person hand-testing a playbook is often the product owner or an engineer, not a marketer. Their feedback is valuable signal about what feels wrong, but it is not marketing truth. Before changing a playbook because of operator feedback:
 1. Have an independent senior-marketer reviewer (a subagent that has not seen our playbook) check the feedback: what is right, what is wrong, what is missing.
 2. Act on what holds. Push back, with reasons, on what doesn't, and say so to the operator plainly.
 3. Add what the operator missed.
-Log the verdict for each point in the playbook's `critique.md`.
+Log the verdict for each point in the playbook's critique log (goose-lab `plan/marketing-agent/critiques/<slug>.md`).
 
 ## 3. Folder layout and ownership
 
@@ -61,8 +59,7 @@ Log the verdict for each point in the playbook's `critique.md`.
 docs/marketing/
 ├── AGENTS.md                this file (owner: orchestrator)
 ├── README.md                human overview + how to test (owner: orchestrator)
-├── BACKLOG.md               jobs not covered yet
-└── reviews/                 cross-set critique reports
+└── BACKLOG.md               jobs not covered yet
 drafts/marketing/<slug>/     built but held back (not published)
 evals/marketing/             routing and behaviour evals
 skills/marketing/<slug>/     one flat folder per published skill — each is its own catalog skill
@@ -70,14 +67,18 @@ skills/marketing/<slug>/     one flat folder per published skill — each is its
     │   ├── SKILL.md             the playbook
     │   ├── skill.meta.json      metadata (format below)
     │   ├── references/*.md      craft knowledge the playbook loads when needed
-    │   ├── tests/test-by-hand.md  the spec's "How to test it", sharpened after critique
-    │   ├── critique.md          every critique round (kept here, never published)
-    │   └── server-needs.md      tools/data the playbook needs that the MCP does not have today
+    │   └── tests/test-by-hand.md  the spec's "How to test it", sharpened after critique (stays in this repo, never published)
     ├── <playbook>-<step>/   a step only that playbook uses (SKILL.md + skill.meta.json), owned with it
     ├── <shared-step>/       a step several playbooks load (claims-gate, run-memory…; owner named in §8)
-    ├── marketing-guide/, marketing-data-access/   foundation skills (owner: orchestrator)
-    └── marketing-agent/     the router; "catalog": false, so never published (evals and hand tests only)
+    └── marketing-guide/, marketing-data-access/   foundation skills (owner: orchestrator)
+
+goose-lab (private): plan/marketing-agent/
+    ├── critiques/<slug>.md      every critique round for that playbook or shared step
+    ├── server-needs/<slug>.md   tools/data the playbook needs that the MCP does not have today
+    └── reviews/                 cross-set critique reports
 ```
+
+This repo is public. **Builder history never goes in it:** critique rounds, server gaps, reviews, people's names, session ids and real client or staging brand names go to goose-lab. Examples in published files use fictional brands.
 
 **Why flat.** The catalog ships each skill as its own folder only, and an install puts them side by side (`~/.agents/skills/<slug>/`). With one flat folder per slug, `../<slug>/SKILL.md` resolves the same here, in an install, in the catalog archive and in the evals.
 
@@ -87,7 +88,7 @@ skills/marketing/<slug>/     one flat folder per published skill — each is its
 
 ## 4. The GooseWorks MCP (the server contract)
 
-Load the tool list with ToolSearch (`+gooseworks` and `+gooseworks-staging`). Read the descriptions of the tools your playbook needs. Name only tools that exist. If what the playbook needs is missing, write it in `server-needs.md` with: the need, which step needs it, and what the playbook does meanwhile (ask the human, degrade, or stop).
+Load the tool list with ToolSearch (`+gooseworks` and `+gooseworks-staging`). Read the descriptions of the tools your playbook needs. Name only tools that exist. If what the playbook needs is missing, write it in goose-lab `plan/marketing-agent/server-needs/<slug>.md` with: the need, which step needs it, and what the playbook does meanwhile (ask the human, degrade, or stop).
 
 Test against **staging** (`gooseworks-staging` tools), never production. Read-only and research calls are fine. **Stop before any call that spends credits** (generation, paid data) and record what you would have run.
 
@@ -104,7 +105,7 @@ description: >-
 ```
 
 - **Description ≤ 1,024 characters** (the Agent Skills limit several hosts enforce). Always use the `>-` block form: a description that opens with a quoted phrase and continues after the quote is invalid YAML.
-- **Every step is its own small skill** (decided 20 Oct, Akhil): `skills/<slug>/SKILL.md` with `name`, `description` and `version`. A step that works alone says "<what it does>. Use alone when you already have <inputs>; otherwise run <playbook>." Every other step says "Step of the <playbook> playbook: …. Run <playbook> instead; not for direct use." Shared steps say which playbooks load them.
+- **Every step is its own small skill** (decided 20 Oct by the owner): `skills/<slug>/SKILL.md` with `name`, `description` and `version`. A step that works alone says "<what it does>. Use alone when you already have <inputs>; otherwise run <playbook>." Every other step says "Step of the <playbook> playbook: …. Run <playbook> instead; not for direct use." Shared steps say which playbooks load them.
 - **`name` is the folder name (the slug)** and slugs are unique across the whole catalog: a playbook's own step is `<playbook>-<step>`. The `version` in SKILL.md and `skill.meta.json` must match (the catalog reads SKILL.md; `scripts/validate-skills.js` checks). Raise it when the skill changes.
 - **Never name a playbook, tool, id, model or vendor to the marketer.** Say what happens next in plain words ("I'll check your claims first"), not "run research-audience". The one exception: two or three outside tools the marketer must run themselves (an email finder, an email platform), as examples, never an endorsement (`skills/marketing/marketing-guide/SKILL.md` §3). Credits are quoted exactly as GooseWorks gives them: never dollars, never your own sums.
 
@@ -136,7 +137,7 @@ Write for an agent: precise, imperative, no filler. Put long craft knowledge (fr
 A step's meta is shorter: `slug`, `category: "capabilities"`, `tier: "atom"`, `version`, `playbook` (its playbook; a shared step has `used_by` instead), `tags`, `standalone`, `installation`, `requires_skills`.
 
 - **Referring to another skill:** "the `<slug>` skill (`../<slug>/SKILL.md`)", or `../<slug>/<file>` for a file inside it, file-relative (one more `../` from `references/` or `tests/`). The path works on disk; the slug lets a hosted agent fetch it (`marketing-guide` explains this once). Files inside the skill stay plain relative paths (`references/<file>.md`). Never link `unreleased/`, `BACKLOG.md` or this file from a published skill.
-- **`requires_skills`** lists every skill it refers to, **flattened**: only one level of dependencies is delivered, so a playbook also lists what its steps need. A step does not list the playbook that runs it, unless it works alone and reads that playbook's references. Shared steps and foundation skills never require a playbook. `node scripts/check-marketing-agent-links.js` (in CI) checks every reference resolves in the installed layout, names a listed dependency, and that the list is flat.
+- **`requires_skills`** lists every skill it refers to, **flattened**: only one level of dependencies is delivered, so a playbook also lists what its steps need. A step does not list the playbook that runs it, unless it works alone and reads that playbook's references. Shared steps and foundation skills never require a playbook. `node scripts/check-skill-links.js` (in CI) checks every reference resolves in the installed layout, names a listed dependency, and that the list is flat.
 
 ## 6. The critique loop (the most important part)
 
@@ -147,18 +148,18 @@ The bar is: **these skills are the work a marketer does, at the depth a great ma
 3. **Adversarial run, after you write.** Have a subagent run the playbook as written, step by step, for three different brands (a DTC skincare brand, a just-launched B2B SaaS, a pre-revenue consumer app). Where does it break, stall, ask something it should have known, invent something, or produce output a marketer would rewrite?
 4. **Contract check, after you write.** Every tool named exists on the MCP; every "reads" item has a writer; every "writes" item has a reader or a reason; nothing violates §2.
 
-Log every round in `critique.md`: the finding, the fix, or why it was rejected. A finding you decide not to fix needs a reason a reviewer can check.
+Log every round in goose-lab `plan/marketing-agent/critiques/<slug>.md`: the finding, the fix, or why it was rejected. A finding you decide not to fix needs a reason a reviewer can check.
 
 ## 7. Done for a builder session
 
 - Each assigned playbook has every file in §3, filled.
-- The last critique round found nothing major, and `critique.md` shows it.
+- The last critique round found nothing major, and the critique log shows it.
 - One staging run per playbook up to the first paid step, recorded in `tests/test-by-hand.md` (what you ran, what came back).
-- A short report to the orchestrator: what you built, the biggest open gaps, and the `server-needs.md` highlights.
+- A short report to the orchestrator: what you built, the biggest open gaps, and the server-needs highlights.
 
 ## 8. Shared conventions (added after the 16 Oct cross-set review)
 
-Every playbook follows these exactly. The shared atoms implement them; the reviews behind them are in `reviews/2026-10-16-*.md`. Server facts below were checked in gooseworks-app `origin/dev`.
+Every playbook follows these exactly. The shared atoms implement them; the reviews behind them are in goose-lab `plan/marketing-agent/reviews/2026-10-16-*.md`. Server facts below were checked in gooseworks-app `origin/dev`.
 
 ### Shared atoms and their owners
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Assemble a MULTI-TAKE episode from generations that already exist. Free, ffmpeg only.
 
-    python build_episode.py --episode liquid-death-ep1 --dry-run   # no ffmpeg, no network
-    python build_episode.py --episode liquid-death-ep1             # the whole episode
-    python build_episode.py --episode liquid-death-ep1 --black-lift 0.024
+    python build_episode.py --episode grimwater-ep1 --dry-run   # no ffmpeg, no network
+    python build_episode.py --episode grimwater-ep1             # the whole episode
+    python build_episode.py --episode grimwater-ep1 --black-lift 0.024
 
 THIS FILE BREAKS THE RULE `SKILL.md` OPENS WITH, AND THAT IS DELIBERATE.
 
@@ -424,7 +424,7 @@ def _number_words(n):
 
 def _norm(w):
     # Whisper writes spoken numbers as digits ("40" for "forty"), and a digit token has no letters
-    # to align on. Olipop episode 1, 2026-10-06: five number words, including the payoff's "four",
+    # to align on. Fizzroot episode 1, 2026-10-06: five number words, including the payoff's "four",
     # were reported as invented speech and left uncaptioned. Spell 0-99 out before comparing.
     digits = w.strip().strip(".,!?;:'\"")
     if digits.isdigit() and int(digits) < 100:
@@ -812,7 +812,7 @@ def find_gap(path, need=0.60, margin=0.20):
 
 def main():
     ap = paths.add_run_arg(argparse.ArgumentParser())
-    ap.add_argument("--episode", default="liquid-death-ep1")
+    ap.add_argument("--episode", default="grimwater-ep1")
     ap.add_argument("--black-lift", type=float, default=None,
                     help="the grade, SOLVED on the concatenated cut by fit_grade.py. Omit and "
                          "this solves it here, which costs two extra probe renders and nothing "
@@ -910,7 +910,7 @@ def main():
     trimmed = []
     for tk, pl in zip(takes, plans):
         pl2, saved = trim_silent_edges(tk, pl)
-        # KEEP THE HANDOVER (opt-in, episode key `extra_head_s`). Olipop episode 1: the head trim
+        # KEEP THE HANDOVER (opt-in, episode key `extra_head_s`). Fizzroot episode 1: the head trim
         # removed the pass of the can at the top of every take, which is the beat the operator
         # asked to see. Give back up to that many seconds of silent run-up, never past the
         # segment's own start, so the boundary is still the take's edge or one of its cuts.

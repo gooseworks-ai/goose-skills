@@ -28,7 +28,7 @@ Default shape: 5 beats × 4.5s + 2.5s end card = 25.0s @ 1280×720/30fps, all co
 from one `config.json`.
 
 ## Run
-build_composition.py --config config.json --output hyperframe.html ; render_seekable_hyperframe.py hyperframe.html master-silent.mp4 <duration> --fps 30 --width 1280 --height 720 — dark stage, staggered grid, deterministic, $0. The config schema is documented at the top of `scripts/build_composition.py`; `scripts/config.example.json` IS the shipped worked example (re-point the cell paths at your own media; its contenders, beat axes, prompts, end-card copy and music prompt are the demo's — the recipe's user choices supply yours, never copy them as defaults).
+build_composition.py --config config.json --output hyperframe.html ; render_seekable_hyperframe.py hyperframe.html master-silent.mp4 <duration> --fps 30 --width 1280 --height 720 — dark stage, staggered grid, deterministic, no paid calls. The config schema is documented at the top of `scripts/build_composition.py`; `scripts/config.example.json` IS the shipped worked example (re-point the cell paths at your own media; its contenders, beat axes, prompts, end-card copy and music prompt are the demo's — the recipe's user choices supply yours, never copy them as defaults).
 
 `build_composition.py` validates every cell path and the column count (2-4), infers each
 cell's media type from its extension (`.png/.jpg/.jpeg/.webp` → image; `.mp4/.mov/.webm/.m4v`

@@ -17,20 +17,20 @@ Fail (20 Oct hand test): "Do this first" before the reader knows what was resear
 
 Fail: any question before the report; "couldn't read the ad libraries" while a browser was available; rivals from memory; a report saved only locally or only on the server; ids or agent shorthand in the report; a section patched in after the report instead of a rewrite.
 
-**The 18 Oct re-test (before this rebuild):** the agent never read its worker briefs (it looked in the wrong folder), told workers there was no browser, reported that no ad library could be read, offered a paid read, then read Meta in the browser in two minutes when the founder said "Can't you do it on your own". Its rivals came from memory; the strongest ones surfaced only in the category pass. Nothing was saved to the brand. See `critique.md`.
+**The 18 Oct re-test (before this rebuild):** the agent never read its worker briefs (it looked in the wrong folder), told workers there was no browser, reported that no ad library could be read, offered a paid read, then read Meta in the browser in two minutes when the founder said "Can't you do it on your own". Its rivals came from memory; the strongest ones surfaced only in the category pass. Nothing was saved to the brand.
 
-## The Juicebox case (the run that failed on 16 Oct and set this bar)
+## The Talentloop case (the run that failed on 16 Oct and set this bar)
 
-Brand: Juicebox (AI recruiting search). Rivals: Loxo, hireEZ, Findem, Eightfold, Fetcher. A good run must reach, unprompted:
-- Fetcher's shutdown (platform closed 16 Oct 2026) and Juicebox's purchase of Fetcher's assets → a time-boxed switch campaign at the top, with its "For you";
+Brand: Talentloop (AI recruiting search). Rivals: Loxo, hireEZ, Findem, Eightfold, Fetcher. A good run must reach, unprompted:
+- Fetcher's shutdown (platform closed 16 Oct 2026) and Talentloop's purchase of Fetcher's assets → a time-boxed switch campaign at the top, with its "For you";
 - the recent hireEZ and Eightfold launches, with demos and third-party posts;
 - what the rivals' founders and execs are posting;
 - LinkedIn and Google ads (Meta matters less for this B2B category), pricing, G2 reviews, hiring and AI-answer presence;
-- "For you" lines such as the Fetcher switch campaign, or Juicebox's free tier against Loxo's trial, and a "You vs them" section.
+- "For you" lines such as the Fetcher switch campaign, or Talentloop's free tier against Loxo's trial, and a "You vs them" section.
 
-The old run read only Meta ad libraries, asked "go deeper?", found the Fetcher story only when pushed, and ended in a chat summary. The rebuilt playbook's Sonnet re-run is recorded in `critique.md`.
+The old run read only Meta ad libraries, asked "go deeper?", found the Fetcher story only when pushed, and ended in a chat summary. The rebuilt playbook was re-run after the rebuild; the builder critique log records it.
 
-## Earlier staging facts still true (2026-10-16, brand "Personal Day")
+## Earlier staging facts still true (2026-10-16, brand "Clearday")
 
 - `competitor_read` returns server dossiers (positioning, pricing tier, socials, ad counts, `last_researched_at`) and `view: "suggestions"` with Meta page checks (CONFIRMED / UNSURE).
 - `ads_template_read` mode `competitor` returns a capped sample (~24 per rival) with ad id, start date, last-seen date, copy, CTA and destination; `media_list` tags `ad_library` + `competitor_ad` hold rival video ads.

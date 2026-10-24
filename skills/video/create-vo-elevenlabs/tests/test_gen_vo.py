@@ -9,8 +9,8 @@ from gen_vo import apply_say_as, load_pairs  # noqa: E402
 
 
 def test_swaps_whole_word_any_case():
-    pairs = [("Drinkag1", "drink A G one")]
-    assert apply_say_as("Try DRINKAG1 tonight. drinkag1!", pairs) == "Try drink A G one tonight. drink A G one!"
+    pairs = [("Brewq2", "brew Q two")]
+    assert apply_say_as("Try BREWQ2 tonight. brewq2!", pairs) == "Try brew Q two tonight. brew Q two!"
 
 
 def test_leaves_longer_words_alone():
@@ -25,4 +25,4 @@ def test_longest_term_wins():
 def test_rules_file_and_flag_merge(tmp_path):
     rules = tmp_path / "r.json"
     rules.write_text(json.dumps({"pronunciations": [{"term": "AGZ", "say_as": "A G Z"}]}))
-    assert load_pairs(["Drinkag1=drink A G one"], str(rules)) == [("Drinkag1", "drink A G one"), ("AGZ", "A G Z")]
+    assert load_pairs(["Brewq2=brew Q two"], str(rules)) == [("Brewq2", "brew Q two"), ("AGZ", "A G Z")]

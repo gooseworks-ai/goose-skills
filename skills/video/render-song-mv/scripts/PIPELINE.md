@@ -1,15 +1,15 @@
 # Pipeline — song-driven music-video
 
 How `config.example.json` maps to the real production steps. This molecule ships a
-**config + this map**, not a bundled runner: the worked example (Loóna "Fall In Love With
-Sleep Again") was produced by the control-plane orchestrator, whose per-step scripts live
-in `clients/loona/ad-runs/run-01-run1/working/`. Reference those scripts directly, or drive
+**config + this map**, not a bundled runner: the worked example (Driftlume "Fall In Love With
+Sleep Again") was produced by the control-plane orchestrator, whose per-step scripts lived
+in the source run's `working/` folder (not shipped). Drive
 the whole run via `video-orchestrator-with-control-plane`.
 
 **Creative values are choices, not defaults.** The visual style (`look_pack`,
 `clip_engine.motion_opener`), song genre / vocalist / mood (`song.prompt`, `song.bpm`, lyrics),
 protagonist (`look_pack.style_opener`) and setting (`tableaux[].keyframe_prompt`) come from the
-recipe's `choices`. The Loóna values in `config.example.json` (paper-craft night, synth lullaby,
+recipe's `choices`. The Driftlume values in `config.example.json` (paper-craft night, synth lullaby,
 soft female vocal, young-woman paper-doll, bedroom → paper village) are one worked example.
 
 The five steps run **in order** because each depends on the last: the song sets the
@@ -28,8 +28,8 @@ intro/verse/pre-chorus/chorus/outro sections, each with `duration_ms` + exact `l
 
 Then derive `working/timeline.json` — `[tableauId, tStart, tEnd]` per beat — by snapping
 each tableau boundary to the lyric-phrase edges in the returned word timings. The hook
-word (`song.hook_word`; Loóna: "fall" at ~15.24s) lands on the chorus drop; the HOOK_HERO tableau
-(Loóna: T08 — set `audio_mix.climax_beat_id` to this run's id) is timed to it. No artist names in `song.prompt` (ElevenLabs ToS filter).
+word (`song.hook_word`; Driftlume: "fall" at ~15.24s) lands on the chorus drop; the HOOK_HERO tableau
+(Driftlume: T08 — set `audio_mix.climax_beat_id` to this run's id) is timed to it. No artist names in `song.prompt` (ElevenLabs ToS filter).
 
 ## 2. Keyframes → Higgsfield `gpt_image_2`  (config: `tableaux[].keyframe_prompt`, `look_pack`, `keyframe_engine`)  [PAID]
 
@@ -63,7 +63,7 @@ the end-card tagline overlay.
 
 - `working/build_end_card.py` composites the brand lockup via **PIL** from the REAL brand
   asset (demo: `brand-assets/app-icon-1024.jpg`, pulled from the iTunes Search API): brand
-  gradient from the brand kit (demo: purple) + soft stars + circular app icon with a warm-glow halo + "Loóna" wordmark
+  gradient from the brand kit (demo: purple) + soft stars + circular app icon with a warm-glow halo + "Driftlume" wordmark
   (Georgia Bold) + tagline (Georgia Italic) + App Store CTA → `working/end-card.png`.
   **Never AI-render brand text** (LEARNINGS L4 — a prior end card rendered "therapits").
 - Assembly (`working/promote_master.py` → `_v2` → `_v3`, the version chain): cut each clip
@@ -76,4 +76,4 @@ the end-card tagline overlay.
   `production/render-outputs.json`, and `history/versions.json` for the control-plane app.
 
 Re-cuts (new caption chunking, swapped end card, re-timed windows) reuse the existing
-keyframes/clips/song and cost **$0** — only steps 1–3 spend.
+keyframes/clips/song and spend nothing — only steps 1–3 spend.

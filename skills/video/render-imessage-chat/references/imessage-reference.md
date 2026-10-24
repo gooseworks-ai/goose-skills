@@ -1,6 +1,6 @@
 # Human version
 
-This format recreates the feel of the approved Clinikally Goa texting ad: a
+This format recreates the feel of the approved Dermwise Goa texting ad: a
 proportional phone over a background, a believable conversation, real message
 sounds and a brand ending. Contact names, phone time, background and story are
 editable for every run.
@@ -83,14 +83,14 @@ No paid retry is needed for a deterministic layout or timing repair.
 
 ## Evidence and limits
 
-Lineage: [[derived-from::create-imessage-mockup]] and the archived Clinikally
+Lineage: [[derived-from::create-imessage-mockup]] and the archived Dermwise
 Goa build. Private project files are optional maintainer evidence; this package
 contains the entire runtime and is sufficient from an empty customer folder.
 
-The operator supplied https://make.gooseworks.ai/sample/clinikally-imessage-goa-sunscreen.
-On 2026-10-04 that URL served a Wonderbly/Rachel clip, despite the Clinikally slug.
+The operator supplied a sample URL whose slug named the Dermwise Goa build.
+On 2026-10-04 that URL served a Wonderloom/Rachel clip, despite the Dermwise slug.
 Do not infer media identity from a URL's name. The maintenance rebuild used the
-original local Clinikally master, source thread and sound hashes. Source demos
+original local Dermwise master, source thread and sound hashes. Source demos
 are references, not generic creative defaults.
 
 Technical checks cover layout and stream integrity. They do not prove that copy

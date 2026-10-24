@@ -20,7 +20,7 @@ capabilities the recipe names — `create-image-fal` (the one-shot environment p
 ## Choices
 
 The calling recipe asks the user these before any paid step; this capability only reads them
-from config. The worked example (Touchland) values are examples, never defaults.
+from config. The worked example (Palmglow) values are examples, never defaults.
 
 - **setting** — where the frame hangs → `config.plate.setting` (demo: premium boutique interior).
 - **wall_style** — the wall it is mounted on → `config.plate.wall_style` (demo: sage subway tile).
@@ -41,7 +41,7 @@ from config. The worked example (Touchland) values are examples, never defaults.
 
 ## Inputs
 
-- `config.json` — copy `scripts/config.example.json` (the Touchland worked example) and edit
+- `config.json` — copy `scripts/config.example.json` (the Palmglow worked example) and edit
   (canvas, plate prompt + setting + wall_style from the user's choices, camera crop, per-beat durations, end-card copy). Schema + per-file working-dir
   layout are documented in `scripts/PIPELINE.md`.
 - The brand's REAL product/packaging/lifestyle stills, wordmark, and icon (recreate the icon

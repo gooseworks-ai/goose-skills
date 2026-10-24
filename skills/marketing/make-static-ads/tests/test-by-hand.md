@@ -2,7 +2,7 @@
 
 **Also test through staging, not only from a local copy:** merge, let the catalogue deploy, then give a fresh agent only the marketer's words (Test 0).
 
-**The bar:** this playbook must produce better ideas than a capable agent with no playbook at all. If it doesn't, it is making agents worse (it did, up to 0.5.4: see `critique.md` round 27). Test 1 is the acceptance test; run it after any change to the idea steps.
+**The bar:** this playbook must produce better ideas than a capable agent with no playbook at all. If it doesn't, it is making agents worse (it did, up to 0.5.4). Test 1 is the acceptance test; run it after any change to the idea steps.
 
 ## Setup
 

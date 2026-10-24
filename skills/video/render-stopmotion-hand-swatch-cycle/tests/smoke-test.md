@@ -16,5 +16,5 @@ Pass when the assembly runs to a valid MP4 and:
 - the music is the entire bed — no separate VO;
 - **no paid call is made** — the master-anchor plate, the shade / motion / finale plates, and the
   end-card BG come from `create-image-gpt-image-fal`, and the track from `create-music-elevenlabs`;
-  this assembly is **$0** and a re-cut (re-timed holds, a re-ordered cycle, a swapped end card) reuses
+  this assembly is **free** and a re-cut (re-timed holds, a re-ordered cycle, a swapped end card) reuses
   the existing plates.

@@ -1,14 +1,14 @@
 # render-creator-pip-listicle scripts — the FREE assembly
 
-`render-creator-pip-listicle` is the **deterministic, $0 assembly stage** of the creator-pip-listicle
+`render-creator-pip-listicle` is the **deterministic, free assembly stage** of the creator-pip-listicle
 format. The paid stages (the creator anchor, the N per-beat native Seedance talking clips) are
 separate capabilities — `create-image-fal` (**Seedream v5 Pro**) and `create-video-fal` (**Seedance
 2.0**). This capability takes those native clips + the brand's real UGC demo clips (or the product's
 own autocropped UI stills / screen recordings) + the real product photos + the brand palette + the
 title copy and stitches the finished master. Re-cuts (new beat durations, a swapped card, a re-cropped
-demo, a caption re-chunk, toggled overlays) reuse the existing native clips + overlays and cost **$0**.
+demo, a caption re-chunk, toggled overlays) reuse the existing native clips + overlays and spend nothing.
 
-`config.example.json` is the worked example (DIBS Beauty "5 products that replaced my whole makeup
+`config.example.json` is the worked example (Solenne Beauty "5 products that replaced my whole makeup
 bag", ~46s 1080×1920). `PIPELINE.md` maps every config block to its source step. This README
 documents the FREE assembly pieces that `render-creator-pip-listicle` owns.
 

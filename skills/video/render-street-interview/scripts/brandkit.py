@@ -2,13 +2,13 @@
 """Load and validate one brand config. The ONLY place a brand name appears in this skill's code.
 
     python brandkit.py                      # list the configs on disk
-    python brandkit.py --brand liquid-death # print one, validated
+    python brandkit.py --brand grimwater # print one, validated
 
 Resolution order for `--brand`, so a config can live outside this repo:
   1. an explicit path to a .json file
   2. `<skill>/brands/<slug>.json`
   3. `$STREET_INTERVIEW_BRAND` (a path or a slug)
-  4. the default slug, `liquid-death`
+  4. the default slug, `grimwater`
 
 Validation is strict and loud. A missing key here means a malformed prompt goes to a PAID call,
 which is the most expensive way to find a typo: seed 4806 spent $3.64 discovering that the
@@ -24,7 +24,7 @@ import format_spec
 import paths
 
 BRANDS = paths.SKILL / "brands"
-DEFAULT_SLUG = "liquid-death"
+DEFAULT_SLUG = "grimwater"
 
 _REQ_TOP = ("brand", "slug", "product", "location", "question", "props", "shots", "generation")
 _REQ_PRODUCT = ("noun", "phrase", "reference_image", "appearance", "colour_ban")

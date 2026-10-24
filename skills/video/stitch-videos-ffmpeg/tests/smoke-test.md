@@ -8,7 +8,7 @@ Steps:
 1. Read `SKILL.md`.
 2. Run the smallest safe workflow described by the skill.
 3. Save outputs to `skills/test-runs/<timestamp>/stitch-videos-ffmpeg/`.
-4. Run the verifier references in `tests/verifier.md`.
+4. Watch the output once (the `watch` skill) and check it matches what this skill's SKILL.md says it makes.
 
 Expected output shape: see `tests/expected-output.md`.
 

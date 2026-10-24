@@ -5,7 +5,7 @@
 
 Four assertions, in order of how much they would cost to discover the hard way:
 
-  1. The approved payload is UNCHANGED. `brands/liquid-death.json` through `format_spec.py`
+  1. The approved payload is UNCHANGED. `brands/grimwater.json` through `format_spec.py`
      reproduces the prompt recorded in the seed-4815 manifest byte for byte. Checked against a
      sha256 that lives in THIS file, so it still runs on a fresh checkout where `projects/` (and
      therefore the manifest) does not exist. If the manifest IS on disk, the full text is compared
@@ -26,11 +26,11 @@ import brandkit
 import format_spec
 import paths
 
-# sha256 of the prompt recorded in projects/street-interview/working/takes/ld-single-seed4815.json,
+# sha256 of the prompt recorded in projects/street-interview/working/takes/gw-single-seed4815.json,
 # the approved base. 948 words, 5306 characters. Recorded here on 2026-09-30 so the assertion
 # survives a checkout without projects/, which is gitignored.
 APPROVED = {
-    "brand": "liquid-death",
+    "brand": "grimwater",
     "seed": 4815,
     "sha256": "1ce00e2fd91e2476dacaa754910958aab22d7ee4d062047ec1faca9aa9edfbee",
     "words": 948,
@@ -315,8 +315,11 @@ def main():
     # exists to delete "takes it and looks at it", which was the single instruction causing the
     # label to turn away, the lid to face the lens and the can to read short. A clause list
     # cannot see a deletion, so the deletion is asserted directly.
+    # An upright config WITHOUT can_sealed, which the size/sealed independence check below
+    # needs. Picked by its flags, not by where its file name happens to sort.
     upr = next((s for s in brands
-                if brandkit.load(s)["generation"].get("upright_grammar")), None)
+                if brandkit.load(s)["generation"].get("upright_grammar")
+                and not brandkit.load(s)["generation"].get("can_sealed_grammar")), None)
     if upr:
         ucfg = brandkit.load(upr)
         UG = dict(_declared(ucfg))

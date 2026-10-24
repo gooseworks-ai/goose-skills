@@ -31,6 +31,6 @@ Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M
 
 ## Expert criteria (from marketer review)
 
-Neither marketer review (18 Oct: `research-review.md`, `social-plan-search-review.md` in `marketing-agent-test/results/reviews/`) covers this playbook.
+Neither marketer review (18 Oct, in goose-lab `plan/marketing-agent/reviews/`) covers this playbook.
 
 TODO: add expert criteria when a senior-marketer review of where-to-start exists. Add each as `- **E1** — …` (put "(must)" first for a must-pass item), then re-judge saved runs with `node run.mjs judge results/<date>/where-to-start`.

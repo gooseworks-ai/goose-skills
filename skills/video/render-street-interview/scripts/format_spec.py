@@ -22,7 +22,7 @@ observation does not prove an exact word ceiling. Length advice is non-blocking;
 still fail. Preserve the approved prompt text rather than trimming guards to hit a count.
 
 `build_prompt(cfg)` is deterministic: the same config produces the same prompt, byte for byte.
-`selftest.py` asserts that the Liquid Death config reproduces the approved seed-4815 prompt
+`selftest.py` asserts that the Grimwater config reproduces the approved seed-4815 prompt
 exactly, so this refactor is provably not a rewrite of the thing that was paid for.
 """
 
@@ -63,11 +63,11 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
     # one word ("sealed"). With the upright grammar it is the orientation and the label, because
     # those are what seed 4827 lost: upright and label-forward at 1.0s, horizontal and
     # lid-to-lens from 5.0s on.
-    # NATURAL HOLD (opt-in, generation.natural_grammar). Olipop seeds 6101/6102, 2026-10-05: the
+    # NATURAL HOLD (opt-in, generation.natural_grammar). Fizzroot seeds 6101/6102, 2026-10-05: the
     # operator's note was that the can is not handed over naturally and people do not hold it
     # naturally. "UPRIGHT, label to the lens" in every shot is what makes them present it.
     natural = bool(cfg.get("generation", {}).get("natural_grammar"))
-    # REAL HOLD (opt-in, generation.real_grammar). Olipop episode 1, 2026-10-06: the can came back
+    # REAL HOLD (opt-in, generation.real_grammar). Fizzroot episode 1, 2026-10-06: the can came back
     # open with its lid to the lens in four of seven people and one woman presented it. The can
     # goes back to sealed and the hold is described as where the hand rests, not as a pose.
     real = bool(cfg.get("generation", {}).get("real_grammar"))
@@ -100,7 +100,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
     # eyeline clause still governs the delivery. If a take comes back eyes-down, this is the
     # first thing to suspect.
     glance = ("glances down and back up, " if (upright and one_mic) else "")
-    # LEVEL CAMERA (opt-in, generation.level_camera). Olipop episodes 1 and 2, 2026-10-06: the can
+    # LEVEL CAMERA (opt-in, generation.level_camera). Fizzroot episodes 1 and 2, 2026-10-06: the can
     # was tipped lid-to-lens on 4 then 5 of 7 people across two rewrites of the hold. The shared
     # cause is a high phone camera looking DOWN plus a glance down in every speaking shot. With
     # the flag on the glance goes and the camera comes down to the can's height.
@@ -112,7 +112,7 @@ def _shot(n, s, cfg, can=False, prev_kind=None, upright=False, one_mic=False, pr
     # sealed grammar put on it, so a rebuilt 4824/4827 prompt still matches its own manifest.
     offered = prod if upright else held
     offering = offered if prompt_version >= 2 and offered.startswith("only the ") else f"the {offered}"
-    # VISIBLE HANDOVER (opt-in, generation.handover_grammar). Olipop seed 6101, 2026-10-05: every
+    # VISIBLE HANDOVER (opt-in, generation.handover_grammar). Fizzroot seed 6101, 2026-10-05: every
     # person was already holding the can on their first frame, and the operator's note was "he
     # should hand it over to them". The older wording asks for a handover in the shot and forbids
     # it in the product clause ("never the interviewer's"), and the clause won. With the flag on,
@@ -435,8 +435,8 @@ GUARD_CLAUSES = {
 # MIC_SCALE itself is KEPT and unchanged: the operator approved the small mic and losing it would
 # trade an approved element for a fix, which is not what was asked for.
 #
-# WORD COST. This REPLACES rather than adds, so the mic grammar costs +24 words on the Liquid
-# Death cast. This helped fit the former internal 1200-word budget; that budget is now advice.
+# WORD COST. This REPLACES rather than adds, so the mic grammar costs +24 words on the
+# Grimwater cast. This helped fit the former internal 1200-word budget; that budget is now advice.
 # The first draft stated the never-changes rule in its own sentence and the description in
 # another; they are merged here because that was a duplicate I had written myself, and the lint
 # refused all three episode-2 payloads until it came out. Measured, not guessed.
@@ -537,7 +537,8 @@ ANSWERS_ONLY = (
 # was paid for goes missing -- that is the same proof _MIC_SCALE_TAIL needed before deletion.
 #
 # It also saves ~150 words. This helped fit the former internal word budget; length alone
-# is now advisory. Cast size is not a proven pace lever (see REFERENCE.md items 32/33).
+# is now advisory. Cast size is not a proven pace lever (see items 32/33 in
+# references/reference-ledger-items-29-42.md).
 # NOTE the position pin in the middle of this sentence, and why it is there. The first draft of
 # this block left it out, and the lint immediately refused the payload for missing "is in the
 # same place in every shot" -- a REQUIRED_CLAUSE whose docstring says it covers BOTH objects and
@@ -641,7 +642,7 @@ _SEALED_CUT = (
 # REPLACES that phrase with a real-world size, bound against the hand holding it because the hand
 # is the only other object in frame at a known size, exactly as MIC_SCALE binds the microphone
 # against the speaker rather than against the hand (Critical knowledge 18). The measurement itself
-# is the brand's (`product.size`), because 19oz is a fact about Liquid Death and not about this
+# is the brand's (`product.size`), because 19oz is a fact about Grimwater and not about this
 # format.
 CAN_SIZE = (
     "IT IS ALWAYS ITS REAL SIZE: {size}, the same size against the hand holding it in every shot, "

@@ -14,7 +14,7 @@ keyframes, so it reads as a printed page that moves. This capability is that **F
 deterministic assembly** — the ffmpeg motion, hard-concat, audio mux, caption burn, and PIL
 end card.
 
-`scripts/config.example.json` is the worked example (Klarify "Rat Park", ~40.8s 1080×1920
+`scripts/config.example.json` is the worked example (Claritude "Rat Park", ~40.8s 1080×1920
 9:16, 6 beats — its 2-tone Niemann look, cream/charcoal/sage palette and Rat Park metaphor are
 that demo's picks, never defaults); `scripts/PIPELINE.md` maps every config block to its source step and
 `scripts/README.md` documents the free assembly.
@@ -38,7 +38,7 @@ so cage/character geometry holds) comes from `create-image-fal` (Nano Banana). G
 clipped audio + `words.json` + the per-beat keyframes + the real brand wordmark PNG,
 `render-editorial-motion-podcast` renders each keyframe as a ken-burns segment, hard-concats
 on the beat, muxes the real audio, burns the mid-sentence captions, and composites the PIL end
-card → the master. Re-cuts reuse the existing audio / keyframes and cost **$0**.
+card → the master. Re-cuts reuse the existing audio / keyframes and spend nothing.
 
 ## Contract (the free assembly)
 

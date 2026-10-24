@@ -1,15 +1,15 @@
 # render-glassy-matte-grwm scripts — the FREE assembly
 
-`render-glassy-matte-grwm` is the **deterministic, $0 assembly stage** of the multi-scene GRWM
+`render-glassy-matte-grwm` is the **deterministic, free assembly stage** of the multi-scene GRWM
 beauty-demo format. The paid stages (the SEPARATE narration VO, the ~7 Seedance scene clips, the
 ~5 gpt-image-2 product cutouts + the flat-lay end-card still, the music bed) are separate
 capabilities — `create-music-elevenlabs`, `create-video-fal`, `create-image-gpt-image-fal`. This
 capability spends nothing — it takes the VO + `<vo>.words.json` + one clip per product step + the
 ~5 product cutouts + the music bed and stitches the finished master. Re-cuts (new cut windows,
 re-timed cards, a swapped end card, caption chunking) reuse the existing VO / clips / cutouts and
-cost **$0**.
+spend nothing.
 
-`config.example.json` is the worked example (DIBS Beauty "5-Step Glassy Matte Routine", ~32s
+`config.example.json` is the worked example (Solenne Beauty "5-Step Glassy Matte Routine", ~32s
 1080×1920). Its creator, voice, setting, tone and music are the demo's picks; a new run takes them
 from the recipe's `choices`. `PIPELINE.md` maps every config block to its source step. This README documents the
 FREE assembly pieces that `render-glassy-matte-grwm` owns.

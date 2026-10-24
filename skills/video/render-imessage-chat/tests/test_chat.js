@@ -22,7 +22,7 @@ test('missing names, duplicate IDs and invalid typing fail before rendering', ()
 });
 
 test('configuration changes the header name and initial, without a demo identity', async () => {
-  for (const name of ['Akhil','Maya','Zoë Chen']) {
+  for (const name of ['Ravi','Maya','Zoë Chen']) {
     const t=fixture(); t.participants[1].name=name;
     const {html}=buildDocument({thread:t},__dirname);
     assert.ok(html.includes(name)); assert.ok(!html.includes('Rachel')); assert.ok(!html.includes('Sam'));

@@ -8,7 +8,7 @@ Steps:
 1. Read `SKILL.md`.
 2. Run `watch` with defaults on the fixture video.
 3. Save outputs to `skills/test-runs/<timestamp>/watch/`.
-4. Run the verifier references in `tests/verifier.md`.
+4. Watch the output once (the `watch` skill) and check it matches what this skill's SKILL.md says it makes.
 
 Pass criteria:
 - `frames/` contains ≥1 JPEG and frame count ≤ `max_frames` (100).

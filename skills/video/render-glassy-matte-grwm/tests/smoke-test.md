@@ -19,4 +19,4 @@ Pass when the assembly runs to a valid MP4 and:
   clips, no music on top of the VO;
 - **no paid call is made** — the VO, scene clips, product cutouts, and music come from the paid
   capabilities (create-music-elevenlabs / create-video-fal / create-image-gpt-image-fal); this
-  assembly is $0 and a re-cut reuses the existing assets.
+  assembly is free and a re-cut reuses the existing assets.

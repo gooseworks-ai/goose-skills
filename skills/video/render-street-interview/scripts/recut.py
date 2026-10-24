@@ -247,14 +247,14 @@ def main():
                          "The default comes from brand_layer.ambience_gap, which is MEASURED "
                          "per take.")
     ap.add_argument("--brand", default=None,
-                    help="brand slug in brands/ (default liquid-death). Supplies the measured "
+                    help="brand slug in brands/ (default grimwater). Supplies the measured "
                          "ambience window; there is no safe fallback for it.")
     ap.add_argument("--no-auto", dest="auto", action="store_false",
                     help="use the stored plan instead of deriving one from this take")
     ap.add_argument("--bed", type=float, default=3.0,
                     help="gain on the looped room tone; 3.0 measured mean join step 4.6 -> 1.6 dB")
     ap.add_argument("--plan", nargs="*", default=None,
-                    help="segments as start,end pairs; default is the Liquid Death plan")
+                    help="segments as start,end pairs; default is the Grimwater plan")
     ap.add_argument("--lead", type=float, default=0.30,
                     help="seconds kept before each line. The only pace control here, with "
                          "--tail: shot COUNT is fixed by the generation. Lower is faster and "

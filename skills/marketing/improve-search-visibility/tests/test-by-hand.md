@@ -41,29 +41,29 @@ On an explicit ChatGPT/Google visibility request, preserve the free evidence pas
 
 The records below describe earlier versions and their actual tools/limits. They are retained as evidence; their old intake and two-stage credit wording is not the current procedure.
 
-## Staging run — 2026-10-16, brand Personal Day (DTC acne-safe skincare), up to the first paid step
+## Staging run — 2026-10-16, brand Clearday (DTC acne-safe skincare), up to the first paid step
 
 | Step | Call | What came back |
 |---|---|---|
-| Connection | `account_whoami`, `brand_read` (list) | staging, org gooseworks; 8 brands; Personal Day coworker agent `9d554b73-…` |
+| Connection | `account_whoami`, `brand_read` (list) | staging, org gooseworks; 8 brands; Clearday coworker agent `9d554b73-…` |
 | Brain read | `brand_read` sections summary, products, onboarding, learnings, sources | description (dermatologist-developed, acne-safe, created by Lili Reinhart), 20 products, 1 learning, onboarding profile fields empty, sources incl. own Google ads |
 | Competitors | `competitor_read` | 5 tracked: Paula's Choice, The Ordinary, CLEARSTEM, CeraVe, Prequel — profiles with positioning and proof points (useful for "named instead") |
 | Claims | `knowledge_search` `source_types: ["claim"]` | 7 "approved" claims created automatically from the site and press (Free Returns, Free Shipping on $45+, 4.9 stars / 234 reviews, Allure/NewBeauty/Byrdie quotes) — no human sign-off; treated as candidates under the claims gate's contract |
-| Search knowledge | `knowledge_search` "search terms, buyer questions…" | empty (`no_match`) — no question set, no search terms in the brain → confirms server-needs §2 |
+| Search knowledge | `knowledge_search` "search terms, buyer questions…" | empty (`no_match`) — no question set, no search terms in the brain → confirms the server has no search-knowledge home yet |
 | Last run | `file_list` `search/` in the coworker workspace | empty → first run |
 | Page list (free) | `knowledge_import` `website: {action: discover}` | 25 pages listed, `provider_requests: 0` (free): collections, product pages, About, FAQ. **Added to the page-and-foundation atom as the free way to find the pages behind the gaps.** |
 | Foundation, site-wide (host shell, free) | `curl robots.txt`; homepage as OAI-SearchBot / PerplexityBot / browser | Shopify robots; no AI search or training bot blocked; all three agents get 200 (no CDN blocking); sitemap declared; canonical present; key copy visible without JavaScript |
-| Foundation, pages | `curl` home, `/collections/cleansers-moisturizers`, `/products/overdew-barrier-cream`, `/pages/faq` | **Homepage `<title>` is just "Personal Day"** — no category words (a likely this-week fix: title + answer-first opening). Collection title "Cleansers & Moisturizers – Personal Day", meta description good. Product page: Product + Offer + AggregateRating + FAQPage markup present. FAQ page: 24 Q&As with FAQPage markup (no Google rich result since May 2026; still liftable text) |
-| Question set (drafted, not saved — needs the human's yes) | — | e.g. best acne-safe moisturizer that won't clog pores · non-comedogenic skincare brand for acne-prone skin · hypochlorous acid spray for acne · blackhead nose strips that actually work · Personal Day vs CLEARSTEM · is Personal Day skincare legit · Personal Day reviews · what is Lili Reinhart's skincare brand |
+| Foundation, pages | `curl` home, `/collections/cleansers-moisturizers`, `/products/overdew-barrier-cream`, `/pages/faq` | **Homepage `<title>` is just "Clearday"** — no category words (a likely this-week fix: title + answer-first opening). Collection title "Cleansers & Moisturizers – Clearday", meta description good. Product page: Product + Offer + AggregateRating + FAQPage markup present. FAQ page: 24 Q&As with FAQPage markup (no Google rich result since May 2026; still liftable text) |
+| Question set (drafted, not saved — needs the human's yes) | — | e.g. best acne-safe moisturizer that won't clog pores · non-comedogenic skincare brand for acne-prone skin · hypochlorous acid spray for acne · blackhead nose strips that actually work · Clearday vs CLEARSTEM · is Clearday skincare legit · Clearday reviews · what is Lili Reinhart's skincare brand |
 
-**Stopped before the first paid step.** Would have asked: "May I run one paid Google lookup — checking whether Google has your site indexed — so I can tell you the price?", then run `gooseworks:data_call_provider` (provider scrapecreators, `/v1/google/search`, query `site:personalday.com`, region US), then asked a yes to a ceiling covering ~13 question lookups + ~4 page index checks ("up to N credits", an estimate), logging each charge in `research/credits-log/<YYYY-MM>.md`. *(Credit flow updated in the 16 Oct cross-set fix pass; the staging run itself stopped before the probe.)* AI surfaces (ChatGPT, AI Overview, AI Mode) were not observable from this host without a logged-out browser — the run would hand the human the 20-paste minimum set (4 must-wins + "is Personal Day skincare legit").
+**Stopped before the first paid step.** Would have asked: "May I run one paid Google lookup — checking whether Google has your site indexed — so I can tell you the price?", then run `gooseworks:data_call_provider` (provider scrapecreators, `/v1/google/search`, query `site:personalday.com`, region US), then asked a yes to a ceiling covering ~13 question lookups + ~4 page index checks ("up to N credits", an estimate), logging each charge in `research/credits-log/<YYYY-MM>.md`. *(Credit flow updated in the 16 Oct cross-set fix pass; the staging run itself stopped before the probe.)* AI surfaces (ChatGPT, AI Overview, AI Mode) were not observable from this host without a logged-out browser — the run would hand the human the 20-paste minimum set (4 must-wins + "is Clearday skincare legit").
 
 Not run: Reddit/YouTube presence (`/v1/reddit/search`, `/v1/youtube/search`, paid); `brand_update` learning write-back (only after the human has read a report).
 
 
-## Re-run — 18 Oct, Sonnet, staging, GooseWorks, Akhil's exact ask ("I need to improve my SEO and EEO for Goosework's brand.")
+## Re-run — 18 Oct, Sonnet, staging, GooseWorks, the owner's exact ask ("I need to improve my SEO and EEO for Goosework's brand.")
 
 Free pass only; the paid Google top-up was offered and declined (0 credits).
 - **Stops:** 0 before the first answer (the 18 Oct hand test had 4–5); 1 gating message in total.
 - **First message:** ChatGPT names Gooseworks on 5 of 5 brand questions and 0 of 8 buyer questions (the 3 most important asked 3 times each); Creatify, AdCreative.ai, Canva, Arcads win instead from vendor lists, Reddit and rivals' pages; Google's AI answer to "is Gooseworks legit" describes a namesake (Gooseworx); draft five fixes; one credit yes; assumptions from the last run to confirm.
-- **Report:** `gooseworks-reports/gooseworks/2026-10-18-search-visibility.md` in the marketer's folder, clickable; saved to the brand with a working link. Write-report §3: pass (see critique.md round 6 for the minor slips, fixed in the template).
+- **Report:** `gooseworks-reports/gooseworks/2026-10-18-search-visibility.md` in the marketer's folder, clickable; saved to the brand with a working link. Write-report §3: pass (minor slips, fixed in the template).

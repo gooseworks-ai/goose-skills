@@ -1,7 +1,7 @@
 # Pipeline — glassy-matte GRWM (multi-scene beauty demo)
 
 How `config.example.json` maps to the real production steps. This capability ships a
-**config + this map**, not a bundled runner: the worked example (DIBS Beauty "5-Step Glassy
+**config + this map**, not a bundled runner: the worked example (Solenne Beauty "5-Step Glassy
 Matte Routine") was produced by the video-orchestrator's per-state steps plus three per-project
 drivers (`build_v4.py`, `render_cards.py`, `composite_cards.py` + `build_master.py`). The four
 paid stages (the SEPARATE VO, the ~7 Seedance scene clips, the ~5 gpt-image-2 product cutouts +
@@ -17,11 +17,11 @@ product-name beats, and the mix + captions + end card finish the master.
 | Config field | Phase | Source step / script | Paid? |
 |---|---|---|---|
 | `vo.script`, `vo.voice_id`, `vo.atempo` | 1 Lock | ElevenLabs `eleven_v3` TTS + ffmpeg `atempo 1.15` (or ingest an mp3) | **PAID** (or supplied) |
-| `scene_clips.clips[]` | 2 Scenes | `create-video-fal` (Seedance 2.0, Fal direct, 720p, ~6s, `--no-audio`) | **PAID** (~$0.30/s @ 720p) |
-| `end_card.flat_lay` | 2 Scenes | `create-image-gpt-image-fal` (gpt-image-2, 9:16) | **PAID** (~$0.07) |
-| `vo.outputs.word_timings` | 3 Whisper | Groq `whisper-large-v3` word-level → `<vo>.words.json` | ~$0.04 |
+| `scene_clips.clips[]` | 2 Scenes | `create-video-fal` (Seedance 2.0, Fal direct, 720p, ~6s, `--no-audio`) | **PAID** (billed per second) |
+| `end_card.flat_lay` | 2 Scenes | `create-image-gpt-image-fal` (gpt-image-2, 9:16) | **PAID** |
+| `vo.outputs.word_timings` | 3 Whisper | Groq `whisper-large-v3` word-level → `<vo>.words.json` | **PAID** |
 | `cuts.windows[]` | 4 Re-cut | scene cuts derived from the "step N" word-starts, re-cut + hard-concat + `-crf 20` | `build_v4.py` (free) |
-| `products.cutouts[]` | 5 Products | `create-image-gpt-image-fal` (gpt-image-2 white-bg standalone); taglines PDP-verified | **PAID** (~$0.35) |
+| `products.cutouts[]` | 5 Products | `create-image-gpt-image-fal` (gpt-image-2 white-bg standalone); taglines PDP-verified | **PAID** |
 | `cards.template`, `.playwright_scale` | 5 Cards | Playwright renders `product-card.html.tmpl` at 2× | `render_cards.py` (free) |
 | `cards.timing[]` | 6 Composite | cards composited onto the master, snapped to product-name word-starts (`-loop 1 -t`) | `composite_cards.py` (free) |
 | `music`, `audio_mix` | 6 Mix | ElevenLabs Music bed ducked under the VO, loudnorm I=-14 | `build_master.py` (**PAID** music; mix free) |
@@ -46,7 +46,7 @@ step (its application beat), and a payoff smile — 720p / 9:16 / `--no-audio`, 
 end-card still. Verify each clip's duration; Seedance drifts on the back ~2s of longer clips, so
 trim to the clean window in Phase 4.
 
-## 3. Whisper the VO → Groq word timestamps  (config: `vo.outputs.word_timings`)  [~$0.04]
+## 3. Whisper the VO → Groq word timestamps  (config: `vo.outputs.word_timings`)  [PAID]
 
 Groq `whisper-large-v3` word-level on the atempo'd VO → `<vo>.words.json`. **The VO's actual
 duration + word-starts set the timeline** — a 1.15× VO ends ~27.5s, not the 45s the plan assumed
@@ -84,4 +84,4 @@ brand kit — the demo used warm cream + pink — cutout thumb, name, PDP taglin
   (1080×1920, 30fps, h264+aac, ~32s).
 
 Re-cuts (new cut windows, re-timed cards, caption chunking, a swapped end card) reuse the existing
-clips / VO / cutouts / music and cost **$0** — only steps 1–2 and 5's cutouts spend.
+clips / VO / cutouts / music and spend nothing — only steps 1–2 and 5's cutouts spend.

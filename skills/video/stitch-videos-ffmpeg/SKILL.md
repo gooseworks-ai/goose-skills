@@ -140,7 +140,7 @@ EDL (for example, the end card) instead.
 
 ### Tests
 
-`tests/test_stitch_montage.py` makes tiny synthetic clips, a still and two tones with ffmpeg,
+In the goose-skills repo (in the goose-skills repo only; installed copies have no `tests/` folder), `tests/test_stitch_montage.py` makes tiny synthetic clips, a still and two tones with ffmpeg,
 then checks: the output length equals the EDL total to the frame, size/fps/pixel shape are
 normalized, captions appear only on their cue frames with the exact text, the bed ducks
 under the VO (about 14 dB on the fixture), and the master is at -14 ±1 LUFS. It runs in CI

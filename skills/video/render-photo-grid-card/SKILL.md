@@ -19,7 +19,7 @@ product heroes, or clips extracted from the brand's own ad corpus) and the **mus
 `create-music-elevenlabs`. Text (wordmark, %, code) is real DOM — never AI-rendered.
 
 ## Run
-build_card.py --config config.json --out hyperframe.html ; render.py --config config.json --html hyperframe.html --out master-silent.mp4 — 1080x1920, scrolling grid, deterministic, $0.
+build_card.py --config config.json --out hyperframe.html ; render.py --config config.json --html hyperframe.html --out master-silent.mp4 — 1080x1920, scrolling grid, deterministic, no paid calls.
 
 Clip tiles are driven by FRAME-SWAP, not `<video>`: `render.py` pre-extracts each clip to
 PNG frames with ffmpeg, preloads them, and swaps each `<img class="vidframe">`'s src per

@@ -17,12 +17,12 @@ shipping master is **100% engine-rendered** (springs + `interpolate`): backgroun
 gradient divs off the `brand_palette`, props are inline SVG, and the ONLY composited
 bitmap is the REAL product photo (`objectFit:contain`, **never stretched**). ALL
 headline/claim/CTA/URL/wordmark text is typeset in the engine — **never AI-rendered**;
-that is the format's credibility guard. Render cost is **~$0**; the only paid step is an
+that is the format's credibility guard. Rendering is **free** (no paid calls); the only paid step is an
 optional music bed, gated upstream in the recipe to `create-music-elevenlabs`.
 
 The whole ad is **data**: copy strings, product photo, palette, fonts, bpm, and beat
 split all arrive as `config.json` and are bound to Remotion **input props** — nothing is
-hardcoded in the scenes (the source run's Spoiled Child strings are generalised into
+hardcoded in the scenes (the source run's brand strings are generalised into
 `project/src/props.ts`). Deterministic → **iterate the cut for free**.
 
 ## Choices
@@ -76,11 +76,7 @@ motion kit — `slamIn / dropIn / bob / flyIn / popIn / wipe` — lives in
 ## Run
 
 ```bash
-# 1) install the bundled Remotion project's deps (one-time; render.py auto-runs
-#    this if node_modules is absent).
-cd project && npm install && cd ..
-
-# 2) bind config → Remotion input props, render the 9:16 master, derive the 1:1 crop.
+# Bind config → Remotion input props, render the 9:16 master, derive the 1:1 crop.
 python3 scripts/render.py \
   --config path/to/config.json \
   --work-dir <work> \
@@ -144,8 +140,8 @@ config and a runtime `--work-dir`.
 
 ## Requires
 
-- **Node.js** (≥18) + **Remotion** (`@remotion/cli` ≥4.0, installed via the bundled
-  `project/package.json` — `render.py` runs `npm install` in `project/` on first use).
+- **Node.js** (≥18) + **Remotion** (`@remotion/cli` ≥4.0, pinned in the bundled
+  `project/package.json`; the kit provides them, and `render.py` sets up `project/` on first use).
   This capability legitimately needs a node runtime — the renderer IS a Remotion project.
 - **ffmpeg** on PATH (for the 1:1 center-crop).
 - `watch` (QC the final master — confirm the headline slams WORD-BY-WORD on the beat, the

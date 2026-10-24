@@ -1,14 +1,14 @@
 # render-cinematic-music-video scripts — the FREE assembly
 
-`render-cinematic-music-video` is the **deterministic, $0 assembly stage** of the cinematic
+`render-cinematic-music-video` is the **deterministic, free assembly stage** of the cinematic
 music-video format. The paid stages (the sung anthem, the N film-look keyframes, the N Kling i2v
 clips) are separate capabilities — `create-music-elevenlabs`, `create-image-gpt-image-fal`,
 `create-video-fal`. This capability spends nothing: it takes the delivered anthem + `words.json`
 + one clip per beat + the brand end-card asset and stitches the finished master. Re-cuts (new
 caption chunking, a swapped end card, re-timed windows) reuse the existing anthem / keyframes /
-clips and cost **$0**.
+clips and spend nothing.
 
-`config.example.json` is the worked example (Hype and Vice "Game Day Girls", ~28s 1080×1920).
+`config.example.json` is the worked example (Rally & Rogue "Game Day Girls", ~28s 1080×1920).
 Its song style, vocalist, cast, setting and story arc are the demo's answers to the format's
 choices — a new run gets them from the user; copy the structure, not the values.
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE assembly

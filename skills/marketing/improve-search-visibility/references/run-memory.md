@@ -115,7 +115,7 @@ The atom's scheduled rules apply in full. In this playbook:
   - Their cells say `not checked (scheduled run, no browser); last: <value, date>`, so the per-cell baseline survives. A missing check is never a 0.
   - The report says plainly that the AI answers weren't re-asked.
   - "Decisions for you" offers the 5-question paste set, or a check together next time.
-  - The goose-aeo engine on the server would close this gap (`server-needs.md` §1).
+  - The goose-aeo engine on the server would close this gap.
 - **Still check, free:**
   - every open fix's ship status, using the table above;
   - web search for each category question;

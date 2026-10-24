@@ -20,7 +20,7 @@ THIN = "a man in his thirties, grey hoodie, with a plain rucksack"
 
 
 def cfg():
-    return brandkit.load("graza-ep1-a2")
+    return brandkit.load("oleara-ep1-a2")
 
 
 class CastAdviceTests(unittest.TestCase):
@@ -60,7 +60,7 @@ class CastAdviceTests(unittest.TestCase):
         others = set(brandkit.other_subjects(c))
         self.assertTrue(others)
         self.assertIn(THIN, own)
-        # another Graza config may share it, but no other BRAND's list may supply it
+        # another Oleara config may share it, but no other BRAND's list may supply it
         self.assertNotIn(THIN, others)
 
     def test_a_garment_or_bag_that_draws_a_logo_is_named(self):

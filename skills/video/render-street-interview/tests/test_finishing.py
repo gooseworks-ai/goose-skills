@@ -55,7 +55,7 @@ class FinishingTests(unittest.TestCase):
         self.assertEqual(command[command.index("--run") + 1], str(self.run.resolve()))
 
     def test_approved_endcard_keeps_original_pixels_and_86px_spacing(self):
-        layer = {"logo": None, "end_card": ["MURDER YOUR THIRST.", "DRINK LIQUID DEATH."]}
+        layer = {"logo": None, "end_card": ["DROWN YOUR THIRST.", "DRINK GRIMWATER."]}
         build_looks.configure_brand_layer(layer)
         expected = Image.new("RGB", (1080, 1920), build_looks.INK).convert("RGBA")
         for i, row in enumerate(layer["end_card"]):
@@ -94,7 +94,7 @@ class FinishingTests(unittest.TestCase):
             self.assertTrue((self.run / "custom-end.png").exists())
 
     def test_versioned_pouch_grammar_preserves_historical_prompt(self):
-        cfg = brandkit.load("liquid-death-4828")
+        cfg = brandkit.load("grimwater-4828")
         cfg["product"]["noun"] = "pouch"
         cfg["product"]["phrase"] = "product pouch"
         flags = {"upright": True, "one_mic": True}
@@ -111,7 +111,7 @@ class FinishingTests(unittest.TestCase):
         self.assertTrue(format_spec.lint(repaired.replace("THE TOP EDGE IS NEVER SHOWN", ""), **flags, prompt_version=2))
 
     def test_versioned_non_upright_payoff_repairs_only_scaffold_articles(self):
-        cfg = brandkit.load("liquid-death")
+        cfg = brandkit.load("grimwater")
         cfg["shots"][-1]["line"] = "Keep the only the phrase verbatim."
         old = format_spec.build_prompt(cfg, one_mic=True)
         new = format_spec.build_prompt(cfg, one_mic=True, prompt_version=2)
@@ -168,7 +168,7 @@ class FinishingTests(unittest.TestCase):
 
     def test_zero_strength_grade_and_brand_bar_through_caption_gaps(self):
         # Entirely synthetic input; no model call, real customer or wallet involved.
-        cfg = brandkit.load("liquid-death")
+        cfg = brandkit.load("grimwater")
         cfg["brand_layer"].update({
             "logo": None, "cuts": [1.0], "ambience_gap": [0.0, 0.5],
             "captions": [[0.8, 1.0, "ANSWER", "answer", "", "Answer."]],

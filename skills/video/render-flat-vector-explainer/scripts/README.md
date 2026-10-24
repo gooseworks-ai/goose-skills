@@ -4,7 +4,7 @@ This capability is **documentation-grade**: the flat-vector-explainer molecule i
 documented recipe, not a runnable end-to-end app. There are no standalone scripts here to
 `--config` and fire. Instead this folder ships:
 
-- **`config.example.json`** — the full config schema (the Spoiled Child "Perfect Morning
+- **`config.example.json`** — the full config schema (the Little Wilder "Perfect Morning
   Routine = 4 Products" worked example). Copy its structure to `config.json`; fill the
   creative fields (host, setting, tone, voice, music) from the recipe's choices and the
   brand fields (palette, products, copy) from the new brand — never the demo's values.
@@ -16,7 +16,7 @@ documented recipe, not a runnable end-to-end app. There are no standalone script
 
 The paid generative steps (keyframes, clean plates, Kling i2v, VO, music) are **separate
 capabilities** the recipe orchestrates and gates — see the recipe. Everything below is
-free, deterministic, $0.
+free and deterministic.
 
 ## The two separations that make this format work
 

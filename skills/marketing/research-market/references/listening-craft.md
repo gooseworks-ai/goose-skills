@@ -17,7 +17,7 @@ Saved as `research/market/watchlist.md` (save-to-brain, `supersede`, title `List
 
 Include: name forms and misspellings, handle, domain, products, founder and visible execs (with a topic word when the name is common or famous), brand hashtags, rivals, category and problem terms in buyers' words (from the voice-of-customer bank when it exists), exclusions.
 
-**Name collisions — check before the first listen.** Web-search the bare brand name and read the first results and one platform's search page. Write down what else the name means (a phrase, another company, a person, a place) and turn each into an exclusion or a scope ("personal day" → exclude "day off", "PTO", "sick day"; scope the bare name to the skincare communities). Where search ignores minus terms, apply the exclusions when reading results. The report says what the name was confused with.
+**Name collisions — check before the first listen.** Web-search the bare brand name and read the first results and one platform's search page. Write down what else the name means (a phrase, another company, a person, a place) and turn each into an exclusion or a scope ("Clearday" → exclude "day off", "PTO", "sick day"; scope the bare name to the skincare communities). Where search ignores minus terms, apply the exclusions when reading results. The report says what the name was confused with.
 
 **Precision** = hits really about the brand ÷ hits read, measured on what was read. Never estimated. Tighten a query under ~30%. Changes are versioned in the file: counts are only comparable on the same query set.
 

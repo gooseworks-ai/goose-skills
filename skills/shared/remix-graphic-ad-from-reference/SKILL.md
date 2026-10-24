@@ -220,7 +220,7 @@ Research/setup dominates the agent cost for the first ad of a new brand; variant
 
 ## Tests
 
-See `tests/`. Smoke = route + render a known reference→product pair end-to-end and confirm a non-empty
+The tests live in the goose-skills repo (in the goose-skills repo only; installed copies have no `tests/` folder). Smoke = route + render a known reference→product pair end-to-end and confirm a non-empty
 PNG at the right dimensions with correct copy. Verifier: `skills/video/verify-product-image/`.
 
 ## Skill Location & Related

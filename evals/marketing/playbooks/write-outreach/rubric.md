@@ -4,7 +4,7 @@
 
 - An LLM judge scores every criterion pass or fail with a one-line evidence quote.
 - **A run passes only if every must-pass criterion passes.**
-- Sources: `playbooks/write-outreach/SKILL.md` "Done when"; the old-vs-new lead-gen review (`marketing-agent-test/results/old-vs-new/leads-outreach-sales.md` gap 1); `atoms/write-report/ATOM.md` §3.
+- Sources: `playbooks/write-outreach/SKILL.md` "Done when"; the old-vs-new lead-gen review (goose-lab `plan/marketing-agent/reviews/2026-10-19-old-vs-new-leads-outreach-sales.md` gap 1); `atoms/write-report/ATOM.md` §3.
 
 Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M = must, S = should, E = expert (an E line containing "(must)" counts as must).
 

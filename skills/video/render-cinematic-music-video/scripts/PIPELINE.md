@@ -1,9 +1,9 @@
 # Pipeline — cinematic music-video
 
 How `config.example.json` maps to the real production steps. This molecule ships a
-**config + this map**, not a bundled runner: the worked example (Hype and Vice "Game Day
+**config + this map**, not a bundled runner: the worked example (Rally & Rogue "Game Day
 Girls") was produced by the run's own per-step scripts, which live in
-`clients/hype-and-vice/ad-runs/run-01-game-day-girls/working/`. Reference those scripts
+that run's own `working/` folder. Reference those scripts
 directly, or drive the whole run via `video-orchestrator-with-control-plane`.
 
 The five steps run **in order** because each depends on the last: the anthem sets the
@@ -105,7 +105,7 @@ glide / CGI swoop.
 4. **`burn_captions`** — call the `sync-captions-to-music` atom's `sync.py` with
    `--video clips/master-no-captions.mp4 --lyrics source/lyrics-locked.md --timestamps
    audio/words.json --placement low --chunk-size 4 --style-preset music-video --accent-words
-   <captions.accent_words>` (demo: `every,day,game,HER,Hype,Vice,girls,started,finish`) → cinematic lower-third serif captions
+   <captions.accent_words>` (demo: `every,day,game,HER,Rally,Rogue,girls,started,finish`) → cinematic lower-third serif captions
    (rendered ASS uses a serif font, New York) burned → `finals/master-final.mp4`.
 
 Captions come from the song's OWN `audio/words.json` (via `build_word_timestamps.py`), **not
@@ -123,4 +123,4 @@ run, `promote_master*.py`-style steps also register the render into `production/
 `history/versions.json` for the app.
 
 Re-cuts (new caption chunking, swapped end card, re-timed windows) reuse the existing
-keyframes/clips/anthem and cost **$0** — only steps 1–3 spend.
+keyframes/clips/anthem and spend nothing — only steps 1–3 spend.
