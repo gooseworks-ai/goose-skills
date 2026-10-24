@@ -9,6 +9,39 @@ const { successorInstallCommand, placeForCodex, placeForCursor } = require('./ta
 
 const SLUG = /^[a-z0-9][a-z0-9-]*$/;
 
+const SEMVER = /^(\d+)\.(\d+)\.(\d+)$/;
+
+// The version of an installed copy: its skill.meta.json, else its SKILL.md frontmatter.
+function installedVersion(dir) {
+  try {
+    const v = JSON.parse(fs.readFileSync(path.join(dir, 'skill.meta.json'), 'utf8')).version;
+    if (typeof v === 'string') return v;
+  } catch {
+    /* no meta, or not JSON */
+  }
+  try {
+    const fm = fs.readFileSync(path.join(dir, 'SKILL.md'), 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    const line = fm && fm[1].split(/\r?\n/).find((l) => /^version:/.test(l));
+    if (line) return line.replace(/^version:\s*/, '').trim().replace(/^['"]|['"]$/g, '');
+  } catch {
+    /* unreadable */
+  }
+  return null;
+}
+
+// True when the catalog version is newer than the installed one. No catalog
+// version: never. A catalog version but none installed: yes (an old copy).
+function isOlder(have, want) {
+  const w = typeof want === 'string' && want.match(SEMVER);
+  if (!w) return false;
+  const h = typeof have === 'string' && have.match(SEMVER);
+  if (!h) return true;
+  for (let i = 1; i <= 3; i++) {
+    if (Number(h[i]) !== Number(w[i])) return Number(h[i]) < Number(w[i]);
+  }
+  return false;
+}
+
 // Every skill the install needs, dependencies before the skills that need them.
 // The whole package resolves before anything is downloaded, so a missing
 // dependency fails the install instead of leaving it half done.
@@ -69,8 +102,12 @@ async function downloadSkillFiles(skill, installDir, { fetch, rawBase, log, erro
 /**
  * Installs a skill and every skill it requires (recursively) to
  * <home>/.claude/skills/<slug>/, then places each for Codex or Cursor.
- * Returns { installed, skipped, failed } (slugs, slugs, file count),
- * or null when the slug is not in the catalog.
+ * A dependency already on disk is kept, unless the catalog has a newer
+ * version than the one installed (or the installed copy has none): then its
+ * files are written again over the old copy. The skill asked for is always
+ * written. Returns { installed, skipped, upgraded, failed } (slugs, slugs,
+ * slugs (also in installed), file count), or null when the slug is not in
+ * the catalog.
  */
 async function installSkill(options, deps) {
   const { slug, target, projectDir } = options;
@@ -86,6 +123,7 @@ async function installSkill(options, deps) {
   const dependencies = packages.slice(0, -1);
   const installed = [];
   const skipped = [];
+  const upgraded = [];
   let failed = 0;
 
   const place = (dir) => {
@@ -98,11 +136,18 @@ async function installSkill(options, deps) {
   for (const dep of dependencies) {
     const depDir = path.join(skillsRoot, dep.slug);
     if (fs.existsSync(path.join(depDir, 'SKILL.md'))) {
-      log(`  ${dep.slug} — already installed`);
-      skipped.push(dep.slug);
-      continue;
+      const have = installedVersion(depDir);
+      const want = dep.version ?? dep.metadata?.version;
+      if (!isOlder(have, want)) {
+        log(`  ${dep.slug} — already installed${have ? ` (${have})` : ''}`);
+        skipped.push(dep.slug);
+        continue;
+      }
+      log(`  ${dep.slug} ${have || '(no version)'} → ${want}, upgrading in ${depDir}`);
+      upgraded.push(dep.slug);
+    } else {
+      log(`  ${dep.slug} → ${depDir}`);
     }
-    log(`  ${dep.slug} → ${depDir}`);
     fs.mkdirSync(depDir, { recursive: true });
     failed += await downloadSkillFiles(dep, depDir, { fetch, rawBase, log, error });
     installed.push(dep.slug);
@@ -121,6 +166,7 @@ async function installSkill(options, deps) {
   log(`\nInstalled ${files - ownFailed}/${files} files.`);
   const depNames = [...skipped, ...installed.slice(0, -1)];
   if (depNames.length) log(`Dependencies: ${depNames.join(', ')}`);
+  if (upgraded.length) log(`Upgraded to the catalog version: ${upgraded.join(', ')}`);
   // requires_tools names programs the skill runs; they are the user's to have.
   const programs = skill.metadata?.requires_tools || [];
   if (programs.length) log(`Programs it runs (install them if missing): ${programs.join(', ')}`);
@@ -141,7 +187,7 @@ async function installSkill(options, deps) {
     log(`  Claude Code loads skills from ${skillsRoot}; start a new session to use ${slug}.`);
   }
 
-  return { installed, skipped, failed };
+  return { installed, skipped, upgraded, failed };
 }
 
-module.exports = { resolvePackages, downloadSkillFiles, installSkill };
+module.exports = { resolvePackages, downloadSkillFiles, installSkill, installedVersion, isOlder };

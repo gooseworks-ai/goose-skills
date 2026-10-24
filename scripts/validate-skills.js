@@ -25,6 +25,37 @@ function isDir(p) {
   return fs.existsSync(p) && fs.statSync(p).isDirectory();
 }
 
+// Builder HTML pages: a review board or build page (build-review.html,
+// <x>-skill-build.html) is how a skill was made, not something it runs, so it
+// stays out of the public repo like critique.md. A page with a builder name
+// may stay only when a script in the skill reads it (a runtime template).
+// Other HTML (templates, scenes) is not touched. tests/ folders are not
+// published and are skipped.
+const CODE_EXT = new Set(['.py', '.js', '.mjs', '.cjs', '.ts', '.sh', '.bash']);
+const BUILDER_PAGE = /(^|[-_.])(build|builder|review|critique|audit|board|proof)([-_.]|$)/i;
+const SKIP_WALK = new Set(['tests', 'node_modules', '.git', '__pycache__', '.tmp']);
+
+function skillFiles(dir, rel = '') {
+  const out = [];
+  for (const entry of fs.readdirSync(path.join(dir, rel), { withFileTypes: true })) {
+    const child = rel ? `${rel}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      if (!SKIP_WALK.has(entry.name)) out.push(...skillFiles(dir, child));
+    } else if (entry.isFile()) out.push(child);
+  }
+  return out;
+}
+
+function builderPages(skillDir) {
+  const files = skillFiles(skillDir);
+  const pages = files.filter((f) => /\.html?$/i.test(f) && BUILDER_PAGE.test(path.posix.basename(f).replace(/\.html?$/i, '')));
+  if (!pages.length) return [];
+  const scripts = files.filter((f) => CODE_EXT.has(path.extname(f))).map((f) => fs.readFileSync(path.join(skillDir, f), 'utf8'));
+  return pages
+    .filter((page) => !scripts.some((text) => text.includes(path.posix.basename(page))))
+    .map((page) => `${page} is a builder page (a build or review board, not something the skill runs); keep it in goose-lab, not in this public repo. A template a script reads may stay`);
+}
+
 // One metadata contract for every family: schemas/skill-meta.schema.json. The
 // rules below are the ones a schema cannot say, because they depend on the
 // folder or on SKILL.md.
@@ -87,6 +118,7 @@ for (const family of FAMILIES) {
         errors.push(`${where}/${note} is a builder note; it belongs in goose-lab plan/marketing-agent/, not in this public repo`);
       }
     }
+    for (const problem of builderPages(skillDir)) errors.push(`${where}/${problem}`);
     if (!fs.existsSync(metaPath)) { errors.push(`Missing skill.meta.json for ${where}`); continue; }
     let meta;
     try {

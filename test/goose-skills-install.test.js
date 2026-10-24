@@ -172,3 +172,114 @@ test('resolvePackages rejects a package path outside its own slug folder', () =>
   const index = { skills: [{ slug: 'x', path: 'skills/shared/../x', files: [] }] };
   assert.throws(() => resolvePackages(index, 'x'), /Invalid package path/);
 });
+
+// ── upgrades ──────────────────────────────────────────────────────────────
+
+function withVersion(index, slug, version) {
+  const copy = structuredClone(index);
+  const entry = copy.skills.find((s) => s.slug === slug);
+  entry.version = version;
+  entry.metadata.version = version;
+  return copy;
+}
+
+function preinstall(home, slug, { meta, skill = 'old copy' } = {}) {
+  const dir = path.join(home, '.claude', 'skills', slug);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'SKILL.md'), skill);
+  if (meta) fs.writeFileSync(path.join(dir, 'skill.meta.json'), JSON.stringify(meta));
+  return dir;
+}
+
+test('a dependency installed at an older version is upgraded', async () => {
+  const r = run('comment-mining', {
+    index: withVersion(INDEX, 'scrapecreators', '1.2.0'),
+    before: (home) => preinstall(home, 'scrapecreators', { meta: { slug: 'scrapecreators', version: '1.1.9' } }),
+  });
+  const result = await r.promise;
+  assert.deepEqual(result.upgraded, ['scrapecreators']);
+  assert.deepEqual(result.skipped, []);
+  assert.ok(result.installed.includes('scrapecreators'));
+  assert.equal(fs.readFileSync(path.join(r.skillsRoot, 'scrapecreators', 'SKILL.md'), 'utf8'), 'content of skills/shared/scrapecreators/SKILL.md\n');
+  assert.ok(r.lines.some((l) => /scrapecreators 1\.1\.9 → 1\.2\.0, upgrading/.test(l)));
+});
+
+test('a dependency at the same or a newer version is kept; the frontmatter version counts when there is no meta', async () => {
+  const same = run('comment-mining', {
+    index: withVersion(INDEX, 'scrapecreators', '1.2.0'),
+    before: (home) => preinstall(home, 'scrapecreators', { meta: { version: '1.2.0' } }),
+  });
+  assert.deepEqual((await same.promise).skipped, ['scrapecreators']);
+
+  const newer = run('comment-mining', {
+    index: withVersion(INDEX, 'scrapecreators', '1.2.0'),
+    before: (home) => preinstall(home, 'scrapecreators', { skill: '---\nname: scrapecreators\nversion: 1.10.0\n---\n' }),
+  });
+  const result = await newer.promise;
+  assert.deepEqual(result.skipped, ['scrapecreators']);
+  assert.equal(fs.readFileSync(path.join(newer.skillsRoot, 'scrapecreators', 'SKILL.md'), 'utf8'), '---\nname: scrapecreators\nversion: 1.10.0\n---\n');
+});
+
+test('an installed copy with no version is upgraded when the catalog has one', async () => {
+  const r = run('comment-mining', {
+    index: withVersion(INDEX, 'scrapecreators', '1.0.0'),
+    before: (home) => preinstall(home, 'scrapecreators'),
+  });
+  assert.deepEqual((await r.promise).upgraded, ['scrapecreators']);
+});
+
+// ── info ──────────────────────────────────────────────────────────────────
+
+const { describeSkill } = require('../bin/lib/info');
+
+test('info shows the skills a skill requires and the programs it runs', () => {
+  const index = withVersion(INDEX, 'write-script', '2.1.0');
+  const { ok, lines } = describeSkill(index, 'write-script', { repo: 'gooseworks-ai/goose-skills', branch: 'main' });
+  assert.equal(ok, true);
+  const text = lines.join('\n');
+  assert.match(text, /Version: 2\.1\.0/);
+  assert.match(text, /Requires skills: angle-miner, watch \(installed with it\)/);
+  assert.match(text, /GitHub: https:\/\/github\.com\/gooseworks-ai\/goose-skills\/tree\/main\/skills\/video\/write-script/);
+  assert.match(describeSkill(INDEX, 'watch').lines.join('\n'), /Requires skills: none/);
+  assert.match(describeSkill(INDEX, 'render-chat').lines.join('\n'), /Programs it runs: python3, ffmpeg/);
+});
+
+test('info explains a retired slug: its replacement, or why it went', () => {
+  const renamed = describeSkill(INDEX, 'old-script');
+  assert.equal(renamed.ok, true);
+  assert.deepEqual(renamed.lines, [
+    'old-script was retired. Use write-script instead.',
+    'Why: Renamed.',
+    'Install: npx goose-skills install write-script',
+  ]);
+  const removed = describeSkill(INDEX, 'video-ad-formats');
+  assert.deepEqual(removed.lines, [
+    'video-ad-formats was removed from the catalog, with no replacement.',
+    'Why: Install the skills one by one.',
+  ]);
+});
+
+test('info on an unknown slug is not ok', () => {
+  const res = describeSkill(INDEX, 'nope');
+  assert.equal(res.ok, false);
+  assert.match(res.lines[0], /Skill "nope" not found/);
+});
+
+test('the CLI prints info from the index it fetches (stubbed network)', () => {
+  const { spawnSync } = require('node:child_process');
+  const indexFile = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'goose-skills-info-')), 'skills-index.json');
+  fs.writeFileSync(indexFile, JSON.stringify(INDEX));
+  const cli = (slug) => spawnSync(process.execPath, ['-r', path.join(__dirname, 'fixtures', 'cli', 'stub-https.js'), path.join(__dirname, '..', 'bin', 'goose-skills.js'), 'info', slug], {
+    env: { ...process.env, GOOSE_SKILLS_STUB_INDEX: indexFile },
+    encoding: 'utf8',
+  });
+  const info = cli('angle-miner');
+  assert.equal(info.status, 0, info.stderr);
+  assert.match(info.stdout, /Requires skills: comment-mining, competitor-intel \(installed with it\)/);
+  const retired = cli('old-script');
+  assert.equal(retired.status, 0, retired.stderr);
+  assert.match(retired.stdout, /old-script was retired\. Use write-script instead\./);
+  const unknown = cli('nope');
+  assert.equal(unknown.status, 1);
+  assert.match(unknown.stderr, /Skill "nope" not found/);
+});

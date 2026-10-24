@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "legacy_revision": "caa9dbf17fa844adce5bba77acff9ca5d15b86ef",
-  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved 2026-10-23. The old skills stay readable at tag legacy-gtm-final. Shared skills (skills/shared/) are the skills used across families: current_shared lists the current ones, retained the older ones still needed, each with its users (used_by) and when it can go (remove_when). Approved 2026-10-24.",
+  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved 2026-10-23. The old skills stay readable at tag legacy-gtm-final. Shared skills (skills/shared/) are the skills used across families: current_shared lists the current ones, retained the older ones still needed, each with its users (used_by) and when it can go (remove_when). Approved 2026-10-24. Superseded video atoms (status: superseded; the video kit's parts now do their job) are listed in superseded, each with the parts that replace it, who still uses it and when it can go. Listed 2026-10-24.",
   "retired": [
     {
       "slug": "battlecard-generator",
@@ -1094,7 +1094,7 @@
     },
     {
       "slug": "brand-research",
-      "reason": "remix-graphic-ad-from-reference requires it; gooseworks-app's deep brand research runs it in the sandbox.",
+      "reason": "remix-graphic-ad-from-reference requires it; gooseworks-app's deep brand research runs it in the sandbox, and the ad-remix chat reads the brand-research/ folder it writes.",
       "used_by": [
         {
           "skill": "remix-graphic-ad-from-reference"
@@ -1102,6 +1102,10 @@
         {
           "repo": "gooseworks-app",
           "file": "apps/api/src/services/ad-brand-research.service.ts"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/ads-remix-chat.service.ts"
         }
       ],
       "remove_when": "both stop using it"
@@ -1182,7 +1186,7 @@
     },
     {
       "slug": "launch-meta-ad-campaign",
-      "reason": "meta-ad-manager and ads-north-star-strategy require it; gooseworks-app's skill-matcher routes to it.",
+      "reason": "meta-ad-manager and ads-north-star-strategy require it; gooseworks-app's skill-matcher routes to it, and the Ads coworker's prompt falls back to it when meta-ad-manager is not installed.",
       "used_by": [
         {
           "skill": "meta-ad-manager"
@@ -1193,6 +1197,10 @@
         {
           "repo": "gooseworks-app",
           "file": "apps/api/src/services/skill-matcher.service.ts"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/ads-coworker-chat.service.ts"
         }
       ],
       "remove_when": "the Ads coworker moves to run-paid-campaigns"
@@ -1327,6 +1335,375 @@
         }
       ],
       "remove_when": "competitor-ad-intelligence stops requiring it"
+    }
+  ],
+  "superseded": [
+    {
+      "slug": "caption-burn",
+      "replaced_by": [
+        "captions-layer@1.1.0"
+      ],
+      "reason": "Recipes still name it, and the app's video tools tell an agent making a video on the customer's computer to fetch it.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "recipes": [
+            "create-ai-testimonial-montage-video-from-refs",
+            "create-creator-hook-screen-walkthrough-video-from-refs",
+            "create-creator-screen-insert-video-from-refs",
+            "create-day-in-the-life-variant-swap-video-from-refs",
+            "create-real-customer-testimonial-cut-video-from-refs",
+            "create-split-screen-creator-demo-video-from-refs",
+            "create-trust-checklist-spokesperson-video-from-refs"
+          ]
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/app-mcp-server/mcp-tools/video/video-tools.ts"
+        }
+      ],
+      "remove_when": "no recipe names it and the app's local-video instructions point at the captions-layer part"
+    },
+    {
+      "slug": "create-apple-notes-mockup",
+      "replaced_by": [
+        "phone-chat@1.2.0"
+      ],
+      "reason": "The app's Apple Notes format inlines its note.css and says to edit it here first; a goose-studio molecule drives it.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/formats/apple_notes/lib/note-css.ts"
+        },
+        {
+          "repo": "goose-studio",
+          "file": "skills/molecules/create-apple-notes-video-ad/SKILL.md"
+        }
+      ],
+      "remove_when": "the app's Apple Notes format renders with the phone-chat part, and the goose-studio molecule is retired"
+    },
+    {
+      "slug": "create-chatgpt-mockup",
+      "replaced_by": [
+        "phone-chat@1.2.0"
+      ],
+      "reason": "Only a goose-studio molecule still drives it; no recipe, app code or skill here uses it.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "file": "skills/molecules/create-chatgpt-video-ad/SKILL.md"
+        }
+      ],
+      "remove_when": "the goose-studio create-chatgpt-video-ad molecule is retired (retire this with replacement null: the phone-chat part draws the ChatGPT screen)"
+    },
+    {
+      "slug": "create-creator-takes-h3",
+      "replaced_by": [
+        "creator-h3@1.8.0"
+      ],
+      "reason": "Recipes name it, and the app's custom-video steps tell the agent to make stills with its make_character.py.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "recipes": [
+            "create-ai-testimonial-montage-video-from-refs",
+            "create-creator-hook-screen-walkthrough-video-from-refs",
+            "create-creator-screen-insert-video-from-refs",
+            "create-split-screen-creator-demo-video-from-refs",
+            "create-trust-checklist-spokesperson-video-from-refs"
+          ]
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/video-actions/custom-video-actions.ts"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/custom-video-clip-check.service.ts"
+        }
+      ],
+      "remove_when": "no recipe names it and the app's custom-video steps use the creator-h3 part"
+    },
+    {
+      "slug": "create-imessage-mockup",
+      "replaced_by": [
+        "phone-chat@1.2.0"
+      ],
+      "reason": "The web app's text mockups port its generate.js to render the same HTML; a goose-studio molecule drives it.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/web/src/lib/text-mockups/chat/imessageRenderer.ts"
+        },
+        {
+          "repo": "goose-studio",
+          "file": "skills/molecules/create-imessage-video-ad/SKILL.md"
+        }
+      ],
+      "remove_when": "the web app's chat mockups follow the phone-chat part, and the goose-studio molecule is retired"
+    },
+    {
+      "slug": "create-music-elevenlabs",
+      "replaced_by": [
+        "music-elevenlabs@1.0.2"
+      ],
+      "reason": "Most recipes name it for their music, and the app's server video lists it as an atom.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "recipes": [
+            "create-3d-character-explainer-video-from-refs",
+            "create-3d-product-showcase-video-from-refs",
+            "create-absurdist-explainer-video-from-refs",
+            "create-ai-testimonial-montage-video-from-refs",
+            "create-balance-scale-benefits-video-from-refs",
+            "create-brand-identity-reveal-video-from-refs",
+            "create-cartoon-music-video-from-refs",
+            "create-cgi-app-sizzle-video-from-refs",
+            "create-cinematic-music-video-from-refs",
+            "create-creator-hook-screen-walkthrough-video-from-refs",
+            "create-day-in-the-life-variant-swap-video-from-refs",
+            "create-flat-vector-explainer-video-from-refs",
+            "create-food-product-sizzle-video-from-refs",
+            "create-glassy-matte-grwm-video-from-refs",
+            "create-hand-swipe-flavor-listicle-video-from-refs",
+            "create-ig-live-gallery-video-from-refs",
+            "create-mascot-genre-film-video-from-refs",
+            "create-model-comparison-grid-video-from-refs",
+            "create-mosaic-grid-reveal-video-from-refs",
+            "create-motion-graphics-offer-ad-video-from-refs",
+            "create-multiworld-product-tour-video-from-refs",
+            "create-myth-vs-fact-video-from-refs",
+            "create-narrated-ugc-wardrobe-stitch-video-from-refs",
+            "create-notebook-math-listicle-video-from-refs",
+            "create-overlay-proof-points-video-from-refs",
+            "create-product-hypermotion-video-from-refs",
+            "create-real-customer-testimonial-cut-video-from-refs",
+            "create-reference-ad-product-swap-video-from-refs",
+            "create-song-driven-music-video-from-refs",
+            "create-stopmotion-flatlay-product-video-from-refs",
+            "create-stopmotion-hand-swatch-cycle-video-from-refs",
+            "create-trust-checklist-spokesperson-video-from-refs",
+            "create-typing-text-listicle-video-from-refs",
+            "create-ugc-aspirational-serif-hook-video-from-refs",
+            "create-ugc-car-confessional-video-from-refs",
+            "create-ugc-grwm-video-from-refs",
+            "create-ugc-mirror-selfie-hook-video-from-refs",
+            "create-ugc-product-video-from-refs",
+            "create-ugc-skincare-demo-video-from-refs",
+            "create-ugc-street-testimonial-video-from-refs",
+            "create-ugc-walk-and-talk-video-from-refs",
+            "create-value-prop-video-from-refs",
+            "create-vignette-video-from-refs",
+            "create-vo-anchored-motion-listicle-video-from-refs",
+            "create-voiceless-ugc-dance-story-video-from-refs",
+            "create-watch-these-listicle-video-from-refs"
+          ]
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/server-video/atoms.ts"
+        }
+      ],
+      "remove_when": "no recipe names it and server video uses the music-elevenlabs part"
+    },
+    {
+      "slug": "create-video-seedance-2-fal",
+      "replaced_by": [
+        "video-seedance-2@1.3.0"
+      ],
+      "reason": "render-street-interview requires it, and recipes name it.",
+      "used_by": [
+        {
+          "skill": "render-street-interview"
+        },
+        {
+          "repo": "goose-studio",
+          "recipes": [
+            "create-ai-testimonial-montage-video-from-refs",
+            "create-creator-pip-listicle-video-from-refs",
+            "create-hook-variant-pack",
+            "create-jargon-analogy-qa-video-from-refs",
+            "create-ugc-client-win-story-video-from-refs",
+            "create-ugc-receipts-breakdown-video-from-refs",
+            "create-ugc-stacked-rules-listicle-video-from-refs"
+          ]
+        }
+      ],
+      "remove_when": "render-street-interview and the recipes use the video-seedance-2 part"
+    },
+    {
+      "slug": "create-vo-elevenlabs",
+      "replaced_by": [
+        "voice-elevenlabs@1.3.0"
+      ],
+      "reason": "render-podcast-skit and render-whiteboard-explainer require it, recipes name it, and the app's server video lists it as an atom.",
+      "used_by": [
+        {
+          "skill": "render-podcast-skit"
+        },
+        {
+          "skill": "render-whiteboard-explainer"
+        },
+        {
+          "repo": "goose-studio",
+          "recipes": [
+            "create-3d-character-explainer-video-from-refs",
+            "create-absurdist-explainer-video-from-refs",
+            "create-cgi-app-sizzle-video-from-refs",
+            "create-cosmic-mythology-voiceover-video-from-refs",
+            "create-day-in-the-life-variant-swap-video-from-refs",
+            "create-editorial-motion-podcast-video-from-refs",
+            "create-flat-vector-explainer-video-from-refs",
+            "create-hook-variant-pack",
+            "create-jargon-analogy-qa-video-from-refs",
+            "create-mascot-genre-film-video-from-refs",
+            "create-myth-vs-fact-video-from-refs",
+            "create-narrated-ugc-wardrobe-stitch-video-from-refs",
+            "create-podcast-skit-video-from-refs",
+            "create-product-hypermotion-video-from-refs",
+            "create-split-screen-creator-video-from-refs",
+            "create-vignette-video-from-refs",
+            "create-vo-anchored-motion-listicle-video-from-refs",
+            "create-voiceover-broll-video-from-refs",
+            "create-whiteboard-explainer-video"
+          ]
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/server-video/atoms.ts"
+        }
+      ],
+      "remove_when": "those renderers, the recipes and server video use the voice-elevenlabs part"
+    },
+    {
+      "slug": "mix-master",
+      "replaced_by": [
+        "audio-mix@1.0.1",
+        "sound-layer@1.0.4"
+      ],
+      "reason": "One recipe still names it.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "recipes": [
+            "create-ai-testimonial-montage-video-from-refs"
+          ]
+        }
+      ],
+      "remove_when": "that recipe uses the audio-mix and sound-layer parts"
+    },
+    {
+      "slug": "render-apple-notes-chat",
+      "replaced_by": [
+        "phone-chat@1.2.0"
+      ],
+      "reason": "Nothing uses it: the goose-studio apple-notes style and the app only note that they were ported from it.",
+      "used_by": [],
+      "remove_when": "now: retire it with replacement null (the phone-chat part draws the Notes screen)"
+    },
+    {
+      "slug": "render-chatgpt-chat",
+      "replaced_by": [
+        "phone-chat@1.2.0"
+      ],
+      "reason": "The app's ChatGPT format inlines its chat.css and says to edit it here first.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/formats/chatgpt_chat/lib/chat-css.ts"
+        }
+      ],
+      "remove_when": "the app's ChatGPT format renders with the phone-chat part"
+    },
+    {
+      "slug": "render-imessage-cascade",
+      "replaced_by": [
+        "phone-chat@1.2.0"
+      ],
+      "reason": "Nothing uses it: the app's seed recipe only notes that it was ported from it.",
+      "used_by": [],
+      "remove_when": "now: retire it with replacement null (the phone-chat part draws the notification cascade)"
+    },
+    {
+      "slug": "render-imessage-chat",
+      "replaced_by": [
+        "phone-chat@1.2.0"
+      ],
+      "reason": "The app's iMessage format is a port of its mockup and inlines its chat.css (edit here first), and the marketing site lists it.",
+      "used_by": [
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/formats/imessage_chat/lib/mockup.ts"
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/landing/src/components/site/data/skills.ts"
+        }
+      ],
+      "remove_when": "the app's iMessage format renders with the phone-chat part and the site stops listing it"
+    },
+    {
+      "slug": "render-ios-keyboard",
+      "replaced_by": [
+        "phone-chat@1.2.0"
+      ],
+      "reason": "Only a goose-studio molecule still slots it into its page; no recipe, app code or skill here uses it.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "file": "skills/molecules/create-chatgpt-video-ad/SKILL.md"
+        }
+      ],
+      "remove_when": "the goose-studio create-chatgpt-video-ad molecule is retired (retire this with replacement null)"
+    },
+    {
+      "slug": "review-finished-ad",
+      "replaced_by": [
+        "check-layer@1.2.0"
+      ],
+      "reason": "render-hook-replacement requires it, and recipes name it.",
+      "used_by": [
+        {
+          "skill": "render-hook-replacement"
+        },
+        {
+          "repo": "goose-studio",
+          "recipes": [
+            "create-3d-character-explainer-video-from-refs",
+            "create-ai-testimonial-montage-video-from-refs",
+            "create-day-in-the-life-variant-swap-video-from-refs",
+            "create-hook-variant-pack",
+            "create-kinetic-text-video-from-refs",
+            "create-real-customer-testimonial-cut-video-from-refs",
+            "create-reference-ad-product-swap-video-from-refs",
+            "create-trust-checklist-spokesperson-video-from-refs",
+            "create-ugc-product-video-from-refs"
+          ]
+        }
+      ],
+      "remove_when": "render-hook-replacement and the recipes use the check-layer part"
+    },
+    {
+      "slug": "review-ugc-render",
+      "replaced_by": [
+        "check-layer@1.2.0"
+      ],
+      "reason": "Recipes name it, and the app vendors its speech review.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "recipes": [
+            "create-myth-vs-fact-video-from-refs",
+            "create-vo-anchored-motion-listicle-video-from-refs"
+          ]
+        },
+        {
+          "repo": "gooseworks-app",
+          "file": "apps/api/src/services/video-line/speech-review.vendored.ts"
+        }
+      ],
+      "remove_when": "no recipe names it and the app's speech review follows the check-layer part"
     }
   ],
   "current_shared": [

@@ -148,3 +148,25 @@ test('FAILS when a skill folder carries a builder note (critique.md or server-ne
   writeIndex(root, [{ slug: 'watch', category: 'capabilities', path: 'skills/video/watch' }]);
   assert.throws(() => runValidate(root), /critique\.md is a builder note/);
 }));
+
+test('FAILS on a builder HTML page; a template a script reads, and other HTML, may stay', () => withRoot((root) => {
+  writeSkill(root, 'video', 'chat-mockup', { name: 'chat-mockup', description: 'Draw a chat.' }, baseMeta('chat-mockup'));
+  const dir = path.join(root, 'skills', 'video', 'chat-mockup');
+  fs.mkdirSync(path.join(dir, 'scripts'), { recursive: true });
+  fs.mkdirSync(path.join(dir, 'tests'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'build-review.html'), '<html>review board</html>');
+  fs.writeFileSync(path.join(dir, 'chat-skill-build.html'), '<html>build page</html>');
+  fs.writeFileSync(path.join(dir, 'scripts', 'review-card.html'), '<html>{{text}}</html>');
+  fs.writeFileSync(path.join(dir, 'scripts', 'render.js'), "fs.readFileSync(path.join(__dirname, 'review-card.html'))\n");
+  fs.writeFileSync(path.join(dir, 'scripts', 'scene.html'), '<html>scene</html>');
+  fs.writeFileSync(path.join(dir, 'tests', 'proof-board.html'), '<html>tests are not published</html>');
+  writeIndex(root, [{ slug: 'chat-mockup', category: 'capabilities', path: 'skills/video/chat-mockup' }]);
+  let message = '';
+  try {
+    runValidate(root);
+  } catch (err) {
+    message = `${err.stdout}${err.stderr}`;
+  }
+  const pages = [...message.matchAll(/chat-mockup\/(\S+) is a builder page/g)].map((m) => m[1]).sort();
+  assert.deepEqual(pages, ['build-review.html', 'chat-skill-build.html']);
+}));

@@ -1,5 +1,5 @@
 {
-  "_comment": "Settings for scripts/atom-lint.js and scripts/check-atom-versions.js. not_video: skills under skills/video that are not video atoms, so neither check reads them. shared_atoms: the shared atoms that recipes and styles reuse (reported on their own line). strict_atoms: atoms with no findings left; any finding in them fails, so they stay clean. limits are bytes.",
+  "_comment": "Settings for scripts/atom-lint.js and scripts/check-atom-versions.js. not_video: skills under skills/video that are not video atoms, so neither check reads them. shared_atoms: the shared atoms that recipes and styles reuse (reported on their own line). limits are bytes.",
   "not_video": [],
   "shared_atoms": [
     "caption-burn",
@@ -24,17 +24,6 @@
     "verify-product-image",
     "watch",
     "write-video-ad-script"
-  ],
-  "strict_atoms": [
-    "compose-creator-layer",
-    "create-kinetic-typography",
-    "footage-cutlist",
-    "media-proxy",
-    "render-hook-replacement",
-    "stitch-videos-ffmpeg",
-    "ugc-fixloop",
-    "verify-product-image",
-    "watch"
   ],
   "limits": {
     "skill_md_bytes": 16384,
