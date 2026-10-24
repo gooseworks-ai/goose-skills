@@ -2,16 +2,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const { validate: validateSchema } = require('./lib/json-schema');
 
 // ROOT defaults to the repo root, but tests can override via env var
 // (matches the same convention used by build-index.js).
 const ROOT = process.env.GOOSE_SKILLS_ROOT
   ? path.resolve(process.env.GOOSE_SKILLS_ROOT)
   : path.resolve(__dirname, '..');
-// Abstraction levels; skill.meta.json `category` must be one of these.
-const LEVELS = ['capabilities', 'composites', 'playbooks'];
 const SCHEMA_PATH = path.join(ROOT, 'schemas', 'skill-meta.schema.json');
-const SKIP_DIRS = new Set(['.tmp', '__pycache__', 'node_modules', '.git']);
 
 function fail(messages) {
   console.error('Skill validation failed:');
@@ -27,24 +25,24 @@ function isDir(p) {
   return fs.existsSync(p) && fs.statSync(p).isDirectory();
 }
 
+// One metadata contract for every family: schemas/skill-meta.schema.json. The
+// rules below are the ones a schema cannot say, because they depend on the
+// folder or on SKILL.md.
 const schema = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
-const allowedTags = new Set(schema.properties.tags.items.enum);
-// The set of valid domain folders comes from the schema's `domain` enum.
-const allowedDomains = new Set(
-  (schema.properties.domain && schema.properties.domain.enum) || [],
-);
 
 const errors = [];
 const slugs = new Set();
 
-const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
-// Skill families: skills/<family>/<slug>/ (see build-index.js). Marketing skills
-// carry a tier and stricter frontmatter rules.
+// Skill families: skills/<family>/<slug>/ (see build-index.js). Every folder in
+// a family is published; work that is not ready to publish lives in drafts/.
 const FAMILIES = ['marketing', 'video', 'shared', 'entry'];
+// The domain a family's skills get when their meta names none. Shared skills must name one.
 const FAMILY_DOMAIN = { marketing: 'marketing-agent', video: 'ads', shared: null, entry: 'gooseworks' };
-// Families with their own domain value, outside the schema's enum.
-const OWN_DOMAIN = new Set(['marketing', 'entry']);
+// Domains that belong to one family only.
+const OWN_DOMAIN = { 'marketing-agent': 'marketing', gooseworks: 'entry' };
 const MA_TIERS = new Set(['playbook', 'atom', 'foundation']);
+// Entry skills come with the GooseWorks CLI; every other skill installs alone, by slug.
+const ENTRY_INSTALL = 'npx gooseworks@latest install --mcp';
 const DESCRIPTION_LIMIT = 1024;
 
 function blockFrontmatter(text) {
@@ -94,59 +92,60 @@ for (const family of FAMILIES) {
     }
     const fm = blockFrontmatter(fs.readFileSync(skillMd, 'utf8'));
     if (!fm) { errors.push(`${where}/SKILL.md has no frontmatter`); continue; }
+    // A generated package (release.json, published from goose-studio) is checked
+    // byte for byte against its provenance, so its SKILL.md and meta are fixed in
+    // the generator, not here; the version and frontmatter rules wait for that.
+    const generated = fs.existsSync(path.join(skillDir, 'release.json'));
 
     if (!isValidSlug(slug)) errors.push(`Directory slug has invalid format: ${where}`);
     if (meta.slug !== slug) errors.push(`Slug mismatch in ${where}: meta.slug=${meta.slug}`);
     if (slugs.has(slug)) errors.push(`Duplicate slug: ${slug}`);
     slugs.add(slug);
 
-    if (family === 'marketing') {
-      if (fm.name !== slug) errors.push(`Frontmatter name must be the slug in ${where}: name=${fm.name}`);
-      if (!MA_TIERS.has(meta.tier)) errors.push(`tier must be one of ${[...MA_TIERS].join(', ')} in ${where}`);
-      if (meta.catalog === false) continue; // kept for evals, never published
-      if (!SEMVER.test(String(meta.version))) {
-        errors.push(`version must be a semver string (x.y.z) in ${where}: ${JSON.stringify(meta.version)}`);
-      } else if (fm.version !== meta.version) {
-        errors.push(`version in SKILL.md (${fm.version}) and skill.meta.json (${meta.version}) differ in ${where}`);
-      }
-      if (!Array.isArray(meta.tags) || meta.tags.length === 0) errors.push(`tags must be a non-empty array in ${where}`);
-      if (!Array.isArray(meta.requires_skills)) errors.push(`requires_skills must be an array in ${where}`);
-    } else if (family === 'entry') {
-      // Entry skills are installed by `gooseworks install` and compared by version.
-      if (fm.name !== slug) errors.push(`Frontmatter name must be the slug in ${where}: name=${fm.name}`);
-      if (!SEMVER.test(String(meta.version)) || fm.version !== meta.version) {
-        errors.push(`version in SKILL.md (${fm.version}) and skill.meta.json (${meta.version}) must be the same semver in ${where}`);
-      }
-    } else if (meta.version !== undefined && !SEMVER.test(String(meta.version))) {
-      errors.push(`version must be a semver string (x.y.z) in ${where}: ${JSON.stringify(meta.version)}`);
+    // The shared contract.
+    for (const problem of validateSchema(schema, meta)) {
+      if (generated && problem === '$: version is required') continue;
+      const at = problem.replace(/^\$\.?/, '');
+      errors.push(`${where}/skill.meta.json${at.startsWith(':') ? '' : ' '}${at}`);
     }
-    if (meta.catalog === false) continue;
 
-    if (!LEVELS.includes(meta.category)) {
-      errors.push(`category must be one of ${LEVELS.join(', ')} in ${where}: ${meta.category}`);
+    // SKILL.md frontmatter repeats some fields; a copy must agree with the meta.
+    if (fm.name !== slug) errors.push(`Frontmatter name must be the slug in ${where}: name=${fm.name}`);
+    if (!generated && fm.version !== undefined && fm.version !== meta.version) {
+      errors.push(`version in SKILL.md (${fm.version}) and skill.meta.json (${meta.version}) differ in ${where}`);
     }
-    const domain = meta.domain || FAMILY_DOMAIN[family];
-    if (!domain) errors.push(`domain required in ${where}/skill.meta.json`);
-    else if (!OWN_DOMAIN.has(family) && allowedDomains.size && !allowedDomains.has(domain)) {
-      errors.push(`Unknown domain "${domain}" in ${where}: allowed ${[...allowedDomains].sort().join(', ')}`);
+    if (!generated && fm.category !== undefined && fm.category !== meta.category) {
+      errors.push(`category in SKILL.md (${fm.category}) and skill.meta.json (${meta.category}) differ in ${where}: delete the SKILL.md line`);
     }
     if (!fm.description) errors.push(`description required in ${where}/SKILL.md`);
     else if (fm.description.length > DESCRIPTION_LIMIT) {
       errors.push(`description over ${DESCRIPTION_LIMIT} characters (${fm.description.length}) in ${where}`);
     }
-    if (!Array.isArray(meta.tags)) {
-      errors.push(`tags must be an array in ${where}`);
-    } else {
-      const invalidTags = meta.tags.filter((t) => !allowedTags.has(t));
-      if (invalidTags.length) {
-        errors.push(`invalid tag(s) in ${where}: ${invalidTags.join(', ')}. Allowed: ${[...allowedTags].sort().join(', ')}`);
-      }
+
+    // Family rules.
+    const domain = meta.domain || FAMILY_DOMAIN[family];
+    if (!domain) errors.push(`domain required in ${where}/skill.meta.json`);
+    else if (OWN_DOMAIN[domain] && OWN_DOMAIN[domain] !== family) {
+      errors.push(`domain "${domain}" is only for skills/${OWN_DOMAIN[domain]}/ (${where})`);
+    } else if (FAMILY_DOMAIN[family] && OWN_DOMAIN[FAMILY_DOMAIN[family]] && domain !== FAMILY_DOMAIN[family]) {
+      errors.push(`skills/${family}/ skills have domain "${FAMILY_DOMAIN[family]}" (${where}: ${domain})`);
     }
-    if (!meta.installation || typeof meta.installation.base_command !== 'string' || !meta.installation.base_command.trim()) {
-      errors.push(`installation.base_command required in ${where}`);
+    const install = meta.installation && meta.installation.base_command;
+    const expectedInstall = family === 'entry' ? ENTRY_INSTALL : `npx goose-skills install ${slug}`;
+    if (typeof install === 'string' && install !== expectedInstall) {
+      errors.push(`installation.base_command must be "${expectedInstall}" in ${where}: ${JSON.stringify(install)}`);
     }
-    if (!meta.installation || !Array.isArray(meta.installation.supports) || meta.installation.supports.length === 0) {
-      errors.push(`installation.supports required in ${where}`);
+    if (family === 'marketing') {
+      if (!MA_TIERS.has(meta.tier)) errors.push(`tier must be one of ${[...MA_TIERS].join(', ')} in ${where}`);
+      if (fm.version === undefined) errors.push(`version required in ${where}/SKILL.md frontmatter (same as skill.meta.json)`);
+      if (!Array.isArray(meta.tags) || meta.tags.length === 0) errors.push(`tags must be a non-empty array in ${where}`);
+      if (!Array.isArray(meta.requires_skills)) errors.push(`requires_skills must be an array in ${where}`);
+    } else if (family === 'entry') {
+      // Entry skills are installed by `gooseworks install` and compared by version.
+      if (meta.tier !== 'entry') errors.push(`tier must be "entry" in ${where}`);
+      if (fm.version === undefined) errors.push(`version required in ${where}/SKILL.md frontmatter (same as skill.meta.json)`);
+    } else if (meta.tier !== undefined) {
+      errors.push(`tier is only for marketing and entry skills (${where})`);
     }
     published.push({ slug, where, meta });
   }
@@ -157,9 +156,9 @@ for (const { where, meta } of published) {
   }
 }
 
-// Folder ⊆ index check: every published skill folder must be a TOP-LEVEL entry in
+// Folder ⊆ index check: every skill folder must be a top-level entry in
 // skills[]. Downstream consumers (the backend sync and the Payload CMS push)
-// iterate idx.skills[] only, so a skill seen only inside packs[] is invisible.
+// iterate idx.skills[] only.
 const indexPath = path.join(ROOT, 'skills-index.json');
 if (fs.existsSync(indexPath)) {
   let index;

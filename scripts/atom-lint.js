@@ -36,7 +36,7 @@ const fs = require('fs');
 const path = require('path');
 const lib = require('./lib/atoms');
 const yaml = require('js-yaml');
-const ACTION_NAMES = require('./atom-lint/action-names.json');
+const ACTION_NAMES = require('./lib/action-names.json');
 
 const { ROOT, CONFIG } = lib;
 
@@ -54,7 +54,7 @@ function wordList(names) {
   return new RegExp(`\\b(?:${names.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'g');
 }
 
-const LIVE_ACTIONS = new Set(ACTION_NAMES.live);
+const LIVE_ACTIONS = new Set([...ACTION_NAMES.actions, ...ACTION_NAMES.outside_contract]);
 
 /**
  * Text rules. `scope` says which file kinds a rule reads: prose (markdown),

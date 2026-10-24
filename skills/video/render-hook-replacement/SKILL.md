@@ -7,7 +7,6 @@ version: "1.0.1"
 created: 2026-10-05
 updated: 2026-10-05
 level: atom
-category: editing
 variant-of: null
 tags: [video, editing, hooks]
 ---

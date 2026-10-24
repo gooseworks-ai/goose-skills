@@ -7,8 +7,7 @@ const { execFileSync } = require('node:child_process');
 
 const BUILD_INDEX = path.resolve(__dirname, '..', 'build-index.js');
 
-// Layout: skills/<family>/<slug>/ with family ∈ marketing | video | shared, and
-// packs/<pack>.json listing member slugs.
+// Layout: skills/<family>/<slug>/ with family ∈ marketing | video | shared | entry.
 function makeFixtureRoot() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'gs-build-index-'));
 }
@@ -27,10 +26,11 @@ function writeSkill(root, family, slug, frontmatter, meta, extra = {}) {
   }
 }
 
-function writePack(root, packSlug, packMeta) {
-  fs.mkdirSync(path.join(root, 'packs'), { recursive: true });
-  fs.writeFileSync(path.join(root, 'packs', `${packSlug}.json`), JSON.stringify(packMeta, null, 2));
+// Every skills/shared/ skill must be declared in retired-skills.json (retained or current_shared).
+function writeRetirements(root, manifest) {
+  fs.writeFileSync(path.join(root, 'retired-skills.json'), JSON.stringify({ retired: [], retained: [], current_shared: [], ...manifest }, null, 2));
 }
+const current = (...slugs) => ({ current_shared: slugs.map((slug) => ({ slug, reason: 'Used across families.' })) });
 
 function writeCollection(root, collectionSlug, collectionMeta) {
   const dir = path.join(root, 'collections', collectionSlug);
@@ -65,6 +65,7 @@ test('category and domain come from skill.meta.json or the family, never the fol
   const root = makeFixtureRoot();
   writeSkill(root, 'video', 'render-offer-ad', { name: 'render-offer-ad', description: 'Render.' }, baseMeta('render-offer-ad', 'capabilities'));
   writeSkill(root, 'shared', 'brand-research', { name: 'brand-research', description: 'Research.' }, baseMeta('brand-research', 'composites', { domain: 'ads' }));
+  writeRetirements(root, current('brand-research'));
   runBuild(root);
   const idx = readIndex(root);
   const render = idx.skills.find((s) => s.slug === 'render-offer-ad');
@@ -93,40 +94,57 @@ test('the same slug in two families fails the build', () => {
   fs.rmSync(root, { recursive: true, force: true });
 });
 
-test('pack members are top-level capabilities that install through their pack', () => {
+test('every skill installs by its own slug: no packs', () => {
   const root = makeFixtureRoot();
-  writeSkill(root, 'video', 'mix-master', { name: 'mix-master', description: 'Mix.' }, baseMeta('mix-master', 'packs/video-ad-formats', { version: '1.2.0' }));
+  writeSkill(root, 'video', 'mix-master', { name: 'mix-master', description: 'Mix.' }, baseMeta('mix-master', 'capabilities', { version: '1.2.0', requires_skills: ['caption-burn'] }));
   writeSkill(root, 'video', 'caption-burn', { name: 'caption-burn', description: 'Burn.' }, baseMeta('caption-burn', 'capabilities'));
-  writePack(root, 'video-ad-formats', { slug: 'video-ad-formats', name: 'Video Ad Formats', domain: 'ads', tags: ['ads'], skills: ['mix-master'] });
   runBuild(root);
   const idx = readIndex(root);
-
   assert.deepEqual(idx.skills.map((s) => s.slug), ['caption-burn', 'mix-master']);
   const member = idx.skills.find((s) => s.slug === 'mix-master');
-  assert.equal(member.category, 'capabilities', 'pack members publish as capabilities (the backend retires other categories)');
   assert.equal(member.version, '1.2.0');
-  assert.equal(member.metadata.pack, 'video-ad-formats');
-  assert.equal(member.metadata.installation.base_command, 'npx goose-skills install video-ad-formats');
-
-  const pack = idx.packs.find((p) => p.slug === 'video-ad-formats');
-  assert.equal(pack.path, 'packs/video-ad-formats.json');
-  assert.deepEqual(pack.skills.map((s) => [s.slug, s.path, s.source]), [['mix-master', 'skills/video/mix-master', 'pack']]);
+  assert.equal(member.metadata.installation.base_command, 'npx goose-skills install mix-master');
+  assert.deepEqual(member.metadata.requires_skills, ['caption-burn'], 'the meta is published as written');
+  assert.deepEqual(idx.packs, [], 'the key stays, empty, for older CLIs');
   fs.rmSync(root, { recursive: true, force: true });
 });
 
-test('a skill in two packs fails the build', () => {
+test('a leftover packs/ folder is ignored', () => {
   const root = makeFixtureRoot();
   writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch', 'capabilities'));
-  writePack(root, 'pack-a', { slug: 'pack-a', domain: 'ads', skills: ['watch'] });
-  writePack(root, 'pack-b', { slug: 'pack-b', domain: 'ads', skills: ['watch'] });
-  assert.throws(() => runBuild(root), /one pack per skill/);
+  fs.mkdirSync(path.join(root, 'packs'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'packs', 'old.json'), JSON.stringify({ slug: 'old', skills: ['watch'] }));
+  runBuild(root);
+  const idx = readIndex(root);
+  assert.deepEqual(idx.packs, []);
+  assert.equal(idx.skills.find((s) => s.slug === 'watch').metadata.pack, undefined);
   fs.rmSync(root, { recursive: true, force: true });
 });
 
-test('a pack naming a missing skill fails the build', () => {
+test('a shared skill must be declared in retired-skills.json', () => {
   const root = makeFixtureRoot();
-  writePack(root, 'pack-a', { slug: 'pack-a', domain: 'ads', skills: ['ghost'] });
-  assert.throws(() => runBuild(root), /no skill folder for "ghost"/);
+  writeSkill(root, 'shared', 'brand-research', { name: 'brand-research', description: 'x' }, baseMeta('brand-research', 'composites', { domain: 'ads' }));
+  writeRetirements(root, {});
+  assert.throws(() => runBuild(root), /add it to retired-skills\.json retained/);
+  fs.rmSync(root, { recursive: true, force: true });
+});
+
+test('tests/ folders are never published, in any family and at any depth', () => {
+  const root = makeFixtureRoot();
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'Watch.' }, baseMeta('watch', 'capabilities'), {
+    'tests/test_watch.py': 'test',
+    'contract/tests/test_contract.py': 'test',
+    'contract/validate.py': 'code',
+    'scripts/watch.py': 'code',
+  });
+  runBuild(root);
+  const entry = readIndex(root).skills.find((s) => s.slug === 'watch');
+  assert.deepEqual(entry.files.sort(), [
+    'skills/video/watch/SKILL.md',
+    'skills/video/watch/contract/validate.py',
+    'skills/video/watch/scripts/watch.py',
+    'skills/video/watch/skill.meta.json',
+  ]);
   fs.rmSync(root, { recursive: true, force: true });
 });
 
@@ -137,7 +155,6 @@ test('handles a tree with no packs', () => {
   const idx = readIndex(root);
   assert.equal(idx.skills.length, 1);
   assert.deepEqual(idx.packs, []);
-  assert.equal(idx.skills.filter((s) => s.metadata && s.metadata.pack).length, 0);
   fs.rmSync(root, { recursive: true, force: true });
 });
 
@@ -183,7 +200,7 @@ test('throws when a skill references an undefined collection', () => {
   fs.rmSync(root, { recursive: true, force: true });
 });
 
-test('marketing skills: folded descriptions, builder files, hand tests and catalog:false folders left out', () => {
+test('marketing skills: folded descriptions, builder files and hand tests left out', () => {
   const root = makeFixtureRoot();
   writeSkill(
     root,
@@ -202,7 +219,6 @@ test('marketing skills: folded descriptions, builder files, hand tests and catal
       'references/report-format.md': 'shape',
     },
   );
-  writeSkill(root, 'marketing', 'marketing-agent', { name: 'marketing-agent', description: 'Router.' }, { slug: 'marketing-agent', tier: 'foundation', catalog: false });
   runBuild(root);
   const idx = readIndex(root);
   const entry = idx.skills.find((s) => s.slug === 'research-market');
@@ -218,7 +234,6 @@ test('marketing skills: folded descriptions, builder files, hand tests and catal
     'skills/marketing/research-market/references/report-format.md',
     'skills/marketing/research-market/skill.meta.json',
   ]);
-  assert.equal(idx.skills.some((s) => s.slug === 'marketing-agent'), false, 'catalog:false is not published');
   fs.rmSync(root, { recursive: true, force: true });
 });
 
@@ -226,7 +241,7 @@ test('video and shared cards publish folded and literal descriptions instead of 
   const root = makeFixtureRoot();
   writeSkill(root, 'shared', 'folded-card', { name: 'folded-card', description: '>\n  Compare tools\n  with evidence.' }, baseMeta('folded-card', 'composites', { domain: 'ads' }));
   writeSkill(root, 'video', 'literal-card', { name: 'literal-card', description: '|-\n  First line.\n  Second line.' }, baseMeta('literal-card', 'capabilities'));
-  writePack(root, 'examples', { slug: 'examples', name: 'Examples', domain: 'ads', skills: ['literal-card'] });
+  writeRetirements(root, current('folded-card'));
   runBuild(root);
   const index = readIndex(root);
   assert.equal(index.skills.find((skill) => skill.slug === 'folded-card').description, 'Compare tools with evidence.');

@@ -1,6 +1,7 @@
 {
   "slug": "launch-meta-ad-campaign",
   "category": "composites",
+  "version": "1.0.0",
   "domain": "ads",
   "tags": [
     "ads"
@@ -26,9 +27,6 @@
     "nine-section launch brief and two separate human confirmations",
     "paused creation and readback verification",
     "recoverable partial-failure reporting"
-  ],
-  "requires_tools": [
-    "meta_marketing_api"
   ],
   "example_prompt": "I want more trial signups from agency owners. $400 over two weeks — can you get some ads running?"
 }
