@@ -1,9 +1,9 @@
 {
   "files": {
     "SKILL.md": {
-      "bytes": 6186,
+      "bytes": 6170,
       "catalog_sha256": "b8dad753ab5276f6a27d2bc42849f877d5fbda70545c3ddc81a2b91802a6c39b",
-      "sha256": "131fa7e05e40c8477ec6e2026e6b5dc500bcad79d722a7c1d77cd9d19763ecc0"
+      "sha256": "82497e67a4df85decfd02b49d28a08c816db3af3576b4127e35c640296498993"
     },
     "auto-fix-from-review-notes.md": {
       "bytes": 6629,
@@ -246,9 +246,9 @@
       "sha256": "c6831561b57facf2b79d76084086067365e9fd05b94c7cb6d397c2fc8bb895c3"
     },
     "skill.meta.json": {
-      "bytes": 683,
-      "catalog_sha256": "b2c3a3a86e25714986ec369e0fbe825903fca15dd1cd5a814260d06dd46959c6",
-      "sha256": "b2c3a3a86e25714986ec369e0fbe825903fca15dd1cd5a814260d06dd46959c6"
+      "bytes": 879,
+      "catalog_sha256": "095b4bc3d2bfa907c4fc3c6031e5248118011a33797ba4483a7d2830fe26d065",
+      "sha256": "095b4bc3d2bfa907c4fc3c6031e5248118011a33797ba4483a7d2830fe26d065"
     },
     "states/edit-to-delivery.md": {
       "bytes": 8440,
@@ -292,10 +292,10 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "8086ff15daaceac0e21bcfc7e0d52c6a3b10ed52",
+  "source_commit": "7e0cf56e34eefa2fcbdbb7ce1969618803d90caa",
   "source_files": {
     "SKILL.md": {
-      "sha256": "131fa7e05e40c8477ec6e2026e6b5dc500bcad79d722a7c1d77cd9d19763ecc0",
+      "sha256": "82497e67a4df85decfd02b49d28a08c816db3af3576b4127e35c640296498993",
       "source": "public-entry.md"
     },
     "auto-fix-from-review-notes.md": {
@@ -507,6 +507,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "83a8dd5111ced20a673a3b300139baa3ca0ee7149836210f3c5436edd0cc0652",
-  "source_version": "5-83a8dd5111ce"
+  "source_hash": "4266017fde5bee7c07a9e246f55e634ac9ddca7debab6206ae5f158e98e97c4b",
+  "source_version": "5-4266017fde5b"
 }
