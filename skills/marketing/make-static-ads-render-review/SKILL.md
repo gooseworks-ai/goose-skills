@@ -2,7 +2,7 @@
 name: make-static-ads-render-review
 description: >-
   Step of make-static-ads: a fresh judge checks every render against its concept-board row and the official product photos, one retry inside the marketer's approval, then the claims and set checks; records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.
-version: 0.8.0
+version: 0.8.2
 ---
 
 # render-review

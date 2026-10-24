@@ -7,7 +7,7 @@ description: >-
   audit, comparison, map or blueprint with dated evidence and clear data limits. Also covers app
   store listings and local search. Drafts changes; never edits live. Full pages go to make-content;
   paid search goes to run-paid-campaigns.
-version: 0.2.0
+version: 0.2.1
 ---
 
 # Human version

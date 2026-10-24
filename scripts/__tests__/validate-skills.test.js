@@ -141,3 +141,10 @@ test('FAILS when requires_tools names a file tool instead of a program', () => w
 test('the real catalog passes', () => {
   assert.match(execFileSync('node', [VALIDATE], { encoding: 'utf8' }), /Skill validation passed/);
 });
+
+test('FAILS when a skill folder carries a builder note (critique.md or server-needs.md)', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'Watch a video.' }, baseMeta('watch', { version: '1.0.0' }));
+  fs.writeFileSync(path.join(root, 'skills', 'video', 'watch', 'critique.md'), 'notes');
+  writeIndex(root, [{ slug: 'watch', category: 'capabilities', path: 'skills/video/watch' }]);
+  assert.throws(() => runValidate(root), /critique\.md is a builder note/);
+}));

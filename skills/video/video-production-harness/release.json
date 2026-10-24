@@ -81,9 +81,9 @@
       "sha256": "8d47b268ffdba4e10a52c377b32fa40a7a64d6f11a71a183b1ab33c388f53539"
     },
     "references/check-severity.md": {
-      "bytes": 9861,
-      "catalog_sha256": "c4af83ea8a5583b30890f9ab5efeb7e0d93e1a8b783c98c5bd70fb337fa9b6cd",
-      "sha256": "c4af83ea8a5583b30890f9ab5efeb7e0d93e1a8b783c98c5bd70fb337fa9b6cd"
+      "bytes": 9872,
+      "catalog_sha256": "b8b0c72092447dffedc2d47388185c068ce72f05f01ce9a584264213f043e4e5",
+      "sha256": "b8b0c72092447dffedc2d47388185c068ce72f05f01ce9a584264213f043e4e5"
     },
     "references/creative-contract-and-review.md": {
       "bytes": 11633,
@@ -247,8 +247,8 @@
     },
     "skill.meta.json": {
       "bytes": 879,
-      "catalog_sha256": "095b4bc3d2bfa907c4fc3c6031e5248118011a33797ba4483a7d2830fe26d065",
-      "sha256": "095b4bc3d2bfa907c4fc3c6031e5248118011a33797ba4483a7d2830fe26d065"
+      "catalog_sha256": "ffcb47c8b036700d05d9cd4ede0c85ae66f8d25c77b10741e463f1e5af5e178d",
+      "sha256": "ffcb47c8b036700d05d9cd4ede0c85ae66f8d25c77b10741e463f1e5af5e178d"
     },
     "states/edit-to-delivery.md": {
       "bytes": 8440,
@@ -292,7 +292,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "7e0cf56e34eefa2fcbdbb7ce1969618803d90caa",
+  "source_commit": "c7cf7b68ccaea76293ffe4f639f6e94b78c30a44",
   "source_files": {
     "SKILL.md": {
       "sha256": "82497e67a4df85decfd02b49d28a08c816db3af3576b4127e35c640296498993",
@@ -359,7 +359,7 @@
       "source": "promote.md"
     },
     "references/check-severity.md": {
-      "sha256": "c4af83ea8a5583b30890f9ab5efeb7e0d93e1a8b783c98c5bd70fb337fa9b6cd",
+      "sha256": "b8b0c72092447dffedc2d47388185c068ce72f05f01ce9a584264213f043e4e5",
       "source": "references/check-severity.md"
     },
     "references/creative-contract-and-review.md": {
@@ -507,6 +507,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "4266017fde5bee7c07a9e246f55e634ac9ddca7debab6206ae5f158e98e97c4b",
-  "source_version": "5-4266017fde5b"
+  "source_hash": "596087081442f3ae9d754a70f4b950b2642b293583f3df51e3cfa13713843a10",
+  "source_version": "5-596087081442"
 }

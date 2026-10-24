@@ -65,7 +65,7 @@ jobs:
 
   atom-checks:
     # What video atoms may say, their version bumps, and the parts index.
-    # Old debt warns; debt a branch adds fails (scripts/atom-lint.js).
+    # Every finding fails (--strict): the old debt is cleared (scripts/atom-lint.js).
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -94,7 +94,7 @@ jobs:
         run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js
 
       - name: Atom lint
-        run: node scripts/atom-lint.js --base "$BASE" --direct
+        run: node scripts/atom-lint.js --base "$BASE" --direct --strict
 
       - name: Atom version bumps
         run: node scripts/check-atom-versions.js --base "$BASE" --direct

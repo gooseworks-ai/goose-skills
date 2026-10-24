@@ -9,7 +9,7 @@ description: >-
   Delivers a readable report saved to the brand, so the next run reports what changed. Never copies
   their words or disparages them. Not for what people say about you or your market — use
   research-market; not for who your buyers are — use research-audience.
-version: 0.5.0
+version: 0.5.1
 ---
 
 # research-competitors

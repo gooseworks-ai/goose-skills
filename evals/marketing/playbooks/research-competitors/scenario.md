@@ -3,7 +3,7 @@
 **What this is.** The script for one behaviour eval of the `research-competitors` playbook. The runner sends the opening ask to the agent; a simulated marketer (a small model) answers any follow-up questions from the persona sheet below. The same scenario runs twice: with the marketing skills installed, and without them (baseline).
 
 - **Brand:** GooseWorks on GooseWorks **staging** (brand name "Gooseworks"). Other staging test brands exist on the same account.
-- **Source of the ask:** the owner's opening message in the 18 Oct hand test. There the agent asked to add the brand ("ok add gooseworks.ai as brand"), offered a paid read, and Akhil asked "Can't you do it on your own".
+- **Source of the ask:** the owner's opening message in the 18 Oct hand test. There the agent asked to add the brand ("ok add gooseworks.ai as brand"), offered a paid read, and the owner asked "Can't you do it on your own".
 - **Settings:** max_turns: 10
 
 ## Brand

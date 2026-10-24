@@ -2,7 +2,7 @@
 name: make-static-ads-compose
 description: >-
   Step of make-static-ads: writes each ad's render prompt and ordered image list from its concept-board row, one per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.
-version: 0.8.0
+version: 0.8.2
 ---
 
 # compose

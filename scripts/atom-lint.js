@@ -170,6 +170,16 @@ WHAT['atom.frontmatter'] = 'SKILL.md frontmatter must be valid YAML';
 
 const SEMVER_REF = /^([a-z][a-z0-9]*(?:-[a-z0-9]+)*)@((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))$/;
 
+let homeBytes;
+/** The canonical billing helper's bytes (the one in CONFIG.billing_helper.home), or an empty buffer. */
+function billingHelperHome() {
+  if (homeBytes === undefined) {
+    const file = path.join(ROOT, 'skills', 'video', CONFIG.billing_helper.home, 'scripts', CONFIG.billing_helper.file);
+    homeBytes = fs.existsSync(file) ? fs.readFileSync(file) : Buffer.alloc(0);
+  }
+  return homeBytes;
+}
+
 /** Published part versions ("id@x.y.z") that are not withdrawn, from the parts registry. */
 function liveParts() {
   const read = (rel, key) => {
@@ -313,7 +323,8 @@ function lintAtom(atom, files) {
     const base = path.posix.basename(rel);
 
     if (base === CONFIG.billing_helper.file && atom.slug !== CONFIG.billing_helper.home) {
-      if (bytes.length > CONFIG.billing_helper.shim_max_bytes) {
+      // A byte-identical copy cannot drift (test/media-proxy-copies.test.js keeps them equal).
+      if (bytes.length > CONFIG.billing_helper.shim_max_bytes && !bytes.equals(billingHelperHome())) {
         findings.push({ rule: 'atom.one_billing_helper', file, line: 1, match: `${base} copy` });
       }
     }

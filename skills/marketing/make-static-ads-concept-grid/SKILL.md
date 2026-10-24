@@ -2,7 +2,7 @@
 name: make-static-ads-concept-grid
 description: >-
   Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.
-version: 0.8.0
+version: 0.8.2
 ---
 
 # concept-grid

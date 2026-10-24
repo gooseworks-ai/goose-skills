@@ -82,6 +82,11 @@ for (const family of FAMILIES) {
     const skillMd = path.join(skillDir, 'SKILL.md');
     const metaPath = path.join(skillDir, 'skill.meta.json');
     if (!fs.existsSync(skillMd)) { errors.push(`Missing SKILL.md for ${where}`); continue; }
+    for (const note of ['critique.md', 'server-needs.md']) {
+      if (fs.existsSync(path.join(skillDir, note))) {
+        errors.push(`${where}/${note} is a builder note; it belongs in goose-lab plan/marketing-agent/, not in this public repo`);
+      }
+    }
     if (!fs.existsSync(metaPath)) { errors.push(`Missing skill.meta.json for ${where}`); continue; }
     let meta;
     try {

@@ -9,7 +9,7 @@ description: >-
   published. Not for a dated posting calendar — use run-organic-social; not ad copy (make-static-ads)
   or promo emails (email-lifecycle). Press releases, landing and product pages, and sales decks are
   not covered.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # make-content

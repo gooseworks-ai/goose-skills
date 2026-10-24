@@ -213,8 +213,6 @@ test('marketing skills: folded descriptions, builder files and hand tests left o
       requires_skills: ['claims-gate'],
     },
     {
-      'critique.md': 'builder notes',
-      'server-needs.md': 'builder notes',
       'tests/test-by-hand.md': 'hand test',
       'references/report-format.md': 'shape',
     },

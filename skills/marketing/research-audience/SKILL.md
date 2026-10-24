@@ -9,7 +9,7 @@ description: >-
   me when a past champion changes jobs". Reads the brand's own customer data first and delivers a
   readable report saved to the brand. Never contacts anyone. Not for market size or trends — use
   research-market; not for writing the messages — use write-outreach.
-version: 0.8.2
+version: 0.8.3
 ---
 
 # research-audience

@@ -9,7 +9,7 @@ description: >-
   sends; a send went wrong. Not for cold outreach to prospects — use write-outreach; not the editorial
   newsletter issue — use make-content; not the whole cross-channel Black Friday plan — use
   plan-campaign.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # email-lifecycle

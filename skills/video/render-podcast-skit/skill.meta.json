@@ -20,7 +20,7 @@
     "watch",
     "media-proxy"
   ],
-  "version": "2.0.0",
+  "version": "2.0.1",
   "features": [
     "Two-host dialogue rendering",
     "Measured audio timeline",

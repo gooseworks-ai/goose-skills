@@ -112,8 +112,6 @@ const FAMILIES = [
   { dir: 'skills/shared', domain: null },
   { dir: 'skills/entry', domain: 'gooseworks' },
 ];
-// Kept in a skill folder for the people who build it; never shipped with the skill.
-const BUILDER_FILES = new Set(['critique.md', 'server-needs.md']);
 // A skill's own tests (hand tests, fixtures, unit tests), at any depth, run in this
 // repo's CI; installs never need them.
 const BUILDER_DIRS = new Set(['tests']);
@@ -175,7 +173,7 @@ function scanFolders() {
           .map((f) => relFromRoot(f))
           .filter((f) => {
             const rel = f.slice(relDir.length + 1);
-            return !BUILDER_FILES.has(rel) && !rel.split('/').slice(0, -1).some((d) => BUILDER_DIRS.has(d));
+            return !rel.split('/').slice(0, -1).some((d) => BUILDER_DIRS.has(d));
           }),
       });
     }

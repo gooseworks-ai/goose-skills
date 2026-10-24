@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "legacy_revision": "caa9dbf17fa844adce5bba77acff9ca5d15b86ef",
-  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved by Akhil 2026-10-23. The old skills stay readable at tag legacy-gtm-final. Shared skills (skills/shared/) are the skills used across families: current_shared lists the current ones, retained the older ones still needed, each with its users (used_by) and when it can go (remove_when). Approved by Akhil 2026-10-24.",
+  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved 2026-10-23. The old skills stay readable at tag legacy-gtm-final. Shared skills (skills/shared/) are the skills used across families: current_shared lists the current ones, retained the older ones still needed, each with its users (used_by) and when it can go (remove_when). Approved 2026-10-24.",
   "retired": [
     {
       "slug": "battlecard-generator",
