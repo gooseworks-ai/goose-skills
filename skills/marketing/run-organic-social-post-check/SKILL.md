@@ -6,7 +6,7 @@ description: >-
   disclosure and rights, trend timing, and whether a named person must approve it; rewrites weak
   drafts. Use alone when you already have the draft, the brand's voice and approved claims; otherwise
   run run-organic-social.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Post check

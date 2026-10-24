@@ -3,7 +3,7 @@ name: research-competitors-edge-cases
 description: >-
   Step of the research-competitors playbook: rules for run edge cases such as no browser, stalled
   workers, earlier reports and late reads. Run research-competitors instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # edge-cases

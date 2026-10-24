@@ -4,7 +4,7 @@ description: >-
   Step of the where-to-start playbook: saves the founder's answers and the agreed first move with the
   brand, so later visits and other playbooks don't ask again. Run where-to-start instead; not for
   direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # situation-save

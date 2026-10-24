@@ -2,7 +2,7 @@
   "slug": "spend-gate",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "used_by": [
     "analyze-performance",
     "email-lifecycle",
@@ -23,14 +23,6 @@
     "research-tools"
   ],
   "standalone": false,
-  "installation": {
-    "base_command": "npx goose-skills install spend-gate",
-    "supports": [
-      "claude",
-      "cursor",
-      "codex"
-    ]
-  },
   "requires_skills": [
     "claims-gate",
     "marketing-data-access",

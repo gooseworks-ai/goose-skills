@@ -3,7 +3,7 @@ name: run-paid-campaigns-draft-moves
 description: >-
   Step of the run-paid-campaigns playbook: turns the weekly read into scale, pause, hold, rotate and
   fix recommendations within the spend ceiling. Run run-paid-campaigns instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Draft the moves (atom)

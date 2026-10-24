@@ -7,14 +7,6 @@
     "Human review gates",
     "Shared Studio production source"
   ],
-  "installation": {
-    "base_command": "npx goose-skills install video-production-harness",
-    "supports": [
-      "claude",
-      "cursor",
-      "codex"
-    ]
-  },
   "requires_skills": [
     "ad-angle-miner",
     "comment-mining",
@@ -26,12 +18,12 @@
     "write-video-ad-script"
   ],
   "slug": "video-production-harness",
-  "source_commit": "65a2eed34701839d699ad0cafa43a8418f09a1c8",
-  "source_hash": "e92d4bcfd21efda1d27cdeeaa70dda7e312edba91d6c2583b650fd5bf2f47539",
-  "source_version": "5-e92d4bcfd21e",
+  "source_commit": "2f924f6e93c9225df5a42121a88aaf4381835ea8",
+  "source_hash": "0aa021946580d4b2b795d581d7d87b589f97455000d654d489af8a20bac55f95",
+  "source_version": "5-0aa021946580",
   "tags": [
     "ads",
     "content"
   ],
-  "version": "3.1.1"
+  "version": "3.1.2"
 }

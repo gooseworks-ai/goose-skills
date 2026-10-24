@@ -7,7 +7,7 @@ description: >-
   how to get the human's yes, and what to do when the data is not reachable. Not for brand facts (read
   the brand brain) or the customer's own ad accounts (the GooseWorks ads tools, or an ads connector
   they have).
-version: 0.1.1
+version: 0.1.2
 ---
 
 # marketing-data-access

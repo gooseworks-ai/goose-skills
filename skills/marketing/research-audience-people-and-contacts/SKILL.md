@@ -5,7 +5,7 @@ description: >-
   each title with a dated source, finds a public contact route, labels email status honestly and flags
   regions with contact rules. Never contacts anyone. Use alone when you already have a vetted company
   list and the buyer titles; otherwise run research-audience.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # people-and-contacts

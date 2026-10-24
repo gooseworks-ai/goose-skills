@@ -3,7 +3,7 @@ name: make-content-source-to-units
 description: >-
   Step of the make-content playbook: mines one finished asset into scored quotable units and maps a
   different lead unit to each platform. Run make-content instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Source to units

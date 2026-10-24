@@ -6,7 +6,7 @@ description: >-
   rights checks and a yes to the quote; returns the link and alt text. Not for carousels, decks or
   print. Use alone when you already have the purpose, placement and exact wording; otherwise run
   make-static-ads.
-version: 0.9.0
+version: 0.9.1
 ---
 
 # graphic-request

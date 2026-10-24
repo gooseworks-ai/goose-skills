@@ -73,7 +73,6 @@ const FAMILY_DOMAIN = { marketing: 'marketing-agent', video: 'ads', shared: null
 const OWN_DOMAIN = { 'marketing-agent': 'marketing', gooseworks: 'entry' };
 const MA_TIERS = new Set(['playbook', 'atom', 'foundation']);
 // Entry skills come with the GooseWorks CLI; every other skill installs alone, by slug.
-const ENTRY_INSTALL = 'npx gooseworks@latest install --mcp';
 const DESCRIPTION_LIMIT = 1024;
 
 function blockFrontmatter(text) {
@@ -166,11 +165,6 @@ for (const family of FAMILIES) {
       errors.push(`domain "${domain}" is only for skills/${OWN_DOMAIN[domain]}/ (${where})`);
     } else if (FAMILY_DOMAIN[family] && OWN_DOMAIN[FAMILY_DOMAIN[family]] && domain !== FAMILY_DOMAIN[family]) {
       errors.push(`skills/${family}/ skills have domain "${FAMILY_DOMAIN[family]}" (${where}: ${domain})`);
-    }
-    const install = meta.installation && meta.installation.base_command;
-    const expectedInstall = family === 'entry' ? ENTRY_INSTALL : `npx goose-skills install ${slug}`;
-    if (typeof install === 'string' && install !== expectedInstall) {
-      errors.push(`installation.base_command must be "${expectedInstall}" in ${where}: ${JSON.stringify(install)}`);
     }
     if (family === 'marketing') {
       if (!MA_TIERS.has(meta.tier)) errors.push(`tier must be one of ${[...MA_TIERS].join(', ')} in ${where}`);

@@ -27,7 +27,7 @@ folder**, not to your working directory:
 | Installed by | This skill's folder |
 |---|---|
 | GooseWorks (the in-app coworker) | `agent-config/skills/meta-ad-manager/` in the workspace |
-| The goose-skills installer | the folder the installer printed; in Claude Code, wherever you placed it (for example `.claude/skills/meta-ad-manager/`) |
+| The GooseWorks CLI (`--with meta-ad-manager`) | the agent's skills folder, for example `~/.claude/skills/meta-ad-manager/` in Claude Code |
 
 The stage skills below are installed with this one and sit beside it, in the same parent
 folder. `ads/` itself is never inside a skill folder.

@@ -5,7 +5,7 @@ description: >-
   account's own median with the likely reason for top and bottom posts, cadence actually kept, best
   posting times, and bio and pinned-post fixes. Use alone when you already know which accounts to
   review and can read their posts; otherwise run run-organic-social.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # Account audit

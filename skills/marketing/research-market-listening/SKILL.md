@@ -3,7 +3,7 @@ name: research-market-listening
 description: >-
   Step of the research-market playbook: the worker brief for listening to what people say about the
   brand and category, risks first. Run research-market instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # listening

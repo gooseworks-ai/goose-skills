@@ -4,7 +4,7 @@ description: >-
   Step of the write-outreach playbook: the brief a helper follows to write one segment's email and
   LinkedIn sequence, first lines and replies from rows and an angle prepared earlier. Run
   write-outreach instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # draft-sequence

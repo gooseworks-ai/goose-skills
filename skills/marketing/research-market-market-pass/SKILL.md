@@ -3,7 +3,7 @@ name: research-market-market-pass
 description: >-
   Step of the research-market playbook: the worker brief for researching the market itself, including
   category, size, changes, pricing norms and demand. Run research-market instead; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # market-pass

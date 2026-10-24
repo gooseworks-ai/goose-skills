@@ -6,7 +6,7 @@ description: >-
   labelled base rates, and flags when the goal needs renegotiating. Use alone when you already have
   the goal (metric, number, date), budget, order value, margin and baseline; otherwise run
   plan-campaign.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Goal chain and economics (atom)

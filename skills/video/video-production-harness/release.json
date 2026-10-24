@@ -3,7 +3,7 @@
     "SKILL.md": {
       "bytes": 6170,
       "catalog_sha256": "b8dad753ab5276f6a27d2bc42849f877d5fbda70545c3ddc81a2b91802a6c39b",
-      "sha256": "e196f389e5434a18ab5ac9e8f224537b4cdf855aa78881780220fc02635c1bee"
+      "sha256": "c33f976a5430483a0f42f47c6443846fcbc9530bc4e5b1d5d33d03070082907d"
     },
     "auto-fix-from-review-notes.md": {
       "bytes": 6629,
@@ -246,9 +246,9 @@
       "sha256": "c6831561b57facf2b79d76084086067365e9fd05b94c7cb6d397c2fc8bb895c3"
     },
     "skill.meta.json": {
-      "bytes": 879,
-      "catalog_sha256": "715259a21b339c67ecc4060c8ec719a3a09fbc9e07e7058b870d8078b04a0982",
-      "sha256": "715259a21b339c67ecc4060c8ec719a3a09fbc9e07e7058b870d8078b04a0982"
+      "bytes": 711,
+      "catalog_sha256": "d64e3ab10f4a3dc38aa153e368c9eddf69b20753054d8ca34baf59147760bb22",
+      "sha256": "d64e3ab10f4a3dc38aa153e368c9eddf69b20753054d8ca34baf59147760bb22"
     },
     "states/edit-to-delivery.md": {
       "bytes": 8440,
@@ -292,10 +292,10 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "65a2eed34701839d699ad0cafa43a8418f09a1c8",
+  "source_commit": "2f924f6e93c9225df5a42121a88aaf4381835ea8",
   "source_files": {
     "SKILL.md": {
-      "sha256": "e196f389e5434a18ab5ac9e8f224537b4cdf855aa78881780220fc02635c1bee",
+      "sha256": "c33f976a5430483a0f42f47c6443846fcbc9530bc4e5b1d5d33d03070082907d",
       "source": "public-entry.md"
     },
     "auto-fix-from-review-notes.md": {
@@ -507,6 +507,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "e92d4bcfd21efda1d27cdeeaa70dda7e312edba91d6c2583b650fd5bf2f47539",
-  "source_version": "5-e92d4bcfd21e"
+  "source_hash": "0aa021946580d4b2b795d581d7d87b589f97455000d654d489af8a20bac55f95",
+  "source_version": "5-0aa021946580"
 }

@@ -130,17 +130,13 @@ npx gooseworks credits                     # Check your credit balance
 npx gooseworks update                      # Update to latest skill version
 ```
 
-**`goose-skills`** is this repo's own npm package. It installs one catalog skill, and every skill it requires, without a GooseWorks account. It reads `skills-index.json` from the `main` branch on GitHub, so it always installs what production serves.
+**Installing one skill.** This repo is not an npm package. The `gooseworks` CLI installs any catalog skill, with every skill it requires, straight from this repo (`main` for production, `dev` with `--env staging`):
 
 ```bash
-npx goose-skills list                          # Every published skill
-npx goose-skills info make-static-ads          # One skill's details, the skills it requires, or a retired skill's replacement
-npx goose-skills install make-static-ads       # Into ~/.claude/skills/<slug>/ (default: Claude Code)
-npx goose-skills install make-static-ads --codex
-npx goose-skills install make-static-ads --cursor --project-dir /path/to/project
+npx gooseworks@latest install --claude --mcp --with make-static-ads   # or --cursor / --codex
 ```
 
-A retired slug is refused with its replacement's install command. Most skills still need the GooseWorks MCP server for paid media and live data.
+A retired slug is refused with its replacement. Most skills need the GooseWorks MCP server for paid media and live data, which `--mcp` sets up.
 
 ---
 
@@ -160,7 +156,6 @@ evals/marketing/       routing and behaviour evals for the playbooks
 drafts/marketing/      playbooks built but not released yet
 schemas/               JSON schemas: skill.meta.json, and the parts index, layers and withdrawn lists
 scripts/, test/        index builder, validators and tests
-bin/                   the goose-skills npm CLI
 skills-index.json      the generated catalog every consumer reads
 retired-skills.json    retired names, their replacements, and why kept skills stay
 ```
@@ -199,7 +194,6 @@ node scripts/validate-skills.js  # Validate SKILL.md + skill.meta.json contract
 node scripts/check-skill-links.js     # Every link in every skill resolves as installed
 npm test
 npm run ci                       # The checks above in one command (see CONTRIBUTING.md)
-node bin/goose-skills.js list    # List the published catalog (reads main on GitHub)
 npm run test:parts               # Part tests (needs ffmpeg; browser tests need playwright-core)
 ```
 

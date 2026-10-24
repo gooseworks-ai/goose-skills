@@ -7,7 +7,7 @@ description: >-
   over, then saves the report to the brand. Use alone when you already have the findings and their
   sources; otherwise run the playbook for the job (e.g. research-market, research-competitors,
   plan-campaign).
-version: 0.1.1
+version: 0.1.2
 ---
 
 # write-report

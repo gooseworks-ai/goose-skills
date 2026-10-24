@@ -4,7 +4,7 @@ description: >-
   Step of the run-paid-campaigns playbook: reads each platform's last mature results window against
   the allowable cost, as evidence for the week's moves. Run run-paid-campaigns instead; not for direct
   use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Weekly read (atom)

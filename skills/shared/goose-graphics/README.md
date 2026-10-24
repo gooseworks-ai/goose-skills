@@ -10,12 +10,11 @@ Any host that reads `SKILL.md` can load the pack — Claude Code agents calling 
 
 | Host | Install | Notes |
 |---|---|---|
-| Claude Code | `npx goose-skills install goose-graphics --claude` | Lands at `~/.claude/skills/goose-graphics/` |
-| Claude Desktop | (same install as above) | Auto-shared — Desktop reads `~/.claude/skills/` |
-| Claude Cowork | (same install as above) | Built on Claude Desktop; same skill dir |
-| Goose (Block) | (same install as above) | Auto-discovers `~/.claude/skills/` + `~/.config/goose/skills/` |
-| Cursor | `npx goose-skills install goose-graphics --cursor --project-dir .` | Writes `.cursor/rules/goose-goose-graphics.mdc` |
-| Codex (OpenAI) | `npx goose-skills install goose-graphics --codex` | Writes `~/.codex/skills/goose-graphics/` |
+| Claude Code | `npx gooseworks@latest install --claude --with goose-graphics` | Installs with the GooseWorks skills |
+| Claude Desktop | (same install as above) | Desktop reads the same Claude skills |
+| Claude Cowork | (same install as above) | Built on Claude Desktop |
+| Cursor | `npx gooseworks@latest install --cursor --with goose-graphics` | |
+| Codex (OpenAI) | `npx gooseworks@latest install --codex --with goose-graphics` | |
 | Claude Design | `npx gooseworks styles get <slug>` → upload the resulting DESIGN.md via CD's "Create new design system" | Per-style DESIGN.md upload; no CLI sync |
 
 ## Directory Structure
@@ -24,7 +23,7 @@ Any host that reads `SKILL.md` can load the pack — Claude Code agents calling 
 goose-graphics/
   SKILL.md                        # Entry-point skill (router)
   README.md                       # This file
-  skill.meta.json                 # Goose-skills installation metadata
+  skill.meta.json                 # catalog metadata
   .claude-plugin/plugin.json      # Claude Code plugin descriptor
   extract-style.md                # Derive a publishable custom style from a reference image
   sources/
@@ -96,10 +95,10 @@ See SKILL.md §17 for the manifest shapes.
 cd screenshot && npm install && npx playwright install chromium
 ```
 
-For cross-platform installation via the `goose-skills` CLI:
+To install it on its own with the GooseWorks CLI:
 
 ```bash
-npx goose-skills install goose-graphics
+npx gooseworks@latest install --claude --with goose-graphics
 ```
 
 See `skill.meta.json` for installation metadata.

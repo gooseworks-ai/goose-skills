@@ -3,7 +3,7 @@ name: plan-campaign-channel-decision
 description: >-
   Step of the plan-campaign playbook: marks each candidate channel Run, Test, Later or No with a
   brand-fact reason and founder hours. Run plan-campaign instead; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Channel decision (atom)

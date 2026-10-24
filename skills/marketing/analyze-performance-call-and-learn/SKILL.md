@@ -4,7 +4,7 @@ description: >-
   Step of the analyze-performance playbook: calls ended tests, scores last week's calls, writes this
   week's kill/scale/hold calls and drafts learnings for the brand brain. Run analyze-performance
   instead; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # Test calls, calls and learnings (atom)

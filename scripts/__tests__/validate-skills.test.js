@@ -47,10 +47,6 @@ const baseMeta = (slug, extra = {}) => ({
   category: 'capabilities',
   version: '1.0.0',
   tags: ['ads'],
-  installation: {
-    base_command: `npx goose-skills install ${slug}`,
-    supports: ['claude', 'cursor', 'codex'],
-  },
   ...extra,
 });
 
@@ -97,10 +93,10 @@ test('FAILS when a shared skill has no domain, or requires a skill that does not
 
 const indexFor = (root, family, slug) => writeIndex(root, [{ slug, category: 'capabilities', path: `skills/${family}/${slug}` }]);
 
-test('FAILS on an install command that names a pack, or any command but the skill\'s own', () => withRoot((root) => {
-  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch', { installation: { base_command: 'npx goose-skills install video-ad-formats/watch', supports: ['claude'] } }));
+test('FAILS when a meta still carries the retired installation field', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch', { installation: { base_command: 'npx goose-skills install watch', supports: ['claude'] } }));
   indexFor(root, 'video', 'watch');
-  assert.throws(() => runValidate(root), /installation\.base_command: does not match[\s\S]*must be "npx goose-skills install watch"/);
+  assert.throws(() => runValidate(root), /installation/);
 }));
 
 test('FAILS on a meta field the schema does not define, and on a missing version', () => withRoot((root) => {

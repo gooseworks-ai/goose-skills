@@ -1020,12 +1020,12 @@
     {
       "slug": "ugc-video-formats",
       "replacement": null,
-      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug: npx goose-skills install create-video-seedance-2-fal, npx goose-skills install review-ugc-render."
+      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug: npx gooseworks@latest install --with create-video-seedance-2-fal, npx gooseworks@latest install --with review-ugc-render."
     },
     {
       "slug": "video-ad-formats",
       "replacement": null,
-      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug (npx goose-skills install <slug>): create-imessage-mockup, create-chatgpt-mockup, create-apple-notes-mockup, render-ios-keyboard, stitch-videos-ffmpeg, mix-master, watch."
+      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug (npx gooseworks@latest install --with <slug>): create-imessage-mockup, create-chatgpt-mockup, create-apple-notes-mockup, render-ios-keyboard, stitch-videos-ffmpeg, mix-master, watch."
     }
   ],
   "skills": [
@@ -1054,14 +1054,6 @@
           "research",
           "social"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install ad-angle-miner",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "scrapecreators-api",
           "competitor-ad-intelligence",
@@ -1093,14 +1085,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install ad-campaign-analyzer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "ads"
       }
     },
@@ -1124,14 +1108,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install ad-lead-quality-analyzer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "ads"
       }
     },
@@ -1160,14 +1136,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install ad-management-intake",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "features": [
           "research first, then only the questions a wrong guess would make expensive",
           "at most four questions a turn, in plain business language",
@@ -1192,7 +1160,7 @@
       "description": "Checks paid ads against the ad platform's rules (Meta, TikTok, Google, LinkedIn and others) and the brand's category rules: the copy, on-image or on-screen text, pictures and people. Rewrites what can be fixed honestly, adds the disclosures that are needed, and flags anything that needs a human or legal review, with one pass, fixed or flag line per ad and platform. Use alone when you already have the ad text or images and know where they will run; otherwise run the playbook for the job (e.g. make-static-ads, make-content, email-lifecycle).",
       "tags": "ads",
       "path": "skills/marketing/ad-policy-check",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "files": [
         "skills/marketing/ad-policy-check/SKILL.md",
         "skills/marketing/ad-policy-check/disclosure.md",
@@ -1202,7 +1170,7 @@
         "slug": "ad-policy-check",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "used_by": [
           "email-lifecycle",
           "make-content",
@@ -1216,14 +1184,6 @@
           "ads"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install ad-policy-check",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -1261,14 +1221,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install ads-north-star-strategy",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "features": [
           "a one-minute strategy with the reason behind every choice",
           "objective chosen from the business outcome, with an honest bridge when the host cannot launch it",
@@ -1321,14 +1273,6 @@
           "brand-growth"
         ],
         "collection_stage": "analyze",
-        "installation": {
-          "base_command": "npx goose-skills install analyze-performance",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "analyze-performance-call-and-learn",
           "analyze-performance-diagnose",
@@ -1427,7 +1371,7 @@
       "description": "Step of the analyze-performance playbook: calls ended tests, scores last week's calls, writes this week's kill/scale/hold calls and drafts learnings for the brand brain. Run analyze-performance instead; not for direct use.",
       "tags": "ads, monitoring",
       "path": "skills/marketing/analyze-performance-call-and-learn",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/analyze-performance-call-and-learn/SKILL.md",
         "skills/marketing/analyze-performance-call-and-learn/skill.meta.json"
@@ -1436,21 +1380,13 @@
         "slug": "analyze-performance-call-and-learn",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "analyze-performance",
         "tags": [
           "ads",
           "monitoring"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install analyze-performance-call-and-learn",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -1471,7 +1407,7 @@
       "description": "Step of the analyze-performance playbook: flags tracking breaks with fixes and explains each big metric move with evidence, confidence and ruled-out causes. Run analyze-performance instead; not for direct use.",
       "tags": "ads, monitoring",
       "path": "skills/marketing/analyze-performance-diagnose",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/analyze-performance-diagnose/SKILL.md",
         "skills/marketing/analyze-performance-diagnose/skill.meta.json"
@@ -1480,21 +1416,13 @@
         "slug": "analyze-performance-diagnose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "analyze-performance",
         "tags": [
           "ads",
           "monitoring"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install analyze-performance-diagnose",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -1506,7 +1434,7 @@
       "description": "Step of the analyze-performance playbook: gathers the week's numbers from tools, exports and pastes, cleans them, and writes the coverage line or switches to claims-only mode. Run analyze-performance instead; not for direct use.",
       "tags": "ads, monitoring",
       "path": "skills/marketing/analyze-performance-intake",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/analyze-performance-intake/SKILL.md",
         "skills/marketing/analyze-performance-intake/skill.meta.json"
@@ -1515,21 +1443,13 @@
         "slug": "analyze-performance-intake",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "analyze-performance",
         "tags": [
           "ads",
           "monitoring"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install analyze-performance-intake",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -1541,7 +1461,7 @@
       "description": "Step of the analyze-performance playbook: ranks creative by angle, hook and format with spend gates, writes short per-channel reads and drafts what to make next. Run analyze-performance instead; not for direct use.",
       "tags": "ads, monitoring",
       "path": "skills/marketing/analyze-performance-rank-and-read",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/analyze-performance-rank-and-read/SKILL.md",
         "skills/marketing/analyze-performance-rank-and-read/skill.meta.json"
@@ -1550,21 +1470,13 @@
         "slug": "analyze-performance-rank-and-read",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "analyze-performance",
         "tags": [
           "ads",
           "monitoring"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install analyze-performance-rank-and-read",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -1576,7 +1488,7 @@
       "description": "Step of the analyze-performance playbook: joins cleaned store or CRM numbers with ad spend to build the business-truth table, MER, new-customer cost and the overclaim ratio. Run analyze-performance instead; not for direct use.",
       "tags": "ads, monitoring",
       "path": "skills/marketing/analyze-performance-revenue-join",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/analyze-performance-revenue-join/SKILL.md",
         "skills/marketing/analyze-performance-revenue-join/skill.meta.json"
@@ -1585,21 +1497,13 @@
         "slug": "analyze-performance-revenue-join",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "analyze-performance",
         "tags": [
           "ads",
           "monitoring"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install analyze-performance-revenue-join",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -1625,15 +1529,7 @@
           "ads",
           "design",
           "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install animate-image",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -1661,14 +1557,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install answer-ads-questions",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "features": [
           "answers only from reads made in the same turn",
           "data window and sync time on every number",
@@ -1721,14 +1609,6 @@
           "brand",
           "research"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install brand-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "competitor-ad-intelligence",
           "comment-mining",
@@ -1765,14 +1645,6 @@
           "ads",
           "content"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install caption-burn",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "media-proxy"
         ]
@@ -1786,7 +1658,7 @@
       "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 to 5 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
       "tags": "brand",
       "path": "skills/marketing/claims-gate",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "files": [
         "skills/marketing/claims-gate/SKILL.md",
         "skills/marketing/claims-gate/claim-types.md",
@@ -1798,7 +1670,7 @@
         "slug": "claims-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.4",
+        "version": "0.1.5",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -1819,14 +1691,6 @@
           "brand"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install claims-gate",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "marketing-data-access",
           "marketing-guide",
@@ -1861,14 +1725,6 @@
           "research",
           "brand"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install comment-mining",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "scrapecreators-api"
         ]
@@ -1894,14 +1750,6 @@
         "tags": [
           "lead-generation"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install company-contact-finder",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "lead-generation"
       }
     },
@@ -1928,14 +1776,6 @@
           "competitive-intel",
           "research"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install competitor-ad-intelligence",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "scrapecreators-api",
           "transcript-intelligence"
@@ -1964,15 +1804,7 @@
         "tags": [
           "ads",
           "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install compose-creator-layer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -2007,15 +1839,7 @@
         "version": "1.0.5",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install create-apple-notes-mockup",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -2051,15 +1875,7 @@
         "version": "1.0.5",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install create-chatgpt-mockup",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -2094,14 +1910,6 @@
           "ads",
           "content"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install create-creator-takes-h3",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "create-image-fal",
           "media-proxy"
@@ -2134,14 +1942,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install create-image-fal",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "media-proxy"
         ]
@@ -2171,15 +1971,7 @@
         "tags": [
           "ads",
           "design"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install create-image-gpt-image-fal",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -2216,15 +2008,7 @@
         "version": "1.0.4",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install create-imessage-mockup",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -2235,7 +2019,7 @@
       "description": "Render a deterministic text-only video ad from approved copy, font, colors, timing and CTA. Use when a brand needs an animated message without product photography or a creator.",
       "tags": "ads",
       "path": "skills/video/create-kinetic-typography",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/video/create-kinetic-typography/SKILL.md",
         "skills/video/create-kinetic-typography/scripts/config.example.json",
@@ -2246,18 +2030,10 @@
         "slug": "create-kinetic-typography",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install create-kinetic-typography",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -2286,14 +2062,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install create-music-elevenlabs",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "media-proxy"
         ]
@@ -2322,14 +2090,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install create-video-fal",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "media-proxy"
         ]
@@ -2358,14 +2118,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install create-video-seedance-2-fal",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -2393,14 +2145,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install create-vo-elevenlabs",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "media-proxy"
         ]
@@ -2443,14 +2187,6 @@
           "brand-growth"
         ],
         "collection_stage": "create",
-        "installation": {
-          "base_command": "npx goose-skills install email-lifecycle",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -2543,7 +2279,7 @@
       "description": "Step of the email-lifecycle playbook: builds the month's send calendar and writes this week's email and SMS broadcasts against the approved cadence and segments. Run email-lifecycle instead; not for direct use.",
       "tags": "content, outreach",
       "path": "skills/marketing/email-lifecycle-broadcast-planner",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/email-lifecycle-broadcast-planner/SKILL.md",
         "skills/marketing/email-lifecycle-broadcast-planner/skill.meta.json"
@@ -2552,21 +2288,13 @@
         "slug": "email-lifecycle-broadcast-planner",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "email-lifecycle",
         "tags": [
           "content",
           "outreach"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install email-lifecycle-broadcast-planner",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -2578,7 +2306,7 @@
       "description": "Step of the email-lifecycle playbook: writes one lifecycle flow as a build sheet for the brand's email tool, every message finished in the brand voice. Run email-lifecycle instead; not for direct use.",
       "tags": "content, outreach",
       "path": "skills/marketing/email-lifecycle-flow-writer",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/email-lifecycle-flow-writer/SKILL.md",
         "skills/marketing/email-lifecycle-flow-writer/skill.meta.json"
@@ -2587,21 +2315,13 @@
         "slug": "email-lifecycle-flow-writer",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "email-lifecycle",
         "tags": [
           "content",
           "outreach"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install email-lifecycle-flow-writer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -2613,7 +2333,7 @@
       "description": "Step of the email-lifecycle playbook: audits list, consent, live flows, recent sends and sending setup, marking every item verified, from-you or unknown. Run email-lifecycle instead; not for direct use.",
       "tags": "content, outreach",
       "path": "skills/marketing/email-lifecycle-lifecycle-audit",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/email-lifecycle-lifecycle-audit/SKILL.md",
         "skills/marketing/email-lifecycle-lifecycle-audit/skill.meta.json"
@@ -2622,21 +2342,13 @@
         "slug": "email-lifecycle-lifecycle-audit",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "email-lifecycle",
         "tags": [
           "content",
           "outreach"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install email-lifecycle-lifecycle-audit",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -2648,7 +2360,7 @@
       "description": "Prices one discount, free-shipping threshold or referral reward against contribution margin: cost per order, share of margin used, break-even lift, code leakage risks, and one recommended offer in two plain sentences. Use alone when you already have the offer, average order value and margin per product; otherwise run email-lifecycle.",
       "tags": "content, outreach",
       "path": "skills/marketing/email-lifecycle-offer-math",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/email-lifecycle-offer-math/SKILL.md",
         "skills/marketing/email-lifecycle-offer-math/skill.meta.json"
@@ -2657,21 +2369,13 @@
         "slug": "email-lifecycle-offer-math",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "email-lifecycle",
         "tags": [
           "content",
           "outreach"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install email-lifecycle-offer-math",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "email-lifecycle"
         ]
@@ -2685,7 +2389,7 @@
       "description": "Checks a drafted email flow or broadcast before it is loaded: flow logic and exits, overlaps, offer depth and codes, stock, claims, consent and legal footer, SMS rules, rendering, voice and AI-copy tells, and the goal metric. Returns a pass / fixed / open-question table. Use alone when you already have the finished draft and the brand's product and policy facts; otherwise run email-lifecycle.",
       "tags": "content, outreach",
       "path": "skills/marketing/email-lifecycle-send-check",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/email-lifecycle-send-check/SKILL.md",
         "skills/marketing/email-lifecycle-send-check/skill.meta.json"
@@ -2694,21 +2398,13 @@
         "slug": "email-lifecycle-send-check",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "email-lifecycle",
         "tags": [
           "content",
           "outreach"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install email-lifecycle-send-check",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -2731,7 +2427,7 @@
       "description": "Watch a brand's own product footage (screen recording, product film), pick the moment that proves each line with the user, and render those picks as a product layer — free, local. survey.py turns footage into timestamped contact sheets + scene cuts + motion so the agent can actually look at it; the agent writes a cut list (beat → source window + framing); preview.py draws it as a review sheet the user corrects round by round; cut.py renders the approved list into a silent 1080x1920 layer with the creator's area left as a plate. Also frames footage as a filmed screen (keystone, bezel, handheld drift) with dissolves between beats, and takes still screenshots as sources. Use for any format that shows real product footage beside, between or instead of a creator (split-screen, screen inserts, walkthroughs).",
       "tags": "ads, content",
       "path": "skills/video/footage-cutlist",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "files": [
         "skills/video/footage-cutlist/SKILL.md",
         "skills/video/footage-cutlist/scripts/_common.py",
@@ -2747,19 +2443,11 @@
         "slug": "footage-cutlist",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "tags": [
           "ads",
           "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install footage-cutlist",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -2782,14 +2470,6 @@
         "tags": [
           "brand"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install get-brand-assets",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "brand"
       }
     },
@@ -2814,15 +2494,7 @@
         "version": "3.2.1",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx gooseworks@latest install --mcp",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -2859,14 +2531,6 @@
           "social",
           "brand"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install goose-graphics",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "features": [
           "Community-driven style catalog discovered via npx gooseworks styles list/search/get",
           "Community-driven format catalog discovered via npx gooseworks formats list/search/get",
@@ -2898,14 +2562,6 @@
           "design",
           "content"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install goose-graphics-create-format",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "goose-graphics"
         ],
@@ -2939,14 +2595,6 @@
           "design",
           "content"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install goose-graphics-create-style",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "goose-graphics"
         ],
@@ -2981,15 +2629,7 @@
         "tags": [
           "ads",
           "brand"
-        ],
-        "installation": {
-          "base_command": "npx gooseworks@latest install --mcp",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -3013,15 +2653,7 @@
         "version": "4.5.2",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx gooseworks@latest install --mcp",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -3045,15 +2677,7 @@
         "version": "1.0.3",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx gooseworks@latest install --mcp",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -3081,15 +2705,7 @@
           "ads",
           "lead-generation",
           "social"
-        ],
-        "installation": {
-          "base_command": "npx gooseworks@latest install --mcp",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -3113,14 +2729,6 @@
         "tags": [
           "monitoring"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install hacker-news-scraper",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "monitoring"
       }
     },
@@ -3132,7 +2740,7 @@
       "description": "Shared step of the marketing playbooks (make-static-ads, run-organic-social): how to review generated images and video honestly. Covers what was seen by eye versus read automatically, findings framed as things for the human to confirm, remakes only after a yes to the price, and at most two tries per item. Loaded by those playbooks; not for direct use.",
       "tags": "design, ads",
       "path": "skills/marketing/honest-review",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "files": [
         "skills/marketing/honest-review/SKILL.md",
         "skills/marketing/honest-review/skill.meta.json"
@@ -3141,7 +2749,7 @@
         "slug": "honest-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "used_by": [
           "make-static-ads",
           "run-organic-social"
@@ -3151,14 +2759,6 @@
           "ads"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install honest-review",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -3212,14 +2812,6 @@
           "brand-growth"
         ],
         "collection_stage": "analyze",
-        "installation": {
-          "base_command": "npx goose-skills install improve-search-visibility",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "improve-search-visibility-citation-check",
@@ -3322,7 +2914,7 @@
       "description": "Step of the improve-search-visibility playbook: runs the agreed buyer questions on AI and Google surfaces, records every run and scores how often the brand is named. Run improve-search-visibility instead; not for direct use.",
       "tags": "seo",
       "path": "skills/marketing/improve-search-visibility-citation-check",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/improve-search-visibility-citation-check/SKILL.md",
         "skills/marketing/improve-search-visibility-citation-check/skill.meta.json"
@@ -3331,20 +2923,12 @@
         "slug": "improve-search-visibility-citation-check",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "improve-search-visibility",
         "tags": [
           "seo"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install improve-search-visibility-citation-check",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -3365,7 +2949,7 @@
       "description": "Step of the improve-search-visibility playbook: checks the profiles answer engines read, plus local listings and reviews, against the brand's facts and writes corrections. Run improve-search-visibility instead; not for direct use.",
       "tags": "seo",
       "path": "skills/marketing/improve-search-visibility-entity-footprint",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/improve-search-visibility-entity-footprint/SKILL.md",
         "skills/marketing/improve-search-visibility-entity-footprint/skill.meta.json"
@@ -3374,20 +2958,12 @@
         "slug": "improve-search-visibility-entity-footprint",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "improve-search-visibility",
         "tags": [
           "seo"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install improve-search-visibility-entity-footprint",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -3399,7 +2975,7 @@
       "description": "Step of the improve-search-visibility playbook: turns one ranked fix into paste-ready site copy or code with owner, risk and undo, and writes page briefs. Run improve-search-visibility instead; not for direct use.",
       "tags": "seo",
       "path": "skills/marketing/improve-search-visibility-fix-writer",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "files": [
         "skills/marketing/improve-search-visibility-fix-writer/SKILL.md",
         "skills/marketing/improve-search-visibility-fix-writer/skill.meta.json"
@@ -3408,20 +2984,12 @@
         "slug": "improve-search-visibility-fix-writer",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "playbook": "improve-search-visibility",
         "tags": [
           "seo"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install improve-search-visibility-fix-writer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -3442,7 +3010,7 @@
       "description": "Step of the improve-search-visibility playbook: audits site indexing, crawling, technical and page issues at the requested scope, or checks pages behind lost visibility questions. Run improve-search-visibility instead; not for direct use.",
       "tags": "seo",
       "path": "skills/marketing/improve-search-visibility-page-and-foundation-check",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "files": [
         "skills/marketing/improve-search-visibility-page-and-foundation-check/SKILL.md",
         "skills/marketing/improve-search-visibility-page-and-foundation-check/skill.meta.json"
@@ -3451,20 +3019,12 @@
         "slug": "improve-search-visibility-page-and-foundation-check",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "playbook": "improve-search-visibility",
         "tags": [
           "seo"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install improve-search-visibility-page-and-foundation-check",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -3476,7 +3036,7 @@
       "description": "Step of the improve-search-visibility playbook: drafts and scores the buyer-question set in AI and Google forms and groups it into page clusters. Run improve-search-visibility instead; not for direct use.",
       "tags": "seo",
       "path": "skills/marketing/improve-search-visibility-question-set",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/improve-search-visibility-question-set/SKILL.md",
         "skills/marketing/improve-search-visibility-question-set/skill.meta.json"
@@ -3485,20 +3045,12 @@
         "slug": "improve-search-visibility-question-set",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "improve-search-visibility",
         "tags": [
           "seo"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install improve-search-visibility-question-set",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -3510,7 +3062,7 @@
       "description": "Audits an app's App Store and Google Play listing against three competitors (title, subtitle, description opening, first screenshots and captions, rating, review themes) and writes a field-by-field rewrite with character counts, or a launch-day listing before release. Use alone when you already have the app's store links and signed-off product facts; otherwise run improve-search-visibility.",
       "tags": "seo",
       "path": "skills/marketing/improve-search-visibility-store-listing-audit",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/improve-search-visibility-store-listing-audit/SKILL.md",
         "skills/marketing/improve-search-visibility-store-listing-audit/skill.meta.json"
@@ -3519,20 +3071,12 @@
         "slug": "improve-search-visibility-store-listing-audit",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "improve-search-visibility",
         "tags": [
           "seo"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install improve-search-visibility-store-listing-audit",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "improve-search-visibility"
         ]
@@ -3562,14 +3106,6 @@
           "lead-generation",
           "outreach"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install job-posting-intent",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "lead-generation"
       }
     },
@@ -3599,14 +3135,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install launch-meta-ad-campaign",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "features": [
           "automatic launch-intent routing",
           "goal-first intake that never asks the user to pick a Meta setting",
@@ -3647,14 +3175,6 @@
         "tags": [
           "lead-generation"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install lead-qualification",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "lead-generation"
       }
     },
@@ -3679,14 +3199,6 @@
         "tags": [
           "outreach"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install linkedin-profile-post-scraper",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "social"
       }
     },
@@ -3720,14 +3232,6 @@
           "brand-growth"
         ],
         "collection_stage": "create",
-        "installation": {
-          "base_command": "npx goose-skills install make-content",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -3821,7 +3325,7 @@
       "description": "Writes a one-page content brief before any draft: audience, intent, the one arguable point, what top results already say and what this piece adds, an outline, a proof inventory with gaps marked, voice, CTA and banned words, checked against six gates. Use alone when you already have the topic, format, audience and destination and want only the brief; otherwise run make-content.",
       "tags": "content",
       "path": "skills/marketing/make-content-content-brief",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/make-content-content-brief/SKILL.md",
         "skills/marketing/make-content-content-brief/skill.meta.json"
@@ -3830,20 +3334,12 @@
         "slug": "make-content-content-brief",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "make-content",
         "tags": [
           "content"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install make-content-content-brief",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "make-content",
@@ -3865,7 +3361,7 @@
       "description": "Step of the make-content playbook: mines one finished asset into scored quotable units and maps a different lead unit to each platform. Run make-content instead; not for direct use.",
       "tags": "content",
       "path": "skills/marketing/make-content-source-to-units",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/make-content-source-to-units/SKILL.md",
         "skills/marketing/make-content-source-to-units/skill.meta.json"
@@ -3874,20 +3370,12 @@
         "slug": "make-content-source-to-units",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "make-content",
         "tags": [
           "content"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-content-source-to-units",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -3899,7 +3387,7 @@
       "description": "Edits an existing draft in order: a substance pass (arguable thesis, swap test, fakes removed, CTA fit), a claims and fact check that cuts or softens unproven lines, a readability and voice-match pass, then an AI-tell sweep, with an edit note listing open gaps. Use alone when you already have a finished draft and the brand's voice samples and approved claims; otherwise run make-content.",
       "tags": "content",
       "path": "skills/marketing/make-content-two-pass-edit",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/make-content-two-pass-edit/SKILL.md",
         "skills/marketing/make-content-two-pass-edit/skill.meta.json"
@@ -3908,20 +3396,12 @@
         "slug": "make-content-two-pass-edit",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "make-content",
         "tags": [
           "content"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install make-content-two-pass-edit",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -3958,14 +3438,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx gooseworks@latest install --mcp",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "video-production-harness",
           "ad-angle-miner",
@@ -4022,14 +3494,6 @@
           "brand-growth"
         ],
         "collection_stage": "create",
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -4133,7 +3597,7 @@
       "description": "Step of make-static-ads: writes the text for each slot the ad's template sets, then the primary texts, headline, description and CTA around the image, from usable facts and customer words. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-ad-copy",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-ad-copy/SKILL.md",
         "skills/marketing/make-static-ads-ad-copy/skill.meta.json"
@@ -4142,21 +3606,13 @@
         "slug": "make-static-ads-ad-copy",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.0",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
           "design"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-ad-copy",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -4168,7 +3624,7 @@
       "description": "Step of the make-static-ads playbook: pulls every claim-bearing span out of an ad — the copy around the image, the on-image words in the prompt, badges, and what the picture implies — and keeps or cuts each by the brand-brain rule. Runs before spend on the finished prompt (Pass A) and on every render (Pass B). Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-claims-extract",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-claims-extract/SKILL.md",
         "skills/marketing/make-static-ads-claims-extract/skill.meta.json"
@@ -4177,21 +3633,13 @@
         "slug": "make-static-ads-claims-extract",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.0",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
           "design"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-claims-extract",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "honest-review",
@@ -4232,14 +3680,6 @@
           "design"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-compose",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "honest-review",
@@ -4280,14 +3720,6 @@
           "design"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-concept-grid",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "make-static-ads-find-references"
         ]
@@ -4317,14 +3749,6 @@
           "design"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-copy-variants",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "honest-review",
@@ -4366,14 +3790,6 @@
           "design"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-find-references",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -4385,7 +3801,7 @@
       "description": "Step of the make-static-ads playbook: fixes a static image ad the platform rejected — finds the ad, maps the platform's reason to the line or element at fault, fixes copy for free or re-composes the image text on a quote, re-runs the claims and policy checks, and answers the request. A rejected video is the video playbook's job. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-fix-rejected",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-fix-rejected/SKILL.md",
         "skills/marketing/make-static-ads-fix-rejected/skill.meta.json"
@@ -4394,21 +3810,13 @@
         "slug": "make-static-ads-fix-rejected",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.0",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
           "design"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-fix-rejected",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -4435,7 +3843,7 @@
       "description": "Makes one simple non-ad brand graphic, such as an email header, social feed or story image, or a blog or link-preview image, in the brand's style with at most a short line of text, after claim and rights checks and a yes to the quote; returns the link and alt text. Not for carousels, decks or print. Use alone when you already have the purpose, placement and exact wording; otherwise run make-static-ads.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-graphic-request",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "files": [
         "skills/marketing/make-static-ads-graphic-request/SKILL.md",
         "skills/marketing/make-static-ads-graphic-request/skill.meta.json"
@@ -4444,21 +3852,13 @@
         "slug": "make-static-ads-graphic-request",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.0",
+        "version": "0.9.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
           "design"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-graphic-request",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -4502,14 +3902,6 @@
           "design"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install make-static-ads-render-review",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "honest-review",
@@ -4534,7 +3926,7 @@
       "description": "How to get live public data (ads libraries, social posts and comments, search results, creator profiles), business identity/work-contact reads, domain SEO metrics and paid media generation through GooseWorks, with no vendor key. Load before any playbook step that reads public data or calls an outside model: which proxy call fits the job, what it costs, how to get the human's yes, and what to do when the data is not reachable. Not for brand facts (read the brand brain) or the customer's own ad accounts (the GooseWorks ads tools, or an ads connector they have).",
       "tags": "research-tools",
       "path": "skills/marketing/marketing-data-access",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/marketing-data-access/SKILL.md",
         "skills/marketing/marketing-data-access/focused-reads.md",
@@ -4544,18 +3936,10 @@
         "slug": "marketing-data-access",
         "category": "capabilities",
         "tier": "foundation",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "tags": [
           "research-tools"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install marketing-data-access",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-guide",
@@ -4588,7 +3972,7 @@
       "description": "How every GooseWorks marketing playbook runs: connecting, picking the brand, where files go, the shared claims, money, research and schedule rules, and the index of what each playbook saves and who reads it. Load at the start of any playbook run. Not a marketer ask: for \"what should I do first?\" use where-to-start.",
       "tags": "brand",
       "path": "skills/marketing/marketing-guide",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "files": [
         "skills/marketing/marketing-guide/SKILL.md",
         "skills/marketing/marketing-guide/research-pattern.md",
@@ -4598,18 +3982,10 @@
         "slug": "marketing-guide",
         "category": "capabilities",
         "tier": "foundation",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "tags": [
           "brand"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install marketing-guide",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -4660,15 +4036,7 @@
         "version": "2.0.6",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install media-proxy",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -4712,14 +4080,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install meta-ad-manager",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "features": [
           "front door for running Meta ads: new campaigns, resume, scheduled checks",
           "keeps a small ads/ folder per brand: index, brand facts, and per-campaign strategy, state and an append-only decision log",
@@ -4758,15 +4118,7 @@
         "tags": [
           "ads",
           "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install meta-ad-policy-checker",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -4791,15 +4143,7 @@
         "tags": [
           "ads",
           "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install meta-ads-analyzer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -4823,15 +4167,7 @@
         "version": "1.0.4",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install mix-master",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -4842,7 +4178,7 @@
       "description": "Shared step of the marketing playbooks (research-audience, write-outreach, work-with-creators): keeps the brand's record of the prospects or creators that were handed over. Tracks a status for each person, permanent opt-outs, re-check dates and dated lessons, which the next run reads. Loaded by those playbooks; not for direct use.",
       "tags": "outreach",
       "path": "skills/marketing/outcomes-ledger",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/outcomes-ledger/SKILL.md",
         "skills/marketing/outcomes-ledger/skill.meta.json"
@@ -4851,7 +4187,7 @@
         "slug": "outcomes-ledger",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "research-audience",
           "work-with-creators",
@@ -4861,14 +4197,6 @@
           "outreach"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install outcomes-ledger",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -4916,14 +4244,6 @@
           "brand-growth"
         ],
         "collection_stage": "research",
-        "installation": {
-          "base_command": "npx goose-skills install plan-campaign",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -5019,7 +4339,7 @@
       "description": "Step of the plan-campaign playbook: writes angles per channel, the asset list, measurement plan, hand-offs and replan triggers, then assembles the plan. Run plan-campaign instead; not for direct use.",
       "tags": "ads, brand",
       "path": "skills/marketing/plan-campaign-brief-and-assets",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/plan-campaign-brief-and-assets/SKILL.md",
         "skills/marketing/plan-campaign-brief-and-assets/skill.meta.json"
@@ -5028,21 +4348,13 @@
         "slug": "plan-campaign-brief-and-assets",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "plan-campaign",
         "tags": [
           "ads",
           "brand"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install plan-campaign-brief-and-assets",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -5063,7 +4375,7 @@
       "description": "Step of the plan-campaign playbook: splits the budget across chosen channels, checks per-channel minimums, and writes the test plan and paid structure. Run plan-campaign instead; not for direct use.",
       "tags": "ads, brand",
       "path": "skills/marketing/plan-campaign-budget-and-tests",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/plan-campaign-budget-and-tests/SKILL.md",
         "skills/marketing/plan-campaign-budget-and-tests/skill.meta.json"
@@ -5072,21 +4384,13 @@
         "slug": "plan-campaign-budget-and-tests",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "plan-campaign",
         "tags": [
           "ads",
           "brand"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install plan-campaign-budget-and-tests",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -5098,7 +4402,7 @@
       "description": "Step of the plan-campaign playbook: marks each candidate channel Run, Test, Later or No with a brand-fact reason and founder hours. Run plan-campaign instead; not for direct use.",
       "tags": "ads, brand",
       "path": "skills/marketing/plan-campaign-channel-decision",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/plan-campaign-channel-decision/SKILL.md",
         "skills/marketing/plan-campaign-channel-decision/skill.meta.json"
@@ -5107,21 +4411,13 @@
         "slug": "plan-campaign-channel-decision",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "plan-campaign",
         "tags": [
           "ads",
           "brand"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install plan-campaign-channel-decision",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -5133,7 +4429,7 @@
       "description": "Checks whether a stated goal is reachable on a given budget: fills an economics box with a source on every number, subtracts the baseline, works out the implied cost per customer against history or labelled base rates, and flags when the goal needs renegotiating. Use alone when you already have the goal (metric, number, date), budget, order value, margin and baseline; otherwise run plan-campaign.",
       "tags": "ads, brand",
       "path": "skills/marketing/plan-campaign-goal-chain",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/plan-campaign-goal-chain/SKILL.md",
         "skills/marketing/plan-campaign-goal-chain/skill.meta.json"
@@ -5142,21 +4438,13 @@
         "slug": "plan-campaign-goal-chain",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "plan-campaign",
         "tags": [
           "ads",
           "brand"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install plan-campaign-goal-chain",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "plan-campaign"
         ]
@@ -5184,15 +4472,7 @@
           "ads",
           "design",
           "brand"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install product-photoshoot",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -5217,14 +4497,6 @@
         "tags": [
           "monitoring"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install reddit-post-finder",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "domain": "monitoring"
       }
     },
@@ -5254,14 +4526,6 @@
           "design",
           "brand"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install remix-graphic-ad-from-reference",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "goose-graphics",
           "create-image-gpt-image-fal",
@@ -5299,14 +4563,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-3d-character-explainer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5339,14 +4595,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-3d-product-showcase",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5360,7 +4608,7 @@
       "description": "Assemble an absurdist animated-explainer video ad (~38s, 9:16) from per-scene i2v clips + their measured VO windows — retime each clip to its VO, re-encode every segment to identical 30fps/libx264/yuv420p so the concat demuxer never drops frames, concat, build a REAL-product PIL end card (never AI) held static, mix VO (loudnorm I=-14) under music (loudnorm I=-26, volume 0.62, amix normalize=0), and burn libass captions last. FREE deterministic assembly (bash-free, Python + ffmpeg + PIL); the recipe supplies the clips, VO, music, product photo, palette, and caption table and gates the paid keyframe/clip/VO/music calls to their own capabilities. Use for the absurdist-explainer format.",
       "tags": "ads",
       "path": "skills/video/render-absurdist-explainer",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "files": [
         "skills/video/render-absurdist-explainer/SKILL.md",
         "skills/video/render-absurdist-explainer/scripts/build_endcard.py",
@@ -5373,18 +4621,10 @@
         "slug": "render-absurdist-explainer",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-absurdist-explainer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5415,14 +4655,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-airdrop-carousel",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5436,7 +4668,7 @@
       "description": "Assemble an Apple Notes list video ad from a note + end-card JSON — a frame-accurate fake iPhone screen recording of a short list being typed into Apple Notes (character by character, key pops, blinking caret, the note scrolling up as it fills) crossfaded into a checklist end card (the note's picks as ticked rows, real product photos, logo, CTA, in the brand's colours and fonts), with an optional music bed. FREE assembly (Playwright + ffmpeg); the recipe supplies the per-brand note + end card and gates the paid music call to its own capability. The Apple Notes sibling of render-imessage-chat and render-chatgpt-chat. Use for the apple-notes format.",
       "tags": "ads",
       "path": "skills/video/render-apple-notes-chat",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "files": [
         "skills/video/render-apple-notes-chat/SKILL.md",
         "skills/video/render-apple-notes-chat/scripts/config.example.json",
@@ -5455,18 +4687,10 @@
         "slug": "render-apple-notes-chat",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.1",
+        "version": "1.1.2",
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-apple-notes-chat",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5501,14 +4725,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-brand-identity-reveal",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5538,14 +4754,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-cartoon-music-video",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5575,14 +4783,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-cgi-sizzle",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5622,14 +4822,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-chatgpt-chat",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5659,14 +4851,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-cinematic-music-video",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch",
           "stitch-videos-ffmpeg"
@@ -5698,14 +4882,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-cosmic-mythology-voiceover",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5735,14 +4911,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-creator-pip-listicle",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5772,14 +4940,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-editorial-motion-podcast",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5809,14 +4969,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-flat-vector-explainer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5846,14 +4998,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-food-product-sizzle",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5883,14 +5027,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-glassy-matte-grwm",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5919,14 +5055,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-hand-swipe-flavor-listicle",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -5958,14 +5086,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-hook-replacement",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch",
           "review-finished-ad"
@@ -6001,14 +5121,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-hypermotion",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6037,14 +5149,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-ig-live-gallery",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6075,14 +5179,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-imessage-cascade",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6126,14 +5222,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-imessage-chat",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6162,15 +5250,7 @@
         "version": "1.0.4",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install render-ios-keyboard",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -6181,7 +5261,7 @@
       "description": "Render the logo-equation card ad (7s, 9:16) — partner icon + brand icon joined by a plus sign as an equation, a two-line \"= outcome\" headline, four numbered steps, and a CTA that hard-cuts in at 2s, on a static black card over timelapse b-roll, no voice. render_card.py draws the two card plates with measured geometry and hard guardrails (the user must confirm the integration is real, no partnership/endorsement/ranking words, no comment-bait CTA, no dashes); compose.py lays the card over the b-roll sped up to read as a timelapse, with an optional bed; measure_motion.py gates the b-roll (a real-time shot reads as a photo). Free, local.",
       "tags": "ads, content",
       "path": "skills/video/render-logo-equation-card",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/video/render-logo-equation-card/SKILL.md",
         "skills/video/render-logo-equation-card/scripts/_fonts.py",
@@ -6194,19 +5274,11 @@
         "slug": "render-logo-equation-card",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads",
           "content"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install render-logo-equation-card",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -6233,14 +5305,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-model-comparison-grid",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6271,14 +5335,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-mosaic-grid-reveal",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6308,14 +5364,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-multiworld",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6354,14 +5402,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-myth-vs-fact",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6391,14 +5431,6 @@
           "ads"
         ],
         "version": "1.0.2",
-        "installation": {
-          "base_command": "npx goose-skills install render-narrated-ugc-wardrobe-stitch",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch",
           "stitch-videos-ffmpeg"
@@ -6443,14 +5475,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-offer-ad",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6480,14 +5504,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-photo-grid-card",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6539,14 +5555,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-podcast-skit",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "create-vo-elevenlabs",
           "create-image-gpt-image-fal",
@@ -6593,14 +5601,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-proof-points-overlay",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6632,14 +5632,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-search-grid",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6669,14 +5661,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-song-mv",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6706,14 +5690,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-split-screen-creator",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6743,14 +5719,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-stopmotion-hand-swatch-cycle",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6820,14 +5788,6 @@
           "ads"
         ],
         "example_prompt": "Make a street interview ad for this brand: an interviewer asks passers-by what the product is, they guess wrong, one gets it right.",
-        "installation": {
-          "base_command": "npx goose-skills install render-street-interview",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch",
           "create-video-seedance-2-fal",
@@ -6885,14 +5845,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-value-prop",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6923,14 +5875,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-vignette",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -6960,14 +5904,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install render-vo-anchored-motion-listicle",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -7011,14 +5947,6 @@
           "ads"
         ],
         "example_prompt": "Make a whiteboard explainer for this brand: a narrator talks while a real whiteboard fills up in black marker.",
-        "installation": {
-          "base_command": "npx goose-skills install render-whiteboard-explainer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch",
           "create-image-gpt-image-fal",
@@ -7066,14 +5994,6 @@
           "brand-growth"
         ],
         "collection_stage": "research",
-        "installation": {
-          "base_command": "npx goose-skills install research-audience",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -7170,7 +6090,7 @@
       "description": "Step of the research-audience playbook: finds candidate accounts matching the fit definition, confirms gates, applies exclusions and dedupes. Run research-audience instead; not for direct use.",
       "tags": "research, lead-generation",
       "path": "skills/marketing/research-audience-account-sourcing",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-audience-account-sourcing/SKILL.md",
         "skills/marketing/research-audience-account-sourcing/skill.meta.json"
@@ -7179,21 +6099,13 @@
         "slug": "research-audience-account-sourcing",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-audience",
         "tags": [
           "research",
           "lead-generation"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-audience-account-sourcing",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -7205,7 +6117,7 @@
       "description": "Step of the research-audience playbook: drafts the searchable fit definition, exclusions and list size that the list run then searches on. Run research-audience instead; not for direct use.",
       "tags": "research, lead-generation",
       "path": "skills/marketing/research-audience-fit-definition",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-audience-fit-definition/SKILL.md",
         "skills/marketing/research-audience-fit-definition/skill.meta.json"
@@ -7214,21 +6126,13 @@
         "slug": "research-audience-fit-definition",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-audience",
         "tags": [
           "research",
           "lead-generation"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-audience-fit-definition",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -7249,7 +6153,7 @@
       "description": "For a list of companies, picks 1-3 current people per company in different buying roles, confirms each title with a dated source, finds a public contact route, labels email status honestly and flags regions with contact rules. Never contacts anyone. Use alone when you already have a vetted company list and the buyer titles; otherwise run research-audience.",
       "tags": "research, lead-generation",
       "path": "skills/marketing/research-audience-people-and-contacts",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-audience-people-and-contacts/SKILL.md",
         "skills/marketing/research-audience-people-and-contacts/skill.meta.json"
@@ -7258,21 +6162,13 @@
         "slug": "research-audience-people-and-contacts",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-audience",
         "tags": [
           "research",
           "lead-generation"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install research-audience-people-and-contacts",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "research-audience"
         ]
@@ -7286,7 +6182,7 @@
       "description": "Step of the research-audience playbook: scores and tiers list rows, groups them into segments with an angle each, runs the pre-handover checks and writes the list files. Run research-audience instead; not for direct use.",
       "tags": "research, lead-generation",
       "path": "skills/marketing/research-audience-score-segment-qa",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-audience-score-segment-qa/SKILL.md",
         "skills/marketing/research-audience-score-segment-qa/skill.meta.json"
@@ -7295,21 +6191,13 @@
         "slug": "research-audience-score-segment-qa",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-audience",
         "tags": [
           "research",
           "lead-generation"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-audience-score-segment-qa",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -7330,7 +6218,7 @@
       "description": "Step of the research-audience playbook: the worker brief for researching one buyer group, returning notes in a fixed shape. Run research-audience instead; not for direct use.",
       "tags": "research, lead-generation",
       "path": "skills/marketing/research-audience-segment-pass",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-audience-segment-pass/SKILL.md",
         "skills/marketing/research-audience-segment-pass/skill.meta.json"
@@ -7339,21 +6227,13 @@
         "slug": "research-audience-segment-pass",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-audience",
         "tags": [
           "research",
           "lead-generation"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-audience-segment-pass",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -7365,7 +6245,7 @@
       "description": "For a list of companies, finds dated, linked timing signals from the last 90 days (funding, new leaders, hiring, launches), drops stale ones and noise, scores timing, and gives one personal hook per person from their recent public work. Facts only, no message copy. Use alone when you already have the company list and, for hooks, the people; otherwise run research-audience.",
       "tags": "research, lead-generation",
       "path": "skills/marketing/research-audience-signals-and-hooks",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-audience-signals-and-hooks/SKILL.md",
         "skills/marketing/research-audience-signals-and-hooks/skill.meta.json"
@@ -7374,21 +6254,13 @@
         "slug": "research-audience-signals-and-hooks",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-audience",
         "tags": [
           "research",
           "lead-generation"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install research-audience-signals-and-hooks",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "research-audience"
         ]
@@ -7431,14 +6303,6 @@
           "brand-growth"
         ],
         "collection_stage": "research",
-        "installation": {
-          "base_command": "npx goose-skills install research-competitors",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -7537,7 +6401,7 @@
       "description": "Step of the research-competitors playbook: the worker brief covering the whole category, including searches, AI answers, community threads and category ad winners. Run research-competitors instead; not for direct use.",
       "tags": "competitive-intel, research",
       "path": "skills/marketing/research-competitors-category-pass",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-competitors-category-pass/SKILL.md",
         "skills/marketing/research-competitors-category-pass/skill.meta.json"
@@ -7546,21 +6410,13 @@
         "slug": "research-competitors-category-pass",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-competitors",
         "tags": [
           "competitive-intel",
           "research"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-competitors-category-pass",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "research-competitors-rival-pass"
         ]
@@ -7574,7 +6430,7 @@
       "description": "Step of the research-competitors playbook: rules for run edge cases such as no browser, stalled workers, earlier reports and late reads. Run research-competitors instead; not for direct use.",
       "tags": "competitive-intel, research",
       "path": "skills/marketing/research-competitors-edge-cases",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-competitors-edge-cases/SKILL.md",
         "skills/marketing/research-competitors-edge-cases/skill.meta.json"
@@ -7583,21 +6439,13 @@
         "slug": "research-competitors-edge-cases",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-competitors",
         "tags": [
           "competitive-intel",
           "research"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-competitors-edge-cases",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -7609,7 +6457,7 @@
       "description": "Step of the research-competitors playbook: the worker brief for profiling one rival at a capped depth, returning a fixed-shape profile. Run research-competitors instead; not for direct use.",
       "tags": "competitive-intel, research",
       "path": "skills/marketing/research-competitors-rival-pass",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-competitors-rival-pass/SKILL.md",
         "skills/marketing/research-competitors-rival-pass/skill.meta.json"
@@ -7618,21 +6466,13 @@
         "slug": "research-competitors-rival-pass",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-competitors",
         "tags": [
           "competitive-intel",
           "research"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-competitors-rival-pass",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -7667,14 +6507,6 @@
           "brand-growth"
         ],
         "collection_stage": "research",
-        "installation": {
-          "base_command": "npx goose-skills install research-market",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -7762,7 +6594,7 @@
       "description": "Step of the research-market playbook: rules for run edge cases such as no browser, stalled workers, earlier reports and late reads. Run research-market instead; not for direct use.",
       "tags": "research, monitoring",
       "path": "skills/marketing/research-market-edge-cases",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-market-edge-cases/SKILL.md",
         "skills/marketing/research-market-edge-cases/skill.meta.json"
@@ -7771,21 +6603,13 @@
         "slug": "research-market-edge-cases",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-market",
         "tags": [
           "research",
           "monitoring"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-market-edge-cases",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -7797,7 +6621,7 @@
       "description": "Step of the research-market playbook: the worker brief for listening to what people say about the brand and category, risks first. Run research-market instead; not for direct use.",
       "tags": "research, monitoring",
       "path": "skills/marketing/research-market-listening",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/research-market-listening/SKILL.md",
         "skills/marketing/research-market-listening/skill.meta.json"
@@ -7806,21 +6630,13 @@
         "slug": "research-market-listening",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "research-market",
         "tags": [
           "research",
           "monitoring"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-market-listening",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -7832,7 +6648,7 @@
       "description": "Step of the research-market playbook: the worker brief for researching the market itself, including category, size, changes, pricing norms and demand. Run research-market instead; not for direct use.",
       "tags": "research, monitoring",
       "path": "skills/marketing/research-market-market-pass",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/research-market-market-pass/SKILL.md",
         "skills/marketing/research-market-market-pass/skill.meta.json"
@@ -7841,21 +6657,13 @@
         "slug": "research-market-market-pass",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "research-market",
         "tags": [
           "research",
           "monitoring"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install research-market-market-pass",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -7867,7 +6675,7 @@
       "description": "Final QC gate for a rendered 9:16 video ad, run before it is published. One script checks what a machine can decide — exact 1080x1920 size, a hook that moves and speaks in the first second, no frozen stretches, no dead air, no black frames, the brand's real logo on the end card (never a favicon, never a redrawn or wrong logo), end-card colours near the brand palette — and builds one contact sheet (frames with the TikTok/Reels UI safe zones shaded, beside the logo, product images and a font specimen) for the checks that need eyes — font, product likeness, product consistency across scenes, safe zones. A declared silent-text profile covers silent, text-led formats such as kinetic text (no audio track needed, short blank beats between text beats allowed within fixed bounds). Exit 0 PASS / 2 FAIL / 3 ERROR. Use on every finished video master before pinning it.",
       "tags": "ads, brand",
       "path": "skills/video/review-finished-ad",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "files": [
         "skills/video/review-finished-ad/SKILL.md",
         "skills/video/review-finished-ad/scripts/review_finished_ad.py",
@@ -7877,19 +6685,11 @@
         "slug": "review-finished-ad",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.1.1",
+        "version": "1.1.2",
         "tags": [
           "ads",
           "brand"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install review-finished-ad",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -7914,14 +6714,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install review-ugc-render",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -7933,7 +6725,7 @@
       "description": "Shared step of the marketing playbooks (analyze-performance, run-paid-campaigns, research-competitors, email-lifecycle): reads the last run's record, checks whether its recommendations were done and whether they worked, and saves a short record of this run for the next one. Loaded by those playbooks; not for direct use.",
       "tags": "brand",
       "path": "skills/marketing/run-memory",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "files": [
         "skills/marketing/run-memory/SKILL.md",
         "skills/marketing/run-memory/skill.meta.json"
@@ -7942,7 +6734,7 @@
         "slug": "run-memory",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -7963,14 +6755,6 @@
           "brand"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install run-memory",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -8018,14 +6802,6 @@
           "brand-growth"
         ],
         "collection_stage": "create",
-        "installation": {
-          "base_command": "npx goose-skills install run-organic-social",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -8140,7 +6916,7 @@
       "description": "Reviews a brand's own social accounts: what each is for, the last ~30 posts ranked against the account's own median with the likely reason for top and bottom posts, cadence actually kept, best posting times, and bio and pinned-post fixes. Use alone when you already know which accounts to review and can read their posts; otherwise run run-organic-social.",
       "tags": "social, content",
       "path": "skills/marketing/run-organic-social-account-audit",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/run-organic-social-account-audit/SKILL.md",
         "skills/marketing/run-organic-social-account-audit/skill.meta.json"
@@ -8149,21 +6925,13 @@
         "slug": "run-organic-social-account-audit",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "run-organic-social",
         "tags": [
           "social",
           "content"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install run-organic-social-account-audit",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -8185,7 +6953,7 @@
       "description": "Step of the run-organic-social playbook: turns the audit, research and dated moments into a two-week grid of empty post slots. Run run-organic-social instead; not for direct use.",
       "tags": "social, content",
       "path": "skills/marketing/run-organic-social-plan-calendar",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/run-organic-social-plan-calendar/SKILL.md",
         "skills/marketing/run-organic-social-plan-calendar/skill.meta.json"
@@ -8194,21 +6962,13 @@
         "slug": "run-organic-social-plan-calendar",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "run-organic-social",
         "tags": [
           "social",
           "content"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install run-organic-social-plan-calendar",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -8229,7 +6989,7 @@
       "description": "Researches how one social platform works right now from dated sources (what gets reach, formats rising and fading, how small accounts get seen, recent changes) and finds what is getting watched in a given niche there, with linked examples and engagement read against each author's baseline. Use alone when you already have the platform and niche; otherwise run run-organic-social.",
       "tags": "social, content",
       "path": "skills/marketing/run-organic-social-platform-research",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/run-organic-social-platform-research/SKILL.md",
         "skills/marketing/run-organic-social-platform-research/skill.meta.json"
@@ -8238,21 +6998,13 @@
         "slug": "run-organic-social-platform-research",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "run-organic-social",
         "tags": [
           "social",
           "content"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install run-organic-social-platform-research",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -8275,7 +7027,7 @@
       "description": "Checks a draft social post before it goes out: voice match against the account, would a person actually post it, AI-sounding phrases, claims against what the brand has signed off, banned words, disclosure and rights, trend timing, and whether a named person must approve it; rewrites weak drafts. Use alone when you already have the draft, the brand's voice and approved claims; otherwise run run-organic-social.",
       "tags": "social, content",
       "path": "skills/marketing/run-organic-social-post-check",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/run-organic-social-post-check/SKILL.md",
         "skills/marketing/run-organic-social-post-check/skill.meta.json"
@@ -8284,21 +7036,13 @@
         "slug": "run-organic-social-post-check",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "run-organic-social",
         "tags": [
           "social",
           "content"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install run-organic-social-post-check",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -8347,14 +7091,6 @@
           "brand-growth"
         ],
         "collection_stage": "analyze",
-        "installation": {
-          "base_command": "npx goose-skills install run-paid-campaigns",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "analyze-performance",
@@ -8461,7 +7197,7 @@
       "description": "Step of the run-paid-campaigns playbook: stages the week's approval items, applies only what the marketer approves and keeps the change log. Run run-paid-campaigns instead; not for direct use.",
       "tags": "ads",
       "path": "skills/marketing/run-paid-campaigns-apply-and-log",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/run-paid-campaigns-apply-and-log/SKILL.md",
         "skills/marketing/run-paid-campaigns-apply-and-log/skill.meta.json"
@@ -8470,20 +7206,12 @@
         "slug": "run-paid-campaigns-apply-and-log",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "run-paid-campaigns",
         "tags": [
           "ads"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install run-paid-campaigns-apply-and-log",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -8495,7 +7223,7 @@
       "description": "Step of the run-paid-campaigns playbook: turns the weekly read into scale, pause, hold, rotate and fix recommendations within the spend ceiling. Run run-paid-campaigns instead; not for direct use.",
       "tags": "ads",
       "path": "skills/marketing/run-paid-campaigns-draft-moves",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/run-paid-campaigns-draft-moves/SKILL.md",
         "skills/marketing/run-paid-campaigns-draft-moves/skill.meta.json"
@@ -8504,20 +7232,12 @@
         "slug": "run-paid-campaigns-draft-moves",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "run-paid-campaigns",
         "tags": [
           "ads"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install run-paid-campaigns-draft-moves",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -8529,7 +7249,7 @@
       "description": "Checks that ads are safe to spend on: conversion tracking recording, landing pages loading on mobile with the right product, price and offer, enough stock behind promoted products, no disapproved ads, and no account or payment stop. Marks each pass, fail or unknown and turns fails into fixes. Use alone when you already have the live or planned ads and their landing pages; otherwise run run-paid-campaigns.",
       "tags": "ads",
       "path": "skills/marketing/run-paid-campaigns-health-gate",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/run-paid-campaigns-health-gate/SKILL.md",
         "skills/marketing/run-paid-campaigns-health-gate/skill.meta.json"
@@ -8538,20 +7258,12 @@
         "slug": "run-paid-campaigns-health-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "run-paid-campaigns",
         "tags": [
           "ads"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install run-paid-campaigns-health-gate",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "run-paid-campaigns"
         ]
@@ -8565,7 +7277,7 @@
       "description": "Step of the run-paid-campaigns playbook: reads each platform's last mature results window against the allowable cost, as evidence for the week's moves. Run run-paid-campaigns instead; not for direct use.",
       "tags": "ads",
       "path": "skills/marketing/run-paid-campaigns-weekly-read",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/run-paid-campaigns-weekly-read/SKILL.md",
         "skills/marketing/run-paid-campaigns-weekly-read/skill.meta.json"
@@ -8574,20 +7286,12 @@
         "slug": "run-paid-campaigns-weekly-read",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "playbook": "run-paid-campaigns",
         "tags": [
           "ads"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install run-paid-campaigns-weekly-read",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -8599,13 +7303,62 @@
       "description": "Shared step of the marketing playbooks (make-static-ads, analyze-performance, email-lifecycle, write-outreach): saves a short brand rule or finding in the human's own words, one idea per rule, retires the playbook's own older rules it replaces, and reads the result back to confirm. Loaded by those playbooks; not for direct use.",
       "tags": "brand",
       "path": "skills/marketing/save-learning",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "files": [
         "skills/marketing/save-learning/SKILL.md",
         "skills/marketing/save-learning/skill.meta.json"
       ],
       "metadata": {
         "slug": "save-learning",
+        "category": "capabilities",
+        "tier": "atom",
+        "version": "0.1.3",
+        "used_by": [
+          "analyze-performance",
+          "email-lifecycle",
+          "improve-search-visibility",
+          "make-content",
+          "make-static-ads",
+          "plan-campaign",
+          "research-audience",
+          "research-competitors",
+          "research-market",
+          "run-organic-social",
+          "run-paid-campaigns",
+          "where-to-start",
+          "work-with-creators",
+          "write-outreach"
+        ],
+        "tags": [
+          "brand"
+        ],
+        "standalone": false,
+        "requires_skills": [
+          "claims-gate",
+          "marketing-data-access",
+          "marketing-guide",
+          "run-memory",
+          "save-to-brain",
+          "spend-gate",
+          "write-report"
+        ]
+      }
+    },
+    {
+      "slug": "save-to-brain",
+      "name": "save-to-brain",
+      "category": "capabilities",
+      "domain": "marketing-agent",
+      "description": "Shared step of the marketing playbooks (research-market, plan-campaign, make-content, analyze-performance): saves a finished file to the brand and makes it searchable. It either replaces older versions or keeps dated history, then checks that the file can be found. Loaded by those playbooks; not for direct use.",
+      "tags": "brand",
+      "path": "skills/marketing/save-to-brain",
+      "version": "0.1.2",
+      "files": [
+        "skills/marketing/save-to-brain/SKILL.md",
+        "skills/marketing/save-to-brain/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "save-to-brain",
         "category": "capabilities",
         "tier": "atom",
         "version": "0.1.2",
@@ -8629,71 +7382,6 @@
           "brand"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install save-learning",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "claims-gate",
-          "marketing-data-access",
-          "marketing-guide",
-          "run-memory",
-          "save-to-brain",
-          "spend-gate",
-          "write-report"
-        ]
-      }
-    },
-    {
-      "slug": "save-to-brain",
-      "name": "save-to-brain",
-      "category": "capabilities",
-      "domain": "marketing-agent",
-      "description": "Shared step of the marketing playbooks (research-market, plan-campaign, make-content, analyze-performance): saves a finished file to the brand and makes it searchable. It either replaces older versions or keeps dated history, then checks that the file can be found. Loaded by those playbooks; not for direct use.",
-      "tags": "brand",
-      "path": "skills/marketing/save-to-brain",
-      "version": "0.1.1",
-      "files": [
-        "skills/marketing/save-to-brain/SKILL.md",
-        "skills/marketing/save-to-brain/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "save-to-brain",
-        "category": "capabilities",
-        "tier": "atom",
-        "version": "0.1.1",
-        "used_by": [
-          "analyze-performance",
-          "email-lifecycle",
-          "improve-search-visibility",
-          "make-content",
-          "make-static-ads",
-          "plan-campaign",
-          "research-audience",
-          "research-competitors",
-          "research-market",
-          "run-organic-social",
-          "run-paid-campaigns",
-          "where-to-start",
-          "work-with-creators",
-          "write-outreach"
-        ],
-        "tags": [
-          "brand"
-        ],
-        "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install save-to-brain",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -8726,15 +7414,7 @@
         "tags": [
           "social",
           "research-tools"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install scrapecreators-api",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -8745,7 +7425,7 @@
       "description": "Shared step of the marketing playbooks (make-static-ads, research-market, run-paid-campaigns, work-with-creators): gets the human's yes before any credits are spent. Shows the price exactly as quoted, or asks for one yes to a credit ceiling for paid data reads, stays under it and logs each charge. Also covers scheduled runs. Loaded by those playbooks; not for direct use.",
       "tags": "research-tools",
       "path": "skills/marketing/spend-gate",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/spend-gate/SKILL.md",
         "skills/marketing/spend-gate/proxy-endpoints.md",
@@ -8755,7 +7435,7 @@
         "slug": "spend-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -8776,14 +7456,6 @@
           "research-tools"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install spend-gate",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -8822,15 +7494,7 @@
         "tags": [
           "ads"
         ],
-        "version": "1.3.1",
-        "installation": {
-          "base_command": "npx goose-skills install stitch-videos-ffmpeg",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        "version": "1.3.1"
       }
     },
     {
@@ -8855,14 +7519,6 @@
           "social",
           "research"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install transcript-intelligence",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "example_prompt": "Analyze these ten product videos and extract their hooks, claims, proof, objections, calls to action, and reusable content atoms.",
         "requires_skills": [
           "scrapecreators-api"
@@ -8892,14 +7548,6 @@
         "tags": [
           "ads"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install ugc-fixloop",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "watch"
         ]
@@ -8913,7 +7561,7 @@
       "description": "QC gate for a generated static ad image — verify the file opens, matches the requested dimensions, shows the correct product/subject (right shape, colour, label, logo), and has no garbled text or severe artifacts. Records pass/fail/needs-human in verification.md. Used as the final check in the static ad remix flow before shipping.",
       "tags": "ads, design",
       "path": "skills/video/verify-product-image",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/video/verify-product-image/SKILL.md",
         "skills/video/verify-product-image/skill.meta.json"
@@ -8922,19 +7570,11 @@
         "slug": "verify-product-image",
         "category": "capabilities",
         "domain": "ads",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "ads",
           "design"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install verify-product-image",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -8945,7 +7585,7 @@
       "description": "Full video production sequence with script review, actual ingredient choices, controlled generation, editing, evidence-based quality review, polish, captions and delivery. A host binding supplies project storage, authentic approvals, provider access and billing.",
       "tags": "ads, content",
       "path": "skills/video/video-production-harness",
-      "version": "3.1.1",
+      "version": "3.1.2",
       "files": [
         "skills/video/video-production-harness/SKILL.md",
         "skills/video/video-production-harness/auto-fix-from-review-notes.md",
@@ -9012,14 +7652,6 @@
           "Human review gates",
           "Shared Studio production source"
         ],
-        "installation": {
-          "base_command": "npx goose-skills install video-production-harness",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-angle-miner",
           "comment-mining",
@@ -9031,14 +7663,14 @@
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "65a2eed34701839d699ad0cafa43a8418f09a1c8",
-        "source_hash": "e92d4bcfd21efda1d27cdeeaa70dda7e312edba91d6c2583b650fd5bf2f47539",
-        "source_version": "5-e92d4bcfd21e",
+        "source_commit": "2f924f6e93c9225df5a42121a88aaf4381835ea8",
+        "source_hash": "0aa021946580d4b2b795d581d7d87b589f97455000d654d489af8a20bac55f95",
+        "source_version": "5-0aa021946580",
         "tags": [
           "ads",
           "content"
         ],
-        "version": "3.1.1"
+        "version": "3.1.2"
       }
     },
     {
@@ -9071,14 +7703,6 @@
           "content"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install voice-card",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -9115,15 +7739,7 @@
         "version": "2.0.1",
         "tags": [
           "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install watch",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        }
+        ]
       }
     },
     {
@@ -9157,14 +7773,6 @@
           "brand-growth"
         ],
         "collection_stage": "research",
-        "installation": {
-          "base_command": "npx goose-skills install where-to-start",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -9233,7 +7841,7 @@
       "description": "Step of the where-to-start playbook: saves the founder's answers and the agreed first move with the brand, so later visits and other playbooks don't ask again. Run where-to-start instead; not for direct use.",
       "tags": "brand, research",
       "path": "skills/marketing/where-to-start-situation-save",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/where-to-start-situation-save/SKILL.md",
         "skills/marketing/where-to-start-situation-save/skill.meta.json"
@@ -9242,21 +7850,13 @@
         "slug": "where-to-start-situation-save",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "where-to-start",
         "tags": [
           "brand",
           "research"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install where-to-start-situation-save",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -9305,14 +7905,6 @@
           "brand-growth"
         ],
         "collection_stage": "create",
-        "installation": {
-          "base_command": "npx goose-skills install work-with-creators",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -9401,7 +7993,7 @@
       "description": "Writes a one-page brief for one creator you have already picked: hook ideas in their format, at most three approved must-say lines, never-says, the disclosure for their platform, deliverables, timeline, the usage-rights ask and two examples. Adds a short first-message draft (gift and paid versions) for you to send. Use alone when you already have the creator, their best fitting post and the goal; otherwise run work-with-creators.",
       "tags": "social, outreach",
       "path": "skills/marketing/work-with-creators-brief-writer",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/work-with-creators-brief-writer/SKILL.md",
         "skills/marketing/work-with-creators-brief-writer/skill.meta.json"
@@ -9410,21 +8002,13 @@
         "slug": "work-with-creators-brief-writer",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "work-with-creators",
         "tags": [
           "social",
           "outreach"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install work-with-creators-brief-writer",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-policy-check",
           "claims-gate",
@@ -9447,7 +8031,7 @@
       "description": "Step of the work-with-creators playbook: builds and screens a long list of creators from fans, category creators and search, and ranks finalists to vet next. Run work-with-creators instead; not for direct use.",
       "tags": "social, outreach",
       "path": "skills/marketing/work-with-creators-creator-discovery",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/work-with-creators-creator-discovery/SKILL.md",
         "skills/marketing/work-with-creators-creator-discovery/skill.meta.json"
@@ -9456,21 +8040,13 @@
         "slug": "work-with-creators-creator-discovery",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "work-with-creators",
         "tags": [
           "social",
           "outreach"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install work-with-creators-creator-discovery",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -9482,7 +8058,7 @@
       "description": "Vets creators you have already named from their public pages. Covers the median views of their last 12 to 20 posts (sponsored and organic apart), a read of their comments, how often they post, audience fit with how sure it is, about 12 months of brand-safety checks, rival partnerships and rules for regulated categories. Gives a verdict with dated numbers for each one. Use alone when you already have the creator handles and the brand's goal; otherwise run work-with-creators.",
       "tags": "social, outreach",
       "path": "skills/marketing/work-with-creators-creator-vetting",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/work-with-creators-creator-vetting/SKILL.md",
         "skills/marketing/work-with-creators-creator-vetting/skill.meta.json"
@@ -9491,21 +8067,13 @@
         "slug": "work-with-creators-creator-vetting",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "work-with-creators",
         "tags": [
           "social",
           "outreach"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install work-with-creators-creator-vetting",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "work-with-creators"
         ]
@@ -9519,7 +8087,7 @@
       "description": "Prices a creator you have already vetted. Gives a low and a target fee from median views and the platform's typical cost per 1,000 views, a walk-away ceiling from your goal and margin, and usage rights priced on their own. Checks against real quoted rates and recommends gift, paid, affiliate or a mix, with one line showing the math. Use alone when you already have the creator's recent view numbers, your goal and your unit cost; otherwise run work-with-creators.",
       "tags": "social, outreach",
       "path": "skills/marketing/work-with-creators-rate-and-deal",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/work-with-creators-rate-and-deal/SKILL.md",
         "skills/marketing/work-with-creators-rate-and-deal/skill.meta.json"
@@ -9528,21 +8096,13 @@
         "slug": "work-with-creators-rate-and-deal",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "work-with-creators",
         "tags": [
           "social",
           "outreach"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install work-with-creators-rate-and-deal",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "work-with-creators"
         ]
@@ -9583,14 +8143,6 @@
           "brand-growth"
         ],
         "collection_stage": "create",
-        "installation": {
-          "base_command": "npx goose-skills install write-outreach",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -9662,7 +8214,7 @@
       "description": "Step of the write-outreach playbook: the brief a helper follows to write one segment's email and LinkedIn sequence, first lines and replies from rows and an angle prepared earlier. Run write-outreach instead; not for direct use.",
       "tags": "outreach, sales",
       "path": "skills/marketing/write-outreach-draft-sequence",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/write-outreach-draft-sequence/SKILL.md",
         "skills/marketing/write-outreach-draft-sequence/skill.meta.json"
@@ -9671,21 +8223,13 @@
         "slug": "write-outreach-draft-sequence",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "write-outreach",
         "tags": [
           "outreach",
           "sales"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install write-outreach-draft-sequence",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -9697,7 +8241,7 @@
       "description": "Step of the write-outreach playbook: the checks a finished outreach pack and send file must pass before delivery, covering facts, proof, compliance, length, asks and tone. Run write-outreach instead; not for direct use.",
       "tags": "outreach, sales",
       "path": "skills/marketing/write-outreach-outreach-qa",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/write-outreach-outreach-qa/SKILL.md",
         "skills/marketing/write-outreach-outreach-qa/skill.meta.json"
@@ -9706,21 +8250,13 @@
         "slug": "write-outreach-outreach-qa",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "write-outreach",
         "tags": [
           "outreach",
           "sales"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install write-outreach-outreach-qa",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": []
       }
     },
@@ -9732,7 +8268,7 @@
       "description": "Step of the write-outreach playbook: sorts outreach replies by type, matches each to its prospect row, sets that person's status and keeps useful exact words. Run write-outreach instead; not for direct use.",
       "tags": "outreach, sales",
       "path": "skills/marketing/write-outreach-reply-reader",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "files": [
         "skills/marketing/write-outreach-reply-reader/SKILL.md",
         "skills/marketing/write-outreach-reply-reader/skill.meta.json"
@@ -9741,21 +8277,13 @@
         "slug": "write-outreach-reply-reader",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "playbook": "write-outreach",
         "tags": [
           "outreach",
           "sales"
         ],
         "standalone": false,
-        "installation": {
-          "base_command": "npx goose-skills install write-outreach-reply-reader",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -9777,7 +8305,7 @@
       "description": "Turns findings you already have into a report a marketer can read in 30 seconds. It has a short summary with key findings and how sure each one is, the first move, decisions needed, at most six next moves, what was not checked, and dated sources. It checks length and wording before handing over, then saves the report to the brand. Use alone when you already have the findings and their sources; otherwise run the playbook for the job (e.g. research-market, research-competitors, plan-campaign).",
       "tags": "research, content",
       "path": "skills/marketing/write-report",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "skills/marketing/write-report/SKILL.md",
         "skills/marketing/write-report/example-top.md",
@@ -9787,7 +8315,7 @@
         "slug": "write-report",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -9809,14 +8337,6 @@
           "content"
         ],
         "standalone": true,
-        "installation": {
-          "base_command": "npx goose-skills install write-report",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "claims-gate",
           "marketing-data-access",
@@ -9869,14 +8389,6 @@
           "content"
         ],
         "example_prompt": "Write a reference-led product ad with connected speech, truthful visible proof and an explicit sound plan",
-        "installation": {
-          "base_command": "npx goose-skills install write-video-ad-script",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
         "requires_skills": [
           "ad-angle-miner",
           "watch",

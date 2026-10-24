@@ -3,7 +3,7 @@ name: research-competitors-rival-pass
 description: >-
   Step of the research-competitors playbook: the worker brief for profiling one rival at a capped
   depth, returning a fixed-shape profile. Run research-competitors instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # rival-pass — worker brief

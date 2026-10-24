@@ -1,18 +1,18 @@
 # Releasing the skills catalog
 
 **In short**
-- **`dev` is staging, `main` is production.** A merge to `dev` publishes the staging catalog. A merge to `main` publishes the production catalog, then updates the public skills site and docs, then releases the npm package.
+- **`dev` is staging, `main` is production.** A merge to `dev` publishes the staging catalog. A merge to `main` publishes the production catalog, then updates the public skills site and docs. This repo is not published to npm: customers get skills through the GooseWorks app, its MCP server and the `gooseworks` CLI.
 - **A `main` merge reaches every customer.** The production catalog is what the GooseWorks app serves, what `gooseworks install` and `gooseworks update` install (they read `skills-index.json` on `main`), and what the GooseWorks plugin loads (its marketplace points at `skills/entry/` on `main`). A change to an entry skill on `main` changes every customer's entry skills at once.
 - **So test on staging first.** Merge to `dev`, check the change on staging, then promote `dev` to `main`.
 - Nothing deploys unless all five checks pass: every release job waits for them.
-- **Nothing blocks a merge yet.** `dev` and `main` have no branch protection and no ruleset, so a pull request with a red check can still be merged; it then just doesn't deploy. The npm release has also failed on every push to `main` since 16 Oct. Both need the owner: see [Owner setup needed](#owner-setup-needed).
+- **Nothing blocks a merge yet.** `dev` and `main` have no branch protection and no ruleset, so a pull request with a red check can still be merged; it then just doesn't deploy. See [Owner setup needed](#owner-setup-needed).
 
 ## The two branches
 
 | Branch | Environment | What publishes | Who sees it |
 |---|---|---|---|
 | `dev` | staging | The staging catalog, synced from the exact merged `dev` commit | The staging app and the staging MCP server (`gooseworks-staging`) |
-| `main` | production | The production catalog from the exact merged `main` commit; then the public skills site and docs; then the npm package | Every customer: the app, the production MCP server, `gooseworks install` / `update`, the plugin, `npx goose-skills` |
+| `main` | production | The production catalog from the exact merged `main` commit; then the public skills site and docs | Every customer: the app, the production MCP server, `gooseworks install` / `update`, the plugin |
 
 Feature PRs go into `dev`. A release is a PR from `dev` into `main`.
 
@@ -23,7 +23,6 @@ All of it is in `.github/workflows/ci.yml`.
 1. **Checks** run on every pull request and on every push to `dev` or `main`: `validate`, `atom-checks`, `part-tests`, `imessage-chat-browser-tests`, `media-tests`.
 2. **`deploy-catalog`** runs on a push to `dev` or `main`, only after every check passes. It starts the `sync-predefined-skills-catalog` task in the GooseWorks app's Trigger.dev project for that environment, passing the branch and the exact commit, and waits for it to finish. It fails if any skill fails to sync.
 3. **`dispatch-public-sync`** (`main` only, after the catalog succeeds) asks the GooseWorks app repo to rebuild the public skills site and docs.
-4. **`npm-release`** (`main` only, after every check passes) opens or updates the changesets release PR, or publishes the `goose-skills` npm package when that PR merges. It does not publish the GooseWorks CLI. **It fails today** ("No NPM_TOKEN or OIDC available"), because nothing gives it npm credentials. The catalog, site and docs still release, since they don't wait for this job; only the npm package is stuck.
 
 ## Test an entry-skill change on staging first
 
@@ -40,18 +39,15 @@ The GooseWorks CLI has its own staging release (`gooseworks@next`); see `docs/st
 
 - **CI runs five checks** on every pull request and push: `validate`, `atom-checks`, `part-tests`, `imessage-chat-browser-tests`, `media-tests`.
 - **They don't block merges.** Neither `dev` nor `main` is protected, and the repository has no rulesets. Read a pull request's checks before you merge it.
-- **They do block releases.** `deploy-catalog` and `npm-release` run only when all five pass.
+- **They do block releases.** `deploy-catalog` runs only when all five pass.
 
 ## Owner setup needed
 
-These are repository and npm settings, so only the owner can change them.
+This is a repository setting, so only the owner can change it.
 
 1. **A ruleset that makes the checks required.** Target `dev` and `main`. Require a pull request before merging, and require these status checks to pass: `validate`, `atom-checks`, `part-tests`, `imessage-chat-browser-tests`, `media-tests`. Then a red check really blocks the merge.
-2. **npm credentials for `npm-release`.** Pick one:
-   - **npm trusted publishing (no stored token).** On npmjs.com, add this repository's `ci.yml` workflow and the `npm-release` environment as a trusted publisher of the `goose-skills` package. In `ci.yml`, add `id-token: write` to the `npm-release` job's `permissions`.
-   - **A token.** Create an npm automation token for `goose-skills` and store it as the `NPM_TOKEN` secret of the `npm-release` environment.
-   
-   Either way, also limit the `npm-release` environment to `main` (it has no branch policy today).
+
+The old `npm-release` job and its `npm-release` environment are gone (24 Oct 2026): the `goose-skills` npm package is no longer released. The environment can be deleted in the repository settings.
 
 ## Settings this depends on
 
@@ -59,7 +55,6 @@ These are repository and npm settings, so only the owner can change them.
 |---|---|---|
 | `TRIGGER_SECRET_KEY` | GitHub environments `staging` and `production` | The secret key of that environment in the app's main Trigger.dev project. Staging deploys are limited to `dev`, production to `main`. |
 | `GOOSEWORKS_APP_REPO_TOKEN`, `GOOSEWORKS_APP_REPO` | Repository secrets | Let `dispatch-public-sync` reach the app repo. |
-| `NPM_TOKEN` | GitHub environment `npm-release` | **Not set today.** The `npm-release` job reads it to publish the npm package. The environment has no secrets and no branch policy; see [Owner setup needed](#owner-setup-needed). |
 
 ## When something fails
 

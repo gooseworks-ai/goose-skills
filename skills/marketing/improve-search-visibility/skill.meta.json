@@ -10,14 +10,6 @@
     "brand-growth"
   ],
   "collection_stage": "analyze",
-  "installation": {
-    "base_command": "npx goose-skills install improve-search-visibility",
-    "supports": [
-      "claude",
-      "cursor",
-      "codex"
-    ]
-  },
   "requires_skills": [
     "claims-gate",
     "improve-search-visibility-citation-check",
@@ -34,7 +26,7 @@
     "spend-gate",
     "write-report"
   ],
-  "pillar": "4 \u2014 SEO and AEO/GEO",
+  "pillar": "4 — SEO and AEO/GEO",
   "intents": [
     "when people ask ChatGPT or Google for products like mine, am I in the answer",
     "why does ChatGPT recommend my competitor and not me",
@@ -54,34 +46,34 @@
     "plan programmatic SEO page sets"
   ],
   "reads": [
-    "brand brain \u2014 brain_map core and required reads, then chapters 2, 5, 7, 8, 9, 17 and brain_search for gaps when brain_* tools are listed; else brand_read summary, products, onboarding, competitors, learnings, sources (server research and the app; learn-my-brand, unreleased)",
-    "claims \u2014 the shared claims-gate atom over the sign-off contract (signed-off marker \u2192 'Claims you may use' facts; written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
-    "voice-of-customer bank and demand read \u2014 research/audience/voc-bank.md (research-audience), research/market/demand.md (research-market); knowledge_search document/evidence",
-    "tracked competitors \u2014 competitor_read (research-competitors)",
-    "page drafts answering our briefs \u2014 content/drafts/* naming search/briefs/<slug>.md on line one (make-content)",
-    "question set, page map and last report \u2014 search/questions.md, search/page-map.md, search/visibility/<date>.md (this playbook)",
-    "Search Console export, app keyword field, location list, pasted AI answers \u2014 human-provided",
-    "price history for proxy lookups \u2014 research/credits-log/<YYYY-MM>.md via the shared spend-gate atom (all proxy users)",
-    "is there an app \u2014 Apple's public search lookup and the Google Play store page, via the host's fetch (public web)",
-    "rivals' sitemaps and robots.txt for the page-type map; page source of the brand's homepage and one money page for analytics and ad tags \u2014 via the host's fetch (public web)",
-    "pronunciation facts ('Pronounce \"<term>\" as \"<spoken form>\"') \u2014 brand_read learnings, if recorded (earlier by learn-my-brand, unreleased); read only, never written here",
-    "last run record \u2014 runs/improve-search-visibility/search-visibility-check/<date>.md via the shared run-memory atom (this playbook's earlier runs)",
+    "brand brain — brain_map core and required reads, then chapters 2, 5, 7, 8, 9, 17 and brain_search for gaps when brain_* tools are listed; else brand_read summary, products, onboarding, competitors, learnings, sources (server research and the app; learn-my-brand, unreleased)",
+    "claims — the shared claims-gate atom over the sign-off contract (signed-off marker → 'Claims you may use' facts; written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
+    "voice-of-customer bank and demand read — research/audience/voc-bank.md (research-audience), research/market/demand.md (research-market); knowledge_search document/evidence",
+    "tracked competitors — competitor_read (research-competitors)",
+    "page drafts answering our briefs — content/drafts/* naming search/briefs/<slug>.md on line one (make-content)",
+    "question set, page map and last report — search/questions.md, search/page-map.md, search/visibility/<date>.md (this playbook)",
+    "Search Console export, app keyword field, location list, pasted AI answers — human-provided",
+    "price history for proxy lookups — research/credits-log/<YYYY-MM>.md via the shared spend-gate atom (all proxy users)",
+    "is there an app — Apple's public search lookup and the Google Play store page, via the host's fetch (public web)",
+    "rivals' sitemaps and robots.txt for the page-type map; page source of the brand's homepage and one money page for analytics and ad tags — via the host's fetch (public web)",
+    "pronunciation facts ('Pronounce \"<term>\" as \"<spoken form>\"') — brand_read learnings, if recorded (earlier by learn-my-brand, unreleased); read only, never written here",
+    "last run record — runs/improve-search-visibility/search-visibility-check/<date>.md via the shared run-memory atom (this playbook's earlier runs)",
     "managed operation discovery and exact-request quotes when marketing_data_describe / marketing_data_lookup are listed; domain_seo_metrics/domain_seo_overview supply native SEO data when returned; website_traffic supplies total visits only (references/seo-data.md)"
   ],
   "writes": [
-    "the report \u2014 local file gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-search-visibility.md (or an artifact in hosted chat) through the shared write-report atom, plus a saved copy with a link (read by the marketer)",
-    "search/questions.md \u2014 the versioned question set (read by the next run)",
-    "search/page-map.md + brand document 'Search page map \u2014 <Brand> \u2014 <date> v<N>' (supersede) \u2014 the cluster\u2192page roadmap (read by the next run and the human; feeds ranked fixes and the briefs)",
-    "search/visibility/<YYYY-MM-DD>.md + brand document 'Search visibility \u2014 <Brand> \u2014 <date>' (keep-history) \u2014 visibility report (read by the human, analyze-performance's channel table, research-competitors)",
-    "search/fixes/<YYYY-MM-DD>.md \u2014 ranked fixes plus a 'For your email program \u2014 review requests' section (read by the human, email-lifecycle and the next run)",
-    "search/briefs/<page-slug>.md \u2014 page briefs in make-content's brief input shape (read by make-content)",
-    "optional monthly automation, created paused \u2014 automation_upsert (enabled by the human)",
-    "research/credits-log/<YYYY-MM>.md \u2014 charges for paid lookups via the shared spend-gate atom (read by every proxy user)",
-    "brand learnings [search YYYY-MM-DD] \u2014 only rules the human stated (e.g. competitor naming) via the shared save-learning atom, retiring the earlier [search \u2026] facts each new rule replaces or contradicts (read by every playbook)",
-    "search/visibility/<YYYY-MM-DD>-runs.md \u2014 verbatim AI answers, never imported into brand knowledge (read by the next run)",
-    "run record \u2014 runs/improve-search-visibility/search-visibility-check/<YYYY-MM-DD>.md + brand document 'Run record \u2014 search visibility check \u2014 <Brand> \u2014 <date>' (keep-history) via the shared run-memory atom (read by the next run)",
-    "search/audits/<date>.md, search/gaps/<date>.md, search/clusters/<topic-slug>.md, search/pseo/<date>-<subject>.md and search/metrics/<date>.md \u2014 selected job evidence and deliverables (read by the marketer, next job run, make-content briefs and engineering handoff)",
-    "job-specific run records under runs/improve-search-visibility/<job>/[<subject>/]<date>.md \u2014 same-job comparisons through run-memory"
+    "the report — local file gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-search-visibility.md (or an artifact in hosted chat) through the shared write-report atom, plus a saved copy with a link (read by the marketer)",
+    "search/questions.md — the versioned question set (read by the next run)",
+    "search/page-map.md + brand document 'Search page map — <Brand> — <date> v<N>' (supersede) — the cluster→page roadmap (read by the next run and the human; feeds ranked fixes and the briefs)",
+    "search/visibility/<YYYY-MM-DD>.md + brand document 'Search visibility — <Brand> — <date>' (keep-history) — visibility report (read by the human, analyze-performance's channel table, research-competitors)",
+    "search/fixes/<YYYY-MM-DD>.md — ranked fixes plus a 'For your email program — review requests' section (read by the human, email-lifecycle and the next run)",
+    "search/briefs/<page-slug>.md — page briefs in make-content's brief input shape (read by make-content)",
+    "optional monthly automation, created paused — automation_upsert (enabled by the human)",
+    "research/credits-log/<YYYY-MM>.md — charges for paid lookups via the shared spend-gate atom (read by every proxy user)",
+    "brand learnings [search YYYY-MM-DD] — only rules the human stated (e.g. competitor naming) via the shared save-learning atom, retiring the earlier [search …] facts each new rule replaces or contradicts (read by every playbook)",
+    "search/visibility/<YYYY-MM-DD>-runs.md — verbatim AI answers, never imported into brand knowledge (read by the next run)",
+    "run record — runs/improve-search-visibility/search-visibility-check/<YYYY-MM-DD>.md + brand document 'Run record — search visibility check — <Brand> — <date>' (keep-history) via the shared run-memory atom (read by the next run)",
+    "search/audits/<date>.md, search/gaps/<date>.md, search/clusters/<topic-slug>.md, search/pseo/<date>-<subject>.md and search/metrics/<date>.md — selected job evidence and deliverables (read by the marketer, next job run, make-content briefs and engineering handoff)",
+    "job-specific run records under runs/improve-search-visibility/<job>/[<subject>/]<date>.md — same-job comparisons through run-memory"
   ],
   "needs": {
     "mcp": [

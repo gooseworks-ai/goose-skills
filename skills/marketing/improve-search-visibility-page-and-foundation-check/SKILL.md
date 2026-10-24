@@ -4,7 +4,7 @@ description: >-
   Step of the improve-search-visibility playbook: audits site indexing, crawling, technical and page
   issues at the requested scope, or checks pages behind lost visibility questions. Run improve-search-visibility instead;
   not for direct use.
-version: 0.2.0
+version: 0.2.1
 ---
 
 # page-and-foundation-check

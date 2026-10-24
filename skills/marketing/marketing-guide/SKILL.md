@@ -5,7 +5,7 @@ description: >-
   shared claims, money, research and schedule rules, and the index of what each playbook saves and who
   reads it. Load at the start of any playbook run. Not a marketer ask: for "what should I do first?"
   use where-to-start.
-version: 0.1.3
+version: 0.1.4
 ---
 
 # marketing-guide

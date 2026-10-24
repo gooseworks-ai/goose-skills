@@ -5,7 +5,7 @@ description: >-
   depth and codes, stock, claims, consent and legal footer, SMS rules, rendering, voice and AI-copy
   tells, and the goal metric. Returns a pass / fixed / open-question table. Use alone when you already
   have the finished draft and the brand's product and policy facts; otherwise run email-lifecycle.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # send-check

@@ -4,7 +4,7 @@ description: >-
   Step of the email-lifecycle playbook: builds the month's send calendar and writes this week's email
   and SMS broadcasts against the approved cadence and segments. Run email-lifecycle instead; not for
   direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # broadcast-planner

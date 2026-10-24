@@ -6,7 +6,7 @@ description: >-
   field-by-field rewrite with character counts, or a launch-day listing before release. Use alone when
   you already have the app's store links and signed-off product facts; otherwise run
   improve-search-visibility.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # store-listing-audit

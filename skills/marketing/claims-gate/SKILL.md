@@ -7,7 +7,7 @@ description: >-
   the 3 to 5 lines that matter and records the answer. Use alone when you already have the copy and a
   brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content,
   write-outreach).
-version: 0.1.4
+version: 0.1.5
 ---
 
 # claims-gate

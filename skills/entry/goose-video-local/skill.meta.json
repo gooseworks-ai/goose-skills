@@ -6,13 +6,5 @@
   "version": "1.0.3",
   "tags": [
     "ads"
-  ],
-  "installation": {
-    "base_command": "npx gooseworks@latest install --mcp",
-    "supports": [
-      "claude",
-      "cursor",
-      "codex"
-    ]
-  }
+  ]
 }

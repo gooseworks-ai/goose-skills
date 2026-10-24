@@ -1021,12 +1021,12 @@
     {
       "slug": "ugc-video-formats",
       "replacement": null,
-      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug: npx goose-skills install create-video-seedance-2-fal, npx goose-skills install review-ugc-render."
+      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug: npx gooseworks@latest install --with create-video-seedance-2-fal, npx gooseworks@latest install --with review-ugc-render."
     },
     {
       "slug": "video-ad-formats",
       "replacement": null,
-      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug (npx goose-skills install <slug>): create-imessage-mockup, create-chatgpt-mockup, create-apple-notes-mockup, render-ios-keyboard, stitch-videos-ffmpeg, mix-master, watch."
+      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug (npx gooseworks@latest install --with <slug>): create-imessage-mockup, create-chatgpt-mockup, create-apple-notes-mockup, render-ios-keyboard, stitch-videos-ffmpeg, mix-master, watch."
     }
   ],
   "retained": [

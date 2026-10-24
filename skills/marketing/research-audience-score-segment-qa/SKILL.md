@@ -4,7 +4,7 @@ description: >-
   Step of the research-audience playbook: scores and tiers list rows, groups them into segments with
   an angle each, runs the pre-handover checks and writes the list files. Run research-audience
   instead; not for direct use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # score-segment-qa

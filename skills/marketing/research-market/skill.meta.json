@@ -11,14 +11,6 @@
     "brand-growth"
   ],
   "collection_stage": "research",
-  "installation": {
-    "base_command": "npx goose-skills install research-market",
-    "supports": [
-      "claude",
-      "cursor",
-      "codex"
-    ]
-  },
   "requires_skills": [
     "claims-gate",
     "marketing-data-access",
@@ -32,7 +24,7 @@
     "spend-gate",
     "write-report"
   ],
-  "pillar": "1 \u2014 Strategy and planning",
+  "pillar": "1 — Strategy and planning",
   "intents": [
     "Do the market research for <brand>",
     "Which market are we in, and how big is it?",
@@ -44,24 +36,24 @@
     "Write positioning options and finished messages for <product>"
   ],
   "reads": [
-    "brand brain: summary, kit, products, competitors, learnings, sources, organic, accounts (brand_read); evidence and earlier documents (knowledge_search) \u2014 server research and the app (learn-my-brand, unreleased)",
-    "buyer groups and the customer-quote bank: workspace research/audience/buyer-groups.md (counts per group) and the latest research/audience/<date>-report.md \u2014 research-audience",
-    "sibling reports: the latest research/competitors/<date>-report.md and plans/ \u2014 research-competitors, plan-campaign",
-    "competitor roster (competitor_read) and rival records research/competitors/* \u2014 research-competitors",
-    "public web: news, analyst estimates, funding, pricing pages, review sites, communities, social platforms' public pages, AI answers \u2014 host web search, page fetch and browser (free)",
-    "previous run: workspace research/market/* incl. watchlist.md \u2014 research-market itself",
-    "claims through the claims-gate shared atom \u2014 its scoped sign-off, or earlier records (learn-my-brand, unreleased)",
-    "shared price history: workspace research/credits-log/<YYYY-MM>.md \u2014 any playbook that spends on data"
+    "brand brain: summary, kit, products, competitors, learnings, sources, organic, accounts (brand_read); evidence and earlier documents (knowledge_search) — server research and the app (learn-my-brand, unreleased)",
+    "buyer groups and the customer-quote bank: workspace research/audience/buyer-groups.md (counts per group) and the latest research/audience/<date>-report.md — research-audience",
+    "sibling reports: the latest research/competitors/<date>-report.md and plans/ — research-competitors, plan-campaign",
+    "competitor roster (competitor_read) and rival records research/competitors/* — research-competitors",
+    "public web: news, analyst estimates, funding, pricing pages, review sites, communities, social platforms' public pages, AI answers — host web search, page fetch and browser (free)",
+    "previous run: workspace research/market/* incl. watchlist.md — research-market itself",
+    "claims through the claims-gate shared atom — its scoped sign-off, or earlier records (learn-my-brand, unreleased)",
+    "shared price history: workspace research/credits-log/<YYYY-MM>.md — any playbook that spends on data"
   ],
   "writes": [
-    "market report (In short, Decisions for you, which market, size top-down and bottom-up, change, buying, pricing, attention, demand, what people are saying, competition in brief, You vs them, disagreements with sibling reports, what it means for positioning, what to do, not doing, baselines, couldn't check, sources with skew): local gooseworks-reports/<brand-slug>/<date>-market-research.md + workspace research/market/<date>-read.md + brand document (keep-history) \u2014 read by the founder, plan-campaign, research-audience, research-competitors, analyze-performance, run-organic-social, the next run",
-    "brand-watch notes (alerts only, else counts): research/market/watch/<date>.md + document (keep-history) \u2014 read by the founder, the next watch, analyze-performance",
-    "demand read: research/market/demand.md + document (supersede) \u2014 plan-campaign",
-    "listening watchlist: research/market/watchlist.md + document (supersede) \u2014 this playbook",
-    "outlier posts: inspiration library via social_inspiration_save (tag research-market) \u2014 makers, work-with-creators, run-organic-social",
-    "on yes only: rivals via competitor_save; [market \u2026] and [listening \u2026] rules via save-learning; a monthly pulse / quarterly report or a weekly brand watch via automation_upsert (created paused)",
-    "run records: workspace runs/research-market/<job-slug>/<date>.md + brand document (keep-history) through the run-memory shared atom \u2014 read by this playbook's next run",
-    "Positioning options: research/market/positioning/<date>.md (keep-history); only on owner choice, positioning.md or positioning-<product>.md (supersede) \u2014 read by planners and copy writers; current brand position is not automatically changed"
+    "market report (In short, Decisions for you, which market, size top-down and bottom-up, change, buying, pricing, attention, demand, what people are saying, competition in brief, You vs them, disagreements with sibling reports, what it means for positioning, what to do, not doing, baselines, couldn't check, sources with skew): local gooseworks-reports/<brand-slug>/<date>-market-research.md + workspace research/market/<date>-read.md + brand document (keep-history) — read by the founder, plan-campaign, research-audience, research-competitors, analyze-performance, run-organic-social, the next run",
+    "brand-watch notes (alerts only, else counts): research/market/watch/<date>.md + document (keep-history) — read by the founder, the next watch, analyze-performance",
+    "demand read: research/market/demand.md + document (supersede) — plan-campaign",
+    "listening watchlist: research/market/watchlist.md + document (supersede) — this playbook",
+    "outlier posts: inspiration library via social_inspiration_save (tag research-market) — makers, work-with-creators, run-organic-social",
+    "on yes only: rivals via competitor_save; [market …] and [listening …] rules via save-learning; a monthly pulse / quarterly report or a weekly brand watch via automation_upsert (created paused)",
+    "run records: workspace runs/research-market/<job-slug>/<date>.md + brand document (keep-history) through the run-memory shared atom — read by this playbook's next run",
+    "Positioning options: research/market/positioning/<date>.md (keep-history); only on owner choice, positioning.md or positioning-<product>.md (supersede) — read by planners and copy writers; current brand position is not automatically changed"
   ],
   "needs": {
     "mcp": [

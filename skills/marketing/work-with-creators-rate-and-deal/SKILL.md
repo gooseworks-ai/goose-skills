@@ -6,7 +6,7 @@ description: >-
   rights priced on their own. Checks against real quoted rates and recommends gift, paid, affiliate or
   a mix, with one line showing the math. Use alone when you already have the creator's recent view
   numbers, your goal and your unit cost; otherwise run work-with-creators.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # rate-and-deal

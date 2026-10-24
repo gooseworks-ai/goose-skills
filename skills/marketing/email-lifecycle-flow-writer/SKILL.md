@@ -4,7 +4,7 @@ description: >-
   Step of the email-lifecycle playbook: writes one lifecycle flow as a build sheet for the brand's
   email tool, every message finished in the brand voice. Run email-lifecycle instead; not for direct
   use.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # flow-writer

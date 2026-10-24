@@ -133,12 +133,11 @@ Description and tag guidelines for formats follow the same rules as styles (§4.
 
 | Host | Install | Notes |
 |---|---|---|
-| Claude Code | `npx goose-skills install goose-graphics --claude` | Lands at `~/.claude/skills/goose-graphics/` |
-| Claude Desktop | (same install as above) | Auto-shared — Desktop reads `~/.claude/skills/` |
-| Claude Cowork | (same install as above) | Built on Claude Desktop; same skill dir |
-| Goose (Block) | (same install as above) | Auto-discovers `~/.claude/skills/` + `~/.config/goose/skills/` |
-| Cursor | `npx goose-skills install goose-graphics --cursor --project-dir .` | Writes `.cursor/rules/goose-goose-graphics.mdc` |
-| Codex (OpenAI) | `npx goose-skills install goose-graphics --codex` | Writes `~/.codex/skills/goose-graphics/` |
+| Claude Code | `npx gooseworks@latest install --claude --with goose-graphics` | Installs with the GooseWorks skills |
+| Claude Desktop | (same install as above) | Desktop reads the same Claude skills |
+| Claude Cowork | (same install as above) | Built on Claude Desktop |
+| Cursor | `npx gooseworks@latest install --cursor --with goose-graphics` | |
+| Codex (OpenAI) | `npx gooseworks@latest install --codex --with goose-graphics` | |
 | Claude Design | `npx gooseworks styles get <slug>` → upload the resulting DESIGN.md via CD's "Create new design system" | Per-style DESIGN.md upload; no CLI sync |
 
 ## 7. First-Run Setup

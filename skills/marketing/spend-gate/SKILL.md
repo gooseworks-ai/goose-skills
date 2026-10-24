@@ -5,7 +5,7 @@ description: >-
   work-with-creators): gets the human's yes before any credits are spent. Shows the price exactly as
   quoted, or asks for one yes to a credit ceiling for paid data reads, stays under it and logs each
   charge. Also covers scheduled runs. Loaded by those playbooks; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # spend-gate

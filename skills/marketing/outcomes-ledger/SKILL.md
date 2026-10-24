@@ -5,7 +5,7 @@ description: >-
   keeps the brand's record of the prospects or creators that were handed over. Tracks a status for
   each person, permanent opt-outs, re-check dates and dated lessons, which the next run reads. Loaded
   by those playbooks; not for direct use.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # outcomes-ledger
