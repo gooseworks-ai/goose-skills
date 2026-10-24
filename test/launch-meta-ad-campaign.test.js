@@ -11,7 +11,7 @@ const {
   publishDirectLaunch,
   readJson,
   selectLaunchAdapter,
-} = require('../tools/meta_marketing_api');
+} = require('../skills/shared/launch-meta-ad-campaign/tools/meta_marketing_api');
 
 const ENV = {
   META_MARKETING_ACCESS_TOKEN: 'test-token-never-persist',
@@ -325,12 +325,13 @@ test('blocks policy and destination failures before Meta writes', async () => {
   fs.rmSync(destinationTemp.root, { recursive: true, force: true });
 });
 
-test('skill metadata resolves to an adapter file that installation can copy', () => {
-  const metaPath = path.resolve(
-    __dirname,
-    '../skills/shared/launch-meta-ad-campaign/skill.meta.json',
-  );
-  const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-  assert.deepEqual(meta.requires_tools, ['meta_marketing_api']);
-  assert.equal(fs.existsSync(path.resolve(__dirname, '../tools/meta_marketing_api.js')), true);
+test('the adapter ships inside the skill folder, at the path its instructions run', () => {
+  const skillDir = path.resolve(__dirname, '../skills/shared/launch-meta-ad-campaign');
+  const meta = JSON.parse(fs.readFileSync(path.join(skillDir, 'skill.meta.json'), 'utf8'));
+  assert.equal(meta.requires_tools, undefined, 'no shared tool files: the skill carries its own adapter');
+  assert.equal(fs.existsSync(path.join(skillDir, 'tools', 'meta_marketing_api.js')), true);
+  const adapter = fs.readFileSync(path.join(skillDir, 'references', 'direct-meta-adapter.md'), 'utf8');
+  assert.match(adapter, /node tools\/meta_marketing_api\.js prepare/);
+  const entry = require('../skills-index.json').skills.find((skill) => skill.slug === 'launch-meta-ad-campaign');
+  assert.ok(entry.files.includes('skills/shared/launch-meta-ad-campaign/tools/meta_marketing_api.js'));
 });

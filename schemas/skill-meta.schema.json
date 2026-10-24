@@ -1,25 +1,46 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://athina.ai/schemas/skill-meta.schema.json",
+  "title": "skill.meta.json",
+  "description": "The metadata of one skill folder, skills/<family>/<slug>/skill.meta.json. scripts/validate-skills.js checks every meta against this schema, then adds the rules a schema cannot say (the slug matches the folder, the version matches SKILL.md, the family's domain and install command). build-index.js copies the whole object into skills-index.json as `metadata`, so a new field is published as it is: add it here first.",
   "type": "object",
-  "required": ["slug", "category", "tags", "installation"],
+  "required": ["slug", "category", "version", "tags", "installation"],
   "properties": {
-    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-    "category": { "type": "string", "enum": ["capabilities", "composites", "playbooks"] },
-    "domain": {
+    "slug": {
+      "description": "The folder name. Permanent: recipes, the app and installed copies use it.",
       "type": "string",
-      "enum": ["ads", "brand", "competitive-intel", "content", "design", "lead-generation", "monitoring", "outreach", "research", "research-tools", "sales", "seo", "social"]
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "category": {
+      "description": "Abstraction level. The app syncs only these three; anything else is retired.",
+      "type": "string",
+      "enum": ["capabilities", "composites", "playbooks"]
+    },
+    "version": {
+      "description": "Semver. Raise it on every change: entry skills and installed copies update by it, and recipes pin video atoms by it (scripts/check-atom-versions.js).",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+    },
+    "domain": {
+      "description": "Catalog area. Video skills default to ads, marketing skills to marketing-agent, entry skills to gooseworks; a shared skill must name one. marketing-agent and gooseworks belong to their families only.",
+      "type": "string",
+      "enum": ["ads", "brand", "design", "gooseworks", "lead-generation", "marketing-agent", "monitoring", "social"]
     },
     "tags": {
+      "description": "Catalog filters. Marketing skills need at least one.",
       "type": "array",
-      "items": { "type": "string", "enum": ["All", "ads", "brand", "competitive-intel", "content", "design", "lead-generation", "monitoring", "outreach", "research", "research-tools", "sales", "seo", "social"] },
+      "items": {
+        "type": "string",
+        "enum": ["All", "ads", "brand", "competitive-intel", "content", "design", "lead-generation", "monitoring", "outreach", "research", "research-tools", "sales", "seo", "social"]
+      },
       "uniqueItems": true
     },
     "installation": {
+      "description": "How a person installs it. Marketing, video and shared skills: `npx goose-skills install <slug>`, one skill per command. Entry skills: `npx gooseworks@latest install --mcp`.",
       "type": "object",
       "required": ["base_command", "supports"],
       "properties": {
-        "base_command": { "type": "string", "minLength": 1 },
+        "base_command": { "type": "string", "minLength": 1, "pattern": "^[^/]+$" },
         "supports": {
           "type": "array",
           "items": { "type": "string", "enum": ["claude", "cursor", "codex"] },
@@ -29,28 +50,25 @@
       },
       "additionalProperties": false
     },
-    "features": {
-      "type": "array",
-      "items": { "type": "string", "minLength": 1 }
-    },
-    "github_url": { "type": "string" },
-    "author": { "type": "string" },
-    "example_prompt": { "type": "string" },
     "requires_skills": {
+      "description": "Every other skill this one reads or runs, by slug. Installers deliver them next to it as ../<slug>/.",
       "type": "array",
-      "items": { "type": "string" },
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
       "uniqueItems": true
     },
     "requires_tools": {
+      "description": "Programs the user's machine must already have (ffmpeg, python…). Never files: a skill ships its own helpers inside its folder.",
       "type": "array",
-      "items": { "type": "string" },
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.+-]{0,63}$" },
       "uniqueItems": true
     },
-    "version": {
-      "description": "Semver of the skill. Every video atom has one; a change to the atom raises it (scripts/check-atom-versions.js).",
-      "type": "string",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+    "features": {
+      "description": "Short selling points shown on the catalog page.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
     },
+    "example_prompt": { "description": "One thing a user might say to start it.", "type": "string", "minLength": 1 },
+    "author": { "type": "string", "minLength": 1 },
     "lint_allow": {
       "description": "Atom lint findings that are creative content, not instructions (scripts/atom-lint.js).",
       "type": "array",
@@ -65,7 +83,52 @@
         },
         "additionalProperties": false
       }
-    }
+    },
+    "tier": {
+      "description": "Marketing skills: playbook, atom (a step) or foundation. Entry skills: entry.",
+      "type": "string",
+      "enum": ["playbook", "atom", "foundation", "entry"]
+    },
+    "playbook": {
+      "description": "Marketing steps: the playbook that runs this step.",
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "standalone": { "description": "Marketing steps: true when the step also works on its own.", "type": "boolean" },
+    "used_by": {
+      "description": "Marketing shared steps: the playbooks that run it.",
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+      "uniqueItems": true
+    },
+    "pillar": { "description": "Marketing playbooks: the marketing pillar it covers.", "type": "string", "minLength": 1 },
+    "intents": {
+      "description": "Marketing playbooks: things a marketer says that should start it (the evals route on them).",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "reads": { "description": "Marketing playbooks: what it reads, and who writes it.", "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "writes": { "description": "Marketing playbooks: what it writes, and who reads it.", "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "needs": {
+      "description": "Marketing playbooks: what must be connected.",
+      "type": "object",
+      "properties": {
+        "gooseworks": { "type": "string" },
+        "mcp": { "type": "array", "items": { "type": "string" } },
+        "connectors_optional": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "collections": {
+      "description": "Editorial collections (collections/<slug>/) it belongs to.",
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+      "uniqueItems": true
+    },
+    "collection_stage": { "description": "Its stage in those collections.", "type": "string", "minLength": 1 },
+    "source_commit": { "description": "Published from goose-studio: the source commit.", "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "source_hash": { "description": "Published from goose-studio: SHA-256 of the source skill.", "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "source_version": { "description": "Published from goose-studio: the source version label.", "type": "string", "minLength": 1 }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

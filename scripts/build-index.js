@@ -6,12 +6,12 @@
  * Layout (2026-10-23): one flat folder per skill, grouped by family:
  *   skills/marketing/<slug>/   marketing playbooks, their steps and foundations
  *   skills/video/<slug>/       video skills (atoms, formats, the production harness)
- *   skills/shared/<slug>/      older skills that a video skill, a playbook or
- *                              gooseworks-app still uses (see retired-skills.json)
+ *   skills/shared/<slug>/      skills used across families: current ones and the
+ *                              older ones still needed (see retired-skills.json)
  *   skills/entry/<slug>/       the skills `gooseworks install` puts in every agent
  *                              (the gooseworks router, goose-ads, goose-video…)
- *   packs/<pack>.json          install bundles of video skills, by slug
- * A reference to another skill is `../<slug>/SKILL.md` inside a family.
+ * Every folder is one installable skill. A reference to another skill is
+ * `../<slug>/SKILL.md`.
  *
  * `category` and `domain` come from skill.meta.json (a family can supply a
  * default domain), never from the folder, so moving a folder changes only
@@ -112,11 +112,11 @@ const FAMILIES = [
   { dir: 'skills/shared', domain: null },
   { dir: 'skills/entry', domain: 'gooseworks' },
 ];
-const PACKS_DIR = 'packs';
 // Kept in a skill folder for the people who build it; never shipped with the skill.
 const BUILDER_FILES = new Set(['critique.md', 'server-needs.md']);
-// Marketing skills keep their hand-test notes in tests/; agents never read them.
-const BUILDER_DIRS = { 'skills/marketing': ['tests/'] };
+// A skill's own tests (hand tests, fixtures, unit tests), at any depth, run in this
+// repo's CI; installs never need them.
+const BUILDER_DIRS = new Set(['tests']);
 
 /** Frontmatter with folded/literal block scalars (`description: >-`), which parseFrontmatter reads as ">-". */
 function parseBlockFrontmatter(content) {
@@ -143,23 +143,6 @@ function parseBlockFrontmatter(content) {
   return result;
 }
 
-/** Pack definitions: packs/<pack>.json, members named by slug. */
-function readPacks() {
-  const dir = path.join(ROOT, PACKS_DIR);
-  if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .sort()
-    .map((f) => {
-      const meta = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
-      if (meta.slug !== f.slice(0, -5)) {
-        throw new Error(`Pack slug mismatch: ${PACKS_DIR}/${f} says "${meta.slug}"`);
-      }
-      return meta;
-    });
-}
-
 /** Every published skill folder: [{ slug, dir, family, meta, frontmatter, files }]. */
 function scanFolders() {
   const found = [];
@@ -182,7 +165,6 @@ function scanFolders() {
       }
       seen.set(slug, relDir);
       const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-      if (meta.catalog === false) continue;
       found.push({
         slug,
         relDir,
@@ -193,7 +175,7 @@ function scanFolders() {
           .map((f) => relFromRoot(f))
           .filter((f) => {
             const rel = f.slice(relDir.length + 1);
-            return !BUILDER_FILES.has(rel) && !(BUILDER_DIRS[family.dir] || []).some((d) => rel.startsWith(d));
+            return !BUILDER_FILES.has(rel) && !rel.split('/').slice(0, -1).some((d) => BUILDER_DIRS.has(d));
           }),
       });
     }
@@ -224,68 +206,9 @@ function skillEntry(folder) {
 }
 
 /**
- * A pack member as a catalog entry. Pack members are listed as capabilities
- * (the backend retires any other category) and install through their pack.
- */
-function packMemberEntry(folder, pack) {
-  const { slug, relDir, meta, frontmatter, files } = folder;
-  const tags = Array.isArray(pack.tags) ? pack.tags : [];
-  return {
-    slug,
-    name: frontmatter.name || slug,
-    ...(meta.version !== undefined ? { version: meta.version } : {}),
-    category: 'capabilities',
-    domain: pack.domain,
-    description: frontmatter.description || '',
-    tags: tags.join(', '),
-    path: relDir,
-    files,
-    metadata: {
-      slug,
-      category: 'capabilities',
-      pack: pack.slug,
-      ...(meta.version !== undefined ? { version: meta.version } : {}),
-      tags,
-      installation: {
-        base_command: `npx goose-skills install ${pack.slug}`,
-        supports: ['claude', 'cursor', 'codex'],
-      },
-    },
-  };
-}
-
-function packEntry(pack, bySlug) {
-  return {
-    slug: pack.slug,
-    name: pack.name || pack.slug,
-    type: 'pack',
-    domain: pack.domain,
-    description: pack.description || '',
-    tags: Array.isArray(pack.tags) ? pack.tags.join(', ') : '',
-    path: `${PACKS_DIR}/${pack.slug}.json`,
-    shared_files: [],
-    skills: (pack.skills || []).map((slug) => {
-      const folder = bySlug.get(slug);
-      if (!folder) throw new Error(`Pack "${pack.slug}": no skill folder for "${slug}"`);
-      return {
-        slug,
-        name: folder.frontmatter.name || slug,
-        description: folder.frontmatter.description || '',
-        path: folder.relDir,
-        ...(folder.meta.version !== undefined ? { version: folder.meta.version } : {}),
-        files: folder.files,
-        source: 'pack',
-      };
-    }),
-    metadata: pack,
-  };
-}
-
-
-/**
  * Scan editorial collections from collections/<slug>/collection.meta.json.
  *
- * Collections are discovery metadata, not installable packs. Membership stays
+ * Collections are discovery metadata, not installable bundles. Membership stays
  * on each skill's metadata.collections field so there is only one source of
  * truth for which skills belong to a collection.
  */
@@ -308,7 +231,7 @@ function scanCollections(skills) {
       throw new Error(`Collection slug mismatch: directory=${slug}, metadata=${meta.slug}`);
     }
     if (meta.installable !== false) {
-      throw new Error(`Collection "${slug}" must set installable=false; collections are not packs`);
+      throw new Error(`Collection "${slug}" must set installable=false; collections are not installable`);
     }
 
     const validStages = new Set((meta.stages || []).map((stage) => stage.slug));
@@ -354,24 +277,12 @@ function scanCollections(skills) {
   return collections;
 }
 
-const folders = scanFolders();
-const foldersBySlug = new Map(folders.map((f) => [f.slug, f]));
-const packDefs = readPacks();
-const packOf = new Map();
-for (const pack of packDefs) {
-  if (!pack.domain) throw new Error(`Pack "${pack.slug}" needs a "domain"`);
-  for (const slug of pack.skills || []) {
-    if (packOf.has(slug)) {
-      throw new Error(`Skill "${slug}" is in packs "${packOf.get(slug).slug}" and "${pack.slug}"; one pack per skill`);
-    }
-    packOf.set(slug, pack);
-  }
-}
-
-const skills = folders
-  .map((folder) => (packOf.has(folder.slug) ? packMemberEntry(folder, packOf.get(folder.slug)) : skillEntry(folder)))
+const skills = scanFolders()
+  .map(skillEntry)
   .sort((a, b) => a.slug.localeCompare(b.slug));
-const packs = packDefs.map((pack) => packEntry(pack, foldersBySlug)).sort((a, b) => a.slug.localeCompare(b.slug));
+// Packs (install bundles) were dropped on 24 Oct 2026; every skill installs by its own slug.
+// The key stays, empty, for older goose-skills CLIs that read it.
+const packs = [];
 
 const collections = scanCollections(skills).sort((a, b) => a.slug.localeCompare(b.slug));
 const collectionSlugs = new Set(collections.map((collection) => collection.slug));
@@ -382,14 +293,6 @@ for (const skill of skills) {
         `Skill "${skill.slug}" references unknown collection "${collectionSlug}"`,
       );
     }
-  }
-}
-
-// Validate no slug collisions between packs and skills
-const skillSlugs = new Set(skills.map((s) => s.slug));
-for (const pack of packs) {
-  if (skillSlugs.has(pack.slug)) {
-    throw new Error(`Pack slug "${pack.slug}" collides with an existing skill slug`);
   }
 }
 
@@ -427,6 +330,5 @@ const index = {
 
 fs.writeFileSync(OUTPUT, JSON.stringify(index, null, 2) + '\n');
 console.log(
-  `Generated ${OUTPUT} with ${skills.length} skills, ${packs.length} packs, ` +
-    `and ${collections.length} collections.`,
+  `Generated ${OUTPUT} with ${skills.length} skills and ${collections.length} collections.`,
 );

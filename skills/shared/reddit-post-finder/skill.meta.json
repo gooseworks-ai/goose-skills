@@ -1,6 +1,7 @@
 {
   "slug": "reddit-post-finder",
   "category": "capabilities",
+  "version": "1.0.0",
   "tags": [
     "monitoring"
   ],

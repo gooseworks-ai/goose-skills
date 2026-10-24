@@ -1006,6 +1006,26 @@
       "slug": "video-production",
       "replacement": null,
       "reason": "This old local video pack was retired; video ads are made with the goose-video skill."
+    },
+    {
+      "slug": "ad-to-landing-page-auditor",
+      "replacement": "analyze-performance",
+      "reason": "Retired 24 Oct 2026: only the prose of three Meta skills mentioned it. analyze-performance's diagnose step checks page and message match (product, promise, offer, price) for the top winners and losers, and run-paid-campaigns' health gate checks landing pages before spend."
+    },
+    {
+      "slug": "google-ad-scraper",
+      "replacement": "research-competitors",
+      "reason": "Retired 24 Oct 2026: it existed only for ad-to-landing-page-auditor. research-competitors searches every ad library (Google's Ads Transparency Center included) for each main rival."
+    },
+    {
+      "slug": "ugc-video-formats",
+      "replacement": null,
+      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug: npx goose-skills install create-video-seedance-2-fal, npx goose-skills install review-ugc-render."
+    },
+    {
+      "slug": "video-ad-formats",
+      "replacement": null,
+      "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug (npx goose-skills install <slug>): create-imessage-mockup, create-chatgpt-mockup, create-apple-notes-mockup, render-ios-keyboard, stitch-videos-ffmpeg, mix-master, watch."
     }
   ],
   "skills": [
@@ -1017,6 +1037,7 @@
       "description": "Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.",
       "tags": "ads, research, social",
       "path": "skills/shared/ad-angle-miner",
+      "version": "1.0.0",
       "files": [
         "skills/shared/ad-angle-miner/SKILL.md",
         "skills/shared/ad-angle-miner/references/buyer-and-product-role.md",
@@ -1026,6 +1047,7 @@
       "metadata": {
         "slug": "ad-angle-miner",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads",
@@ -1045,7 +1067,8 @@
           "competitor-ad-intelligence",
           "comment-mining",
           "reddit-post-finder",
-          "watch"
+          "watch",
+          "transcript-intelligence"
         ],
         "example_prompt": "What static ads should I make for my brand? Show me the reviews and ads behind each idea."
       }
@@ -1058,6 +1081,7 @@
       "description": "Analyze ad campaign performance data (Google, Meta, LinkedIn) to identify what's working, what's wasting budget, and specific cut/scale/test recommendations. Runs statistical analysis, funnel diagnostics, and multi-channel budget reallocation with specific dollar-amount shift recommendations and scenario modeling.",
       "tags": "ads",
       "path": "skills/shared/ad-campaign-analyzer",
+      "version": "1.0.0",
       "files": [
         "skills/shared/ad-campaign-analyzer/SKILL.md",
         "skills/shared/ad-campaign-analyzer/skill.meta.json"
@@ -1065,7 +1089,7 @@
       "metadata": {
         "slug": "ad-campaign-analyzer",
         "category": "composites",
-        "description": "Analyze ad campaign performance data, identify winners and waste, check statistical significance, and recommend multi-channel budget reallocation with specific dollar-amount shift recommendations and scenario modeling.",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -1088,6 +1112,7 @@
       "description": "For paid lead-gen and participant-recruitment ads, replaces vanity CPA with true CAC per qualified lead by joining ad-platform data with downstream funnel events, surfaces tracking gaps, and classifies every creative into Scale / Keep / Investigate / Cut.",
       "tags": "ads",
       "path": "skills/shared/ad-lead-quality-analyzer",
+      "version": "1.0.0",
       "files": [
         "skills/shared/ad-lead-quality-analyzer/SKILL.md",
         "skills/shared/ad-lead-quality-analyzer/skill.meta.json"
@@ -1095,7 +1120,7 @@
       "metadata": {
         "slug": "ad-lead-quality-analyzer",
         "category": "composites",
-        "description": "For paid lead-gen and participant-recruitment ads, replaces vanity CPA with true CAC per qualified lead by joining ad-platform data with downstream funnel events stored in the advertiser's own database. Surfaces tracking gaps, classifies every creative into Scale / Keep / Investigate / Cut, and flags the 'dangerous winners' — low Platform CPA but high vanity-signup rate.",
+        "version": "1.0.0",
         "tags": [
           "ads"
         ],
@@ -1118,6 +1143,7 @@
       "description": "The intake stage of a Meta ad harness. Researches the brand first, states what it assumes, and asks only what it cannot infer and what would change money, claims or legal exposure if guessed wrong — at most four questions a turn, in plain business language. Writes the brand's stable facts (ads/brand.md), the campaign brief, and a log of what was asked vs assumed. Use it when someone wants to run Meta ads and the brand's ad facts are not yet recorded.",
       "tags": "ads",
       "path": "skills/shared/ad-management-intake",
+      "version": "1.0.0",
       "files": [
         "skills/shared/ad-management-intake/SKILL.md",
         "skills/shared/ad-management-intake/agents/openai.yaml",
@@ -1129,6 +1155,7 @@
       "metadata": {
         "slug": "ad-management-intake",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads"
@@ -1149,7 +1176,10 @@
           "corrections update one fact without re-interviewing"
         ],
         "requires_skills": [
-          "meta-ad-manager"
+          "meta-ad-manager",
+          "ads-north-star-strategy",
+          "answer-ads-questions",
+          "launch-meta-ad-campaign"
         ],
         "example_prompt": "Help me set up Meta ads for my shop. Ask me only what you really need."
       }
@@ -1207,39 +1237,6 @@
       }
     },
     {
-      "slug": "ad-to-landing-page-auditor",
-      "name": "ad-to-landing-page-auditor",
-      "category": "composites",
-      "domain": "ads",
-      "description": "Analyze the message match between your ads and landing pages. Checks if the promise in the ad copy carries through to the landing page headline, body, and CTA. Flags disconnects that kill conversion rates. Works with Google, Meta, and LinkedIn ads.",
-      "tags": "ads, research",
-      "path": "skills/shared/ad-to-landing-page-auditor",
-      "files": [
-        "skills/shared/ad-to-landing-page-auditor/SKILL.md",
-        "skills/shared/ad-to-landing-page-auditor/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "ad-to-landing-page-auditor",
-        "category": "composites",
-        "domain": "ads",
-        "tags": [
-          "ads",
-          "research"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install ad-to-landing-page-auditor",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "requires_skills": [
-          "google-ad-scraper"
-        ]
-      }
-    },
-    {
       "slug": "ads-north-star-strategy",
       "name": "ads-north-star-strategy",
       "category": "composites",
@@ -1247,6 +1244,7 @@
       "description": "Turn a brand's facts, a campaign brief and the product into a one-minute Meta ad strategy with its reasoning — goal, audience, objective and placements, budget split, how many ads and how different they must be (generate 3x so the user can choose), the test frame, the success metric, and safety rules for the user to accept. Decides what launch-meta-ad-campaign then executes, and re-reads the strategy after a deep check to show which assumption changed. Use it after intake and before any creative is generated or any campaign is built.",
       "tags": "ads",
       "path": "skills/shared/ads-north-star-strategy",
+      "version": "1.0.0",
       "files": [
         "skills/shared/ads-north-star-strategy/SKILL.md",
         "skills/shared/ads-north-star-strategy/agents/openai.yaml",
@@ -1258,6 +1256,7 @@
       "metadata": {
         "slug": "ads-north-star-strategy",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads"
@@ -1280,7 +1279,9 @@
         ],
         "requires_skills": [
           "meta-ad-manager",
-          "launch-meta-ad-campaign"
+          "launch-meta-ad-campaign",
+          "ad-management-intake",
+          "answer-ads-questions"
         ],
         "example_prompt": "We have $1,500 for three weeks to get demo requests. What should the Meta ads strategy be?"
       }
@@ -1610,6 +1611,7 @@
       "description": "Animate an existing product image or static ad into a short branded video using the GooseWorks Animate Images workflow, with source-image continuity and optional end-frame control.",
       "tags": "ads, design, content",
       "path": "skills/video/animate-image",
+      "version": "1.0.0",
       "files": [
         "skills/video/animate-image/SKILL.md",
         "skills/video/animate-image/skill.meta.json"
@@ -1617,6 +1619,7 @@
       "metadata": {
         "slug": "animate-image",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads",
@@ -1641,6 +1644,7 @@
       "description": "Answer questions about a brand's Meta ads (spend, results, which ad is winning, is it paused, why did Goose do that) only from reads made in the same turn, with the data window and sync time on every number and a plain caveat when the connection is stale or partial. Use it whenever a user asks how their ads are doing or why an ad action was taken.",
       "tags": "ads",
       "path": "skills/shared/answer-ads-questions",
+      "version": "1.0.0",
       "files": [
         "skills/shared/answer-ads-questions/SKILL.md",
         "skills/shared/answer-ads-questions/agents/openai.yaml",
@@ -1652,6 +1656,7 @@
       "metadata": {
         "slug": "answer-ads-questions",
         "category": "capabilities",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads"
@@ -1673,7 +1678,10 @@
           "GooseWorks, direct Meta and planning-only modes"
         ],
         "requires_skills": [
-          "meta-ad-manager"
+          "meta-ad-manager",
+          "ad-management-intake",
+          "ads-north-star-strategy",
+          "launch-meta-ad-campaign"
         ],
         "example_prompt": "How are my Meta ads doing this week, and why did you pause the gift ad?"
       }
@@ -1686,6 +1694,7 @@
       "description": "Research a company or brand from its website and produce a reusable Brand Core covering products, audience, competitors, positioning, offers, messaging evidence, voice, and visual identity. Use before growth, ad, content, creator, or product work when reliable brand context is missing.",
       "tags": "ads, brand, research",
       "path": "skills/shared/brand-research",
+      "version": "1.0.0",
       "files": [
         "skills/shared/brand-research/.env.example",
         "skills/shared/brand-research/README.md",
@@ -1705,6 +1714,7 @@
       "metadata": {
         "slug": "brand-research",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads",
@@ -1721,7 +1731,9 @@
         },
         "requires_skills": [
           "competitor-ad-intelligence",
-          "comment-mining"
+          "comment-mining",
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     },
@@ -1742,8 +1754,7 @@
         "skills/video/caption-burn/scripts/media_proxy.py",
         "skills/video/caption-burn/scripts/plates.py",
         "skills/video/caption-burn/scripts/transcribe.py",
-        "skills/video/caption-burn/skill.meta.json",
-        "skills/video/caption-burn/tests/smoke-test.md"
+        "skills/video/caption-burn/skill.meta.json"
       ],
       "metadata": {
         "slug": "caption-burn",
@@ -1835,6 +1846,7 @@
       "description": "Mine comments and replies on social posts, videos, and ads for recurring customer language, questions, objections, desired outcomes, complaints, product requests, purchase signals, and creative opportunities. Use for voice-of-customer research grounded in linked source evidence.",
       "tags": "social, research, brand",
       "path": "skills/shared/comment-mining",
+      "version": "1.0.0",
       "files": [
         "skills/shared/comment-mining/SKILL.md",
         "skills/shared/comment-mining/skill.meta.json"
@@ -1842,13 +1854,13 @@
       "metadata": {
         "slug": "comment-mining",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "social",
         "tags": [
           "social",
           "research",
           "brand"
         ],
-        "source": "scrapecreators",
         "installation": {
           "base_command": "npx goose-skills install comment-mining",
           "supports": [
@@ -1870,6 +1882,7 @@
       "description": "Find decision-makers at a specific company using Apollo, Crustdata, Fiber, and PDL people search via Gooseworks MCP. Given a company name and target titles, returns a list of contacts with name, title, LinkedIn URL, and location.",
       "tags": "lead-generation",
       "path": "skills/shared/company-contact-finder",
+      "version": "1.0.0",
       "files": [
         "skills/shared/company-contact-finder/SKILL.md",
         "skills/shared/company-contact-finder/skill.meta.json"
@@ -1877,6 +1890,7 @@
       "metadata": {
         "slug": "company-contact-finder",
         "category": "capabilities",
+        "version": "1.0.0",
         "tags": [
           "lead-generation"
         ],
@@ -1899,6 +1913,7 @@
       "description": "Scrape competitor ads from Meta, TikTok, Google, and LinkedIn ad libraries, analyze creative patterns (hooks, formats, CTAs), reverse-engineer landing page funnels, and produce a strategic teardown with vulnerability analysis and counter-play recommendations. Use when you need to understand the competitive ad landscape, find new creative directions, or identify weaknesses in a competitor's paid strategy.",
       "tags": "ads, competitive-intel, research",
       "path": "skills/shared/competitor-ad-intelligence",
+      "version": "1.0.0",
       "files": [
         "skills/shared/competitor-ad-intelligence/SKILL.md",
         "skills/shared/competitor-ad-intelligence/skill.meta.json"
@@ -1906,13 +1921,13 @@
       "metadata": {
         "slug": "competitor-ad-intelligence",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads",
           "competitive-intel",
           "research"
         ],
-        "source": "scrapecreators",
         "installation": {
           "base_command": "npx goose-skills install competitor-ad-intelligence",
           "supports": [
@@ -1939,9 +1954,7 @@
       "files": [
         "skills/video/compose-creator-layer/SKILL.md",
         "skills/video/compose-creator-layer/scripts/compose.py",
-        "skills/video/compose-creator-layer/skill.meta.json",
-        "skills/video/compose-creator-layer/tests/smoke-test.md",
-        "skills/video/compose-creator-layer/tests/test_compose_split.py"
+        "skills/video/compose-creator-layer/skill.meta.json"
       ],
       "metadata": {
         "slug": "compose-creator-layer",
@@ -1965,12 +1978,12 @@
     {
       "slug": "create-apple-notes-mockup",
       "name": "create-apple-notes-mockup",
-      "version": "1.0.5",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a JSON note spec. Outputs HTML + PNG at the iPhone 16/15 Pro native 1180×2556. Supports paragraphs, images, checklists, dividers, autocorrect underline, smart quotes, and an optional iOS keyboard chrome overlay used by the parent video-ad molecule.",
       "tags": "ads",
       "path": "skills/video/create-apple-notes-mockup",
+      "version": "1.0.5",
       "files": [
         "skills/video/create-apple-notes-mockup/SKILL.md",
         "skills/video/create-apple-notes-mockup/apple-notes-skill-build.html",
@@ -1986,23 +1999,18 @@
         "skills/video/create-apple-notes-mockup/screenshot.js",
         "skills/video/create-apple-notes-mockup/skill.meta.json",
         "skills/video/create-apple-notes-mockup/templates/icons.js",
-        "skills/video/create-apple-notes-mockup/templates/note.css",
-        "skills/video/create-apple-notes-mockup/tests/expected-output.md",
-        "skills/video/create-apple-notes-mockup/tests/human-test.md",
-        "skills/video/create-apple-notes-mockup/tests/run-all.sh",
-        "skills/video/create-apple-notes-mockup/tests/sample-input.md",
-        "skills/video/create-apple-notes-mockup/tests/smoke-test.md"
+        "skills/video/create-apple-notes-mockup/templates/note.css"
       ],
       "metadata": {
         "slug": "create-apple-notes-mockup",
         "category": "capabilities",
-        "pack": "video-ad-formats",
+        "domain": "ads",
         "version": "1.0.5",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
+          "base_command": "npx goose-skills install create-apple-notes-mockup",
           "supports": [
             "claude",
             "cursor",
@@ -2014,12 +2022,12 @@
     {
       "slug": "create-chatgpt-mockup",
       "name": "create-chatgpt-mockup",
-      "version": "1.0.5",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate ChatGPT mobile (iOS) screen mockups in light mode from a thread JSON. Supports user text bubbles, user image attachments, assistant markdown prose, citation chips, the OpenAI spiral logo, the Apps-SDK GPT chip in the composer, and three header styles (model-tag, plain title, \"Get Plus\"). Fixed 9:16 viewport. Outputs HTML + PNG.",
       "tags": "ads",
       "path": "skills/video/create-chatgpt-mockup",
+      "version": "1.0.5",
       "files": [
         "skills/video/create-chatgpt-mockup/SKILL.md",
         "skills/video/create-chatgpt-mockup/build-review.html",
@@ -2036,23 +2044,18 @@
         "skills/video/create-chatgpt-mockup/screenshot.js",
         "skills/video/create-chatgpt-mockup/skill.meta.json",
         "skills/video/create-chatgpt-mockup/templates/chat.css",
-        "skills/video/create-chatgpt-mockup/templates/icons.js",
-        "skills/video/create-chatgpt-mockup/tests/expected-output.md",
-        "skills/video/create-chatgpt-mockup/tests/human-test.md",
-        "skills/video/create-chatgpt-mockup/tests/run-all.sh",
-        "skills/video/create-chatgpt-mockup/tests/sample-input.md",
-        "skills/video/create-chatgpt-mockup/tests/smoke-test.md"
+        "skills/video/create-chatgpt-mockup/templates/icons.js"
       ],
       "metadata": {
         "slug": "create-chatgpt-mockup",
         "category": "capabilities",
-        "pack": "video-ad-formats",
+        "domain": "ads",
         "version": "1.0.5",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
+          "base_command": "npx goose-skills install create-chatgpt-mockup",
           "supports": [
             "claude",
             "cursor",
@@ -2082,14 +2085,7 @@
         "skills/video/create-creator-takes-h3/scripts/plan_takes.py",
         "skills/video/create-creator-takes-h3/scripts/run_takes.py",
         "skills/video/create-creator-takes-h3/scripts/tiers.py",
-        "skills/video/create-creator-takes-h3/skill.meta.json",
-        "skills/video/create-creator-takes-h3/tests/smoke-test.md",
-        "skills/video/create-creator-takes-h3/tests/test_action_skin_light.py",
-        "skills/video/create-creator-takes-h3/tests/test_hands_voice_pace.py",
-        "skills/video/create-creator-takes-h3/tests/test_make_character.py",
-        "skills/video/create-creator-takes-h3/tests/test_quality_tier.py",
-        "skills/video/create-creator-takes-h3/tests/test_run_takes_rejection.py",
-        "skills/video/create-creator-takes-h3/tests/test_voice_ethnicity.py"
+        "skills/video/create-creator-takes-h3/skill.meta.json"
       ],
       "metadata": {
         "slug": "create-creator-takes-h3",
@@ -2130,10 +2126,7 @@
         "skills/video/create-image-fal/scripts/gen_image.py",
         "skills/video/create-image-fal/scripts/image_quality.py",
         "skills/video/create-image-fal/scripts/media_proxy.py",
-        "skills/video/create-image-fal/skill.meta.json",
-        "skills/video/create-image-fal/tests/smoke-test.md",
-        "skills/video/create-image-fal/tests/test_brand_pack_lint.py",
-        "skills/video/create-image-fal/tests/test_image_quality.py"
+        "skills/video/create-image-fal/skill.meta.json"
       ],
       "metadata": {
         "slug": "create-image-fal",
@@ -2170,11 +2163,7 @@
         "skills/video/create-image-gpt-image-fal/scripts/fal_helpers.py",
         "skills/video/create-image-gpt-image-fal/scripts/generate.py",
         "skills/video/create-image-gpt-image-fal/scripts/media_proxy.py",
-        "skills/video/create-image-gpt-image-fal/skill.meta.json",
-        "skills/video/create-image-gpt-image-fal/tests/expected-output.md",
-        "skills/video/create-image-gpt-image-fal/tests/human-test.md",
-        "skills/video/create-image-gpt-image-fal/tests/sample-input.md",
-        "skills/video/create-image-gpt-image-fal/tests/smoke-test.md"
+        "skills/video/create-image-gpt-image-fal/skill.meta.json"
       ],
       "metadata": {
         "slug": "create-image-gpt-image-fal",
@@ -2198,12 +2187,12 @@
     {
       "slug": "create-imessage-mockup",
       "name": "create-imessage-mockup",
-      "version": "1.0.4",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.",
       "tags": "ads",
       "path": "skills/video/create-imessage-mockup",
+      "version": "1.0.4",
       "files": [
         "skills/video/create-imessage-mockup/.gitignore",
         "skills/video/create-imessage-mockup/SKILL.md",
@@ -2220,23 +2209,18 @@
         "skills/video/create-imessage-mockup/screenshot.js",
         "skills/video/create-imessage-mockup/skill.meta.json",
         "skills/video/create-imessage-mockup/templates/chat.css",
-        "skills/video/create-imessage-mockup/templates/icons.js",
-        "skills/video/create-imessage-mockup/tests/expected-output.md",
-        "skills/video/create-imessage-mockup/tests/human-test.md",
-        "skills/video/create-imessage-mockup/tests/run-all.sh",
-        "skills/video/create-imessage-mockup/tests/sample-input.md",
-        "skills/video/create-imessage-mockup/tests/smoke-test.md"
+        "skills/video/create-imessage-mockup/templates/icons.js"
       ],
       "metadata": {
         "slug": "create-imessage-mockup",
         "category": "capabilities",
-        "pack": "video-ad-formats",
+        "domain": "ads",
         "version": "1.0.4",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
+          "base_command": "npx goose-skills install create-imessage-mockup",
           "supports": [
             "claude",
             "cursor",
@@ -2294,8 +2278,7 @@
         "skills/video/create-music-elevenlabs/SKILL.md",
         "skills/video/create-music-elevenlabs/scripts/gen_music.py",
         "skills/video/create-music-elevenlabs/scripts/media_proxy.py",
-        "skills/video/create-music-elevenlabs/skill.meta.json",
-        "skills/video/create-music-elevenlabs/tests/smoke-test.md"
+        "skills/video/create-music-elevenlabs/skill.meta.json"
       ],
       "metadata": {
         "slug": "create-music-elevenlabs",
@@ -2331,8 +2314,7 @@
         "skills/video/create-video-fal/SKILL.md",
         "skills/video/create-video-fal/scripts/gen_video.py",
         "skills/video/create-video-fal/scripts/media_proxy.py",
-        "skills/video/create-video-fal/skill.meta.json",
-        "skills/video/create-video-fal/tests/smoke-test.md"
+        "skills/video/create-video-fal/skill.meta.json"
       ],
       "metadata": {
         "slug": "create-video-fal",
@@ -2358,39 +2340,35 @@
     {
       "slug": "create-video-seedance-2-fal",
       "name": "create-video-seedance-2-fal",
-      "version": "2.0.5",
       "category": "capabilities",
       "domain": "ads",
       "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
       "tags": "ads",
       "path": "skills/video/create-video-seedance-2-fal",
+      "version": "2.0.5",
       "files": [
         "skills/video/create-video-seedance-2-fal/SKILL.md",
         "skills/video/create-video-seedance-2-fal/scripts/generate.py",
         "skills/video/create-video-seedance-2-fal/scripts/media_proxy.py",
-        "skills/video/create-video-seedance-2-fal/skill.meta.json",
-        "skills/video/create-video-seedance-2-fal/tests/expected-output.md",
-        "skills/video/create-video-seedance-2-fal/tests/human-test.md",
-        "skills/video/create-video-seedance-2-fal/tests/sample-input.md",
-        "skills/video/create-video-seedance-2-fal/tests/smoke-test.md",
-        "skills/video/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py"
+        "skills/video/create-video-seedance-2-fal/skill.meta.json"
       ],
       "metadata": {
         "slug": "create-video-seedance-2-fal",
         "category": "capabilities",
-        "pack": "ugc-video-formats",
+        "domain": "ads",
         "version": "2.0.5",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install ugc-video-formats",
+          "base_command": "npx goose-skills install create-video-seedance-2-fal",
           "supports": [
             "claude",
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": []
       }
     },
     {
@@ -2407,11 +2385,7 @@
         "skills/video/create-vo-elevenlabs/scripts/gen_vo.py",
         "skills/video/create-vo-elevenlabs/scripts/media_proxy.py",
         "skills/video/create-vo-elevenlabs/scripts/read_pronunciations.py",
-        "skills/video/create-vo-elevenlabs/skill.meta.json",
-        "skills/video/create-vo-elevenlabs/tests/smoke-test.md",
-        "skills/video/create-vo-elevenlabs/tests/test_gen_vo.py",
-        "skills/video/create-vo-elevenlabs/tests/test_pace.py",
-        "skills/video/create-vo-elevenlabs/tests/test_timestamps.py"
+        "skills/video/create-vo-elevenlabs/skill.meta.json"
       ],
       "metadata": {
         "slug": "create-vo-elevenlabs",
@@ -2769,8 +2743,7 @@
         "skills/video/footage-cutlist/scripts/photo.py",
         "skills/video/footage-cutlist/scripts/preview.py",
         "skills/video/footage-cutlist/scripts/survey.py",
-        "skills/video/footage-cutlist/skill.meta.json",
-        "skills/video/footage-cutlist/tests/smoke-test.md"
+        "skills/video/footage-cutlist/skill.meta.json"
       ],
       "metadata": {
         "slug": "footage-cutlist",
@@ -2799,6 +2772,7 @@
       "description": "Get company logos, brand colors, fonts, and style guides",
       "tags": "brand",
       "path": "skills/shared/get-brand-assets",
+      "version": "1.0.0",
       "files": [
         "skills/shared/get-brand-assets/SKILL.md",
         "skills/shared/get-brand-assets/skill.meta.json"
@@ -2806,10 +2780,10 @@
       "metadata": {
         "slug": "get-brand-assets",
         "category": "capabilities",
+        "version": "1.0.0",
         "tags": [
           "brand"
         ],
-        "source": "orthogonal",
         "installation": {
           "base_command": "npx goose-skills install get-brand-assets",
           "supports": [
@@ -2819,38 +2793,6 @@
           ]
         },
         "domain": "brand"
-      }
-    },
-    {
-      "slug": "google-ad-scraper",
-      "name": "google-ad-scraper",
-      "category": "capabilities",
-      "domain": "ads",
-      "description": "Scrape competitor ads from Google Ads by domain. Returns ad creatives, formats, and campaign details. Use for competitive ad research and messaging analysis.",
-      "tags": "ads",
-      "path": "skills/shared/google-ad-scraper",
-      "files": [
-        "skills/shared/google-ad-scraper/SKILL.md",
-        "skills/shared/google-ad-scraper/scripts/search_google_ads.py",
-        "skills/shared/google-ad-scraper/skill.meta.json",
-        "skills/shared/google-ad-scraper/tests/actor-input-contract.json",
-        "skills/shared/google-ad-scraper/tests/test_search_contract.py"
-      ],
-      "metadata": {
-        "slug": "google-ad-scraper",
-        "category": "capabilities",
-        "tags": [
-          "ads"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install google-ad-scraper",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "domain": "ads"
       }
     },
     {
@@ -2893,6 +2835,7 @@
       "description": "Portable visual skill pack for the Agent Skills ecosystem (Claude Code, Claude Desktop, Claude Cowork, Claude Design, Goose, Cursor, Codex). Discovers community-published styles + formats via the gooseworks CLI, runs an extract-style workflow on reference images, and exports rendered PNGs via Playwright.",
       "tags": "content, design, social, brand",
       "path": "skills/shared/goose-graphics",
+      "version": "1.0.0",
       "files": [
         "skills/shared/goose-graphics/README.md",
         "skills/shared/goose-graphics/SKILL.md",
@@ -2910,6 +2853,7 @@
       "metadata": {
         "slug": "goose-graphics",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "design",
         "tags": [
           "content",
@@ -2943,6 +2887,7 @@
       "description": "Creates a new graphics format spec (custom canvas dimensions + content rules) and publishes it to the Gooseworks library so any agent can render against it. Use when the existing community formats (carousel, story, infographic, slides, poster, chart, tweet, plus community additions) don't fit the user's canvas — e.g., LinkedIn banner 1584×396, story cover 1080×1920, event flyer 8.5×11in. Mirrors goose-graphics-create-style but for formats.",
       "tags": "design, content",
       "path": "skills/shared/goose-graphics-create-format",
+      "version": "1.0.0",
       "files": [
         "skills/shared/goose-graphics-create-format/SKILL.md",
         "skills/shared/goose-graphics-create-format/skill.meta.json"
@@ -2950,6 +2895,7 @@
       "metadata": {
         "slug": "goose-graphics-create-format",
         "category": "composites",
+        "version": "1.0.0",
         "tags": [
           "design",
           "content"
@@ -2982,6 +2928,7 @@
       "description": "End-to-end skill that turns a single reference image into a published Gooseworks style — analyzes the image, drafts the slim style spec, renders a hero example plus 2-3 additional formats via Playwright, writes the `gooseworks-style.json` manifest, and publishes via `npx gooseworks styles publish` so other agents can discover it. Mirrors goose-graphics-create-format but for styles.",
       "tags": "design, content",
       "path": "skills/shared/goose-graphics-create-style",
+      "version": "1.0.0",
       "files": [
         "skills/shared/goose-graphics-create-style/SKILL.md",
         "skills/shared/goose-graphics-create-style/skill.meta.json"
@@ -2989,6 +2936,7 @@
       "metadata": {
         "slug": "goose-graphics-create-style",
         "category": "composites",
+        "version": "1.0.0",
         "tags": [
           "design",
           "content"
@@ -3154,6 +3102,7 @@
       "description": "Search Hacker News stories and comments using the free Algolia API. No Apify token needed. Use when you need to find HN discussions, track mentions, discover Show HN launches, or monitor tech community sentiment.",
       "tags": "monitoring",
       "path": "skills/shared/hacker-news-scraper",
+      "version": "1.0.0",
       "files": [
         "skills/shared/hacker-news-scraper/SKILL.md",
         "skills/shared/hacker-news-scraper/scripts/search_hn.py",
@@ -3162,6 +3111,7 @@
       "metadata": {
         "slug": "hacker-news-scraper",
         "category": "capabilities",
+        "version": "1.0.0",
         "tags": [
           "monitoring"
         ],
@@ -3598,6 +3548,7 @@
       "description": "Detect buying intent from job postings. When a company posts a job in your problem area, they've allocated budget and are actively thinking about the problem. This skill finds those companies, qualifies them, extracts personalization context, and outputs everything to a Google Sheet. Does NOT do outreach — just delivers qualified leads with reasoning.",
       "tags": "lead-generation, outreach",
       "path": "skills/shared/job-posting-intent",
+      "version": "1.1.0",
       "files": [
         "skills/shared/job-posting-intent/SKILL.md",
         "skills/shared/job-posting-intent/scripts/create_sheet.py",
@@ -3608,6 +3559,7 @@
       "metadata": {
         "slug": "job-posting-intent",
         "category": "capabilities",
+        "version": "1.1.0",
         "tags": [
           "lead-generation",
           "outreach"
@@ -3631,17 +3583,20 @@
       "description": "Take someone from a business goal to a verified, paused-then-live Meta/Facebook/Instagram campaign without making them learn Meta's hierarchy. Use automatically for requests to launch, run, create, publish, set up, or plan Meta ads; use reporting skills for analysis-only requests.",
       "tags": "ads",
       "path": "skills/shared/launch-meta-ad-campaign",
+      "version": "1.0.0",
       "files": [
         "skills/shared/launch-meta-ad-campaign/SKILL.md",
         "skills/shared/launch-meta-ad-campaign/agents/openai.yaml",
         "skills/shared/launch-meta-ad-campaign/references/direct-meta-adapter.md",
         "skills/shared/launch-meta-ad-campaign/references/gooseworks-adapter.md",
         "skills/shared/launch-meta-ad-campaign/references/planning-only.md",
-        "skills/shared/launch-meta-ad-campaign/skill.meta.json"
+        "skills/shared/launch-meta-ad-campaign/skill.meta.json",
+        "skills/shared/launch-meta-ad-campaign/tools/meta_marketing_api.js"
       ],
       "metadata": {
         "slug": "launch-meta-ad-campaign",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads"
@@ -3668,9 +3623,6 @@
           "paused creation and readback verification",
           "recoverable partial-failure reporting"
         ],
-        "requires_tools": [
-          "meta_marketing_api"
-        ],
         "example_prompt": "I want more trial signups from agency owners. $400 over two weeks — can you get some ads running?"
       }
     },
@@ -3682,6 +3634,7 @@
       "description": "Lead qualification engine with conversational intake. Asks structured questions to understand your qualification criteria, generates a reusable qualification prompt, then batch-enriches leads via Apify LinkedIn scraping and scores them with parallel processing. Outputs qualified/disqualified verdicts with confidence scores and reasoning to CSV or whatever output format the user prefers. Supports calibration mode for prompt refinement.",
       "tags": "lead-generation",
       "path": "skills/shared/lead-qualification",
+      "version": "1.0.0",
       "files": [
         "skills/shared/lead-qualification/SKILL.md",
         "skills/shared/lead-qualification/qualification-prompts/ai-event-attendees-gtm.md",
@@ -3692,6 +3645,7 @@
       "metadata": {
         "slug": "lead-qualification",
         "category": "capabilities",
+        "version": "1.0.0",
         "tags": [
           "lead-generation"
         ],
@@ -3714,6 +3668,7 @@
       "description": "Scrape recent posts from LinkedIn profiles using Apify. Use when you need to monitor what specific people are posting on LinkedIn, track founder/exec activity, or gather LinkedIn content for competitive intelligence.",
       "tags": "outreach",
       "path": "skills/shared/linkedin-profile-post-scraper",
+      "version": "1.0.0",
       "files": [
         "skills/shared/linkedin-profile-post-scraper/SKILL.md",
         "skills/shared/linkedin-profile-post-scraper/scripts/scrape_linkedin_posts.py",
@@ -3722,6 +3677,7 @@
       "metadata": {
         "slug": "linkedin-profile-post-scraper",
         "category": "capabilities",
+        "version": "1.0.0",
         "tags": [
           "outreach"
         ],
@@ -4013,7 +3969,15 @@
           ]
         },
         "requires_skills": [
-          "video-production-harness"
+          "video-production-harness",
+          "ad-angle-miner",
+          "comment-mining",
+          "competitor-ad-intelligence",
+          "reddit-post-finder",
+          "scrapecreators-api",
+          "transcript-intelligence",
+          "watch",
+          "write-video-ad-script"
         ]
       }
     },
@@ -4688,10 +4652,7 @@
         "skills/video/media-proxy/SKILL.md",
         "skills/video/media-proxy/scripts/media_proxy.py",
         "skills/video/media-proxy/scripts/resume.py",
-        "skills/video/media-proxy/skill.meta.json",
-        "skills/video/media-proxy/tests/smoke-test.md",
-        "skills/video/media-proxy/tests/test_call_query.py",
-        "skills/video/media-proxy/tests/test_media_proxy_policy.py"
+        "skills/video/media-proxy/skill.meta.json"
       ],
       "metadata": {
         "slug": "media-proxy",
@@ -4719,6 +4680,7 @@
       "description": "Front door and loop owner of a Meta (Facebook/Instagram) ad harness. Reads the brand's ads/ docs, works out which campaign the user means and which stage it is at, hands off to the stage skill that runs it (intake, strategy, creative, launch, checks, fixes, answers), and writes every stage change back to the docs. Use it when someone wants to run ads on Meta, comes back to ads they started earlier, a stage skill hands back, or a scheduled check fires.",
       "tags": "ads",
       "path": "skills/shared/meta-ad-manager",
+      "version": "1.0.0",
       "files": [
         "skills/shared/meta-ad-manager/SKILL.md",
         "skills/shared/meta-ad-manager/agents/openai.yaml",
@@ -4737,7 +4699,6 @@
         "skills/shared/meta-ad-manager/contract/templates/campaign/decisions.md",
         "skills/shared/meta-ad-manager/contract/templates/campaign/state.md",
         "skills/shared/meta-ad-manager/contract/templates/campaign/strategy.md",
-        "skills/shared/meta-ad-manager/contract/tests/test_validate.py",
         "skills/shared/meta-ad-manager/contract/validate.py",
         "skills/shared/meta-ad-manager/references/direct-meta-adapter.md",
         "skills/shared/meta-ad-manager/references/gooseworks-adapter.md",
@@ -4747,6 +4708,7 @@
       "metadata": {
         "slug": "meta-ad-manager",
         "category": "playbooks",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads"
@@ -4784,6 +4746,7 @@
       "description": "Pre-flight policy check for Meta ads. Takes ad copy plus advertiser context, resolves and fetches the relevant Meta transparency-center policy pages at runtime, and returns a Pass / Fix Required / Block verdict with cited findings and rewrites.",
       "tags": "ads, research",
       "path": "skills/shared/meta-ad-policy-checker",
+      "version": "1.0.0",
       "files": [
         "skills/shared/meta-ad-policy-checker/SKILL.md",
         "skills/shared/meta-ad-policy-checker/skill.meta.json"
@@ -4791,7 +4754,7 @@
       "metadata": {
         "slug": "meta-ad-policy-checker",
         "category": "composites",
-        "description": "Pre-flight policy check for Meta ads. Takes ad copy plus a short advertiser context, resolves and fetches the relevant policy pages from Meta's transparency center at runtime, and returns a verdict (Pass / Fix Required / Block) with cited findings and rewrites. Uses Meta's own published policies as source of truth, no hardcoded rule list. Designed to gate ad-write workflows or audit existing live ads.",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads",
@@ -4815,6 +4778,7 @@
       "description": "Diagnose Meta Ads campaign performance and account gaps using Meta's actual system mechanics — including customer-journey coverage, Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Use for performance diagnosis, account audits, full-funnel or TOF/MOF/BOF gap analysis, deciding what to test or create next, and producing novice-friendly recommendations without forcing every campaign or ad into a funnel stage.",
       "tags": "ads, research",
       "path": "skills/shared/meta-ads-analyzer",
+      "version": "1.0.0",
       "files": [
         "skills/shared/meta-ads-analyzer/SKILL.md",
         "skills/shared/meta-ads-analyzer/references/customer-journey-coverage.md",
@@ -4823,7 +4787,7 @@
       "metadata": {
         "slug": "meta-ads-analyzer",
         "category": "composites",
-        "description": "Diagnose Meta Ads performance and account gaps using customer-journey coverage, Breakdown Effect, Learning Phase, Auction Overlap, Pacing, and Creative Fatigue. Audits TOF/MOF/BOF coverage without forcing separate funnel campaigns or assigning every ad to one stage, then produces novice-friendly, testable recommendations.",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads",
@@ -4842,12 +4806,12 @@
     {
       "slug": "mix-master",
       "name": "mix-master",
-      "version": "1.0.4",
       "category": "capabilities",
       "domain": "ads",
       "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
       "tags": "ads",
       "path": "skills/video/mix-master",
+      "version": "1.0.4",
       "files": [
         "skills/video/mix-master/SKILL.md",
         "skills/video/mix-master/scripts/mix.sh",
@@ -4856,13 +4820,13 @@
       "metadata": {
         "slug": "mix-master",
         "category": "capabilities",
-        "pack": "video-ad-formats",
+        "domain": "ads",
         "version": "1.0.4",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
+          "base_command": "npx goose-skills install mix-master",
           "supports": [
             "claude",
             "cursor",
@@ -5207,6 +5171,7 @@
       "description": "Create faithful studio, lifestyle, and on-model product photography through the GooseWorks Product Photos workflow, then approve selected results for reuse in future creative work.",
       "tags": "ads, design, brand",
       "path": "skills/shared/product-photoshoot",
+      "version": "1.0.0",
       "files": [
         "skills/shared/product-photoshoot/SKILL.md",
         "skills/shared/product-photoshoot/skill.meta.json"
@@ -5214,6 +5179,7 @@
       "metadata": {
         "slug": "product-photoshoot",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads",
@@ -5238,6 +5204,7 @@
       "description": "Scrape and search Reddit posts using Apify. Use when you need to find Reddit discussions, track competitor mentions, monitor product feedback, discover pain points, or analyze subreddit content. Supports keyword filtering, time-based searches, and subreddit-specific queries.",
       "tags": "monitoring",
       "path": "skills/shared/reddit-post-finder",
+      "version": "1.0.0",
       "files": [
         "skills/shared/reddit-post-finder/SKILL.md",
         "skills/shared/reddit-post-finder/references/apify-config.md",
@@ -5247,6 +5214,7 @@
       "metadata": {
         "slug": "reddit-post-finder",
         "category": "capabilities",
+        "version": "1.0.0",
         "tags": [
           "monitoring"
         ],
@@ -5269,21 +5237,18 @@
       "description": "Recreate a static graphic ad (Pinterest pin, IG/FB feed image, poster) from a reference image, swapping in a new brand's product and new copy while keeping the reference's layout, composition, and visual energy. ALWAYS generated with GPT Image 2 in edit-the-reference mode (fal-ai/gpt-image-1/edit-image, a billed FAL generation); the HTML/goose-graphics overlay is only an optional text-finishing step, never the generator. The static-graphics counterpart to the video remix-ad skill; this is what the app calls when a user picks a reference ad and wants it for their own product.",
       "tags": "ads, design, brand",
       "path": "skills/shared/remix-graphic-ad-from-reference",
+      "version": "1.0.0",
       "files": [
         "skills/shared/remix-graphic-ad-from-reference/SKILL.md",
         "skills/shared/remix-graphic-ad-from-reference/assets/overlay-template.html",
         "skills/shared/remix-graphic-ad-from-reference/requirements.txt",
         "skills/shared/remix-graphic-ad-from-reference/scripts/cutout_product.py",
-        "skills/shared/remix-graphic-ad-from-reference/skill.meta.json",
-        "skills/shared/remix-graphic-ad-from-reference/tests/expected-output.md",
-        "skills/shared/remix-graphic-ad-from-reference/tests/human-test.md",
-        "skills/shared/remix-graphic-ad-from-reference/tests/sample-input.md",
-        "skills/shared/remix-graphic-ad-from-reference/tests/smoke-test.md",
-        "skills/shared/remix-graphic-ad-from-reference/tests/verifier.md"
+        "skills/shared/remix-graphic-ad-from-reference/skill.meta.json"
       ],
       "metadata": {
         "slug": "remix-graphic-ad-from-reference",
         "category": "composites",
+        "version": "1.0.0",
         "domain": "ads",
         "tags": [
           "ads",
@@ -5303,7 +5268,11 @@
           "create-image-gpt-image-fal",
           "verify-product-image",
           "brand-research",
-          "product-photoshoot"
+          "product-photoshoot",
+          "comment-mining",
+          "competitor-ad-intelligence",
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     },
@@ -5321,8 +5290,7 @@
         "skills/video/render-3d-character-explainer/scripts/compose.py",
         "skills/video/render-3d-character-explainer/scripts/config.example.json",
         "skills/video/render-3d-character-explainer/scripts/make_captions.py",
-        "skills/video/render-3d-character-explainer/skill.meta.json",
-        "skills/video/render-3d-character-explainer/tests/smoke-test.md"
+        "skills/video/render-3d-character-explainer/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-3d-character-explainer",
@@ -5362,8 +5330,7 @@
         "skills/video/render-3d-product-showcase/scripts/build_masters.py",
         "skills/video/render-3d-product-showcase/scripts/config.example.json",
         "skills/video/render-3d-product-showcase/scripts/shoot.js",
-        "skills/video/render-3d-product-showcase/skill.meta.json",
-        "skills/video/render-3d-product-showcase/tests/smoke-test.md"
+        "skills/video/render-3d-product-showcase/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-3d-product-showcase",
@@ -5401,8 +5368,7 @@
         "skills/video/render-absurdist-explainer/scripts/compose.py",
         "skills/video/render-absurdist-explainer/scripts/config.example.json",
         "skills/video/render-absurdist-explainer/scripts/make_captions.py",
-        "skills/video/render-absurdist-explainer/skill.meta.json",
-        "skills/video/render-absurdist-explainer/tests/smoke-test.md"
+        "skills/video/render-absurdist-explainer/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-absurdist-explainer",
@@ -5440,8 +5406,7 @@
         "skills/video/render-airdrop-carousel/scripts/compose_carousel.py",
         "skills/video/render-airdrop-carousel/scripts/config.example.json",
         "skills/video/render-airdrop-carousel/scripts/one_shot.py",
-        "skills/video/render-airdrop-carousel/skill.meta.json",
-        "skills/video/render-airdrop-carousel/tests/smoke-test.md"
+        "skills/video/render-airdrop-carousel/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-airdrop-carousel",
@@ -5485,8 +5450,7 @@
         "skills/video/render-apple-notes-chat/scripts/record-notes.js",
         "skills/video/render-apple-notes-chat/scripts/render-end-card.js",
         "skills/video/render-apple-notes-chat/scripts/stitch.sh",
-        "skills/video/render-apple-notes-chat/skill.meta.json",
-        "skills/video/render-apple-notes-chat/tests/smoke-test.md"
+        "skills/video/render-apple-notes-chat/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-apple-notes-chat",
@@ -5528,8 +5492,7 @@
         "skills/video/render-brand-identity-reveal/scripts/recrop.py",
         "skills/video/render-brand-identity-reveal/scripts/render_art.py",
         "skills/video/render-brand-identity-reveal/scripts/scene.html",
-        "skills/video/render-brand-identity-reveal/skill.meta.json",
-        "skills/video/render-brand-identity-reveal/tests/smoke-test.md"
+        "skills/video/render-brand-identity-reveal/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-brand-identity-reveal",
@@ -5566,8 +5529,7 @@
         "skills/video/render-cartoon-music-video/scripts/PIPELINE.md",
         "skills/video/render-cartoon-music-video/scripts/README.md",
         "skills/video/render-cartoon-music-video/scripts/config.example.json",
-        "skills/video/render-cartoon-music-video/skill.meta.json",
-        "skills/video/render-cartoon-music-video/tests/smoke-test.md"
+        "skills/video/render-cartoon-music-video/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-cartoon-music-video",
@@ -5604,8 +5566,7 @@
         "skills/video/render-cgi-sizzle/scripts/PIPELINE.md",
         "skills/video/render-cgi-sizzle/scripts/README.md",
         "skills/video/render-cgi-sizzle/scripts/config.example.json",
-        "skills/video/render-cgi-sizzle/skill.meta.json",
-        "skills/video/render-cgi-sizzle/tests/smoke-test.md"
+        "skills/video/render-cgi-sizzle/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-cgi-sizzle",
@@ -5652,8 +5613,7 @@
         "skills/video/render-chatgpt-chat/scripts/record-chat.js",
         "skills/video/render-chatgpt-chat/scripts/render-end-card.js",
         "skills/video/render-chatgpt-chat/scripts/stitch.sh",
-        "skills/video/render-chatgpt-chat/skill.meta.json",
-        "skills/video/render-chatgpt-chat/tests/smoke-test.md"
+        "skills/video/render-chatgpt-chat/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-chatgpt-chat",
@@ -5690,8 +5650,7 @@
         "skills/video/render-cinematic-music-video/scripts/PIPELINE.md",
         "skills/video/render-cinematic-music-video/scripts/README.md",
         "skills/video/render-cinematic-music-video/scripts/config.example.json",
-        "skills/video/render-cinematic-music-video/skill.meta.json",
-        "skills/video/render-cinematic-music-video/tests/smoke-test.md"
+        "skills/video/render-cinematic-music-video/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-cinematic-music-video",
@@ -5729,8 +5688,7 @@
         "skills/video/render-cosmic-mythology-voiceover/scripts/README.md",
         "skills/video/render-cosmic-mythology-voiceover/scripts/config.example.json",
         "skills/video/render-cosmic-mythology-voiceover/scripts/render.py",
-        "skills/video/render-cosmic-mythology-voiceover/skill.meta.json",
-        "skills/video/render-cosmic-mythology-voiceover/tests/smoke-test.md"
+        "skills/video/render-cosmic-mythology-voiceover/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-cosmic-mythology-voiceover",
@@ -5767,8 +5725,7 @@
         "skills/video/render-creator-pip-listicle/scripts/PIPELINE.md",
         "skills/video/render-creator-pip-listicle/scripts/README.md",
         "skills/video/render-creator-pip-listicle/scripts/config.example.json",
-        "skills/video/render-creator-pip-listicle/skill.meta.json",
-        "skills/video/render-creator-pip-listicle/tests/smoke-test.md"
+        "skills/video/render-creator-pip-listicle/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-creator-pip-listicle",
@@ -5805,8 +5762,7 @@
         "skills/video/render-editorial-motion-podcast/scripts/PIPELINE.md",
         "skills/video/render-editorial-motion-podcast/scripts/README.md",
         "skills/video/render-editorial-motion-podcast/scripts/config.example.json",
-        "skills/video/render-editorial-motion-podcast/skill.meta.json",
-        "skills/video/render-editorial-motion-podcast/tests/smoke-test.md"
+        "skills/video/render-editorial-motion-podcast/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-editorial-motion-podcast",
@@ -5843,8 +5799,7 @@
         "skills/video/render-flat-vector-explainer/scripts/PIPELINE.md",
         "skills/video/render-flat-vector-explainer/scripts/README.md",
         "skills/video/render-flat-vector-explainer/scripts/config.example.json",
-        "skills/video/render-flat-vector-explainer/skill.meta.json",
-        "skills/video/render-flat-vector-explainer/tests/smoke-test.md"
+        "skills/video/render-flat-vector-explainer/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-flat-vector-explainer",
@@ -5881,8 +5836,7 @@
         "skills/video/render-food-product-sizzle/scripts/PIPELINE.md",
         "skills/video/render-food-product-sizzle/scripts/README.md",
         "skills/video/render-food-product-sizzle/scripts/config.example.json",
-        "skills/video/render-food-product-sizzle/skill.meta.json",
-        "skills/video/render-food-product-sizzle/tests/smoke-test.md"
+        "skills/video/render-food-product-sizzle/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-food-product-sizzle",
@@ -5919,8 +5873,7 @@
         "skills/video/render-glassy-matte-grwm/scripts/PIPELINE.md",
         "skills/video/render-glassy-matte-grwm/scripts/README.md",
         "skills/video/render-glassy-matte-grwm/scripts/config.example.json",
-        "skills/video/render-glassy-matte-grwm/skill.meta.json",
-        "skills/video/render-glassy-matte-grwm/tests/smoke-test.md"
+        "skills/video/render-glassy-matte-grwm/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-glassy-matte-grwm",
@@ -5956,9 +5909,7 @@
         "skills/video/render-hand-swipe-flavor-listicle/SKILL.md",
         "skills/video/render-hand-swipe-flavor-listicle/scripts/build_hand_swipe_listicle.py",
         "skills/video/render-hand-swipe-flavor-listicle/scripts/config.example.json",
-        "skills/video/render-hand-swipe-flavor-listicle/skill.meta.json",
-        "skills/video/render-hand-swipe-flavor-listicle/tests/make_smoke_inputs.py",
-        "skills/video/render-hand-swipe-flavor-listicle/tests/smoke-test.md"
+        "skills/video/render-hand-swipe-flavor-listicle/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-hand-swipe-flavor-listicle",
@@ -5997,9 +5948,7 @@
         "skills/video/render-hook-replacement/scripts/make_demo.py",
         "skills/video/render-hook-replacement/scripts/replace_hook.py",
         "skills/video/render-hook-replacement/scripts/replace_pack.py",
-        "skills/video/render-hook-replacement/skill.meta.json",
-        "skills/video/render-hook-replacement/tests/smoke-test.md",
-        "skills/video/render-hook-replacement/tests/test_replace_hook.py"
+        "skills/video/render-hook-replacement/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-hook-replacement",
@@ -6042,8 +5991,7 @@
         "skills/video/render-hypermotion/scripts/PIPELINE.md",
         "skills/video/render-hypermotion/scripts/README.md",
         "skills/video/render-hypermotion/scripts/config.example.json",
-        "skills/video/render-hypermotion/skill.meta.json",
-        "skills/video/render-hypermotion/tests/smoke-test.md"
+        "skills/video/render-hypermotion/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-hypermotion",
@@ -6079,8 +6027,7 @@
         "skills/video/render-ig-live-gallery/SKILL.md",
         "skills/video/render-ig-live-gallery/scripts/build.py",
         "skills/video/render-ig-live-gallery/scripts/config.example.json",
-        "skills/video/render-ig-live-gallery/skill.meta.json",
-        "skills/video/render-ig-live-gallery/tests/smoke-test.md"
+        "skills/video/render-ig-live-gallery/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-ig-live-gallery",
@@ -6118,8 +6065,7 @@
         "skills/video/render-imessage-cascade/scripts/compose.py",
         "skills/video/render-imessage-cascade/scripts/config.example.json",
         "skills/video/render-imessage-cascade/scripts/layout.py",
-        "skills/video/render-imessage-cascade/skill.meta.json",
-        "skills/video/render-imessage-cascade/tests/smoke-test.md"
+        "skills/video/render-imessage-cascade/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-imessage-cascade",
@@ -6170,12 +6116,7 @@
         "skills/video/render-imessage-chat/scripts/render.sh",
         "skills/video/render-imessage-chat/scripts/sfx-embedded.json",
         "skills/video/render-imessage-chat/scripts/stitch.sh",
-        "skills/video/render-imessage-chat/skill.meta.json",
-        "skills/video/render-imessage-chat/tests/fixtures/long-group-thread.json",
-        "skills/video/render-imessage-chat/tests/smoke-test.md",
-        "skills/video/render-imessage-chat/tests/test_chat.js",
-        "skills/video/render-imessage-chat/tests/test_safe_area.js",
-        "skills/video/render-imessage-chat/tests/test_stitch.py"
+        "skills/video/render-imessage-chat/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-imessage-chat",
@@ -6201,33 +6142,29 @@
     {
       "slug": "render-ios-keyboard",
       "name": "render-ios-keyboard",
-      "version": "1.0.4",
       "category": "capabilities",
       "domain": "ads",
       "description": "Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).",
       "tags": "ads",
       "path": "skills/video/render-ios-keyboard",
+      "version": "1.0.4",
       "files": [
         "skills/video/render-ios-keyboard/SKILL.md",
         "skills/video/render-ios-keyboard/generate.js",
         "skills/video/render-ios-keyboard/render.js",
         "skills/video/render-ios-keyboard/skill.meta.json",
-        "skills/video/render-ios-keyboard/templates/keyboard.css",
-        "skills/video/render-ios-keyboard/tests/expected-output.md",
-        "skills/video/render-ios-keyboard/tests/human-test.md",
-        "skills/video/render-ios-keyboard/tests/sample-input.md",
-        "skills/video/render-ios-keyboard/tests/smoke-test.md"
+        "skills/video/render-ios-keyboard/templates/keyboard.css"
       ],
       "metadata": {
         "slug": "render-ios-keyboard",
         "category": "capabilities",
-        "pack": "video-ad-formats",
+        "domain": "ads",
         "version": "1.0.4",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
+          "base_command": "npx goose-skills install render-ios-keyboard",
           "supports": [
             "claude",
             "cursor",
@@ -6251,8 +6188,7 @@
         "skills/video/render-logo-equation-card/scripts/compose.py",
         "skills/video/render-logo-equation-card/scripts/measure_motion.py",
         "skills/video/render-logo-equation-card/scripts/render_card.py",
-        "skills/video/render-logo-equation-card/skill.meta.json",
-        "skills/video/render-logo-equation-card/tests/smoke-test.md"
+        "skills/video/render-logo-equation-card/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-logo-equation-card",
@@ -6287,8 +6223,7 @@
         "skills/video/render-model-comparison-grid/scripts/build_composition.py",
         "skills/video/render-model-comparison-grid/scripts/config.example.json",
         "skills/video/render-model-comparison-grid/scripts/render_seekable_hyperframe.py",
-        "skills/video/render-model-comparison-grid/skill.meta.json",
-        "skills/video/render-model-comparison-grid/tests/smoke-test.md"
+        "skills/video/render-model-comparison-grid/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-model-comparison-grid",
@@ -6326,8 +6261,7 @@
         "skills/video/render-mosaic-grid-reveal/scripts/build_html.py",
         "skills/video/render-mosaic-grid-reveal/scripts/config.example.json",
         "skills/video/render-mosaic-grid-reveal/scripts/render.py",
-        "skills/video/render-mosaic-grid-reveal/skill.meta.json",
-        "skills/video/render-mosaic-grid-reveal/tests/smoke-test.md"
+        "skills/video/render-mosaic-grid-reveal/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-mosaic-grid-reveal",
@@ -6364,8 +6298,7 @@
         "skills/video/render-multiworld/scripts/PIPELINE.md",
         "skills/video/render-multiworld/scripts/README.md",
         "skills/video/render-multiworld/scripts/config.example.json",
-        "skills/video/render-multiworld/skill.meta.json",
-        "skills/video/render-multiworld/tests/smoke-test.md"
+        "skills/video/render-multiworld/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-multiworld",
@@ -6411,8 +6344,7 @@
         "skills/video/render-myth-vs-fact/scripts/hyperframes/beat-turn.html",
         "skills/video/render-myth-vs-fact/scripts/make_captions.py",
         "skills/video/render-myth-vs-fact/scripts/render_beats.py",
-        "skills/video/render-myth-vs-fact/skill.meta.json",
-        "skills/video/render-myth-vs-fact/tests/smoke-test.md"
+        "skills/video/render-myth-vs-fact/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-myth-vs-fact",
@@ -6449,8 +6381,7 @@
         "skills/video/render-narrated-ugc-wardrobe-stitch/scripts/PIPELINE.md",
         "skills/video/render-narrated-ugc-wardrobe-stitch/scripts/README.md",
         "skills/video/render-narrated-ugc-wardrobe-stitch/scripts/config.example.json",
-        "skills/video/render-narrated-ugc-wardrobe-stitch/skill.meta.json",
-        "skills/video/render-narrated-ugc-wardrobe-stitch/tests/smoke-test.md"
+        "skills/video/render-narrated-ugc-wardrobe-stitch/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-narrated-ugc-wardrobe-stitch",
@@ -6502,8 +6433,7 @@
         "skills/video/render-offer-ad/project/tsconfig.json",
         "skills/video/render-offer-ad/scripts/config.example.json",
         "skills/video/render-offer-ad/scripts/render.py",
-        "skills/video/render-offer-ad/skill.meta.json",
-        "skills/video/render-offer-ad/tests/smoke-test.md"
+        "skills/video/render-offer-ad/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-offer-ad",
@@ -6540,8 +6470,7 @@
         "skills/video/render-photo-grid-card/scripts/_shared.js",
         "skills/video/render-photo-grid-card/scripts/build_card.py",
         "skills/video/render-photo-grid-card/scripts/render.py",
-        "skills/video/render-photo-grid-card/skill.meta.json",
-        "skills/video/render-photo-grid-card/tests/smoke-test.md"
+        "skills/video/render-photo-grid-card/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-photo-grid-card",
@@ -6601,8 +6530,7 @@
         "skills/video/render-podcast-skit/scripts/shape_vo.py",
         "skills/video/render-podcast-skit/scripts/test_distribution.py",
         "skills/video/render-podcast-skit/skill.meta.json",
-        "skills/video/render-podcast-skit/source-manifest.json",
-        "skills/video/render-podcast-skit/tests/smoke-test.md"
+        "skills/video/render-podcast-skit/source-manifest.json"
       ],
       "metadata": {
         "slug": "render-podcast-skit",
@@ -6623,7 +6551,8 @@
           "create-vo-elevenlabs",
           "create-image-gpt-image-fal",
           "create-video-fal",
-          "watch"
+          "watch",
+          "media-proxy"
         ],
         "version": "2.0.0",
         "features": [
@@ -6654,10 +6583,7 @@
         "skills/video/render-proof-points-overlay/scripts/compose_master.py",
         "skills/video/render-proof-points-overlay/scripts/fetch_icons.py",
         "skills/video/render-proof-points-overlay/scripts/music_coverage.py",
-        "skills/video/render-proof-points-overlay/skill.meta.json",
-        "skills/video/render-proof-points-overlay/tests/smoke-test.md",
-        "skills/video/render-proof-points-overlay/tests/test_layout.py",
-        "skills/video/render-proof-points-overlay/tests/test_music.py"
+        "skills/video/render-proof-points-overlay/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-proof-points-overlay",
@@ -6696,8 +6622,7 @@
         "skills/video/render-search-grid/scripts/config.example.json",
         "skills/video/render-search-grid/scripts/prep_assets.py",
         "skills/video/render-search-grid/scripts/render.py",
-        "skills/video/render-search-grid/skill.meta.json",
-        "skills/video/render-search-grid/tests/smoke-test.md"
+        "skills/video/render-search-grid/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-search-grid",
@@ -6734,8 +6659,7 @@
         "skills/video/render-song-mv/scripts/PIPELINE.md",
         "skills/video/render-song-mv/scripts/README.md",
         "skills/video/render-song-mv/scripts/config.example.json",
-        "skills/video/render-song-mv/skill.meta.json",
-        "skills/video/render-song-mv/tests/smoke-test.md"
+        "skills/video/render-song-mv/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-song-mv",
@@ -6772,8 +6696,7 @@
         "skills/video/render-split-screen-creator/scripts/PIPELINE.md",
         "skills/video/render-split-screen-creator/scripts/README.md",
         "skills/video/render-split-screen-creator/scripts/config.example.json",
-        "skills/video/render-split-screen-creator/skill.meta.json",
-        "skills/video/render-split-screen-creator/tests/smoke-test.md"
+        "skills/video/render-split-screen-creator/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-split-screen-creator",
@@ -6810,8 +6733,7 @@
         "skills/video/render-stopmotion-hand-swatch-cycle/scripts/PIPELINE.md",
         "skills/video/render-stopmotion-hand-swatch-cycle/scripts/README.md",
         "skills/video/render-stopmotion-hand-swatch-cycle/scripts/config.example.json",
-        "skills/video/render-stopmotion-hand-swatch-cycle/skill.meta.json",
-        "skills/video/render-stopmotion-hand-swatch-cycle/tests/smoke-test.md"
+        "skills/video/render-stopmotion-hand-swatch-cycle/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-stopmotion-hand-swatch-cycle",
@@ -6910,20 +6832,7 @@
         "skills/video/render-street-interview/scripts/selftest.py",
         "skills/video/render-street-interview/scripts/single_gen.py",
         "skills/video/render-street-interview/scripts/variants_gen.py",
-        "skills/video/render-street-interview/skill.meta.json",
-        "skills/video/render-street-interview/tests/fixtures/prompt-snapshots.json",
-        "skills/video/render-street-interview/tests/smoke-test.md",
-        "skills/video/render-street-interview/tests/test_cast_advice.py",
-        "skills/video/render-street-interview/tests/test_conversation.py",
-        "skills/video/render-street-interview/tests/test_edit_timeline.py",
-        "skills/video/render-street-interview/tests/test_finishing.py",
-        "skills/video/render-street-interview/tests/test_h3_provider_route.py",
-        "skills/video/render-street-interview/tests/test_opt_in_hold_grammar.py",
-        "skills/video/render-street-interview/tests/test_prompt_budget.py",
-        "skills/video/render-street-interview/tests/test_recut_media.py",
-        "skills/video/render-street-interview/tests/test_selector_route.py",
-        "skills/video/render-street-interview/tests/test_single_gen_rejection.py",
-        "skills/video/render-street-interview/tests/test_skin_and_voice_options.py"
+        "skills/video/render-street-interview/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-street-interview",
@@ -6946,7 +6855,14 @@
           "watch",
           "create-video-seedance-2-fal",
           "write-video-ad-script",
-          "create-video-fal"
+          "create-video-fal",
+          "ad-angle-miner",
+          "comment-mining",
+          "competitor-ad-intelligence",
+          "media-proxy",
+          "reddit-post-finder",
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     },
@@ -6982,8 +6898,7 @@
         "skills/video/render-value-prop/shared/beat-templates/hook-sticker.html",
         "skills/video/render-value-prop/shared/beat-templates/prop-hero.html",
         "skills/video/render-value-prop/shared/beat-templates/prop-row.html",
-        "skills/video/render-value-prop/skill.meta.json",
-        "skills/video/render-value-prop/tests/smoke-test.md"
+        "skills/video/render-value-prop/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-value-prop",
@@ -7021,8 +6936,7 @@
         "skills/video/render-vignette/scripts/music_and_mux.py",
         "skills/video/render-vignette/scripts/render_overlays.py",
         "skills/video/render-vignette/scripts/strip_product_backgrounds.py",
-        "skills/video/render-vignette/skill.meta.json",
-        "skills/video/render-vignette/tests/smoke-test.md"
+        "skills/video/render-vignette/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-vignette",
@@ -7059,8 +6973,7 @@
         "skills/video/render-vo-anchored-motion-listicle/scripts/PIPELINE.md",
         "skills/video/render-vo-anchored-motion-listicle/scripts/README.md",
         "skills/video/render-vo-anchored-motion-listicle/scripts/config.example.json",
-        "skills/video/render-vo-anchored-motion-listicle/skill.meta.json",
-        "skills/video/render-vo-anchored-motion-listicle/tests/smoke-test.md"
+        "skills/video/render-vo-anchored-motion-listicle/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-vo-anchored-motion-listicle",
@@ -7110,8 +7023,7 @@
         "skills/video/render-whiteboard-explainer/scripts/render.py",
         "skills/video/render-whiteboard-explainer/scripts/solve-layout.py",
         "skills/video/render-whiteboard-explainer/scripts/trace.py",
-        "skills/video/render-whiteboard-explainer/skill.meta.json",
-        "skills/video/render-whiteboard-explainer/tests/test_whiteboard_portable.py"
+        "skills/video/render-whiteboard-explainer/skill.meta.json"
       ],
       "metadata": {
         "slug": "render-whiteboard-explainer",
@@ -7133,7 +7045,8 @@
         "requires_skills": [
           "watch",
           "create-image-gpt-image-fal",
-          "create-vo-elevenlabs"
+          "create-vo-elevenlabs",
+          "media-proxy"
         ]
       }
     },
@@ -7981,11 +7894,7 @@
       "files": [
         "skills/video/review-finished-ad/SKILL.md",
         "skills/video/review-finished-ad/scripts/review_finished_ad.py",
-        "skills/video/review-finished-ad/skill.meta.json",
-        "skills/video/review-finished-ad/tests/test_overrun_freeze_clicks.py",
-        "skills/video/review-finished-ad/tests/test_review_finished_ad.py",
-        "skills/video/review-finished-ad/tests/test_sampling.py",
-        "skills/video/review-finished-ad/tests/test_silent_text_profile.py"
+        "skills/video/review-finished-ad/skill.meta.json"
       ],
       "metadata": {
         "slug": "review-finished-ad",
@@ -8009,34 +7918,34 @@
     {
       "slug": "review-ugc-render",
       "name": "review-ugc-render",
-      "version": "2.0.5",
       "category": "capabilities",
       "domain": "ads",
       "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
       "tags": "ads",
       "path": "skills/video/review-ugc-render",
+      "version": "2.0.5",
       "files": [
         "skills/video/review-ugc-render/SKILL.md",
         "skills/video/review-ugc-render/scripts/review_render.py",
-        "skills/video/review-ugc-render/skill.meta.json",
-        "skills/video/review-ugc-render/tests/test_review_render.py"
+        "skills/video/review-ugc-render/skill.meta.json"
       ],
       "metadata": {
         "slug": "review-ugc-render",
         "category": "capabilities",
-        "pack": "ugc-video-formats",
+        "domain": "ads",
         "version": "2.0.5",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install ugc-video-formats",
+          "base_command": "npx goose-skills install review-ugc-render",
           "supports": [
             "claude",
             "cursor",
             "codex"
           ]
-        }
+        },
+        "requires_skills": []
       }
     },
     {
@@ -8827,6 +8736,7 @@
       "description": "Provider reference for collecting public profiles, posts, comments, transcripts, trends, and ad-library data from major social platforms through ScrapeCreators. Use as a dependency of research workflows, not as the final user-facing deliverable.",
       "tags": "social, research-tools",
       "path": "skills/shared/scrapecreators-api",
+      "version": "1.0.0",
       "files": [
         "skills/shared/scrapecreators-api/SKILL.md",
         "skills/shared/scrapecreators-api/skill.meta.json"
@@ -8834,13 +8744,12 @@
       "metadata": {
         "slug": "scrapecreators-api",
         "category": "capabilities",
+        "version": "1.0.0",
         "domain": "social",
-        "visibility": "dependency",
         "tags": [
           "social",
           "research-tools"
         ],
-        "source": "scrapecreators",
         "installation": {
           "base_command": "npx goose-skills install scrapecreators-api",
           "supports": [
@@ -8912,12 +8821,12 @@
     {
       "slug": "stitch-videos-ffmpeg",
       "name": "stitch-videos-ffmpeg",
-      "version": "1.3.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
       "tags": "ads",
       "path": "skills/video/stitch-videos-ffmpeg",
+      "version": "1.3.1",
       "files": [
         "skills/video/stitch-videos-ffmpeg/SKILL.md",
         "skills/video/stitch-videos-ffmpeg/scripts/composite.py",
@@ -8927,24 +8836,18 @@
         "skills/video/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
         "skills/video/stitch-videos-ffmpeg/scripts/trim_clips.py",
         "skills/video/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
-        "skills/video/stitch-videos-ffmpeg/skill.meta.json",
-        "skills/video/stitch-videos-ffmpeg/tests/expected-output.md",
-        "skills/video/stitch-videos-ffmpeg/tests/human-test.md",
-        "skills/video/stitch-videos-ffmpeg/tests/sample-input.md",
-        "skills/video/stitch-videos-ffmpeg/tests/smoke-test.md",
-        "skills/video/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
-        "skills/video/stitch-videos-ffmpeg/tests/test_trim_clips.py"
+        "skills/video/stitch-videos-ffmpeg/skill.meta.json"
       ],
       "metadata": {
         "slug": "stitch-videos-ffmpeg",
         "category": "capabilities",
-        "pack": "video-ad-formats",
-        "version": "1.3.1",
+        "domain": "ads",
         "tags": [
           "ads"
         ],
+        "version": "1.3.1",
         "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
+          "base_command": "npx goose-skills install stitch-videos-ffmpeg",
           "supports": [
             "claude",
             "cursor",
@@ -8961,6 +8864,7 @@
       "description": "Turn TikTok, Instagram, YouTube, Facebook, X, LinkedIn, Reddit, or Rumble transcripts into timestamped hooks, claims, objections, proof, calls to action, sponsorship signals, and reusable content atoms. Use directly for transcript analysis or as support for creator, competitor, trend, demand, and repurposing work.",
       "tags": "social, research",
       "path": "skills/shared/transcript-intelligence",
+      "version": "1.0.0",
       "files": [
         "skills/shared/transcript-intelligence/SKILL.md",
         "skills/shared/transcript-intelligence/skill.meta.json"
@@ -8968,12 +8872,12 @@
       "metadata": {
         "slug": "transcript-intelligence",
         "category": "capabilities",
+        "version": "1.0.0",
         "domain": "social",
         "tags": [
           "social",
           "research"
         ],
-        "source": "scrapecreators",
         "installation": {
           "base_command": "npx goose-skills install transcript-intelligence",
           "supports": [
@@ -9001,8 +8905,7 @@
         "skills/video/ugc-fixloop/SKILL.md",
         "skills/video/ugc-fixloop/scripts/stitch_replacement.py",
         "skills/video/ugc-fixloop/scripts/vet_seedance_prompt.py",
-        "skills/video/ugc-fixloop/skill.meta.json",
-        "skills/video/ugc-fixloop/tests/smoke-test.md"
+        "skills/video/ugc-fixloop/skill.meta.json"
       ],
       "metadata": {
         "slug": "ugc-fixloop",
@@ -9208,31 +9111,27 @@
     {
       "slug": "watch",
       "name": "watch",
-      "version": "2.0.1",
       "category": "capabilities",
       "domain": "ads",
       "description": "Observe actual video and sound over the whole file or named ranges, with timestamped evidence and honest coverage. Use complementary playback, listening and targeted frames; return observations without edits or verdicts.",
       "tags": "ads",
       "path": "skills/video/watch",
+      "version": "2.0.1",
       "files": [
         "skills/video/watch/SKILL.md",
         "skills/video/watch/references/parameters.md",
-        "skills/video/watch/skill.meta.json",
-        "skills/video/watch/tests/expected-output.md",
-        "skills/video/watch/tests/human-test.md",
-        "skills/video/watch/tests/sample-input.md",
-        "skills/video/watch/tests/smoke-test.md"
+        "skills/video/watch/skill.meta.json"
       ],
       "metadata": {
         "slug": "watch",
         "category": "capabilities",
-        "pack": "video-ad-formats",
+        "domain": "ads",
         "version": "2.0.1",
         "tags": [
           "ads"
         ],
         "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
+          "base_command": "npx goose-skills install watch",
           "supports": [
             "claude",
             "cursor",
@@ -9968,13 +9867,7 @@
         "skills/video/write-video-ad-script/scripts/media_proxy.py",
         "skills/video/write-video-ad-script/scripts/prepare_angle_context.py",
         "skills/video/write-video-ad-script/scripts/verify_handoff.py",
-        "skills/video/write-video-ad-script/skill.meta.json",
-        "skills/video/write-video-ad-script/tests/test_angle_handoff.py",
-        "skills/video/write-video-ad-script/tests/test_creative_brief.py",
-        "skills/video/write-video-ad-script/tests/test_critique_scripts.py",
-        "skills/video/write-video-ad-script/tests/test_handoff_release.py",
-        "skills/video/write-video-ad-script/tests/test_lint_scripts.py",
-        "skills/video/write-video-ad-script/tests/test_pacing.py"
+        "skills/video/write-video-ad-script/skill.meta.json"
       ],
       "metadata": {
         "slug": "write-video-ad-script",
@@ -9996,283 +9889,17 @@
         },
         "requires_skills": [
           "ad-angle-miner",
-          "watch"
+          "watch",
+          "comment-mining",
+          "competitor-ad-intelligence",
+          "reddit-post-finder",
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     }
   ],
-  "packs": [
-    {
-      "slug": "ugc-video-formats",
-      "name": "UGC Video Ad Capabilities",
-      "type": "pack",
-      "domain": "ads",
-      "description": "Shared, reusable capabilities the video-ad orchestrator composes to render short-form ads locally (Seedance 2.0 reference-to-video render engine + the render QC gate). The per-format recipes are NOT skills — each ad format is a TEMPLATE (data) in the ad_sample DB (recipe = the capabilities it uses + its instructions + config + brand-input contract). The goose-video composite reads a template from the DB and runs these capabilities. Removed the per-format create-*/remix-* template-skills (they belong in the DB, not the skill library).",
-      "tags": "ads",
-      "path": "packs/ugc-video-formats.json",
-      "shared_files": [],
-      "skills": [
-        {
-          "slug": "create-video-seedance-2-fal",
-          "name": "create-video-seedance-2-fal",
-          "description": "Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.",
-          "path": "skills/video/create-video-seedance-2-fal",
-          "version": "2.0.5",
-          "files": [
-            "skills/video/create-video-seedance-2-fal/SKILL.md",
-            "skills/video/create-video-seedance-2-fal/scripts/generate.py",
-            "skills/video/create-video-seedance-2-fal/scripts/media_proxy.py",
-            "skills/video/create-video-seedance-2-fal/skill.meta.json",
-            "skills/video/create-video-seedance-2-fal/tests/expected-output.md",
-            "skills/video/create-video-seedance-2-fal/tests/human-test.md",
-            "skills/video/create-video-seedance-2-fal/tests/sample-input.md",
-            "skills/video/create-video-seedance-2-fal/tests/smoke-test.md",
-            "skills/video/create-video-seedance-2-fal/tests/test_seedance_policy_rejection.py"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "review-ugc-render",
-          "name": "review-ugc-render",
-          "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates pinning the final render (video_project_upsert patch.final_render_id) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"AG1\" said \"A G one\") passes. Runnable, gating counterpart to content-goose's review-transcript-integrity atom. Every ugc-video-formats recipe runs this after render and BEFORE pinning the final render.",
-          "path": "skills/video/review-ugc-render",
-          "version": "2.0.5",
-          "files": [
-            "skills/video/review-ugc-render/SKILL.md",
-            "skills/video/review-ugc-render/scripts/review_render.py",
-            "skills/video/review-ugc-render/skill.meta.json",
-            "skills/video/review-ugc-render/tests/test_review_render.py"
-          ],
-          "source": "pack"
-        }
-      ],
-      "metadata": {
-        "slug": "ugc-video-formats",
-        "name": "UGC Video Ad Capabilities",
-        "description": "Shared, reusable capabilities the video-ad orchestrator composes to render short-form ads locally (Seedance 2.0 reference-to-video render engine + the render QC gate). The per-format recipes are NOT skills — each ad format is a TEMPLATE (data) in the ad_sample DB (recipe = the capabilities it uses + its instructions + config + brand-input contract). The goose-video composite reads a template from the DB and runs these capabilities. Removed the per-format create-*/remix-* template-skills (they belong in the DB, not the skill library).",
-        "tags": [
-          "ads"
-        ],
-        "skills": [
-          "create-video-seedance-2-fal",
-          "review-ugc-render"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install ugc-video-formats",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "domain": "ads"
-      }
-    },
-    {
-      "slug": "video-ad-formats",
-      "name": "Video Ad Formats",
-      "type": "pack",
-      "domain": "ads",
-      "description": "Remix branded short-form video ads from library templates — one local-render recipe per format (iMessage, ChatGPT, Apple Notes live; photo-grid + music-video coming), plus the shared renderer / stitch / mix / QC atoms they reuse. The recipe runs in the user's own Claude Code; the app is the review + viewer.",
-      "tags": "ads",
-      "path": "packs/video-ad-formats.json",
-      "shared_files": [],
-      "skills": [
-        {
-          "slug": "create-imessage-mockup",
-          "name": "create-imessage-mockup",
-          "description": "Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.",
-          "path": "skills/video/create-imessage-mockup",
-          "version": "1.0.4",
-          "files": [
-            "skills/video/create-imessage-mockup/.gitignore",
-            "skills/video/create-imessage-mockup/SKILL.md",
-            "skills/video/create-imessage-mockup/examples/dm-minimal.json",
-            "skills/video/create-imessage-mockup/examples/dm-with-frame.json",
-            "skills/video/create-imessage-mockup/examples/dm-with-keyboard.json",
-            "skills/video/create-imessage-mockup/examples/dm-with-typing.json",
-            "skills/video/create-imessage-mockup/examples/group-minimal.json",
-            "skills/video/create-imessage-mockup/examples/group-with-frame.json",
-            "skills/video/create-imessage-mockup/generate.js",
-            "skills/video/create-imessage-mockup/package-lock.json",
-            "skills/video/create-imessage-mockup/package.json",
-            "skills/video/create-imessage-mockup/render.js",
-            "skills/video/create-imessage-mockup/screenshot.js",
-            "skills/video/create-imessage-mockup/skill.meta.json",
-            "skills/video/create-imessage-mockup/templates/chat.css",
-            "skills/video/create-imessage-mockup/templates/icons.js",
-            "skills/video/create-imessage-mockup/tests/expected-output.md",
-            "skills/video/create-imessage-mockup/tests/human-test.md",
-            "skills/video/create-imessage-mockup/tests/run-all.sh",
-            "skills/video/create-imessage-mockup/tests/sample-input.md",
-            "skills/video/create-imessage-mockup/tests/smoke-test.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "create-chatgpt-mockup",
-          "name": "create-chatgpt-mockup",
-          "description": "Render pixel-accurate ChatGPT mobile (iOS) screen mockups in light mode from a thread JSON. Supports user text bubbles, user image attachments, assistant markdown prose, citation chips, the OpenAI spiral logo, the Apps-SDK GPT chip in the composer, and three header styles (model-tag, plain title, \"Get Plus\"). Fixed 9:16 viewport. Outputs HTML + PNG.",
-          "path": "skills/video/create-chatgpt-mockup",
-          "version": "1.0.5",
-          "files": [
-            "skills/video/create-chatgpt-mockup/SKILL.md",
-            "skills/video/create-chatgpt-mockup/build-review.html",
-            "skills/video/create-chatgpt-mockup/examples/01-sunscreen-image.json",
-            "skills/video/create-chatgpt-mockup/examples/02-sleep-apnea-long.json",
-            "skills/video/create-chatgpt-mockup/examples/03-poem-iphone-mac.json",
-            "skills/video/create-chatgpt-mockup/examples/04-empty-typing.json",
-            "skills/video/create-chatgpt-mockup/examples/05-seatgeek-gpt-chip.json",
-            "skills/video/create-chatgpt-mockup/examples/06-short-howto.json",
-            "skills/video/create-chatgpt-mockup/examples/assets/sunscreen-sky.svg",
-            "skills/video/create-chatgpt-mockup/generate.js",
-            "skills/video/create-chatgpt-mockup/package.json",
-            "skills/video/create-chatgpt-mockup/render.js",
-            "skills/video/create-chatgpt-mockup/screenshot.js",
-            "skills/video/create-chatgpt-mockup/skill.meta.json",
-            "skills/video/create-chatgpt-mockup/templates/chat.css",
-            "skills/video/create-chatgpt-mockup/templates/icons.js",
-            "skills/video/create-chatgpt-mockup/tests/expected-output.md",
-            "skills/video/create-chatgpt-mockup/tests/human-test.md",
-            "skills/video/create-chatgpt-mockup/tests/run-all.sh",
-            "skills/video/create-chatgpt-mockup/tests/sample-input.md",
-            "skills/video/create-chatgpt-mockup/tests/smoke-test.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "create-apple-notes-mockup",
-          "name": "create-apple-notes-mockup",
-          "description": "Render pixel-accurate Apple Notes (iPhone, light mode) screenshot mockups from a JSON note spec. Outputs HTML + PNG at the iPhone 16/15 Pro native 1180×2556. Supports paragraphs, images, checklists, dividers, autocorrect underline, smart quotes, and an optional iOS keyboard chrome overlay used by the parent video-ad molecule.",
-          "path": "skills/video/create-apple-notes-mockup",
-          "version": "1.0.5",
-          "files": [
-            "skills/video/create-apple-notes-mockup/SKILL.md",
-            "skills/video/create-apple-notes-mockup/apple-notes-skill-build.html",
-            "skills/video/create-apple-notes-mockup/examples/frame-1-title-only.json",
-            "skills/video/create-apple-notes-mockup/examples/long.json",
-            "skills/video/create-apple-notes-mockup/examples/mid.json",
-            "skills/video/create-apple-notes-mockup/examples/short.json",
-            "skills/video/create-apple-notes-mockup/examples/with-checklist.json",
-            "skills/video/create-apple-notes-mockup/examples/with-image.json",
-            "skills/video/create-apple-notes-mockup/generate.js",
-            "skills/video/create-apple-notes-mockup/package.json",
-            "skills/video/create-apple-notes-mockup/render.js",
-            "skills/video/create-apple-notes-mockup/screenshot.js",
-            "skills/video/create-apple-notes-mockup/skill.meta.json",
-            "skills/video/create-apple-notes-mockup/templates/icons.js",
-            "skills/video/create-apple-notes-mockup/templates/note.css",
-            "skills/video/create-apple-notes-mockup/tests/expected-output.md",
-            "skills/video/create-apple-notes-mockup/tests/human-test.md",
-            "skills/video/create-apple-notes-mockup/tests/run-all.sh",
-            "skills/video/create-apple-notes-mockup/tests/sample-input.md",
-            "skills/video/create-apple-notes-mockup/tests/smoke-test.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "render-ios-keyboard",
-          "name": "render-ios-keyboard",
-          "description": "Render a static iOS QWERTY keyboard as inline HTML+CSS sized for the 750-wide 9:16 stage. Includes the 3-suggestion bar, alpha keys, shift/backspace, 123/emoji/space/return row, and the bottom globe+mic strip. No animation logic — slide up/down is the molecule's job (CSS transform on the .keyboard root).",
-          "path": "skills/video/render-ios-keyboard",
-          "version": "1.0.4",
-          "files": [
-            "skills/video/render-ios-keyboard/SKILL.md",
-            "skills/video/render-ios-keyboard/generate.js",
-            "skills/video/render-ios-keyboard/render.js",
-            "skills/video/render-ios-keyboard/skill.meta.json",
-            "skills/video/render-ios-keyboard/templates/keyboard.css",
-            "skills/video/render-ios-keyboard/tests/expected-output.md",
-            "skills/video/render-ios-keyboard/tests/human-test.md",
-            "skills/video/render-ios-keyboard/tests/sample-input.md",
-            "skills/video/render-ios-keyboard/tests/smoke-test.md"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "stitch-videos-ffmpeg",
-          "name": "stitch-videos-ffmpeg",
-          "description": "Stitch video segments with ffmpeg concat, xfade, overlay, audio mux, and export settings, and trim a source into named clips at exact windows (trim_clips.py). Ships montage.py, a free montage assembler (python3 + ffmpeg, no keys). It takes a JSON EDL of clips and stills, normalizes them and hard-cuts them in order, burns captions from an SRT, a cue list or word timings, and lays a VO over a music bed that ducks under it, mastered to -14 LUFS.",
-          "path": "skills/video/stitch-videos-ffmpeg",
-          "version": "1.3.1",
-          "files": [
-            "skills/video/stitch-videos-ffmpeg/SKILL.md",
-            "skills/video/stitch-videos-ffmpeg/scripts/composite.py",
-            "skills/video/stitch-videos-ffmpeg/scripts/composite_final.py",
-            "skills/video/stitch-videos-ffmpeg/scripts/composite_final.sh",
-            "skills/video/stitch-videos-ffmpeg/scripts/montage.py",
-            "skills/video/stitch-videos-ffmpeg/scripts/normalize_clip.sh",
-            "skills/video/stitch-videos-ffmpeg/scripts/trim_clips.py",
-            "skills/video/stitch-videos-ffmpeg/scripts/voiceless/composite.py",
-            "skills/video/stitch-videos-ffmpeg/skill.meta.json",
-            "skills/video/stitch-videos-ffmpeg/tests/expected-output.md",
-            "skills/video/stitch-videos-ffmpeg/tests/human-test.md",
-            "skills/video/stitch-videos-ffmpeg/tests/sample-input.md",
-            "skills/video/stitch-videos-ffmpeg/tests/smoke-test.md",
-            "skills/video/stitch-videos-ffmpeg/tests/test_stitch_montage.py",
-            "skills/video/stitch-videos-ffmpeg/tests/test_trim_clips.py"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "mix-master",
-          "name": "mix-master",
-          "description": "Canonical short-form-ad audio mix in one FFmpeg pass. VO loudnorm + 3.0× per-clip + 2.0× mix, music 0.13 base + apad+afade, sidechain compress 20:1 @ 0.01, climax line +20%, optional video-to-music duration sync. Replaces the reactive multi-round tuning that cost v03 6+ passes.",
-          "path": "skills/video/mix-master",
-          "version": "1.0.4",
-          "files": [
-            "skills/video/mix-master/SKILL.md",
-            "skills/video/mix-master/scripts/mix.sh",
-            "skills/video/mix-master/skill.meta.json"
-          ],
-          "source": "pack"
-        },
-        {
-          "slug": "watch",
-          "name": "watch",
-          "description": "Observe actual video and sound over the whole file or named ranges, with timestamped evidence and honest coverage. Use complementary playback, listening and targeted frames; return observations without edits or verdicts.",
-          "path": "skills/video/watch",
-          "version": "2.0.1",
-          "files": [
-            "skills/video/watch/SKILL.md",
-            "skills/video/watch/references/parameters.md",
-            "skills/video/watch/skill.meta.json",
-            "skills/video/watch/tests/expected-output.md",
-            "skills/video/watch/tests/human-test.md",
-            "skills/video/watch/tests/sample-input.md",
-            "skills/video/watch/tests/smoke-test.md"
-          ],
-          "source": "pack"
-        }
-      ],
-      "metadata": {
-        "slug": "video-ad-formats",
-        "name": "Video Ad Formats",
-        "description": "Remix branded short-form video ads from library templates — one local-render recipe per format (iMessage, ChatGPT, Apple Notes live; photo-grid + music-video coming), plus the shared renderer / stitch / mix / QC atoms they reuse. The recipe runs in the user's own Claude Code; the app is the review + viewer.",
-        "tags": [
-          "ads"
-        ],
-        "skills": [
-          "create-imessage-mockup",
-          "create-chatgpt-mockup",
-          "create-apple-notes-mockup",
-          "render-ios-keyboard",
-          "stitch-videos-ffmpeg",
-          "mix-master",
-          "watch"
-        ],
-        "installation": {
-          "base_command": "npx goose-skills install video-ad-formats",
-          "supports": [
-            "claude",
-            "cursor",
-            "codex"
-          ]
-        },
-        "domain": "ads"
-      }
-    }
-  ],
+  "packs": [],
   "collections": [
     {
       "slug": "brand-growth",

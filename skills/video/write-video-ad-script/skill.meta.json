@@ -18,6 +18,11 @@
   },
   "requires_skills": [
     "ad-angle-miner",
-    "watch"
+    "watch",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "reddit-post-finder",
+    "scrapecreators-api",
+    "transcript-intelligence"
   ]
 }

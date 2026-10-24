@@ -24,7 +24,7 @@
     "ads",
     "gooseworks"
   ],
-  "author": "Athina AI",
+  "author": "GooseWorks",
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.29.6",

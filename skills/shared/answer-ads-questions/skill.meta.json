@@ -1,6 +1,7 @@
 {
   "slug": "answer-ads-questions",
   "category": "capabilities",
+  "version": "1.0.0",
   "domain": "ads",
   "tags": [
     "ads"
@@ -22,7 +23,10 @@
     "GooseWorks, direct Meta and planning-only modes"
   ],
   "requires_skills": [
-    "meta-ad-manager"
+    "meta-ad-manager",
+    "ad-management-intake",
+    "ads-north-star-strategy",
+    "launch-meta-ad-campaign"
   ],
   "example_prompt": "How are my Meta ads doing this week, and why did you pause the gift ad?"
 }

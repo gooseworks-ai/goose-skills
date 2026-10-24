@@ -18,6 +18,7 @@
   "requires_skills": [
     "watch",
     "create-image-gpt-image-fal",
-    "create-vo-elevenlabs"
+    "create-vo-elevenlabs",
+    "media-proxy"
   ]
 }

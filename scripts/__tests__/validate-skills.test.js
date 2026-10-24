@@ -45,6 +45,7 @@ function runValidate(root) {
 const baseMeta = (slug, extra = {}) => ({
   slug,
   category: 'capabilities',
+  version: '1.0.0',
   tags: ['ads'],
   installation: {
     base_command: `npx goose-skills install ${slug}`,
@@ -68,7 +69,7 @@ test('PASSES when every skill folder is a top-level skills[] entry', () => withR
   assert.match(runValidate(root), /Skill validation passed for 1 skills/);
 }));
 
-test('FAILS when a skill folder is missing from top-level skills[] (only nested in packs[] counts as missing)', () => withRoot((root) => {
+test('FAILS when a skill folder is missing from top-level skills[]', () => withRoot((root) => {
   writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch'));
   writeSkill(root, 'video', 'mix-master', { name: 'mix-master', description: 'x' }, baseMeta('mix-master'));
   writeIndex(root, [{ slug: 'watch', category: 'capabilities', path: 'skills/video/watch' }]);
@@ -93,3 +94,50 @@ test('FAILS when a shared skill has no domain, or requires a skill that does not
   writeIndex(root, [{ slug: 'brand-research', category: 'capabilities', path: 'skills/shared/brand-research' }]);
   assert.throws(() => runValidate(root), /domain required[\s\S]*requires unknown skill "ghost"/);
 }));
+
+const indexFor = (root, family, slug) => writeIndex(root, [{ slug, category: 'capabilities', path: `skills/${family}/${slug}` }]);
+
+test('FAILS on an install command that names a pack, or any command but the skill\'s own', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch', { installation: { base_command: 'npx goose-skills install video-ad-formats/watch', supports: ['claude'] } }));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /installation\.base_command: does not match[\s\S]*must be "npx goose-skills install watch"/);
+}));
+
+test('FAILS on a meta field the schema does not define, and on a missing version', () => withRoot((root) => {
+  const meta = baseMeta('watch', { visibility: 'dependency' });
+  delete meta.version;
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, meta);
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /version is required[\s\S]*visibility: is not an allowed field/);
+}));
+
+test('FAILS when SKILL.md frontmatter repeats a category or version that differs from the meta', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x', category: 'video', version: '2.0.0' }, baseMeta('watch'));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /version in SKILL\.md \(2\.0\.0\) and skill\.meta\.json \(1\.0\.0\) differ[\s\S]*category in SKILL\.md \(video\)/);
+}));
+
+test('a generated package (release.json) waits for its generator on version and frontmatter', () => withRoot((root) => {
+  const meta = baseMeta('harness', { category: 'playbooks' });
+  delete meta.version;
+  writeSkill(root, 'video', 'harness', { name: 'harness', description: 'x', category: 'video', version: '3.1.0' }, meta);
+  fs.writeFileSync(path.join(root, 'skills', 'video', 'harness', 'release.json'), '{}');
+  indexFor(root, 'video', 'harness');
+  assert.match(runValidate(root), /passed for 1 skills/);
+}));
+
+test('FAILS when a family-only domain is used outside its family', () => withRoot((root) => {
+  writeSkill(root, 'shared', 'brand-research', { name: 'brand-research', description: 'x' }, baseMeta('brand-research', { domain: 'marketing-agent' }));
+  indexFor(root, 'shared', 'brand-research');
+  assert.throws(() => runValidate(root), /domain "marketing-agent" is only for skills\/marketing\//);
+}));
+
+test('FAILS when requires_tools names a file tool instead of a program', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch', { requires_tools: ['meta_marketing_api'] }));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /requires_tools\[0\]: does not match/);
+}));
+
+test('the real catalog passes', () => {
+  assert.match(execFileSync('node', [VALIDATE], { encoding: 'utf8' }), /Skill validation passed/);
+});
