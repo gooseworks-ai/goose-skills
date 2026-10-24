@@ -18,9 +18,6 @@ def module(skill,name):
 
 join=module('create-creator-takes-h3','join_takes')
 photo=module('footage-cutlist','photo')
-layout=module('render-imessage-cascade','layout')
-build=module('render-imessage-cascade','build_assets')
-cascade_compose=module('render-imessage-cascade','compose')
 kinetic=module('create-kinetic-typography','render')
 pron=module('create-vo-elevenlabs','read_pronunciations')
 foot=module('caption-burn','footprint')
@@ -49,44 +46,6 @@ def test_word_sidecar_rejects_missing_audio(tmp_path):
     with pytest.raises(ValueError):join.read_words(p,3)
     p.write_text(json.dumps([{'text':'complete','start':'0.1','end':'0.8'}]))
     assert join.read_words(p,3)==[{'text':'complete','start':.1,'end':.8}]
-
-def test_notification_wrap_and_legacy_geometry():
-    f=build.font('reg',36)
-    legacy=layout.geometry({'notifications':[{'body':'Hello'}]*4},f)
-    assert (legacy['banner_height'],legacy['row_pitch'],legacy['bottom_y'])==(176,214,1200)
-    g=layout.geometry({'notifications':[{'body':'The whole team can now see the update in one place.'}]*3},f)
-    assert g['banner_height']==220
-    assert all(f.getlength(line)<=636 for ls in g['body_lines'] for line in ls)
-
-def test_excessive_copy_and_stack_fail():
-    f=build.font('reg',36)
-    for copy,n in [('x'*95,3),('This long notification needs another line for the full update.',5)]:
-        with pytest.raises(ValueError):layout.geometry({'notifications':[{'body':copy}]*n},f)
-
-def test_resolution_follows_clear_and_legacy_timing():
-    c={'notifications':[{'body':'x'}]*4};assert layout.timing(c)==([1.6,3.6,5.6,7.6],9.2,None,9.9,14)
-    c['resolution']={'body':'Done'}
-    arrivals,clear,at,ec,dur=layout.timing(c);assert at>clear+.4 and ec>=at+2 and dur>=ec+3
-    c['timing']={'endcard_in':9.9,'duration':14}
-    with pytest.raises(ValueError):layout.timing(c)
-
-@pytest.mark.parametrize('audio_keys',[[],['pop'],['bed','pop','swoosh']])
-def test_resolution_sound_uses_the_actual_input_index(tmp_path,monkeypatch,audio_keys):
-    sound=tmp_path/'sound.wav';sound.touch()
-    c={'plate':'fixture.png','notifications':[{'body':'A short message'}],
-       'audio':{k:str(sound) for k in audio_keys},'resolution':{'body':'All clear','sound':str(sound)}}
-    cfg=tmp_path/'config.json';cfg.write_text(json.dumps(c))
-    (tmp_path/'layout.json').write_text(json.dumps(layout.geometry(c,build.font('reg',36))))
-    captured=[]
-    def fake_run(cmd,**kw):
-        captured.append(cmd)
-        return type('Result',(),{'returncode':0,'stderr':''})()
-    monkeypatch.setattr(cascade_compose.subprocess,'run',fake_run)
-    monkeypatch.setattr(sys,'argv',['compose.py','--config',str(cfg),'--work-dir',str(tmp_path),'--out',str(tmp_path/'out.mp4')])
-    cascade_compose.main();cmd=captured[0]
-    idx=6+sum(k in audio_keys for k in ['pop','swoosh'])
-    assert f'[{idx}:a]adelay=' in cmd[cmd.index('-filter_complex')+1]
-    assert 'apad,atrim=duration=' in cmd[cmd.index('-filter_complex')+1]
 
 @pytest.mark.parametrize('size',[(800,1400),(1400,800)])
 def test_photo_preserves_whole_product_and_qualification(size):

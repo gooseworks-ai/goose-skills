@@ -133,7 +133,7 @@ Write for an agent: precise, imperative, no filler. Put long craft knowledge (fr
 }
 ```
 
-A step's meta is shorter: `slug`, `category: "capabilities"`, `tier: "atom"`, `version`, `playbook` (its playbook; a shared step has `used_by` instead), `tags`, `standalone`, `installation`, `requires_skills`.
+A step's meta is shorter: `slug`, `category: "capabilities"`, `tier: "atom"`, `version`, `playbook` (its playbook; a shared step has `used_by` instead), `tags`, `standalone`, `requires_skills`.
 
 - **Referring to another skill:** "the `<slug>` skill (`../<slug>/SKILL.md`)", or `../<slug>/<file>` for a file inside it, file-relative (one more `../` from `references/` or `tests/`). The path works on disk; the slug lets a hosted agent fetch it (`marketing-guide` explains this once). Files inside the skill stay plain relative paths (`references/<file>.md`). Never link `unreleased/`, `BACKLOG.md` or this file from a published skill.
 - **`requires_skills`** lists every skill it refers to, **flattened**: only one level of dependencies is delivered, so a playbook also lists what its steps need. A step does not list the playbook that runs it, unless it works alone and reads that playbook's references. Shared steps and foundation skills never require a playbook. `node scripts/check-skill-links.js` (in CI) checks every reference resolves in the installed layout, names a listed dependency, and that the list is flat.
@@ -162,7 +162,7 @@ Every playbook follows these exactly. The shared atoms implement them; the revie
 
 ### Shared atoms and their owners
 
-| Shared step (`skills/<slug>/SKILL.md`) | Does | Owner session |
+| Shared step (`skills/marketing/<slug>/SKILL.md`) | Does | Owner session |
 |---|---|---|
 | `claims-gate` | Load the brand's claims contract once, classify every claim-like span, keep / rewrite / cut, list each cut with the proof that would restore it. Also the inline **scoped sign-off**: when no sign-off exists, put the 3–5 lines this job needs to the human and record their answer through the contract in its §5. Makers keep their own extract step (on-image text, page sections, post copy). | orchestrator (was learn-my-brand, held back 20 Oct) |
 | `save-learning` | The one seam for writing learnings into the brand brain, by the rules below. Holds any interim handling of today's server. | orchestrator (was learn-my-brand, held back 20 Oct) |

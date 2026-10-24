@@ -63,7 +63,7 @@ Full:
 
 ## Skin and voice settings
 
-All off by default, so every recorded prompt and its hash are unchanged. Judged once: on 2026-10-13 Apoorv watched seed 6222 (settings off) against seed 6225 (settings on) and found 6225 better. That is one pair of 8 second takes, and 6225 also had a different scene reference, so it is a good sign and not a proof.
+All off by default, so every recorded prompt and its hash are unchanged. Judged once: on 2026-10-13 a reviewer watched seed 6222 (settings off) against seed 6225 (settings on) and found 6225 better. That is one pair of 8 second takes, and 6225 also had a different scene reference, so it is a good sign and not a proof.
 
 | key | where | what it does |
 |---|---|---|

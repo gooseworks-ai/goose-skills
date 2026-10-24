@@ -1,7 +1,6 @@
 ---
 name: create-street-interview-video
 description: Produce a 12-15s 9:16 street interview where strangers guess wrong about a product and the last one gets it right. ONE generation, not an assembled cut - one location, one light, one room tone, and the interviewer's question generated inside the clip. Brand layer (captions, title, end card) drawn locally so no model renders a letter. Built as a Goose Video recipe for DTC brands.
-owner: apoorv
 status: draft
 version: 2
 created: 2026-09-29

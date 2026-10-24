@@ -1,6 +1,6 @@
 {
   "$comment": "Old goose-skills (skills/ on dev) a user would have used for the same job as each new playbook. Source: goose-lab plan/marketing-agent/reviews/2026-10-19-release-and-legacy.md, Q2 table. Picked 2-4 per playbook, preferring the skills the CLI router (gooseworks-cli skills/routes.json, brand_growth_routes) sends users to, since those are the most-used. The runner also installs each pick's requires_skills (transitively, from skills-index.json), as the catalog fetch would.",
-  "source": "skills/ in the goose-skills checkout (GOOSE_SKILLS_DIR, default: the goose-skills root above evals/marketing/)",
+  "source": "skills/ at the pinned legacy_revision in retired-skills.json (tag legacy-gtm-final); GOOSE_SKILLS_DIR points at your own checkout of it",
   "playbooks": {
     "research-market": [
       {

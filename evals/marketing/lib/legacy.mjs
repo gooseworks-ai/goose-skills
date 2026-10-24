@@ -41,7 +41,7 @@ export function loadMapping() {
 function loadIndex() {
   ensureLegacyRoot();
   const f = path.join(GOOSE_SKILLS_DIR, 'skills-index.json');
-  if (!fs.existsSync(f)) throw new Error(`No skills-index.json in ${GOOSE_SKILLS_DIR} (set GOOSE_SKILLS_DIR to a goose-skills checkout on dev)`);
+  if (!fs.existsSync(f)) throw new Error(`No skills-index.json in ${GOOSE_SKILLS_DIR} (set GOOSE_SKILLS_DIR to a goose-skills checkout of the legacy_revision in retired-skills.json)`);
   return new Map(JSON.parse(fs.readFileSync(f, 'utf8')).skills.map((s) => [s.slug, s]));
 }
 

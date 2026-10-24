@@ -10,8 +10,8 @@ The renderer for the **whiteboard** video ad format: a voice explains one idea w
 fills up in marker, the way a graphic recorder works a room. Every mark lands on the word it
 belongs to, and the board is wiped and reused between sections.
 
-Siblings in the chat-UI family are `render-imessage-chat`, `render-chatgpt-chat` and
-`render-apple-notes-chat`, where a screen is the creative. Reach for this one when the creative
+Siblings in the chat-UI family are `render-imessage-chat` and `render-chatgpt-chat`, where a
+screen is the creative. Reach for this one when the creative
 is **someone explaining a thing by drawing it**.
 
 ## The three decisions that make this format work

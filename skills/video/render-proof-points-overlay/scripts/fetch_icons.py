@@ -2,7 +2,7 @@
 """Download the three Twemoji PNGs the pills need into <run>/assets/icons.
 
 PIL cannot render Apple Color Emoji (horizontal-bar artifacts) — we paste 72x72
-Twemoji PNGs instead (see memory feedback_pil_emoji_use_twemoji_png). Free, local.
+Twemoji PNGs instead. Free, local.
 
 Usage:  fetch_icons.py --run-dir <run>
 """

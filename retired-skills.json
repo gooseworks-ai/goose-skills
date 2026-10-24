@@ -1027,6 +1027,26 @@
       "slug": "video-ad-formats",
       "replacement": null,
       "reason": "Install bundle dropped on 24 Oct 2026. Install each video skill by its own slug (npx gooseworks@latest install --with <slug>): create-imessage-mockup, create-chatgpt-mockup, create-apple-notes-mockup, render-ios-keyboard, stitch-videos-ffmpeg, mix-master, watch."
+    },
+    {
+      "slug": "render-apple-notes-chat",
+      "replacement": null,
+      "reason": "Ported into the phone-chat part (skin apple-notes); goose-studio's apple-notes style renders it. No recipe or app runs this renderer."
+    },
+    {
+      "slug": "render-imessage-cascade",
+      "replacement": null,
+      "reason": "Ported into the phone-chat part (skin notification-cascade); goose-studio's imessage-notification-cascade style renders it. No recipe or app runs this renderer."
+    },
+    {
+      "slug": "render-search-grid",
+      "replacement": null,
+      "reason": "Ported into the html-frames part. No recipe, app or skill runs this renderer."
+    },
+    {
+      "slug": "render-photo-grid-card",
+      "replacement": null,
+      "reason": "Ported into the html-frames part; goose-studio's photo-grid-promo-card style renders it. No recipe or app runs this renderer."
     }
   ],
   "retained": [
@@ -1594,15 +1614,6 @@
       "remove_when": "that recipe uses the audio-mix and sound-layer parts"
     },
     {
-      "slug": "render-apple-notes-chat",
-      "replaced_by": [
-        "phone-chat@1.2.0"
-      ],
-      "reason": "Nothing uses it: the goose-studio apple-notes style and the app only note that they were ported from it.",
-      "used_by": [],
-      "remove_when": "now: retire it with replacement null (the phone-chat part draws the Notes screen)"
-    },
-    {
       "slug": "render-chatgpt-chat",
       "replaced_by": [
         "phone-chat@1.2.0"
@@ -1615,15 +1626,6 @@
         }
       ],
       "remove_when": "the app's ChatGPT format renders with the phone-chat part"
-    },
-    {
-      "slug": "render-imessage-cascade",
-      "replaced_by": [
-        "phone-chat@1.2.0"
-      ],
-      "reason": "Nothing uses it: the app's seed recipe only notes that it was ported from it.",
-      "used_by": [],
-      "remove_when": "now: retire it with replacement null (the phone-chat part draws the notification cascade)"
     },
     {
       "slug": "render-imessage-chat",
