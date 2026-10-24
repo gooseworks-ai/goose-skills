@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ElevenLabs Music bed ROUTED THROUGH THE PROXY (bills the Ads agent). Trims any sparse
+"""ElevenLabs Music bed ROUTED THROUGH THE PROXY (charged to your GooseWorks credits). Trims any sparse
 intro, loudnorm, fades the tail. Prompt + length from the template recipe.
 
   gen_music.py --prompt "..." --length-ms 10500 --duration 10 --trim-intro 0 --out music.m4a

@@ -58,9 +58,9 @@ guess wrong in an escalating way, and the last answer is the truth. It is the hi
 short-form format in this niche and the most dangerous to build, because it needs believable
 human faces.
 
-Read the bundled [model notes](references/model-behaviors.md) and current `SKILL.md` before generating. This format does not require an avatar still. `READINESS.md` records the 2026-09-29 assessment; its then-unruled face question was superseded by the 2026-10-01 observation in Status below. That later success does not certify a new take. `TAKES.md` explains how to record this project's successes, rejections, limitations and seeds. Missing private measurements and sibling molecules are optional authoring context.
+Read the bundled [model notes](references/model-behaviors.md) and current `SKILL.md` before generating. This format does not require an avatar still. A 2026-09-29 readiness assessment (kept with the builder tests in the goose-skills repo, not installed) left the face question open; the 2026-10-01 observation in Status below superseded it. That later success does not certify a new take. `TAKES.md` explains how to record this project's successes, rejections, limitations and seeds. Missing private measurements and sibling molecules are optional authoring context.
 
-NOT the right molecule for: a single talking head to camera (`create-avatar-reel`), a product
+NOT the right molecule for: a single talking head to camera (`create-creator-takes-h3`), a product
 demo (`product-video/`), or anything where the faces must be a specific real person.
 
 ## Where the rest of this record lives

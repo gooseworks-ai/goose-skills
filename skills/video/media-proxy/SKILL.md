@@ -1,6 +1,6 @@
 ---
 name: media-proxy
-description: Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call bills the Ads agent — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.
+description: Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call is charged to your GooseWorks credits — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.
 status: active
 version: "2.0.6"
 updated: 2026-10-16
@@ -12,7 +12,7 @@ The foundation capability for paid media in the video-ad pipeline. It fixes the
 auth-path conflict where engine scripts called FAL/ElevenLabs **directly** (billing
 the wrong account): all paid calls now go through
 `<api_base>/api/internal/{fal-proxy,elevenlabs-proxy}` with `?token=&agent_id=`, which
-**bills the Ads agent**.
+**is charged to your GooseWorks credits**.
 
 ## Crash-resume (never lose / double-bill a paid render)
 
@@ -31,7 +31,7 @@ render. Two built-in protections (automatic for every capability that imports th
   resume.py --request-id <id> --out final.mp4   # poll to completion + download
   ```
   `resume_fal` NEVER re-submits, so it can't double-charge.
-- **Poll timeout never resubmits (GOOSE-3729)** — polling gives up after
+- **Poll timeout never resubmits** — polling gives up after
   `default_poll_timeout(model)`: **1800s for video / lipsync / audio-driven models**,
   600s for images (`GW_FAL_POLL_TIMEOUT_S` overrides; `timeout_s=` per call). A timeout
   raises `FalPollTimeout` carrying `.request_id` + `.model_path` — the job is still
@@ -53,7 +53,7 @@ render. Two built-in protections (automatic for every capability that imports th
   that job's result has since expired at fal, the poll fails: retry once with
   `new_take=True`.
 
-## Policy rejections are final: surface, do not retry (QA-14)
+## Policy rejections are final: surface, do not retry
 
 When fal refuses a request on policy grounds, `_fal_run` (and so `fal_generate*`) raises
 **`FalPolicyRejection`**, a `RuntimeError` subclass, so old `except RuntimeError` handlers
@@ -133,7 +133,7 @@ vid = fal_generate_video("fal-ai/kling-video/v3/pro/image-to-video",
 eleven_music(prompt, 10500, "music.mp3", force_instrumental=True)
 ```
 
-## Save-as-you-go digest (GOOSE-3731)
+## Save-as-you-go digest
 
 `input_digest(model, args)` = sha256 of the canonical JSON `{"model", "args"}` (sorted
 keys, no whitespace), first 32 hex chars. Pass it with the MCP `media_upload` of the
@@ -159,7 +159,7 @@ for that input's own ingredient_key + digest first, or the digest never matches.
 
 ## Contracts (load-bearing)
 
-- **Bills the Ads agent** — `?token=&agent_id=` from `~/.gooseworks/credentials.json`
+- **Charged to your GooseWorks credits** — `?token=&agent_id=` from `~/.gooseworks/credentials.json`
   (written by the GooseWorks CLI). In a GooseWorks cloud sandbox
   (coworker chat) the env wins instead: `GW_MEDIA_PROXY_TOKEN` (a per-session token that
   already binds agent/org/user) + `GW_API_BASE`; `GW_PROJECT_ID` attributes spend.

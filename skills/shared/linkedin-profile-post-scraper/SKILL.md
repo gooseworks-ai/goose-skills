@@ -17,7 +17,7 @@ Requires `APIFY_API_TOKEN` env var (or `--token` flag). Install dependency: `pip
 ```bash
 # Scrape recent posts from a profile
 python3 skills/linkedin-profile-post-scraper/scripts/scrape_linkedin_posts.py \
-  --profiles "https://www.linkedin.com/in/marcelsantilli" --max-posts 10
+  --profiles "https://www.linkedin.com/in/example-person" --max-posts 10
 
 # Multiple profiles with keyword filtering
 python3 skills/linkedin-profile-post-scraper/scripts/scrape_linkedin_posts.py \
@@ -26,7 +26,7 @@ python3 skills/linkedin-profile-post-scraper/scripts/scrape_linkedin_posts.py \
 
 # Summary table
 python3 skills/linkedin-profile-post-scraper/scripts/scrape_linkedin_posts.py \
-  --profiles "https://www.linkedin.com/in/marcelsantilli" --output summary
+  --profiles "https://www.linkedin.com/in/example-person" --output summary
 ```
 
 ## CLI Reference

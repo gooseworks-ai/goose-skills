@@ -22,16 +22,16 @@ function cuesOf(vtt) {
 test('captions follow the word timings at the line\'s pace, a lone last word joins the one before, the last holds to the end', { skip }, async () => {
   const { ctx, orders } = makeCtx({ partDir: dir });
   const video = await fileRef(await makeVideo(join(ctx.workDir, 'cut.mp4'), 4, { width: 540, height: 960, tone: 440, pattern: 'color=c=0x2060c0' }), 'video');
-  const words = [['Try', 0.2, 0.5], ['Drinkag1', 0.6, 1.2], ['today', 1.3, 1.7], ['for', 2.0, 2.2], ['free', 2.3, 2.6]].map(([text, s, e]) => ({ text, start_s: s, end_s: e }));
+  const words = [['Try', 0.2, 0.5], ['Drinkqx9', 0.6, 1.2], ['today', 1.3, 1.7], ['for', 2.0, 2.2], ['free', 2.3, 2.6]].map(([text, s, e]) => ({ text, start_s: s, end_s: e }));
   const inputs = await layerInputsFor(video, {
     expect: { speech: 'voiceover', captions: true },
-    timeline: { speech: [{ scene_id: 's1', text: 'Try Drinkag1 today for free', spoken: 'Try drink A G one today for free', start_s: 0.2, end_s: 2.6, words }] },
+    timeline: { speech: [{ scene_id: 's1', text: 'Try Drinkqx9 today for free', spoken: 'Try drink Q X nine today for free', start_s: 0.2, end_s: 2.6, words }] },
   });
   const out = await mod.run(inputs, ctx);
   assert.equal(orders.length, 0, 'nothing is transcribed when the timeline has word timings');
   const cues = cuesOf(readFileSync(out.captions.path, 'utf8'));
   assert.ok(readFileSync(out.captions.path, 'utf8').startsWith('WEBVTT'));
-  assert.deepEqual(cues.map((c) => c.text), ['Try', 'Drinkag1', 'today', 'for free'], 'the written name, not the spoken one');
+  assert.deepEqual(cues.map((c) => c.text), ['Try', 'Drinkqx9', 'today', 'for free'], 'the written name, not the spoken one');
   assert.ok(Math.abs(cues[0].start - 0.2) < 0.01);
   assert.ok(Math.abs(cues.at(-1).end - (await probe(video.path)).duration_s) < 0.05, 'the last caption holds to the end');
   // A plate is drawn while a caption shows and nothing before the first word.

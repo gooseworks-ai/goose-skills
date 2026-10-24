@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Route paid media generation (FAL + ElevenLabs) through the GooseWorks proxies so
-every call BILLS THE ADS AGENT — never call a provider SDK's default host (your token
+every call is charged to your GooseWorks credits — never call a provider SDK's default host (your token
 isn't a FAL/ElevenLabs token → 401).
 
 Base = <api_base>/api/internal/<proxy>, with ?token=&agent_id= (+ &project_id= when
@@ -15,17 +15,17 @@ This is the shared helper every media capability imports. Import it, don't reinv
 
   from media_proxy import fal_generate, fal_generate_video, eleven_music
 
-Every paid call is auto-logged to the app for diagnostics (GOOSE-2862) — successes
+Every paid call is auto-logged to the app for diagnostics — successes
 as a `generation` trail, failures as an `api_failure` with the error + prompt — so a
 local skill run isn't a black box. Import `gw_log(...)` to log your own steps/issues
 and `run_id()` to read the current run id. Best-effort; never breaks a render.
 
-`input_digest(model, args)` names the exact inputs of a generation (GOOSE-3731):
+`input_digest(model, args)` names the exact inputs of a generation:
 pass it with the MCP `media_upload` of the result (plus an `ingredient_key`), so a
 resumed run reuses the saved file only when the digest still matches. Pass the SAME
 digest to the FAL submit (`fal_generate(..., input_digest=d)`) so a resumed run that
 re-submits the job (inputs re-uploaded -> new URLs) re-attaches to it instead of
-paying twice (GOOSE-3729).
+paying twice.
 
 FAL inputs that are local files (a product image, an audio track) must be a PUBLIC
 URL — `fal_upload(path)` puts a local file on the fal CDN through the fal-storage-proxy
@@ -41,7 +41,7 @@ media_upload for a local file), saves the result JSON where the request says, an
 re-runs the same command. Same server proxy, same price, billed to GW_PROJECT_ID.
 GW_MEDIA_VIA=proxy forces the HTTP path.
 
-POLICY REJECTIONS ARE FINAL (QA-14). When fal refuses a request on policy grounds
+POLICY REJECTIONS ARE FINAL. When fal refuses a request on policy grounds
 (likeness of a real person, content_policy_violation, partner_validation_failed, NSFW /
 safety checker) `_fal_run` raises `FalPolicyRejection` (a RuntimeError subclass) carrying
 the reason, type, request id, HTTP status and a charge hint, whatever shape the error body
@@ -183,7 +183,7 @@ def _params(tok, agent, project_id=None):
     return p
 
 
-# ── CLI/skill run diagnostics (GOOSE-2862) ───────────────────────────────────
+# ── CLI/skill run diagnostics ───────────────────────────────────
 # A skill running in a LOCAL agent (Claude Code, Cursor, …) is otherwise a black
 # box. `gw_log` POSTs a diagnostic event to the app (`/api/internal/cli-logs`,
 # same creds as the media proxies) so the team can see what happened — and, when
@@ -204,7 +204,7 @@ def run_id():
 
 
 def input_digest(model, args):
-    """Stable id of one generation's inputs (GOOSE-3731).
+    """Stable id of one generation's inputs.
 
     sha256 of the canonical JSON ``{"model": model, "args": args}`` (sorted keys, no
     whitespace, UTF-8), first 32 hex chars. Same model + same args -> same digest on any
@@ -217,7 +217,7 @@ def input_digest(model, args):
     own ingredient_key + input_digest, or the file's sha256) before hashing, or the
     digest never matches.
 
-    A digest passed to a FAL submit is ALSO a permanent refusal key (QA-14): after a
+    A digest passed to a FAL submit is ALSO a permanent refusal key: after a
     policy rejection, any later request with the same digest is refused locally. So it
     must cover EVERY input that is sent: prompt, every setting (duration, resolution,
     aspect ratio, audio, seed...) and the CONTENT of every input file. Leave one out and
@@ -266,7 +266,7 @@ _FAL_RESULT_KEYS = ("images", "videos", "video", "audio", "image", "output",
                     "status_url", "status", "seed", "url")
 
 
-# ── Policy rejections: classify, surface, never resubmit the same request (QA-14) ──
+# ── Policy rejections: classify, surface, never resubmit the same request ──
 # Exit code for "the provider refused this on policy grounds: surface it, do not retry".
 # (RELAY_EXIT is also 3; the two are told apart by what the script prints.)
 POLICY_EXIT = 3
@@ -724,7 +724,7 @@ def _poll_get(url, params, deadline, what):
     raise TimeoutError(f"FAL {what} unreachable through the outage: {last}")
 
 
-# ── Poll timeouts: NEVER resubmit (GOOSE-3729) ────────────────────────────────
+# ── Poll timeouts: NEVER resubmit ────────────────────────────────
 # A poll timeout does NOT mean the job failed — fal keeps rendering (a veed/fabric
 # lipsync once finished at 626s, 26s after a 600s poller gave up; the retry paid
 # for a second identical job). So a timeout raises FalPollTimeout carrying the
@@ -832,7 +832,7 @@ def _fal_run(model_path, payload, timeout_s=None, poll_s=3, new_take=False,
     paid for. If that job's result has expired upstream the poll fails: retry with
     new_take=True.
 
-    Policy rejections (QA-14): a refusal on policy grounds raises FalPolicyRejection and
+    Policy rejections: a refusal on policy grounds raises FalPolicyRejection and
     records this request in the rejected-request ledger (rejected_request()). An identical
     request is then refused here before any network call, with or without new_take: a
     re-roll of a rejected payload is still the same payload. The ledger matches on the
@@ -997,7 +997,7 @@ def fal_whisper(audio_url, language="en", **kw):
 
     `audio_url` MUST be a PUBLIC url (this module does not upload) — the orchestrator
     hosts the local VO with `fal_upload` (or the MCP `media_upload`) and passes that
-    url in. Proxy-routed, so it bills the Ads agent (never a raw FAL_KEY)."""
+    url in. Proxy-routed, so it is charged to your GooseWorks credits (never a raw FAL_KEY)."""
     r = _fal_run("fal-ai/whisper", {"audio_url": audio_url, "task": "transcribe",
                                     "language": language, "chunk_level": "word"}, **kw)
     words = []

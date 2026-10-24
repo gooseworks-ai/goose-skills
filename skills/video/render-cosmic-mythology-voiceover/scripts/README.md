@@ -44,7 +44,7 @@ reusable — the sequence repeats a few across the ~10–12 cuts.
 
 ## 2. Ken-Burns render per still
 
-Each cut renders through the ken-burns-clip atom (`render.py`): scale 2×, center crop, and a
+Each cut renders as a Ken Burns move with ffmpeg: scale 2×, center crop, and a
 `zoompan` to the configured `zoom_end` (~1.10). Apply `zoom_out` on the flagged cuts. The FIRST cut
 gets a `fade_in` (~0.4s) up from black and the LAST cut a `fade_out` (~0.6s); the body cuts
 hard-join.

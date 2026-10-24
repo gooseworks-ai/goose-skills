@@ -6,9 +6,13 @@
 
 Resolution order for `--brand`, so a config can live outside this repo:
   1. an explicit path to a .json file
-  2. `<skill>/brands/<slug>.json`
+  2. `<skill>/brands/<slug>.json`, then `<skill>/tests/fixtures/brands/<slug>.json`
   3. `$STREET_INTERVIEW_BRAND` (a path or a slug)
   4. the default slug, `grimwater`
+
+`tests/fixtures/brands/` holds the per-seed development takes (`grimwater-48xx`) that the
+selftest and the unit tests replay. It exists only in the goose-skills repo; an installed copy
+has `brands/` alone.
 
 Validation is strict and loud. A missing key here means a malformed prompt goes to a PAID call,
 which is the most expensive way to find a typo: seed 4806 spent $3.64 discovering that the
@@ -24,6 +28,8 @@ import format_spec
 import paths
 
 BRANDS = paths.SKILL / "brands"
+# Development-record takes, kept with the builder tests (never installed). See the docstring.
+DEV_BRANDS = paths.SKILL / "tests" / "fixtures" / "brands"
 DEFAULT_SLUG = "grimwater"
 
 _REQ_TOP = ("brand", "slug", "product", "location", "question", "props", "shots", "generation")
@@ -36,8 +42,17 @@ _REQ_GEN = ("seed", "duration")
 EPISODE_ROLES = ("opening", "middle", "payoff")
 
 
+def brand_dirs():
+    """The config folders on disk, `brands/` first."""
+    return [d for d in (BRANDS, DEV_BRANDS) if d.exists()]
+
+
+def config_files():
+    return sorted((p for d in brand_dirs() for p in d.glob("*.json")), key=lambda p: p.stem)
+
+
 def available():
-    return sorted(p.stem for p in BRANDS.glob("*.json")) if BRANDS.exists() else []
+    return sorted(p.stem for p in config_files())
 
 
 def find(arg=None) -> Path:
@@ -47,11 +62,12 @@ def find(arg=None) -> Path:
         if not p.exists():
             raise SystemExit(f"no brand config at {p}")
         return p.resolve()
-    cand = BRANDS / f"{arg}.json"
-    if not cand.exists():
-        raise SystemExit(f"no brand config {arg!r} in {BRANDS}. Have: "
-                         f"{', '.join(available()) or '(none)'}")
-    return cand
+    for d in brand_dirs():
+        cand = d / f"{arg}.json"
+        if cand.exists():
+            return cand
+    raise SystemExit(f"no brand config {arg!r} in {BRANDS}. Have: "
+                     f"{', '.join(available()) or '(none)'}")
 
 
 def load(arg=None) -> dict:
@@ -277,7 +293,7 @@ def cast_advice(cfg, other_subjects=()):
 def other_subjects(cfg):
     """Every person described in the OTHER bundled configs, for the copied-cast note."""
     out = []
-    for f in sorted(BRANDS.glob("*.json")):
+    for f in config_files():
         try:
             other = json.loads(f.read_text(encoding="utf-8"))
         except (OSError, ValueError):

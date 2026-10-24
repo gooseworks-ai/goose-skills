@@ -1,18 +1,18 @@
 ---
 name: create-video-fal
-description: Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.
+description: Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), routed through the GooseWorks proxy, so the call is charged to your GooseWorks credits. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.
 status: active
 ---
 
 # create-video-fal
 
-Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), ROUTED THROUGH THE GooseWorks fal-proxy so the call bills the Ads agent. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.
+Image-to-video (or text-to-video) via any FAL video model (Kling, Seedance, Veo), routed through the GooseWorks proxy, so the call is charged to your GooseWorks credits. The template recipe names the model + params; image_url inputs must be public URLs (the orchestrator hosts local frames with the MCP media_upload). Returns the result video URL and downloads it. Use for the generative base clip of any video-ad format.
 
 ## Run
-gen_video.py --model fal-ai/kling-video/v3/pro/image-to-video --payload '{...}' --out clip.mp4 — bills the agent; host-swaps the FAL queue URLs; downloads the result.
+gen_video.py --model fal-ai/kling-video/v3/pro/image-to-video --payload '{...}' --out clip.mp4 — charged to your GooseWorks credits; host-swaps the FAL queue URLs; downloads the result.
 
 ## Contract
-- Paid calls route through the GooseWorks proxies (bills the Ads agent) via the
+- Paid calls route through the GooseWorks proxies (charged to your GooseWorks credits) via the
   bundled `media_proxy.py` — never a provider SDK's default host.
 - The template recipe (DB) supplies the model + params; this capability is generic.
 

@@ -76,7 +76,7 @@ Nothing in the assembly keys on world slugs or names: clips are ordered by
   (`marketing_studio_video/product_showcase`) grounded on imported product UUIDs, with the
   sealed-bottle safety block front-loaded on every prompt. `create-video-fal` is a FAL i2v
   proxy — a different provider and job shape — so it cannot serve this step. Wiring the clip
-  step to templates-as-data requires a **`create-video-higgsfield`** proxy (Marketing Studio
+  step to templates-as-data requires a Higgsfield video proxy (Marketing Studio
   `product_showcase`, imported-product grounding, per-prompt safety block) that **does not
   exist yet**. Until it lands, the clips are generated via the Higgsfield Marketing Studio
   path directly (CLI/MCP) and that step is **not a fetchable capability**.

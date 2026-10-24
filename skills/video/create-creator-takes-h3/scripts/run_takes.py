@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the planned creator takes with H3 Max, through the GooseWorks proxy (bills the
-Ads agent). DRY RUN unless --go.
+"""Generate the planned creator takes with H3 Max, through the GooseWorks proxy (charged to your GooseWorks credits). DRY RUN unless --go.
 
     run_takes.py --spec work/takes/takes.json                 # dry run: plan + estimate
     run_takes.py --spec work/takes/takes.json --only t1 --go  # FIRST take, alone
@@ -22,7 +21,7 @@ the same clip, so a take that already exists on disk is skipped. The finished fi
 
 `prompt_expansion_mode: disabled` keeps the dialogue verbatim; expansion rewrites lines.
 
-A PROVIDER POLICY REJECTION IS FINAL FOR THOSE INPUTS (QA-14). If fal refuses a take
+A PROVIDER POLICY REJECTION IS FINAL FOR THOSE INPUTS. If fal refuses a take
 (likeness of a real person, content policy, partner validation, NSFW), the take is reported
 (reason, request id, charge state), kept in manifest.json under "rejected", and the run exits
 3 at the end: surface it to the user, do not retry. A STILL rejection (likeness or partner

@@ -65,8 +65,9 @@ pip3 install requests
 
 ### 3. Rube/Composio (for Google Sheets)
 
-Google Sheet creation uses Rube MCP with Composio. The token is preconfigured.
-If it stops working, update the `RUBE_TOKEN` env var or the default in `search_jobs.py`.
+Google Sheet creation uses Rube MCP with Composio. Nothing is preconfigured: set the
+`RUBE_TOKEN` env var to your own Rube token before running the sheet step. Without it the
+sheet scripts stop with an error; the job search itself still works.
 
 ## Usage
 

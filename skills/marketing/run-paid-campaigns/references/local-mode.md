@@ -11,7 +11,7 @@ Load at Before you start 1 when GooseWorks isn't connected (the `marketing-guide
 | Outcome check (step 2, `run-memory.md`) | `change_status`, `push_status`, the server's `decisions.md` blocks | the local `decisions.md` blocks (every one is yours), the connector's read-back values and times, the marketer's "done" |
 | Money-move recipe (`run-memory.md` § The baseline recipe) | `meta_read` by subtraction, else the ad-set export | the connector's date-range read for the stored ad ids, else the ad-set export |
 | Launch (step 5, `launch-and-graduate.md`) | routes 1–2 (GooseWorks pushes); make-static-ads' batch files; `video_read` | route 3 (written launch cards), or new campaigns, ad sets and ads created **paused** through the connector, each switched on by its own named yes. Creative is the marketer's own files or ads already in the account, checked here (health gate item 3) |
-| Stage and apply (steps 7–8) | approval pages, the pause tool | connector cards and written instructions (the apply-and-log skill's lever list) |
+| Stage and apply (steps 7–8) | approval pages, the pause tool | connector cards and written instructions (the `run-paid-campaigns-apply-and-log` skill's lever list) |
 | Targets and caps (`proposal-and-log.md` § The yardstick in the brain) | brain proposals | the approved plan's numbers; a target the marketer states goes to `brand-notes.md` through save-learning |
 | Schedule (Output, Recurring) | `automation_upsert` | marketing-guide §3 Schedules, local branch |
 | Saving | the workspace and brand documents | the same paths under `gooseworks-local/<brand-slug>/`, through the save-to-brain, run-memory and write-report local branches |

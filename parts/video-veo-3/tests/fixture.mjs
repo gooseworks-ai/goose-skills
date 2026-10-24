@@ -58,11 +58,11 @@ export async function scenesInputs(workDir, extra = {}) {
     mode: 'scenes',
     stills,
     template: await writeTemplate(workDir),
-    products: [{ id: 'p1', name: 'Bioma Probiotic' }],
+    products: [{ id: 'p1', name: 'Gutleaf Probiotic' }],
     scenes: [
       { id: 's1', line: 'Do not buy this.', on_screen: null, picture: 'Look 1: MCU, she lifts the jar and squints at it' },
       { id: 's2', line: null, on_screen: null, picture: 'Cutaway: a crowded supplement aisle' },
-      { id: 's3', line: 'Unless you hate bloating.', on_screen: null, picture: 'Product: Bioma Probiotic on a bathroom shelf' },
+      { id: 's3', line: 'Unless you hate bloating.', on_screen: null, picture: 'Product: Gutleaf Probiotic on a bathroom shelf' },
       { id: 's4', line: 'Three weeks in and I feel lighter every single morning.', on_screen: null, picture: 'Look 2: MS, she laughs and spins toward the window' },
       { id: 's5', line: 'Link below.', on_screen: 'Link below', picture: null },
     ],

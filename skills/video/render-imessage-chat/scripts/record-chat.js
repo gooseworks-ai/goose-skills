@@ -15,7 +15,7 @@ const TIMING = {
   char_per_sec:15, min_type:0.5, max_type:2, scroll_ms:300,
 };
 const snap = t => Math.ceil((t - 1e-8) * FPS) / FPS;
-// Platform-safe layout (QA-60). TikTok/Reels draw tabs over the top of a 9:16
+// Platform-safe layout. TikTok/Reels draw tabs over the top of a 9:16
 // video, caption/composer UI over the bottom and buttons down the right. These
 // are review-finished-ad's bands at 1080×1920; they scale with the canvas.
 const SAFE_BANDS = { top:220, bottom:400, right:140, left:0 };

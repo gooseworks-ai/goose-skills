@@ -26,7 +26,7 @@
     "_lighting_note": "the lighting_mood choice. luxe_botanical_warm (warm rim upper-right, soft fill below, warm bokeh) is the Solenne pick; others: clean_bright_daylight, dramatic_hard_key, cool_tech_rim — describe the chosen mood in rim_light and in every beat prompt",
     "rim_light": "strong warm rim light from upper-right; soft fill from below",
     "register": "premium product film — glossy speculars, warm bokeh, clean seamless backdrop, no people, no hands, no on-screen text on the plate",
-    "reference_videos": "9 catalogued 3D-product-showcase shorts (GOOSE-1778) — the format reference"
+    "reference_videos": "9 catalogued 3D-product-showcase shorts — the format reference"
   },
 
   "product_identity": {
@@ -43,7 +43,7 @@
       "engine": "fal_i2v",
       "provider": "fal",
       "model": "fal-ai/bytedance/seedance/v1/lite/image-to-video",
-      "_model_note": "create-video-fal i2v seeded on hero_styled.png. Seedance Lite is the cheap default; swap to seedance/v1/pro or kling-video/v3/pro/image-to-video for higher fidelity. All bill the Ads agent via the fal-proxy.",
+      "_model_note": "create-video-fal i2v seeded on hero_styled.png. Seedance Lite is the cheap default; swap to seedance/v1/pro or kling-video/v3/pro/image-to-video for higher fidelity. All are charged to your GooseWorks credits through the GooseWorks proxy.",
       "start_image": "hero_styled.png",
       "duration_sec": 4,
       "_duration_note": "i2v takes are ~5s; build_masters trims to 4s. A single i2v yields a partial arc (~60-120°), NOT a literal 360 — do not promise a full turn.",

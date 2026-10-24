@@ -22,7 +22,11 @@
 
 **Names never change.** Recipes, the GooseWorks app, routes and installed copies refer to skills by slug, so a published slug is permanent. To replace a skill, add the new one, then retire the old one in `retired-skills.json` with its `replacement` (or `null` and a `reason`).
 
-**Tests go in the skill's `tests/` folder.** They stay in this repo and are never published to an install, so a SKILL.md never tells the agent to run them. CI finds them on its own: Python tests through `pytest`, Node tests in `test/*.test.js`.
+**Where tests go.** A skill's `tests/` folder stays in this repo and is never published to an install, so a SKILL.md never tells the agent to run it. What CI finds on its own:
+
+- **Python tests** in a skill's `tests/` folder: CI runs `python3 -m pytest -q skills test`, which finds every `test_*.py`.
+- **Node tests** are found only in the repo's `test/` folder (`npm test` runs `test/*.test.js`) and, for parts, in `parts/<id>/tests/` (`npm run test:parts`). `npm test` does not look in `skills/*/*/tests/`, so a Node test kept there never runs in CI: put it in `test/`.
+- **Hand tests and fixtures** (`tests/*.md`, sample inputs) can live in the skill's `tests/` folder.
 
 **Then run:**
 
@@ -31,6 +35,16 @@ npm run ci
 ```
 
 It runs what CI's `validate` job runs: validate every meta, rebuild `skills-index.json`, check that every link in every skill resolves as installed (`node scripts/check-skill-links.js`), and the Node tests. Commit the regenerated `skills-index.json` with your change. For a video skill, also run the atom checks (below) and `python3 -m pytest -q skills/video/<slug>`.
+
+**A merge conflict in `skills-index.json`: never hand-merge it.** The file is generated, so a hand merge almost always leaves it wrong. Resolve every other conflicted file first, take either side of `skills-index.json`, then rebuild it with `node scripts/build-index.js`, run `npm run ci`, and commit the rebuilt file.
+
+## Skills published from another repo
+
+Some video and shared skills are written in another GooseWorks repo and copied here by a publish step: video skills from **goose-studio**, some shared and older skills from **goose-lab**. The next publish overwrites a change made only here. Change those skills at their source instead, or ask the GooseWorks team first. How to tell:
+
+- **goose-lab** lists the skills it publishes, by slug, in `coworkers/shared/publish-to-goose-skills/published-skills.json`.
+- **goose-studio** marks a skill it publishes whole with `source_commit` and `source_hash` in its `skill.meta.json` and a `release.json` beside it (today: `video-production-harness`; CI checks its files against `release.json`, so don't edit them here).
+- **Also in goose-studio** (24 Oct 2026), with a different copy there: brand-research, create-apple-notes-mockup, create-chatgpt-mockup, create-image-gpt-image-fal, create-imessage-mockup, create-kinetic-typography, create-music-elevenlabs, create-video-seedance-2-fal, mix-master, remix-graphic-ad-from-reference, render-ios-keyboard, stitch-videos-ffmpeg and watch. A fix to one of these here should also go to goose-studio, or the next publish from there undoes it.
 
 **To make a marketing playbook use it,** reference it from the playbook's SKILL.md as `` the `<slug>` skill (`../<slug>/SKILL.md`) `` and list it in `requires_skills`. **To make GooseWorks route customers to it,** add its row to `skills/entry/gooseworks/routes.json` and run `node scripts/build-router.js`, which rewrites the router's tables and the Brand Growth collection's routes (CI checks they match).
 

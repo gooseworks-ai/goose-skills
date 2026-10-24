@@ -1,6 +1,6 @@
 # render-flat-vector-explainer — free assembly how-to
 
-This capability is **documentation-grade**: the flat-vector-explainer molecule is a
+This capability is **documentation-grade**: the format's source recipe is a
 documented recipe, not a runnable end-to-end app. There are no standalone scripts here to
 `--config` and fire. Instead this folder ships:
 
@@ -98,4 +98,4 @@ Optional v2 cutdown: hook-led montage (hook -> slate -> grid pulled forward -> r
 
 Node + Remotion, `Pillow` (PIL), `ffmpeg` with libass. All free — the paid keys
 (`FAL_API_KEY`, `ELEVENLABS_API_KEY`) belong to the separate paid capabilities, which
-route through the GooseWorks proxies so the calls bill the Ads agent.
+route through the GooseWorks proxies so the calls are charged to your GooseWorks credits.

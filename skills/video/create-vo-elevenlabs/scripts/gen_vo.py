@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ElevenLabs voiceover (TTS) ROUTED THROUGH THE PROXY (bills the Ads agent). Voice +
+"""ElevenLabs voiceover (TTS) ROUTED THROUGH THE PROXY (charged to your GooseWorks credits). Voice +
 text from the template recipe. gen_vo.py --text "..." --voice dMyQqiVXTU80dDl2eNK8 --out vo.mp3
 
 Brand pronunciations: --say-as "Brewq2=brew Q two" (repeatable) or
@@ -30,8 +30,8 @@ MAX_TEMPO = 1.25
 
 
 def measure_wps(alignment):
-    """Heard words per second from a character alignment, counted as goose-studio's reference_rate.py
-    counts one: a run of characters between spaces holding a letter or digit is a word (a lone dash or
+    """Heard words per second from a character alignment, counted the way a reference's rate is
+    counted: a run of characters between spaces holding a letter or digit is a word (a lone dash or
     full stop is not), ending at its last letter or digit; first word's start to last word's end."""
     found, current = [], None
     for c, s0, e0 in zip(alignment.get("characters") or [], alignment.get("character_start_times_seconds") or [],

@@ -4,7 +4,7 @@ Scrape LinkedIn profile posts using Apify.
 Fetches recent posts from specified LinkedIn profiles.
 
 Usage:
-  python3 scrape_linkedin_posts.py --profiles "https://www.linkedin.com/in/marcelsantilli" --max-posts 10
+  python3 scrape_linkedin_posts.py --profiles "https://www.linkedin.com/in/example-person" --max-posts 10
   python3 scrape_linkedin_posts.py --profiles "url1,url2" --keywords "AI,growth" --days 30 --output summary
 """
 
@@ -204,13 +204,13 @@ def main():
         epilog="""
 Examples:
   # Scrape recent posts from a profile
-  %(prog)s --profiles "https://www.linkedin.com/in/marcelsantilli" --max-posts 10
+  %(prog)s --profiles "https://www.linkedin.com/in/example-person" --max-posts 10
 
   # Multiple profiles with keyword filtering
   %(prog)s --profiles "url1,url2" --keywords "AI,growth" --days 30
 
   # Summary table
-  %(prog)s --profiles "https://www.linkedin.com/in/marcelsantilli" --output summary
+  %(prog)s --profiles "https://www.linkedin.com/in/example-person" --output summary
 """,
     )
 

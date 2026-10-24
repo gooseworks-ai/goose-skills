@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Word-level transcript of a video or audio file, through the GooseWorks proxy (fal
-Whisper, bills the Ads agent; a few cents a minute).
+Whisper, charged to your GooseWorks credits; a few cents a minute).
 
     transcribe.py --media reel.mp4 --out reel.words.json [--offset 0] [--language en]
 

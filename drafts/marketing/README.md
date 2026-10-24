@@ -39,4 +39,4 @@ These are **data formats**, not hand-offs. Records written earlier (by a full br
 4. **Routing eval:** restore the expected playbook in `evals/marketing/routing/cases.jsonl` for the cases whose note says "held back" (R02, R08, R09, R20, R37, R51, R52, R60; add the alternatives back on R19, R30, R39).
 5. **Test** with its `tests/test-by-hand.md` on staging, then run the routing eval.
 
-For **make-static-ads** (being reworked on its own branch): the Codex round-1 fixes (20 Oct) repointed its video, photo and claims hand-offs to goose-video, goose-product-photos and the claims gate, and dropped its `Product imagery needed` request line. The rewrite carries those over before it merges.
+**make-static-ads** is released (`skills/marketing/make-static-ads/`). Its video, photo and claims hand-offs point at goose-video, goose-product-photos and the claims gate. When make-video-ads or make-product-photos comes back, check its hand-offs there too.

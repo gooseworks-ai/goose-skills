@@ -134,7 +134,7 @@ npx gooseworks update                      # Update to latest skill version
 
 ```bash
 npx goose-skills list                          # Every published skill
-npx goose-skills info make-static-ads          # One skill's details and dependencies
+npx goose-skills info make-static-ads          # One skill's details, the skills it requires, or a retired skill's replacement
 npx goose-skills install make-static-ads       # Into ~/.claude/skills/<slug>/ (default: Claude Code)
 npx goose-skills install make-static-ads --codex
 npx goose-skills install make-static-ads --cursor --project-dir /path/to/project
@@ -158,7 +158,7 @@ collections/           curated paths through the catalog (Brand Growth)
 docs/marketing/        the marketing build guide and backlog
 evals/marketing/       routing and behaviour evals for the playbooks
 drafts/marketing/      playbooks built but not released yet
-schemas/               the skill.meta.json schema
+schemas/               JSON schemas: skill.meta.json, and the parts index, layers and withdrawn lists
 scripts/, test/        index builder, validators and tests
 bin/                   the goose-skills npm CLI
 skills-index.json      the generated catalog every consumer reads
@@ -225,23 +225,17 @@ Each skill folder (`skills/<family>/<slug>/`) must include:
 - **`SKILL.md`** — the instructions, with `name` and `description` frontmatter (description at most 1,024 characters)
 - **`skill.meta.json`** — machine-readable metadata
 
-`skill.meta.json` fields:
+**The schema is the contract.** [`schemas/skill-meta.schema.json`](schemas/skill-meta.schema.json) defines every `skill.meta.json` field and rejects any other, and `node scripts/validate-skills.js` checks each meta against it. In brief:
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `slug` | Yes | Unique kebab-case identifier; the folder name |
-| `category` | Yes | `capabilities`, `composites`, or `playbooks` (the GooseWorks app only syncs these) |
-| `domain` | `shared` only | Catalog grouping; marketing skills default to `marketing-agent`, video skills to `ads`, entry skills to `gooseworks` |
-| `tier` | Marketing and entry | `playbook`, `atom` (a step) or `foundation`; `entry` for skills/entry |
-| `version` | Yes | Semver; marketing and entry skills repeat it in SKILL.md frontmatter; raise it on every change |
-| `requires_skills` | No | Slugs this skill loads; each must exist |
-| `tags` | Yes | String array of category tags |
-| `installation.base_command` | Yes | Install command |
-| `installation.supports` | Yes | Array: `claude`, `codex`, `cursor` |
-| `features` | No | Feature flags |
-| `github_url` | No | Source repository URL |
-| `author` | No | Skill author |
-| `example_prompt` | No | Copyable prompt shown in the catalog and docs for trying the skill |
+| Fields | Who uses them |
+|---|---|
+| `slug`, `category` (`capabilities`, `composites` or `playbooks`), `version`, `tags`, `installation` | **Required** for every skill |
+| `domain`, `requires_skills`, `requires_tools`, `features`, `example_prompt`, `author`, `collections`, `collection_stage` | Any skill (a shared skill must name its `domain`) |
+| `lint_allow` | Video atoms: lint findings that are creative content |
+| `tier`, `playbook`, `standalone`, `used_by`, `pillar`, `intents`, `reads`, `writes`, `needs` | Marketing skills (`tier: entry` for entry skills) |
+| `source_commit`, `source_hash`, `source_version` | Skills published from goose-studio |
+
+Read the schema for each field's meaning and allowed values.
 
 ---
 
@@ -250,9 +244,11 @@ Each skill folder (`skills/<family>/<slug>/`) must include:
 These skills run inside your coding agent, so it's worth knowing exactly what they do:
 
 - **Open source & inspectable.** Every skill — its `SKILL.md` instructions and all scripts — lives in this repo under the MIT license. The `gooseworks` CLI fetches skills at runtime so recipes stay current, but the source you'd run is right here to read, diff, or pin before you run it.
-- **Scripts run locally.** Skill scripts execute on your machine and write to `/tmp/gooseworks-scripts/`, never into your project directory. Only API requests go through GooseWorks servers; review any script before letting your agent run it.
+- **Where skills land.** An install copies each skill into your agent's skills folder (for Claude Code, `~/.claude/skills/<slug>/`). When your agent fetches a skill from the catalog in the middle of a task, the `gooseworks` entry skill tells it to save that skill's scripts under `/tmp/gooseworks-scripts/<slug>/`, not in your project.
+- **Where scripts write.** Scripts run on your machine and write where they are run or where the agent points them, usually a folder in your project (for example a video's `working/` and `output/` folders). The shared media helper also keeps two small ledgers under `~/.gooseworks/` (`pending-fal-jobs/`, so a dropped job is resumed instead of paid for twice, and `rejected-fal-requests/`, so a refused request is not sent again), and when it has to relay a paid call through your agent it writes the request to `working/mcp-requests/`. Review any script before letting your agent run it.
 - **Your agent stays in control.** The skills are a tool your agent reaches for when it fits the task (data at scale, sources behind auth, a specific provider) — not a replacement for its built-in web search or fetch on quick lookups. You can read or edit any installed `SKILL.md` to tune that behavior.
-- **Credentials stay local.** Auth is a Bearer token stored at `~/.gooseworks/credentials.json` (file mode `0600`). Third-party provider keys are held server-side — your token never touches them. All network calls are HTTPS.
+- **Credentials stay local.** GooseWorks auth is a Bearer token stored at `~/.gooseworks/credentials.json` (file mode `0600`). Paid media (images, video, voice, music, transcription) goes through GooseWorks' proxies and is charged to your GooseWorks credits, so those skills never need a provider key. All network calls are HTTPS.
+- **A few older skills can use your own provider keys.** They read them from environment variables you set, and only when the GooseWorks route isn't available: `reddit-post-finder`, `linkedin-profile-post-scraper`, `lead-qualification` and `job-posting-intent` call Apify with `APIFY_API_TOKEN` when no `GOOSEWORKS_API_KEY` is set (`job-posting-intent` also needs your `RUBE_TOKEN` for its Google Sheets step); `launch-meta-ad-campaign` calls Meta with `META_ACCESS_TOKEN` and `META_AD_ACCOUNT_ID` when the GooseWorks tools aren't connected; `brand-research`'s optional image step reads `FAL_KEY` from its `.env`; `review-ugc-render` falls back to `OPENAI_API_KEY`, or a local `whisper`, when the GooseWorks transcription proxy can't be reached. Those calls are billed by that provider, not by GooseWorks.
 - **The MCP server is part of the install.** The install registers the GooseWorks MCP server in your agent's config, because the skills call it for your account. To disconnect it, remove the `gooseworks` entry from that config (`~/.claude.json`, `~/.codex/config.toml` or `~/.cursor/mcp.json`).
 
 Found something that looks off? [Open an issue](https://github.com/gooseworks-ai/goose-skills/issues) — we'd rather fix it in public.

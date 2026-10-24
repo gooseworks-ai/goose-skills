@@ -54,7 +54,7 @@ test('clusters: keyframes within 10 bits are one setup (single linkage); the ver
   assert.equal(chkSetupClusters([a, near, chain]), 1, 'joined through the middle one');
   assert.equal(chkSetupClusters([a, far]), 2);
   assert.equal(chkSetupClusters([]), 0);
-  // The Personal Day test video: 4 setups against about 10.
+  // The Clearday test video: 4 setups against about 10.
   assert.equal(chkSetupVerdict(4, 10, 17).status, 'fail');
   assert.match(chkSetupVerdict(4, 10, 17).message, /4 distinct setups against the reference's 10/);
   assert.equal(chkSetupVerdict(7, 10, 12).status, 'pass', '30 % fewer is the limit');

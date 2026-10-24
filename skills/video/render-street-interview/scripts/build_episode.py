@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Assemble a MULTI-TAKE episode from generations that already exist. Free, ffmpeg only.
 
-    python build_episode.py --episode grimwater-ep1 --dry-run   # no ffmpeg, no network
-    python build_episode.py --episode grimwater-ep1             # the whole episode
-    python build_episode.py --episode grimwater-ep1 --black-lift 0.024
+    python build_episode.py --episode fizzroot-ep3 --dry-run   # no ffmpeg, no network
+    python build_episode.py --episode fizzroot-ep3             # the whole episode
+    python build_episode.py --episode fizzroot-ep3 --black-lift 0.024
 
 THIS FILE BREAKS THE RULE `SKILL.md` OPENS WITH, AND THAT IS DELIBERATE.
 
@@ -61,6 +61,8 @@ import recut
 
 HERE = paths.HERE
 EPISODES = paths.SKILL / "episodes"
+# The grimwater development episodes, kept with the builder tests (goose-skills repo only).
+DEV_EPISODES = paths.SKILL / "tests" / "fixtures" / "episodes"
 W, H = build_looks.W, build_looks.H
 SAFE_TOP, SAFE_BOT = build_looks.SAFE_TOP, build_looks.SAFE_BOT
 END_CARD_S = 2.2
@@ -743,10 +745,12 @@ def caption_png(text, path, size, rows=None):
 # ── the build ──────────────────────────────────────────────────────────────────────────────
 def load_episode(arg):
     p = Path(arg).expanduser()
+    dirs = [d for d in (EPISODES, DEV_EPISODES) if d.exists()]
     if p.suffix != ".json":
-        p = EPISODES / f"{arg}.json"
+        p = next((d / f"{arg}.json" for d in dirs if (d / f"{arg}.json").exists()),
+                 EPISODES / f"{arg}.json")
     if not p.exists():
-        have = ", ".join(sorted(q.stem for q in EPISODES.glob("*.json"))) or "(none)"
+        have = ", ".join(sorted(q.stem for d in dirs for q in d.glob("*.json"))) or "(none)"
         sys.exit(f"no episode config at {p}. Have: {have}")
     ep = json.loads(p.read_text(encoding="utf-8"))
     ep["_path"] = str(p)

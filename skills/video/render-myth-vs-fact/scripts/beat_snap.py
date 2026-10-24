@@ -10,7 +10,7 @@ Two outputs, written into the work dir:
   - beat-manifest.json      : the config beats with re-snapped start/end/duration.
 
 Whisper word-timestamps come from fal-ai/whisper (chunk_level=word). Prefer the
-PROXY-ROUTED path so the call bills the Ads agent (never a raw FAL_KEY): the orchestrator
+PROXY-ROUTED path so the call is charged to your GooseWorks credits (never a raw FAL_KEY): the orchestrator
 hosts the rendered VO with the MCP `media_upload` and passes the returned
 url as `--vo-url` (transcribed through `media_proxy.fal_whisper`). Already have the words?
 pass `--words-file words.json` and beat_snap skips transcription entirely. Legacy: a raw
@@ -31,14 +31,14 @@ from pathlib import Path
 
 
 def transcribe_proxy(vo_url):
-    """Proxy-routed Whisper (bills the Ads agent). Needs media_proxy.py on sys.path —
+    """Proxy-routed Whisper (charged to your GooseWorks credits). Needs media_proxy.py on sys.path —
     the orchestrator fetches it with the create-vo-elevenlabs / media-proxy capability."""
     from media_proxy import fal_whisper
     return fal_whisper(vo_url)
 
 
 def transcribe_fal(vo_path):
-    """Legacy: a raw FAL_KEY in the env (NOT proxy-routed — does not bill the Ads agent)."""
+    """Legacy: a raw FAL_KEY in the env (NOT proxy-routed — billed to your own fal account)."""
     import fal_client
     if "FAL_KEY" not in os.environ and "FAL_API_KEY" in os.environ:
         os.environ["FAL_KEY"] = os.environ["FAL_API_KEY"]
@@ -95,7 +95,7 @@ def main():
     elif a.no_whisper:
         print("[whisper] skipped — using config beat durations un-snapped")
     elif a.vo_url:
-        print("[whisper] transcribing via proxy (bills the Ads agent)")
+        print("[whisper] transcribing via proxy (charged to your GooseWorks credits)")
         words = transcribe_proxy(a.vo_url)
         print(f"[whisper] {len(words)} words: " + " ".join(w["text"] for w in words)[:200])
     elif vo and os.path.exists(vo) and ("FAL_KEY" in os.environ or "FAL_API_KEY" in os.environ):

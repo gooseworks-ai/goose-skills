@@ -65,7 +65,7 @@ Write `montage.json` from `config.json` like this:
 Notes:
 
 - **Words file:** use `vo-final.words.json` exactly as the transcriber wrote it. Whisper's nested
-  `segments[].words[]` (goose-studio's `transcribe-audio-fal`), a flat `[{text|word, start, end}]`
+  `segments[].words[]` (what fal's Whisper returns), a flat `[{text|word, start, end}]`
   list, `{words: [...]}` and fal's `{chunks: [...]}` all work.
 - **Keep `audio.vo_start` at 0.** `word_range` cuts and word captions are timed on the words file's
   clock; `vo_start` moves only the VO audio, not the cuts or captions.

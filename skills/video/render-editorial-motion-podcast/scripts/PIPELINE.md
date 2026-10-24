@@ -28,7 +28,7 @@ ffmpeg -y -ss 933.5 -to 973.30 -i <source_mp3> \
   audio/source-rat-park-40s.mp3     # -> 39.84s clip ending cleanly on "community."
 ```
 
-Then Whisper word timings via the **`transcribe-audio-fal`** atom (`fal-ai/whisper`,
+Then Whisper word timings via the **`caption-burn`** skill's `transcribe.py` (`fal-ai/whisper`,
 paid, <30s — default to it; local whisper ran 40min+ CPU and was killed, L8) →
 `audio/words.json`. Mark every payoff word's time; each beat's visual must START within
 ~0.5s of its line (never ahead = spoils the reveal, never lag = redundant, L3). There is
@@ -36,7 +36,7 @@ paid, <30s — default to it; local whisper ran 40min+ CPU and was killed, L8) �
 
 ## 2. Style anchor → Nano Banana  (config: `look_pack.style_ref`, `look_pack.anchor_keyframe`, `keyframe_engine`)  [PAID]
 
-`create-image-nano-banana-fal` from `look_pack.style_ref` (`moodboard/style-ref-01.png`)
+`create-image-fal` (nano-banana edit) from `look_pack.style_ref` (`moodboard/style-ref-01.png`)
 → the FIRST keyframe (`generated/style-anchor/anchor-cage-1.png`, "Cage 1"). This anchor is
 the reference EVERY subsequent keyframe chains off (`--ref-image`), so cage/character
 geometry stays consistent. **Approve the anchor before fanning out** — it locks the whole

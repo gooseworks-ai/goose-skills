@@ -206,7 +206,7 @@ def load_words(path: Path) -> list:
     """Word timings in any of the shapes transcribers write, as [{text, start, end}] by start.
 
     Accepts a flat list; {"words": [...]} (OpenAI/ElevenLabs, `word` or `text` key);
-    Whisper's {"segments": [{"words": [...]}]} (goose-studio transcribe-audio-fal); and fal's
+    Whisper's {"segments": [{"words": [...]}]} (fal Whisper's shape); and fal's
     {"chunks": [{"text", "timestamp": [start, end]}]}. Skips entries with no time and
     ElevenLabs `spacing` entries, and strips the leading space Whisper puts on each word.
     """

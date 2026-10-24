@@ -40,7 +40,7 @@ brand's REAL product photo onto the seamless studio set, so the product geometry
 never AI-invented; Beat 3 (the physics reveal) is a Veo3 image-to-video seeded on Beat 1's last
 frame (also `create-video-fal`); the one instrumental bed is `create-music-elevenlabs`. **There
 is no Higgsfield / Marketing Studio in this format** — everything paid runs through the
-fal-proxy / elevenlabs-proxy so it bills the Ads agent.
+fal-proxy / elevenlabs-proxy so the call is charged to your GooseWorks credits.
 
 Given those beats + the brand wordmark, this capability:
 

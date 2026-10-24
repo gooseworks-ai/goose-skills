@@ -28,6 +28,10 @@ Given the delivered anthem + `words.json` + one clip per beat + the brand end-ca
 muxes the anthem, burns the cinematic lower-third captions, and overlays the end card → the
 master. Re-cuts reuse the existing anthem / keyframes / clips and spend nothing.
 
+This skill ships no assembler script of its own. Do the cuts and captions with the
+`stitch-videos-ffmpeg` skill's `montage.py` (`../stitch-videos-ffmpeg/SKILL.md`) and the anthem
+mux with one ffmpeg pass; `scripts/PIPELINE.md` step 4 lists each step.
+
 ## Choices
 
 The creative content this stage assembles is decided upstream by the format's `choices`, asked
@@ -55,7 +59,7 @@ This assembly reads them only through the config (`tableaux[]` windows + caption
   returned word timings — never trim the anthem to a pre-planned grid.
 - **Captions from the anthem's OWN word timings, not Whisper.** Derive `words.json` from the
   music model's `words_timestamps`, chunk ~4 words at lyric boundaries, and burn cinematic
-  lower-third serif captions (`--placement low`) with the hook line accent-treated (bold-italic).
+  lower-third serif captions (low on the frame) with the hook line and accent words in the accent colour.
   Whisper on sung audio returns "🎵 Music Playing 🎵".
 - **Land the hook on the chorus drop.** The hero tableau (`is_hook`) is timed so the
   load-bearing line sits on the chorus drop; accent that line in the captions.
@@ -66,5 +70,5 @@ This assembly reads them only through the config (`tableaux[]` windows + caption
   Composite the lockup (PIL/ffmpeg) from the real asset or use a designed keyframe base;
   diffusion garbles a wordmark.
 - **FFmpeg composite, deterministic, FREE.** Normalize each clip to its beat-locked window,
-  hard-concat, mux the anthem (`afade` in/out + `loudnorm I=-14`), burn the caption ASS, overlay
+  hard-concat, mux the anthem (`afade` in/out + `loudnorm I=-14`), burn the captions, overlay
   the end card → a 1080×1920 h264+aac master. No paid calls, no keys.
