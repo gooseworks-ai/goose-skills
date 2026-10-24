@@ -19,7 +19,7 @@ from urllib.parse import urlparse
 
 SKILL = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT = SKILL / "scripts" / "single_gen.py"
-REF_REL = "clients/liquid-death/brand-assets/reference-photos/mountain-water-still-19oz-tallboy-official.png"
+REF_REL = "assets/grimwater/reference-photos/grimwater-still-19oz-tallboy.png"
 BAD = b"IMAGE-WITH-A-PHOTOREAL-FACE"  # the mock refuses any request carrying these bytes
 GOOD = b"CLEAN-PACKSHOT-NO-PEOPLE"
 LIKENESS = {"detail": [{"loc": ["body", "image_urls"], "msg": "The images may contain likenesses of real people",
@@ -114,7 +114,7 @@ class SingleGenRejectionTests(unittest.TestCase):
         self.mock.close()
         shutil.rmtree(self.tmp, ignore_errors=True)
 
-    def run_gen(self, *extra, brand="liquid-death", run="run"):
+    def run_gen(self, *extra, brand="grimwater", run="run"):
         return subprocess.run([sys.executable, str(SCRIPT), "--brand", brand, "--run",
                                str(self.tmp / run), "--yes", *extra],
                               env=self.env, capture_output=True, text=True, timeout=120)
@@ -142,9 +142,9 @@ class SingleGenRejectionTests(unittest.TestCase):
         self.assertEqual(self.run_gen().returncode, 3)
         other = self.ref.parent / "packshot-v2.png"
         other.write_bytes(GOOD)
-        cfg = json.loads((SKILL / "brands" / "liquid-death.json").read_text())
+        cfg = json.loads((SKILL / "brands" / "grimwater.json").read_text())
         cfg["product"]["reference_image"] = str(other.relative_to(self.root))
-        alt = self.tmp / "liquid-death-v2.json"
+        alt = self.tmp / "grimwater-v2.json"
         alt.write_text(json.dumps(cfg))
         r2 = self.run_gen(brand=str(alt))
         self.assertEqual(r2.returncode, 0, r2.stderr)

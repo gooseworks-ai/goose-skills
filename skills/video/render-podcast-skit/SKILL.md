@@ -52,8 +52,8 @@ it can propose matches without reading account credentials.
 
 ## Non-negotiables
 
-Paid commands print cost by default. Both confirmation and execution flags
-are required after explicit approval. Preserve completed audio and timing
+Paid commands only print their plan by default. Paid steps run only on an
+approved order, with both the confirmation and execution flags. Preserve completed audio and timing
 responses when resuming. Never re-bill a completed beat to recover a missing
 local file. Motion inserts are unimplemented and fail explicitly if enabled.
 

@@ -71,8 +71,8 @@ keyed/misread. Swap the image or tighten the `window_mask` thresholds if it blee
 ## Requires
 
 - **Python 3** with `numpy` + `Pillow`, and **ffmpeg/ffprobe** on PATH.
-- **Playwright chromium** for the screenshot step (`pip install playwright && playwright
-  install chromium`). If Playwright is unavailable, run `build_card.py`, screenshot
+- **Playwright with Chromium** for the screenshot step (the kit provides it). If Playwright
+  is unavailable, run `build_card.py`, screenshot
   `chrome.html` / `chrome-pressed.html` (fullPage) → `chrome-green.png` /
   `chrome-green-pressed.png` via the chrome-devtools MCP, then call `compose_carousel.py`
   directly.

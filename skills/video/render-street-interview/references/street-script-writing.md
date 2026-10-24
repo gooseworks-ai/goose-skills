@@ -56,7 +56,7 @@ use that structure? Do not narrow the audience or invent a buying concern to jus
 already selected example. Reject a fully inspected reference when its persuasive purpose
 does not fit. The selector validates recorded compatibility, not this creative decision.
 
-The Som Sleep trial exposed this error: a tasting reference led to warm-water preparation
+The Hushwell Sleep trial exposed this error: a tasting reference led to warm-water preparation
 as the whole message. That explains how to prepare a drink, but does not explain its sleep
 role or a relevant reason to choose it. A sip can demonstrate taste; it cannot demonstrate
 a later sleep effect. Sampling may serve a genuine taste objection within an established

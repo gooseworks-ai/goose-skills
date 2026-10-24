@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """compose.py — the deterministic FREE assembler for the myth-vs-fact ad.
 
-Ports the validated assembly recipe from the Clinikally "acne myths" run
+Ports the validated assembly recipe from the Dermwise "acne myths" run
 (working/build_master.py), generalized + portable (config-driven, no hardcoded paths):
 
   1. Concat the per-beat mp4s (already rendered by render_beats.py, all at the same fps)

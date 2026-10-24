@@ -52,11 +52,11 @@ Ask: **"Write an SEO article: <question>."** Before the brief, it reads the top 
 
 ## Staging run log (2026-10-16, GooseWorks staging, org "gooseworks", 4,165 credits available; nothing spent)
 
-Brand: **Personal Day** (`0e5b2fb0-…`, DTC acne-safe skincare). Ask: "Turn our latest Instagram video into versions for every platform we post on."
+Brand: **Clearday** (`0e5b2fb0-…`, DTC acne-safe skincare). Ask: "Turn our latest Instagram video into versions for every platform we post on."
 
 | # | Call | What came back | What the playbook does with it |
 |---|---|---|---|
-| 1 | `brand_read` (list) | 8 brands, each with `coworker_agent_id` (Personal Day → `9d554b73-…`) | Workspace scope for every file |
+| 1 | `brand_read` (list) | 8 brands, each with `coworker_agent_id` (Clearday → `9d554b73-…`) | Workspace scope for every file |
 | 2 | `brand_read` sections summary, kit, learnings, sources, organic | Kit voice (description, 3 site lines, Do/Don't); 1 learning: `dont` choppy script lines; own IG @personalday and TikTok @personaldayskin as `relationship: self` sources; 12 own posts (Oct 5–12) with metrics and `media_asset_id` | Platforms = IG + TikTok (from sources); the script learning applies to every video version |
 | 3 | `brand_read` learnings (full) | No "Claims sign-off (learn-my-brand" marker | **Before sign-off: plain product facts only.** Positioning note sent before drafting ("'acne-safe' isn't signed off yet…") |
 | 4 | `knowledge_search` claim | 7 rows `claim_status: approved`, all research-created (4 press quotes, free returns, free shipping $45+, 4.9/234 reviews) | Treated as candidates under the claims gate's contract, not proof |
@@ -74,4 +74,4 @@ Brand: **Personal Day** (`0e5b2fb0-…`, DTC acne-safe skincare). Ask: "Turn our
 
 **Not verified on staging:** `knowledge_import url` pricing (expected free; the playbook stops if it quotes a price); importing voice cards as documents (no confirmed card yet).
 
-**Cleanup:** the TEST RUN files written in this run (`content/repurposed/ig-2026-10-12-lili-spray/2026-10-16.md`, `social/calendar/2026-10-19.md`) were deleted from the Personal Day workspace afterwards (`file_delete`, success), so the next real run starts clean.
+**Cleanup:** the TEST RUN files written in this run (`content/repurposed/ig-2026-10-12-lili-spray/2026-10-16.md`, `social/calendar/2026-10-19.md`) were deleted from the Clearday workspace afterwards (`file_delete`, success), so the next real run starts clean.

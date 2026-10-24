@@ -1,5 +1,5 @@
 /* render-myth-vs-fact — shared tokens + scaffold for 1080x1920 9:16.
- * Ported (generalized, brand-neutral) from the validated Clinikally "acne myths" run.
+ * Ported (generalized, brand-neutral) from the validated Dermwise "acne myths" run.
  * The whole video is driven off these five CSS-var tokens — render_beats.py overwrites
  * them per run from config.palette. NO off-palette accents. */
 

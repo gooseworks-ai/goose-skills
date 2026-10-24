@@ -18,11 +18,11 @@ beat-driven music bed.
 
 This capability ships the FREE, deterministic assembly — everything between the two paid
 model calls. It is **documentation-grade + config**: the format has no runnable driver.
-`scripts/` carries the worked config + the step-by-step pipeline doc; the Soundboks
+`scripts/` carries the worked config + the step-by-step pipeline doc; the Boomcrate
 reference PIL impls (`gen_kinetic_v6.py`, `gen_endcard_v10.py`, `assemble_v10.py`) are
 copied + adapted per run, not vendored.
 
-- **config.example.json** — the Soundboks worked example: hero product, 5 spec callouts,
+- **config.example.json** — the Boomcrate worked example: hero product, 5 spec callouts,
   the 5-block Seedance prompt, per-card treatments, beat structure, end-card spec, music
   brief, dims. Copy its structure to `config.json`; never its creative values. Card
   `label`s equal their `text_cards` keys (`intro`, `spec_1`..`spec_N`, `cta`) so
@@ -36,7 +36,7 @@ copied + adapted per run, not vendored.
 ## Choices
 
 The calling recipe asks the user these before any paid step; this capability only assembles
-what they produced. The Soundboks values are a worked example, never defaults.
+what they produced. The Boomcrate values are a worked example, never defaults.
 
 - **energy** → `config.brand_voice`, Seedance block 1, `music.bpm` (demo: party, 124 BPM).
 - **environment** → Seedance blocks 3–4 (demo: beach festival deck).
@@ -75,7 +75,7 @@ read only from config.
 
 Output: `master-final.mp4`, 1080×1920, ≈20–30s (25s default) h264 (+ 192 kbps aac music) —
 14 segments: intro + 6 hypermotion cuts + 5 spec cards + CTA + real-logo end card. All
-FREE, $0.
+FREE.
 
 ## Contract
 

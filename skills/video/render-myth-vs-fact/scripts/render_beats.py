@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """render_beats.py — deterministically render each myth-vs-fact beat to an mp4.
 
-Ports the validated Playwright + ffmpeg renderer from the Clinikally "acne myths" run,
+Ports the validated Playwright + ffmpeg renderer from the Dermwise "acne myths" run,
 generalized to be config-driven and portable (no hardcoded /Users or clients/ paths).
 
 For every `mg` beat the renderer:
@@ -23,7 +23,7 @@ are frame-exact and the render is fully reproducible.
 Usage:
   render_beats.py --config config.json --work-dir /path/to/work [--only 01 02]
 
-Requires: Playwright (chromium) + ffmpeg/ffprobe.  pip install playwright && playwright install chromium
+Requires: Playwright (chromium) + ffmpeg/ffprobe, which the kit provides.
 """
 import argparse, json, os, subprocess, sys, tempfile, shutil
 from pathlib import Path

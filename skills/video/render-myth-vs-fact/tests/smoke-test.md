@@ -9,7 +9,6 @@ concat/mix/caption path (Phase B) with synthetic beat mp4s + a synthetic VO.
 
 ```bash
 cd scripts
-python3 -m pip install playwright && playwright install chromium   # if not present
 mkdir -p /tmp/mvf-smoke
 # Copy the example config and REPLACE the paths / copy for a real run:
 #   - "vo"           : the RENDERED VO mp3 (measured; the timeline hangs off it)

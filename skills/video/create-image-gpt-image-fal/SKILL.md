@@ -87,7 +87,7 @@ The script:
 - For character anchors: visually inspect against the descriptor block (hair, shirt color, age).
 - `meta.json` includes `gateway: "fal-proxy"`, the resolved `model` id, `model_family`, `image_size`, and `quality`.
 - For gpt-image-2 custom sizes: confirm the output dimensions match the requested `WIDTHxHEIGHT`.
-- **No readable text in the prompt that should appear in the image.** AI image models mangle short brand text, URLs, code tokens, captions, and wordmarks even with explicit prompting. Examples observed: `"ffmpeg"` → `"ffmmg"`; `"klarify"` → `"clarify"`; `"therapists"` → `"therapits"`. Use PIL or `ffmpeg drawtext` for any overlay containing readable text. Reserve image gen for purely visual content (characters, scenes, backgrounds). Repeats LEARNINGS L4.
+- **No readable text in the prompt that should appear in the image.** AI image models mangle short brand text, URLs, code tokens, captions, and wordmarks even with explicit prompting. Examples observed: `"ffmpeg"` → `"ffmmg"`; `"claritude"` → `"clarytude"`; `"therapists"` → `"therapits"`. Use PIL or `ffmpeg drawtext` for any overlay containing readable text. Reserve image gen for purely visual content (characters, scenes, backgrounds). Repeats LEARNINGS L4.
 
 ## Failure Modes
 

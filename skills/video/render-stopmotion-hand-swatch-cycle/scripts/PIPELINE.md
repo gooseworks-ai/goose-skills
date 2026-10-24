@@ -1,7 +1,7 @@
 # Pipeline — stop-motion hand-swatch-cycle
 
 How `config.example.json` maps to the real production steps. This capability ships a **config + this
-map**, not a bundled runner: the worked example (DIBS Beauty "Pick Your Match") was produced by the
+map**, not a bundled runner: the worked example (Solenne Beauty "Pick Your Match") was produced by the
 shared stop-motion template scripts plus a per-project plate spec — `generate_plates.py`,
 `build_video.py`, `render_endcard.py`, `finalize_video.py` / `add_endcard_and_music.py` — driven by
 a plate spec (`plates-v3.json`). Reference those directly, or drive the whole run via the video
@@ -54,7 +54,7 @@ hero BG.
 Encode each plate PNG→mp4 at its own `pose_hold_ms` (`ffmpeg -loop 1 -t <hold>`, scale/crop to
 1080×1920 @ 30fps crf18) — motion / half-painted plates 150–250ms, per-shade ~380ms (or ~1000ms for a
 slower cycle), hero / bookend beats 1100–1800ms — then concat-**demux** the plate mp4s in order
-(`ffmpeg -f concat`) into the silent master. HARD cuts between plates, no dissolves. DIBS v3 ran 27
+(`ffmpeg -f concat`) into the silent master. HARD cuts between plates, no dissolves. Solenne v3 ran 27
 plate clips (15 unique plates, some reused across the cycle). Concat-demux (not `filter_complex`) is
 correct because the plates are silent stills. Free — a re-cut reuses the existing plate PNGs.
 
@@ -69,4 +69,4 @@ correct because the plates are silent stills. Free — a re-cut reuses the exist
   silent tail) → the master (1080×1920, 30fps, h264+aac, ~16.6s).
 
 Re-cuts (new holds, a re-ordered cycle, a swapped end card, a different track) reuse the existing
-plates and cost **$0** — only steps 1–3 + the end-card BG spend.
+plates and spend nothing — only steps 1–3 + the end-card BG spend.

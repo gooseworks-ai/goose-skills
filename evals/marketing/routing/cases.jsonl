@@ -3,9 +3,9 @@
 {"id": "R03", "ask": "Write my welcome and abandoned-cart emails", "expected_playbook": "email-lifecycle", "kind": "direct", "source": "routing-review #3"}
 {"id": "R04", "ask": "Find me 50 B2B leads with emails", "expected_playbook": "research-audience", "kind": "direct", "source": "routing-review #4", "note": "list mode of audience research (lists only on request)"}
 {"id": "R05", "ask": "Find me influencers", "expected_playbook": "work-with-creators", "kind": "direct", "source": "routing-review #5"}
-{"id": "R06", "ask": "Do a competitor teardown on Glossier", "expected_playbook": "research-competitors", "kind": "direct", "source": "routing-review #6"}
+{"id": "R06", "ask": "Do a competitor teardown on Dewlark", "expected_playbook": "research-competitors", "kind": "direct", "source": "routing-review #6"}
 {"id": "R07", "ask": "Mine our reviews", "expected_playbook": "research-audience", "acceptable_alternatives": ["research-market"], "kind": "direct", "source": "routing-review #7", "note": "18–19 Oct: research-audience owns the customer-quote bank"}
-{"id": "R08", "ask": "Set up my brand", "expected_playbook": "none", "kind": "direct", "source": "routing-review #8", "note": "held back from the first release on 20 Oct (Akhil): brand setup as its own job is not covered yet (GooseWorks sets the brand up on first connect); the router's not-covered list also answers it", "acceptable_alternatives": ["marketing-agent"]}
+{"id": "R08", "ask": "Set up my brand", "expected_playbook": "none", "kind": "direct", "source": "routing-review #8", "note": "held back from the first release on 20 Oct (the owner): brand setup as its own job is not covered yet (GooseWorks sets the brand up on first connect); the router's not-covered list also answers it", "acceptable_alternatives": ["marketing-agent"]}
 {"id": "R09", "ask": "Studio photos of my water bottle", "expected_playbook": "goose-product-photos", "kind": "direct", "source": "routing-review #9", "note": "product photos go to the goose-product-photos entry skill (20 Oct catalog PR)", "acceptable_alternatives": ["none", "marketing-agent"]}
 {"id": "R10", "ask": "Fill my social calendar for two weeks", "expected_playbook": "run-organic-social", "kind": "direct", "source": "routing-review #10"}
 {"id": "R11", "ask": "Am I showing up in ChatGPT?", "expected_playbook": "improve-search-visibility", "kind": "direct", "source": "routing-review #11"}
@@ -48,7 +48,7 @@
 {"id": "R48", "ask": "Is this influencer's engagement real?", "expected_playbook": "work-with-creators", "kind": "edge", "source": "routing-review #48"}
 {"id": "R49", "ask": "Draft a reply to this angry review", "expected_playbook": "none", "kind": "edge", "source": "routing-review #49", "note": "reply drafts moved to BACKLOG on 18 Oct"}
 {"id": "R50", "ask": "A customer says our cream gave her a rash and it's spreading", "expected_playbook": "research-market", "acceptable_alternatives": ["run-paid-campaigns", "none"], "kind": "edge", "source": "routing-review #50", "note": "risk triage of what people are saying moved into research-market with listening"}
-{"id": "R51", "ask": "Our price changed", "expected_playbook": "none", "kind": "edge", "source": "routing-review #51", "note": "held back from the first release on 20 Oct (Akhil): recording a price or product change is not covered yet; the router's not-covered list also answers it", "acceptable_alternatives": ["marketing-agent"]}
+{"id": "R51", "ask": "Our price changed", "expected_playbook": "none", "kind": "edge", "source": "routing-review #51", "note": "held back from the first release on 20 Oct (the owner): recording a price or product change is not covered yet; the router's not-covered list also answers it", "acceptable_alternatives": ["marketing-agent"]}
 {"id": "R52", "ask": "Can we say 'dermatologist approved'?", "expected_playbook": "none", "kind": "edge", "source": "routing-review #52", "note": "a standalone claims check: claims-gate is now published and usable alone (20 Oct catalog PR)", "acceptable_alternatives": ["marketing-agent", "claims-gate"]}
 {"id": "R53", "ask": "Optimise my Amazon listing", "expected_playbook": "none", "kind": "edge", "source": "routing-review #53", "note": "marketplace listings are not covered yet"}
 {"id": "R54", "ask": "Fix our Google Business Profile", "expected_playbook": "improve-search-visibility", "kind": "edge", "source": "routing-review #54"}
@@ -58,14 +58,14 @@
 {"id": "R58", "ask": "Our Meta ad account got restricted", "expected_playbook": "run-paid-campaigns", "kind": "edge", "source": "routing-review #58"}
 {"id": "R59", "ask": "Is my pixel/tracking working?", "expected_playbook": "analyze-performance", "acceptable_alternatives": ["run-paid-campaigns"], "kind": "edge", "source": "routing-review #59"}
 {"id": "R60", "ask": "Make a product demo video for our SaaS", "expected_playbook": "goose-video", "kind": "edge", "source": "routing-review #60", "note": "product demo videos go to the goose-video entry skill (20 Oct catalog PR)", "acceptable_alternatives": ["none", "marketing-agent"]}
-{"id": "R61", "ask": "i want to do the market research for gooseworks", "expected_playbook": "research-market", "kind": "direct", "source": "Akhil hand test 18 Oct"}
-{"id": "R62", "ask": "i want to do the audience research for gooseworks", "expected_playbook": "research-audience", "kind": "direct", "source": "Akhil hand test 18 Oct"}
+{"id": "R61", "ask": "i want to do the market research for gooseworks", "expected_playbook": "research-market", "kind": "direct", "source": "owner hand test 18 Oct"}
+{"id": "R62", "ask": "i want to do the audience research for gooseworks", "expected_playbook": "research-audience", "kind": "direct", "source": "owner hand test 18 Oct"}
 {"id": "R63", "ask": "What's the market size for AI ad tools?", "expected_playbook": "research-market", "kind": "direct", "source": "research-audience edge test"}
 {"id": "R64", "ask": "Where does our audience hang out online?", "expected_playbook": "research-audience", "kind": "direct", "source": "added 18 Oct (new audience-research scope)"}
-{"id": "R65", "ask": "I need to improve my SEO and EEO for Goosework's brand.", "expected_playbook": "improve-search-visibility", "kind": "direct", "source": "Akhil hand test 18 Oct"}
-{"id": "R66", "ask": "I want to run organic social for my brand Gooseworks.", "expected_playbook": "run-organic-social", "kind": "direct", "source": "Akhil hand test 18 Oct"}
-{"id": "R67", "ask": "I want to plan a campaign.", "expected_playbook": "plan-campaign", "kind": "direct", "source": "Akhil hand test 18 Oct"}
-{"id": "R68", "ask": "Ok I want to do the competitor research for gooseworks", "expected_playbook": "research-competitors", "kind": "direct", "source": "Akhil hand test 18 Oct"}
+{"id": "R65", "ask": "I need to improve my SEO and EEO for Goosework's brand.", "expected_playbook": "improve-search-visibility", "kind": "direct", "source": "owner hand test 18 Oct"}
+{"id": "R66", "ask": "I want to run organic social for my brand Gooseworks.", "expected_playbook": "run-organic-social", "kind": "direct", "source": "owner hand test 18 Oct"}
+{"id": "R67", "ask": "I want to plan a campaign.", "expected_playbook": "plan-campaign", "kind": "direct", "source": "owner hand test 18 Oct"}
+{"id": "R68", "ask": "Ok I want to do the competitor research for gooseworks", "expected_playbook": "research-competitors", "kind": "direct", "source": "owner hand test 18 Oct"}
 {"id": "R69", "ask": "What do I send to this list of 40 prospects?", "expected_playbook": "write-outreach", "kind": "direct", "source": "lead-gen completion 19 Oct"}
 {"id": "R70", "ask": "Write LinkedIn connection notes for these leads", "expected_playbook": "write-outreach", "kind": "direct", "source": "lead-gen completion 19 Oct"}
 {"id": "R71", "ask": "A prospect replied 'we already use a competitor' — what do I say?", "expected_playbook": "write-outreach", "kind": "direct", "source": "lead-gen completion 19 Oct"}
@@ -77,7 +77,7 @@
 {"id": "R77", "ask": "Send these cold emails for me", "expected_playbook": "none", "kind": "edge", "source": "lead-gen completion 19 Oct", "acceptable_alternatives": ["write-outreach"], "note": "sending is not covered; write-outreach drafts, the human sends"}
 {"id": "R78", "ask": "Win back customers who cancelled their subscription last year", "expected_playbook": "email-lifecycle", "kind": "edge", "source": "lead-gen completion 19 Oct", "acceptable_alternatives": ["write-outreach"], "note": "consumer lapsed customers → email-lifecycle; churned business accounts → write-outreach"}
 {"id": "R79", "ask": "Find me leads and write my cold emails", "expected_playbook": "research-audience", "acceptable_alternatives": ["write-outreach"], "kind": "multi-step", "source": "lead-gen completion 19 Oct", "note": "list mode first; it goes on into write-outreach itself"}
-{"id": "R80", "ask": "Write content for my X account", "expected_playbook": "make-content", "acceptable_alternatives": ["run-organic-social"], "kind": "vague", "source": "hand-test 20 Oct (went to run-organic-social; Akhil redirected)", "note": "router asks 'one piece, or an ongoing plan?'; one piece → make-content"}
+{"id": "R80", "ask": "Write content for my X account", "expected_playbook": "make-content", "acceptable_alternatives": ["run-organic-social"], "kind": "vague", "source": "hand-test 20 Oct (went to run-organic-social; the owner redirected)", "note": "router asks 'one piece, or an ongoing plan?'; one piece → make-content"}
 {"id": "R81", "ask": "Write an X thread about our launch", "expected_playbook": "make-content", "kind": "direct", "source": "hand-test 20 Oct"}
 {"id": "R82", "ask": "Write a long X article on why ad creative wears out", "expected_playbook": "make-content", "kind": "direct", "source": "hand-test 20 Oct"}
 {"id": "R83", "ask": "Someone at Acme filled in our demo request form, write my reply", "expected_playbook": "write-outreach", "kind": "direct", "source": "hand-test 20 Oct", "note": "a named account a person emails → write-outreach"}

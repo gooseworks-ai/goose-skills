@@ -66,7 +66,7 @@ def check_onsets(master, cues):
 
     Over a bed that test is wrong twice. A bed has attacks of its own, and a
     guitar note 150 to 200 ms before a cue was taken for the cue arriving early
-    (Brightland clean run, 2026-10-07: all ten cues sat 7.5x to 24x above the
+    (Sunmere clean run, 2026-10-07: all ten cues sat 7.5x to 24x above the
     bed and the check still raised at 2.20 s). So an onset must clear the
     loudest thing the bed does anywhere else. The send sound swells rather than
     clicks and clears that level about 70 ms after it starts, so the late bound

@@ -48,7 +48,7 @@ Compose a `thread.json` matching the schema below, then pass it to `render.js`.
     "text": "Typed text to show with caret",
     "cursor": true,
     "streaming": false,
-    "chip": { "name": "SeatGeek" }
+    "chip": { "name": "Seatfinch" }
   }
 }
 ```
@@ -166,29 +166,29 @@ npx playwright install chromium
 | `templates/icons.js` | Inline SVG icons (hamburger, chevrons, spiral logo, mic, plus, send arrow, stop square, signal/wifi/battery, thumbs up/down) |
 | `examples/*.json` | 6 reference threads exercising every variant |
 | `examples/assets/` | Placeholder image assets used by image examples |
-| `tests/run-all.sh` | Render every example into `tests/output/` for visual review |
+| `tests/run-all.sh` | Builders only, in the goose-skills repo (installs have no `tests/`): render every example into `tests/output/` for visual review |
 
 ## Known limitations
 
 - **Light mode only.** Dark mode would require a separate theme block and is out of scope for v1.
-- **No carousel / horizontal-scroll cards.** The Apps-SDK SeatGeek reference shows a horizontal card carousel inside the assistant response; not modeled here.
+- **No carousel / horizontal-scroll cards.** The Apps-SDK ticketing-app reference shows a horizontal card carousel inside the assistant response; not modeled here.
 - **No live keyboard rendering.** The composer is the bottom pill only — no on-screen keyboard chrome, suggestion bar, or QWERTY grid. (If you need the keyboard, scale the screen down 50% and overlay a separate keyboard image.)
 - **Markdown is intentionally minimal** — no tables, no fenced code blocks with syntax highlighting, no nested lists. Add to `generate.js#renderMarkdown` if a brief requires more.
 - **Emoji rendering** depends on system fonts. Chromium on macOS ships Apple Color Emoji; on Linux ships Noto Color Emoji.
 
 ## Quality Checks
 
-Run `bash tests/run-all.sh` and open the PNGs in `tests/output/`, then confirm:
+Render each `examples/*.json` with `render.js` and open the PNGs (builders in the goose-skills repo can run `bash tests/run-all.sh`, which renders all six into `tests/output/`), then confirm:
 
 - **Every example renders without error.** All six `examples/*.json` produce an `index.html` + `screenshot.png` + `thread.json` triplet; `render.js` exits `0`.
 - **Dimensions are stable.** Each `screenshot.png` is **2250 × 4872** (the `.stage` is `750 × 1624` and `screenshot.js` captures at `deviceScaleFactor: 3`). A wrong size means the stage box or DPR changed.
 - **Light mode, white background.** Background is white, text near-black. This atom does not render dark mode.
-- **Status bar.** Time sits top-left; the signal / wifi / battery cluster sits top-right, unclipped. When `statusBar.dnd: true` (see `02-sleep-apnea-long.json`, `05-seatgeek-gpt-chip.json`) a moon glyph renders next to the time.
+- **Status bar.** Time sits top-left; the signal / wifi / battery cluster sits top-right, unclipped. When `statusBar.dnd: true` (see `02-sleep-apnea-long.json`, `05-seatfinch-gpt-chip.json`) a moon glyph renders next to the time.
 - **Header style matches the JSON.** `model-tag` shows `ChatGPT 5.1 ▾` (`01-sunscreen-image.json`, `06-short-howto.json`); `title-only` shows the plain title + right chevron (`02`, `03`, `05`); `plain-title` shows the upsell title with no chevron (`04-empty-typing.json`). The center cluster never wraps and the right icons never overlap it.
 - **User turns.** User text is a right-aligned soft-gray bubble (`#F4F4F4`, `28px` radius). A `user-image` (see `01-sunscreen-image.json`) renders the attachment right-aligned, same `28px` corners, above the text bubble.
-- **Assistant turns.** Assistant prose is left-aligned plain text with no bubble. Markdown renders: bold/italic, `##` headings, bullet and ordered lists (`06-short-howto.json`), `---` horizontal rules and the `[[cite:…]]` pill chip (`02-sleep-apnea-long.json`), an `[[icon:💡]]` inline prefix, and `title` as bold heading text (`03-poem-iphone-mac.json`, `05-seatgeek-gpt-chip.json`). `feedback: false` hides the thumbs chips.
+- **Assistant turns.** Assistant prose is left-aligned plain text with no bubble. Markdown renders: bold/italic, `##` headings, bullet and ordered lists (`06-short-howto.json`), `---` horizontal rules and the `[[cite:…]]` pill chip (`02-sleep-apnea-long.json`), an `[[icon:💡]]` inline prefix, and `title` as bold heading text (`03-poem-iphone-mac.json`, `05-seatfinch-gpt-chip.json`). `feedback: false` hides the thumbs chips.
 - **Empty state.** When `messages` is empty (`04-empty-typing.json`) the centered OpenAI spiral hero renders instead of a conversation.
-- **Composer.** Default is the full-pill (`999px`) bar with `+`, input, mic, and a round `44×44` send button. With `composer.text` set (`04-empty-typing.json`) the send button is solid black and a caret follows the typed text. With `streaming: true` (`02`, `03`) the send button shows the black stop square. With `composer.chip` (`05-seatgeek-gpt-chip.json`) the Apps-SDK GPT chip renders inside the composer above the input row.
+- **Composer.** Default is the full-pill (`999px`) bar with `+`, input, mic, and a round `44×44` send button. With `composer.text` set (`04-empty-typing.json`) the send button is solid black and a caret follows the typed text. With `streaming: true` (`02`, `03`) the send button shows the black stop square. With `composer.chip` (`05-seatfinch-gpt-chip.json`) the Apps-SDK GPT chip renders inside the composer above the input row.
 
 ## Failure Modes
 

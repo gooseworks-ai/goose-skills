@@ -14,4 +14,4 @@ Pass when the assembly runs to a valid MP4 and:
 - the instrumental bed carries with no VO, loudnormed to −16 LUFS;
 - **no paid call is made** — the hero/macro/reveal clips and the music come from the paid
   capabilities (create-image-fal / create-video-fal / create-music-elevenlabs); this assembly is
-  $0 and a re-cut reuses the existing assets.
+  free and a re-cut reuses the existing assets.

@@ -14,7 +14,7 @@ a hero-pick payoff and a branded end card. The hand, background color, test surf
 and music are the recipe's user choices; this capability only assembles the plates it is given. This capability is the **FREE, deterministic assembly** —
 the per-plate PNG→mp4 loop encode, the concat-demux, the end-card render, and the music mux.
 
-`scripts/config.example.json` is the worked example — reference only, never the default (DIBS
+`scripts/config.example.json` is the worked example — reference only, never the default (Solenne
 Beauty "Pick Your Match": a fair hand, bubblegum-pink background, cream skin-patch; ~16.6s 1080×1920
 9:16, ~24 cycle plates + finale beats + a 3s end card); `scripts/PIPELINE.md` maps every config
 block to its source step and `scripts/README.md` documents the free assembly.
@@ -29,7 +29,7 @@ mp3). Given the ordered plate PNGs + per-plate holds + the end-card hero BG + th
 the music track, `render-stopmotion-hand-swatch-cycle` loop-encodes each plate at its hold,
 concat-demuxes with hard cuts into a silent master, appends the HTML-rendered end card, and muxes the
 music under it → the master. Re-cuts (re-timed holds, a re-ordered cycle, a swapped end card) reuse
-the existing plates / track and cost **$0**.
+the existing plates / track and spend nothing.
 
 ## Contract (the free assembly)
 

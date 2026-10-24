@@ -3,7 +3,7 @@
 
 VO-FIRST is the whole design: render the VO, transcribe it to word-level timestamps, then
 re-snap every beat boundary to the nearest word ONSET so a beat's on-screen turn lands
-exactly when the VO says it. This ports the re-snap step from the Clinikally run.
+exactly when the VO says it. This ports the re-snap step from the Dermwise run.
 
 Two outputs, written into the work dir:
   - whisper/words-flat.json : [{text, start, end}, ...] (what compose.py's captions read)

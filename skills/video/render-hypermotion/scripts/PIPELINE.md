@@ -2,25 +2,25 @@
 
 The source format has **no runnable driver**: the pipeline is prose + referenced atoms +
 inline PIL/ffmpeg. This doc is the step-by-step recipe, naming the atom/tool each step
-uses. Config lives in `config.example.json`. The Soundboks reference implementations are
-`clients/soundboks/video-02-hypermotion/working/scripts/` (`gen_kinetic_v6.py`,
+uses. Config lives in `config.example.json`. The Boomcrate reference implementations live in
+that run's own `working/scripts/` folder (`gen_kinetic_v6.py`,
 `gen_endcard_v10.py`, `assemble_v10.py`) — copy + adapt them; they are not vendored here.
 
 Two PAID calls total (Seedance i2v + ElevenLabs Music). Everything else is free
 PIL/ffmpeg. Guard **both** paid calls with skip-if-exists so a re-run never re-bills.
 
-> **Worked example, not the format.** Soundboks values throughout (party energy, beach
+> **Worked example, not the format.** Boomcrate values throughout (party energy, beach
 > festival deck, dusk magenta/blue rim, 124 BPM party banger, the spec strings, orange
 > accent) are the demo's build. Energy, environment, lighting and music come from the
 > recipe's `choices` (`energy`, `environment`, `lighting`, `music`); spec callouts, logo,
 > colours and CTA come from the brand kit.
 
-Keys: `FAL_API_KEY` from the repo-root `.env`; alias `FAL_KEY=$FAL_API_KEY` (fal_client reads
-`FAL_KEY`).
+Keys: none to set. GooseWorks holds every key; the two paid calls go through the media proxy
+(the `create-video-seedance-2-fal` and `create-music-elevenlabs` atoms).
 
 ---
 
-## Phase 0 — Brand asset gathering (autonomous, $0)
+## Phase 0 — Brand asset gathering (autonomous, free)
 
 1. **Hero product PNG.** Scrape the highest-res PDP shot (Shopify: `curl -sL
    "${product_url}.json" | jq -r '.product.images[0].src'`). Real photo, NOT AI-gen. This
@@ -33,14 +33,14 @@ Keys: `FAL_API_KEY` from the repo-root `.env`; alias `FAL_KEY=$FAL_API_KEY` (fal
    open('logo.png', 'wb').write(base64.b64decode(m.group(1)))
    ```
    Pure-vector SVG (rare) → `rsvg-convert -w 2400 logo.svg -o logo.png`. Validated on
-   Soundboks → 865×135 real wordmark. → `assets/logo/`.
+   Boomcrate → 865×135 real wordmark. → `assets/logo/`.
 3. **Palette.** Count `#xxxxxx` in the homepage CSS; map the dominant accent →
    `accent_color_hex`.
 4. **Font.** Download the **static** Space Grotesk Bold (variable TTF renders as Regular in
    PIL):
    `curl -sSL -o assets/fonts/SpaceGrotesk-Bold.ttf https://raw.githubusercontent.com/floriankarsten/space-grotesk/master/fonts/ttf/static/SpaceGrotesk-Bold.ttf`
 5. Write `config.json` + `brief.md`. **GATE 1** — show the brief + 5-block Seedance prompt
-   + spec callouts + ~$5 estimate.
+   + spec callouts (GooseWorks shows the price on the card).
 
 ---
 
@@ -48,17 +48,16 @@ Keys: `FAL_API_KEY` from the repo-root `.env`; alias `FAL_KEY=$FAL_API_KEY` (fal
 
 Fire both concurrently; each behind a skip-if-exists guard.
 
-### 1a. Seedance i2v hypermotion — atom `create-video-seedance-2-fal` (~$4.54 / 15s)
+### 1a. Seedance i2v hypermotion — atom `create-video-seedance-2-fal` (paid, one 15s call)
 
 The prompt MUST carry all **5 blocks** in order (see `config.hypermotion_i2v.prompt_blocks`).
-The 5th block (ABSOLUTE CONSTRAINTS) is what stops geometry drift — Soundboks V2, run
+The 5th block (ABSOLUTE CONSTRAINTS) is what stops geometry drift — Boomcrate V2, run
 without it, morphed the speaker into a cowbell at t=8s. Rules for block 4: ONE camera move
 per beat (Seedance fails on stacked moves), 3–5 beats, first beat high-energy, last beat a
 settle.
 
 ```python
-import fal_client, os
-os.environ["FAL_KEY"] = os.environ.get("FAL_API_KEY", "")
+import fal_client, os   # paid call: the atom routes it through the media proxy
 prompt = "\n\n".join(cfg["hypermotion_i2v"]["prompt_blocks"].values())
 image_url = fal_client.upload_file(cfg["product_image"])
 if not os.path.exists("working/hypermotion-raw.mp4"):     # skip-if-exists
@@ -69,7 +68,7 @@ if not os.path.exists("working/hypermotion-raw.mp4"):     # skip-if-exists
     # download r["video"]["url"] -> working/hypermotion-raw.mp4
 ```
 
-### 1b. ElevenLabs Music — atom `create-music-elevenlabs` (~$0.45)
+### 1b. ElevenLabs Music — atom `create-music-elevenlabs` (paid)
 
 `fal-ai/elevenlabs/music`, generate at target length, `output_format: mp3_44100_192`.
 Bake the sync points into the prompt (kick at 1s for the first cut, build 10–20s, peak +
@@ -78,7 +77,7 @@ with a single rallying lyric is a feature here — no VO competes.
 
 ---
 
-## Phase 2 — Kinetic-typography cards (autonomous, $0)
+## Phase 2 — Kinetic-typography cards (autonomous, free)
 
 Render each card 1080×1920 via PIL **frame-by-frame** → PNG sequence
 (`working/kinetic-frames/<label>/f%04d.png`) → ffmpeg-encode (yuv420p, libx264) →
@@ -125,7 +124,7 @@ else:          d=t-0.70; scale=1.0+0.010*math.sin(d*1.4); x_off=int(3*math.sin(d
 
 ---
 
-## Phase 3 — Dice + intercut + mux (autonomous, $0)
+## Phase 3 — Dice + intercut + mux (autonomous, free)
 
 1. **Center-crop** the hypermotion 1:1 → 9:16:
    ```bash
@@ -169,14 +168,16 @@ else:          d=t-0.70; scale=1.0+0.010*math.sin(d*1.4); x_off=int(3*math.sin(d
 (echoes ≤1.08×); product holds identity across every segment (label sharp, no morph);
 no people/hands/text inside the hypermotion clip; end-card **real logo** sharp +
 micro-moving (not frozen); inversion flash on beat (~60%); music holds to the tail (no
-decay), aligned to cuts; audio ≈192 kbps aac. Re-render cards / re-cut for $0; only re-fire
-Seedance ($4.54) if the clip itself drifted.
+decay), aligned to cuts; audio ≈192 kbps aac. Re-render cards / re-cut for free; only re-fire
+the paid Seedance call if the clip itself drifted.
 
-## Spend (validated Soundboks V10, 2026-05-28)
+## Paid vs free (validated Boomcrate V10, 2026-05-28)
 
-| Item | Per-unit | Note |
+| Item | Paid? | Note |
 |---|---|---|
-| Seedance 2.0 i2v 15s (1080p, audio off) | $4.54 | one call, diced into 6 |
-| ElevenLabs Music 25s | $0.45 | |
-| PIL cards + ffmpeg dice/concat/mux + logo extract | $0.00 | |
-| **V1 marginal** | **~$4.99** | full V1→V10 run = $17.43 |
+| Seedance 2.0 i2v 15s (1080p, audio off) | **PAID** | one call, diced into 6 |
+| ElevenLabs Music 25s | **PAID** | |
+| PIL cards + ffmpeg dice/concat/mux + logo extract | free | |
+
+One run is the two paid calls; every extra iteration (V1→V10) re-fires them, so guard both
+with skip-if-exists. GooseWorks quotes the price.

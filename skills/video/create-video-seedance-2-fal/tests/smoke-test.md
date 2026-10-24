@@ -8,7 +8,7 @@ Steps:
 1. Read `SKILL.md` and confirm `FAL_API_KEY` (or `FAL_KEY`) is set.
 2. Run `scripts/generate.py` with the sample prompt + one portrait ref + one product ref, `--duration 4 --resolution 720p` (cheapest smoke).
 3. Confirm "[seedance-2-fal] wrote <N> bytes seed=<int>" with N > 10_000.
-4. Run the verifier references in `tests/verifier.md`.
+4. Watch the output once (the `watch` skill) and check it matches what this skill's SKILL.md says it makes.
 
 Pass/fail: pass when the MP4 exists, plays end-to-end, has audio, duration ≈ 4s, and `meta.json` records `gateway: "fal"`, `model: "bytedance/seedance-2.0/reference-to-video"`, and a numeric seed.
 

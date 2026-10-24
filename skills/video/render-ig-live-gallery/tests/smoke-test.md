@@ -1,15 +1,15 @@
 # Smoke test — render-ig-live-gallery
 
-Free, $0 check that the renderer runs and produces a valid vertical master. No paid calls.
+Free check that the renderer runs and produces a valid vertical master. No paid calls.
 
 ## Setup
 
 Point `--assets` at any dir with 5 product stills + a wordmark, and use the bundled example
-config (or your own). For a self-contained check, use the Glossier demo stills.
+config (or your own). For a self-contained check, use the Dewlark demo stills.
 
 ```bash
 DIR=skills/video/render-ig-live-gallery
-ASSETS=<dir with 5 product stills + wordmark>   # e.g. the Glossier demo brand stills
+ASSETS=<dir with 5 product stills + wordmark>   # e.g. the Dewlark demo brand stills
 ```
 
 ## 1. Stills (fastest)

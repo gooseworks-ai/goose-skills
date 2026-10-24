@@ -2,8 +2,8 @@
 
 **What this is.** The script for one behaviour eval of the `where-to-start` playbook. The runner sends the opening ask to the agent; a simulated marketer (a small model) answers any follow-up questions from the persona sheet below. The same scenario runs twice: with the marketing skills installed, and without them (baseline).
 
-- **Brand:** GooseWorks on GooseWorks **staging** (brand name "Gooseworks"). Other staging brands: Juicebox (AI recruiting search), Personal Day (acne-safe skincare).
-- **Source of the ask:** where-to-start tests/test-by-hand.md case 1 ("Help me with marketing.", early brand, thin brain), with GooseWorks facts from Akhil's 18 Oct hand tests.
+- **Brand:** GooseWorks on GooseWorks **staging** (brand name "Gooseworks"). Other staging test brands exist on the same account.
+- **Source of the ask:** where-to-start tests/test-by-hand.md case 1 ("Help me with marketing.", early brand, thin brain), with GooseWorks facts from the owner's 18 Oct hand tests.
 - **Settings:** max_turns: 6 · requires_report: false (the deliverable is a one-screen recommendation in chat)
 
 ## Brand
@@ -19,7 +19,7 @@ Help me with marketing.
 ## Persona
 
 ### Who you are
-- **Akhil, founding engineer at GooseWorks.** You do the company's marketing yourself. You are an engineer, not a marketer. You are based in India.
+- **Sam, the first engineer at GooseWorks (a fictional persona).** You do the company's marketing yourself. You are an engineer, not a marketer.
 - You type short, casual messages, often lower-case, sometimes with small typos. You don't use marketing jargon.
 
 ### What you know about GooseWorks (answer only from this)
@@ -32,7 +32,7 @@ Help me with marketing.
 - Rivals you've heard of: Pencil, AdCreative.ai, Creatify, Arcads. If asked for the full list, tell the agent to find them.
 - Tracking: sign-up events and UTMs are in place.
 - You have a few hours a week for marketing.
-- On GooseWorks staging, the brand is called **Gooseworks** (the account also has other brands like Juicebox and Personal Day). If asked which brand, it's Gooseworks.
+- On GooseWorks staging, the brand is called **Gooseworks** (the account also has other test brands). If asked which brand, it's Gooseworks.
 
 ### Always
 - **Decline every paid credit top-up or paid read:** "no paid stuff for now, use what you found free."

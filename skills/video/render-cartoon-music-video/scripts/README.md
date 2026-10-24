@@ -1,14 +1,14 @@
 # render-cartoon-music-video scripts — the FREE assembly
 
-`render-cartoon-music-video` is the **deterministic, $0 assembly stage** of the cartoon
+`render-cartoon-music-video` is the **deterministic, free assembly stage** of the cartoon
 music-video format. The paid stages (the sung song, the character lock, the N per-bar keyframes,
 the N Seedance i2v clips) are separate capabilities — `create-music-elevenlabs`,
 `create-image-fal`, `create-video-fal`. This capability spends nothing: it takes the song +
 `word-timestamps.json` + `bars.json` + one clip per bar + the brand wordmark SVG and stitches the
 finished master. Re-cuts (new caption chunking, a swapped end card, re-timed windows, a logo-bug
-toggle) reuse the existing song / keyframes / clips and cost **$0**.
+toggle) reuse the existing song / keyframes / clips and spend nothing.
 
-`config.example.json` is the worked example (Coinbase "Bet on anything", ~55s 1080×1920); its felt look,
+`config.example.json` is the worked example (Coinmesa "Bet on anything", ~55s 1080×1920); its felt look,
 character, story and song are that demo's answers to the recipe choices — never defaults).
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE assembly
 pieces that `render-cartoon-music-video` owns.

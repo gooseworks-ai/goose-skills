@@ -2,9 +2,9 @@
 
 How `config.example.json` maps to the real production steps. The free assembly (steps 3+) now ships
 as a **runnable script — `scripts/render.py`** (config-driven; ffmpeg + Pillow only; see
-`README.md` §0). The worked example (WishAstro "Saturn isn't your villain") was originally produced
-by per-project drivers (`vo.py`, `gen_images2.py`, `build_video2.py` under
-`clients/wishastro/accounts/wishastro-ig/posts/saturn-myth/working/`); `render.py` is the
+`README.md` §0). The worked example (Starwhim "Saturn isn't your villain") was originally produced
+by per-project drivers (`vo.py`, `gen_images2.py`, `build_video2.py` in that
+post's own `working/` folder); `render.py` is the
 generalized, config-driven successor to `build_video2.py`. The paid steps (VO, stills) remain the
 media capabilities.
 
@@ -68,4 +68,4 @@ is the hook + captions, added in post. Review all before step 3.
   burn (or timed PIL PNG overlays if libass is missing) is the **free** fallback to the VEED tier.
 
 Re-cuts (re-weighted windows, new hook timing, caption chunking, zoom params) reuse the existing
-VO + stills and cost **$0** — only steps 1–2 spend.
+VO + stills and spend nothing — only steps 1–2 spend.

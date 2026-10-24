@@ -33,9 +33,9 @@ deterministic** — the only paid step of the format (the music bed) is a separa
 - `end_card` — `sub`, `tagline_top`, `tagline_bottom` (bold), `cta`, `url`. Brand's own approved copy only.
 - `eyebrow` — optional top kicker held during the grid.
 
-`scripts/config.example.json` is a filled example (the Pair Eyewear "RANGE" worked example);
+`scripts/config.example.json` is a filled example (the fictional Twofold Eyewear "RANGE" worked example);
 the tile `image`/`wordmark` paths are brand inputs bound by the orchestrator at remix time.
-Its tiles, tile colours, end-card copy and music prompt are Pair's answers, not defaults.
+Its tiles, tile colours, end-card copy and music prompt are Twofold's answers, not defaults.
 
 ## Choices
 

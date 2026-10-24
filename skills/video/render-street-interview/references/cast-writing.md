@@ -8,15 +8,15 @@
 
 ## What was measured
 
-On 2026-10-13 a face detector was run over 21 generated takes across three brands (Liquid Death, Olipop, Graza) and three real street clips. The generated takes kept returning the same people:
+On 2026-10-13 a face detector was run over 21 generated takes across three brands (Grimwater, Fizzroot, Oleara) and three real street clips. The generated takes kept returning the same people:
 
 | Recurring face | Seen in |
 | --- | --- |
-| Young woman, long brown hair | five Olipop takes |
-| Young man, dark curly hair, hoodie | Olipop, Graza and Liquid Death |
-| Older man in a flat cap | Olipop, Graza and Liquid Death |
+| Young woman, long brown hair | five Fizzroot takes |
+| Young man, dark curly hair, hoodie | Fizzroot, Oleara and Grimwater |
+| Older man in a flat cap | Fizzroot, Oleara and Grimwater |
 | Grey-haired man in his fifties, dark jacket | most takes, all three brands |
-| Older woman, grey or auburn bob | Olipop and Graza |
+| Older woman, grey or auburn bob | Fizzroot and Oleara |
 
 Every generated person was white. The real clips were not. This was judged by eye on a contact sheet, not by a face-matching score.
 
@@ -75,7 +75,7 @@ A voice phrase is at most 90 characters, with no quote marks and no full stop at
 
 ## What one take showed
 
-Seed 6222 (2026-10-13, Graza, 8 seconds, fast endpoint) described both people in full and kept the settings, street and reference images of the older take it was compared with (seed 6214). It was shorter, 8 seconds against 15, with shorter lines, so compare faces and not timing. Both people came out as described: a stocky Black man with a shaved head and a greying beard, and a South Asian woman in her sixties with long grey hair. Neither is one of the recurring faces. All three lines were spoken as written.
+Seed 6222 (2026-10-13, Oleara, 8 seconds, fast endpoint) described both people in full and kept the settings, street and reference images of the older take it was compared with (seed 6214). It was shorter, 8 seconds against 15, with shorter lines, so compare faces and not timing. Both people came out as described: a stocky Black man with a shaved head and a greying beard, and a South Asian woman in her sixties with long grey hair. Neither is one of the recurring faces. All three lines were spoken as written.
 
 It also showed what a description does not cover:
 

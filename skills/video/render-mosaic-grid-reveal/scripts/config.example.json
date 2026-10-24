@@ -1,10 +1,10 @@
 {
-  "_comment": "Pair Eyewear 'RANGE' mosaic-grid-reveal — the worked example. Copy to config.json (in a dir with an assets/ folder) and edit. Canvas 1080x1920 9:16. FULL-BLEED 3x3 mosaic of REAL product tiles pops in one at a time (scatter order), clears, then the REAL brand wordmark builds line-by-line + tagline + CTA. Real DOM text/SVG only — never AI-render the wordmark or copy. Copy slots = the brand's OWN approved lines; never invent claims/customers/results. Creative fields — tiles[].image/name, tiles[].bg/ink, palette.bg, end_card copy, music.prompt — are the Pair build's answers to the recipe's choices (range, tile_look, music); never copy them as defaults.",
-  "brand_name": "Pair Eyewear",
+  "_comment": "Twofold Eyewear 'RANGE' mosaic-grid-reveal — the worked example. Copy to config.json (in a dir with an assets/ folder) and edit. Canvas 1080x1920 9:16. FULL-BLEED 3x3 mosaic of REAL product tiles pops in one at a time (scatter order), clears, then the REAL brand wordmark builds line-by-line + tagline + CTA. Real DOM text/SVG only — never AI-render the wordmark or copy. Copy slots = the brand's OWN approved lines; never invent claims/customers/results. Creative fields — tiles[].image/name, tiles[].bg/ink, palette.bg, end_card copy, music.prompt — are the Twofold build's answers to the recipe's choices (range, tile_look, music); never copy them as defaults.",
+  "brand_name": "Twofold Eyewear",
   "width": 1080,
   "height": 1920,
   "fps": 30,
-  "wordmark": "assets/pair-wordmark.svg",
+  "wordmark": "assets/twofold-wordmark.svg",
   "wordmark_viewbox": "0 0 170 92",
   "wordmark_width": 430,
   "palette": {
@@ -24,16 +24,16 @@
     { "image": "assets/4-cobalt-check.png",    "name": "Cobalt Check",          "bg": "#D2DDF1", "ink": "#37507F" },
     { "image": "assets/5-cherries.png",        "name": "Cherries",              "bg": "#F0DEDE", "ink": "#9B4340" },
     { "image": "assets/6-watermelon.png",      "name": "Watermelon",            "bg": "#D7E9D6", "ink": "#3B7A4A" },
-    { "image": "assets/7-butterflies.png",     "name": "Beautiful Butterflies", "bg": "#E3DAED", "ink": "#5B4A82" },
-    { "image": "assets/8-pride.png",           "name": "Traditional Pride",     "bg": "#ECE5D6", "ink": "#6E6448" },
+    { "image": "assets/7-butterflies.png",     "name": "Butterflies",           "bg": "#E3DAED", "ink": "#5B4A82" },
+    { "image": "assets/8-rainbow-stripe.png", "name": "Rainbow Stripe",        "bg": "#ECE5D6", "ink": "#6E6448" },
     { "image": "assets/9-sunset-palms.png",    "name": "Sunset Palms",          "bg": "#F3DEC8", "ink": "#9A6437" }
   ],
   "end_card": {
     "sub": "Eyewear",
-    "tagline_top": "One Pair.",
-    "tagline_bottom": "Infinite Possibilities.",
+    "tagline_top": "One Frame.",
+    "tagline_bottom": "Endless Looks.",
     "cta": "Shop Now",
-    "url": "paireyewear.com"
+    "url": "twofoldeyewear.example"
   },
   "music": {
     "prompt": "Light, upbeat, modern lifestyle bed for a short fashion-eyewear ad. Bright plucky marimba and soft synth mallets, gentle claps, warm and playful, clean and minimal, no vocals, no lyrics, positive and friendly, quick tempo but relaxed, boutique DTC brand feel. Kicks in immediately with no long intro.",

@@ -16,7 +16,7 @@ capability is the **FREE, deterministic assembly** — the weighted beat-sync se
 Ken-Burns render, the concat, the VO composite, the hook overlay, and the caption burn.
 
 `scripts/config.example.json` is the worked example — reference only, never the default
-(WishAstro "Saturn isn't your villain", ~31s
+(Starwhim "Saturn isn't your villain", ~31s
 1080×1920 9:16, 12 weighted Ken-Burns cuts); `scripts/PIPELINE.md` maps every config block to its
 source step and `scripts/README.md` documents the free assembly.
 
@@ -39,7 +39,7 @@ hero stills in one look pack (`create-image-fal`, Flux Pro 1.1, reused as repeat
 distributes the cuts across the VO duration by the weighted formula, Ken-Burns-renders each still,
 concats, composites the VO, fades the hook line on over the open, burns the captions, and (if
 `--endcard` is passed) appends a brand end card → the master + a poster. Re-cuts reuse the existing
-VO / stills and cost **$0**. See `scripts/README.md` §0 for the full arg contract.
+VO / stills and spend nothing. See `scripts/README.md` §0 for the full arg contract.
 
 ## Contract (the free assembly)
 

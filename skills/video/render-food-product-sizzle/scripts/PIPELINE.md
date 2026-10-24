@@ -1,7 +1,7 @@
 # Pipeline — food-product sizzle
 
 How `config.example.json` maps to the real production steps. This ships a **config + this map**, not
-a bundled runner: the worked example (Lineage Provisions "Beef Sticks Sizzle") was produced by
+a bundled runner: the worked example (Hearthline Provisions "Beef Sticks Sizzle") was produced by
 per-project scripts (`gen_keyframes` / `.hf_S0*.json`, `gen_clips_hf.sh`, `gen_music_v2.py`,
 `make_sfx.sh`, `make_end_card.py`, `build_master_v2.sh`). Drive the whole run via a control-plane
 video orchestrator, or reference those steps directly.
@@ -65,4 +65,4 @@ cue (~1.5s) and a ~180ms `tear.wav` (pink noise) at the box-open cue (~11s). Tim
   ffmpeg `drawtext` reads a raw `%` as a strftime spec.
 
 Re-cuts (new callout timing, swapped end card, re-timed SFX cues, grain-pass toggle) reuse the
-existing keyframes / clips / music and cost **$0** — only steps 1–3 spend.
+existing keyframes / clips / music and spend nothing — only steps 1–3 spend.

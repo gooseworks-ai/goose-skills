@@ -1,10 +1,10 @@
 {
-  "_note": "Worked example (Glossier). At remix time the orchestrator binds the brand's real product stills, wordmark, benefit phrases, and claim-free comments. Image paths are relative to --assets.",
-  "_comment": "Worked example (the Glossier build). Creative fields — slides[].phrase, slides[].comments, endcard.payoff, music.prompt — come from the recipe's choices (slide_story, copy_tone, music); never copy them as defaults.",
+  "_note": "Worked example (the fictional brand Dewlark). At remix time the orchestrator binds the brand's real product stills, wordmark, benefit phrases, and claim-free comments. Image paths are relative to --assets.",
+  "_comment": "Worked example (the Dewlark build). Creative fields — slides[].phrase, slides[].comments, endcard.payoff, music.prompt — come from the recipe's choices (slide_story, copy_tone, music); never copy them as defaults.",
   "width": 1080,
   "height": 1920,
   "fps": 30,
-  "username": "glossier",
+  "username": "dewlark",
   "verified": true,
   "slide_dur": 3.4,
   "endcard_dur": 3.8,
@@ -20,23 +20,23 @@
     "live_red": [237, 28, 76]
   },
   "slides": [
-    { "image": "stretch-fluid-foundation-medium3-standalone.jpg", "phrase": "Skin first,", "viewers": "8.2k",
+    { "image": "product-1-foundation.jpg", "phrase": "Skin first,", "viewers": "8.2k",
       "comments": [["mara.k", "so lightweight"], ["devon.r", "skin first, always"]] },
-    { "image": "futuredew-standalone.png", "phrase": "then a little dew,", "viewers": "9.6k",
+    { "image": "product-2-dew-serum.png", "phrase": "then a little dew,", "viewers": "9.6k",
       "comments": [["noor.b", "that glow"], ["els", "so dewy"]] },
-    { "image": "cloud-paint-soar-standalone.jpg", "phrase": "a dab of color,", "viewers": "11k",
+    { "image": "product-3-cheek-tint.jpg", "phrase": "a dab of color,", "viewers": "11k",
       "comments": [["jules", "prettiest flush"], ["tay.m", "so blendable"]] },
-    { "image": "boy-brow-standalone.jpg", "phrase": "brows in seconds,", "viewers": "12k",
+    { "image": "product-4-brow-gel.jpg", "phrase": "brows in seconds,", "viewers": "12k",
       "comments": [["remi", "fluffy brows"], ["dana.k", "brows in secs"]] },
-    { "image": "balm-dotcom-black-cherry-standalone.jpg", "phrase": "a swipe of balm —", "viewers": "13k",
+    { "image": "product-5-lip-balm.jpg", "phrase": "a swipe of balm —", "viewers": "13k",
       "comments": [["cleo", "so glossy"], ["suki", "forever fave"]] }
   ],
   "endcard": {
-    "logo": "glossier-logo-white.png",
+    "logo": "dewlark-logo-white.png",
     "logo_is_white": true,
-    "payoff": "you look good.",
-    "handle": "@glossier",
-    "cta": "shop the edit  ·  glossier.com"
+    "payoff": "glow, your way.",
+    "handle": "@dewlark",
+    "cta": "shop the edit  ·  dewlark.example"
   },
   "music": {
     "prompt": "Soft dreamy beauty-ad instrumental: airy warm synth pads, light plucky bells, a gentle uplifting build, subtle soft heartbeat kick, clean modern and aspirational, feminine and calm, no vocals. Instrumental only.",

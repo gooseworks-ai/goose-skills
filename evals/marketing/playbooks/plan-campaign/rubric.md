@@ -5,7 +5,7 @@
 - An LLM judge (Opus by default) scores every criterion **pass** or **fail** with a one-line evidence quote, once for the run with the skill and once for the baseline.
 - **A run passes only if every must-pass criterion passes.** Should-pass criteria show quality beyond the bar.
 - Criteria judge what the marketer received, not which method the agent used, so the baseline can pass too.
-- Sources: playbooks/plan-campaign/SKILL.md "Done when"; playbooks/plan-campaign/tests/test-by-hand.md Test 1 (Akhil's ask, 18 Oct); the four failure modes from the 17–18 Oct hand tests (asked before doing free work; stopped after one source; procedure over craft; chat summary instead of a document); `atoms/write-report/ATOM.md` §3.
+- Sources: playbooks/plan-campaign/SKILL.md "Done when"; playbooks/plan-campaign/tests/test-by-hand.md Test 1 (the owner's ask, 18 Oct); the four failure modes from the 17–18 Oct hand tests (asked before doing free work; stopped after one source; procedure over craft; chat summary instead of a document); `atoms/write-report/ATOM.md` §3.
 
 Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M = must, S = should, E = expert (an E line containing "(must)" counts as must).
 
@@ -35,7 +35,7 @@ Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M
 
 ## Expert criteria (from marketer review)
 
-Merged from `marketing-agent-test/results/reviews/social-plan-search-review.md` §4 (senior-marketer review, 18 Oct 2026). Items marked **(must)** fail the run when they fail. Items marked *new* need a playbook change first, so they are scored but not must-pass yet. Where these overlap the criteria above, both are kept: the judge scores each.
+Merged from goose-lab `plan/marketing-agent/reviews/2026-10-18-social-plan-search-review.md` §4 (senior-marketer review, 18 Oct 2026). Items marked **(must)** fail the run when they fail. Items marked *new* need a playbook change first, so they are scored but not must-pass yet. Where these overlap the criteria above, both are kept: the judge scores each.
 
 - **E1** — (must) Before the first question, the transcript shows the look-first reads: brand (products, prices, onboarding), existing campaigns, connected accounts, and the live pricing page.
 - **E2** — (must) The first message opens with what was found (product, prices, offer status) and asks at most 4 plain questions. None contains UTM, pixel, event, attribution, funnel rate, churn or margin.

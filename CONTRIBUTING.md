@@ -1,5 +1,11 @@
 # Contributing to goose-skills
 
+**In short**
+- One folder per skill under `skills/<family>/<slug>/`, with a `SKILL.md` and a `skill.meta.json`. Slugs never change.
+- Run `npm run ci` before you push: it runs the same checks as CI's `validate` job. Video atoms also need the atom checks below.
+- Open the PR into `dev` (staging). Promoting `dev` to `main` releases to every customer ([DEPLOYMENT.md](DEPLOYMENT.md)).
+- **Questions?** Ask the GooseWorks team: open a GitHub issue, or a draft PR into `dev` with the question in its description.
+
 ## Adding a skill
 
 **Where it goes.** One folder per skill, named by its slug:
@@ -8,34 +14,38 @@
 |---|---|---|
 | A new marketing job (a marketer's want, done end to end) | `skills/marketing/<slug>/` | A playbook: `tier: playbook`, `category: playbooks`. Read `docs/marketing/AGENTS.md` first. Prefer a new mode or output of an existing playbook over a new playbook. |
 | One step a playbook loads | `skills/marketing/<playbook>-<step>/` | `tier: atom`. Steps several playbooks share get a plain name (`claims-gate`). List it in the playbook's `requires_skills`. |
-| A video atom or format renderer | `skills/video/<slug>/` | Starts at `version: 1.0.0`; see "Video atoms" below. To ship it in a bundle, add its slug to a `packs/<pack>.json`. |
-| A change to what every install starts with | `skills/entry/<slug>/` | The six entry skills. Raise `version` in both SKILL.md and skill.meta.json; `test/entry-skills.test.js` enforces real action names, credits only, no install lines and the size budgets. |
-| Anything else | Ask first | `skills/shared/` holds only older skills something still uses; new skills don't go there. |
+| A video atom or format renderer | `skills/video/<slug>/` | Starts at `version: 1.0.0`; see "Video atoms" below. |
+| A change to what every install starts with | `skills/entry/<slug>/` | The six entry skills. Raise `version` in both SKILL.md and skill.meta.json **and** the plugin `version` in `skills/entry/.claude-plugin/plugin.json` and `.codex-plugin/plugin.json`. `test/entry-skills.test.js` enforces real action names, credits only, no install lines and the size budgets. Test on staging before it reaches `main` ([DEPLOYMENT.md](DEPLOYMENT.md#test-an-entry-skill-change-on-staging-first)). |
+| A skill two families use | Ask first | `skills/shared/` holds skills used across families (goose-graphics and the older skills listed in `retired-skills.json`). |
+
+**Every skill has a semver `version`.** Raise it on every change: patch for a fix, minor for a new option, major for a removed input or a new requirement.
 
 **Names never change.** Recipes, the GooseWorks app, routes and installed copies refer to skills by slug, so a published slug is permanent. To replace a skill, add the new one, then retire the old one in `retired-skills.json` with its `replacement` (or `null` and a `reason`).
+
+**Tests go in the skill's `tests/` folder.** They stay in this repo and are never published to an install, so a SKILL.md never tells the agent to run them. CI finds them on its own: Python tests through `pytest`, Node tests in `test/*.test.js`.
 
 **Then run:**
 
 ```bash
-node scripts/build-index.js && node scripts/validate-skills.js && node scripts/check-marketing-agent-links.js && npm test
+npm run ci
 ```
 
-Commit the regenerated `skills-index.json` with your change. Open the PR into `dev`: merging publishes to staging; promoting `dev` to `main` publishes to production ([DEPLOYMENT.md](DEPLOYMENT.md)).
+It runs what CI's `validate` job runs: validate every meta, rebuild `skills-index.json`, check that every link in every skill resolves as installed (`node scripts/check-skill-links.js`), and the Node tests. Commit the regenerated `skills-index.json` with your change. For a video skill, also run the atom checks (below) and `python3 -m pytest -q skills/video/<slug>`.
 
 **To make a marketing playbook use it,** reference it from the playbook's SKILL.md as `` the `<slug>` skill (`../<slug>/SKILL.md`) `` and list it in `requires_skills`. **To make GooseWorks route customers to it,** add its row to `skills/entry/gooseworks/routes.json` and run `node scripts/build-router.js`, which rewrites the router's tables and the Brand Growth collection's routes (CI checks they match).
 
-## Authoring SKILL.md files — prose constraints
+## Keep SKILL.md bodies free of shell
 
-The body of every `SKILL.md` is fetched at runtime and replayed verbatim into the next LLM API call. The request body passes through an upstream WAF that blocks common RCE/RFI patterns. To avoid 403s, keep the prose body free of:
+Hosted agents fetch a SKILL.md body through the GooseWorks API and send it on in their next model call, and that traffic passes a web firewall that blocks text that looks like an exploit. So in the **body** of a SKILL.md, prefer plain words to:
 
-- shell-variable forms (e.g. dollar-prefixed names, brace-expansion)
+- shell-variable forms (a dollar sign before a name, brace expansion)
 - literal absolute filesystem paths
-- backtick-wrapped shell-ish tokens
-- dependency-folder names commonly used in exploits
-- install-command keywords
-- code-host URLs
+- install commands and code-host URLs
+- names of dependency folders often used in exploits
 
-Concrete paths and shell commands belong in the install template, tool wrappers, or scripts — **not** in the SKILL.md body. When you need to refer to a location, describe it ("the project directory under the sandbox home", "the dependency folder") rather than typing the literal path or command.
+Concrete paths and commands belong in scripts, their READMEs and tool wrappers. When a body must refer to a location, describe it ("the project folder", "the dependency folder").
+
+**What is checked today:** entry skills (`test/entry-skills.test.js`: no install lines) and video atoms (`scripts/atom-lint.js`: no install or sign-in lines, no key requests). Marketing and shared skills are not linted for this yet, and a few older ones still carry install lines; don't add new ones.
 
 ## Other authoring rules
 
@@ -43,7 +53,7 @@ Concrete paths and shell commands belong in the install template, tool wrappers,
 - (Optional) Set `example_prompt` in `skill.meta.json` to a short, copyable prompt that shows the skill in action. It's surfaced in the catalog and docs; if omitted, one is generated from the description.
 - Use plain prose over code blocks where possible — the agent reads this, not a build tool.
 - Keep the body focused on agent behaviour: decision flow, non-negotiables, troubleshooting. Tool plumbing belongs elsewhere.
-- After editing a skill, rebuild the local index and run the skill validation and tests.
+- After editing a skill, run `npm run ci`.
 - The GooseWorks backend sync reads the catalog from GitHub; it does not accept a local-directory flag. To test catalog ingestion against a dev database, push a draft branch, set the backend's predefined-skills source ref to that branch, and run the forced catalog sync.
 
 ## Video atoms
@@ -51,6 +61,6 @@ Concrete paths and shell commands belong in the install template, tool wrappers,
 Video atoms are the skills under `skills/video/` whose `category` is not `composites` or `playbooks`. They hold craft: how to drive a model or tool and how to check the piece. CI runs these checks on every pull request:
 
 - **Version.** Each atom has a semver `version` in `skill.meta.json` (and the same number in any SKILL.md frontmatter `version`). A pull request that changes any file in an atom raises it: patch for a fix, minor for a new option, mode or model, major for a removed or renamed input or a new requirement. A new atom starts at `1.0.0`. Run `node scripts/check-atom-versions.js --base origin/<base branch>`.
-- **What an atom may say.** No dollar or credit amounts, no approval or spend-gate steps, no install or sign-in lines, no requests for provider keys, no AI app names, no removed action names, no retired model ids, no full copy of the billing helper, and SKILL.md under 16 KB. Old text warns; text a pull request adds fails. An atom marked `status: superseded` (replaced by a part) is skipped only when its frontmatter's `superseded_by` names published, not-withdrawn parts as `id@x.y.z` and its body opens with a one-paragraph `> **Superseded` note naming each of them. A true finding that is creative content (a mockup that draws a named app) goes in the atom's `lint_allow` with a reason. Run `node scripts/atom-lint.js --base origin/<base branch>`.
+- **What an atom may say.** No dollar or credit amounts, no approval or spend-gate steps, no install or sign-in lines, no requests for provider keys, no AI app names, no removed action names, no retired model ids, no full copy of the billing helper (`media_proxy.py`; a skill that still carries a copy keeps it byte-identical to `skills/video/media-proxy`'s, which `test/media-proxy-copies.test.js` checks), and SKILL.md under 16 KB. Old text warns; text a pull request adds fails. The old warnings were cleared on 24 Oct, so `--strict` (every finding fails) should pass. An atom marked `status: superseded` (replaced by a part) is skipped only when its frontmatter's `superseded_by` names published, not-withdrawn parts as `id@x.y.z` and its body opens with a one-paragraph `> **Superseded` note naming each of them. A true finding that is creative content (a mockup that draws a named app) goes in the atom's `lint_allow` with a reason. Run `node scripts/atom-lint.js --base origin/<base branch>`.
 - **Parts.** Published part versions under `parts/<id>/<x.y.z>/` never change, and `parts/index.json` is rebuilt with `node scripts/build-parts-index.js`. A part never carries or imports the billing helper: it orders paid pieces only through `ctx.line.order`. Run `node scripts/check-parts.js --base origin/<base branch>`.
 - **Moving approved videos to a fix.** A free part reaches approved videos at its newest patch of the same minor by itself. A paid part reaches them only when the new version's `part.json` lists the older versions in `reuses_pieces_of` (same major, same models and kit range) and orders exactly the same pieces: add the part's `tests/pieces.fixture.mjs` cases, and `parts/_tools/reuses-pieces.test.mjs` runs both versions on them and compares every paid request byte for byte. Declare it only when the fix never touches a request (a local join, say), never to skip a re-buy.

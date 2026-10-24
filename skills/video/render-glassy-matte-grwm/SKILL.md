@@ -18,7 +18,7 @@ This is the **multi-scene beauty demo**, distinct from the single-take apparel o
 (`ugc-grwm`, one Seedance reference-to-video call with native lip-sync and minimal post). Here the
 timeline is driven by a SEPARATE VO and the scenes are re-cut to its word-starts.
 
-`scripts/config.example.json` is the worked example (DIBS Beauty "5-Step Glassy Matte Routine",
+`scripts/config.example.json` is the worked example (Solenne Beauty "5-Step Glassy Matte Routine",
 ~32s 1080×1920 9:16, 12 VO-snapped cuts + 5 product cards); `scripts/PIPELINE.md` maps every
 config block to its source step and `scripts/README.md` documents the free assembly.
 
@@ -48,7 +48,7 @@ mp3; word-level Whisper timestamps set the timeline), ~7 Seedance scene clips on
 per step + the ~5 product cutouts + the music bed, `render-glassy-matte-grwm` re-cuts each clip to
 its VO word-start window, hard-concats on the cut, renders + composites the product cards on the
 product-name beats, mixes the VO over the ducked music, burns the captions, and appends the
-flat-lay end card → the master. Re-cuts reuse the existing VO / clips / cutouts and cost **$0**.
+flat-lay end card → the master. Re-cuts reuse the existing VO / clips / cutouts and spend nothing.
 
 ## Contract (the free assembly)
 

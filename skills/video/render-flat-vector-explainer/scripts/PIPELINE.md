@@ -2,11 +2,8 @@
 
 This molecule is **documentation-grade**. Rather than re-implement a 14-scene Remotion
 app here, it maps every `config.json` field to the **real, runnable script** that
-produced the worked example. The executable reference is the source project:
-
-```
-clients/spoiled-child/video-11-routine-broken/
-```
+produced the worked example. The executable reference is the source project's own folder (the
+run that made the demo).
 
 Its `HOW_TO.md` + `LEARNINGS.md` are the authoritative v3 recipe (Kling i2v + Remotion
 overlay). Run the pipeline there (or port these scripts into a new brand's project

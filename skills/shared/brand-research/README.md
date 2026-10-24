@@ -19,8 +19,8 @@ Paste into Claude Code (or any agent that can run shell + read files):
 
 ```
 Read ./gooseworks-ads-video/skills/templates/brand-research/SKILL.md and use it to
-research Liquid Death (product: Sparkling Water, https://liquiddeath.com) into
-./liquid-death. Research-only — no existing ads, skip image generation.
+research Oatly (product: Oat Milk, https://www.oatly.com) into
+./oatly. Research-only — no existing ads, skip image generation.
 
 Before starting:
   1. cd into ./gooseworks-ads-video/skills/templates/brand-research

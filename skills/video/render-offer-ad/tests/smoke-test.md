@@ -1,8 +1,8 @@
 # Smoke test — render-offer-ad
 
 Verifies the free, deterministic Remotion assembly end-to-end. No paid calls. Needs:
-**Node.js ≥18** and the bundled Remotion project's deps (`cd project && npm install` —
-`render.py` auto-runs this if `node_modules` is absent), plus **ffmpeg** on PATH for the
+**Node.js ≥18** and the bundled Remotion project's deps (the kit provides them;
+`render.py` sets up `project/` if `node_modules` is absent), plus **ffmpeg** on PATH for the
 1:1 crop. If node/Remotion aren't available, do the validation-only Phase B (config
 binding + render-command wiring) and NOTE that a full render needs node/Remotion installed.
 

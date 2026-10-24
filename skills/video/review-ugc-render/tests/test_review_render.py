@@ -79,9 +79,9 @@ def test_no_script_is_advisory_pass():
 
 
 def test_brand_name_misvoicing_flagged_high():
-    # Classic Seedance brand mis-voicing (documented: Hume→Hune, Alitu→al-too).
-    script = "Hume makes the band that reads your mood"
-    heard = "Hune makes the band that reads your mood"
+    # Classic Seedance brand mis-voicing (documented: Brume→Brune, Avitu→av-too).
+    script = "Brume makes the band that reads your mood"
+    heard = "Brune makes the band that reads your mood"
     v = review_transcript(script, heard)
     assert not v.passed
     assert v.issues[0].severity == "high"
@@ -89,7 +89,7 @@ def test_brand_name_misvoicing_flagged_high():
 
 # ── QA-71 audit fixture table (evidence/A07-audio-creator.md) ──────────────
 # (script, heard, kwargs, expected verdict). Before this change every "True" row FAILED
-# and the Hume→Hune row PASSED.
+# and the Brume→Brune row PASSED.
 AUDIT_CASES = [
     ("Take 5mg daily", "Take five milligrams daily", {}, True),
     ("Visit braxleybands.com today", "Visit braxleybands dot com today", {}, True),
@@ -97,8 +97,8 @@ AUDIT_CASES = [
     ("Get 30% off now", "Get thirty percent off now", {}, True),
     ("Don't miss it", "Do not miss it", {}, True),
     ("Meet Braxleybands today", "Meet Braxley Bands today", {"brand_terms": ["Braxleybands"]}, True),
-    ("Meet Drinkag1 now", "Meet drink AG1 now", {"brand_terms": ["Drinkag1"]}, True),
-    ("Hume makes the band", "Hune makes the band", {"brand_terms": ["Hume"]}, False),
+    ("Meet Drinktg1 now", "Meet drink TG1 now", {"brand_terms": ["Drinktg1"]}, True),
+    ("Brume makes the band", "Brune makes the band", {"brand_terms": ["Brume"]}, False),
     ("It costs 49 dollars", "It costs 59 dollars", {}, False),
     ("Visit braxleybands.com today", "Visit braxley bands dot com today", {}, True),
     ("Our bands never slip", "Our bands slip", {}, False),
@@ -199,7 +199,7 @@ def test_urls():
         ("Visit www.example.com today", "Visit www dot example dot com today", {}, True),
         ("Visit www.example.com today", "Visit example dot com today", {}, True),
         ("Visit https://example.com/shop", "Visit example dot com slash shop", {}, True),
-        ("Try juicebox.ai", "Try juicebox dot a i", {}, True),
+        ("Try talentloop.ai", "Try talentloop dot a i", {}, True),
     ])
 
 
@@ -248,7 +248,7 @@ def test_fused_and_split_words_are_equal():
         ("Meet Braxleybands today", "Meet Braxley Bands today", {}, True),
         ("Try Gooseworks today", "Try goose works today", {}, True),
         ("Try Goose Works today", "Try Gooseworks today", {}, True),
-        ("Meet Drinkag1 now", "Meet drink AG1 now", {}, True),
+        ("Meet Drinktg1 now", "Meet drink TG1 now", {}, True),
     ])
 
 
@@ -260,16 +260,16 @@ def test_fusion_is_exact_not_fuzzy():
 
 
 # ── Brand terms ─────────────────────────────────────────────────────────────
-def test_brand_term_is_not_stripped_hume_hune_fails():
-    # Before QA-71 the fuzzy brand strip removed "Hune" and this PASSED with ratio 1.00.
-    v = review_transcript("Hume makes the band", "Hune makes the band", brand_terms=["Hume"])
+def test_brand_term_is_not_stripped_brume_brune_fails():
+    # Before QA-71 the fuzzy brand strip removed "Brune" and this PASSED with ratio 1.00.
+    v = review_transcript("Brume makes the band", "Brune makes the band", brand_terms=["Brume"])
     assert not v.passed
     assert _high(v) and "brand" in _high(v)[0].note
 
 
 def test_dropped_brand_fails_high():
-    v = review_transcript("Hume makes the band that reads your mood every single day",
-                          "makes the band that reads your mood every single day", brand_terms=["Hume"])
+    v = review_transcript("Brume makes the band that reads your mood every single day",
+                          "makes the band that reads your mood every single day", brand_terms=["Brume"])
     assert not v.passed and _high(v)
 
 
@@ -279,27 +279,27 @@ def test_brand_term_fused_split_forms_pass():
 
 
 # ── Confirmed aliases ───────────────────────────────────────────────────────
-def test_ag1_alias_passes_only_when_confirmed():
-    script = "Meet AG1 now"
-    # Not confirmed: a spelled-out "A G one" is not assumed, even with --brand-term.
-    assert not review_transcript(script, "Meet A G one now").passed
-    assert not review_transcript(script, "Meet A G one now", brand_terms=["AG1"]).passed
-    confirmed = {"aliases": [("AG1", "A G one")]}
-    for heard in ["Meet AG1 now", "Meet AG one now", "Meet A G 1 now", "Meet A.G. one now", "Meet A G one now"]:
+def test_tg1_alias_passes_only_when_confirmed():
+    script = "Meet TG1 now"
+    # Not confirmed: a spelled-out "T G one" is not assumed, even with --brand-term.
+    assert not review_transcript(script, "Meet T G one now").passed
+    assert not review_transcript(script, "Meet T G one now", brand_terms=["TG1"]).passed
+    confirmed = {"aliases": [("TG1", "T G one")]}
+    for heard in ["Meet TG1 now", "Meet TG one now", "Meet T G 1 now", "Meet T.G. one now", "Meet T G one now"]:
         v = review_transcript(script, heard, **confirmed)
         assert v.passed, (heard, v.issues)
 
 
 def test_alias_does_not_hide_a_wrong_number_or_misvoice():
-    confirmed = {"aliases": {"AG1": "A G one"}}
-    assert not review_transcript("Meet AG1 now", "Meet A G two now", **confirmed).passed
-    assert not review_transcript("Meet AG1 now", "Meet A B one now", **confirmed).passed
+    confirmed = {"aliases": {"TG1": "T G one"}}
+    assert not review_transcript("Meet TG1 now", "Meet T G two now", **confirmed).passed
+    assert not review_transcript("Meet TG1 now", "Meet T B one now", **confirmed).passed
 
 
 def test_alias_cannot_rewrite_quantities_units_or_negations():
-    for bad in [{"AG1": "A G two"}, {"AG1": "A G one not"}, {"Decagon": "five"}, {"Decagon": "5"},
-                {"Gold": "five milligrams"}, {"Hume": "not"}, {"Nope": "no"},
-                [("A", "same thing"), ("B", "same thing")], [("AG1", "")]]:
+    for bad in [{"TG1": "T G two"}, {"TG1": "T G one not"}, {"Decagon": "five"}, {"Decagon": "5"},
+                {"Gold": "five milligrams"}, {"Brume": "not"}, {"Nope": "no"},
+                [("A", "same thing"), ("B", "same thing")], [("TG1", "")]]:
         try:
             build_aliases(bad)
         except ValueError:
@@ -309,21 +309,21 @@ def test_alias_cannot_rewrite_quantities_units_or_negations():
 
 def test_saved_pronunciations_with_number_like_syllables_are_accepted():
     # Review P1-1: real saved pronunciations sound like numbers/negations; they must not error.
-    good = [("Notion", "NO-shun"), ("OneSkin", "one skin"), ("Tenzing", "ten-zing"),
-            ("Sevenly", "seven-lee"), ("Nomad", "no-mad"), ("Norwex", "nor-wex"),
-            ("Fourthwall", "fourth wall"), ("Wonderbly", "one-der-blee"), ("AG1", "A G one")]
+    good = [("Nosha", "NO-shuh"), ("OneGlow", "one glow"), ("Tenzeal", "ten-zeal"),
+            ("Sevenmoor", "seven-moor"), ("Nomad", "no-mad"), ("Norvale", "nor-vale"),
+            ("Fourthgate", "fourth gate"), ("Wonderloom", "one-der-loom"), ("TG1", "T G one")]
     build_aliases(good)
     _check([
-        ("OneSkin changed my skin", "One Skin changed my skin", {"aliases": [("OneSkin", "one skin")]}, True),
-        ("Tenzing keeps me going", "Ten zing keeps me going", {"aliases": [("Tenzing", "ten-zing")]}, True),
+        ("OneGlow changed my skin", "One Glow changed my skin", {"aliases": [("OneGlow", "one glow")]}, True),
+        ("Tenzeal keeps me going", "Ten zeal keeps me going", {"aliases": [("Tenzeal", "ten-zeal")]}, True),
         # the term is not even in the script: still no error
-        ("Our gummies help you sleep", "Our gummies help you sleep", {"aliases": [("Notion", "NO-shun")]}, True),
+        ("Our gummies help you sleep", "Our gummies help you sleep", {"aliases": [("Nosha", "NO-shuh")]}, True),
     ])
 
 
 def test_alias_cli_and_pronunciations_file_parsing():
-    assert parse_alias_arg("AG1=A G one") == ("AG1", "A G one")
-    for bad in ["AG1", "=A G one", "AG1="]:
+    assert parse_alias_arg("TG1=T G one") == ("TG1", "T G one")
+    for bad in ["TG1", "=T G one", "TG1="]:
         try:
             parse_alias_arg(bad)
         except ValueError:
@@ -333,13 +333,13 @@ def test_alias_cli_and_pronunciations_file_parsing():
         path = os.path.join(td, "pronunciations.json")
         with open(path, "w") as fh:
             json.dump({"brand_id": "b1", "basis": "fresh user-authored brand learnings read",
-                       "pronunciations": [{"term": "AG1", "say_as": "A G one", "fact_id": "f1"}]}, fh)
+                       "pronunciations": [{"term": "TG1", "say_as": "T G one", "fact_id": "f1"}]}, fh)
         pairs = load_pronunciations(path)
-    assert pairs == [("AG1", "A G one")]
-    v = review_transcript("Meet AG1 now", "Meet A G one now", aliases=pairs)
-    assert v.passed and v.aliases == [{"term": "AG1", "say_as": "A G one"}]
+    assert pairs == [("TG1", "T G one")]
+    v = review_transcript("Meet TG1 now", "Meet T G one now", aliases=pairs)
+    assert v.passed and v.aliases == [{"term": "TG1", "say_as": "T G one"}]
     # a confirmed term is also a brand term: mis-voicing it is HIGH
-    v = review_transcript("Meet AG1 now", "Meet A G now", aliases=pairs)
+    v = review_transcript("Meet TG1 now", "Meet T G now", aliases=pairs)
     assert not v.passed and _high(v)
 
 
@@ -383,7 +383,7 @@ def test_cli_style_brand_terms_accept_spoken_form_script():
         ("Try Acme today", "Try ak-mee today", terms, True),
     ])
     # ...but a mis-voicing whose heard word is not a declared term still fails HIGH
-    v = review_transcript("Hume makes the band", "Hune makes the band", brand_terms=["Hume", "hyoom"])
+    v = review_transcript("Brume makes the band", "Brune makes the band", brand_terms=["Brume", "broom"])
     assert not v.passed and _high(v)
     v = review_transcript("Try ak-mee today", "Try ak-moo today", **terms)
     assert not v.passed and _high(v)
@@ -405,7 +405,7 @@ def test_number_words_join_into_words():
     _check([
         ("Every one of them works", "Everyone of them works", {}, True),
         ("I need someone now", "I need some one now", {}, True),
-        ("OneSkin changed my skin", "One Skin changed my skin", {}, True),
+        ("OneGlow changed my skin", "One Glow changed my skin", {}, True),
     ])
 
 
@@ -425,12 +425,12 @@ def test_more_number_forms():
     assert not v.passed and _high(v)
 
 
-def test_ag1_without_alias_written_forms():
-    # Whisper writing "AG one" or "A.G. one" for AG1 passes without an alias; spaced letters do not.
+def test_tg1_without_alias_written_forms():
+    # Whisper writing "TG one" or "T.G. one" for TG1 passes without an alias; spaced letters do not.
     _check([
-        ("Drink AG1 daily", "Drink AG one daily", {}, True),
-        ("Drink AG1 daily", "Drink A.G. one daily", {}, True),
-        ("Drink AG1 daily", "Drink A G one daily", {}, False),
+        ("Drink TG1 daily", "Drink TG one daily", {}, True),
+        ("Drink TG1 daily", "Drink T.G. one daily", {}, True),
+        ("Drink TG1 daily", "Drink T G one daily", {}, False),
     ])
 
 
@@ -453,9 +453,9 @@ def test_brand_term_swap_rule_does_not_hide_wrong_numbers_or_names():
     _fails_high([
         ("Open 7 days a week", "Open 11 days a week", {"brand_terms": ["7-Eleven"]}),
         ("The Pod 4 cools your bed", "The Pod 5 cools your bed", {"brand_terms": ["Pod 4", "Pod 5"]}),
-        ("Hims is made for men", "Hers is made for men", {"brand_terms": ["Hims & Hers"]}),
-        ("Hims is made for men", "Hers is made for men", {"brand_terms": ["Hims", "Hers"]}),
-        ("Meet the Hume Body Pod", "Meet the Hume Band", {"brand_terms": ["Hume", "Hume Band", "Hume Body Pod"]}),
+        ("Hale is made for men", "Hart is made for men", {"brand_terms": ["Hale & Hart"]}),
+        ("Hale is made for men", "Hart is made for men", {"brand_terms": ["Hale", "Hart"]}),
+        ("Meet the Brume Body Pod", "Meet the Brume Band", {"brand_terms": ["Brume", "Brume Band", "Brume Body Pod"]}),
         ("Try Acme today", "Try ak today", {"brand_terms": ["Acme", "ak", "mee"]}),
     ])
     # common words in a declared term are not "the same brand"
@@ -494,18 +494,18 @@ def test_written_digits_never_join():
 
 
 def test_spelled_number_does_not_join_a_single_letter():
-    _fails_high([("Drink A G one daily", "Drink a gone daily", {})])
+    _fails_high([("Drink T G one daily", "Drink t gone daily", {})])
 
 
 def test_alias_may_not_add_a_strong_negation():
-    for bad in [("Hume", "Hume not"), ("Hume", "never Hume"), ("Lux", "without lux"),
+    for bad in [("Brume", "Brume not"), ("Brume", "never Brume"), ("Lux", "without lux"),
                 ("Nonea", "none a"), ("Nothingbut", "nothing but"), ("Nobodee", "nobody")]:
         try:
             build_aliases([bad])
         except ValueError:
             continue
         raise AssertionError(f"alias {bad!r} should be rejected")
-    build_aliases([("Nomad", "no mad"), ("Norwex", "nor-wex")])   # "no"/"nor" are fine as syllables
+    build_aliases([("Nomad", "no mad"), ("Norvale", "nor-vale")])   # "no"/"nor" are fine as syllables
     _passes_long([("Nomad bags last", "No mad bags last", {"aliases": {"Nomad": "no mad"}})])
 
 
@@ -571,15 +571,15 @@ def _run_cli(transcript, *extra):
 def test_cli_pass_fail_and_error_exit_codes():
     code, verdict, _ = _run_cli("Take five milligrams daily", "--script", "Take 5mg daily")
     assert code == 0 and verdict["passed"]
-    code, verdict, _ = _run_cli("Hune makes the band", "--script", "Hume makes the band", "--brand-term", "Hume")
+    code, verdict, _ = _run_cli("Brune makes the band", "--script", "Brume makes the band", "--brand-term", "Brume")
     assert code == 2 and not verdict["passed"]
-    assert verdict["issues"][0]["severity"] == "high" and verdict["issues"][0]["heard_text"] == "Hune"
-    code, verdict, _ = _run_cli("Meet A G one now", "--script", "Meet AG1 now", "--alias", "AG1=A G one")
-    assert code == 0 and verdict["aliases"] == [{"term": "AG1", "say_as": "A G one"}]
+    assert verdict["issues"][0]["severity"] == "high" and verdict["issues"][0]["heard_text"] == "Brune"
+    code, verdict, _ = _run_cli("Meet T G one now", "--script", "Meet TG1 now", "--alias", "TG1=T G one")
+    assert code == 0 and verdict["aliases"] == [{"term": "TG1", "say_as": "T G one"}]
 
 
 def test_cli_bad_alias_errors_before_transcribing():
-    code, verdict, calls = _run_cli("anything", "--script", "Meet AG1 now", "--alias", "AG1=A G two")
+    code, verdict, calls = _run_cli("anything", "--script", "Meet TG1 now", "--alias", "TG1=T G two")
     assert code == 3 and verdict is None and not calls
     code, _, calls = _run_cli("anything", "--script", "x", "--pronunciations", "/nonexistent/p.json")
     assert code == 3 and not calls
@@ -594,11 +594,11 @@ def test_cli_unusable_saved_pronunciation_is_skipped_not_fatal():
         with open(path, "w") as fh:
             json.dump({"name": "Acme", "pronunciations": [
                 {"term": "Decagon", "say_as": "five"},            # unusable: skipped with a warning
-                {"term": "OneSkin", "say_as": "one skin", "learning_id": "1"}]}, fh)
-        code, verdict, calls = _run_cli("One Skin changed my skin", "--script", "OneSkin changed my skin",
+                {"term": "OneGlow", "say_as": "one glow", "learning_id": "1"}]}, fh)
+        code, verdict, calls = _run_cli("One Glow changed my skin", "--script", "OneGlow changed my skin",
                                         "--pronunciations", path)
     assert code == 0 and calls, verdict
-    assert verdict["aliases"] == [{"term": "OneSkin", "say_as": "one skin"}]
+    assert verdict["aliases"] == [{"term": "OneGlow", "say_as": "one glow"}]
 
 
 

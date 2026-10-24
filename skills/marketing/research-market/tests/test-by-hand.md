@@ -17,15 +17,15 @@ Fail (20 Oct hand test): "Do this first" before the reader knows what was resear
 
 Fail: questions before the report; a report about rivals' complaints instead of the market; no market decision or no bottom-up size; buyer groups invented here that contradict research-audience's buyer groups without saying so; a report saved only on the server; ids or jargon; a brand watch that sends a full report when nothing happened.
 
-**The 18 Oct hand test (before this rebuild)** turned into rival research, lost the brand's own Product Hunt comments when a worker stalled on a browser prompt for 52 minutes, used the website's prices over the brain's, and produced a report full of ids and agent terms. See `critique.md`.
+**The 18 Oct hand test (before this rebuild)** turned into rival research, lost the brand's own Product Hunt comments when a worker stalled on a browser prompt for 52 minutes, used the website's prices over the brain's, and produced a report full of ids and agent terms.
 
-## Staging run — 2026-10-16 (GooseWorks staging, brand "Personal Day", acne-safe skincare)
+## Staging run — 2026-10-16 (GooseWorks staging, brand "Clearday", acne-safe skincare)
 
 Ran every free step up to the first paid call. Nothing paid was called.
 
 | Step | Call | What came back |
 |---|---|---|
-| Connection | `brand_read` (list) | 8 brands; Personal Day `0e5b2fb0…`, coworker `9d554b73…` |
+| Connection | `brand_read` (list) | 8 brands; Clearday `0e5b2fb0…`, coworker `9d554b73…` |
 | Brain read | `brand_read` sections summary, competitors, learnings, onboarding, accounts, sources | 1 learning (a video-script "dont"); onboarding profile mostly empty (role, ad spend, goals missing); saved sources = organic_social (own IG/TikTok + 5 rivals), meta_ads (own + 5 rivals), google_ads (own). **No review source** (no Trustpilot) saved. |
 | Evidence | `knowledge_search` "customer reviews pains objections what buyers say" | Only 2 hits: an AI-generated "what customers are saying" box from a Google ad page (context, not quotable) and a site metric "4.9 out of 5 stars, 234 reviews". → The bank must be built from public sources; the brain has almost no verbatim customer evidence. |
 | Competitors | `competitor_read` + `view: "suggestions"` | 5 tracked (Paula's Choice, The Ordinary, CLEARSTEM, CeraVe, Prequel) with dossiers; 5 suggestions (Skinfix, Naturium, Sofie Pavitt Face CONFIRMED pages; La Roche-Posay, Topicals UNSURE). |
@@ -33,7 +33,7 @@ Ran every free step up to the first paid call. Nothing paid was called.
 | Previous run | `file_list` coworker workspace | Only `agent-config/` — first run, no previous bank. |
 | Write path | `file_write` → `media_upload` (scope brand, kind document, source workspace) → `knowledge_import` → `job_get` knowledge_ingest → `knowledge_search` document | Tested on the QA brand "MCP Video QA Alpha" with a one-row test bank: import `ready` in ~10 s, 1 chunk, found by search; free. `media_upload` with source `bytes` **rejects markdown** (images/audio/video only) → the atom uses the workspace source. Deleting the media asset (`media_update` delete) removed its knowledge too; test file and media cleaned up. |
 
-**First paid step (not run):** the pull plan would have been — Reddit `/v1/reddit/search` for "personal day skincare", "acne safe moisturizer", "hypochlorous spray" (1 page each); Reddit `/v1/reddit/post/comments` on the top 5 threads; TikTok `/v1/tiktok/search/keyword` "personal day skincare review" + `/v1/tiktok/video/comments` on the top 5; competitor product-page reviews by browser (free). No ScrapeCreators price on record → the run would ask one yes for a single probe (the Reddit search), keep its results, show its real charge, then ask for the stage A total (and later a stage B total for comments).
+**First paid step (not run):** the pull plan would have been — Reddit `/v1/reddit/search` for "Clearday skincare", "acne safe moisturizer", "hypochlorous spray" (1 page each); Reddit `/v1/reddit/post/comments` on the top 5 threads; TikTok `/v1/tiktok/search/keyword` "Clearday skincare review" + `/v1/tiktok/video/comments` on the top 5; competitor product-page reviews by browser (free). No ScrapeCreators price on record → the run would ask one yes for a single probe (the Reddit search), keep its results, show its real charge, then ask for the stage A total (and later a stage B total for comments).
 
 ## 22 October — positioning acceptance (GOOSE-4058)
 

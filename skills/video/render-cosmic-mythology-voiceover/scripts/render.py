@@ -3,7 +3,7 @@
 
 Given the atempo VO, the stills, and the bound recipe config, this produces the 1080x1920 master:
 weighted beat-sync sequencing -> Ken-Burns per still -> concat -> VO composite -> hook overlay ->
-caption burn (-> optional end card). No paid calls, no API keys. $0. A re-cut reuses the same VO +
+caption burn (-> optional end card). No paid calls, no API keys. A re-cut reuses the same VO +
 stills.
 
   render.py --config config.json --vo working/vo2/vo_atempo.mp3 --stills-dir working/stills \

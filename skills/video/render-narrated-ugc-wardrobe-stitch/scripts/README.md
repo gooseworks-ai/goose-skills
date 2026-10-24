@@ -1,15 +1,15 @@
 # render-narrated-ugc-wardrobe-stitch scripts — the FREE assembly
 
-`render-narrated-ugc-wardrobe-stitch` is the **deterministic, $0 assembly stage** of the
+`render-narrated-ugc-wardrobe-stitch` is the **deterministic, free assembly stage** of the
 narrated-UGC "stitch reply" format. The paid stages (the spoken VO, the creator lock, the ~5
 wardrobe edits + 3 world wides, the ~30 per-cut start-frames, the ~30 Veo/Seedance i2v clips) are
 separate capabilities — `create-vo-elevenlabs`, `create-image-gpt-image-fal`, `create-image-fal`,
 `create-video-fal`. This capability spends nothing — it takes the VO + `vo-final.words.json` +
 one clip per cut + a Playwright landing-page PNG + the brand end-card PNG and stitches the
 finished master. Re-cuts (new caption timing, re-timed windows, an end-card swap) reuse the
-existing VO / start-frames / clips and cost **$0**.
+existing VO / start-frames / clips and spend nothing.
 
-`config.example.json` is one worked example (Bioma "Do NOT buy Bioma Probiotics", 1080×1920; the
+`config.example.json` is one worked example (Gutwise "Do NOT buy Gutwise Probiotics", 1080×1920; the
 original run's master was ~37 s).
 Its creator, voice, hook angle, worlds and music bed are the demo's answers to the recipe's
 `choices` — never copy them as defaults.
@@ -21,7 +21,7 @@ This package ships no scripts of its own. The assembly runs on `montage.py` from
 `stitch-videos-ffmpeg` atom. This package lists that atom in `requires_skills`, so it installs
 alongside: after `gooseworks fetch render-narrated-ugc-wardrobe-stitch` the helper is at
 `/tmp/gooseworks-scripts/stitch-videos-ffmpeg/scripts/montage.py`. It needs python3 and ffmpeg
-(plus Pillow for captions when the ffmpeg has no libass: `python3 -m pip install pillow`). The full
+(plus Pillow for captions when the ffmpeg has no libass; the kit provides it). The full
 spec format is in `stitch-videos-ffmpeg/SKILL.md`.
 
 ```bash
@@ -101,7 +101,7 @@ lands on the held reveal beat. An i2v clip shorter than its window by more than 
 
 Capsule macro, unboxing, and a landing-page scroll break up the talking-head cuts the way a real
 stitch reply does. The landing-page scroll is FFmpeg **zoompan** over a Playwright-rendered PNG (the
-Bioma run rendered `landing-page.png` at 2160×3840 and zoomed wide → best-value card → order button)
+Gutwise run rendered `landing-page.png` at 2160×3840 and zoomed wide → best-value card → order button)
 — it is **not** an i2v clip, because i2v hallucinates the UI. In `montage.json` each scroll cut is a
 still with a `pan` (window centre `x`/`y` and `zoom`, from → to). The capsule/unboxing composites
 come from the paid start-frame stage grounded on the real product hero.
@@ -113,7 +113,7 @@ simpler free version from `vo-final.words.json` with `captions.words` and `per: 
 time, each held until the next, in one colour (`captions.style.color`, e.g. `#FFE800`) with a dark
 outline. It does not highlight the active word inside a phrase, and `captions.base_color` is not
 used. For VEED's exact look, burn the captions in VEED instead. Re-spell brand tokens Whisper mishears against the locked script with
-`captions.respell` (Bioma demo: "synbiotic" over "symbiotic"; kept "I'ma" verbatim) — never edit the
+`captions.respell` (Gutwise demo: "synbiotic" over "symbiotic"; kept "I'ma" verbatim) — never edit the
 script to match Whisper. Captions stop with the last word, so they are suppressed over the end card.
 The helper draws captions with Pillow when it is installed and with libass otherwise, so the host
 ffmpeg does not need libass.

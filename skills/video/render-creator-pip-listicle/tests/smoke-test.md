@@ -29,5 +29,5 @@ Pass when the assembly runs to a valid MP4 and:
 - **no paid call is made in the composite/stitch stage** — the creator anchor comes from
   `create-image-fal` (Seedream v5 Pro, `bytedance/seedream/v5/pro/text-to-image`, no `fal-ai/`
   prefix) and the N native clips from `create-video-fal` (Seedance 2.0,
-  `bytedance/seedance-2.0/reference-to-video`); this assembly is $0, and a re-cut reuses the existing
+  `bytedance/seedance-2.0/reference-to-video`); this assembly is free, and a re-cut reuses the existing
   native clips + overlays.

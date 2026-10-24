@@ -13,12 +13,12 @@ VO (voice + tone are the caller's choice; the demo used a calm-authority expert)
 **punch** line + a static brand **end card**.
 
 Every on-screen word is a **deterministic HTML hyperframe** — **no AI image/video gen, no
-b-roll, no character**. Visuals cost **$0**. The only metered spend is upstream (VO +
+b-roll, no character**. Visuals are **free** (no paid calls). The only metered spend is upstream (VO +
 Whisper word-timestamps + an optional music bed), gated to its own capabilities. This
 capability OWNS the whole FREE assembly: beat-snap → render → captions → mix → burn →
 master. Iterate the cut for free; re-roll only the offending paid audio beat.
 
-It ports the validated build from the Clinikally "acne myths" run — brand-neutralised,
+It ports the validated build from the Dermwise "acne myths" run — brand-neutralised,
 config-driven, and portable (no `/Users`, no `clients/`; everything via `--config` +
 `--work-dir`).
 
@@ -50,7 +50,7 @@ its `role`, `duration`, and its copy; ONE role template renders any pair.
 - `scripts/compose.py` — the assembler: concat the beats → mix VO + optional music (music
   −20 dB, `amix normalize=0`, ~0.8s tail fade) → burn the `.ass` LAST → master mp4.
 - `scripts/config.example.json` — the shape of the brand `config` the recipe binds (the
-  brand-neutralised Clinikally values as a worked reference).
+  brand-neutralised Dermwise values as a worked reference).
 - `scripts/hyperframes/` — the bundled hyperframe scaffold: `_shared.css` (palette-tokened
   tokens + card/tag/fact/pill/chain type), `_shared.js` (the `initRenderer` /
   `springScale` / `buildLineStrikes` + `strikeLines` per-line-strike / `popIn` /
@@ -74,7 +74,7 @@ duration, captions, cues{...}}` plus the role's copy:
 
 The recipe's `myth_fact_pairs`, `hook_line`, `turn_slate`, `punch_line`, `palette`,
 `end_card_png`, and optional `actives_or_proof` map onto these beats 1:1. See
-`config.example.json` (a worked example — the Clinikally acne build; its copy and palette
+`config.example.json` (a worked example — the Dermwise acne build; its copy and palette
 are that brand's, never defaults).
 
 ## Choices
@@ -115,8 +115,8 @@ The palette is a brand fact (brand kit), not a choice.
 
 ## Requires
 
-- **Python 3** + **Playwright chromium** (`pip install playwright && playwright install
-  chromium`) for the frame-exact hyperframe render, and **ffmpeg/ffprobe** on PATH. If
+- **Python 3** + **Playwright with Chromium** (the kit provides it) for the frame-exact
+  hyperframe render, and **ffmpeg/ffprobe** on PATH. If
   Playwright is unavailable, `compose.py` + `make_captions.py` (the concat / mix / caption
   path) still run; only `render_beats.py` needs the browser.
 - `watch` (QC the final master — the red strike crosses the vertical MIDDLE of EVERY wrapped

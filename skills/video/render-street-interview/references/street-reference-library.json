@@ -3,7 +3,7 @@
   "summary": "Source leads and compact observations. A seed snippet is not sufficient ad-writing context: inspect the complete commercial clip and keep full/private transcripts project-scoped.",
   "references": [
     {
-      "id": "gainful-street-1",
+      "id": "proteva-street-1",
       "format": "street-interview",
       "dialogue_mode": "street-interview",
       "execution_modes": [
@@ -16,13 +16,12 @@
       "buying_contexts": [
         "product-discovery"
       ],
-      "brand_id": "gainful",
+      "brand_id": "proteva",
       "commercial": true,
       "origin": "seed",
       "observed": true,
       "observed_scope": "transcript",
-      "source": "clients/gainful/existing-ads/street-interview-1.mp4",
-      "source_url": "https://www.facebook.com/ads/library/?view_all_page_id=510816675756087",
+      "source": "assets/reference-ads/proteva-street-1.mp4",
       "asset_sha256": "49a2df5ec349ff722b113897eddefa80c833d66d6829dfee39911feae8f5f645",
       "observed_at": "2026-10-02",
       "observation_method": "faster-whisper base.en ASR and sampled frames at 0/5/12/20/30 seconds; speaker functions inferred from exchange and frames",
@@ -57,7 +56,7 @@
       }
     },
     {
-      "id": "gainful-street-2",
+      "id": "proteva-street-2",
       "format": "street-interview",
       "dialogue_mode": "street-interview",
       "execution_modes": [
@@ -70,13 +69,12 @@
       "buying_contexts": [
         "everyday-friction"
       ],
-      "brand_id": "gainful",
+      "brand_id": "proteva",
       "commercial": true,
       "origin": "seed",
       "observed": true,
       "observed_scope": "transcript",
-      "source": "clients/gainful/existing-ads/street-interview-2.mp4",
-      "source_url": "https://www.facebook.com/ads/library/?view_all_page_id=510816675756087",
+      "source": "assets/reference-ads/proteva-street-2.mp4",
       "asset_sha256": "f8b04677f16d3a026ee0930c366cd5605a2a498689a822615fb87ae61dc10adf",
       "observed_at": "2026-10-02",
       "observation_method": "faster-whisper base.en ASR and sampled frames at 0/5/12/20/30 seconds; speaker functions inferred from exchange and frames",

@@ -1,15 +1,15 @@
 # Pipeline — VO-anchored motion-graphic listicle
 
 How `config.example.json` maps to the real production steps. This molecule ships a
-**config + this map**, not a bundled runner: the worked example (Everself "doctor-educator"
-listicle — an example, not the default) was produced by per-project drivers that live in
-`clients/everself-hb/working/doctor-christopher-avatar/` (`voice/render_listicle_v2.py`,
+**config + this map**, not a bundled runner: the worked example (Truehour "doctor-educator"
+listicle — an example, not the default) was produced by per-project drivers in the source run (not shipped:
+`voice/render_listicle_v2.py`,
 `working/render_hf.py`, `working/grade_brolls_v4.py`, `working/build_master_v4.py`).
 
 **Creative calls come from the recipe's `choices`** (asked of the user first; the demo's values are
 examples only): `narrator` → `voice.mode`/`voice.voice_id`; `tone` → the script + the read;
 `list_angle` → the script + `beats[]`; `visual_style` → `design.name`/`callout_style`/`accents`/
-`background_tiles` (colours + fonts still from the brand kit); `music` → `music.prompt` (`none` = no bed). Reference those directly, or drive the whole run via
+`background_tiles` (colours + fonts still from the brand kit); `music` → `music.prompt` (`none` = no bed). Drive the whole run via
 `video-orchestrator-with-control-plane`.
 
 The steps run **in order** because each depends on the last: the VO sets the timeline (its
@@ -22,7 +22,7 @@ bed + burns the window-masked captions.
 | Config field | Phase | Source step / script (in the run) | Paid? |
 |---|---|---|---|
 | `voice.mode`, `voice.voice_id`, `voice.model`, `voice.atempo`, `voice.script_ref` | 1 VO | ElevenLabs clone/cast (`eleven_v3`) + ffmpeg `atempo` -> `voice/vo-render.mp3` | **PAID** |
-| `voice.outputs.word_timings` | 2 Transcribe | Groq `whisper-large-v3` word-level on the rendered VO -> `working/whisper/words-flat.json` | ~$0.10 |
+| `voice.outputs.word_timings` | 2 Transcribe | Groq `whisper-large-v3` word-level on the rendered VO -> `working/whisper/words-flat.json` | **PAID** |
 | `design.*`, `beats[].hero_numeral/headline/body/callout/accent` | 3 Beats | author N hyperframes (HTML + Web Animations `window.renderAt(t)`) in ONE design system -> `working/hyperframes-v4/beat-NN.html` + `_shared.css` + `_shared.js` | free |
 | `beats[].anchor_word`, `beats[].anchor_t` | 3 Beats | reveals anchored to word times in `words-flat.json` | free |
 | `render_engine`, `fps` | 5 Render | `working/render_hf.py` (Playwright frame-by-frame `renderAt(t)` -> ffmpeg encode; ALL beats share fps 25) | free |
@@ -41,7 +41,7 @@ narrator + `choices.tone` — then `atempo` to the target pace (v3's speed
 param is weak; use ffmpeg `atempo` for real time-stretch) -> `voice/vo-render.mp3`. The delivered VO
 and its word-level timings, NOT the plan, set the timeline.
 
-## 2. Transcribe -> Whisper word timings  (config: `voice.outputs.word_timings`)  [~$0.10]
+## 2. Transcribe -> Whisper word timings  (config: `voice.outputs.word_timings`)  [PAID]
 
 Groq `whisper-large-v3` word-level on the RENDERED VO -> `working/whisper/words-flat.json` (a flat
 list of `{word, start, end}`). Every beat reveal in step 3 anchors to a word time here. Whisper is
@@ -84,5 +84,5 @@ beats the on-screen type IS the caption.
   `finals/master.mp4` (1080×1920, 25fps, h264 crf18 + aac 192k, ~66s).
 
 Re-cuts (new caption chunking, re-timed beats, swapped B-roll, a different music bed level) reuse the
-existing VO / beats / B-roll and cost **$0** — only the VO clone/narration, the Whisper pass, the
+existing VO / beats / B-roll and spend nothing — only the VO clone/narration, the Whisper pass, the
 music bed, and any AI breather clips spend.

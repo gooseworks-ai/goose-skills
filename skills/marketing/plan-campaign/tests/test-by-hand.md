@@ -3,8 +3,8 @@
 ## Setup
 Connect GooseWorks **staging**. Link the playbook into your agent's skills folder. Pick a brand you know first-hand whose market and competitor research is done and whose claims are approved (this playbook only reads that work).
 
-## Test 1 — Akhil's ask (GooseWorks, 18 Oct)
-Say only: "I want to plan a campaign." When asked, answer as Akhil did: GooseWorks; Thanksgiving; start 1 Nov, end Thanksgiving; at least 20 paying accounts; $1,000 total; you don't know funnel numbers; GooseWorks makes the ads; you'd post on LinkedIn, X and Meta; more than 1,000 free users, most did a trial and never came back.
+## Test 1 — the owner's ask (GooseWorks, 18 Oct)
+Say only: "I want to plan a campaign." When asked, answer as the owner did: GooseWorks; Thanksgiving; start 1 Nov, end Thanksgiving; at least 20 paying accounts; $1,000 total; you don't know funnel numbers; GooseWorks makes the ads; you'd post on LinkedIn, X and Meta; more than 1,000 free users, most did a trial and never came back.
 
 Pass if:
 1. **Looks first.** Before the first question it has read the brand, products and prices, onboarding, what's connected (Meta, social accounts), existing campaigns, research files and the site's pricing page — and says what it found in two or three lines.
@@ -38,7 +38,7 @@ Disconnect GooseWorks. Ask for a plan for one product with a budget and a date, 
 Pass if: it says once that it keeps notes in this folder; no `gooseworks:` tool is called from setup to write-back; the plan opens from a local link and the chat says "saved in this folder", never "saved to your brand"; after the yes, `gooseworks-local/<brand-slug>/plans/<slug>/` holds a new version whose Status line reads "Approved <date> by <name>", and the run record is re-saved; the replan is created with the host's scheduler (off until you say so), or it says scheduling isn't available here.
 Fail if: any campaign record, concept, server link or automation call; any "saved to your brand".
 
-## Staging run — 2026-10-16 (brand: Personal Day, DTC acne-safe skincare)
+## Staging run — 2026-10-16 (brand: Clearday, DTC acne-safe skincare)
 
 Ask simulated: "We're launching a new serum on March 1st with $8,000 — what should we run, and where?" (goal number withheld).
 
@@ -58,7 +58,7 @@ Ask simulated: "We're launching a new serum on March 1st with $8,000 — what sh
 
 Stopped before: nothing paid exists in this playbook. Generation (`request_campaign_generation`) is deliberately out of scope.
 
-## Re-run — 18 Oct 2026, Sonnet, Akhil's exact ask (GooseWorks, staging, 0 credits)
+## Re-run — 18 Oct 2026, Sonnet, the owner's exact ask (GooseWorks, staging, 0 credits)
 
 - **Before the first question (17 calls):** get_started, brand list + full read, campaign_read (found the approved Thanksgiving v2), meta_read pages (not connected), social_account_list (none), approvals view (none), knowledge_search ×3 (no claims, evidence or learnings), workspace file_list/file_read (market read, customer-words bank), competitor_read, WebFetch gooseworks.ai + /pricing (live plans Lite $29 / Starter $59 / Pro $149, no offer), WebSearch ×3 benchmarks.
 - **First message:** what it found, then: paid plans + offer? · goal, dates, budget? · "I'll look at every channel that could work — ads, email to people who've signed up, LinkedIn and X posts, creators — say if you want ads only" · how many past users could you email (default stated) · research first or plan now. One message, no form, no technical question. (Found paragraph ran ~7 lines — guidance tightened to 2–3.)

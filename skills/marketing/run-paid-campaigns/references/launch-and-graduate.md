@@ -31,7 +31,7 @@ Pushing a winning render into the marketer's main conversion ad set (route 1) ca
 - **A — add to the main ad set** (link): fastest; one significant edit; learning may reset for a few days.
 - **B — a separate "Goose graduates" ad set** in the same campaign (card: duplicate the main ad set, add the winners there, small budget): protects the main ad set; slower to scale.
 - **C — duplicate the winning ad into the main ad set by hand** (card), keeping its social proof.
-A render already live in a Goose push may be refused for a second push (unverified — see server-needs); if prepare refuses, fall back to B or C.
+A render already live in a Goose push may be refused for a second push (unverified); if prepare refuses, fall back to B or C.
 
 ## Route 3 — written launch cards
 

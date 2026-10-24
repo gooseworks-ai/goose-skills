@@ -1,7 +1,7 @@
 # Pipeline — narrated-ugc-wardrobe-stitch
 
 How `config.example.json` maps to the real production steps. This capability is the FREE assembly.
-The worked example (Bioma "Do NOT buy Bioma Probiotics") was built in a private run whose
+The worked example (Gutwise "Do NOT buy Gutwise Probiotics") was built in a private run whose
 per-project driver scripts are not shipped. Run the paid steps with the capabilities named below,
 and the free steps (EDL, assembly, captions, mix) with the shared `montage.py` helper from
 `stitch-videos-ffmpeg`, which installs with this package (see `README.md` §0). Or drive the whole
@@ -10,7 +10,7 @@ run via `video-orchestrator-with-control-plane`.
 **Creative values are choices, not defaults.** The creator (`character.descriptor`), voice
 (`vo.voice_id`), hook angle (`vo.hook_line` / `vo.script_md` / `vo.payoff_line`), the 3 worlds
 (`worlds.briefs`) and the music bed (`audio_mix.music_brief`) come from the recipe's `choices`. The
-Bioma values in `config.example.json` (blonde woman creator, "Do not buy" reversal, bedroom / kitchen
+Gutwise values in `config.example.json` (blonde woman creator, "Do not buy" reversal, bedroom / kitchen
 / bathroom) are one worked example.
 
 The seven steps run **in order** because each depends on the last: the VO sets the timeline (via
@@ -24,7 +24,7 @@ captions, and end card.
 | Config field | Phase | Step (tool) | Paid? |
 |---|---|---|---|
 | `vo.script_md`, `vo.voice_id`, `vo.settings`, `vo.model` | 1 VO | ElevenLabs v3 render of the locked testimonial | **PAID** |
-| `vo.outputs.word_timings` | 1 VO | Whisper word-align (`transcribe-audio-fal`) → `audio/vo-final.words.json` | ~$0.10 (Whisper) |
+| `vo.outputs.word_timings` | 1 VO | Whisper word-align (`transcribe-audio-fal`) → `audio/vo-final.words.json` | **PAID** (Whisper) |
 | `edl.*`, `edl.timeline[].t_in/t_out/role/source` | 2 EDL | `montage.py edl`: each cut's `word_range` snaps to the VO word boundaries → `edl.json` (~30 cuts) | free |
 | `character.descriptor`, `character.anchor`, `worlds[]` | 3 Creator/Worlds | `create-image-gpt-image-fal` gpt-image-2 anchor + `create-image-fal` 3 world wides | **PAID** |
 | `character.wardrobes` | 3 Creator | `create-image-gpt-image-fal` → 5 wardrobe edits chained off the anchor | **PAID** |
@@ -40,7 +40,7 @@ captions, and end card.
 **Lock the VO FIRST — it sets the timeline.** Render the verbatim ~13-sentence testimonial with
 ElevenLabs v3 (`vo.voice_id` + `vo.settings`), atempo-clamp to the target pace (~1.24× → ~30–32s),
 then Whisper word-align → `audio/vo-final.mp3` + `audio/vo-final.words.json`. The word boundaries
-set the cut grid. Keep the testimonial verbatim (Bioma demo: "I'ma" kept; "synbiotic" locked over
+set the cut grid. Keep the testimonial verbatim (Gutwise demo: "I'ma" kept; "synbiotic" locked over
 Whisper's "symbiotic").
 
 ## 2. EDL → `montage.py edl`  (config: `edl`)  [FREE]
@@ -87,4 +87,4 @@ prompt (mid-action keyframes freeze). The landing-page-scroll cuts are FFmpeg zo
   plus the end card, 36.8 s in the demo).
 
 Re-cuts (new caption timing, re-timed windows, an end-card swap) reuse the existing
-VO/start-frames/clips and cost **$0** — only steps 1, 3, 4, 5 spend.
+VO/start-frames/clips and spend nothing — only steps 1, 3, 4, 5 spend.

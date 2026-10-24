@@ -21,5 +21,5 @@ Pass when the assembly runs to a valid MP4 and:
   is the entire audio bed — no separate music;
 - **no paid call is made** — the VO, the anchor, and the VEED Fabric lip-sync take
   come from the paid upstream steps (create-vo-elevenlabs / create-image-gpt-image-fal
-  / the no-atom VEED Fabric lip-sync); this assembly is $0 and a re-cut reuses the
+  / the no-atom VEED Fabric lip-sync); this assembly is free and a re-cut reuses the
   existing assets.

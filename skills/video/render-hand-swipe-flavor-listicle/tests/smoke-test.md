@@ -71,7 +71,7 @@ Each edit below goes in a copy of `config.json`; re-run and check the result.
 | `music.trim_intro_sec` = `2.5` (8s bed, 7.4s cut) | `WARNING: … Trimming 0.60s instead`; music audible to the end (about -33 dB in the last fade at 7.0s, never -91 dB) |
 | `music.volume` = `0.1` | about 20 dB quieter than `1.0` |
 | `hand.trim_start` = `5`, `hand.trim_end` = `6` | exit 1, `ERROR: hand.trim_start (5.0s) is at or past the end of hand_clip (2.00s)` |
-| `title` = `"5 Flavors of Liquid Death Mountain Water"`, then `--stills` | `WARNING: … shrunk to 64 to fit the frame`; the title and underline sit inside the frame |
+| `title` = `"5 Flavors of Grimwater Glacier Spring Water"`, then `--stills` | `WARNING: … shrunk to 62 to fit the frame`; the title and underline sit inside the frame |
 | a can saved as an opaque `.jpg` | `WARNING: … has no transparent pixels` |
 
 Measure the music level at a time `T` with:

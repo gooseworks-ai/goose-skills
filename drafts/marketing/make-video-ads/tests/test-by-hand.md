@@ -43,7 +43,7 @@ Same as Test 1 in Claude.ai. After the yes it hands off and ends the turn; on re
 
 ## Staging run — 2026-10-16 (stopped at the script gate, before `video_approve`)
 
-Brand Personal Day, product Dive Deep Mevalonic Moisturizer. Ask: "a 30-second video ad for the Dive Deep moisturizer for paid social". Client `claude-code-desktop`, `shell: true`.
+Brand Clearday, product Dive Deep Mevalonic Moisturizer. Ask: "a 30-second video ad for the Dive Deep moisturizer for paid social". Client `claude-code-desktop`, `shell: true`.
 
 | Step | Call | What came back |
 |---|---|---|
@@ -53,7 +53,7 @@ Brand Personal Day, product Dive Deep Mevalonic Moisturizer. Ask: "a 30-second v
 | Draft 1 | `video_create` `ugc-product` | Free draft. Plan note: "Cast the brand's own buyer… Line 1 raises a question the buyer feels" — a generated person reviewing the product as a customer: **the speaker rule would steer away from this style or script it as a presenter**. `buyer_brief.may_claim` lists press quotes about a mist and a toner for the moisturiser |
 | Draft 2 | `video_create` `kinetic-text` | Free draft; 2–10 scenes, ≤ 10 words / 60 characters each, no voice, last scene must carry the brand name |
 | Script | `video_change` with 4 `candidates` | First try refused: `candidates_too_similar` (scripts 1 and 3). Rewrote one; saved. **Quote: 207 credits, `yes_covers_up_to` 248**, no engine `warnings` |
-| Read back | `video_read` `include: ["scenes"]` | Lead saved: "For people who read every ingredient list / and still worry about their moisturiser / Dive Deep: Mevalonic Acid, Azelaic Acid, Squalane / A lightweight moisturiser, $16 / Personal Day. Shop Dive Deep." Script judge still picking |
+| Read back | `video_read` `include: ["scenes"]` | Lead saved: "For people who read every ingredient list / and still worry about their moisturiser / Dive Deep: Mevalonic Acid, Azelaic Acid, Squalane / A lightweight moisturiser, $16 / Clearday. Shop Dive Deep." Script judge still picking |
 
 **Script-check on the test's own candidates:** the engine raised no warnings, but two of my candidate lines would be cut by this playbook — "Azelaic Acid to calm skin" and "skin stays balanced, never oily" are efficacy wording from the product page, not approved claims. The lead script (identity angle) uses only ingredient names, texture and price.
 
@@ -61,7 +61,7 @@ Brand Personal Day, product Dive Deep Mevalonic Moisturizer. Ask: "a 30-second v
 
 **Review path verified on an existing staging render** (project `1030779e…`, style day-in-the-life): `video_read` `include: ["renders","recipe"]` gave the render `asset_id` and "Check: passed"; `media_analyze` on that asset returned the word-timed transcript and 16 shots with descriptions and on-screen text — which exposed a voice line about one product over shots of two others, on-screen text naming the wrong product, and "Unplugged" for "Unplug". The engine's check had passed it.
 
-**Round 2 adversarial run (same day, read-only) added:** Personal Day has no sign-off marker, no voice-of-customer bank and no angle bank; 13 of its 17 videos are Failed; Meta is not connected. The moisturiser's catalogue images print unapproved claims ("97% of test subjects agreed…", "boosts… collagen"). The engine's script judge suggested a personal-attribute hook. A custom project's script-phase yes had already committed 166 credits against a 37-credit approval (`budget_exceeded`). Production footage search for Gooseworks returned a "synthetic screen fixture (not for publishing)" showing other brands. All folded into the playbook (Hard rules, Steps 2, 4, 5, 6, 8, 10, 11).
+**Round 2 adversarial run (same day, read-only) added:** Clearday has no sign-off marker, no voice-of-customer bank and no angle bank; 13 of its 17 videos are Failed; Meta is not connected. The moisturiser's catalogue images print unapproved claims ("97% of test subjects agreed…", "boosts… collagen"). The engine's script judge suggested a personal-attribute hook. A custom project's script-phase yes had already committed 166 credits against a 37-credit approval (`budget_exceeded`). Production footage search for Gooseworks returned a "synthetic screen fixture (not for publishing)" showing other brands. All folded into the playbook (Hard rules, Steps 2, 4, 5, 6, 8, 10, 11).
 
 ## Round 2 fix pass (2026-10-16) — re-check by hand
 

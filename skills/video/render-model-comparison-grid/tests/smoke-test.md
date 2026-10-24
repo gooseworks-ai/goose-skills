@@ -1,6 +1,6 @@
 # Smoke Test
 
-build_composition.py --config config.json --output hyperframe.html ; render_seekable_hyperframe.py hyperframe.html master-silent.mp4 <duration> --fps 30 --width 1280 --height 720 — dark stage, N-panel comparison grid, deterministic, $0.
+build_composition.py --config config.json --output hyperframe.html ; render_seekable_hyperframe.py hyperframe.html master-silent.mp4 <duration> --fps 30 --width 1280 --height 720 — dark stage, N-panel comparison grid, deterministic, no paid calls.
 
 Pass when:
 - build_composition.py validates every cell path + the column count (2-4) and prints the total duration; render_seekable_hyperframe.py runs to a valid mp4 at the config canvas/fps/duration;

@@ -1,6 +1,6 @@
 {
-  "_comment": "DIBS Beauty 'Desert Island Duo (shade 3)' — the worked example. Copy to config.json and edit. A ~15s premium 3D product showcase: one real product floats centered on a clean seamless brand-color backdrop and sells itself across 4 beats — Beat 1 an orbiting hero rotation, Beat 2 a macro push-in on the surface detail, Beat 3 a physics reveal (reveal_variant), then Beat 4 a typographic brand close. 720x1280 9:16, music-only (no VO). IDENTITY: Beats 1+2 are create-video-fal image-to-video seeded on a create-image-fal STYLED HERO built from the brand's real product photo (real geometry, never AI-invented). Beat 3 is Veo3 i2v seeded on Beat 1's last frame. Beat 4 is a deterministic Playwright hyperframe. One ElevenLabs instrumental bed, loudnorm I=-16. There is NO Higgsfield / Marketing Studio in this format. Worked example (the DIBS Beauty pink build). Creative fields — studio_look.bg, studio_look.lighting_preset, studio_look.rim_light, the <BG>/<LIGHTING> phrases inside beats[].prompt, product_identity.step_1, reveal_variant, beats[2], music.prompt — come from the recipe's choices (backdrop, lighting_mood, reveal, music); never copy them as defaults. Bubblegum pink + luxe_botanical_warm are this demo's picks, not the format's look.",
-  "brand_name": "DIBS Beauty",
+  "_comment": "Solenne Beauty 'Dune Duo (shade 3)' — the worked example. Copy to config.json and edit. A ~15s premium 3D product showcase: one real product floats centered on a clean seamless brand-color backdrop and sells itself across 4 beats — Beat 1 an orbiting hero rotation, Beat 2 a macro push-in on the surface detail, Beat 3 a physics reveal (reveal_variant), then Beat 4 a typographic brand close. 720x1280 9:16, music-only (no VO). IDENTITY: Beats 1+2 are create-video-fal image-to-video seeded on a create-image-fal STYLED HERO built from the brand's real product photo (real geometry, never AI-invented). Beat 3 is Veo3 i2v seeded on Beat 1's last frame. Beat 4 is a deterministic Playwright hyperframe. One ElevenLabs instrumental bed, loudnorm I=-16. There is NO Higgsfield / Marketing Studio in this format. Worked example (the Solenne Beauty pink build). Creative fields — studio_look.bg, studio_look.lighting_preset, studio_look.rim_light, the <BG>/<LIGHTING> phrases inside beats[].prompt, product_identity.step_1, reveal_variant, beats[2], music.prompt — come from the recipe's choices (backdrop, lighting_mood, reveal, music); never copy them as defaults. Bubblegum pink + luxe_botanical_warm are this demo's picks, not the format's look.",
+  "brand_name": "Solenne Beauty",
   "width": 720,
   "height": 1280,
   "fps": 24,
@@ -9,21 +9,21 @@
 
   "product": {
     "_note": "the REAL product — its geometry is locked by the create-image-fal styled hero built from the real product photo; never AI-invented",
-    "name": "Desert Island Duo (shade 3)",
+    "name": "Dune Duo (shade 3)",
     "category": "cosmetic",
     "form_factor": "dual-ended cream stick, pink barrel, bronzer one side + blush the other",
-    "hero_png": "../../brand-assets/product-photos/desert-island-duo/did-sku_4050A-03_featured1.png",
-    "pdp_url": "https://www.dibsbeauty.com/products/desert-island-duo"
+    "hero_png": "assets/product-photos/dune-duo/hero.png",
+    "pdp_url": "https://solennebeauty.example/products/dune-duo"
   },
 
   "reveal_variant": "exploded_view",
-  "_reveal_variant_note": "pick by category: cosmetic bottle/liquid or fragrance -> particle_disintegration; beverage OR a water product (spa/tub/fountain) -> liquid_splash; dual-ended/structural product -> exploded_view; large/featureless no-reveal product (a tool, a solid appliance) -> rotation_only (skip Beat 3). DID is a dual-ended stick -> exploded_view.",
+  "_reveal_variant_note": "pick by category: cosmetic bottle/liquid or fragrance -> particle_disintegration; beverage OR a water product (spa/tub/fountain) -> liquid_splash; dual-ended/structural product -> exploded_view; large/featureless no-reveal product (a tool, a solid appliance) -> rotation_only (skip Beat 3). Dune Duo is a dual-ended stick -> exploded_view.",
 
   "studio_look": {
     "bg": "#F8B8C6",
-    "_bg_note": "bubblegum pink (DIBS brand primary) — the seamless backdrop AND the normalize pad color",
+    "_bg_note": "bubblegum pink (Solenne brand primary) — the seamless backdrop AND the normalize pad color",
     "lighting_preset": "luxe_botanical_warm",
-    "_lighting_note": "the lighting_mood choice. luxe_botanical_warm (warm rim upper-right, soft fill below, warm bokeh) is the DIBS pick; others: clean_bright_daylight, dramatic_hard_key, cool_tech_rim — describe the chosen mood in rim_light and in every beat prompt",
+    "_lighting_note": "the lighting_mood choice. luxe_botanical_warm (warm rim upper-right, soft fill below, warm bokeh) is the Solenne pick; others: clean_bright_daylight, dramatic_hard_key, cool_tech_rim — describe the chosen mood in rim_light and in every beat prompt",
     "rim_light": "strong warm rim light from upper-right; soft fill from below",
     "register": "premium product film — glossy speculars, warm bokeh, clean seamless backdrop, no people, no hands, no on-screen text on the plate",
     "reference_videos": "9 catalogued 3D-product-showcase shorts (GOOSE-1778) — the format reference"
@@ -48,7 +48,7 @@
       "duration_sec": 4,
       "_duration_note": "i2v takes are ~5s; build_masters trims to 4s. A single i2v yields a partial arc (~60-120°), NOT a literal 360 — do not promise a full turn.",
       "motion": "A slow deliberate camera orbit around the product; product stays centered horizontally, occupying ~50% of frame height.",
-      "prompt": "9:16 PRODUCT-SHOWCASE HERO ROTATION. The DIBS Desert Island Duo — a glossy pink dual-ended cream stick with a rosy-bronzer end and a pink-blush end, shade 3. A slow deliberate camera orbit around the stick. Stick stays centered horizontally, occupying ~50% of frame height, geometry solid and unchanged. Bubblegum pink seamless backdrop. Strong warm rim light from upper-right; soft fill from below. Subtle warm bokeh in background. Lowercase 'dibs.' wordmark on the barrel visible during the orbit. Cinematic, premium beauty product film. Product identical to the seed hero. No on-screen text.",
+      "prompt": "9:16 PRODUCT-SHOWCASE HERO ROTATION. The Solenne Dune Duo — a glossy pink dual-ended cream stick with a rosy-bronzer end and a pink-blush end, shade 3. A slow deliberate camera orbit around the stick. Stick stays centered horizontally, occupying ~50% of frame height, geometry solid and unchanged. Bubblegum pink seamless backdrop. Strong warm rim light from upper-right; soft fill from below. Subtle warm bokeh in background. Lowercase 'solenne.' wordmark on the barrel visible during the orbit. Cinematic, premium beauty product film. Product identical to the seed hero. No on-screen text.",
       "produces_anchor": "beat1_last_frame.png (ffmpeg -sseof -0.1 -i beat1.mp4 -frames:v 1) — the SHARED seed for Beat 3 AND the Beat 4 hyperframe background",
       "t_start_sec": 0.0,
       "t_end_sec": 4.0
@@ -63,7 +63,7 @@
       "_start_image_note": "SAME styled hero as Beat 1 so the product reads identical across both beats",
       "duration_sec": 4,
       "motion": "Camera moves smoothly along the barrel, revealing the swatch line where the two creams meet, with texture detail catching warm rim light; shallow DOF.",
-      "prompt": "9:16 MACRO PUSH-IN along the length of the DIBS Desert Island Duo cream stick. Camera moves smoothly along the barrel, revealing the swatch line where the rosy-bronzer cream meets the pink-blush cream, with cream texture detail catching warm rim light. Shallow depth of field. Strong specular highlights on the glossy pink barrel. Warm bokeh background. Lowercase 'dibs.' wordmark visible. Product identical to the seed hero. No on-screen text.",
+      "prompt": "9:16 MACRO PUSH-IN along the length of the Solenne Dune Duo cream stick. Camera moves smoothly along the barrel, revealing the swatch line where the rosy-bronzer cream meets the pink-blush cream, with cream texture detail catching warm rim light. Shallow depth of field. Strong specular highlights on the glossy pink barrel. Warm bokeh background. Lowercase 'solenne.' wordmark visible. Product identical to the seed hero. No on-screen text.",
       "t_start_sec": 4.0,
       "t_end_sec": 8.0
     },
@@ -78,8 +78,8 @@
       "generate_audio": false,
       "duration_sec": 4,
       "_duration_note": "Veo3 fast i2v defaults to an 8s take (no 4s option on the fal-proxy); build_masters trims the best 4s window (rise -> peak -> early settle). Priciest single call in the format.",
-      "_reveal_spatial_rule": "the reveal prompt MUST name WHERE the reveal happens (which surface faces the gap) — omitting it garbled the SHIPPED DID Beat 3 (P1: Veo3 cap-popped + smeared ambient swatches instead of a clean cross-section). The prompt below is the spatial-clause FIX.",
-      "prompt": "The DIBS Desert Island Duo cream stick separates smoothly along its long horizontal axis, the two halves sliding apart to create a visible gap. At the join, each half's cream is visible in circular cross-section facing the gap — rosy-bronzer cream on the left half's exposed end, pink-blush cream on the right half's exposed end (like a sliced apple). Subtle pink shimmer particles drift through the gap. Halves smoothly reassemble. Bubblegum pink seamless backdrop. Camera holds steady, stick stays centered. No on-screen text. No text whatsoever.",
+      "_reveal_spatial_rule": "the reveal prompt MUST name WHERE the reveal happens (which surface faces the gap) — omitting it garbled the SHIPPED Dune Duo Beat 3 (P1: Veo3 cap-popped + smeared ambient swatches instead of a clean cross-section). The prompt below is the spatial-clause FIX.",
+      "prompt": "The Solenne Dune Duo cream stick separates smoothly along its long horizontal axis, the two halves sliding apart to create a visible gap. At the join, each half's cream is visible in circular cross-section facing the gap — rosy-bronzer cream on the left half's exposed end, pink-blush cream on the right half's exposed end (like a sliced apple). Subtle pink shimmer particles drift through the gap. Halves smoothly reassemble. Bubblegum pink seamless backdrop. Camera holds steady, stick stays centered. No on-screen text. No text whatsoever.",
       "t_start_sec": 8.0,
       "t_end_sec": 12.0
     },
@@ -110,11 +110,11 @@
       "size_px": 92,
       "uppercase": true,
       "color": "auto",
-      "_color_note": "warm-white (#F6F1E7) on dark/saturated bg, dark ink (#2A1F26) on light/pastel bg. DID's pink bg is light -> #2A1F26. build_endcard.py --headline-color to override.",
+      "_color_note": "warm-white (#F6F1E7) on dark/saturated bg, dark ink (#2A1F26) on light/pastel bg. Dune Duo's pink bg is light -> #2A1F26. build_endcard.py --headline-color to override.",
       "animation": "0.55s spring-rise cubic-bezier(.34,1.56,.64,1), 88% safe area"
     },
     "wordmark": {
-      "asset": "dibs-logo-black.svg",
+      "asset": "solenne-logo-black.svg",
       "width_px": 180,
       "animation": "0.35s fade-in +0.55s",
       "_note": "the REAL brand wordmark — never uppercase, never AI-rendered. build_endcard.py recolors the SVG to the headline color."

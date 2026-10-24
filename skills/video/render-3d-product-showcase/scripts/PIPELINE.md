@@ -13,7 +13,7 @@ seeded on the styled hero → extract Beat 1 last frame → Veo3 Beat 3 reveal s
 
 ## Choices → config fields
 
-Asked of the user before any paid step (recipe `choices`); `config.example.json` holds the DIBS
+Asked of the user before any paid step (recipe `choices`); `config.example.json` holds the Solenne
 answers as a worked example only.
 
 | Choice | Config fields | Demo value |
@@ -46,7 +46,7 @@ answers as a worked example only.
 - **Identity discipline:** the styled hero is built from the brand's REAL product photo, so Beats
   1+2 carry the real geometry; Beat 3 is seeded on Beat 1's *last frame*; Beat 4 sits over Beat 1's
   stilled last frame — the product + lighting carry across all four beats and are never AI-invented.
-- **Reveal-prompt spatial clause is load-bearing.** The shipped DID Beat 3 used a prompt that
+- **Reveal-prompt spatial clause is load-bearing.** The shipped Dune Duo Beat 3 used a prompt that
   didn't say *where* the creams should show; Veo3 cap-popped and smeared ambient swatches (a P1).
   The `config.example.json` `beats[2].prompt` is the spatial-clause fix.
 - **Reveal-variant taxonomy:** cosmetic/liquid/fragrance → particle_disintegration; beverage OR a

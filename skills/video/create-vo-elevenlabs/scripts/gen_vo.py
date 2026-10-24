@@ -2,7 +2,7 @@
 """ElevenLabs voiceover (TTS) ROUTED THROUGH THE PROXY (bills the Ads agent). Voice +
 text from the template recipe. gen_vo.py --text "..." --voice dMyQqiVXTU80dDl2eNK8 --out vo.mp3
 
-Brand pronunciations: --say-as "Drinkag1=drink A G one" (repeatable) or
+Brand pronunciations: --say-as "Brewq2=brew Q two" (repeatable) or
 --rules working/brand-rules.json (its `pronunciations: [{term, say_as}]`) swaps each
 term for how it is SAID before the text is spoken. Captions keep the written term.
 

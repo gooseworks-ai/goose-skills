@@ -4,7 +4,7 @@ This capability ships the **recipe** (`config.example.json`) + a config→step m
 (`PIPELINE.md`) for the 3D-CGI app-sizzle format, plus this note documenting the
 **FREE, deterministic assembly** — everything between the paid model calls. The paid
 steps (nano-banana CGI plates, Kling i2v float clips, ElevenLabs VO + music) are separate
-capabilities; the recipe orchestrates and gates them. Everything below is $0
+capabilities; the recipe orchestrates and gates them. Everything below is free
 (PIL + FFmpeg), keeps the real UI + wordmark pixel-crisp, and never makes an AI or paid call.
 
 ## What's FREE here

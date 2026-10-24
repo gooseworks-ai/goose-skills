@@ -368,7 +368,7 @@ def main() -> int:
 
     # ------------------------------------------------------------ config gates
     check("11 no real brand", gates.gate_no_real_brand, (cfg,),
-          (mut(cfg, lambda o: o.__setitem__("brand_name", "Ladder")),),
+          (mut(cfg, lambda o: o.__setitem__("brand_name", "GW-Canary-Brand")),),
           "no_real_brand")
     check("12 no unbound placeholder", gates.gate_no_unbound_placeholders, (cfg,),
           (mut(cfg, lambda o: o["end_card"].__setitem__("url_text", "<url>")),),

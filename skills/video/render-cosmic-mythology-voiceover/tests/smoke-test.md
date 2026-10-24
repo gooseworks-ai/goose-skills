@@ -1,6 +1,6 @@
 # Smoke Test
 
-Given the spoken VO (atempo mp3) and N curated stills in ONE coherent look (the WishAstro demo is
+Given the spoken VO (atempo mp3) and N curated stills in ONE coherent look (the Starwhim demo is
 deep-indigo + gold cosmic; the look is the user's choice), the per-cut weight array, and the ONE hook
 line, `scripts/render.py` assembles the master: distribute the cuts across the VO duration by the
 weighted formula (`cut_dur = VO_dur × weight / Σweights`), Ken-Burns-render each still (fade-in
@@ -25,5 +25,5 @@ Pass when `render.py` runs to a valid MP4 and:
 - it runs on a **stock ffmpeg with NO `drawtext`/`libass`** (hook + captions are PIL PNG overlays)
   and needs only ffmpeg + Pillow;
 - **no paid call is made** — the VO and the stills come from the paid capabilities
-  (create-vo-elevenlabs / create-image-fal); this assembly is $0 and a re-cut reuses the existing
+  (create-vo-elevenlabs / create-image-fal); this assembly is free and a re-cut reuses the existing
   assets.

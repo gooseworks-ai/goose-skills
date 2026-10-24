@@ -2,14 +2,14 @@
 
 **In short**
 - Three playbooks are built but **held back from the first release**: learn-my-brand, make-video-ads and make-product-photos.
-- **Why:** each one needs server work before it can run safely or be tested properly. The details are in each folder's `server-needs.md`; the blockers are summarised below.
-- **Decision:** Akhil, 20 Oct 2026. They come back when the server work exists.
+- **Why:** each one needs server work before it can run safely or be tested properly. The blockers are summarised below; the full server-needs list for each is in goose-lab, `plan/marketing-agent/server-needs/<name>.md`.
+- **Decision:** the owner, 20 Oct 2026. They come back when the server work exists.
 - **What users see meanwhile:** video ads go to the goose-video skill and product photos to goose-product-photos (GooseWorks skills, not playbooks); brand setup as its own job is "not covered yet", and claims are approved through the claims gate's scoped sign-off. Nothing hands off to these three.
-- The folders are kept whole (SKILL.md, atoms, references, tests, critique), so nothing is lost. Hosts never list them, because nothing links to or installs from `drafts/`.
+- The folders are kept whole (SKILL.md, atoms, references, tests), so nothing is lost; their critique logs moved to goose-lab (`plan/marketing-agent/critiques/`). Hosts never list them, because nothing links to or installs from `drafts/`.
 
 ## The three, and what blocks each
 
-| Playbook | What it does | What blocks it (from its `server-needs.md`) |
+| Playbook | What it does | What blocks it (from its server-needs list) |
 |---|---|---|
 | learn-my-brand | Learns the brand once: audits every claim, gets the important ones signed off with proof, scope and review date, turns the voice into confirmed rules, records the unknowns. | **Brand Brain write paths.** No tool can approve, reject or retire a claim, and server research writes claims as already "approved". Claims, proof points, palette and fonts are not writable through `brand_update`. The operating plan (who approves, spend caps) can't be read or written over MCP. Pending proposals can't be listed or accepted from chat. There is no typed home for the unknowns ledger or a structured voice. |
 | make-video-ads | Makes a produced video ad from a researched angle: hook, script held to signed-off claims, priced approval, honest review of the render. | **Video engine.** Several styles put first-person customer words in generated mouths (a fake-testimonial risk). The approval buffer can re-approve changed words silently. The engine's claim list and advice aren't scoped to the product or the sign-off. The custom route dead-ends in chat hosts, and its script step commits more credits than the yes covered. Text outside the scenes (end cards, taglines) isn't claim-checked. |
@@ -27,10 +27,10 @@ These are **data formats**, not hand-offs. Records written earlier (by a full br
 
 ## How to release one
 
-1. **Check the blockers are fixed** on staging: the items above, against the playbook's `server-needs.md`.
-2. **Move it into the published tree**: `git mv drafts/marketing/<name> skills/marketing/<name>`, then each of its `atoms/<step>/ATOM.md` to `skills/marketing/<name>-<step>/SKILL.md` with frontmatter (`name`, `description`, `version`) and a `skill.meta.json` (`docs/marketing/AGENTS.md` §5). Rewrite its links to the `../<slug>/SKILL.md` form (the links to shared steps now read `../../../skills/marketing/<slug>/SKILL.md` from here) and run `node scripts/build-index.js && node scripts/check-marketing-agent-links.js`, which lists what is left. Change the `ln -s` line in its `tests/test-by-hand.md`.
-3. **Put the hand-offs back.** The 20 Oct change replaced them with "not covered yet" or "the marketer does it"; `git log -S "held back" -- marketing-agent skills/marketing` finds that change, and its diff is the list to undo for this playbook. The main places:
-   - the router (`../../skills/marketing/marketing-agent/SKILL.md`): its row, the "Not this" cells that pointed to it, the "Not covered yet" bullet, and the description line;
+1. **Check the blockers are fixed** on staging: the items above, against the playbook's server-needs list in goose-lab.
+2. **Move it into the published tree**: `git mv drafts/marketing/<name> skills/marketing/<name>`, then each of its `atoms/<step>/ATOM.md` to `skills/marketing/<name>-<step>/SKILL.md` with frontmatter (`name`, `description`, `version`) and a `skill.meta.json` (`docs/marketing/AGENTS.md` §5). Rewrite its links to the `../<slug>/SKILL.md` form (the links to shared steps now read `../../../skills/marketing/<slug>/SKILL.md` from here) and run `node scripts/build-index.js && node scripts/check-skill-links.js`, which lists what is left. Change the `ln -s` line in its `tests/test-by-hand.md`.
+3. **Put the hand-offs back.** The 20 Oct change replaced them with "not covered yet" or "the marketer does it"; `git log -S "held back" -- skills/marketing` finds that change, and its diff is the list to undo for this playbook. The main places:
+   - the customer router: the playbook's row in `skills/entry/gooseworks/routes.json`, then `node scripts/build-router.js`;
    - the index in `../../skills/marketing/marketing-guide/SKILL.md` (and the reserved paths above);
    - where-to-start's `references/playbook-map.md` (the playbook's entry, the gaps table, the company-type table);
    - plan-campaign's brief roles and calendar, run-paid-campaigns' rotation and fix lines, analyze-performance's "what to make next", make-content, run-organic-social, work-with-creators;

@@ -13,7 +13,7 @@ grain, light leaks, natural light, handheld imperfection) timed to the lyrics, a
 the **FREE, deterministic assembly** — cut-to-window, hard-concat, anthem mux, caption burn,
 and the brand end card.
 
-`scripts/config.example.json` is the worked example (Hype and Vice "Game Day Girls", ~28s
+`scripts/config.example.json` is the worked example (Rally & Rogue "Game Day Girls", ~28s
 1080×1920 9:16, 14 tableaux) — copy its structure, never its creative values; `scripts/PIPELINE.md` maps every config block to its source step
 and `scripts/README.md` documents the free assembly.
 
@@ -26,7 +26,7 @@ in one look pack (`create-image-gpt-image-fal`); and one Kling 3.0 i2v clip per 
 Given the delivered anthem + `words.json` + one clip per beat + the brand end-card asset,
 `render-cinematic-music-video` cuts each clip to its lyric window, hard-concats on the beat,
 muxes the anthem, burns the cinematic lower-third captions, and overlays the end card → the
-master. Re-cuts reuse the existing anthem / keyframes / clips and cost **$0**.
+master. Re-cuts reuse the existing anthem / keyframes / clips and spend nothing.
 
 ## Choices
 

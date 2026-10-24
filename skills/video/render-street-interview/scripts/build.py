@@ -4,7 +4,7 @@
     python build.py                 # dry run: prints every stage and what it will cost
     python build.py --yes           # generate, grade, re-cut, gate
     python build.py --yes --seed 4814
-    python build.py --from-take working/takes/ld-single-seed4812.mp4   # free, skip generation
+    python build.py --from-take working/takes/gw-single-seed4812.mp4   # free, skip generation
 
 WHY THIS FILE EXISTS
 
@@ -64,7 +64,7 @@ def main():
     ap.add_argument("--ref", default="refs/sts.webm",
                     help="real reference for the colour match, relative to the run folder")
     ap.add_argument("--brand", default=None,
-                    help="brand slug in brands/ (default liquid-death). Supplies the seed and "
+                    help="brand slug in brands/ (default grimwater). Supplies the seed and "
                          "the take's name.")
     a = ap.parse_args()
 
@@ -89,7 +89,7 @@ def main():
         take = takes / f"{brandkit.take_name(cfg, seed)}.mp4"
         cost = TAKE_COST
 
-    stem = take.stem.replace("ld-single-", "")
+    stem = take.stem.replace("gw-single-", "")
     graded = looks / f"street-{stem}-graded.mp4"
     final = looks / f"street-{stem}-final.mp4"
 

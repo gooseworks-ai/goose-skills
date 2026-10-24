@@ -5,7 +5,7 @@
 - An LLM judge scores every criterion pass or fail with a one-line evidence quote.
 - **A run passes only if every must-pass criterion passes.**
 - Criteria judge what the marketer received, not the method, so the baseline and the old skills can pass too.
-- Sources: research-audience list mode (`references/list-mode.md`, `fit-and-scoring.md`, `contacts-and-compliance.md`, `output-format.md`), the old-vs-new lead-gen review (`marketing-agent-test/results/old-vs-new/leads-outreach-sales.md`), `atoms/write-report/ATOM.md` §3.
+- Sources: research-audience list mode (`references/list-mode.md`, `fit-and-scoring.md`, `contacts-and-compliance.md`, `output-format.md`), the old-vs-new lead-gen review (goose-lab `plan/marketing-agent/reviews/2026-10-19-old-vs-new-leads-outreach-sales.md`), `atoms/write-report/ATOM.md` §3.
 
 Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M = must, S = should, E = expert (an E line containing "(must)" counts as must).
 

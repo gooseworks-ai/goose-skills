@@ -5,7 +5,7 @@ Given the delivered beat clips + the end-card PNG + one instrumental bed, this
 trims each beat to its window, normalizes every segment to the 720x1280 brand
 canvas (strips the i2v model's auto-audio with -an), hard-concats in beat order
 (no dissolves), and mixes the music bed at loudnorm I=-16 -> the h264+aac master.
-Re-cuts reuse the existing beats and cost $0.
+Re-cuts reuse the existing beats and spend nothing.
 
   build_masters.py --config config.json \
       --clips working/clips --endcard working/endcard.png \

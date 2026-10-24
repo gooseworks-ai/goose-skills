@@ -39,7 +39,7 @@ Not used, on purpose: `/v1/detect-age-gender` (never infer protected traits); fo
 
 ## Credits
 
-Spending follows the `spend-gate` skill (`../../spend-gate/SKILL.md`) (proxy branch): a probe with the human's yes for an endpoint with no logged charge, then a yes to "up to N credits", labelled an estimate, drawn from logged charges; stop at it. `gooseworks:data_price_provider` does not price these lookups (server-needs #2). Every charge is logged in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`). A resubmitted paid call pays again.
+Spending follows the `spend-gate` skill (`../../spend-gate/SKILL.md`) (proxy branch): a probe with the human's yes for an endpoint with no logged charge, then a yes to "up to N credits", labelled an estimate, drawn from logged charges; stop at it. `gooseworks:data_price_provider` does not price these lookups. Every charge is logged in `research/credits-log/<YYYY-MM>.md` (`date | playbook | tool/endpoint | query kind | items | credits`). A resubmitted paid call pays again.
 
 Lookup counts for the estimate when a top-up only deepens a free result (approximate): **hidden numbers ~2 per finalist** (profile + posts); **deeper vetting ~10–15 per paid pick** (profile 1, posts 2–4, comments ~5, transcripts 2–3, link-in-bio 1, name search 1, competitor ad checks 1–3); **light vetting ~4 per seeding finalist**; audience countries as their own line (a notably pricier lookup); business contacts after the human approves the names, ~1–2 each. Avoid `gooseworks:social_inspiration_watch` unless a saved video truly can't be judged from metadata and transcript — it is materially more expensive.
 

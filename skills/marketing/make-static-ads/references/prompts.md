@@ -10,7 +10,7 @@ The idea survives generation only if the prompt **describes the event concretely
 
 Name every attached image's job in the prompt, in the same order:
 
-1. **Product identity** (always first; for software, the real UI screenshot, or the logo or mascot when no UI fits): "Image 1 is the official product. Reproduce this exact pouch: yellow top, dark teal bottom, black KOLKATA CHAI CO. wordmark, label layout and proportions. Never substitute another package."
+1. **Product identity** (always first; for software, the real UI screenshot, or the logo or mascot when no UI fits): "Image 1 is the official product. Reproduce this exact pouch: yellow top, dark teal bottom, black MASALA LANE wordmark, label layout and proportions. Never substitute another package."
 2. **The logo file**, on every ad unless the marketer said none: "Image 2 is our logo: place it exactly as given at <position>, at about <size>; never redraw or recolour it." A small file is still attached; never leave an empty space to add it later. It keeps its own colours: when the background would hide it, move it or change that ad's background, never recolour it. More product angles follow if needed.
 3. **The template**, only at **close** and only when the brand owns it (its own past ad): "Image 3 is the layout to follow: keep its composition, block positions and text slots; replace its product, words and colours with ours." At every other level, or for any other brand's template, describe the layout in words (§3).
 

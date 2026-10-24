@@ -1,6 +1,6 @@
 # Smoke Test
 
-fetch_icons.py --run-dir <run> ; build_overlays.py --config config.json --out-dir <run>/generated/overlays ; compose_master.py --config config.json --run-dir <run> --no-music — deterministic, $0.
+fetch_icons.py --run-dir <run> ; build_overlays.py --config config.json --out-dir <run>/generated/overlays ; compose_master.py --config config.json --run-dir <run> --no-music — deterministic, no paid calls.
 
 Pass when:
 - `fetch_icons.py` lands medal.png / finger-down.png / check.png in `<run>/assets/icons`.

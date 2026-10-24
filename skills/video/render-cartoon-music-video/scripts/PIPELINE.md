@@ -1,9 +1,9 @@
 # Pipeline — cartoon music-video
 
 How `config.example.json` maps to the real production steps. This molecule ships a
-**config + this map**, not a bundled runner: the worked example (Coinbase "Bet on anything")
+**config + this map**, not a bundled runner: the worked example (Coinmesa "Bet on anything")
 was produced by the video-orchestrator's per-state steps plus two per-project drivers that
-live in `clients/coinbase/video-01-music-video-debut/scripts/` (`stitch.py`, `rebuild_captions.py`).
+live in that project's own `scripts/` folder (`stitch.py`, `rebuild_captions.py`).
 Reference those directly, or drive the whole run via `video-orchestrator-with-control-plane`.
 
 The six steps run **in order** because each depends on the last: the song sets the timeline
@@ -16,7 +16,7 @@ assembly stitches all of it with the logo bug + end card.
 | Config field | Phase | Source step / script (in the run) | Paid? |
 |---|---|---|---|
 | `song.source`, `song.prompt`, `song.structure`, `song.model` | 1 Song | ElevenLabs `music_v1` (or ingest the user mp3) | **PAID** (or user-supplied) |
-| `song.outputs.word_timings` | 1 Song | native `music_v1` timestamps, OR Groq `whisper-large-v3` word-level on the supplied mp3 | ~$0.10 (Whisper) |
+| `song.outputs.word_timings` | 1 Song | native `music_v1` timestamps, OR Groq `whisper-large-v3` word-level on the supplied mp3 | **PAID** (Whisper) |
 | `song.outputs.beats` / `.bars`, `song.bar_duration_s`, `song.time_signature` | 1 Song | `librosa.beat.beat_track` (assume 4/4) → `beats.json` + `bars.json` | free |
 | `song.recommended_trim_end_s` | 1 Song | `audio/song-ingestion-notes.md` trim analysis | free |
 | `character.descriptor`, `character.anchor`, `character.angles`, `character.method` | 2 Character | video-orchestrator `lock-character` → `nano_banana_2` anchor + 4 angles → `generated/character-lock/LOCKED.json` | **PAID** |
@@ -32,7 +32,7 @@ assembly stitches all of it with the logo bug + end card.
 
 **Lock the song FIRST — it sets the timeline.** Either feed `song.structure` + `song.prompt`
 to ElevenLabs `music_v1` (`source: generate`), or ingest a user-supplied mp3 (`source:
-user_supplied`, the Coinbase path — the mp3 landed before the API call could fire). Get
+user_supplied`, the Coinmesa path — the mp3 landed before the API call could fire). Get
 word-level timestamps: native from `music_v1`, or Groq `whisper-large-v3` word-level for a
 supplied track → `audio/word-timestamps.json`. Then `librosa.beat.beat_track` → `audio/beats.json`
 + `audio/bars.json` (4/4). **The BAR GRID sets the timeline** — one bar = one shot (default);
@@ -47,7 +47,7 @@ markers from the lyric text before any music-gen call** — the model sings them
 9:16, then 4 parallel angle calls off the approved anchor (3q-left, 3q-right, action medium,
 climax hero — the climax angle doubles as the S15 keyframe). Drift-check hair / wardrobe /
 brand-color / applique / skin tone → `LOCKED.json`. Drift < 5% → `method: anchor-ref`; drift
-> 15% → escalate to Higgsfield Soul ID (~$15). The locked anchor job is threaded as the media
+> 15% → escalate to Higgsfield Soul ID (a paid step). The locked anchor job is threaded as the media
 ref into every character-bearing keyframe.
 
 ## 3. Keyframes → `nano_banana_2`  (config: `tableaux[].keyframe_prompt`, `look_pack`, `keyframe_engine`)  [PAID]
@@ -101,4 +101,4 @@ The repeated "you called it" ×3 hook had a Whisper gap — hand-patch the choru
   silent tail), loudnorm to −14 LUFS → `edits/master-final.mp4` (1080×1920, 30fps, h264+aac, ~54.9s).
 
 Re-cuts (new caption chunking, swapped end card, re-timed windows, logo-bug toggle) reuse the
-existing keyframes/clips/song and cost **$0** — only steps 1–4 spend.
+existing keyframes/clips/song and spend nothing — only steps 1–4 spend.

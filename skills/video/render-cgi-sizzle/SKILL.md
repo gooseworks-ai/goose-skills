@@ -12,7 +12,7 @@ the phone in 3D with rim-light + bokeh, then everything collapses back into the 
 value-prop climax + a brand end card over a music bed. It reads as an Apple-keynote product
 film, not UGC and not a physical-product shoot.
 
-The worked example (`scripts/config.example.json`) is MasterClass: a gold phone in a
+The worked example (`scripts/config.example.json`) is Lumenclass: a gold phone in a
 smoky-black studio with an amaranth rim-light, an "Eryn" keynote-cadence VO, a premium-tech
 piano/synth bed, and a "200+ classes. One app." climax. Those are **one example**, not defaults.
 

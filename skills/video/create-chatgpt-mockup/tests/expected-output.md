@@ -12,7 +12,7 @@ Each PNG should read as a real ChatGPT iOS screen in light mode. What each examp
 | `02-sleep-apnea-long.json` | `title-only` header "ChatGPT 5.2 ›" with edit/personPlus/more, DND moon next to `08:18`; long assistant answer with a `💡` inline-icon `##` heading, **bold** and *italic* runs, a horizontal rule, a bullet list, and a "Johns Hopkins Medicine +1" cite pill; no thumbs feedback; composer send button is the black stop square (`streaming`) |
 | `03-poem-iphone-mac.json` | `title-only` header; assistant bold title "Ode to iPhone and Mac" above a four-stanza poem where lines inside a stanza are soft `<br>` breaks and stanzas are separated by blank space; no feedback; composer is the streaming (stop-square) state |
 | `04-empty-typing.json` | `plain-title` "Get Plus ✦" header; centered OpenAI spiral hero (empty state, no conversation); composer shows typed text "Write me a poem about loving iPhone and Mac" with a caret and a solid-black active send button |
-| `05-seatgeek-gpt-chip.json` | `title-only` header, DND moon next to `9:41`; assistant bold title "Cheapest Upcoming Mets Games" + a short reply with bold price runs; the "SeatGeek ×" GPT chip sits inside the composer above the "Ask ChatGPT" input row |
+| `05-seatfinch-gpt-chip.json` | `title-only` header, DND moon next to `9:41`; assistant bold title "Cheapest Upcoming Mets Games" + a short reply with bold price runs; the "Seatfinch ×" GPT chip sits inside the composer above the "Ask ChatGPT" input row |
 | `06-short-howto.json` | `model-tag` header `ChatGPT 5.1 ▾`; assistant reply opening with a **bold** lead and a clean 1./2./3. ordered list; thumbs feedback; default "Ask anything" composer |
 
 Visual identity checks (eyeball against the `references/*.png` captures):

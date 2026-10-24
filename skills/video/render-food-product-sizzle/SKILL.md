@@ -14,7 +14,7 @@ SFX with NO voiceover. This capability is the **FREE, deterministic assembly** �
 the anti-AI grain pass, the audio (music bed + SFX) composite, the PIL end card, and the optional
 serif stat-callout pills.
 
-`scripts/config.example.json` is the worked example (Lineage Provisions "Beef Sticks Sizzle", ~14s
+`scripts/config.example.json` is the worked example (Hearthline Provisions "Beef Sticks Sizzle", ~14s
 1080×1920 9:16, ~4 macro scenes + a static end card); `scripts/PIPELINE.md` maps every config block
 to its source step and `scripts/README.md` documents the free assembly.
 
@@ -40,7 +40,7 @@ clips + the music bed + the diegetic SFX + the real logo PNG + the real product 
 `render-food-product-sizzle` normalizes fps / SAR, concats the body clips, applies the anti-AI grain
 pass, composites the audio (bed + SFX at their cue points), composites the static PIL end card, burns
 the optional serif callout pills, and muxes → the master. Re-cuts reuse the existing keyframes /
-clips / music and cost **$0**.
+clips / music and spend nothing.
 
 ## Contract (the free assembly)
 

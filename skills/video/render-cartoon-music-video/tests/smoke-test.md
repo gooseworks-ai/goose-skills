@@ -13,5 +13,5 @@ Pass when the assembly runs to a valid MP4 and:
 - the end card is a solid brand-color card, song carrying under it with an afade tail (no silent tail);
 - the sung song is the entire script — no separate VO;
 - **no paid call is made** — the song, keyframes, and clips come from the paid capabilities
-  (create-music-elevenlabs / create-image-fal / create-video-fal); this assembly is $0 and a
+  (create-music-elevenlabs / create-image-fal / create-video-fal); this assembly is free and a
   re-cut reuses the existing assets.

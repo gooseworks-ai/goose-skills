@@ -1,6 +1,6 @@
 # render-3d-product-showcase scripts — the FREE assembly
 
-`render-3d-product-showcase` is the **deterministic, $0 assembly stage** of the 3D
+`render-3d-product-showcase` is the **deterministic, free assembly stage** of the 3D
 product-showcase format. The paid stages are separate capabilities:
 
 - **the styled hero** (identity lock) — `create-image-fal` (nano-banana edit) restyles the
@@ -15,9 +15,9 @@ product-showcase format. The paid stages are separate capabilities:
 There is **no Higgsfield / Marketing Studio** in this format; every paid call routes through the
 fal-proxy / elevenlabs-proxy so it bills the Ads agent. This capability spends nothing: given the
 four delivered beats + the brand wordmark it stitches the finished master. Re-cuts (a swapped end
-card, a re-timed beat, a re-mixed bed) reuse the existing beats and cost **$0**.
+card, a re-timed beat, a re-mixed bed) reuse the existing beats and spend nothing.
 
-`config.example.json` is the worked example (DIBS Beauty "Desert Island Duo", ~15s 720×1280).
+`config.example.json` is the worked example (Solenne Beauty "Dune Duo", ~15s 720×1280).
 `build_endcard.py` and `build_masters.py` are the runnable free assembly (below). `PIPELINE.md`
 maps every config block to its source step.
 

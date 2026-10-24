@@ -16,7 +16,7 @@ Four beats (mirrors the Pinterest search-moodboard reference):
 
 Creative values (hook, rooms/captions, caret_color, endcard.bg, stack_tint) come from the
 config, which the recipe fills from the brand kit + recipe.choices (backdrop_mood). The
-Ruggable demo's red caret + warm beige gradient are ONE worked example, not defaults: when a
+Loomwash demo's red caret + warm beige gradient are ONE worked example, not defaults: when a
 CSS value is missing or still an unfilled `<input:…>` / `<brand:…>` / `{…}` placeholder, a
 NEUTRAL value is used and a WARNING is printed. Unfilled TEXT/PATH placeholders fail loudly.
 

@@ -16,7 +16,7 @@ is NO lipsync (the still headshot is kept only for a future lipsync variant). Th
 is the **FREE, deterministic assembly** — the Playwright beat render, the ffmpeg concat, the
 window-masked caption burn, the VO+music mix, and the final composite.
 
-`scripts/config.example.json` is the worked example (Everself "doctor-educator" listicle, ~66s
+`scripts/config.example.json` is the worked example (Truehour "doctor-educator" listicle, ~66s
 1080×1920 9:16 at 25fps) — copy its structure, never its creative values; `scripts/PIPELINE.md` maps every config block to its source step and
 `scripts/README.md` documents the free assembly.
 
@@ -47,7 +47,7 @@ Given the VO + `words-flat.json` + the N authored hyperframe beats + the color-g
 the brand wordmark SVG, `render-vo-anchored-motion-listicle` renders each beat frame-by-frame via
 Playwright (all beats at fps 25), concats the beats + B-roll, burns the window-masked captions, mixes
 the VO under the low music bed, and composites → the master. Re-cuts reuse the existing VO / beats /
-B-roll and cost **$0**.
+B-roll and spend nothing.
 
 ## Contract (the free assembly)
 

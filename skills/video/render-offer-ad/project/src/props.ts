@@ -20,8 +20,8 @@ export interface Copy {
   subline: string; // beat 1 — the smaller line under the headline (e.g. "the new way")
   motif_chip: string; // beat 2 — the sticker-chip over the product (e.g. "DRINKABLE")
   claim_lines: { big: string; small: string }[]; // beat 3 — 3 proof rows (e.g. {big:"10g",small:"collagen"})
-  cta_label: string; // beat 4 — CTA pill text (e.g. "Try E27")
-  cta_url: string; // beat 4 — URL under the pill (e.g. "spoiledchild.com")
+  cta_label: string; // beat 4 — CTA pill text (e.g. "Try it today")
+  cta_url: string; // beat 4 — URL under the pill (e.g. "littlewilder.example")
   wordmark: string; // beat 4 — brand wordmark that slams first
 }
 
