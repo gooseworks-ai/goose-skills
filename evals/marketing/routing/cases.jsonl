@@ -85,10 +85,10 @@
 {"id": "R85", "ask": "Write an onboarding email series for new free sign-ups", "expected_playbook": "email-lifecycle", "kind": "direct", "source": "hand-test 20 Oct", "note": "automated emails to a list segment → email-lifecycle"}
 {"id": "R86", "ask": "Set up a win-back automation for users inactive for 30 days", "expected_playbook": "email-lifecycle", "kind": "edge", "source": "hand-test 20 Oct"}
 {"id": "R87", "ask": "Write an email to our leads", "expected_playbook": "write-outreach", "acceptable_alternatives": ["email-lifecycle"], "kind": "vague", "source": "hand-test 20 Oct", "note": "router asks cold or warm in one question"}
-{"id": "R88", "ask": "I need to grow my brand", "expected_playbook": "where-to-start", "acceptable_alternatives": ["marketing-agent"], "kind": "vague", "source": "Akhil 24 Oct", "note": "a broad growth ask went straight to campaign planning; where-to-start asks a few questions, then names the job"}
-{"id": "R89", "ask": "Help me grow my brand", "expected_playbook": "where-to-start", "acceptable_alternatives": ["marketing-agent"], "kind": "vague", "source": "Akhil 24 Oct", "note": "no campaign, budget or date → not plan-campaign"}
-{"id": "R90", "ask": "How do I get more sales?", "expected_playbook": "where-to-start", "acceptable_alternatives": ["marketing-agent"], "kind": "vague", "source": "Akhil 24 Oct"}
-{"id": "R91", "ask": "How do I get more customers for my business?", "expected_playbook": "where-to-start", "acceptable_alternatives": ["marketing-agent"], "kind": "vague", "source": "Akhil 24 Oct"}
-{"id": "R92", "ask": "Where do I start with marketing?", "expected_playbook": "where-to-start", "acceptable_alternatives": ["marketing-agent"], "kind": "vague", "source": "Akhil 24 Oct"}
+{"id": "R88", "ask": "I need to grow my brand", "expected_playbook": "where-to-start", "kind": "vague", "source": "Akhil 24 Oct", "note": "a broad growth ask went straight to campaign planning; where-to-start asks a few questions, then names the job"}
+{"id": "R89", "ask": "Help me grow my brand", "expected_playbook": "where-to-start", "kind": "vague", "source": "Akhil 24 Oct", "note": "no campaign, budget or date → not plan-campaign"}
+{"id": "R90", "ask": "How do I get more sales?", "expected_playbook": "where-to-start", "kind": "vague", "source": "Akhil 24 Oct"}
+{"id": "R91", "ask": "How do I get more customers for my business?", "expected_playbook": "where-to-start", "kind": "vague", "source": "Akhil 24 Oct"}
+{"id": "R92", "ask": "Where do I start with marketing?", "expected_playbook": "where-to-start", "kind": "vague", "source": "Akhil 24 Oct"}
 {"id": "R93", "ask": "Grow my Instagram", "expected_playbook": "run-organic-social", "kind": "edge", "source": "Akhil 24 Oct", "note": "a growth ask that names a channel is that job, not where-to-start"}
 {"id": "R94", "ask": "Plan a campaign to grow the brand: $3k for Black Friday", "expected_playbook": "plan-campaign", "kind": "edge", "source": "Akhil 24 Oct", "note": "growth wording, but a campaign, a budget and a date → plan-campaign"}

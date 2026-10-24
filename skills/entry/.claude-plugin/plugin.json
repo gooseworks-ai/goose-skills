@@ -1,6 +1,6 @@
 {
   "name": "gooseworks",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "GooseWorks for your coding agent: the gooseworks router plus the ads, video and product-photo entry skills. Pair it with `npx gooseworks@latest install --mcp` to connect your GooseWorks account.",
   "author": {
     "name": "GooseWorks",
