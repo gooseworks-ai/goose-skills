@@ -13,6 +13,10 @@
     "create-image-gpt-image-fal",
     "verify-product-image",
     "brand-research",
-    "product-photoshoot"
+    "product-photoshoot",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "scrapecreators-api",
+    "transcript-intelligence"
   ]
 }

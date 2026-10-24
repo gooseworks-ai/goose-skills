@@ -1067,7 +1067,8 @@
           "competitor-ad-intelligence",
           "comment-mining",
           "reddit-post-finder",
-          "watch"
+          "watch",
+          "transcript-intelligence"
         ],
         "example_prompt": "What static ads should I make for my brand? Show me the reviews and ads behind each idea."
       }
@@ -1175,7 +1176,10 @@
           "corrections update one fact without re-interviewing"
         ],
         "requires_skills": [
-          "meta-ad-manager"
+          "meta-ad-manager",
+          "ads-north-star-strategy",
+          "answer-ads-questions",
+          "launch-meta-ad-campaign"
         ],
         "example_prompt": "Help me set up Meta ads for my shop. Ask me only what you really need."
       }
@@ -1275,7 +1279,9 @@
         ],
         "requires_skills": [
           "meta-ad-manager",
-          "launch-meta-ad-campaign"
+          "launch-meta-ad-campaign",
+          "ad-management-intake",
+          "answer-ads-questions"
         ],
         "example_prompt": "We have $1,500 for three weeks to get demo requests. What should the Meta ads strategy be?"
       }
@@ -1672,7 +1678,10 @@
           "GooseWorks, direct Meta and planning-only modes"
         ],
         "requires_skills": [
-          "meta-ad-manager"
+          "meta-ad-manager",
+          "ad-management-intake",
+          "ads-north-star-strategy",
+          "launch-meta-ad-campaign"
         ],
         "example_prompt": "How are my Meta ads doing this week, and why did you pause the gift ad?"
       }
@@ -1722,7 +1731,9 @@
         },
         "requires_skills": [
           "competitor-ad-intelligence",
-          "comment-mining"
+          "comment-mining",
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     },
@@ -3958,7 +3969,15 @@
           ]
         },
         "requires_skills": [
-          "video-production-harness"
+          "video-production-harness",
+          "ad-angle-miner",
+          "comment-mining",
+          "competitor-ad-intelligence",
+          "reddit-post-finder",
+          "scrapecreators-api",
+          "transcript-intelligence",
+          "watch",
+          "write-video-ad-script"
         ]
       }
     },
@@ -5249,7 +5268,11 @@
           "create-image-gpt-image-fal",
           "verify-product-image",
           "brand-research",
-          "product-photoshoot"
+          "product-photoshoot",
+          "comment-mining",
+          "competitor-ad-intelligence",
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     },
@@ -6528,7 +6551,8 @@
           "create-vo-elevenlabs",
           "create-image-gpt-image-fal",
           "create-video-fal",
-          "watch"
+          "watch",
+          "media-proxy"
         ],
         "version": "2.0.0",
         "features": [
@@ -6831,7 +6855,14 @@
           "watch",
           "create-video-seedance-2-fal",
           "write-video-ad-script",
-          "create-video-fal"
+          "create-video-fal",
+          "ad-angle-miner",
+          "comment-mining",
+          "competitor-ad-intelligence",
+          "media-proxy",
+          "reddit-post-finder",
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     },
@@ -7014,7 +7045,8 @@
         "requires_skills": [
           "watch",
           "create-image-gpt-image-fal",
-          "create-vo-elevenlabs"
+          "create-vo-elevenlabs",
+          "media-proxy"
         ]
       }
     },
@@ -9857,7 +9889,12 @@
         },
         "requires_skills": [
           "ad-angle-miner",
-          "watch"
+          "watch",
+          "comment-mining",
+          "competitor-ad-intelligence",
+          "reddit-post-finder",
+          "scrapecreators-api",
+          "transcript-intelligence"
         ]
       }
     }

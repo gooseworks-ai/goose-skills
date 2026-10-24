@@ -22,7 +22,10 @@
     "corrections update one fact without re-interviewing"
   ],
   "requires_skills": [
-    "meta-ad-manager"
+    "meta-ad-manager",
+    "ads-north-star-strategy",
+    "answer-ads-questions",
+    "launch-meta-ad-campaign"
   ],
   "example_prompt": "Help me set up Meta ads for my shop. Ask me only what you really need."
 }

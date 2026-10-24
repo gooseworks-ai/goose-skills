@@ -24,7 +24,9 @@
   ],
   "requires_skills": [
     "meta-ad-manager",
-    "launch-meta-ad-campaign"
+    "launch-meta-ad-campaign",
+    "ad-management-intake",
+    "answer-ads-questions"
   ],
   "example_prompt": "We have $1,500 for three weeks to get demo requests. What should the Meta ads strategy be?"
 }
