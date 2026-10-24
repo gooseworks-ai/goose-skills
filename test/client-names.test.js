@@ -55,14 +55,15 @@ test('without canaries the fictional names pass', () => {
   assert.deepEqual(scanText('gwcanaryclient', loadHashes()), []);
 });
 
-test('the scan reads tracked text files and skips frozen part versions and parts/_lib', () => {
+test('the scan reads tracked text files and skips frozen part versions, part src and parts/_lib', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'gs-client-names-'));
   const write = (rel, text) => {
     fs.mkdirSync(path.dirname(path.join(root, rel)), { recursive: true });
     fs.writeFileSync(path.join(root, rel), text);
   };
   write('skills/marketing/plan-launch/tests/test-by-hand.md', 'Brand: GwCanaryClient\n');
-  write('parts/check-layer/src/part.mjs', '// gw canary client\n');
+  write('parts/check-layer/src/part.mjs', '// gw canary client (build source of the frozen version)\n');
+  write('parts/check-layer/tests/part.test.mjs', '// gw canary client\n');
   write('parts/check-layer/1.2.0/part.mjs', '// gw canary client (frozen)\n');
   write('parts/_lib/speech.mjs', '// gwcanaryclient (bundled)\n');
   write('assets/logo.bin', Buffer.from([0, 1, 2, ...Buffer.from('gwcanaryclient')]));
@@ -76,5 +77,5 @@ test('the scan reads tracked text files and skips frozen part versions and parts
   });
   assert.equal(res.status, 1, res.stdout + res.stderr);
   const files = res.stderr.split('\n').filter((l) => /a real client/.test(l)).map((l) => l.split(':').slice(0, 2).join(':'));
-  assert.deepEqual(files.sort(), ['parts/check-layer/src/part.mjs:1', 'skills/marketing/plan-launch/tests/test-by-hand.md:1']);
+  assert.deepEqual(files.sort(), ['parts/check-layer/tests/part.test.mjs:1', 'skills/marketing/plan-launch/tests/test-by-hand.md:1']);
 });
