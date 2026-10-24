@@ -1,16 +1,16 @@
 # Creativity levels — close, balanced, bold
 
-Every ad is built on a template. The level decides how much of it the ad keeps. The marketer picks the level in the combined question (playbook Step 2); "your choice" or "just give me the images" means **balanced**.
+Every ad is built on a template. The level decides how much of it the ad keeps. The marketer picks one level for the whole set in the combined question (playbook Step 2, which also says what "your choice" means). The angle rule is the same at every level (playbook Step 2).
 
-| Level | Message | Picture | Template image sent to the image model? | Where the on-image text format comes from |
-|---|---|---|---|---|
-| **Close** | A profile angle | The template's own scene and layout, with this brand's product, words and colours swapped in | Only when the brand owns the template (its own past ad). Any other brand's template: a detailed layout description in words instead | The template's text slots |
-| **Balanced** | A profile angle | A new visual idea, staged inside the template's layout | No. The layout is described in words | The template's text slots |
-| **Bold** | A profile angle, or a marked new one | Idea first (`ideas.md`); the template lends only a device or a look | No. Words only | The brand's own ads (`brand-profile.md` §2, "How they write on-image text") |
+| Level | Picture | Template image sent to the image model? | Where the on-image text format comes from |
+|---|---|---|---|
+| **Close** | The template's own scene and layout, with this brand's product, words and colours swapped in | Only when the brand owns the template (its own past ad). Any other brand's template: a detailed layout description in words instead | The template's text slots |
+| **Balanced** | A new visual idea, staged inside the template's layout | No. The layout is described in words | The template's text slots |
+| **Bold** | Idea first (`ideas.md`); the template lends only a device or a look | No. Words only | The brand's own ads (`brand-profile.md` §2, "How they write on-image text") |
 
 ## Style: one per ad, varied across the set
 
-Style is how the picture is made, separate from the level. Pick it with the template; each ad's alternates on the board show other styles.
+Style is how the picture is made, separate from the level. Pick it after the visual idea and before the template (the `make-static-ads-concept-grid` skill (`../../make-static-ads-concept-grid/SKILL.md`) §4); each ad's alternates on the board show other styles.
 
 | Style (`style:` tag) | Looks like |
 |---|---|
@@ -24,22 +24,18 @@ Style is how the picture is made, separate from the level. Pick it with the temp
 | Illustration (`illustration`) | Drawn, in one consistent hand |
 | Conceptual still life (`still-life`) | A staged set with props or miniatures; playful |
 
-Take the style from the template and the brand's own ads (`profile.md`). A set uses at least two styles unless the brand's ads use only one. Conceptual still life, miniatures and puppet characters read as playful or cartoonish: at most one ad per set, unless that is the brand's own look. Bold means a bold idea, not a whimsical style.
+Start from the styles the brand's own ads use (`profile.md`). **The style rule:** a set of two or more ads uses at least two styles; conceptual still life, miniatures and puppet characters read as playful or cartoonish, so at most one ad per set. Bold means a bold idea, not a whimsical style.
 
 ## Close
 
-The fastest way to an ad that works: a proven layout, this brand's message. Describe the template as the find-references step records it. Keep none of the source's product, words, logo or people. If a buyer could mistake ours for theirs (cover both logos and look side by side), change the picture and the words.
+The fastest way to an ad that works: a proven layout, this brand's message. Close templates come from the brand's own ads, the GooseWorks library or another category; a direct competitor's ad lends layout only, so it is never a close template. Describe it as the `make-static-ads-find-references` skill (`../../make-static-ads-find-references/SKILL.md`) records it; its rights rules (§4 there) apply.
 
-## Balanced
+## Balanced and bold
 
-The template sets the stage (layout, text slots, background treatment); the visual idea fills it. Choose the template after the idea, so the layout fits the event: a single big object needs a hero layout; a comparison needs a split.
-
-## Bold
-
-Today's most creative mode. The template is a source of a device ("an object crosses a screen") or a look (lighting, set). Text style comes from the brand's own ads, never from the agent's default. If the brand has no ads, use the website's headline style and say so on the board.
+At **balanced** the template sets the stage (layout, text slots, background); the visual idea fills it. At **bold** it lends only a device ("an object crosses a screen") or a look; text style comes from the brand's own ads, or from the website's headline style when the brand has no ads (say so on the board).
 
 ## Text and fullness, at every level
 
-Fill the text slots the source has, all of them: if the template carries a list, a price-free badge, UI, a quote card or a product grid, so does the ad (with this brand's true content). If it has just a headline, the ad has just a headline. Keep slot content short so it draws cleanly (list items of 2–4 words, a few large UI labels, a one-line quote): the build test rules out long or small text, not the slots. A fact with no slot goes in the post text.
+Fill the text slots the source has, all of them: if the template carries a list, a badge, UI, a quote card or a product grid, so does the ad (with this brand's true content). If it has just a headline, the ad has just a headline. Keep slot content short so it draws cleanly (list items of 2–4 words, a few large UI labels, a one-line quote) and at most one proof line per image (`../../ad-policy-check/SKILL.md` §2): the build test rules out long or small text, not the slots. A fact with no slot goes in the post text.
 
 **Fill the frame.** A big headline floating on empty background is not a layout. Every area of the template does a job in the ad. Across a set, vary the structure: no two ads share the same text pattern; one repeated pattern reads as one template. Use at least two background tones across a set; keep text contrast at least 4.5:1. Pick templates whose information density matches the brand's own ads.

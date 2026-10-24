@@ -7,7 +7,7 @@ description: >-
   legal review, with one pass, fixed or flag line per ad and platform. Use alone when you already have
   the ad text or images and know where they will run; otherwise run the playbook for the job (e.g.
   make-static-ads, make-content, email-lifecycle).
-version: 0.1.1
+version: 0.1.2
 ---
 
 # ad-policy-check
@@ -21,7 +21,7 @@ Craft knowledge, not legal advice. Policies change: when a rule decides whether 
 
 ## 1. Category first
 
-Regulated (health, supplements, cosmetics with efficacy language, alcohol, cannabis/CBD, tobacco/vape, financial products, crypto, weight loss, kids' products, regulated professions, gambling, dating, political) or a special ad category on Meta (housing, employment, credit, social issues)?
+Regulated (health, supplements, food with health, nutrition or free-from claims, cosmetics with efficacy language, alcohol, cannabis/CBD, tobacco/vape, financial products, crypto, weight loss, kids' products, regulated professions, gambling, dating, political) or a special ad category on Meta (housing, employment, credit, social issues)?
 
 - No brand rule on file for it → flag the whole set "needs legal review before launch".
 - A special ad category → write it in the hand-off so whoever launches sets the flag; copy may not target protected traits.
@@ -45,7 +45,7 @@ Regulated (health, supplements, cosmetics with efficacy language, alcohol, canna
 - **Body image and before/after:** nothing that makes people feel bad about their body; no before/after for weight loss; for beauty and health treat it as needing the human's OK — same conditions, no retouch, typical result; prefer old-vs-new routines, never faces or bodies.
 - **Misleading and sensational:** no fake play buttons, close-X, notification badges, fake DMs; no shocking imagery.
 - **Branded content:** a real creator's face or name needs their permission and the paid-partnership label.
-- Text-heavy images get less delivery — keep image words to a hook and at most one proof line.
+- Text-heavy images get less delivery — keep image words short: a hook and at most one proof line (a number, rating or claim), whatever slots the layout has. Other slots carry a few plain words each (list items of 2–4 words, labels).
 
 **TikTok** — stricter on supplements, weight management and "too good to be true" results, varies by market; no exaggerated before/after; must not imitate organic UI (fake "For You" chrome, fake like counts). Music: only TikTok's Commercial Music Library or generated/licensed music.
 

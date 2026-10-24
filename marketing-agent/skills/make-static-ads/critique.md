@@ -592,3 +592,34 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 **Summary.** Akhil saw that every brand's ads (Graza, Anna and Sarah, Gooseworks) came out in one look: staged, playful set-design still life, cartoonish with miniatures or a felt puppet. Cause: the prompt guide's shared foundation gave every ad the same finish ("real materials, believable cast shadows, a deliberately built and photographed set"), ideas.md asked for events "built on a real set and photographed", and the Kolkata example is five staged sets. The 0.8.0 cut of creative-taxonomy also removed the only list of visual styles.
 
 **Change.** A style per ad (levels.md: premium product photo, lifestyle, phone/UGC, 3D render, flat graphic or type, native format, editorial collage, illustration, conceptual still life), taken from the template and the brand's own ads; at least two styles per set; conceptual still life at most one per set unless it is the brand's look. The prompt describes each ad's own style; no shared finish. Template alternates on the board show other styles, so the marketer can switch the look. Board column and `style:` tag added. Also from the 0.8.0 run: anything shown inside an ad must look finished (no blank placeholder boxes); concept ids carry the batch date (`concept:<yyyymmdd>-c<n>`) so batches don't collide; rubric severities now match render-review (a REMAKE still failing after the retry is shown, not dropped).
+
+
+## Round 34 — 24 Oct: audit loop to 9/10 (0.9.0)
+
+**Summary.** Akhil asked for every gap fixed before merge, then two independent audits scored on ten parameters until each scored 9 or more. One auditor used the writing-for-agents standard; the other walked a spice-mix and a software run from zero. Rounds 3 to 8 took the scores from 5–8 to 9 on all ten for both.
+
+| Parameter | Round 3 (writing-for-agents / plain) | Round 8 |
+|---|---|---|
+| Size and economy | 6 / 6 | 9 / 9 |
+| No repetition | 6 / 6 | 9 / 9 |
+| No contradictions | 5 / 6 | 9 / 9 |
+| From-scratch readability | 7 / 7 | 9 / 9 |
+| Order and flow | 6 / 7 | 9 / 9 |
+| Gates and safety | 7 / 8 | 9 / 9 |
+| Owner's decisions | 6 / 7 | 9 / 9 |
+| Tool accuracy | 8 / 8 | 9 / 9 |
+| What the human sees | 7 / 7 | 9 / 9 |
+| Edge cases | 6 / 6 | 9 / 9 |
+
+**What changed:**
+- **Logo:** the real file is placed by `scripts/place_logo.py` after every render (tested); the model never draws it on shell hosts. No shell: the marketer picks a clear corner (recommended) or a drawn logo.
+- **Style step** in concept-grid between visual idea and template; the style rule is strict (2+ styles per set, still life at most one).
+- **Step 2** carries its own layout: creativity first, angle table, claim lines, logo options, placements and ratios, missing photos, price.
+- **Step 7 change paths:** template swap, row change, level change, edited line, new claim, added ratio.
+- **render-review** owns the retry rule: one retry per ad and ratio; verdict order (free label repair, copy-only fix, unfixable, try 1, try 2); failed renders; refusals re-quoted; the judge/agent split of rubric checks; tags on the kept version.
+- **One home per rule:** claims through claims-gate (claims-and-policy slimmed, tiers table cut), one price rule, template rights in find-references §4, the new-angle cap in Step 2, brand ads win over kit in brand-profile §3.
+- **Tool fixes:** run-memory inputs, `approved_only` history read, `library_scrape` polling, `media_upload` arguments, no-image prompts stay on the default engine.
+- **Shared skills:** claims-gate 0.1.4 (one path rule, `brand_knowledge_read`, food row in claim-types), honest-review 0.1.2, ad-policy-check 0.1.2.
+- **Size:** 1,038 lines / 16,616 words before, 988 / 16,592 after, with more behaviour; label-repair docs moved to `scripts/repair_patch.md`.
+
+**Owner calls made here:** no set total (spend-gate forbids own sums); the still-life brand-look exception stays removed.

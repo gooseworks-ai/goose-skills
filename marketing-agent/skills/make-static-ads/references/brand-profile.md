@@ -14,12 +14,12 @@ Look at the actual images and posts, not titles or metadata.
 | The brand kit and brain | `brand_read` kit and learnings; `brand_knowledge_browse` core rules | Colours, fonts, logo, every `must` / `dont` |
 
 **Routes** (free, by eye, host browser):
-- **Meta Ad Library:** type the brand's name in the search box and choose it under "Advertisers" (keyword search returns other advertisers), then `facebook.com/ads/library/?active_status=active&ad_type=all&country=<CC>&view_all_page_id=<page id>`. Most-shown ads come first. Don't filter to "Images": many statics run as dynamic ads. Up to 20 statics.
+- **Meta Ad Library:** type the brand's name in the search box and choose it under "Advertisers" (keyword search returns other advertisers), then `facebook.com/ads/library/?active_status=active&ad_type=all&country=<CC>&view_all_page_id=<page id>`. Most-shown ads come first. Don't filter to "Images": many statics run as dynamic ads. Look closely at up to 20 statics for the profile; for the no-repeat test, also skim the rest of the live statics (picture and headline) and write the count ("30 of 30 live ads checked for repeats").
 - **Other platforms the brand uses:** LinkedIn `linkedin.com/ad-library/search?accountOwner=<brand>` (check the advertiser is the brand), TikTok `library.tiktok.com/ads` (Europe and UK only), Google `adstransparency.google.com`.
-- **Imported into GooseWorks:** `gooseworks:ads_template_read` `mode: "mine"`, `filters.format: "image"`, `limit: 20`; check the advertiser is the brand. Nothing imported, or older than a week → `gooseworks:ads_library_scrape` with `brand_id` (free), poll `gooseworks:job_get` `kind: "library_scrape"`.
-- **No browser and nothing imported:** the proxy, on one yes to a ceiling (the `spend-gate` skill (`../../spend-gate/SKILL.md`) branch B): `gooseworks:data_call_provider` `provider: "scrapecreators"`, `/v1/facebook/adLibrary/search/companies` `{query}`, then `/v1/facebook/adLibrary/company/ads` `{pageId, status: "ACTIVE", media_type: "all", trim: "true"}`.
-- **Made before in GooseWorks:** `gooseworks:ads_creative_read` `tags: ["made-by:make-static-ads"]`, `limit: 20`, and the three latest batch files in `ads/batches/`.
-- **Customers:** the voice-of-customer bank (`reading-the-brain.md` §2), else 10–20 public reviews (product page, Amazon, Reddit). Note the moments people describe. Customer words are situations and hooks, never product proof.
+- **Imported into GooseWorks:** `gooseworks:ads_template_read` `mode: "mine"`, `filters.format: "image"`, `limit: 20`; check the advertiser is the brand. Nothing imported, or older than a week → `gooseworks:ads_library_scrape` with `brand_id` (free), poll `gooseworks:job_get` `kind: "library_scrape"` with `brand_id` and `job_id` = the returned `source_id`.
+- **No browser and nothing imported:** a paid read. Don't run it at Step 1: mark the brand's ads "not checked", put its "up to N credits" ask in the Step 2 question (the `spend-gate` skill (`../../spend-gate/SKILL.md`) branch B), and after a yes read them and update the profile before Step 3. The calls: the Meta rows of `../../spend-gate/proxy-endpoints.md` (Ad libraries): `company/ads` with `companyName` or `pageId`, `status: "ACTIVE"`.
+- **Made before in GooseWorks:** the calls in `engine-notes.md` (the last 10).
+- **Customers:** the voice-of-customer bank (`reading-the-brain.md` §2), else 10–20 public reviews (product page, Amazon, Reddit). Note the moments people describe.
 
 A source you couldn't open goes in the profile as "not checked" with the reason. A brand with no ads and no posts gets its profile from the website and kit alone, and says so.
 
@@ -44,14 +44,18 @@ Colours, type: <what the ads actually use; note where it differs from the kit>
 Recurring devices: <e.g. the mascot in a circle; handwritten notes; before/after>
 How they write on-image text: <length, case, voice, how many text elements, where they sit>
 
+## Five product truths
+1. <what is true about the product, one plain sentence> (source)
+
+## Customer lines (up to five; never made up)
+1. "<a customer's own words, or a moment they describe>" (source, e.g. V-07, an Amazon review)
+
 ## Never
 <every dont/must rule; anything their ads clearly avoid>
 ```
 
 ## 3. Conflicts
 
-When sources disagree (the kit says one positioning, the website another; the kit font differs from the font in their ads), don't pick one. Put the conflict in the combined question to the marketer (playbook Step 2), with your recommendation: for positioning, usually the newest public source; for look and fonts, what the brand's own ads use. "Your choice" → use the recommendation and say which you used on the board.
+**The brand's own ads win over the kit** on look, colours, fonts and on-image text, unless the marketer says otherwise: the kit is often generated (its font is often a guess) and the ads are what the brand actually runs. Every other file points here for this rule.
 
-## 4. How the profile is used
-
-It feeds the angle picker (playbook Step 2), every board row's angle and the no-repeat history (the concept-grid step), the prompt's look and text style (`prompts.md`), and the brand-fit checks of the critic and the judge.
+When sources disagree on anything else (the kit says one positioning, the website another), don't pick one. Put the conflict in the combined question to the marketer (playbook Step 2), with your recommendation: for positioning, usually the newest public source. A look or font conflict goes in the question too, recommending the ads' version. "Your choice" → use the recommendation and say which you used on the board.
