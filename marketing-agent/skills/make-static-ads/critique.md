@@ -623,3 +623,18 @@ Run-memory Start and End are mandatory, including first-run honesty, prior recom
 - **Size:** 1,038 lines / 16,616 words before, 988 / 16,592 after, with more behaviour; label-repair docs moved to `scripts/repair_patch.md`.
 
 **Owner calls made here:** no set total (spend-gate forbids own sums); the still-life brand-look exception stays removed.
+
+
+## Round 35 — 25 Oct: quick questions and visible templates (0.10.0)
+
+**Summary.** Akhil ran 0.9.0 end to end on staging (Personal Day, 3 ads). Two problems: the agent asked everything in one long paragraph instead of the host's question tool, and he could not see which template any ad came from: not on the board, not at hand-off, not in the app.
+
+**Why.** Step 2 said "one message, numbered", so the agent wrote a paragraph. The board rule said "template as an image" but gave no way to make one, so the agent pasted links and skipped the alternates. Templates were only sent to the model at close, and a plain product photo was accepted as a "template". `ads_render` has no template field, so the app's creative page never shows a base image.
+
+**Change.**
+- Step 2 uses the host's question tool (`AskUserQuestion` in Claude Code): at most two calls, the recommendation first; a short numbered list only without one. Claim lines are a multi-select, one tick per approved line.
+- The board's go-ahead is a question too, with "Swap a template" leading to one A/B/C question per ad.
+- `scripts/template_sheet.py` (tested) lays each ad's template and two alternates side by side; the board shows it as an image. At hand-off each ad shows a "Based on" sheet (template → finished ad).
+- A template is a finished ad layout; a product photo is not one. Close and balanced now send the template image (the brand's own ads and GooseWorks library templates); ad-library ads of other brands stay words only.
+- The creative's title names its template, so the app shows it until `ads_render` takes a template id (server-needs N20).
+- A run check before the board catches the steps the test skipped (run memory, history, three templates, raw critic inputs, three headlines, Pass A); Step 9's Done now requires the copy-variant offer and the run record.

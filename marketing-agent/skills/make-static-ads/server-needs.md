@@ -6,6 +6,10 @@ What this playbook needs that the GooseWorks MCP does not give today. Each: the 
 
 **Status in short (v0.4, 19 Oct 2026):** the thin render tool shipped (N1, gooseworks-app PR #2105) and tag writes were fixed in the same PR (#21). Per-ad copy direction (N2) is solved inside the composer's Variant brief. Still open and most important: other brands' ads registered as templates must be structure-only on the server (N0). New since the composer port: N13–N17. Items 1–21 were checked against staging on 2026-10-16 and describe the earlier route through the server's own prompt writer; they are kept for history, with their status updated.
 
+## Added 2026-10-25 — the template behind each ad
+
+N20. **`ads_render` should record the template an ad is based on.** — **Open.** It takes only `prompt`, `image_urls`, `title`; the creative's `source_static_template_id` stays null, so the creative page shows no base image and the marketer can't tell a template was used (Akhil, Personal Day test, 25 Oct). *Ask:* an optional `template_id` (library or own-ad template) and `reference_image_url`, stored on the creative and shown as "Based on" in the app. *Meanwhile:* compose puts the template's name in `title`, the `template:` tag and the batch file carry it, and the hand-off shows a "Based on" sheet.
+
 ## Added 2026-10-19 — concepts, templates, the composer port
 
 ### High

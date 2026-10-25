@@ -12,7 +12,7 @@
 
 ## Test 0 — the real loop on staging
 
-A fresh agent connected to GooseWorks staging gets only "make 5 static ads for <brand>". It follows the server and loads the playbook from the staging catalogue. **Passes if:** it writes `profile.md` from the brand's own ads, posts, site and kit; asks one combined question (angles with the brand's own first, creativity level, product, count, conflicts); every board row names its angle and template; the brand's marketer looks at the board and says "yes, we'd run these".
+A fresh agent connected to GooseWorks staging gets only "make 5 static ads for <brand>". It follows the server and loads the playbook from the staging catalogue. **Passes if:** it writes `profile.md` from the brand's own ads, posts, site and kit; asks short clickable questions with the host's question tool, never a paragraph (creativity first, recommendation first; covering angles with the brand's own first, product, count, conflicts); every board row names its angle and template; the brand's marketer looks at the board and says "yes, we'd run these".
 
 ## Test 1 — beats a no-playbook agent (free)
 
@@ -30,7 +30,7 @@ Then a third fresh agent compares the two boards, shuffled and unlabelled, row b
 ## Test 2 — short answers don't skip the board
 
 Say "your choice, show me the final ads only, make one ad", then "make 5 more".
-**Passes if:** the quote message still shows the board (one row, then five); the five don't repeat the first ad's meaning or the brand's live-ad messages; a fresh critic ran on both.
+**Passes if:** the quote message still shows the board (one row, then five) with each ad's template sheet as an image; the five don't repeat the first ad's meaning or the brand's live-ad messages; a fresh critic ran on both.
 
 ## Test 3 — B2B SaaS, no product photo
 
@@ -44,7 +44,7 @@ A brand with no claims, no reviews and no own ads (staging: Greener Closet). Say
 
 ## Test 5 — paid render and review (small)
 
-Approve two ads from a passing board. **Passes if:** each prompt contains the board's protected choice word for word and names each attached image's role; no other brand's image is attached; a fresh judge checks the idea first, then the product and spelling; at most one retry per image within the quote; failures are shown, not hidden.
+Approve two ads from a passing board. **Passes if:** each prompt contains the board's protected choice word for word and names each attached image's role; no ad-library ad's image is attached; at close and balanced the brand's own ad or a library template is attached as the layout image; each finished ad has its "Based on" sheet; a fresh judge checks the idea first, then the product and spelling; at most one retry per image within the quote; failures are shown, not hidden.
 
 ## Test 6 — reactive modes
 
