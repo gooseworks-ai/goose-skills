@@ -22,16 +22,17 @@ Picks are also written in the batch file, which stays the record of truth. Reada
 
 ## 2. The board at the spend gate (Step 7)
 
-One message, in this order:
+Short, in this order:
 
-1. **Above the cards:** what was read ("Read: 14 reviews, 20 of ~300 live Meta ads, 15 X posts, the homepage; LinkedIn not checked"), the creativity level and who chose it, the angles and who chose them, and the brand profile in three lines (positioning, angles, look).
-2. **One card per ad**, in a grid where the host can show images, else one block per ad:
+1. **Above the cards**, three lines: what was read ("Read: 14 reviews, 20 of ~300 live Meta ads, 15 X posts, the homepage; LinkedIn not checked"); the level and angles, and who chose them; the brand's look in one line.
+2. **One card per ad:**
+   - **The template sheet**, shown to the marketer as the `make-static-ads-find-references` skill (`../../make-static-ads-find-references/SKILL.md`) §5 says: the chosen template (A) and two alternates (B, C) in other styles, each captioned with its source and style.
    - **Angle** (yours / new) · **Message** · **Visual idea** (one sentence) · **Style**
    - **On-image text**, slot by slot, exactly as it will be drawn
-   - **Template:** its image, with its source; then the **two alternates** as images, each with its style ("Swap to B for a lifestyle photo instead")
    - **Why it's ours:** the product fact or customer words behind it, with the source
    - **Quote:** credits for each ratio
-3. **Below the cards:** the critic's main objection and what changed; cut lines with what would confirm them; open flags; this sentence word for word: "If an image fails my check I redo it once, at the same price."; and one question: "Go ahead with these quotes?" (when no critic ran: "Go ahead with these quotes, or tell me which rows to cut first?")
+3. **Below the cards**, a few lines: the critic's main objection and what changed; cut lines with what would confirm them; open flags; anything the run check marked skipped, and why; this sentence word for word: "If an image fails my check I redo it once, at the same price."
+4. **The question**, with the question tool when the host has one (playbook Step 2): "Go ahead with these quotes?" Options: "Yes, make them as quoted" (Recommended), "Swap a template first", "Change or drop an ad"; when no critic ran, add "Tell me which rows to cut". "Swap a template" → one question per ad (up to four per call): "Template for ad <n>?" A (Recommended), B, C.
 
 No real product photos: no quotes; end with "Send me real photos (or I can make them first) and I'll quote these."
 
@@ -39,7 +40,7 @@ Prompts, fonts and palettes stay in the batch file; show them when asked.
 
 ## 3. The finished set (Step 9)
 
-One card per ad, with the kept image (logo placed, or its corner left clear) on top:
+One card per ad, with a "Based on" sheet on top, shown to the marketer the same way (`../scripts/template_sheet.py --no-chosen`: the template, then the kept image with its logo as chosen; no shell: the two images side by side):
 - Angle · message · visual idea · style · template · level
 - On-image text as drawn
 - Primary text A and B · link headline · description · CTA · destination
@@ -48,7 +49,6 @@ One card per ad, with the kept image (logo placed, or its corner left clear) on 
 Write the check lines in plain words ("safe to say", "cut 'never oily': nothing on file confirms it", "passed my check on the second try", "please read the headline letter by letter"). Then, in this order (the same content goes into `ads/batches/<YYYY-MM-DD>-<slug>.md`, `reading-the-brain.md` §7):
 1. **Cut lines:** `line → ad → why → proof that would restore it`.
 2. **Copy variants** (if made), under each parent ad.
-3. **Flags:** taste calls, regulated-category notes, renders still failing after the retry, anything not checked by eye.
+3. **Flags and what you should check:** taste calls, regulated-category notes, renders still failing after the retry, anything not checked by eye, and what I checked.
 4. **A suggested test:** for example one ad per angle at the same budget. The structure is the marketer's call.
-5. **What I checked / what you should check.**
-6. **Your pick:** "Tell me which to run; I'll mark them approved for launch."
+5. **Your pick:** "Tell me which to run; I'll mark them approved for launch."

@@ -1,11 +1,11 @@
 # Creativity levels — close, balanced, bold
 
-Every ad is built on a template. The level decides how much of it the ad keeps. The marketer picks one level for the whole set in the combined question (playbook Step 2, which also says what "your choice" means). The angle rule is the same at every level (playbook Step 2).
+Every ad is built on a template. The level decides how much of it the ad keeps. The marketer picks one level for the whole set in the Step 2 questions (playbook Step 2, which also says what "your choice" means). The angle rule is the same at every level (playbook Step 2).
 
 | Level | Picture | Template image sent to the image model? | Where the on-image text format comes from |
 |---|---|---|---|
-| **Close** | The template's own scene and layout, with this brand's product, words and colours swapped in | Only when the brand owns the template (its own past ad). Any other brand's template: a detailed layout description in words instead | The template's text slots |
-| **Balanced** | A new visual idea, staged inside the template's layout | No. The layout is described in words | The template's text slots |
+| **Close** | The template's own scene and layout, with this brand's product, words and colours swapped in | Yes, when it is the brand's own ad or a GooseWorks library template (rights: find-references §4); otherwise a detailed layout description in words | The template's text slots |
+| **Balanced** | A new visual idea, staged inside the template's layout | Yes, as at close, as a layout reference only (its block and text-slot positions; the scene is new) | The template's text slots |
 | **Bold** | Idea first (`ideas.md`); the template lends only a device or a look | No. Words only | The brand's own ads (`brand-profile.md` §2, "How they write on-image text") |
 
 ## Style: one per ad, varied across the set
