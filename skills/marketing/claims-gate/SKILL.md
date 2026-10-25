@@ -4,10 +4,10 @@ description: >-
   Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the
   claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would
   bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on
-  the 3 to 5 lines that matter and records the answer. Use alone when you already have the copy and a
+  the 3 or 4 lines that matter and records the answer. Use alone when you already have the copy and a
   brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content,
   write-outreach).
-version: 0.1.5
+version: 0.1.6
 ---
 
 # claims-gate
@@ -57,11 +57,11 @@ Give the result in one short line per asset in chat; the cut list goes in the ca
 
 Run it when a line the job depends on is not usable under §1: on the older path, when the marker is not `signed-off` or the line is not on the list; on the brain path, when the line is not a confirmed brain claim (no marker is needed when it is). It approves only what this job needs.
 
-1. **Pick the 3–5 load-bearing lines** — the benefit line, the hook's promise, the offer — not everything the job could say; never a test-named brand, a likely test brand only after the human's yes, and a backer or customer line only with its source (§2.5). Prefer the brain's own wording (value props, product descriptions) over new wording.
+1. **Pick the 3–4 load-bearing lines** (one question holds four) — the benefit line, the hook's promise, the offer — not everything the job could say; never a test-named brand, a likely test brand only after the human's yes, and a backer or customer line only with its source (§2.5). Prefer the brain's own wording (value props, product descriptions) over new wording.
 2. **Check who may approve.** Read the marker's `approver:`. No marker: ask once who approves claims (local mode: `local-claims.md` § Who approves, which also keeps the answer). If it names a client, or the person says someone else approves claims, don't ask the person in the chat for these lines: use the claims already approved plus plain product facts, add the new lines to the Brand record's "Decisions needed" sheet for the approver (saved as §5 step 1; local mode: its `pending` rows), and rewrite the marker naming the new version, `approver: client <name>`, by §5's status rule. `user_statement` is the person's words (e.g. "Dana approves claims").
-3. **Put them to the human in one message**, each line with: the exact wording, what kind of claim it is, the proof on file or "no proof on file", and your recommendation (approve / approve with this qualifier / reword to … / leave out). Say once that this is not legal advice.
+3. **Put them to the human as one multi-select question** with the host's question tool (at most four lines; a fifth goes in its own question). Each option's description starts with the exact wording in quotes, then what kind of claim it is, the proof on file or "no proof on file", and your recommendation (approve / approve with this qualifier / reword to … / leave out). Without a question tool: a short numbered list, one line each. Say once, in the question, that this is not legal advice.
    - High-risk lines (efficacy, clinical or expert, comparative, health, environmental, testimonials implying results) need proof on file. The owner's word is enough only for a verifiable fact about the business (who formulated it, where it is made, which awards). Without proof, recommend leaving it out or a safer wording.
-   - Ask for an approval that stands on its own: "Yes, approve 1, 2 and 4." A bare "ok" to a list is not a sign-off.
+   - A ticked option, or "Yes, approve 1, 2 and 4", is a sign-off. A bare "ok" or "all" to a list, or "your choice", is not.
 4. **If they decline or don't answer,** ship plain product facts and say which lines were left out and why.
 5. **Record the answer** (§5) before any line is used.
 6. **Brain path: a yes in chat does not make a line usable yet.** Saving can't approve a claim: every agent save is *found* until the human confirms it in the GooseWorks app (found vs confirmed: the marketing-guide §1.4). So after §5, the new lines stay out of anything published, sent, launched or handed to a maker as final, until the brain shows them `confirmed`. Say so in one line ("Approve these 2 lines in GooseWorks and I'll use them"), relay the link if the save returned one, and ship this job with the confirmed claims and plain product facts. Drafts may show a waiting line, labelled "waiting for your yes", never as approved. The next run picks the line up once it is confirmed.

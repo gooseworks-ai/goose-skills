@@ -1684,10 +1684,10 @@
       "name": "claims-gate",
       "category": "capabilities",
       "domain": "marketing-agent",
-      "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 to 5 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
+      "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 or 4 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
       "tags": "brand",
       "path": "skills/marketing/claims-gate",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "files": [
         "skills/marketing/claims-gate/SKILL.md",
         "skills/marketing/claims-gate/claim-types.md",
@@ -1699,7 +1699,7 @@
         "slug": "claims-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.5",
+        "version": "0.1.6",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -3510,7 +3510,7 @@
       "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads/SKILL.md",
         "skills/marketing/make-static-ads/references/brand-profile.md",
@@ -3528,15 +3528,14 @@
         "skills/marketing/make-static-ads/scripts/place_logo.py",
         "skills/marketing/make-static-ads/scripts/repair_patch.md",
         "skills/marketing/make-static-ads/scripts/repair_patch.py",
-        "skills/marketing/make-static-ads/scripts/test_place_logo.py",
-        "skills/marketing/make-static-ads/scripts/test_repair_patch.py",
+        "skills/marketing/make-static-ads/scripts/template_sheet.py",
         "skills/marketing/make-static-ads/skill.meta.json"
       ],
       "metadata": {
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "tags": [
           "ads",
           "design"
@@ -3715,7 +3714,7 @@
       "description": "Step of make-static-ads: writes each ad's render prompt and ordered image list from its concept-board row, one per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-compose",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads-compose/SKILL.md",
         "skills/marketing/make-static-ads-compose/skill.meta.json"
@@ -3724,7 +3723,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -3755,7 +3754,7 @@
       "description": "Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-concept-grid",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads-concept-grid/SKILL.md",
         "skills/marketing/make-static-ads-concept-grid/skill.meta.json"
@@ -3764,7 +3763,7 @@
         "slug": "make-static-ads-concept-grid",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -3825,7 +3824,7 @@
       "description": "Step of make-static-ads: picks a template for every ad in its chosen style, after its visual idea and style are set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-find-references",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads-find-references/SKILL.md",
         "skills/marketing/make-static-ads-find-references/skill.meta.json"
@@ -3834,7 +3833,7 @@
         "slug": "make-static-ads-find-references",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -3937,7 +3936,7 @@
       "description": "Step of make-static-ads: a fresh judge checks every render against its concept-board row and the official product photos, one retry inside the marketer's approval, then the claims and set checks; records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-render-review",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads-render-review/SKILL.md",
         "skills/marketing/make-static-ads-render-review/skill.meta.json"
@@ -3946,7 +3945,7 @@
         "slug": "make-static-ads-render-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
