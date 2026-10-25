@@ -74,7 +74,7 @@ keyed/misread. Swap the image or tighten the `window_mask` thresholds if it blee
 - **Playwright with Chromium** for the screenshot step (the kit provides it). If Playwright
   is unavailable, run `build_card.py`, screenshot
   `chrome.html` / `chrome-pressed.html` (fullPage) → `chrome-green.png` /
-  `chrome-green-pressed.png` via the chrome-devtools MCP, then call `compose_carousel.py`
+  `chrome-green-pressed.png` via the chrome-devtools MCP, then run `compose_carousel.py`
   directly.
 - `watch` (QC the final master). The recipe gates `create-image-fal` (optional hero shot
   when the brand has NO usable product photo) — the only paid, proxy-routed step.

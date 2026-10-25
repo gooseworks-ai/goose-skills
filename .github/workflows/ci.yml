@@ -18,8 +18,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Test catalog deployment
-        run: node --test scripts/__tests__/deploy-catalog.test.mjs
+      - name: Install dependencies
+        # js-yaml, for the atom-lint tests that npm test runs.
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Validate skill metadata
         run: node scripts/validate-skills.js
@@ -35,6 +36,10 @@ jobs:
         # Also: a skill named in prose exists here (or is retired), and the relative links in docs/, drafts/, evals/ and the top-level docs resolve.
         run: node scripts/check-skill-links.js
 
+      - name: Every GooseWorks tool a skill names is listed
+        # Every family. Old and hidden names fail with the listed tool to use (scripts/lib/action-names.json).
+        run: node scripts/check-tool-names.js
+
       - name: No internal ticket ids in published files
         # GOOSE-/GV-/QA-… ids mean nothing to a reader outside the team.
         run: node scripts/check-internal-ids.js
@@ -47,15 +52,13 @@ jobs:
       - name: Router tables match skills/entry/gooseworks/routes.json
         run: node scripts/build-router.js --check
 
-      - name: Test the Git LFS pointer check
-        run: node --test scripts/__tests__/check-lfs-pointers.test.js
-
       - name: No unresolved Git LFS pointers
         # A file whose LFS object was never pushed is a short text stub; the catalog release refuses it.
         # Reads the indexed blobs through git, so the working tree cannot hide one.
         run: node scripts/check-lfs-pointers.js
 
-      - name: Test CLI, scripts and the Node tests in skill folders
+      - name: Test the scripts, the repo tests and the Node tests in skill folders
+        # Discovery, not a list: every test/*.test.js and scripts/__tests__/*.test.{js,mjs} runs.
         run: npm test
 
       - name: Verify packaged writer handoff
@@ -95,11 +98,7 @@ jobs:
           base="$(node scripts/pick-base.js)"
           echo "BASE=$base" >> "$GITHUB_ENV"
 
-      - name: Install dependencies
-        run: npm ci --ignore-scripts --no-audit --no-fund
-
-      - name: Test the atom, version and part checks
-        run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-skill-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js
+      # The checks' own tests run in the validate job (npm test).
 
       - name: Atom lint
         run: node scripts/atom-lint.js --base "$BASE" --direct --strict
@@ -182,13 +181,20 @@ jobs:
 
       - name: Install ffmpeg and test deps
         run: |
-          brew install ffmpeg
+          # librsvg: review-finished-ad's SVG logo test.
+          brew install ffmpeg librsvg
           # opencv: make-static-ads' repair-patch test.
-          python -m pip install pytest pillow numpy requests opencv-python-headless
+          python -m pip install pytest==8.3.5 pillow==11.1.0 numpy==2.2.6 requests==2.32.3 opencv-python-headless==4.12.0.88
 
-      - name: Test every Python test under skills/ and test/
+      - name: Test every Python test under skills/ and test/ (a skip fails the job)
         # Discovery, not a list: a new test_*.py runs without editing this file.
-        run: python -m pytest -q skills test
+        shell: bash
+        env:
+          # An OFL font already in the repo, for render-hook-replacement's text route.
+          HOOK_TEST_FONT: ${{ github.workspace }}/parts/captions-layer/1.5.0/assets/fonts/Montserrat-Bold.ttf
+        run: |
+          python -m pytest -q -rs skills test 2>&1 | tee "$RUNNER_TEMP/pytest.log"
+          node scripts/require-all-tests-ran.js "$RUNNER_TEMP/pytest.log"
 
       - name: Test custom-video regressions
         # Its own run: named on one command line with test/, pytest drops the

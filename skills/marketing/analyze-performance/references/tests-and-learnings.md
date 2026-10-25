@@ -51,7 +51,7 @@ The full evidence (test, dates, ads, spend, CPAs, scope, what it supersedes) sta
 **Show what it would retire.** Each proposed learning carries "retires: <old fact>" when it supersedes one, so a yes to it is a yes to the retirement too.
 
 **Hygiene:**
-- Before writing, look for the same claim (the atom's read step: `brain_search` / `brain_map` kind 23 where listed, else `knowledge_search` `["learning"]`): update the existing entry rather than add a near-duplicate.
+- Before writing, look for the same claim (the atom's read step: `brand_knowledge_search` / `brand_knowledge_browse` kind 23 where listed, else `knowledge_search` `["learning"]`): update the existing entry rather than add a near-duplicate.
 - When a new learning contradicts an old one of ours, retire the old one as the atom says.
 - When a fact's review date has passed, propose re-confirm / retire in the next decisions block.
 - Promote `insight` → `do`/`dont` only when the marketer states it as a rule.

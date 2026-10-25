@@ -72,7 +72,7 @@ test('ScrapeCreators skills describe operations without assuming the CLI', () =>
   const dependency = fs.readFileSync(dependencyPath, 'utf8');
 
   assert.match(dependency, /Runtime selection/i);
-  assert.match(dependency, /call_data_provider/i);
+  assert.match(dependency, /\bdata_call_provider\b/);
   assert.match(dependency, /GooseWorks CLI available/i);
   assert.match(dependency, /User-owned ScrapeCreators key/i);
   assert.doesNotMatch(

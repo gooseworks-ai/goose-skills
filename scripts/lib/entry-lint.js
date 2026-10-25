@@ -189,7 +189,11 @@ function lintView(text, actions, recipes) {
   return problems;
 }
 
+/** The frontmatter requires_skills line lists dependency slugs for the installer, not text the agent acts on. */
+const withoutRequiresLine = (text) => text.replace(/^(---\n[\s\S]*?)^requires_skills:.*\n([\s\S]*?^---$)/m, '$1$2');
+
 function lintSkill(text, options = {}) {
+  text = withoutRequiresLine(text);
   const actions = new Set([...(options.actions ?? ACTION_NAMES), ...ANSWER_FIELDS]);
   const recipes = new Set(options.recipes ?? RECIPE_SLUGS);
   const maxChars = options.maxChars ?? ENTRY_SKILL_MAX_CHARS;

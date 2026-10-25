@@ -12,12 +12,13 @@ list in `state.md` (`meta_push_ids`). Pause and revert both exist, inside the co
 
 - **Inside the coworker** (chat, messaging turns, scheduled runs): all the tools below. Read the
   `ads/` docs with the built-in `Read` tool, paths relative to the workspace root (`ads/README.md`).
-- **From an outside host** (Claude Code, Cursor, any MCP client): only the shared Meta reads.
-  **`get_meta_push_status` and `get_goose_creative_performance` are not visible.** For a push or
-  Goose-creative question, say the answer needs the brand's coworker in GooseWorks, and do not
-  guess. Read the `ads/` docs with `file_read` and `scope: { type: "agent", agent_id:
-  <brand.coworker_agent_id> }` (from `brand_list`). The read tools resolve the brand themselves and
-  never take a `brand_id`.
+- **From an outside host** (Claude Code, Cursor, any MCP client): `meta_read` answers push and
+  Goose-creative questions; pass `brand_id` (from `brand_read`) on every call. The account reads
+  (`meta_status_get`, `list_meta_entities`, `query_meta_insights`, `get_meta_ad_context`) are
+  coworker tools and may not be listed. If they are not, say account-wide numbers need the brand's
+  coworker in GooseWorks, and do not guess. Read the `ads/` docs with `file_read` and
+  `scope: { type: "agent", agent_id: <brand.coworker_agent_id> }` (from `brand_read` without
+  `brand_id`).
 - A reconnect in GooseWorks is done in the brand's Settings. Never ask for a token in chat.
 
 ### Reads → tools
@@ -29,8 +30,8 @@ list in `state.md` (`meta_push_ids`). Pause and revert both exist, inside the co
 | "Which campaign / ad set / ad is best or worst?" | `list_meta_entities` at that `level`. **Read every page** (`next_cursor`) before you rank | envelope `freshness`; the window you passed |
 | A trend, day by day, "since Tuesday" | `query_meta_insights` (`granularity: "day"`, up to 25 `entity_ids`, up to 90 days) | envelope `freshness`; the window you passed |
 | One specific ad | `get_meta_ad_context` with the numeric ad id. If the user gave a name, find the id with `list_meta_entities` `level: "ad"` first | the dossier's performance window and freshness |
-| "How are the ads Goose made doing?" | `get_goose_creative_performance` (`days`, `rank_by`) | its `window`. Its `freshness` is only a word (`fresh`, `partial`, `stale`) with no timestamp, so take the sync time from `meta_status_get` |
-| A Goose push: "did it go live?", "is it paused?" | `get_meta_push_status` with the push id from the campaign's `state.md` (`meta_push_ids`) | `state`, `all_paused`, each item's `live` and `external_change` |
+| "How are the ads Goose made doing?" | `meta_read` with `view: "performance"` (optional `days`, `rank_by`, `limit`) | its `window`. Its `freshness` is only a word (`fresh`, `partial`, `stale`) with no timestamp, so take the sync time from `meta_status_get` |
+| A Goose push: "did it go live?", "is it paused?" | `meta_read` with `view: "push_status"` and the `push_id` from the campaign's `state.md` (`meta_push_ids`) | `state`, `all_paused`, each item's `live` and `external_change` |
 | "Why did you pause / change / recommend that?" | Read `ads/README.md`, find the campaign, read its `decisions.md` | the entry's date and its `Evidence:` pointer |
 | "What have you noticed?", "anything wrong?" | Read the campaign's `state.md` `## Open recommendations`, then call `meta_status_get` `view: "summary"` | the fresh read |
 
@@ -60,10 +61,10 @@ anyway, otherwise `view: "sync"`.
 ### Fields the six rules lean on
 
 - **Rule 2:** money is in `account_currency`. CTRs come back as **fractions** (0.021 is "2.1%").
-- **Rule 4:** `get_meta_push_status` shows `external_change` on an item changed in Ads Manager.
+- **Rule 4:** `meta_read` `view: "push_status"` shows `external_change` on an item changed in Ads Manager.
 - **Rule 5, "Goose published it":** `get_meta_ad_context` shows `link.provenance.source:
   "goose_push"`, or a push in `state.md` `meta_push_ids` lists the ad id in
-  `get_meta_push_status`. `link.state: "unlinked"` is "no Goose link recorded". Links survive a
+  `meta_read` `view: "push_status"`. `link.state: "unlinked"` is "no Goose link recorded". Links survive a
   Meta reconnect, but `unlinked` is still not proof. `goose_render_reference`, or a
   reviewed historical mapping, is "uses a Goose creative, not published through Goose".
 
@@ -76,7 +77,7 @@ anyway, otherwise `view: "sync"`.
   `"conflict"` (the creative was replaced, so numbers are withheld: say that, don't estimate).
   So this tool's `status` says nothing about freshness. Read `freshness.classification`
   (`"stale"` means stale), and get the connection state from `meta_status_get`.
-- `get_goose_creative_performance`: `insight.available: false` means give the numbers but name
+- `meta_read` `view: "performance"`: `insight.available: false` means give the numbers but name
   no winner. `status: "no_creatives"` means Goose has no published creative with data yet. Say
   so, and don't fall back to account totals as if they were Goose's. `status: "conflict"` means
   a Goose ad's creative was replaced in Meta, and its numbers are withheld. The tool's `scope`

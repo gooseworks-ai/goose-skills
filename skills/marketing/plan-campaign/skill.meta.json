@@ -49,7 +49,7 @@
     "creator roster creators/roster.csv (wave results) — work-with-creators, when a creator leg is Run/Test",
     "its own last run record runs/plan-campaign/campaign-plan/<slug>/<date>.md (the plan's bets) — run-memory",
     "analyze-performance's run records (runs/analyze-performance/weekly-performance-read/, monthly-read/) and run-paid-campaigns' run records (runs/run-paid-campaigns/weekly-ads-check/<slug>/) — scorecards, money moves, verdicts",
-    "Brand Brain (brain_map, brain_open, brain_search where listed): chapters 2, 3, 5, 15, 18, 19, 20 (target_cpa, target_roas, decision.*, experiment.*), 23 (experiment_readout.*, worn_out_angle.*)"
+    "Brand Brain (brand_knowledge_browse, brand_knowledge_read, brand_knowledge_search where listed): chapters 2, 3, 5, 15, 18, 19, 20 (target_cpa, target_roas, decision.*, experiment.*), 23 (experiment_readout.*, worn_out_angle.*)"
   ],
   "writes": [
     "readable campaign plan gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md (local file, via write-report) — the marketer",
@@ -90,9 +90,9 @@
       "gooseworks:media_upload",
       "gooseworks:knowledge_import",
       "gooseworks:job_get",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search",
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search",
       "gooseworks:automation_list"
     ]
   }

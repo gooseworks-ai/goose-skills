@@ -6,7 +6,6 @@ description: >
   and produce a strategic teardown with vulnerability analysis and counter-play recommendations.
   Use when you need to understand the competitive ad landscape, find new creative directions,
   or identify weaknesses in a competitor's paid strategy.
-tags: [ads]
 ---
 
 # Competitor Ad Intelligence

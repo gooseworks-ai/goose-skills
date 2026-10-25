@@ -22,12 +22,15 @@ export const SETTINGS_FILE = process.env.GOOSE_EVAL_SETTINGS
 // GooseWorks staging tools that spend credits, publish, or touch ad accounts.
 // Blocked for the subject in both arms so an eval can never spend.
 // competitor_research has a free refresh mode but its mentions mode is paid, so it is blocked whole.
+// Hidden old names stay callable, so they are blocked too.
 const PAID_OR_PUBLISHING = [
+  'ads_creative_edit', 'video_make', 'social_post_update',
   'data_call_provider', 'data_post_provider', 'knowledge_sync', 'ads_library_scrape', 'competitor_research',
-  'ads_generate', 'ads_creative_edit', 'photos_generate', 'photos_update',
-  'video_make', 'video_create', 'video_batch', 'video_fix', 'video_change', 'video_approve', 'video_import',
+  'ads_generate', 'ads_render', 'ads_creative_regenerate', 'ads_creative_resize', 'ads_creative_layerize',
+  'ads_creative_animate', 'ads_creative_precision_edit', 'photos_generate', 'photos_update',
+  'video_production', 'video_create', 'video_batch', 'video_fix', 'video_change', 'video_approve', 'video_import',
   'request_campaign_generation', 'goose_run_task',
-  'social_post_create', 'social_post_patch', 'social_inspiration_watch', 'automation_upsert',
+  'social_post_create', 'social_post_patch', 'social_post_approve', 'social_post_retry', 'social_post_revise', 'social_inspiration_watch', 'automation_upsert',
   'prepare_meta_ad_push', 'pause_meta_ad_push', 'revert_meta_ad_push', 'propose_meta_budget_change',
   'propose_meta_creative_replacement', 'ads_approval_decide',
 ];

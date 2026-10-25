@@ -2,7 +2,7 @@
 
 Review the exact cut the viewer saw, decide what stops the message from landing, and make the smallest useful change. Keep the accepted cut, candidates and original notes separate. A change is done only when its effect and the whole new output are checked.
 
-[[composes::review-video]] and [[composes::auto-fix-from-review-notes]] use the same evidence and history.
+The [review-video](../review-video.md) and [auto-fix-from-review-notes](../auto-fix-from-review-notes.md) steps use the same evidence and history.
 
 ---
 

@@ -15,7 +15,7 @@ Inputs: the account audit, the voice cards, `../run-organic-social/references/ca
 - **plan-campaign:** `gooseworks:campaign_read` (list mode, then one campaign) for any campaign with an organic leg in the window.
 - **analyze-performance's organic "what overperformed" read:** the latest `reports/performance/<date>.md`.
 - **The brain:**
-  - When `brain_*` tools are listed: reuse step 1's reads of chapters 19 "this week and what is coming", 20 "our plan" and 23 "what is working" (focus, live promotions, launches, what not to promote, past results); don't open them again. `gooseworks:brain_search` for the seasonal calendar and for customer questions and phrases.
+  - When `brand_knowledge_*` tools are listed: reuse step 1's reads of chapters 19 "this week and what is coming", 20 "our plan" and 23 "what is working" (focus, live promotions, launches, what not to promote, past results); don't open them again. `gooseworks:brand_knowledge_search` for the seasonal calendar and for customer questions and phrases.
   - Otherwise: `gooseworks:knowledge_search` for "this week's focus, live promotions, launches, what not to promote, seasonal calendar", and `source_types: ["evidence"]` for voice-of-customer questions and phrases.
 - **The previous calendar:** `social/calendar/` (what went out, what's still queued).
 - **The last run record** (the `run-memory` skill (`../run-memory/SKILL.md`) Start, loaded by SKILL.md): format tests still open, the per-format scorecard, and recommendations still open.

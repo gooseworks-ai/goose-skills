@@ -11,7 +11,7 @@ version: 0.1.3
 # save-learning
 
 Learnings are the brand's short rules. Every playbook writes them through this atom and nowhere else. There are two server paths, and this atom picks between them:
-- **Brain path:** when the Brand Brain tools are listed (`brand_knowledge_*` on current servers; `brain_*` names below map as in the `marketing-guide` skill §1.4). Save with `brand_knowledge_save` (`brain_save`), read back with `brand_knowledge_read` / `brand_knowledge_search`. **Exception:** claims-gate's claim facts and marker always use the older path below.
+- **Brain path:** when the Brand Brain tools are listed (`brand_knowledge_*`). Save with `brand_knowledge_save`, read back with `brand_knowledge_read` / `brand_knowledge_search`. **Exception:** claims-gate's claim facts and marker always use the older path below.
 - **Older path:** otherwise (older servers), and always for claims-gate's claim facts. Save with `gooseworks:brand_update` `patch.facts`, read back with `gooseworks:brand_read`.
 - **Local mode** (no GooseWorks, [the `marketing-guide` skill](../marketing-guide/SKILL.md) §5): append to `gooseworks-local/<brand-slug>/brand-notes.md`, same opening, their words, dated. Read the file first; mark your own superseded line `retired <date>`; read it back.
 
@@ -37,22 +37,22 @@ Long evidence, tables and reports belong in a brand document (the `save-to-brain
 - Example: `[lifecycle 2026-10-16] Never send a promo email the day after a shipping delay email.`
 - A **typed fact** (brain path, step 2) carries the value only, without the opening. Its kind and field say what it is, and `request_key` starts with the playbook slug.
 
-## Steps: brain path (`brain_*` tools listed)
+## Steps: brain path (`brand_knowledge_*` tools listed)
 
-1. **Read** the brain's rules and what is working. Use `gooseworks:brain_map` (the core already lists every rule and the never-list) with `kind: 14` for the full rules and `kind: 23` for learnings, or `gooseworks:brain_search` `source_types: ["learning"]` for the topic. Look for a learning that already says the same thing, and check `waiting_for_yes` too: the same rule may already be waiting for the human's yes. Don't save it twice.
+1. **Read** the brain's rules and what is working. Use `gooseworks:brand_knowledge_browse` (the core already lists every rule and the never-list) with `kind: 14` for the full rules and `kind: 23` for learnings, or `gooseworks:brand_knowledge_search` `source_types: ["learning"]` for the topic. Look for a learning that already says the same thing, and check `waiting_for_yes` too: the same rule may already be waiting for the human's yes. Don't save it twice.
 2. **Pick the target.**
-   - If the rule fits a **registered fact field**, save it as that fact (`brain_save` `fact`: kind + field). Engines read typed fields directly. Fields:
+   - If the rule fits a **registered fact field**, save it as that fact (`brand_knowledge_save` `fact`: kind + field). Engines read typed fields directly. Fields:
      - 15 "How we work together": `agent_may_do_alone.<item>`, `alert_on.<item>`, `reply_rule.<item>`, `reporting_rhythm`.
      - 18 "How we count results": `winning_number`, `conversion.<item>`, `attribution_window`, `lead_definition`, `naming_convention`.
      - 20 "Our plan": `no_go_list`, `target_cpa`, `target_roas`, `priority_products`, `decision.<item>`, `experiment.<item>`.
      - 23 "What is working": `worn_out_angle.<item>`, `experiment_readout.<item>`, `lesson`.
      
      An unknown field is refused with the allowed list. Pick from that list, or fall back to a learning. Never invent a field. The `operating_plan.*` fields (budget caps, approvers, goals) belong to the playbooks whose spec owns them, not to this atom.
-   - Otherwise, save a **learning** (`brain_save` target `learning`, with the kind and the text).
-3. **Save** with the human's words in `user_statement`, source `you` (`our_work` for a readout), and `is_public: false` unless the human says the rule is public-facing. Use a stable `request_key` such as `<playbook>.<YYYYMMDD>.<n>`, so a retried call never duplicates. Use `expected_version: 0` for a new item. For an existing one, pass its `revision` from `brain_open` as `expected_revision`, and on a version conflict re-open it and retry once.
+   - Otherwise, save a **learning** (`brand_knowledge_save` target `learning`, with the kind and the text).
+3. **Save** with the human's words in `user_statement`, source `you` (`our_work` for a readout), and `is_public: false` unless the human says the rule is public-facing. Use a stable `request_key` such as `<playbook>.<YYYYMMDD>.<n>`, so a retried call never duplicates. Use `expected_version: 0` for a new item. For an existing one, pass its `revision` from `brand_knowledge_read` as `expected_revision`, and on a version conflict re-open it and retry once.
    - **The text limit is explicit: 300 characters.** A longer learning is refused, not cut. See "Long learnings" below.
 4. **Retire your own superseded learning.** Save the replacement on the old learning's `id` (the old text becomes history), or close a dropped one with `valid_until` = today. Never touch another playbook's learning; if yours contradicts it, tell the human. If both are refused, retire it on the older path (`brand_update` `{id, active: false}`) and note it in the run's hand-over.
-5. **Read back.** `gooseworks:brain_open` the saved record, or check `brain_save` `proposal` `list` when the answer says it waits for a yes. Compare the stored text with what you sent. A missing one is reported as not saved.
+5. **Read back.** `gooseworks:brand_knowledge_read` the saved record, or check `brand_knowledge_save` `proposal` `list` when the answer says it waits for a yes. Compare the stored text with what you sent. A missing one is reported as not saved.
 6. **Tell the human in one line** what was saved, and whether it waits for their yes: "I've saved that rule. It's waiting for your yes in GooseWorks before ads follow it."
 
 ## Steps: older path (no Brand Brain tools, or claims-gate's claim facts; one `brand_update` call per save)
@@ -66,5 +66,5 @@ Long evidence, tables and reports belong in a brand document (the `save-to-brain
 ## Long learnings (both paths)
 
 - **Brain path:** the 300-character limit is explicit, and longer text is refused. Show the human a version of 300 characters or fewer that keeps their meaning, and save it on their yes; their yes makes it their words. Keep the full original in the related brand document (through the `save-to-brain` skill (`../save-to-brain/SKILL.md`); for claims, the Brand record). In a scheduled run with no human, don't save it. Put it in the report's "Decisions for you".
-- **Older path (interim, remove when production has `brain_*` tools):** the server cuts learning text over 300 characters without an error. Still write it as one learning (the stored copy will be cut), keep the full text in the related brand document, and tell the human in one line where the full text lives. In read-back, a stored text that matches the first 300 characters of a longer learning counts as saved, provided the full text is in that document.
+- **Older path (interim):** the server cuts learning text over 300 characters without an error. Still write it as one learning (the stored copy will be cut), keep the full text in the related brand document, and tell the human in one line where the full text lives. In read-back, a stored text that matches the first 300 characters of a longer learning counts as saved, provided the full text is in that document.
 - On either path, never split one idea into several learnings, ration them, or quietly shorten or reword one to fit. Any limit handling lives here, nowhere else.

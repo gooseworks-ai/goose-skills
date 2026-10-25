@@ -1,7 +1,6 @@
 ---
 name: brand-research
 description: Research a company or brand from its website and produce a reusable Brand Core covering products, audience, competitors, positioning, offers, messaging evidence, voice, and visual identity. Use before growth, ad, content, creator, or product work when reliable brand context is missing.
-tags: [ads, brand, research]
 ---
 
 # Brand Research
@@ -101,7 +100,7 @@ The local Brand Core remains usable even if sync fails.
 
 Asset generation is never required to finish brand research. If the user explicitly asks:
 
-- use `product-photoshoot` for product photography;
+- use the `goose-product-photos` skill for product photography;
 - use `goose-graphics` for branded graphics;
 - quote credits and confirm before any paid generation.
 

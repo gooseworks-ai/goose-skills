@@ -61,7 +61,7 @@
       "gooseworks:automation_list",
       "gooseworks:automation_upsert",
       "gooseworks:brand_read",
-      "gooseworks:brand_setup",
+      "gooseworks:brand_setup_create",
       "gooseworks:competitor_read",
       "gooseworks:competitor_save",
       "gooseworks:data_call_provider",
@@ -83,9 +83,9 @@
       "gooseworks:social_inspiration_save",
       "gooseworks:social_inspiration_search",
       "gooseworks:tools_load",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search"
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search"
     ]
   }
 }

@@ -7,7 +7,6 @@ description: >
   poster, chart, tweet, plus community additions) don't fit the user's canvas —
   e.g., LinkedIn banner 1584×396, story cover 1080×1920, event flyer 8.5×11in.
   Mirrors goose-graphics-create-style but for formats.
-tags: [design, content]
 ---
 
 # Create Goose Graphics Format

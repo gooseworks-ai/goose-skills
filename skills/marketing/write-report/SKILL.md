@@ -34,7 +34,7 @@ Every playbook that hands over research, a plan, a strategy or a report writes i
 
 **Length:** the body (everything after "In short") stays under **3,000 words**. Cut repetition and detail no decision needs. An appendix may hold specialist tables; the report must work without it.
 
-**Agree with the sibling reports, or say why not.** Before writing, read every same-brand report from the last 14 days whose job overlaps (market, competitors, audience, a campaign or social plan, outreach) — saved documents (`brain_search` where listed, else `knowledge_search`; local mode: `gooseworks-local/<brand-slug>/` instead) and the local `gooseworks-reports/<brand-slug>/` folder. Compare lead buyer, first move, positioning and prices. A different lead buyer or first move is named in "In short" (anything else, in the story) and settled: merge the two first moves, or say why this one wins.
+**Agree with the sibling reports, or say why not.** Before writing, read every same-brand report from the last 14 days whose job overlaps (market, competitors, audience, a campaign or social plan, outreach) — saved documents (`brand_knowledge_search` where listed, else `knowledge_search`; local mode: `gooseworks-local/<brand-slug>/` instead) and the local `gooseworks-reports/<brand-slug>/` folder. Compare lead buyer, first move, positioning and prices. A different lead buyer or first move is named in "In short" (anything else, in the story) and settled: merge the two first moves, or say why this one wins.
 
 **A worked example of the top:** [`example-top.md`](example-top.md), next to this file (a fictional brand — never reuse its names, numbers or findings). Read it before writing your first In short.
 

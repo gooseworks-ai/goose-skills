@@ -19,5 +19,9 @@
     "reddit-post-finder",
     "scrapecreators-api",
     "transcript-intelligence"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
   ]
 }

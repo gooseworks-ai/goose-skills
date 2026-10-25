@@ -8,5 +8,8 @@
   ],
   "requires_skills": [
     "media-proxy"
+  ],
+  "requires_tools": [
+    "ffmpeg"
   ]
 }

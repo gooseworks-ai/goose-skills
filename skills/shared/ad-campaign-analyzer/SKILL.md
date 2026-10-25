@@ -5,7 +5,6 @@ description: >
   working, what's wasting budget, and specific cut/scale/test recommendations. Runs
   statistical analysis, funnel diagnostics, and multi-channel budget reallocation
   with specific dollar-amount shift recommendations and scenario modeling.
-tags: [ads]
 ---
 
 # Ad Campaign Analyzer

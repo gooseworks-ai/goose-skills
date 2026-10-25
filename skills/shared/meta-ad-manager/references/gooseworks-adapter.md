@@ -21,12 +21,12 @@ root. The coworker has no `file_*` tools there.
 Never write to an absolute path such as `/workspace/…`: that is the sandbox's local disk, which
 is lost when the sandbox stops and which no other run can see.
 
-**From an outside host** (Claude Code, Cursor, any MCP client): call `brand_list`, take the
+**From an outside host** (Claude Code, Cursor, any MCP client): call `brand_read` without `brand_id`, take the
 brand's `coworker_agent_id`, and pass it as `scope` on **every** file call. Without `scope` the
 tools fall back to the user's default agent, which is usually not the brand's.
 
 ```json
-{ "tool": "brand_list", "args": {} }
+{ "tool": "brand_read", "args": {} }
 { "tool": "file_read",  "args": { "path": "ads/README.md",
     "scope": { "type": "agent", "agent_id": "<brand.coworker_agent_id>" } } }
 { "tool": "file_write", "args": { "path": "ads/README.md", "content": "<whole file>",
@@ -34,19 +34,19 @@ tools fall back to the user's default agent, which is usually not the brand's.
 ```
 
 **Ids.** `brand_id` is the GooseWorks brand id and `coworker_agent_id` its coworker agent, both
-from `brand_list`.
+from `brand_read` without `brand_id`.
 
 ## Meta tools from an outside host
 
 The launch, pause and proposal tools take **`brand_id`** on every call from an outside host (the
-GooseWorks brand id from `brand_list`, not the coworker agent id). Inside the coworker they take no
+GooseWorks brand id from `brand_read`, not the coworker agent id). Inside the coworker they take no
 brand: the session is already bound to one. Everything else about them is the same, and so are
 the gates: they act as the signed-in user, on a brand in the user's own organisation.
 
 ```json
-{ "tool": "list_meta_pages",      "args": { "brand_id": "<brand.id>" } }
+{ "tool": "meta_read",            "args": { "brand_id": "<brand.id>", "view": "pages" } }
 { "tool": "prepare_meta_ad_push", "args": { "brand_id": "<brand.id>", "render_ids": ["<render id>"],
-    "mode": "NEW_CAMPAIGN", "page_id": "<id from list_meta_pages>", "...": "..." } }
+    "mode": "NEW_CAMPAIGN", "page_id": "<id from meta_read view pages>", "...": "..." } }
 { "tool": "pause_meta_ad_push",   "args": { "brand_id": "<brand.id>", "push_id": "<push id>",
     "meta_ad_ids": ["<meta ad id>"], "user_instruction": "<the user's words>" } }
 { "tool": "propose_meta_budget_change", "args": { "brand_id": "<brand.id>", "push_id": "<push id>",
@@ -72,14 +72,14 @@ message instead.
 
 | Stage | Tools |
 |---|---|
-| intake | `ad-management-intake` (its GooseWorks adapter): `brand_get_context` / `get_brand_kit`, `brand_onboarding`, `campaign_read` / `campaign_upsert` for the brief |
+| intake | `ad-management-intake` (its GooseWorks adapter): `brand_knowledge_browse` / `brand_read`, `brand_setup_status`, `campaign_read` / `campaign_upsert` for the brief |
 | connect | the in-app connection card (`render_meta_connection` with only an intent inside the coworker). Never ask for or repeat a token |
 | strategy | `ads-north-star-strategy` (its GooseWorks adapter) |
 | create, review | concepts via `add_campaign_concept`, then `request_campaign_generation({campaign_id, planned_ads})`, which generates three times the plan and waits in the approval queue until the user approves (the Generate button or `ads_approval_decide`). Tell the user where to approve. A one-off "make me an ad" outside a plan uses `ads_generate` with `dry_run: true` first (the cost quote), then `mode: generate` after the user's yes. `ads_creative_read` (`approved_only: true`) fetches the picks |
-| launch | `launch-meta-ad-campaign` (its GooseWorks adapter): `list_meta_pages`, `prepare_meta_ad_push`, the approval page, `get_meta_push_status`, then `refresh_meta_sync` so the new ads show in reads |
+| launch | `launch-meta-ad-campaign` (its GooseWorks adapter): `meta_read` view `pages`, `prepare_meta_ad_push`, the approval page, `meta_read` view `push_status`, then `refresh_meta_sync` so the new ads show in reads |
 | quick check | the daily Meta ads report automation and its watch findings |
 | deep check | `meta-ads-analyzer` over `query_meta_insights` complete days |
-| fix and adjust | `pause_meta_ad_push` (a whole push or one ad), `revert_meta_ad_push`, `propose_meta_budget_change`, `propose_meta_creative_replacement`, then `get_meta_change_status` after the user approves on the page |
+| fix and adjust | `pause_meta_ad_push` (a whole push or one ad), `revert_meta_ad_push`, `propose_meta_budget_change`, `propose_meta_creative_replacement`, then `meta_read` with `view: "change_status"` and the `change_id` after the user approves on the page |
 | answers | `answer-ads-questions` (its GooseWorks adapter) |
 
 `render_meta_connection` works inside the coworker only: from an outside host, send the user to

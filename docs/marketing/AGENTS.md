@@ -135,7 +135,7 @@ Write for an agent: precise, imperative, no filler. Put long craft knowledge (fr
 
 A step's meta is shorter: `slug`, `category: "capabilities"`, `tier: "atom"`, `version`, `playbook` (its playbook; a shared step has `used_by` instead), `tags`, `standalone`, `requires_skills`.
 
-- **Referring to another skill:** "the `<slug>` skill (`../<slug>/SKILL.md`)", or `../<slug>/<file>` for a file inside it, file-relative (one more `../` from `references/` or `tests/`). The path works on disk; the slug lets a hosted agent fetch it (`marketing-guide` explains this once). Files inside the skill stay plain relative paths (`references/<file>.md`). Never link `unreleased/`, `BACKLOG.md` or this file from a published skill.
+- **Referring to another skill:** "the `<slug>` skill (`../<slug>/SKILL.md`)", or `../<slug>/<file>` for a file inside it, file-relative (one more `../` from `references/` or `tests/`). The path works on disk; the slug lets a hosted agent fetch it (`marketing-guide` explains this once). Files inside the skill stay plain relative paths (`references/<file>.md`). Never link `drafts/` (unreleased playbooks), `BACKLOG.md` or this file from a published skill.
 - **`requires_skills`** lists every skill it refers to, **flattened**: only one level of dependencies is delivered, so a playbook also lists what its steps need. A step does not list the playbook that runs it, unless it works alone and reads that playbook's references. Shared steps and foundation skills never require a playbook. `node scripts/check-skill-links.js` (in CI) checks every reference resolves in the installed layout, names a listed dependency, and that the list is flat.
 
 ## 6. The critique loop (the most important part)
@@ -190,12 +190,12 @@ Runtime rules: `skills/marketing/save-to-brain/SKILL.md` (title, tags, upload �
 
 ### Learnings and the brand brain
 Runtime rules: `skills/marketing/save-learning/SKILL.md` (learnings and typed facts, openings, prefixes) and `skills/marketing/save-to-brain/SKILL.md` (documents).
-- **Two seams only** (orchestrator ruling, 16 Oct; typed `brain_save` targets added 20 Oct). Brain **memory** (learnings and documents) is written only through those two atoms. Typed brand fields a playbook's spec owns (`brand_update` kit / products / onboarding / audience proposals, `knowledge_import` of the brand's own published URLs, `competitor_save`, `campaign_upsert`, and the matching typed `brain_save` targets) are written directly by that playbook, as `found`; audience, plan, budget and positioning changes wait for the human's yes in the app.
+- **Two seams only** (orchestrator ruling, 16 Oct; typed `brand_knowledge_save` targets added 20 Oct). Brain **memory** (learnings and documents) is written only through those two atoms. Typed brand fields a playbook's spec owns (`brand_update` kit / products / onboarding / audience proposals, `knowledge_import` of the brand's own published URLs, `competitor_save`, `campaign_upsert`, and the matching typed `brand_knowledge_save` targets) are written directly by that playbook, as `found`; audience, plan, budget and positioning changes wait for the human's yes in the app.
 - **Do not design around today's server limits.** The rebuild removes the silent cut of long fact text and the engines' small fact window. Playbooks never ration or shorten learnings; any interim handling lives inside `save-learning`.
 - The fixed-opening facts (`Claims sign-off (learn-my-brand, …`, `Claims you may use —`, …) keep learn-my-brand's opening as a data format although it is unreleased; only `claims-gate` §5 writes the marker and claims.
 
 ### Brand Brain tools (decided 19 Oct)
-Prefer `brain_*` where listed and fall back to `brand_read` / `knowledge_search` otherwise: production does not list `brain_*` yet, so every brain step needs its fallback, and playbooks do not change when production gets it. Runtime rules, including found vs confirmed: guide §1.4; writes through the two atoms above.
+The Brand Brain tools were renamed from `brain_*` to `brand_knowledge_*` (`brand_knowledge_browse`, `brand_knowledge_search`, `brand_knowledge_read`, `brand_knowledge_save`). Skills name only these listed tools; the old `brain_*` names are hidden and never listed. Each brain step keeps its `brand_read` / `knowledge_search` fallback for a server that doesn't list them. Runtime rules, including found vs confirmed: guide §1.4; writes through the two atoms above.
 
 ### Run memory (decided 19 Oct)
 - **Every repeatable playbook** (anything that can run again for the same brand, weekly, monthly or on request) loads its last run record at the start and saves a new one at the end, through `skills/marketing/run-memory/SKILL.md`. Scheduled runs with no human present do both. Anything needing a yes waits as a proposal, and open questions go into the report's "Decisions for you".
@@ -204,7 +204,7 @@ Prefer `brain_*` where listed and fall back to `brand_read` / `knowledge_search`
 - A run record is a few hundred words, never the report, and never holds personal data.
 
 ### Claims
-Runtime rules: `skills/marketing/claims-gate/SKILL.md` (both paths: the older sign-off marker, and confirmed brain claims when `brain_*` is listed). Across the playbooks, "signed-off claims" means claims usable through `claims-gate` on either path.
+Runtime rules: `skills/marketing/claims-gate/SKILL.md` (both paths: the older sign-off marker, and confirmed brain claims when `brand_knowledge_*` is listed). Across the playbooks, "signed-off claims" means claims usable through `claims-gate` on either path.
 
 ### Money and publishing
 Runtime rules: `skills/marketing/spend-gate/SKILL.md` (engine quotes, the proxy ceiling and credits log, automations) and guide §3 "Publishing".

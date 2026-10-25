@@ -64,7 +64,7 @@ without it the model reads "miniature" by adding a scale-reference prop. Review 
 ## 4. Clips → Seedance 2.0 i2v  (config: `tableaux[].motion_hint`, `clip_engine`)  [PAID]
 
 Per keyframe, build the prompt as `clip_engine.motion_opener` + `tableaux[i].motion_hint` and
-call `seedance_2_0` image-to-video, `--duration 4`, 9:16, off the clean keyframe → `generated/animated/scene-NN.mp4`.
+run the `clip_engine.model` image-to-video model (`seedance_2_0` in the example config), `--duration 4`, 9:16, off the clean keyframe → `generated/animated/scene-NN.mp4`.
 **Lead with the CHARACTER VERB, not the camera move** — camera-led openers ("slow push-in…")
 read static; this was the single biggest v1→v4 quality jump. Auto-fall back to `veo3_1_lite`
 when Seedance returns `ip_detected` (Oscar-trophy shapes) or `nsfw` ("intimate"/"leans toward"

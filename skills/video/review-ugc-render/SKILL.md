@@ -1,10 +1,8 @@
 ---
 name: review-ugc-render
-description: Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates keeping the render as the final version (video_review) — blocking a render whose generated audio mis-voices a word (e.g. the approved "human-vetted" spoken as "human witted"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently ("5mg" said "five milligrams", "30%" said "thirty percent", a spoken URL, "don't" said "do not", "braxleybands" said "braxley bands", a confirmed pronunciation like "TG1" said "T G one") passes. Runnable, gating counterpart to GooseWorks' fuller transcript-integrity review. Every ugc-video-formats recipe runs this after render and BEFORE keeping the final version.
+description: Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates keeping the render as the final version (video_review) — blocking a render whose generated audio mis-voices a word (e.g. the approved "human-vetted" spoken as "human witted"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently ("5mg" said "five milligrams", "30%" said "thirty percent", a spoken URL, "don't" said "do not", "larkfieldstraps" said "larkfield straps", a confirmed pronunciation like "TG1" said "T G one") passes. Runnable, gating counterpart to GooseWorks' fuller transcript-integrity review. Every ugc-video-formats recipe runs this after render and BEFORE keeping the final version.
 status: superseded
 version: "2.0.5"
-created: 2026-07-04
-updated: 2026-10-06
 superseded_by: check-layer@1.2.0
 ---
 
@@ -83,9 +81,9 @@ diff. The rules are **bounded** — each is an exact rewrite, never a fuzzy matc
 | `5mg`, `30g`, `500ml`, `12oz`, `10 lbs`, `30-day` | `five milligrams`, `thirty grams`, …, `thirty days` | unit **after a quantity** (weights, volumes, %, money, hours/minutes/seconds, days/weeks/months/years, calories, `x` times) |
 | `30%` | `thirty percent` / `30 per cent` | percent |
 | `$49`, `$49.99` | `forty nine dollars`, `forty nine dollars and ninety nine cents` | money |
-| `braxleybands.com`, `www.example.com` | `braxleybands dot com`, `w w w dot example dot com`, `example dot com` | URL; `www.` is optional |
+| `larkfieldstraps.com`, `www.example.com` | `larkfieldstraps dot com`, `w w w dot example dot com`, `example dot com` | URL; `www.` is optional |
 | `don't`, `can't`, `it's`, `you're` | `do not`, `cannot` / `can not`, `it is`, `you are` | contractions |
-| `Braxleybands`, `Gooseworks`, `everyone`, `OneGlow` | `Braxley Bands`, `goose works`, `every one`, `One Glow` | fused/split: exact join of 2–3 words |
+| `Larkfieldstraps`, `Gooseworks`, `everyone`, `OneGlow` | `Larkfield Straps`, `goose works`, `every one`, `One Glow` | fused/split: exact join of 2–3 words |
 | `TG1` | `TG1`, `TG one`, `T.G. one` | written forms, no alias needed |
 | `TG1` | `T G one`, `T G 1` (letters spaced out) | **only** with a confirmed alias |
 
@@ -95,7 +93,7 @@ Guards that keep the rules honest:
   "milligrams".
 - Letters spelled one by one ("T G") are **not** fused into a word. That needs a
   confirmed pronunciation.
-- Fusion is exact concatenation. "Braxly Bands" is not "Braxleybands".
+- Fusion is exact concatenation. "Larkfeld Straps" is not "Larkfieldstraps".
 - A join never swallows a negation: "no table" is not "notable" ("no thing" is "nothing").
 - A number word joins a word only when every part has 2+ letters: "every one" is
   "everyone", but "G one" is not "gone".

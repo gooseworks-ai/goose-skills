@@ -21,8 +21,8 @@ Hard rules:
   any network call. Change the inputs (image, prompt, model) to try again.
 - duration must be an INT for bytedance/seedance-2.0/reference-to-video (enum {auto,4..15}); a string 400s (invalid_request)
 - image refs must be PUBLIC URLs — the proxy does not upload local files. The
-  orchestrator hosts local refs via MCP get_upload_url -> get_download_url and passes
-  the URL here (identical to create-video-fal).
+  orchestrator hosts local refs via MCP file_url (mode "upload", PUT the file, then
+  mode "download" on the same path) and passes the download URL here.
 
 Usage:
     generate.py --prompt "..." --output PATH --image-url URL [--image-url URL ...]
@@ -117,7 +117,7 @@ def main() -> int:
     local = [u for u in args.image_urls if not _looks_like_url(u)]
     if local:
         sys.exit("ERROR: image refs must be PUBLIC URLs (the proxy does not upload local files). "
-                 "Host each local ref via MCP get_upload_url -> get_download_url and pass the URL. "
+                 "Host each local ref via MCP file_url (mode upload, PUT, then mode download) and pass the URL. "
                  f"Got local path(s): {local}")
 
     payload: dict = {

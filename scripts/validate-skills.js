@@ -74,6 +74,10 @@ const OWN_DOMAIN = { 'marketing-agent': 'marketing', gooseworks: 'entry' };
 const MA_TIERS = new Set(['playbook', 'atom', 'foundation']);
 // Entry skills come with the GooseWorks CLI; every other skill installs alone, by slug.
 const DESCRIPTION_LIMIT = 1024;
+// One SKILL.md frontmatter style. Everything else about a skill lives in skill.meta.json.
+const FRONTMATTER = new Set(['name', 'description', 'version', 'status', 'superseded_by']);
+// Entry skills keep the gooseworks CLI's frontmatter, and make-custom-video carries its dependencies and harness.
+const ENTRY_FRONTMATTER = new Set([...FRONTMATTER, 'slug', 'author', 'tags', 'requires_skills', 'harness_binding']);
 
 function blockFrontmatter(text) {
   const m = text.match(/^---\n([\s\S]*?)\n---/);
@@ -152,6 +156,12 @@ for (const family of FAMILIES) {
     }
     if (!generated && fm.category !== undefined && fm.category !== meta.category) {
       errors.push(`category in SKILL.md (${fm.category}) and skill.meta.json (${meta.category}) differ in ${where}: delete the SKILL.md line`);
+    }
+    if (!generated) {
+      const allowed = family === 'entry' ? ENTRY_FRONTMATTER : FRONTMATTER;
+      for (const key of Object.keys(fm)) {
+        if (!allowed.has(key)) errors.push(`${where}/SKILL.md frontmatter has "${key}": allowed keys are ${[...allowed].join(', ')} (other metadata goes in skill.meta.json)`);
+      }
     }
     if (!fm.description) errors.push(`description required in ${where}/SKILL.md`);
     else if (fm.description.length > DESCRIPTION_LIMIT) {

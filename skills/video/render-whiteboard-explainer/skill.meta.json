@@ -12,5 +12,9 @@
     "create-image-gpt-image-fal",
     "create-vo-elevenlabs",
     "media-proxy"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
   ]
 }

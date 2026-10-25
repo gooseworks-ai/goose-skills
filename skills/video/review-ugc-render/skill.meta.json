@@ -6,5 +6,8 @@
   "tags": [
     "ads"
   ],
-  "requires_skills": []
+  "requires_skills": [],
+  "requires_tools": [
+    "ffmpeg"
+  ]
 }

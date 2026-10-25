@@ -30,12 +30,12 @@ Every durable artifact goes through this atom. Never keep the only copy in chat 
 
 ## Brand Brain tools
 
-On current servers these are `brand_knowledge_*` (`brain_save` = `brand_knowledge_save`, `brain_search` = `brand_knowledge_search`, `brain_open` = `brand_knowledge_read`; the `marketing-guide` skill §1.4).
+The Brand Brain tools are `brand_knowledge_save`, `brand_knowledge_search` and `brand_knowledge_read`.
 
-`brain_save` has **no document or report target**. Its targets are learning, fact, claim, audience, competitor, product, kit fields, operating-plan sections and proposals. So documents keep the route below (workspace file → `media_upload` → `knowledge_import`) on every server. What changes when `brain_*` tools are listed:
-- **Read-back** (step 6) uses `gooseworks:brain_search` with `source_types: ["document"]`, and `gooseworks:brain_open` on the hit to read it in full. Otherwise use `gooseworks:knowledge_search`.
+`brand_knowledge_save` has **no document or report target**. Its targets are learning, fact, claim, audience, competitor, product, kit fields, operating-plan sections and proposals. So documents keep the route below (workspace file → `media_upload` → `knowledge_import`) on every server. What changes when `brand_knowledge_*` tools are listed:
+- **Read-back** (step 6) uses `gooseworks:brand_knowledge_search` with `source_types: ["document"]`, and `gooseworks:brand_knowledge_read` on the hit to read it in full. Otherwise use `gooseworks:knowledge_search`.
 - **Status.** An imported document is *found*: never call it confirmed, and it is never an approved claim (the marketing-guide §1.4).
-- **Indexing lags.** `brain_search` can answer "Still indexing: N of M". That means "saved, not yet searchable", not a failure. Do not re-import.
+- **Indexing lags.** `brand_knowledge_search` can answer "Still indexing: N of M". That means "saved, not yet searchable", not a failure. Do not re-import.
 
 ## Workspace scope
 
@@ -52,7 +52,7 @@ The scope in [the `marketing-guide` skill](../marketing-guide/SKILL.md) §2, on 
    - `versioned: supersede` — delete (`gooseworks:media_update` `delete`) those whose title matches this title apart from the date (and version).
    - `keep-history` — delete only a copy with exactly this title (a re-run of the same period, written to the same file); other periods, and same-day copies with a suffixed title, are history and are never deleted.
    Deleting the upload also removes its knowledge, so search stops returning stale rows. The workspace file is never deleted.
-6. **Verify.** Search with a query that should hit the new content, using `source_types: ["document"]`: `gooseworks:brain_search` when `brain_*` tools are listed, otherwise `gooseworks:knowledge_search`. If it does not come back (or the brain says it is still indexing), say "saved, not yet searchable". Never claim it is in the brain when it is not.
+6. **Verify.** Search with a query that should hit the new content, using `source_types: ["document"]`: `gooseworks:brand_knowledge_search` when `brand_knowledge_*` tools are listed, otherwise `gooseworks:knowledge_search`. If it does not come back (or the brain says it is still indexing), say "saved, not yet searchable". Never claim it is in the brain when it is not.
 
 ## If a tool is missing
 

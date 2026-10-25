@@ -21,9 +21,9 @@
       "sha256": "2c81a5336d5160b2f6c90ba1ded310c05f7771d215fa128f5a3f127d92bdb3d8"
     },
     "capabilities.md": {
-      "bytes": 13888,
-      "catalog_sha256": "ddd827ce55cbd26cd9b58e5e7d691f26c044981372d955231891025555dfc139",
-      "sha256": "ddd827ce55cbd26cd9b58e5e7d691f26c044981372d955231891025555dfc139"
+      "bytes": 13894,
+      "catalog_sha256": "3b2d89c83c004ff85587dc65d16d42bac11ecb023c6c5fdb47b56ed05d75d834",
+      "sha256": "3b2d89c83c004ff85587dc65d16d42bac11ecb023c6c5fdb47b56ed05d75d834"
     },
     "create-clips.md": {
       "bytes": 15352,
@@ -36,9 +36,9 @@
       "sha256": "265d03bbaad57ee1994bd579348dfd80de486810229468a9a2a07c95ca19126b"
     },
     "create-storyboard.md": {
-      "bytes": 9025,
-      "catalog_sha256": "9d8e96a7e3aff2278233e9fa14afb2f4b5c881c0cefc2d60282d0d01f1173fc4",
-      "sha256": "9d8e96a7e3aff2278233e9fa14afb2f4b5c881c0cefc2d60282d0d01f1173fc4"
+      "bytes": 9031,
+      "catalog_sha256": "a11f2da053fbb12dabc6b1372bb9edd3ab432ac8d9e9b329d4eecfb03c291685",
+      "sha256": "a11f2da053fbb12dabc6b1372bb9edd3ab432ac8d9e9b329d4eecfb03c291685"
     },
     "edit-clip.md": {
       "bytes": 6507,
@@ -81,9 +81,9 @@
       "sha256": "8d47b268ffdba4e10a52c377b32fa40a7a64d6f11a71a183b1ab33c388f53539"
     },
     "references/check-severity.md": {
-      "bytes": 9872,
-      "catalog_sha256": "b8b0c72092447dffedc2d47388185c068ce72f05f01ce9a584264213f043e4e5",
-      "sha256": "b8b0c72092447dffedc2d47388185c068ce72f05f01ce9a584264213f043e4e5"
+      "bytes": 9884,
+      "catalog_sha256": "423d7597e0a236f202de9146a7c54bbc4966a124f55cccaa7f8b05785d438992",
+      "sha256": "423d7597e0a236f202de9146a7c54bbc4966a124f55cccaa7f8b05785d438992"
     },
     "references/creative-contract-and-review.md": {
       "bytes": 11633,
@@ -96,9 +96,9 @@
       "sha256": "b8b38679ae45dd1f13de32015021b930e9de9f256507b3edc8418e80e1533498"
     },
     "references/editorial-review.md": {
-      "bytes": 6469,
-      "catalog_sha256": "109b1c9ee2f1a60c5b07dfeec4371583b313b31c63fce873e29daa754c76a10b",
-      "sha256": "109b1c9ee2f1a60c5b07dfeec4371583b313b31c63fce873e29daa754c76a10b"
+      "bytes": 6509,
+      "catalog_sha256": "e92e32f723a812fa3d7d729bfbe690cd60f74bed1a24b8a2a3a6643c3cef1055",
+      "sha256": "e92e32f723a812fa3d7d729bfbe690cd60f74bed1a24b8a2a3a6643c3cef1055"
     },
     "references/genres/ai-creator-ugc.md": {
       "bytes": 2798,
@@ -131,9 +131,9 @@
       "sha256": "ab9702d4438e38eec2f38b0f65e2a966d711b809574fdc3673c9941e68125cc7"
     },
     "references/hook-compatibility.md": {
-      "bytes": 2823,
-      "catalog_sha256": "7c0a392fae0dea60c92c2b23dc0c77a39a91afdae9fc3202ceff359cf97acd20",
-      "sha256": "7c0a392fae0dea60c92c2b23dc0c77a39a91afdae9fc3202ceff359cf97acd20"
+      "bytes": 2821,
+      "catalog_sha256": "edb51d9ab623ef17113fa43f15411d62ba4170ff3de277849915bf725bc0de64",
+      "sha256": "edb51d9ab623ef17113fa43f15411d62ba4170ff3de277849915bf725bc0de64"
     },
     "references/libraries-look-and-rubric.md": {
       "bytes": 6175,
@@ -166,9 +166,9 @@
       "sha256": "547002c498fa884184cf032a0674606d8aafbf25bba6fe94ddd494e465c9a945"
     },
     "references/specialist-handoff.md": {
-      "bytes": 4859,
-      "catalog_sha256": "205e1124617165038d2f71fbbf4eea49da4ee43e2634a5a5455f0530314b46f9",
-      "sha256": "205e1124617165038d2f71fbbf4eea49da4ee43e2634a5a5455f0530314b46f9"
+      "bytes": 4851,
+      "catalog_sha256": "aefa1dc1a4c854e1c4095f2b0d74a7c6551102486389cde5f4d6d98a60978808",
+      "sha256": "aefa1dc1a4c854e1c4095f2b0d74a7c6551102486389cde5f4d6d98a60978808"
     },
     "references/speech-and-route-qualification.md": {
       "bytes": 10361,
@@ -246,9 +246,9 @@
       "sha256": "c6831561b57facf2b79d76084086067365e9fd05b94c7cb6d397c2fc8bb895c3"
     },
     "skill.meta.json": {
-      "bytes": 711,
-      "catalog_sha256": "d64e3ab10f4a3dc38aa153e368c9eddf69b20753054d8ca34baf59147760bb22",
-      "sha256": "d64e3ab10f4a3dc38aa153e368c9eddf69b20753054d8ca34baf59147760bb22"
+      "bytes": 820,
+      "catalog_sha256": "f12809dfbadb84fe6601a0bcb3b8b6b7f45c565bf05032317a57ebdd80619a65",
+      "sha256": "f12809dfbadb84fe6601a0bcb3b8b6b7f45c565bf05032317a57ebdd80619a65"
     },
     "states/edit-to-delivery.md": {
       "bytes": 8440,
@@ -292,7 +292,7 @@
   ],
   "schema_version": 1,
   "slug": "video-production-harness",
-  "source_commit": "2f924f6e93c9225df5a42121a88aaf4381835ea8",
+  "source_commit": "37cdb257c52b7825ba0e64fca2732e15ba1c344e",
   "source_files": {
     "SKILL.md": {
       "sha256": "c33f976a5430483a0f42f47c6443846fcbc9530bc4e5b1d5d33d03070082907d",
@@ -311,7 +311,7 @@
       "source": "brainstorm.md"
     },
     "capabilities.md": {
-      "sha256": "ddd827ce55cbd26cd9b58e5e7d691f26c044981372d955231891025555dfc139",
+      "sha256": "3b2d89c83c004ff85587dc65d16d42bac11ecb023c6c5fdb47b56ed05d75d834",
       "source": "capabilities.md"
     },
     "create-clips.md": {
@@ -323,7 +323,7 @@
       "source": "create-design-brief.md"
     },
     "create-storyboard.md": {
-      "sha256": "9d8e96a7e3aff2278233e9fa14afb2f4b5c881c0cefc2d60282d0d01f1173fc4",
+      "sha256": "a11f2da053fbb12dabc6b1372bb9edd3ab432ac8d9e9b329d4eecfb03c291685",
       "source": "create-storyboard.md"
     },
     "edit-clip.md": {
@@ -359,7 +359,7 @@
       "source": "promote.md"
     },
     "references/check-severity.md": {
-      "sha256": "b8b0c72092447dffedc2d47388185c068ce72f05f01ce9a584264213f043e4e5",
+      "sha256": "423d7597e0a236f202de9146a7c54bbc4966a124f55cccaa7f8b05785d438992",
       "source": "references/check-severity.md"
     },
     "references/creative-contract-and-review.md": {
@@ -371,7 +371,7 @@
       "source": "references/creator-grammar.md"
     },
     "references/editorial-review.md": {
-      "sha256": "109b1c9ee2f1a60c5b07dfeec4371583b313b31c63fce873e29daa754c76a10b",
+      "sha256": "e92e32f723a812fa3d7d729bfbe690cd60f74bed1a24b8a2a3a6643c3cef1055",
       "source": "references/editorial-review.md"
     },
     "references/genres/ai-creator-ugc.md": {
@@ -399,7 +399,7 @@
       "source": "references/genres/product-demo.md"
     },
     "references/hook-compatibility.md": {
-      "sha256": "7c0a392fae0dea60c92c2b23dc0c77a39a91afdae9fc3202ceff359cf97acd20",
+      "sha256": "edb51d9ab623ef17113fa43f15411d62ba4170ff3de277849915bf725bc0de64",
       "source": "references/hook-compatibility.md"
     },
     "references/libraries-look-and-rubric.md": {
@@ -427,7 +427,7 @@
       "source": "references/shot-routing.md"
     },
     "references/specialist-handoff.md": {
-      "sha256": "205e1124617165038d2f71fbbf4eea49da4ee43e2634a5a5455f0530314b46f9",
+      "sha256": "aefa1dc1a4c854e1c4095f2b0d74a7c6551102486389cde5f4d6d98a60978808",
       "source": "references/specialist-handoff.md"
     },
     "references/speech-and-route-qualification.md": {
@@ -507,6 +507,6 @@
       "source": "wrap-session.md"
     }
   },
-  "source_hash": "0aa021946580d4b2b795d581d7d87b589f97455000d654d489af8a20bac55f95",
-  "source_version": "5-0aa021946580"
+  "source_hash": "c2cfbfd6caa49d126ecbc524daacd0ed6e2e120bbf02eeadeab4293de00d1078",
+  "source_version": "5-c2cfbfd6caa4"
 }

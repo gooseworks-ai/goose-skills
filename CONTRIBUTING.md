@@ -5,8 +5,11 @@
 - Run `npm run ci` before you push: it runs the same checks as CI's `validate` job. Video atoms also need the atom checks below.
 - Open the PR into `dev` (staging). Promoting `dev` to `main` releases to every customer ([DEPLOYMENT.md](DEPLOYMENT.md)).
 - **Questions?** Ask the GooseWorks team: open a GitHub issue, or a draft PR into `dev` with the question in its description.
+- **Outside contributors:** fork, branch from `dev`, run `npm run ci`, and open the PR into `dev`. You don't need any GooseWorks access. Some docs (`docs/marketing/AGENTS.md`) mention the team's private planning repo; you can ignore those paths.
 
 ## Adding a skill
+
+**Start from the template.** Copy [`docs/skill-template/`](docs/skill-template/README.md) into the right family folder and fill it in.
 
 **Where it goes.** One folder per skill, named by its slug:
 
@@ -34,9 +37,25 @@
 npm run ci
 ```
 
-It runs what CI's `validate` job runs: validate every meta, rebuild `skills-index.json`, check that every link in every skill resolves as installed (`node scripts/check-skill-links.js`), and the Node tests. Commit the regenerated `skills-index.json` with your change. For a video skill, also run the atom checks (below) and `python3 -m pytest -q skills/video/<slug>`.
+It runs what CI's `validate` job runs: validate every meta, rebuild `skills-index.json`, check that every link in every skill resolves as installed (`node scripts/check-skill-links.js`), check every tool name (below), and the Node tests. `npm run check:all` runs every CI job that works offline, the atom checks and the part, browser and media tests included; it reports a job whose tools are missing as skipped, and a skip fails it. Commit the regenerated `skills-index.json` with your change. For a video skill, also run the atom checks (below) and `python3 -m pytest -q skills/video/<slug>`.
 
 **A merge conflict in `skills-index.json`: never hand-merge it.** The file is generated, so a hand merge almost always leaves it wrong. Resolve every other conflicted file first, take either side of `skills-index.json`, then rebuild it with `node scripts/build-index.js`, run `npm run ci`, and commit the rebuilt file.
+
+## GooseWorks tool names
+
+A skill may name only the tools the GooseWorks server lists to customers. The list is [`scripts/lib/action-names.json`](scripts/lib/action-names.json):
+
+- `actions`: the listed tools. Name only these.
+- `renamed`: old names the server still answers but hides, each with the listed tool to use.
+- `removed`: names that are gone.
+- `other_tools`: tools of other servers a skill may name, each with its reason. `not_tools`: words that look like old tool names but mean something else.
+
+`npm run check:tools` (in `npm run ci`) reads every file under `skills/` and `docs/`. It fails on a renamed or removed name, on `gooseworks:<name>` or `mcp__gooseworks__<name>` for an unlisted name, and on "call `<name>`" or "`<name>` tool" for one. **When the server's tools change,** the GooseWorks team rebuilds the list from a gooseworks-app checkout:
+
+```bash
+node scripts/refresh-action-names.js --app ../gooseworks-app --ref origin/dev
+GOOSEWORKS_APP_DIR=../gooseworks-app node --test scripts/__tests__/check-tool-names.test.js   # is the list current?
+```
 
 ## Skills published from another repo
 

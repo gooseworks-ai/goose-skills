@@ -7,7 +7,6 @@ description: >
   `gooseworks-style.json` manifest, and publishes via
   `npx gooseworks styles publish` so other agents can discover it. Mirrors
   goose-graphics-create-format but for styles.
-tags: [design, content]
 ---
 
 # Create Goose Graphics Style

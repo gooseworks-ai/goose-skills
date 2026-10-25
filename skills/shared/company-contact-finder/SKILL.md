@@ -4,7 +4,6 @@ description: >
   Find decision-makers at a specific company using Apollo, Crustdata, Fiber,
   and PDL people search via Gooseworks MCP. Given a company name and target
   titles, returns a list of contacts with name, title, LinkedIn URL, and location.
-tags: [lead-generation]
 ---
 
 # company-contact-finder
@@ -237,7 +236,7 @@ Always start with Apollo. Escalate through Fiber → Crustdata → PDL only as f
 ```
 Find Partners and Controllers at EisnerAmper
 ```
-Agent calls `apollo_person_search` with `person_titles: ["Partner", "Controller"], q_keywords: "EisnerAmper", per_page: 25`.
+Agent runs the Apollo search (Step 2) with `person_titles: ["Partner", "Controller"], q_keywords: "EisnerAmper", per_page: 25`.
 
 ### With more titles: Find VP Finance and CFO at Sage Intacct users
 ```

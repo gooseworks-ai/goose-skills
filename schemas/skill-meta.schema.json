@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://athina.ai/schemas/skill-meta.schema.json",
+  "$id": "https://gooseworks.ai/schemas/skill-meta.schema.json",
   "title": "skill.meta.json",
   "description": "The metadata of one skill folder, skills/<family>/<slug>/skill.meta.json. scripts/validate-skills.js checks every meta against this schema, then adds the rules a schema cannot say (the slug matches the folder, the version matches SKILL.md, the family's domain and install command). build-index.js copies the whole object into skills-index.json as `metadata`, so a new field is published as it is: add it here first.",
   "type": "object",

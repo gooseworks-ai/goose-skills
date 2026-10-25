@@ -11,12 +11,12 @@ Use ScrapeCreators when a workflow needs structured public social or ad-library 
 
 Task skills describe each request as an environment-neutral operation containing `provider`, `method`, `path`, and optional `query` or `body`. Execute that same operation through the first available runtime:
 
-1. **GooseWorks MCP available:** inspect and call the live `call_data_provider` tool. Pass the operation fields directly. This is the preferred path in ChatGPT, Cowork, and any client without a terminal. It uses the first-party GooseWorks ScrapeCreators proxy and managed key; it does not route through Orthogonal.
+1. **GooseWorks MCP available:** inspect and call the live `data_call_provider` tool. Pass the operation fields directly. This is the preferred path in ChatGPT, Cowork, and any client without a terminal. It uses the first-party GooseWorks ScrapeCreators proxy and managed key; it does not route through Orthogonal.
 2. **Local GooseWorks CLI available:** translate the operation into `gooseworks call <provider> <path>`, adding the method, query, or body options represented in the operation. The CLI uses the same first-party proxy.
 3. **User-owned ScrapeCreators key available:** call `https://api.scrapecreators.com<path>` with `SCRAPECREATORS_API_KEY` in the `x-api-key` header, using the operation's method, query, and JSON body.
 4. **No runtime available:** ask the user to connect GooseWorks MCP, sign in through the local GooseWorks CLI, or provide their own ScrapeCreators key. Do not pretend the operation ran.
 
-Prefer MCP whenever `call_data_provider` is registered, even if a shell might also exist. Never ask for a separate provider key when the managed MCP or CLI path is available. Never print, store, or return either credential.
+Prefer MCP whenever `data_call_provider` is registered, even if a shell might also exist. Never ask for a separate provider key when the managed MCP or CLI path is available. Never print, store, or return either credential.
 
 Example operation:
 

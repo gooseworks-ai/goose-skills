@@ -27,7 +27,7 @@ const GOOSEWORKS_TOOLS = Object.freeze([
   'list_meta_entities',
   'get_meta_ad_context',
   'prepare_meta_ad_push',
-  'get_meta_push_status',
+  'meta_read',
 ]);
 
 class AdapterError extends Error {

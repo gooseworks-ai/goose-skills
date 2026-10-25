@@ -1,7 +1,6 @@
 ---
 name: ad-angle-miner
 description: Research supported advertising promises from a specific buyer's context, current product facts, customer language and observed ads. Turn them into static, video or copy ideas; match video ideas to actual recipes and save a product-scoped angle bank for write-video-ad-script. Product-led discovery can use verified facts without reviews. Reference persistence and reach are observations, not proof of performance.
-tags: [ads]
 ---
 
 # Ad Angle Miner
@@ -179,7 +178,7 @@ What is getting **earned** reach right now.
    | TikTok | /v1/tiktok/search/keyword | query, date_posted last-3-months, sort_by most-liked | About 2MB per call: parse it; keep url (tiktok.com/@author/video/id), author, followers, statistics.play_count, create_time, desc, commerce_info |
    | Instagram Reels | /v2/instagram/reels/search | query, date_posted last-month | Google-indexed, best-effort, about 9 results a page; no follower count |
    | YouTube Shorts | /v1/youtube/search | query, type shorts, nothing else | Adding uploadDate or sortBy with type shorts returns nothing. Rows have only url, title and views: for the 3-5 you'd cite, call /v1/youtube/video for channel, publishDate and isPaidPromotion. YouTube evidence is evergreen: cite its date |
-   | X | none | none | No X keyword search: use `competitor_search_mentions` with platform x, or /v1/twitter/user-tweets for a handle |
+   | X | none | none | No X keyword search: use `competitor_research` (mentions) with platform x, or /v1/twitter/user-tweets for a handle |
 
    The full list is the official OpenAPI (docs.scrapecreators.com/openapi.json). If a call errors,
    read it there; never guess a path.
@@ -300,7 +299,7 @@ method/limits, timestamped words and actions, visible setup, participation reaso
 brand connection, payoff, and unseen recruitment as explicitly unknown. Label paraphrases
 and retain full transcript evidence. Partial hooks and editorial radio excerpts cannot
 fill this gap; seed summaries are source leads until inspected in full. The selected
-[[references::render-street-interview]] guide and writer's files reference define the record.
+`render-street-interview` skill's guide and writer's files reference define the record.
 
 For podcasts, an appropriate editorial interview can provisionally teach turn structure,
 with commercial and delivery limitations recorded. Neither real performers nor an
@@ -388,9 +387,9 @@ For the picked ideas, with no manual step in between:
 
 - **Static**: hand each idea's template id (with its source type), headline and primary text to
   the `goose-ads` skill as the source and the brief.
-- **Video**: one project per idea with `video_project_upsert` (brand id, a short name from the
-  hook, format set to the template id, and no brief, since a brief makes a multi-concept batch).
-  Then make them one after another with `goose-video-local`; each idea is that project's brief.
+- **Video**: one draft plan per idea with `video_create` (brand id, `style` set to the template
+  id, and the idea's products). Never put several ideas in one plan: each plan holds one idea.
+  Then make them one after another with `goose-video-local`; each idea is that plan's brief.
   Pass the complete selected idea and shared bank into goose-video-local, including the chosen
   angle id, product id, template id, evidence and proof requirements. Its script step must fetch
   write-video-ad-script and prepare a validated angle context; never pass only the hook. Keep raw
@@ -401,9 +400,9 @@ Up to 5 per request; offer the rest after. Each paid step of making an ad is app
 
 ## Tools Required
 
-- **GooseWorks MCP** (recommended): `brand_read`, `competitor_read`, `competitor_search_mentions`,
+- **GooseWorks MCP** (recommended): `brand_read`, `competitor_read`, `competitor_research`,
   `ads_template_read`, `social_inspiration_library`, `social_inspiration_search`,
-  `data_call_provider`, `video_catalog_list`, `video_project_upsert`
+  `data_call_provider`, `video_formats`, `video_create`
 - **`scrapecreators-api`**: ad libraries, comments, reviews, social search
 - **`competitor-ad-intelligence`**: deeper teardown of one competitor's ads, when asked
 - **`comment-mining`**: structured mining of a long comment thread
@@ -420,4 +419,4 @@ Up to 5 per request; offer the rest after. Each paid step of making an ad is app
 
 ## Related
 
-- [[references::write-video-ad-script]] — consumes the video handoff and fits it to the recipe.
+- The `write-video-ad-script` skill — consumes the video handoff and fits it to the recipe.

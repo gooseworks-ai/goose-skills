@@ -50,7 +50,7 @@
     "human (one message): the type's referee (store, CRM, app consoles, bookings), exports per rostered channel, retailer sell-through, customer-level export monthly",
     "its own last run records runs/analyze-performance/<job-slug>/<date>.md (up to four weekly back: scorecards, angle history, calls) — run-memory",
     "run-paid-campaigns' run records runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md (money moves, baseline recipes, verdicts, per-ad scorecard)",
-    "Brand Brain (brain_map, brain_open, brain_search where listed): chapters 18, 20, 22, 23 (experiment_readout.*, worn_out_angle.*, lessons)",
+    "Brand Brain (brand_knowledge_browse, brand_knowledge_read, brand_knowledge_search where listed): chapters 18, 20, 22, 23 (experiment_readout.*, worn_out_angle.*, lessons)",
     "connectors the marketer already has (ads platforms, store, CRM, billing, product analytics) — read-only, never their write tools",
     "local mode: gooseworks-local/<brand-slug>/ (brand-notes.md, its own contract, reports and run records, the paid run's local state.md and decisions.md) — the marketing-guide skill (../marketing-guide/SKILL.md) §5"
   ],
@@ -93,9 +93,9 @@
       "gooseworks:media_update",
       "gooseworks:account_whoami",
       "gooseworks:tools_load",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search",
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search",
       "gooseworks:automation_list"
     ]
   }

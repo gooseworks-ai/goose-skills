@@ -19,16 +19,16 @@ Fail: any question before the report; "couldn't read the ad libraries" while a b
 
 **The 18 Oct re-test (before this rebuild):** the agent never read its worker briefs (it looked in the wrong folder), told workers there was no browser, reported that no ad library could be read, offered a paid read, then read Meta in the browser in two minutes when the founder said "Can't you do it on your own". Its rivals came from memory; the strongest ones surfaced only in the category pass. Nothing was saved to the brand.
 
-## The Talentloop case (the run that failed on 16 Oct and set this bar)
+## A B2B case to hold the bar (fictional)
 
-Brand: Talentloop (AI recruiting search). Rivals: Loxo, hireEZ, Findem, Eightfold, Fetcher. A good run must reach, unprompted:
-- Fetcher's shutdown (platform closed 16 Oct 2026) and Talentloop's purchase of Fetcher's assets → a time-boxed switch campaign at the top, with its "For you";
-- the recent hireEZ and Eightfold launches, with demos and third-party posts;
+Brand: Rotawell (fictional: shift-scheduling software for small clinics). Rivals, also fictional: ShiftPilot, Clinicrew, Staffmere, Dutyline. A good run must reach, unprompted:
+- ShiftPilot ending its free plan at the end of the month → a time-boxed switch campaign at the top, with its "For you";
+- the recent Clinicrew and Staffmere launches, with demos and third-party posts;
 - what the rivals' founders and execs are posting;
-- LinkedIn and Google ads (Meta matters less for this B2B category), pricing, G2 reviews, hiring and AI-answer presence;
-- "For you" lines such as the Fetcher switch campaign, or Talentloop's free tier against Loxo's trial, and a "You vs them" section.
+- LinkedIn and Google ads (Meta matters less for this B2B category), pricing, review-site reviews, hiring and AI-answer presence;
+- "For you" lines such as the ShiftPilot switch campaign, or Rotawell's month-to-month plan against Dutyline's annual contract, and a "You vs them" section.
 
-The old run read only Meta ad libraries, asked "go deeper?", found the Fetcher story only when pushed, and ended in a chat summary. The rebuilt playbook was re-run after the rebuild; the builder critique log records it.
+A failing run reads only Meta ad libraries, asks "go deeper?", finds the free-plan news only when pushed, and ends in a chat summary.
 
 ## Earlier staging facts still true (2026-10-16, brand "Clearday")
 

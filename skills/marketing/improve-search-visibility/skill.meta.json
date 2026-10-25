@@ -46,7 +46,7 @@
     "plan programmatic SEO page sets"
   ],
   "reads": [
-    "brand brain — brain_map core and required reads, then chapters 2, 5, 7, 8, 9, 17 and brain_search for gaps when brain_* tools are listed; else brand_read summary, products, onboarding, competitors, learnings, sources (server research and the app; learn-my-brand, unreleased)",
+    "brand brain — brand_knowledge_browse core and required reads, then chapters 2, 5, 7, 8, 9, 17 and brand_knowledge_search for gaps when brand_knowledge_* tools are listed; else brand_read summary, products, onboarding, competitors, learnings, sources (server research and the app; learn-my-brand, unreleased)",
     "claims — the shared claims-gate atom over the sign-off contract (signed-off marker → 'Claims you may use' facts; written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
     "voice-of-customer bank and demand read — research/audience/voc-bank.md (research-audience), research/market/demand.md (research-market); knowledge_search document/evidence",
     "tracked competitors — competitor_read (research-competitors)",
@@ -94,9 +94,9 @@
       "gooseworks:media_list",
       "gooseworks:media_update",
       "gooseworks:automation_list",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search",
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search",
       "gooseworks:file_url",
       "gooseworks:marketing_data_describe",
       "gooseworks:marketing_data_lookup"

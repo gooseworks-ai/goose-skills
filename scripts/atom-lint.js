@@ -53,7 +53,7 @@ function wordList(names) {
   return new RegExp(`\\b(?:${names.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'g');
 }
 
-const LIVE_ACTIONS = new Set([...ACTION_NAMES.actions, ...ACTION_NAMES.outside_contract]);
+const LIVE_ACTIONS = new Set([...ACTION_NAMES.actions, ...Object.keys(ACTION_NAMES.other_tools)]);
 
 /**
  * Text rules. `scope` says which file kinds a rule reads: prose (markdown),
@@ -132,9 +132,9 @@ const TEXT_RULES = [
   },
   {
     id: 'action.real_names_only',
-    what: 'names a removed action; name only actions that exist today',
+    what: 'names a removed or hidden action; name only listed tools (scripts/lib/action-names.json renamed says which)',
     scope: ['prose', 'json', 'code'],
-    patterns: [wordList(ACTION_NAMES.removed)],
+    patterns: [wordList([...ACTION_NAMES.removed, ...Object.keys(ACTION_NAMES.renamed)])],
     // mcp__<gooseworks server>__<action> must also be a live action. Other
     // servers' tools are not ours to check.
     extra: (line) => {

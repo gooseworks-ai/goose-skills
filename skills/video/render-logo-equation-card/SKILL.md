@@ -1,8 +1,11 @@
 ---
 name: render-logo-equation-card
 description: Render the logo-equation card ad (7s, 9:16) — partner icon + brand icon joined by a plus sign as an equation, a two-line "= outcome" headline, four numbered steps, and a CTA that hard-cuts in at 2s, on a static black card over timelapse b-roll, no voice. render_card.py draws the two card plates with measured geometry and hard guardrails (the user must confirm the integration is real, no partnership/endorsement/ranking words, no comment-bait CTA, no dashes); compose.py lays the card over the b-roll sped up to read as a timelapse, with an optional bed; measure_motion.py gates the b-roll (a real-time shot reads as a photo). Free, local.
-status: active
+status: superseded
+superseded_by: html-frames@1.2.1, cut-footage@1.2.1, audio-mix@1.1.0
 ---
+
+> **Superseded:** the video kit now does this with goose-studio's logo-equation-card style, which uses the html-frames part, version 1.2.1 (the card), the cut-footage part, version 1.2.1 (the timelapse b-roll) and the audio-mix part, version 1.1.0 (the optional bed), in the parts folder of this repository. This renderer stays, unchanged in behaviour, for goose-studio's create-logo-equation-card-video-ad molecule until it moves; its scripts still run.
 
 # render-logo-equation-card
 

@@ -44,7 +44,7 @@
     "a send went wrong, help me fix it"
   ],
   "reads": [
-    "brand brain — brain_map core and required reads, then chapters 2, 5, 11, 15, 17, 18, 20, brain_open and brain_search for gaps when brain_* tools are listed; else brand_read summary, kit, products (price, offers, notes), learnings (server research and the app; learn-my-brand, unreleased)",
+    "brand brain — brand_knowledge_browse core and required reads, then chapters 2, 5, 11, 15, 17, 18, 20, brand_knowledge_read and brand_knowledge_search for gaps when brand_knowledge_* tools are listed; else brand_read summary, kit, products (price, offers, notes), learnings (server research and the app; learn-my-brand, unreleased)",
     "claims — the shared claims-gate atom over the sign-off contract (signed-off marker → 'Claims you may use' facts; written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
     "standing offer and brand-wide policies — the shared Standing offer: fact, any Policy: facts (written earlier by learn-my-brand, unreleased) and earlier [lifecycle] rules, else the Brand record",
     "voice and banned words — brand learnings (server research and the app; learn-my-brand, unreleased); voice cards brand/voices/<handle>.md via the shared voice-card atom (make-content, run-organic-social)",
@@ -88,9 +88,9 @@
       "gooseworks:media_update",
       "gooseworks:knowledge_search",
       "gooseworks:automation_list",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search"
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search"
     ]
   }
 }

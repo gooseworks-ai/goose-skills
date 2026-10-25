@@ -133,4 +133,4 @@ need research or an explicit provisional status, never invented defaults.
 
 ## Related
 
-- [[references::write-video-ad-script]] — validates and consumes this contract.
+- The `write-video-ad-script` skill — validates and consumes this contract.

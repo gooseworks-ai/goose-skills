@@ -45,7 +45,7 @@
       "gooseworks:file_list",
       "gooseworks:get_started",
       "gooseworks:brand_read",
-      "gooseworks:brand_setup",
+      "gooseworks:brand_setup_status",
       "gooseworks:brand_update",
       "gooseworks:knowledge_search",
       "gooseworks:knowledge_import",

@@ -18,7 +18,7 @@ A new list is a new `subject`. To find "what happened with the lists before", th
 **Outcome sources** (`outcome_sources`), all free:
 - **The outcomes ledger** (`research/audience/ledger.csv`, the `outcomes-ledger` skill (`../../outcomes-ledger/SKILL.md`)) — the source of truth for every person. Recount from it, never from the last record: per list, per segment, per `list_source` and per `signal_type` — listed, contacted, replied, positive = **distinct rows** where `reply_category` is `interested` **or** `status` is `meeting` (a booked row is counted once), with meetings reported separately as a subset, meetings, not-a-fit, bounced, unsubscribed — for rows listed since the last record's date, and for older rows whose status changed since.
 - **write-outreach's results** (`outreach/*/results.md`, and `results-working.md` for open request lines) and lessons (`research/audience/lessons/`), for what the messages showed (which segments and signals replied) and open request lines.
-- **The brain**, with `brain_*` tools: `brain_search` `since` the last record, `source_types: ["learning", "audience", "document"]` — new `[outreach …]` rules, audience items the marketer confirmed or rejected, new customer evidence. Otherwise `knowledge_search`.
+- **The brain**, with `brand_knowledge_*` tools: `brand_knowledge_search` `since` the last record, `source_types: ["learning", "audience", "document"]` — new `[outreach …]` rules, audience items the marketer confirmed or rejected, new customer evidence. Otherwise `knowledge_search`.
 - **Watches:** `research/audience/watch/<D>.md`, `seen.csv`, `champions.csv` (moves found, alerts sent, and — from the ledger — what each alert led to).
 
 **Say, in 3–5 lines** (the run-memory format), what fits the job:

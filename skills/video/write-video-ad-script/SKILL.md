@@ -134,7 +134,7 @@ Record opening, setup, engagement, hook, product connection and payoff; mark uns
 approaches unknown. Match the actual offering and interaction. Keep timestamped words
 and actions, label paraphrases and retain the full transcript. Snippets, radio interviews
 and seed summaries cannot replace this observation. Run the selected renderer's
-[[references::render-street-interview]] street-script-writing selector. Needs-reference
+street-script-writing selector (in the `render-street-interview` skill). Needs-reference
 or unsupported-route stops approval; report the gap and supported alternatives.
 
 For a **podcast**, an appropriate publisher transcript can establish turn structure.
@@ -256,8 +256,8 @@ complete proposal that does not require repairing obvious defects.
 
 ## Related
 
-- [[composes::ad-angle-miner]] — evidence and shared video handoff.
-- [[composes::watch]] — observe reference footage when its beat map is missing.
+- The `ad-angle-miner` skill — evidence and shared video handoff.
+- The `watch` skill — observe reference footage when its beat map is missing.
 
 ## Delivery handoff
 

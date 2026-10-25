@@ -166,3 +166,9 @@ test('FAILS on a builder HTML page; a template a script reads, and other HTML, m
   const pages = [...message.matchAll(/chat-mockup\/(\S+) is a builder page/g)].map((m) => m[1]).sort();
   assert.deepEqual(pages, ['build-review.html', 'chat-skill-build.html']);
 }));
+
+test('FAILS on a SKILL.md frontmatter key outside the one style; entry skills keep the CLI keys', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x', owner: 'team', level: 'atom' }, baseMeta('watch'));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /watch\/SKILL\.md frontmatter has "owner"[\s\S]*frontmatter has "level"/);
+}));

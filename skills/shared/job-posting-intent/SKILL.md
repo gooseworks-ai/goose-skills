@@ -6,7 +6,6 @@ description: >
   they've allocated budget and are actively thinking about the problem. This skill finds those
   companies, qualifies them, extracts personalization context, and outputs everything to a
   Google Sheet. Does NOT do outreach — just delivers qualified leads with reasoning.
-tags: [lead-generation, outreach]
 ---
 
 # Job Posting Intent Detection

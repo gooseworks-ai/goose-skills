@@ -3,7 +3,6 @@ name: render-narrated-ugc-wardrobe-stitch
 description: "Assemble a narrated-UGC \"stitch reply\" ad from a config: one voiceover carries a verbatim testimonial while about 30 short clips (one creator across about 5 outfits and 3 settings, plus product B-roll) are trimmed to windows cut from the voiceover's word timings and joined. The voiceover sits over a ducked music bed, word-by-word captions run throughout, a landing-page scroll is animated from a screenshot, and the brand's real end card closes it (never AI-rendered text). Free, deterministic assembly using the shared stitch-videos-ffmpeg helper; the voiceover, creator stills and clips come from create-vo-elevenlabs, create-image-gpt-image-fal, create-image-fal and create-video-fal. Use for the narrated-ugc-wardrobe-stitch format."
 status: active
 version: "1.0.2"
-updated: 2026-10-06
 ---
 
 # render-narrated-ugc-wardrobe-stitch

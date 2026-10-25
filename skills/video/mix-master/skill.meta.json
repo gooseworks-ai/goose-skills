@@ -5,5 +5,9 @@
   "version": "1.0.4",
   "tags": [
     "ads"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
   ]
 }

@@ -66,7 +66,7 @@ Brand: **Clearday**. Ask: "Fill my social calendar for the next two weeks and wr
 |---|---|---|---|
 | 1 | `brand_read` (list) | coworker `9d554b73-…` | Workspace scope |
 | 2 | `brand_read` accounts, sources, organic, kit, learnings | `accounts: []`; own IG @clearday and TikTok @cleardayskin as self sources; 12 own posts Oct 5–12 (7 IG, 5 TikTok) with views, likes, comments and `posted_at` (all 16:00–20:20 UTC); 4 IG captions cut off; 10 competitor top posts | Audit window stated as "8 days"; top/bottom 3 rule (under 15 posts); cut-off captions left out of the voice measurements; own posting times are the starting guess |
-| 3 | `social_account_list` (Clearday, Saffron Table, Braxley) | 0 managed accounts on every staging brand | `social_strategy_*` and `social_post_create` paths do not apply; everything lives in the workspace |
+| 3 | `social_account_list` (Clearday, Saffron Table, Kestrel Straps) | 0 managed accounts on every staging brand | `social_strategy_*` and `social_post_create` paths do not apply; everything lives in the workspace |
 | 4 | `brand_read` learnings (full) | No claims sign-off marker | Plain product facts only; efficacy lines from past captions ("kills acne causing bacteria") are flagged and never copied |
 | 5 | `knowledge_search` document "Brand record approved claims" | empty | Confirms no sign-off |
 | 6 | `file_read research/audience/voc-bank.md` | not_found | Says "no buyer evidence on file"; press quotes are not buyer words |

@@ -37,7 +37,7 @@
     "Why is nobody replying to my outreach?"
   ],
   "reads": [
-    "Brand Brain when brain_* tools are listed: brain_map first (core rules, never-list, waiting items, chapters 14, 22, 23, products), brain_search for lessons and signed-off claims; fallback brand_read + knowledge_search",
+    "Brand Brain when brand_knowledge_* tools are listed: brand_knowledge_browse first (core rules, never-list, waiting items, chapters 14, 22, 23, products), brand_knowledge_search for lessons and signed-off claims; fallback brand_read + knowledge_search",
     "workspace research/audience/ — newest <date>-<list>/list.csv (rows, segments, signals, hooks, region flags), fit-definition.md, buyer-groups.md, voc-bank.md, ledger.csv, lessons/ (research-audience)",
     "workspace outreach/ — earlier packs, results and lessons (this playbook)",
     "claims via claims-gate (its scoped sign-off, or earlier records by learn-my-brand, unreleased) — every proof line",
@@ -67,9 +67,9 @@
       "gooseworks:knowledge_import",
       "gooseworks:job_get",
       "gooseworks:brand_update",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search"
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search"
     ]
   }
 }

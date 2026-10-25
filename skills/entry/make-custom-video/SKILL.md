@@ -2,7 +2,7 @@
 name: make-custom-video
 description: "Create a custom video with sourced product accuracy, explicit sound routing and exact-final audiovisual review."
 version: 3.8.3
-requires_skills: [video-production-harness, ad-angle-miner, comment-mining, competitor-ad-intelligence, reddit-post-finder, scrapecreators-api, transcript-intelligence, watch, write-video-ad-script]
+requires_skills: [video-production-harness, ad-angle-miner, comment-mining, competitor-ad-intelligence, create-video-fal, create-video-seedance-2-fal, media-proxy, reddit-post-finder, render-street-interview, scrapecreators-api, transcript-intelligence, watch, write-video-ad-script]
 harness_binding: gooseworks/video-actions/v1
 ---
 
@@ -46,7 +46,7 @@ Show the full saved script, then the actual playable ingredients and exact cumul
 
 ## Produce, assemble and deliver
 
-After ingredient approval, save the kit block and follow video_make if parts fit; else use the customer's verified shell, never a cloud sandbox. Report per paid piece.
+After ingredient approval, save the kit block and follow video_production if parts fit; else use the customer's verified shell, never a cloud sandbox. Report per paid piece.
 Review the first take and risky product action before batching. Reject double mouths, extra hands, smears and garbled labels; never hide them with tracked face/body patches or blur. Re-make affected sources within approval. Send every resulting clip to clip_check; only checked bytes enter the final. Save prompts/settings and source-byte reviews; label unplayed clips measured.
 Build the source-linked assembly_timeline: native picture and audio ranges stay together, pauses and freezes are declared, real soundtrack cues. Edits invalidate affected evidence.
 Review all repaired motion and cuts at normal speed; samples cannot clear it. Review the exact final: listen, or use final_measure and frame judge (measured). Save quality_report.content_review: final SHA-256, timeline/creative_contract revisions, reviewer, capabilities, full coverage and per-dimension findings. Serious defects block delivery.
