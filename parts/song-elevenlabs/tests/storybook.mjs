@@ -12,10 +12,10 @@ export const storybookScenes = [
   { id: 's8', line: 'Fall into the dream.' },
   { id: 's9', line: 'Paper moon above me.' },
   { id: 's10', line: 'Stars stitched in seams.' },
-  { id: 's11', line: 'Loona takes me there.' },
+  { id: 's11', line: 'Lunah takes me there.' },
   { id: 's12', line: 'Every night I land' },
   { id: 's13', line: 'somewhere soft.' },
-  { id: 's14', line: 'Fall asleep with Loona.' },
+  { id: 's14', line: 'Fall asleep with Lunah.' },
 ];
 export const storybookInputs = () => ({
   scenes: storybookScenes,
@@ -33,5 +33,5 @@ export const storybookInputs = () => ({
   hook: 'Fall',
   hook_scene: 8,
   ending_scenes: 1,
-  pronunciations: [{ term: 'Loona', say_as: 'Loo nah' }],
+  pronunciations: [{ term: 'Lunah', say_as: 'Loo nah' }],
 });

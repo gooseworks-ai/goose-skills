@@ -1,0 +1,6 @@
+{
+  "permissions": {
+    "deny": ["mcp__gooseworks"],
+    "allow": ["WebSearch", "WebFetch", "mcp__gooseworks-staging"]
+  }
+}

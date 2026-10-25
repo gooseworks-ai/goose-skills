@@ -1,0 +1,15 @@
+{
+  "slug": "plan-campaign-goal-chain",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.2",
+  "playbook": "plan-campaign",
+  "tags": [
+    "ads",
+    "brand"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "plan-campaign"
+  ]
+}

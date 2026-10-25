@@ -1,0 +1,16 @@
+{
+  "slug": "render-hand-swipe-flavor-listicle",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.1.1",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "watch"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
+  ]
+}

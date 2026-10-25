@@ -46,7 +46,7 @@ test('fixture: veo3.1 scenes mode makes one silent clip per picked scene, timed 
   assert.equal(o['clip-s1'].body.image_url.sha256, inputs.stills[0].image.sha256);
   assert.match(o['clip-s1'].body.prompt, /^Vertical 9:16 UGC phone footage, natural daylight\. .*she lifts the jar and squints at it\. Handheld phone camera drifts in a small arc$/);
   assert.equal(o['clip-s2'].body.prompt, 'Vertical 9:16 UGC phone footage, natural daylight. a crowded supplement aisle. Black and white, the camera pushes in 4 inches over 2 seconds');
-  assert.equal(o['clip-s3'].body.prompt, 'Vertical 9:16 UGC phone footage, natural daylight. Bioma Probiotic on a bathroom shelf. A hand turns Bioma Probiotic toward the lens, the label sharp');
+  assert.equal(o['clip-s3'].body.prompt, 'Vertical 9:16 UGC phone footage, natural daylight. Gutleaf Probiotic on a bathroom shelf. A hand turns Gutleaf Probiotic toward the lens, the label sharp');
   assert.equal(o['clip-s1'].body.negative_prompt, 'text, captions, watermark, extra fingers, extra limbs');
   assert.deepEqual(out.clips.map((c) => c.id), ['s1', 's2', 's3', 's4']);
   assert.ok(out.clips.every((c) => c.video && !c.image));
@@ -149,7 +149,7 @@ test('still-shot words refuse before anything is ordered; static_words allow let
   for (const [picture, word] of [
     ['Look 1: MCU, she remains in pose by the mirror', 'remains'],
     ['Look 2: the hem STAYS still while she smiles', 'stays'],
-    ['Product: Bioma Probiotic, a slow push-in', 'slow'],
+    ['Product: Gutleaf Probiotic, a slow push-in', 'slow'],
     ['Look 1: she holds the jar, steady framing', 'steady'],
   ]) {
     const inputs = await scenesInputs(w);

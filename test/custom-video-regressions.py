@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-ROOT = Path(__file__).resolve().parents[1] / 'skills/ads/capabilities'
+ROOT = Path(__file__).resolve().parents[1] / 'skills/video'
 CREATOR = ROOT / 'create-creator-takes-h3/scripts'
 
 def load(name, path):
@@ -33,7 +33,7 @@ class CustomVideoRegressions(unittest.TestCase):
             self.assertTrue(spec['planning_only'])
             prompt = (out/'takes/t1-prompt.txt').read_text()
             self.assertNotIn('phone propped on a stand', prompt)
-            self.assertIn('No phone, camera, tripod or stand is visible', prompt)
+            self.assertIn('no hand holding a phone is in the frame', prompt)
             result = subprocess.run([sys.executable, str(CREATOR/'run_takes.py'), '--spec', str(out/'takes/takes.json'), '--only', 't1', '--go'], capture_output=True, text=True)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('planning-only spec', result.stderr)

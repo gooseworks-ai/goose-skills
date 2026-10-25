@@ -1,22 +1,21 @@
 {
-  "$comment": "DERIVED, do not hand-edit. The single source for GooseWorks skill routing is gooseworks/src/skills/routes.ts (GOOSE-3190), published as skills/routes.json in the gooseworks CLI package. This file mirrors the Brand Growth half of it so the collection, the CLI router SKILL.md, and the backend hosted-connector pointer cannot drift apart. Regenerate by copying from the source below, then run: npm run build:index && npm test",
+  "$comment": "DERIVED by scripts/build-router.js from skills/entry/gooseworks/routes.json, the single source for GooseWorks routing. Do not hand-edit.",
   "source": {
-    "repo": "gooseworks-ai/gooseworks",
-    "file": "src/skills/routes.ts",
-    "published_as": "skills/routes.json",
-    "raw_url": "https://raw.githubusercontent.com/gooseworks-ai/gooseworks/main/skills/routes.json"
+    "file": "skills/entry/gooseworks/routes.json"
   },
-  "route_table_version": 1,
-  "captured": "2026-10-22",
-  "$comment_entry_skills": "Vendored by the CLI and installed to ~/.agents/skills/ \u2014 they are NOT members of this collection, they are the entry points into it.",
+  "route_table_version": 2,
+  "$comment_entry_skills": "Installed into every agent by `gooseworks install`; they are the entry points into this collection, not members of it.",
   "entry_skills": [
     "goose-ads",
     "goose-product-photos",
-    "goose-video"
+    "goose-video",
+    "goose-video-local",
+    "gooseworks",
+    "make-custom-video"
   ],
   "brand_growth_routes": [
     {
-      "job": "Not sure what to do first",
+      "job": "Grow the brand, get more customers or sales, or not sure where to start",
       "skills": [
         "where-to-start"
       ]
@@ -46,7 +45,7 @@
       ]
     },
     {
-      "job": "A campaign plan from a budget and a date",
+      "job": "A campaign plan from a launch, budget or date",
       "skills": [
         "plan-campaign"
       ]

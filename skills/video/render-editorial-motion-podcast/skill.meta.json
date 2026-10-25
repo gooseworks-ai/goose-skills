@@ -1,0 +1,14 @@
+{
+  "slug": "render-editorial-motion-podcast",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.0.1",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "watch",
+    "caption-burn",
+    "media-proxy"
+  ]
+}
