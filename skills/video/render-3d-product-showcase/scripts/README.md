@@ -17,7 +17,7 @@ fal-proxy / elevenlabs-proxy so the call is charged to your GooseWorks credits. 
 four delivered beats + the brand wordmark it stitches the finished master. Re-cuts (a swapped end
 card, a re-timed beat, a re-mixed bed) reuse the existing beats and spend nothing.
 
-`config.example.json` is the worked example (Solenne Beauty "Dune Duo", ~15s 720×1280).
+`config.example.json` is the worked example (Quillmere Pen Co. "Meridian 14", ~15s 720×1280).
 `build_endcard.py` and `build_masters.py` are the runnable free assembly (below). `PIPELINE.md`
 maps every config block to its source step.
 

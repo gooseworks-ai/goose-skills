@@ -82,7 +82,7 @@ comes back. None of them is fixed by the format.
   (static-still fallback on missing clips) → concat → audio (restyle verbatim / original
   mix) → burn captions → master mp4.
 - `scripts/config.example.json` — the shape of the `config` the recipe binds (the
-  brand-neutralised "six types" restyle values as a worked example; captions, audio and
+  "six types of laundry stains" restyle demo, a made-up brand, as a worked example; captions, audio and
   music are the demo's, never defaults).
 
 ## Inputs (all via `--config` + a runtime work dir — NO hardcoded paths)

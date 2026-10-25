@@ -10,15 +10,15 @@ Assemble a **cosmic-mythology-voiceover** reel from a config: a faceless, cinema
 video where one spoken **voiceover** carries the whole narrative over a slow, weighted **Ken-Burns
 zoom** across curated stills in ONE locked look, with ONE on-screen hook line and burned captions.
 The narrator, voice, tone, story shape, visual world and art style are the recipe's user choices —
-this capability only assembles what it is given (the demo: a warm contemplative "myth as teacher"
-reframe over deep-indigo + gold cosmic stills). This
+this capability only assembles what it is given (the demo: a warm contemplative "the steady star, not the
+brightest" reframe over deep-indigo + gold cosmic stills). This
 capability is the **FREE, deterministic assembly** — the weighted beat-sync sequencing, the
 Ken-Burns render, the concat, the VO composite, the hook overlay, and the caption burn.
 
 `scripts/config.example.json` is the worked example — reference only, never the default
-(Starwhim "Saturn isn't your villain", ~31s
+(Peerlark Optics "The North Star isn't the brightest", ~31s
 1080×1920 9:16, 12 weighted Ken-Burns cuts); `scripts/PIPELINE.md` maps every config block to its
-source step and `scripts/README.md` documents the free assembly.
+production step and `scripts/README.md` documents the free assembly.
 
 ## Run
 

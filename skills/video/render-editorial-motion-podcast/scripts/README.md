@@ -8,8 +8,8 @@ the motion layer: it takes the clipped audio + `words.json` + the per-beat keyfr
 brand wordmark PNG and stitches the finished master. Re-cuts (new beat windows, added micro-cuts,
 re-timed caption ranges, a swapped end card) reuse the existing audio / keyframes and spend nothing.
 
-`config.example.json` is the worked example (Claritude "Rat Park", ~40.8s 1080×1920; its look pack,
-palette and Rat Park metaphor are that demo's answers to the recipe choices — never defaults). `PIPELINE.md`
+`config.example.json` is the worked example (the fictional Ironfern "The Trees With No Wind" demo, ~40.8s
+1080×1920; its look pack, palette and dome-tree metaphor are that demo's answers to the recipe choices — never defaults). `PIPELINE.md`
 maps every config block to its source step. This README documents the FREE assembly pieces that
 `render-editorial-motion-podcast` owns.
 
@@ -17,7 +17,7 @@ maps every config block to its source step. This README documents the FREE assem
 
 The motion is **deterministic ffmpeg ken-burns** on static keyframes, never generative i2v.
 Seedance/Kling are photoreal-trained and invent naturalistic middle states (a photoreal drawing
-hand, rats morphing into humanoids, hallucinated clouds) that collapse the 2-tone discipline.
+hand, flat silhouettes morphing into naturalistic shapes, stray cartoon elements) that collapse the 2-tone discipline.
 Two helpers: `render_kb <src> <out> <dur> [zoom_end]` (push-in — scale to 2×, crop,
 `zoompan z='min(zoom+step,zoom_end)'`, `trim=duration`, `-t dur`) and `render_kb_out` (pull-back,
 `zoom_start` down to 1.0). **Never** `-loop 1` with `zoompan d=N` — d runs per input frame per
@@ -27,7 +27,7 @@ loop and balloons the duration; feed a single image and clamp with `-t` + `trim`
 
 Each beat's segments are hard-concatenated on the beat; long beats split into micro-cuts (target
 8–10 distinct visual moments — anything held > 6s reads static even with active zoompan). **No
-crossfades** — they ghost two drifting cages through each other. Each beat's visual STARTS within
+crossfades** — they ghost two slightly drifted frames through each other. Each beat's visual STARTS within
 ~0.5s of its spoken line (marked from the Whisper timings upstream), never ahead, never lag.
 
 ## 3. Narration mux + mid-sentence captions
@@ -63,4 +63,4 @@ The brand lockup is composited with **PIL** from the brand's REAL wordmark PNG: 
 center column → 1080×1920 + `GaussianBlur(80)` for the gradient bg; a feathered radial-alpha
 ellipse crop of the brand mascot pasted centered-upper; wordmark + tagline drawn with a system
 font. The brand text is **never** AI-rendered — a diffusion model garbles a wordmark
-("therapits"). Output is a 1080×1920 h264 + aac master. Deterministic, no paid calls, no keys.
+(misspelled letters). Output is a 1080×1920 h264 + aac master. Deterministic, no paid calls, no keys.

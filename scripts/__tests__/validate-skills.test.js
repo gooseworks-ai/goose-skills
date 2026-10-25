@@ -172,3 +172,9 @@ test('FAILS on a SKILL.md frontmatter key outside the one style; entry skills ke
   indexFor(root, 'video', 'watch');
   assert.throws(() => runValidate(root), /watch\/SKILL\.md frontmatter has "owner"[\s\S]*frontmatter has "level"/);
 }));
+
+test('FAILS on a template placeholder description', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: '<What it does and when to use it>' }, baseMeta('watch'));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /template placeholder/);
+}));

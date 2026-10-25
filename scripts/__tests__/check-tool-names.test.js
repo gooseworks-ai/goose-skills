@@ -30,6 +30,22 @@ test('an invented tool fails when prefixed or phrased as a call', () => {
   assert.deepEqual(names('The totally_fake_tool tool returns a list.'), ['totally_fake_tool']);
 });
 
+test('the reviewer\'s probes fail: capital Call, function form, use/run, a table cell, any GooseWorks server prefix', () => {
+  assert.deepEqual(names('Call `brand_fetch_everything` first.'), ['brand_fetch_everything']);
+  assert.deepEqual(names('Then brand_fetch_everything({brand_id}).'), ['brand_fetch_everything']);
+  assert.deepEqual(names('Run `brand_fetch_everything` once.'), ['brand_fetch_everything']);
+  assert.deepEqual(names('| Read | `brand_fetch_everything` | free |'), ['brand_fetch_everything']);
+  assert.deepEqual(names('Use mcp__claude_ai_GooseWorks__brand_fetch_everything.'), ['brand_fetch_everything']);
+  assert.deepEqual(names('Use mcp__GooseWorks__brand_fetch_everything.'), ['brand_fetch_everything']);
+  assert.deepEqual(names('Call `whoami`.'), ['whoami']);
+});
+
+test('script functions and fields are not tools', () => {
+  assert.deepEqual(names('Call `load_fal_key()` first.'), []);
+  assert.deepEqual(names('Use `parse_brief_json` to read it.'), []);
+  assert.deepEqual(names('| `request_id` | the job |'), []);
+});
+
 test('another server\'s tool passes only when other_tools gives its reason', () => {
   const [other] = Object.keys(NAMES.other_tools);
   assert.deepEqual(names(`Call \`${other}\` first.`), []);

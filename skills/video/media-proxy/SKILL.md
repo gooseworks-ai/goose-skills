@@ -217,10 +217,9 @@ file over instead of its contents:
    `media` row and an `upload` block.
 2. PUT the file to `upload.url` with `upload.method` and `upload.required_headers`
    (`curl -X PUT -T <file> "<upload.url>"`).
-3. Finish the upload. With the current actions `media_upload` finishes it itself once the
-   PUT lands; a connector that still exposes a separate confirm action needs that call
-   after the PUT, and `media.status` stays `pending` until then. Only a finished upload's
-   `media.id` is accepted.
+3. Finish the upload: after the PUT, call `media_confirm` with `brand_id` and `media_id`
+   (the `media.id` from step 1). The upload is not finished until then: `media.status`
+   stays `pending`, and a pending `media.id` is refused as `body_asset_id`.
 4. Send the compact call with that `media.id` as `body_asset_id` and omit `body`.
 
 A connector whose `media_upload` takes source `bytes` (base64 inline, up to about 8 MB)

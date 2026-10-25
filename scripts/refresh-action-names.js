@@ -5,10 +5,11 @@
  * Rebuilds scripts/lib/action-names.json from a gooseworks-app checkout, so
  * the tool-name check reads the same names the customer server lists.
  *
- *   node scripts/refresh-action-names.js --app ../gooseworks-app [--ref origin/main]
+ *   node scripts/refresh-action-names.js --app ../gooseworks-app [--ref origin/dev]
  *   node scripts/refresh-action-names.js --app ../gooseworks-app --check   (exit 1 on drift)
  *
- * It reads, at the given ref (default origin/main, what production runs):
+ * It reads, at the given ref (default: the ref the list was last built from, in its
+ * source_ref; origin/dev, what staging runs, when there is none):
  *   - lib/customer-tool-catalog.snapshot.json            -> actions (the listed tools)
  *   - lib/tool-contracts.ts PUBLIC_TOOL_REPLACEMENTS,
  *     lib/public-tool-calls.ts, lib/brand-knowledge-tool-names.ts,
@@ -28,7 +29,8 @@ const API = 'apps/api/src';
 const LIB = `${API}/app-mcp-server/lib`;
 
 function args() {
-  const out = { ref: 'origin/main', check: false };
+  const built = (() => { try { return require('./lib/action-names.json').source_ref.split(' @ ')[0]; } catch { return null; } })();
+  const out = { ref: built || 'origin/dev', check: false };
   const argv = process.argv.slice(2);
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--app') out.app = argv[++i];

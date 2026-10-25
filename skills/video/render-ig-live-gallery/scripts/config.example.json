@@ -1,10 +1,10 @@
 {
-  "_note": "Worked example (the fictional brand Dewlark). At remix time the orchestrator binds the brand's real product stills, wordmark, benefit phrases, and claim-free comments. Image paths are relative to --assets.",
-  "_comment": "Worked example (the Dewlark build). Creative fields — slides[].phrase, slides[].comments, endcard.payoff, music.prompt — come from the recipe's choices (slide_story, copy_tone, music); never copy them as defaults.",
+  "_note": "Worked example (the fictional stationery brand Inkwren). At remix time the orchestrator binds the brand's real product stills, wordmark, benefit phrases, and claim-free comments. Image paths are relative to --assets.",
+  "_comment": "Worked example (the Inkwren build). Creative fields — slides[].phrase, slides[].comments, endcard.payoff, music.prompt — come from the recipe's choices (slide_story, copy_tone, music); never copy them as defaults.",
   "width": 1080,
   "height": 1920,
   "fps": 30,
-  "username": "dewlark",
+  "username": "inkwren",
   "verified": true,
   "slide_dur": 3.4,
   "endcard_dur": 3.8,
@@ -20,26 +20,26 @@
     "live_red": [237, 28, 76]
   },
   "slides": [
-    { "image": "product-1-foundation.jpg", "phrase": "Skin first,", "viewers": "8.2k",
-      "comments": [["mara.k", "so lightweight"], ["devon.r", "skin first, always"]] },
-    { "image": "product-2-dew-serum.png", "phrase": "then a little dew,", "viewers": "9.6k",
-      "comments": [["noor.b", "that glow"], ["els", "so dewy"]] },
-    { "image": "product-3-cheek-tint.jpg", "phrase": "a dab of color,", "viewers": "11k",
-      "comments": [["jules", "prettiest flush"], ["tay.m", "so blendable"]] },
-    { "image": "product-4-brow-gel.jpg", "phrase": "brows in seconds,", "viewers": "12k",
-      "comments": [["remi", "fluffy brows"], ["dana.k", "brows in secs"]] },
-    { "image": "product-5-lip-balm.jpg", "phrase": "a swipe of balm —", "viewers": "13k",
-      "comments": [["cleo", "so glossy"], ["suki", "forever fave"]] }
+    { "image": "product-1-notebook.jpg", "phrase": "A fresh page,", "viewers": "8.2k",
+      "comments": [["mara.k", "so crisp"], ["devon.r", "love this paper"]] },
+    { "image": "product-2-fineliner.png", "phrase": "a few quick lines,", "viewers": "9.6k",
+      "comments": [["noor.b", "smooth ink"], ["els", "so neat"]] },
+    { "image": "product-3-highlighter.jpg", "phrase": "a streak of yellow,", "viewers": "11k",
+      "comments": [["jules", "cutest pastel"], ["tay.m", "so cheerful"]] },
+    { "image": "product-4-washi-tape.jpg", "phrase": "one strip of tape,", "viewers": "12k",
+      "comments": [["remi", "cute pattern"], ["dana.k", "tape addict"]] },
+    { "image": "product-5-sticker-sheet.jpg", "phrase": "a tiny sticker —", "viewers": "13k",
+      "comments": [["cleo", "so sweet"], ["suki", "need these"]] }
   ],
   "endcard": {
-    "logo": "dewlark-logo-white.png",
+    "logo": "inkwren-logo-white.png",
     "logo_is_white": true,
-    "payoff": "glow, your way.",
-    "handle": "@dewlark",
-    "cta": "shop the edit  ·  dewlark.example"
+    "payoff": "your day, on paper.",
+    "handle": "@inkwren",
+    "cta": "shop the set  ·  inkwren.example"
   },
   "music": {
-    "prompt": "Soft dreamy beauty-ad instrumental: airy warm synth pads, light plucky bells, a gentle uplifting build, subtle soft heartbeat kick, clean modern and aspirational, feminine and calm, no vocals. Instrumental only.",
+    "prompt": "Cozy lo-fi stationery-ad instrumental: warm mellow keys, light plucky bells, a gentle uplifting build, subtle soft kick, clean modern and unhurried, calm and bright, no vocals. Instrumental only.",
     "length_ms": 22000,
     "trim_intro_sec": 1.2
   }

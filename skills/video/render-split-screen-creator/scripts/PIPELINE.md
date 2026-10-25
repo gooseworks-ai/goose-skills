@@ -2,7 +2,7 @@
 
 How `config.example.json` maps to the real production steps. This capability
 ships a **config + this map** — the FREE assembly + captions stage. The worked
-example (Askwell concept-10 "Bloomberg terminal") was produced by the per-scene
+example (the fictional Larderloop "whole Sunday" demo) is produced by the per-scene
 paid steps plus the split-screen assembler + the caption burn.
 
 The steps run **in order** because each depends on the last: the script sets the
@@ -12,8 +12,8 @@ fill the top zone, assembly stitches the two zones, and captions come from the
 ASSEMBLED cut (not the raw VO).
 
 The creator (gender, age, look), setting, tone and caption style are the user's
-choices, made upstream. The Askwell values in `config.example.json` (creator,
-`arlo` voice, script, `#20808D` divider, `serif-accent`) are the worked example's
+choices, made upstream. The Larderloop values in `config.example.json` (creator,
+`arlo` voice, script, `#E07A3F` divider, `serif-accent`) are the worked example's
 build — never defaults.
 
 ## Field → source-step map

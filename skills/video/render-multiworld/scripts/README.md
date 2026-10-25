@@ -12,7 +12,7 @@ an AI or paid call.
 
 A silent, music-led tour of three "third-place" worlds — one per product/variant; the
 worlds, their look and the music are the user's choices (recipe `choices`), the demo's
-Wildroot Pure values are only a worked example. Each world is a **two-shot pair**: a WIDE
+Kettle & Fern values (a fictional tea brand) are only a worked example. Each world is a **two-shot pair**: a WIDE
 kinetic-calm ARRIVAL (environment dominates, product stays small) hard-cutting to a
 top-down MACRO product MOMENT (the sealed product nested with its companion prop). The six clips land on a Pinterest-style brand end card.
 720×1280, ≈27.0s = `3×(arrival 4.5 + macro 3.5) + end-card 3.0`.
@@ -29,13 +29,13 @@ the clip's upright tilt extreme.
 
 ### 2. HTML/Playwright end card (never AI-rendered)
 The paid NB2 step renders the **text-free flat-lay background only** (all three sealed
-bottles + their botanicals, generous negative space at top). The message text is composited
+products + their botanicals, generous negative space at top). The message text is composited
 FREE over it:
 
-- **Headline** — `overlay.headline`, approved brand copy (demo: "FIND YOUR DAILY."; Inter
+- **Headline** — `overlay.headline`, approved brand copy (demo: "STEEP SLOWER."; Inter
   900, one key word outlined via `-webkit-text-stroke`, rise-in animation).
 - **Product labels + arrows** — one handwritten Caveat-font `scent_labels[].label` per product,
-  each with a hand-drawn SVG arrow (staggered `drawArrow` animation) pointing at its bottle.
+  each with a hand-drawn SVG arrow (staggered `drawArrow` animation) pointing at its product.
 - **Wordmark + URL** — `overlay.wordmark` (Playfair Display, two rows) + `overlay.url`.
 
 Playwright screenshots `end_card.html` over the NB2 background, then FFmpeg encodes it to
@@ -65,8 +65,8 @@ clip (paid) when a scene itself is wrong.
   end-card text.
 - **Silent, music-led** — no VO, no captions during the scenes. On-screen text appears
   ONLY on the end card, and it's HTML-composited, never AI-rendered.
-- **Sealed-bottle rule is upstream but enforced here at QC** — the trim/concat can't fix an
-  open-cap clip; a sealed-bottle violation is a re-roll (paid), not an assembly fix.
+- **Sealed-product rule is upstream but enforced here at QC** — the trim/concat can't fix an
+  opened-product clip; a sealed-product violation is a re-roll (paid), not an assembly fix.
 - Per world = WIDE arrival → top-down macro; hard cuts between scenes; the end card is a
   static hold with legible HTML text; music starts at t=0 and fades the tail.
 - The paid steps — the six per-world clips, the NB2 end-card background, the ElevenLabs
@@ -82,7 +82,7 @@ clip (paid) when a scene itself is wrong.
 
 The source molecule fires the six per-world clips through **Higgsfield Marketing Studio**
 (`marketing_studio_video/product_showcase`), grounded on the brand's imported product
-UUIDs, with the sealed-bottle safety block front-loaded on every prompt. Marketing Studio
+UUIDs, with the sealed-product safety block front-loaded on every prompt. Marketing Studio
 owns credit reservation server-side.
 
 There is **no generic proxy capability for this yet**. `create-video-fal` is a FAL

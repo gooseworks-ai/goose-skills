@@ -2,7 +2,7 @@
 
 How `config.example.json` maps to the real production steps. This molecule ships a
 **config + this map**, not a bundled runner: the worked example (Truehour "doctor-educator"
-listicle — an example, not the default) was produced by per-project drivers in the source run (not shipped:
+listicle — an example, not the default) was produced by per-project drivers in the first build (not shipped:
 `voice/render_listicle_v2.py`,
 `working/render_hf.py`, `working/grade_brolls_v4.py`, `working/build_master_v4.py`).
 

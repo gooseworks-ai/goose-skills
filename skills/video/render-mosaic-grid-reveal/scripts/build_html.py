@@ -50,7 +50,7 @@ def main():
     assert len(tiles) == n, f"need {n} tiles for a {cols}x{rows} grid, got {len(tiles)}"
     pop_order = cfg.get("pop_order") or list(range(n))
     ec = cfg["end_card"]
-    vb, wm_inner = load_wordmark(cfg["wordmark"], cfg.get("wordmark_viewbox", "0 0 170 92"))
+    vb, wm_inner = load_wordmark(cfg["wordmark"], cfg.get("wordmark_viewbox", "0 0 200 80"))
     wm_w = cfg.get("wordmark_width", 430)
     eyebrow = cfg.get("eyebrow", "")  # optional top kicker held during the grid
 

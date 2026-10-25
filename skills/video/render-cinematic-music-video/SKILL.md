@@ -13,7 +13,7 @@ grain, light leaks, natural light, handheld imperfection) timed to the lyrics, a
 the **FREE, deterministic assembly** — cut-to-window, hard-concat, anthem mux, caption burn,
 and the brand end card.
 
-`scripts/config.example.json` is the worked example (Rally & Rogue "Game Day Girls", ~28s
+`scripts/config.example.json` is the worked example (Sundrift "Roll On", ~28s
 1080×1920 9:16, 14 tableaux) — copy its structure, never its creative values; `scripts/PIPELINE.md` maps every config block to its source step
 and `scripts/README.md` documents the free assembly.
 
@@ -37,14 +37,14 @@ mux with one ffmpeg pass; `scripts/PIPELINE.md` step 4 lists each step.
 The creative content this stage assembles is decided upstream by the format's `choices`, asked
 of the user before any paid step. The worked example's values are examples, never defaults:
 
-- **song_style** — the anthem's genre, mood, BPM and arrangement. The demo used a triumphant
-  120-BPM indie-pop cinematic anthem.
-- **vocalist** — who sings it. The demo used a confident-but-warm female lead.
-- **cast** — who is on screen in the tableaux. The demo used four young college women.
-- **setting** — place + time of day (drives the look pack's light and palette). The demo used an
-  American college town on game day, autumn, golden hour.
-- **story_arc** — the 3-act shape of the tableaux and lyrics. The demo used one game day,
-  morning → stadium peak → twilight, with an origin-story wink.
+- **song_style** — the anthem's genre, mood, BPM and arrangement. The demo used a sunny
+  120-BPM indie surf-pop anthem.
+- **vocalist** — who sings it. The demo used a bright, warm female lead.
+- **cast** — who is on screen in the tableaux. The demo used four young women roller skaters.
+- **setting** — place + time of day (drives the look pack's light and palette). The demo used a
+  seaside boardwalk town in late summer, golden hour.
+- **story_arc** — the 3-act shape of the tableaux and lyrics. The demo used one summer day,
+  morning → skate-bowl peak → twilight, with an origin-story wink.
 
 This assembly reads them only through the config (`tableaux[]` windows + captions, the anthem,
 `captions.accent_words`, `end_card.*`); it hardcodes none of them.

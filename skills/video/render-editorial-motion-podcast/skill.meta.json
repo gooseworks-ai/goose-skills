@@ -7,6 +7,8 @@
     "ads"
   ],
   "requires_skills": [
-    "watch"
+    "watch",
+    "caption-burn",
+    "media-proxy"
   ]
 }

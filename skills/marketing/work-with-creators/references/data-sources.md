@@ -33,9 +33,11 @@ What it adds, in plain words: numbers the public pages hide, comment reads at vo
 | Transcripts (claims and safety on video) | `/v1/tiktok/video/transcript`, `/v2/instagram/media/transcript`, `/v1/youtube/video/transcript` |
 | Sponsor history | `/v1/youtube/video/sponsors` (experimental — a lead, not proof) |
 | Audience countries (TikTok only; pricier) | `/v1/tiktok/user/audience` — reach and install roles, top five picks at most |
-| Public business contact — **only for names the founder approved** | `/v1/find-creator-emails`; link-in-bio reads |
+| Public business contact — **only for names the founder approved** | the contact the creator's own profile shows (`/v1/instagram/profile`, `/v1/tiktok/profile`, `/v1/youtube/channel`) and their link-in-bio page (`/v1/linktree`, `/v1/komi`, `/v1/pillar`, `/v1/linkbio`, `/v1/linkme`) |
 
 Not used, on purpose: `/v1/detect-age-gender` (never infer protected traits); follower lists for audience "analysis" (privacy, cost).
+
+Not on the proxy: there is no creator-email or other-profiles finder (the proxy refuses `/v1/find-creator-emails` and `/v1/find-social-profiles`). Take contacts and other accounts from the creator's own profile and link-in-bio page; if neither shows one, record "no public business contact" and leave the outreach route to the founder.
 
 ## Credits
 

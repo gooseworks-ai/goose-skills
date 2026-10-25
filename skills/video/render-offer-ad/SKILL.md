@@ -22,7 +22,7 @@ optional music bed, gated upstream in the recipe to `create-music-elevenlabs`.
 
 The whole ad is **data**: copy strings, product photo, palette, fonts, bpm, and beat
 split all arrive as `config.json` and are bound to Remotion **input props** — nothing is
-hardcoded in the scenes (the source run's brand strings are generalised into
+hardcoded in the scenes (the first build's brand strings are generalised into
 `project/src/props.ts`). Deterministic → **iterate the cut for free**.
 
 ## Choices
@@ -59,7 +59,7 @@ claims and CTA are brand facts.
 Scene boundaries are **derived** from `beat_split_sec` (default `[3.0, 3.5, 3.0, 2.5]`s →
 cuts at frames 0/90/195/285/360 @30fps) so the hard cuts land on the beat downbeats. The
 motion kit — `slamIn / dropIn / bob / flyIn / popIn / wipe` — lives in
-`project/src/lib/anim.ts` and is kept intact from the source run.
+`project/src/lib/anim.ts` and is kept intact from the first build.
 
 ## Two gating checks (run before any render — from the recipe)
 
@@ -97,7 +97,7 @@ config and a runtime `--work-dir`.
   → bind config to Remotion input props → `npx remotion render` (9:16) → ffmpeg 1:1
   center-crop.
 - `scripts/config.example.json` — the shape of the `config` the recipe binds
-  (brand-neutral worked defaults from the source run; replace every `/abs/...` placeholder).
+  (brand-neutral worked defaults from the first build; replace every `/abs/...` placeholder).
 - `project/` — the bundled Remotion project. `src/props.ts` (the input-props schema +
   beat-layout math + safe defaults), `src/lib/anim.ts` (the `slamIn/dropIn/bob/flyIn/
   popIn/wipe` motion kit — kept intact), `src/scenes/Scene01–04.tsx` (the four beats,
@@ -122,14 +122,14 @@ config and a runtime `--work-dir`.
 | `show_competitor_strike` | `show_competitor_strike` | Scene02 |
 | `aspects` | (driver) | 9:16 always; 1:1 = ffmpeg crop |
 
-## Craft rules (load-bearing — faithful to the source run)
+## Craft rules (load-bearing — faithful to the first build)
 
 - **The composited bitmap is the REAL product photo — never an AI packshot.** Clean /
   transparent bg; `objectFit:contain`, never stretched.
 - **Never AI-render text.** Headline, claim, CTA, URL, wordmark — all typeset in the
   engine. AI never draws a letter in this format.
 - **Never Ken-Burns/zoompan over stills** — the engine springs carry the motion; a
-  static/zoompan cut was rejected as "too static" on the source run.
+  static/zoompan cut was rejected as "too static" on the first build.
 - **Music-only, beat-locked** — the cuts + big slams land on the 0.0/3.0/6.5/9.5s
   downbeats; the bed volume ramps to 0 over the last `music.fade_out_frames` inside the
   render. No VO, no captions.

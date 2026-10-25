@@ -12,8 +12,8 @@ The delivered song sets the timeline; N tableaux (one keyframe → one image-to-
 lyric beat, all in a single look pack) are cut to their lyric windows and hard-concatenated
 on the beat, captions are built from the song's OWN word timings with the hook line landing
 on the chorus drop, and the spot closes on a PIL brand end card. It reads like a tiny animated
-music video, not a demo. `scripts/config.example.json` is one worked example (Driftlume "Fall In
-Love With Sleep Again", 28s paper-craft 9:16) — its style, song, vocalist, mood, protagonist and
+music video, not a demo. `scripts/config.example.json` is one worked example (Fernhollow "Bring The
+Green Back Home", 28s paper-craft 9:16) — its style, song, vocalist, mood, protagonist and
 setting are that demo's answers, not defaults; `scripts/PIPELINE.md` maps every config block
 to its step and `scripts/README.md` documents the free assembly.
 
@@ -23,12 +23,12 @@ The creative calls are made upstream by the user (the recipe's `choices`) and ar
 this assembly never picks them.
 
 - **visual_style** → `look_pack`, `clip_engine.motion_opener`. The demo used a paper-craft diorama
-  at night.
-- **song_genre** → `song.prompt` / `song.bpm`. The demo used a dreamy synth lullaby at ~80 BPM.
-- **vocalist** → `song.prompt`. The demo used a soft breathy female lead.
-- **mood** → `song.prompt`, the lyrics, `tableaux`. The demo went calm/dreamy.
-- **protagonist** → `look_pack.style_opener`. The demo used a young-woman paper-doll.
-- **setting** → `tableaux[].keyframe_prompt`. The demo went bedroom at night → moonlit paper village.
+  on a rainy morning.
+- **song_genre** → `song.prompt` / `song.bpm`. The demo used breezy bedroom-pop at ~80 BPM.
+- **vocalist** → `song.prompt`. The demo used a warm, airy male lead.
+- **mood** → `song.prompt`, the lyrics, `tableaux`. The demo went grey and stuck → fresh and hopeful.
+- **protagonist** → `look_pack.style_opener`. The demo used a young-man paper-doll.
+- **setting** → `tableaux[].keyframe_prompt`. The demo went grey apartment → paper indoor jungle.
 
 ## Run
 
@@ -58,8 +58,8 @@ the existing song / keyframes / clips and spend nothing.
   every keyframe so N beats read as one film; no morph within a clip.
 - **Hard cuts on the beat.** Cut each clip to its lyric window and hard-concat — no dissolves
   (one optional match-cut into the hero reveal).
-- **PIL end card from the brand's real asset (e.g. the app icon) — never AI-render brand text.** The lockup is
-  composited deterministically (brand gradient + circular app icon + wordmark + tagline + CTA)
+- **PIL end card from the brand's real asset (e.g. a logo mark or app icon) — never AI-render brand text.** The lockup is
+  composited deterministically (brand gradient + circular logo mark or app icon + wordmark + tagline + CTA)
   from the brand's real asset; a diffusion model garbles a wordmark.
 - **FFmpeg composite, deterministic, FREE.** Burn the caption ASS, overlay the end-card PNG on
   the final window, mux the song, boost the climax beat (`audio_mix.climax_beat_id` — set it to

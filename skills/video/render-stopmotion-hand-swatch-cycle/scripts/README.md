@@ -8,7 +8,7 @@ the ordered plate PNGs + per-plate holds + the end-card hero BG + the brand logo
 track and stitches the finished master. Re-cuts (re-timed holds, a re-ordered cycle, a swapped end
 card, a different track) reuse the existing plates and spend nothing.
 
-`config.example.json` is the worked example (Solenne Beauty "Pick Your Match", ~16.6s 1080×1920) —
+`config.example.json` is the worked example (Kestrel Art Supply "Swipe Your Color", ~16.6s 1080×1920) —
 its hand, background, surface and music are the demo's; the recipe's choices supply yours.
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE assembly
 pieces that `render-stopmotion-hand-swatch-cycle` owns.
@@ -26,7 +26,7 @@ beats 1100–1800ms. Average ~380ms gives the tactile frame-swap feel.
 Concat-**demux** the plate mp4s in order (`ffmpeg -f concat` over the ordered plate list) with HARD
 cuts — no dissolves. The frame-swap tactility is the whole point of stop-motion; a crossfade erases
 it. Concat-demux (not `filter_complex`) is correct because the plates are silent stills with no audio
-to reconcile. Solenne v3 ran 27 plate clips into a ~13.6s silent body master.
+to reconcile. The demo ran 27 plate clips into a ~13.6s silent body master.
 
 ## 3. End card — Playwright HTML from the real logo SVG, no AI text
 

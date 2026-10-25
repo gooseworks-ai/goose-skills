@@ -79,8 +79,8 @@ Three playbooks are built but not released, because they need server work before
 | Playbook | The job users can't get yet | Build when |
 |---|---|---|
 | learn-my-brand | Learning the brand in one pass: a full claims audit and sign-off, a confirmed voice, a brand book read, a price or product change recorded. (The claim lines a job needs are still approved inside that job, through the claims check.) | The Brand Brain can approve, reject and retire claims and edit proof points over MCP, and pending proposals can be listed and accepted from chat (its `server-needs.md` #1–#7) |
-| make-video-ads | Video ads made with AI: Reels, TikTok and Shorts ads, AI UGC-style video, product demos, fixing a rejected video ad | The video engine fixes its `server-needs.md` High items: no generated customer testimonials, money-only approval buffer, claims scoped to the product, a working chat-host route, every rendered text claim-checked |
-| make-product-photos | Product photos without a shoot: packshots, lifestyle and on-model shots, redoing photos after a packaging change | The photo engine fixes its `server-needs.md` High items: a dry run that validates, reference control, archiving without a brand-wide rule, a real-vs-generated filter |
+| make-video-ads | Video ads made with AI: Reels, TikTok and Shorts ads, AI UGC-style video, product demos, fixing a rejected video ad | The video engine fixes the High items in its server-needs note (goose-lab `plan/marketing-agent/server-needs/`): no generated customer testimonials, money-only approval buffer, claims scoped to the product, a working chat-host route, every rendered text claim-checked |
+| make-product-photos | Product photos without a shoot: packshots, lifestyle and on-model shots, redoing photos after a packaging change | The photo engine fixes the High items in its server-needs note (goose-lab `plan/marketing-agent/server-needs/`): a dry run that validates, reference control, archiving without a brand-wide rule, a real-vs-generated filter |
 
 ## Ranked by how soon a customer gets stuck
 
@@ -146,10 +146,10 @@ Retail and trade marketing, offline and experiential, martech operations, and cr
 
 ## Server work that unblocks several cards
 
-These are not playbooks, but several cards above wait on them. Each playbook's `server-needs.md` has the detail.
+These are not playbooks, but several cards above wait on them. Each playbook's server needs now live in the private goose-lab repo (`plan/marketing-agent/server-needs/<playbook>.md`), which has the detail.
 - A claim-approval tool (approve, reject, retire) — every maker depends on it.
 - A typed home in the brand brain for margins, stock, offers and email programs — cards #1, #7.
 - Reading the customer's own tools (email, Search Console, Seller Central) — cards #1, #7, #11.
 - A sending layer — card #6 (sending half), #18.
-- The lead-data routes on the connector (people search, email find, email check — they exist on the server's CLI proxy) — research-audience list mode, write-outreach (`skills/research-audience/server-needs.md`).
+- The lead-data routes on the connector (people search, email find, email check — they exist on the server's CLI proxy) — research-audience list mode, write-outreach (moved to the private goose-lab repo: `plan/marketing-agent/server-needs/research-audience.md`).
 - A watcher layer — cards #9, #10.

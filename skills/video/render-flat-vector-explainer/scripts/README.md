@@ -4,12 +4,12 @@ This capability is **documentation-grade**: the format's source recipe is a
 documented recipe, not a runnable end-to-end app. There are no standalone scripts here to
 `--config` and fire. Instead this folder ships:
 
-- **`config.example.json`** — the full config schema (the Little Wilder "Perfect Morning
-  Routine = 4 Products" worked example). Copy its structure to `config.json`; fill the
+- **`config.example.json`** — the full config schema (the Greenmoth "Happy Plants = 4
+  Products" worked example). Copy its structure to `config.json`; fill the
   creative fields (host, setting, tone, voice, music) from the recipe's choices and the
   brand fields (palette, products, copy) from the new brand — never the demo's values.
-- **`PIPELINE.md`** — the field-by-field map from every `config.json` key to the real,
-  runnable source script that produced the worked example (in the source project's
+- **`PIPELINE.md`** — the field-by-field map from every `config.json` key to the
+  per-project script that builds each step of the demo (in the project's
   `working/`), and which phase / paid-or-free it is.
 - **this README** — the FREE assembly steps the agent runs by hand with ffmpeg + Remotion +
   PIL after the paid gen steps have produced the character clips, VO, and music.

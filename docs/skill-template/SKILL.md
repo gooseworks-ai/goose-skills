@@ -1,6 +1,7 @@
 ---
 name: <slug>
 description: <What it does and when to use it, in one or two sentences. This is what an agent matches on. At most 1,024 characters.>
+version: 1.0.0
 ---
 
 # <Title>

@@ -241,8 +241,13 @@ Full template reference: `prompt-example.md`.
 
 A Seedance submit is billed as soon as it is accepted. The media proxy saves every submit's `request_id` (in `~/.gooseworks/pending-fal-jobs/`) before it starts polling, so a lost poller or a crashed shell never loses the render.
 
-1. List what can be resumed: `media-proxy`'s `resume.py --list`.
-2. Re-attach and download: `resume.py --request-id <id> --out <output>.mp4` (or `resume_fal(request_id)` in Python). It never re-submits, so it can't charge twice.
+Use the bundled `scripts/media_proxy.py` (run from this skill's folder):
+
+1. List what can be resumed:
+   `python3 -c "import sys; sys.path.insert(0, 'scripts'); from media_proxy import list_pending; print(list_pending())"`
+2. Re-attach and download:
+   `python3 -c "import sys; sys.path.insert(0, 'scripts'); from media_proxy import resume_fal, download; r = resume_fal('<request_id>'); download(r['video']['url'], '<output>.mp4')"`.
+   `resume_fal` never re-submits, so it can't charge twice.
 3. Save the seed and request id next to the clip (`<output>.mp4.meta.json`) so later calls can reuse the seed for continuity.
 
 ## References

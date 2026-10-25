@@ -9,8 +9,8 @@ one clip per cut + a Playwright landing-page PNG + the brand end-card PNG and st
 finished master. Re-cuts (new caption timing, re-timed windows, an end-card swap) reuse the
 existing VO / start-frames / clips and spend nothing.
 
-`config.example.json` is one worked example (Gutwise "Do NOT buy Gutwise Probiotics", 1080×1920; the
-original run's master was ~37 s).
+`config.example.json` is one worked example (the fictional Sunnook "Don't buy Sunnook Tan Mousse" demo, 1080×1920;
+the master is ~37 s).
 Its creator, voice, hook angle, worlds and music bed are the demo's answers to the recipe's
 `choices` — never copy them as defaults.
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE assembly.
@@ -57,7 +57,7 @@ Write `montage.json` from `config.json` like this:
     {"file": "../../brand-assets/end-card.png", "label": "end-card", "duration": 2.0}
   ],
   "captions": {"words": "audio/vo-final.words.json", "per": 1,
-               "respell": {"symbiotic": "synbiotic"}, "style": {"color": "#FFE800", "y": 0.5}},
+               "respell": {"Sunook": "Sunnook"}, "style": {"color": "#FFE800", "y": 0.5}},
   "audio": {"vo": "audio/vo-final.mp3", "music": "audio/music/bed.mp3", "music_start": 14.21}
 }
 ```
@@ -99,11 +99,11 @@ lands on the held reveal beat. An i2v clip shorter than its window by more than 
 
 ## 3. Product B-roll — landing-page scroll is zoompan, not i2v
 
-Capsule macro, unboxing, and a landing-page scroll break up the talking-head cuts the way a real
+Product macro, unboxing, and a landing-page scroll break up the talking-head cuts the way a real
 stitch reply does. The landing-page scroll is FFmpeg **zoompan** over a Playwright-rendered PNG (the
-Gutwise run rendered `landing-page.png` at 2160×3840 and zoomed wide → best-value card → order button)
+demo renders `landing-page.png` at 2160×3840 and zooms wide → bundle price card → order button)
 — it is **not** an i2v clip, because i2v hallucinates the UI. In `montage.json` each scroll cut is a
-still with a `pan` (window centre `x`/`y` and `zoom`, from → to). The capsule/unboxing composites
+still with a `pan` (window centre `x`/`y` and `zoom`, from → to). The product-macro/unboxing composites
 come from the paid start-frame stage grounded on the real product hero.
 
 ## 4. Word-by-word captions — from the VO word timings, re-spelled against the locked script
@@ -113,7 +113,7 @@ simpler free version from `vo-final.words.json` with `captions.words` and `per: 
 time, each held until the next, in one colour (`captions.style.color`, e.g. `#FFE800`) with a dark
 outline. It does not highlight the active word inside a phrase, and `captions.base_color` is not
 used. For VEED's exact look, burn the captions in VEED instead. Re-spell brand tokens Whisper mishears against the locked script with
-`captions.respell` (Gutwise demo: "synbiotic" over "symbiotic"; kept "I'ma" verbatim) — never edit the
+`captions.respell` (Sunnook demo: "Sunnook" over "Sunook"; kept "I'ma" verbatim) — never edit the
 script to match Whisper. Captions stop with the last word, so they are suppressed over the end card.
 The helper draws captions with Pillow when it is installed and with libass otherwise, so the host
 ffmpeg does not need libass.

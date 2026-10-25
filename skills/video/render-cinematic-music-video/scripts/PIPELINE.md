@@ -1,8 +1,8 @@
 # Pipeline — cinematic music-video
 
 How `config.example.json` maps to the real production steps. This molecule ships a
-**config + this map**, not a bundled runner: the worked example (Rally & Rogue "Game Day
-Girls") was produced by the run's own per-step scripts, which live in
+**config + this map**, not a bundled runner: the worked example (Sundrift "Roll
+On") was produced by the run's own per-step scripts, which live in
 that run's own `working/` folder. Reference those scripts
 directly, or drive the whole run via `video-orchestrator-with-control-plane`.
 
@@ -16,28 +16,28 @@ The creative values in `config.example.json` are the demo's. On a real run they 
 recipe's `choices`, asked of the user before any paid step:
 
 - **song_style** — genre, mood, BPM and per-section arrangement → `song.prompt`, `song.bpm`,
-  `song.global_styles`. The demo used a triumphant 120-BPM indie-pop cinematic anthem.
+  `song.global_styles`. The demo used a sunny 120-BPM indie surf-pop anthem.
 - **vocalist** — who sings → the vocal clause of `song.prompt` / `song.global_styles`. The demo
-  used a confident-but-warm female lead.
+  used a bright, warm female lead.
 - **cast** — who is on screen → the people in `tableaux[].keyframe_prompt` / `motion_hint`. The
-  demo used four young college women.
+  demo used four young women roller skaters.
 - **setting** — place + time of day → the place/light clause of `look_pack.style_opener`,
-  `look_pack.palette_anchors`, and every `keyframe_prompt`. The demo used an American college
-  town on game day, autumn, golden hour.
+  `look_pack.palette_anchors`, and every `keyframe_prompt`. The demo used a seaside boardwalk
+  town in late summer, golden hour.
 - **story_arc** — the shape of the tableaux + lyrics → `tableaux[]` and `song.structure[].lines`.
-  The demo used one game day, morning → stadium peak → twilight, with an origin-story wink.
+  The demo used one summer day, morning → skate-bowl peak → twilight, with an origin-story wink.
 
 The 35mm-film look (named stock, grain, light leaks, handheld), the anthem-first timeline, the
 hook on the chorus drop and the real-asset end card are the format and stay fixed.
 
 ## Field → source-script map
 
-| Config field | Source script (`…/run-01-game-day-girls/working/`) | Phase | Paid? |
+| Config field | Source script (`…/<demo-run>/working/`) | Phase | Paid? |
 |---|---|---|---|
 | `song.prompt`, `song.structure[]`, `song.global_styles` | ElevenLabs `music_v1` call (music-gen atom) → `audio/music.mp3` + `audio/music_metadata.json` | 1 — Anthem | **PAID** |
 | `song.outputs.metadata` → `captions.source` | `build_word_timestamps.py` (adapter: `music_metadata.words_timestamps` ms → Whisper-shape `words.json` s) | 1 — Anthem | free |
 | `song.hook_line` / `hook_word` / `hook_target_sec` | derived from the returned word timings; drives the beat-window snap | 1 — Anthem | free |
-| `look_pack.style_opener` (`STYLE_OPENER`), `look_pack.negative_tail` (`NEG`), `continuity_anchor` (`HV_GARMENT`) | `gen_keyframes.py` (prepend/append per prompt) | 2 — Keyframes | **PAID** |
+| `look_pack.style_opener` (`STYLE_OPENER`), `look_pack.negative_tail` (`NEG`), `continuity_anchor` (`PRODUCT_ANCHOR`) | `gen_keyframes.py` (prepend/append per prompt) | 2 — Keyframes | **PAID** |
 | `tableaux[].keyframe_prompt`, `keyframe_engine.model/resolution/aspect_ratio` | `gen_keyframes.py` `KEYFRAMES[]` → `higgsfield generate create gpt_image_2 --aspect_ratio 2:3 --resolution 2k` → `assets/keyframes/<id>.png` | 2 — Keyframes | **PAID** |
 | `keyframe_engine.batch_size` (3) | `gen_keyframes.py` `ThreadPoolExecutor` (burst-credit reserve) | 2 — Keyframes | — |
 | `clip_engine.motion_opener` (`MOTION_OPENER`) | `gen_clips.py` (prepend per motion hint) | 3 — Clips | **PAID** |
@@ -54,7 +54,7 @@ hook on the chorus drop and the real-asset end card are the format and stay fixe
 **Generate the anthem FIRST — it sets the timeline.** Feed `song.structure` (the
 verse/pre-chorus/chorus/outro sections, each with `duration_ms`, per-section
 `positive_local_styles`/`negative_local_styles`, and the exact `lines`) and `song.prompt`
-(the vibe from `choices.song_style` + `choices.vocalist`; the demo: a 120-BPM indie-cinematic anthem) to ElevenLabs `music_v1`. The call returns:
+(the vibe from `choices.song_style` + `choices.vocalist`; the demo: a 120-BPM indie surf-pop anthem) to ElevenLabs `music_v1`. The call returns:
 - `audio/music.mp3` — the sung anthem (the narration; **no separate VO**).
 - `audio/music_metadata.json` — the `composition_plan` echo **plus `words_timestamps`**
   (word-level start/end in **ms**).
@@ -63,8 +63,8 @@ Then run `build_word_timestamps.py` — it maps `music_metadata.words_timestamps
 Whisper-shape `audio/words.json` (seconds) that the captions step consumes. Derive the beat
 windows — `(tableauId, tStart, tEnd)` per beat — by snapping each tableau
 boundary to the lyric-phrase edges in the returned word timings. The hook line
-(`song.hook_line`; demo: "every day is game day" at ~14.4s) lands on the chorus drop; the
-`is_hook` tableau (demo: `HOOK_HERO` T08, a split-screen brand-range frame) is timed to it. No artist names
+(`song.hook_line`; demo: "roll on into the sun" at ~14.4s) lands on the chorus drop; the
+`is_hook` tableau (demo: `HOOK_HERO` T08, a split-screen colorway-range frame) is timed to it. No artist names
 in `song.prompt` (ElevenLabs ToS filter — describe the arrangement only).
 
 ## 2. Keyframes → Higgsfield `gpt_image_2`  (config: `tableaux[].keyframe_prompt`, `look_pack`, `keyframe_engine`)  [PAID]
@@ -77,7 +77,7 @@ supported ratio to 9:16). Parallel batches of ≤8 threads (the config caps `bat
 for the Higgsfield burst-credit reserve). One PNG per beat → `assets/keyframes/<id>.png`.
 Idempotent — skips beats whose PNG already exists and is >80KB. The single `look_pack` (the
 `STYLE_OPENER` 35mm-film clause) is what makes N beats read as shot by one photographer, with
-the continuity anchor (the brand's real product; `HV_GARMENT` in the demo) present each frame. The 35mm look is HARDER than
+the continuity anchor (the brand's real product; `PRODUCT_ANCHOR`, the skates, in the demo) present each frame. The 35mm look is HARDER than
 paper-craft — budget 1–2 re-rolls per tableau. **Review all N before step 3.**
 
 ## 3. Clips → Higgsfield `kling3_0` i2v  (config: `tableaux[].motion_hint`, `clip_engine`)  [PAID]
@@ -108,7 +108,7 @@ shipped. Do the four steps with the `stitch-videos-ffmpeg` skill's free `montage
 4. **Burn the captions** — `montage.py captions --video clips/master-no-captions.mp4 --words
    audio/words.json`, 4 words a cue (`per`), low on the frame (`y` about 0.85) in a serif font.
    `montage.py` draws each cue in one colour, so burn the accent words
-   (`captions.accent_words`; demo: `every,day,game,HER,Rally,Rogue,girls,started,finish`) and
+   (`captions.accent_words`; demo: `sun,on,roll,done,Sundrift,wheels,run,crew,found,home`) and
    the hook line as a second `captions` pass from a cue file of just those words, in the accent
    colour → `finals/master-final.mp4`.
 
@@ -116,9 +116,9 @@ Captions come from the song's OWN `audio/words.json` (via `build_word_timestamps
 Whisper** — Whisper on sung audio returns "🎵 Music Playing 🎵". The chorus hook line gets the
 accent colour, as do the accent words.
 
-The **end card** for H&V was authored as the designed `T14` keyframe base (cream cursive
-italic serif wordmark on a warm-dark background with the real garment). **Never AI-render the
-lockup as free diffusion text** (LEARNINGS L4 — a prior end card rendered "therapits");
+The **end card** in the demo was authored as the designed `T14` keyframe base (ivory
+hand-lettered script wordmark on a warm-dark background with the real skates). **Never AI-render the
+lockup as free diffusion text** (LEARNINGS L4 — diffusion garbles a wordmark);
 where a real wordmark asset exists, prefer a PIL/ffmpeg composite over the final window
 (`end_card.overlay_window_sec` = 26.1–28.0).
 

@@ -13,15 +13,15 @@ seeded on the styled hero → extract Beat 1 last frame → Veo3 Beat 3 reveal s
 
 ## Choices → config fields
 
-Asked of the user before any paid step (recipe `choices`); `config.example.json` holds the Solenne
+Asked of the user before any paid step (recipe `choices`); `config.example.json` holds the demo's
 answers as a worked example only.
 
 | Choice | Config fields | Demo value |
 |---|---|---|
-| `backdrop` | `studio_look.bg` (+ pad colour), `<BG>` in `beats[].prompt`, `product_identity.step_1` | bubblegum pink `#F8B8C6` |
+| `backdrop` | `studio_look.bg` (+ pad colour), `<BG>` in `beats[].prompt`, `product_identity.step_1` | deep teal `#1F4E5A` |
 | `lighting_mood` | `studio_look.lighting_preset`, `studio_look.rim_light`, `<LIGHTING>` in `beats[].prompt`, `product_identity.step_1` | `luxe_botanical_warm` |
 | `reveal` | `reveal_variant`, `beats[2]` | `exploded_view` |
-| `music` | `music.prompt` | uplifting pop-ambient, drop at 7s, 100 BPM |
+| `music` | `music.prompt` | minimal ambient-electronic, drop at 7s, 100 BPM |
 
 ## Field → step map
 
@@ -46,11 +46,11 @@ answers as a worked example only.
 - **Identity discipline:** the styled hero is built from the brand's REAL product photo, so Beats
   1+2 carry the real geometry; Beat 3 is seeded on Beat 1's *last frame*; Beat 4 sits over Beat 1's
   stilled last frame — the product + lighting carry across all four beats and are never AI-invented.
-- **Reveal-prompt spatial clause is load-bearing.** The shipped Dune Duo Beat 3 used a prompt that
-  didn't say *where* the creams should show; Veo3 cap-popped and smeared ambient swatches (a P1).
-  The `config.example.json` `beats[2].prompt` is the spatial-clause fix.
+- **Reveal-prompt spatial clause is load-bearing.** A reveal prompt that doesn't say *where* the
+  parts or cross-sections should face lets Veo3 pop a part off at random and smear the surface.
+  The `config.example.json` `beats[2].prompt` shows the spatial clause.
 - **Reveal-variant taxonomy:** cosmetic/liquid/fragrance → particle_disintegration; beverage OR a
-  water product (spa/tub/fountain) → liquid_splash; dual-ended/structural → exploded_view;
+  water product (spa/tub/fountain) → liquid_splash; multi-part / structural → exploded_view;
   large/featureless no-reveal (a tool, a solid appliance) → rotation_only (skip Beat 3).
 - **Duration:** beats are 4+4+4+3 = **15s**. Veo3 fast is an 8s take → `build_masters` trims it to
   the 4s window (`trim_start` default 1.0s). i2v auto-audio is stripped (`-an`) or it leaks into

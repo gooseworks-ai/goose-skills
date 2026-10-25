@@ -14,9 +14,9 @@ keyframes, so it reads as a printed page that moves. This capability is that **F
 deterministic assembly** — the ffmpeg motion, hard-concat, audio mux, caption burn, and PIL
 end card.
 
-`scripts/config.example.json` is the worked example (Claritude "Rat Park", ~40.8s 1080×1920
-9:16, 6 beats — its 2-tone Niemann look, cream/charcoal/sage palette and Rat Park metaphor are
-that demo's picks, never defaults); `scripts/PIPELINE.md` maps every config block to its source step and
+`scripts/config.example.json` is the worked example (the fictional Ironfern "The Trees With No Wind" demo, ~40.8s
+1080×1920 9:16, 6 beats — its 2-tone Niemann look, cream/charcoal/sage palette and dome-tree
+metaphor are that demo's picks, never defaults); `scripts/PIPELINE.md` maps every config block to its source step and
 `scripts/README.md` documents the free assembly.
 
 ## Choices
@@ -26,7 +26,7 @@ never picks them. The demo's value is an example only:
 
 - **Illustration style** — demo: bold flat 2-tone silhouettes, halftone (Niemann / Steinberg lineage).
 - **Palette** — demo: cream #F4EBD9 + charcoal #1A1A1A + one sage #86987A accent.
-- **Central metaphor** — demo: the Rat Park study.
+- **Central metaphor** — demo: a tree grown in a windless dome vs. trees in a windswept grove.
 - **Tone / voice** — demo: warm and reflective, the real podcast host (no generated voice).
 
 ## Run
@@ -34,7 +34,7 @@ never picks them. The demo's value is an example only:
 This is the **FREE, deterministic** assembly stage — it spends nothing on the motion layer.
 The paid inputs are separate: the real podcast MP3 is clipped from source (free ffmpeg) with
 its Whisper word timings, and one editorial-illustration keyframe per beat (chained ref images
-so cage/character geometry holds) comes from `create-image-fal` (Nano Banana). Given the
+so set/character geometry holds) comes from `create-image-fal` (Nano Banana). Given the
 clipped audio + `words.json` + the per-beat keyframes + the real brand wordmark PNG,
 `render-editorial-motion-podcast` renders each keyframe as a ken-burns segment, hard-concats
 on the beat, muxes the real audio, burns the mid-sentence captions, and composites the PIL end
@@ -50,8 +50,8 @@ card → the master. Re-cuts reuse the existing audio / keyframes and spend noth
   with `zoompan` (push-in / pull-back, 1.0→~1.06×, 24fps); Seedance/Kling are photoreal-trained
   and invent naturalistic middle states that collapse the flat limited-palette look look. Never `-loop 1` with
   `zoompan d=N` (it balloons the duration); feed a single image and clamp with `-t` + `trim`.
-- **Hard cuts on the beat — no crossfades.** Crossfades ghost two drifting cages through each
-  other; hard-concat each beat's segments and split long beats into micro-cuts (target 8–10
+- **Hard cuts on the beat — no crossfades.** Crossfades ghost two slightly drifted frames through
+  each other; hard-concat each beat's segments and split long beats into micro-cuts (target 8–10
   distinct visual moments). Each beat's visual STARTS within ~0.5s of its spoken line.
 - **Captions from Whisper word-timestamps, ON only mid-sentence.** Burn `frosted-subtle`
   captions while the speaker talks; leave silent/reflective beats and the end card uncaptioned.
@@ -71,7 +71,7 @@ card → the master. Re-cuts reuse the existing audio / keyframes and spend noth
      `enable='between(t,st,en)'` windows. Same look, no libass.
 - **End card via PIL from the real wordmark PNG — never AI-render brand text.** The lockup is
   composited deterministically (stretched-gradient bg + feathered mascot crop + wordmark +
-  tagline with a system font); a diffusion model garbles a wordmark ("therapits"). The video
+  tagline with a system font); a diffusion model garbles a wordmark (misspelled letters). The video
   runs a ~1.5s silent hold past the audio on the end card (fade first/last 0.3s).
 - **FFmpeg composite, deterministic, FREE.** Ken-burns each keyframe, hard-concat, mux the real
   audio, burn the captions, hold on the end card → a 1080×1920 h264+aac master. No paid calls.

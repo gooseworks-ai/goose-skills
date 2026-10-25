@@ -138,7 +138,7 @@ def main() -> int:
 
     try:
         # Default poll timeout for video (1800s). A timeout raises FalPollTimeout with the
-        # request_id — resume it (media-proxy resume.py), never resubmit.
+        # request_id — resume it with the bundled media_proxy.resume_fal, never resubmit.
         # A request the provider already refused raises FalPolicyRejection before any
         # network call (media_proxy's rejected-request ledger).
         result = _fal_run(MODEL, payload, input_digest=args.input_digest, query=query)

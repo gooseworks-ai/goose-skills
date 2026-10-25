@@ -8,7 +8,7 @@ clips) are separate capabilities — `create-music-elevenlabs`, `create-image-fa
 caption chunking, a swapped end card, re-timed windows) reuse the existing song / keyframes
 / clips and spend nothing — only the paid capabilities spend.
 
-`config.example.json` is one worked example (Driftlume "Fall In Love With Sleep Again", 28s
+`config.example.json` is one worked example (Fernhollow "Bring The Green Back Home", 28s
 paper-craft 9:16). Its visual style, song, vocalist, mood, protagonist and setting are the demo's
 answers to the recipe's `choices` — never copy them as defaults. `PIPELINE.md` maps every config block to its source step. This README
 documents the four FREE assembly pieces that `render-song-mv` owns.
@@ -33,13 +33,13 @@ its lyric window and hard-concats the clips **on the beat** (one optional match-
 hook-hero reveal). No dissolves. The N clips + their windows are a pure function of the song,
 so the whole cut is deterministic and repeatable.
 
-## 3. PIL end card — from the real app icon, no AI text
+## 3. PIL end card — from the real brand asset, no AI text
 
-The brand lockup is composited with **PIL** from the brand's REAL asset (e.g. the app icon
-pulled from the iTunes Search API): brand-color gradient (from the brand kit) + the circular app
-icon with a soft halo (the demo added paper stars to match its style) + wordmark + tagline + CTA → a PNG overlaid on the final window
+The brand lockup is composited with **PIL** from the brand's REAL asset (e.g. a logo mark from
+the brand kit, or an app icon from the iTunes Search API): brand-color gradient (from the brand kit) + the circular
+mark with a soft halo (the demo added paper leaves to match its style) + wordmark + tagline + CTA → a PNG overlaid on the final window
 (`end_card.overlay_window_sec`). The brand text is **never** AI-rendered — a diffusion model
-garbles a wordmark ("therapits"), so the lockup is drawn deterministically from the real
+garbles a wordmark, so the lockup is drawn deterministically from the real
 asset every time.
 
 ## 4. FFmpeg composite

@@ -9,7 +9,7 @@ Turn an existing product image or static ad into a short motion creative through
 
 ## Prerequisite
 
-This workflow requires the GooseWorks MCP connector (`https://mcp.gooseworks.ai/mcp`). It uses three tools: `ads_creative_animation_quote` (free price), `ads_creative_animate` (paid start) and `job_get` (poll). If `ads_creative_animate` or `job_get` is not in the advertised tool list, or `account_whoami` reports `features.animate_image: false`, explain that the connection or feature is not available and stop; do not substitute an unrelated image generator.
+This workflow requires the GooseWorks MCP connector (`https://mcp.gooseworks.ai/mcp`). It uses three tools: `ads_creative_animation_quote` (free price), `ads_creative_animate` (paid start) and `job_get` (poll). Some clients list tools by group and show the `ads` tools only after they are loaded. If `ads_creative_animation_quote` or `ads_creative_animate` is not in the advertised tool list, call `tools_load` with `{ "groups": ["ads"] }` first (free). If the tools are still missing, or `account_whoami` reports `features.animate_image: false`, explain that the connection or feature is not available and stop; do not substitute an unrelated image generator.
 
 ## Tool calls
 

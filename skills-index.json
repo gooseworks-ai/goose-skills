@@ -1764,7 +1764,7 @@
       "name": "company-contact-finder",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": "Find decision-makers at a specific company using Apollo, Crustdata, Fiber, and PDL people search via Gooseworks MCP. Given a company name and target titles, returns a list of contacts with name, title, LinkedIn URL, and location.",
+      "description": "Find decision-makers at a specific company using Fiber, Crustdata and PDL people search inside the GooseWorks coworker. Given a company name and target titles, returns a list of contacts with name, title, LinkedIn URL, and location.",
       "tags": "lead-generation",
       "path": "skills/shared/company-contact-finder",
       "version": "1.0.0",
@@ -4960,7 +4960,9 @@
           "ads"
         ],
         "requires_skills": [
-          "watch"
+          "watch",
+          "caption-burn",
+          "media-proxy"
         ]
       }
     },
@@ -5448,7 +5450,9 @@
         "version": "1.0.2",
         "requires_skills": [
           "watch",
-          "stitch-videos-ffmpeg"
+          "stitch-videos-ffmpeg",
+          "caption-burn",
+          "media-proxy"
         ]
       }
     },

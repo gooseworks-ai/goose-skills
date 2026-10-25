@@ -33,15 +33,15 @@ deterministic** — the only paid step of the format (the music bed) is a separa
 - `end_card` — `sub`, `tagline_top`, `tagline_bottom` (bold), `cta`, `url`. Brand's own approved copy only.
 - `eyebrow` — optional top kicker held during the grid.
 
-`scripts/config.example.json` is a filled example (the fictional Twofold Eyewear "RANGE" worked example);
+`scripts/config.example.json` is a filled example (the fictional Glazewell Ceramics "RANGE" worked example: nine mug glazes);
 the tile `image`/`wordmark` paths are brand inputs bound by the orchestrator at remix time.
-Its tiles, tile colours, end-card copy and music prompt are Twofold's answers, not defaults.
+Its tiles, tile colours, end-card copy and music prompt are the Glazewell demo's answers, not defaults.
 
 ## Choices
 
 The recipe asks the user these before any paid step; the renderer draws whatever the config says.
 
-- `range` — which 9 products/variants fill the grid → `tiles[].image`, `tiles[].name`. Asked of the user; the demo used 9 eyewear colourways.
+- `range` — which 9 products/variants fill the grid → `tiles[].image`, `tiles[].name`. Asked of the user; the demo used 9 mug glaze colourways.
 - `tile_look` — tile backgrounds → `tiles[].bg`, `tiles[].ink`, `palette.bg`. Asked of the user; the demo used a soft pastel per variant.
 - `music` — the bed's genre/mood → `music.prompt` (consumed by `create-music-elevenlabs`). Asked of the user; the demo used light upbeat marimba.
 

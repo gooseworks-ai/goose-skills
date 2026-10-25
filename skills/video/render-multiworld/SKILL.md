@@ -22,10 +22,10 @@ them.
 ## Choices
 
 The calling recipe asks the user these before any paid step; this capability only assembles
-what they produced. The worked example (the fictional brand Wildroot Pure) values are examples, never defaults.
+what they produced. The worked example (the fictional brand Kettle & Fern) values are examples, never defaults.
 
-- **worlds** — the three places toured → `config.worlds`, `config.scene_grid` (demo: pilates
-  studio / spa anteroom / farmers market).
+- **worlds** — the three places toured → `config.worlds`, `config.scene_grid` (demo: reading
+  nook / glasshouse / farmers market).
 - **visual_style** — the worlds' look → `config.visual_style`, `worlds[*].palette`,
   `end_card.nb2_prompt` (demo: sunlit-natural / handmade).
 - **music** — the bed's genre/mood → `config.music.prompt` (demo: warm acoustic-pop).
@@ -40,7 +40,7 @@ Nothing in the assembly keys on world slugs or names: clips are ordered by
    hides any label misrender at the clip's upright tilt extreme.
 2. **End card (Playwright/HTML, FREE)** — screenshot `end_card.html` over the AI flat-lay
    BACKGROUND, then FFmpeg-encode to a `dwell_sec` (3.0s) static clip. Headline
-   (`overlay.headline`, approved brand copy — the demo's was "FIND YOUR DAILY."; Inter 900),
+   (`overlay.headline`, approved brand copy — the demo's was "STEEP SLOWER."; Inter 900),
    one handwritten Caveat product label + hand-drawn SVG arrow per product, Playfair
    wordmark + URL. **End-card text is HTML, NEVER AI-rendered** —
    the AI step produces the background only.
@@ -57,12 +57,12 @@ Nothing in the assembly keys on world slugs or names: clips are ordered by
   end-card text. Iterate the cut for free by re-running the assembly.
 - **Silent, music-led** — no VO, no captions during the scenes; on-screen text appears
   ONLY on the end card, HTML-composited.
-- Per world = WIDE arrival (bottle small, environment dominant) → top-down macro (product +
+- Per world = WIDE arrival (product small, environment dominant) → top-down macro (product +
   botanical, no hands). Hard cuts between scenes; end card is a static hold with legible
   HTML text; music starts at t=0 and fades the tail.
-- **Sealed-bottle rule** is enforced at QC — trim/concat can't fix an open-cap or spraying
+- **Sealed-product rule** is enforced at QC — trim/concat can't fix an opened or spilling
   clip; that's a re-roll (paid), not an assembly fix. Identity via world + botanical, never
-  bottle color.
+  pack color.
 - The template recipe (DB) supplies the per-video config (worlds, palettes, companion props
   and music mood from the user's choices; prompts; end-card copy from the brand kit); this
   capability is the generic assembler.
@@ -74,13 +74,13 @@ Nothing in the assembly keys on world slugs or names: clips are ordered by
 - **The demo's clips used a Higgsfield-proxy capability that does not exist.** The
   source molecule fires them through **Higgsfield Marketing Studio**
   (`marketing_studio_video/product_showcase`) grounded on imported product UUIDs, with the
-  sealed-bottle safety block front-loaded on every prompt. `create-video-fal` is a FAL i2v
+  sealed-product safety block front-loaded on every prompt. `create-video-fal` is a FAL i2v
   proxy — a different provider and job shape — so it cannot serve this step. Wiring the clip
   step to templates-as-data requires a Higgsfield video proxy (Marketing Studio
   `product_showcase`, imported-product grounding, per-prompt safety block) that **does not
   exist yet**. Until it lands, the clips are generated via the Higgsfield Marketing Studio
   path directly (CLI/MCP) and that step is **not a fetchable capability**.
-- **The end-card background** is an AI flat-lay render (text-free, all three sealed bottles +
+- **The end-card background** is an AI flat-lay render (text-free, all three sealed products +
   botanicals) that in prod routes through **create-image-fal** (NB2); only the HTML text
   overlay + encode run locally as FREE assembly.
 - **The music** is a paid ElevenLabs call that in prod routes through

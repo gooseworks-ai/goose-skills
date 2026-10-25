@@ -37,10 +37,16 @@ The read tools in step 3 (`meta_status_get`, `list_meta_entities`, `get_meta_ad_
 4. Recommend reuse when an existing ad set matches objective, geography, audience, schedule, and optimization. Explain overlap before proposing a separate campaign.
 5. Call `meta_read` with `view: "pages"` and use one of its ids as `page_id`. Call `prepare_meta_ad_push` only after every decision and destination/policy check is complete. Pass the source campaign ID so the push remains linked.
 6. Present the exact summary and returned approval URL/card. Tell the human to choose **Approve paused launch** or **Decline**. Do not execute the push from chat.
-7. After the human returns, call `meta_read` with `view: "push_status"` and the same `push_id`:
+   If `prepare_meta_ad_push` returns `PREPARING`, the checks are still running: wait about 30 seconds, read `push_status`, and present the plan only once it is `AWAITING_APPROVAL`. Never prepare it again meanwhile.
+7. After the human returns, call `meta_read` with `view: "push_status"` and the same `push_id`, and act on `push.state`:
+   - `PREPARING`: the checks are still running; read again in about 30 seconds.
+   - `PREPARE_FAILED`: the checks refused the plan and nothing exists in Meta; relay the reason and findings.
+   - `AWAITING_APPROVAL`: return the same approval link; do not create a new push.
+   - `APPROVED` or `RUNNING`: approved; Goose is creating the paused ads (usually a minute or two). Read again shortly; do not prepare again.
    - `COMPLETED`: report every ID only after paused readback.
    - `PARTIAL` or `FAILED`: list created IDs, verified states, failure, and `next_action`.
    - `CANCELED`: report that nothing was created.
-   - `AWAITING_APPROVAL`: return the same approval link; do not create a new push.
+
+   The push status lists every object it created, so do not run `refresh_meta_sync` after a launch. Use it only when an object you know exists is missing from reads.
 
 Activation remains a separate GooseWorks UI flow with its own typed confirmation. Never activate during this skill or during tests.

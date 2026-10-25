@@ -3,13 +3,13 @@
 How each `config.example.json` field maps to the source generation step. This molecule
 ships as **config + documentation**, not a rebuilt runnable Higgsfield harness — the six
 clips are fired through Higgsfield Marketing Studio (CLI/MCP), which reserves credits
-server-side. The real render/assembly scripts live in the source project:
-the source run's `working/` (`render_clips.py`,
-`render_endcard.py`, `build_master.py`) and `production/` (`scene-contract.json`,
-`generation-jobs.json`, `audio-plan.json`).
+server-side. The demo's render/assembly scripts are not shipped: they lived in its
+project's `working/` (`render_clips.py`, `render_endcard.py`, `build_master.py`) and
+`production/` (`scene-contract.json`, `generation-jobs.json`, `audio-plan.json`).
 
-> **Worked example, not the format.** Everything named below — Wildroot Pure, the three
-> scents, the pilates / spa / farmers-market worlds, the "FIND YOUR DAILY." headline, the
+> **Worked example, not the format.** Everything named below — Kettle & Fern (a fictional
+> brand), its three teas, the reading-nook / glasshouse / farmers-market worlds, the
+> "STEEP SLOWER." headline, the
 > acoustic music — is the demo's build. For a new video the worlds, look and music come from
 > the recipe's `choices` (`worlds`, `visual_style`, `music`); product names, copy and URL
 > come from the brand kit. Copy the structure, never the creative values.
@@ -20,22 +20,22 @@ the source run's `working/` (`render_clips.py`,
 > `product_image`) → `create-video-fal` (Kling 3.0 i2v); its `config.keyframe` / `config.i2v`
 > / `config.worlds[*].*_keyframe_prompt` / `*_i2v_prompt` fields are the live schema.
 
-## The 3×3 grid — worked example (Wildroot Pure, from `idea-brief.md`)
+## The 3×3 grid — worked example (Kettle & Fern, from `idea-brief.md`)
 
 The format's core IP: three products/variants, each locked to its own **world + palette +
 companion prop**, so variant identity is carried by the *set*, not by product color. The
 worlds and palette come from `choices.worlds` / `choices.visual_style`; the table below is
 the demo's grid.
 
-| Scent (product) | Third place (world) | Palette | Botanical companion | Bottle color |
+| Variant (product) | Third place (world) | Palette | Botanical companion | Pack color (`bottle_color`) |
 |---|---|---|---|---|
-| Lavender | Sunrise reformer pilates studio | Mauve sunrise + cream linen + blonde pine | fresh lavender sprig | cream/beige |
-| Blue Tansy | Spa anteroom / sauna threshold | Sage-teal + bone + warm cedar | blue tansy flower + eucalyptus bundle | cream/beige |
-| Bergamot + Eucalyptus | Saturday outdoor farmers-market stall | Citrus yellow + linen + sage | bergamot fruit + eucalyptus stems | matte black |
+| Hibiscus Rose Tea | Sunrise window-seat reading nook | Rose dawn + cream linen + blonde pine | dried hibiscus petals + rosebud | blush pink |
+| Mint Green Tea | Glasshouse potting bench | Sage + terracotta + bone | fresh mint + rolled green tea leaves | sage green |
+| Smoked Chai | Autumn farmers-market stall | Cinnamon + warm linen + brass | cinnamon sticks + star anise | matte black |
 
-Note: eucalyptus appears in BOTH the Blue Tansy and B+E worlds (a connective brand
-thread) — differentiate via the *other* botanical (blue tansy flower vs bergamot fruit)
-so the two worlds don't read as the same scent.
+Note: when one prop appears in two worlds (here, cream linen), treat it as a connective
+brand thread and differentiate the worlds through their *own* botanical, so two worlds
+never read as the same variant.
 
 ## Field → generation step
 
@@ -44,31 +44,32 @@ so the two worlds don't read as the same scent.
   its `product_uuid` (the brand's imported Higgsfield product):
   - `arrival_prompt` → the WIDE kinetic-calm arrival (renders `higgsfield.arrival_duration_sec` = 5s; trimmed to 4.5s at master).
   - `macro_prompt` → the top-down macro product moment (renders `macro_duration_sec` = 4s; trimmed to 3.5s).
-- `higgsfield.safety_block` is appended to **every** prompt: sealed-bottle discipline +
-  no smoke/vapor/aerosol + no whip-pans/shake + label-match + no on-screen text.
+- `higgsfield.safety_block` is appended to **every** prompt: sealed-product discipline
+  (the demo: tin sealed, lid on) + no steam/pouring + no whip-pans/shake + label-match +
+  no on-screen text.
 - Six clips fired in parallel (ThreadPoolExecutor); per-job result JSON + mp4 land in
   `working/clips/`. Job ledger → `production/generation-jobs.json`.
 - **Gotchas seen on the demo** (all in `generation-jobs.json`):
-  - S03 (Blue Tansy arrival) v1 rendered the bottle **cap-off** → P0 sealed-bottle
-    violation → re-rolled as v2 with "BOTTLE STAYS SEALED, CAP STAYS ON" front-loaded.
-  - S05 (B+E arrival) mid-clip showed a gloved leather hand vs the called-for bare
+  - S03 (second-world arrival) v1 rendered the product **open** → P0 sealed-product
+    violation → re-rolled as v2 with "TIN STAYS SEALED, LID STAYS ON" front-loaded.
+  - S05 (third-world arrival) mid-clip showed a gloved hand vs the called-for bare
     fingertips — minor, accepted.
-  - S06 (B+E macro) first submission failed HTTP 502 (transient) → retried; and the
-    label misrendered "Eucalyptus"→"Eucaiyptus" at the upright tilt extreme — not
-    visible in the top-down portion the trim dominates.
+  - S06 (third-world macro) first submission failed HTTP 502 (transient) → retried; and
+    the label misrendered one letter of the product name at the upright tilt extreme —
+    not visible in the top-down portion the trim dominates.
 
 ### `end_card.nb2_*` → NB2 flat-lay background (`render_endcard.py`, PAID) + HTML overlay
 - `nb2_prompt` + the 3 `nb2_input_product_uuids` → one `nano_banana_2` render of the
-  **text-free** editorial flat-lay: all three sealed bottles + their botanicals on a
+  **text-free** editorial flat-lay: all three sealed products + their botanicals on a
   cream-blush gradient, generous negative space at top. Prompt explicitly forbids
   text/typography (`No text overlays, no typography, no captions`). Output → `working/endcard/layer1.png`; job → `generation-jobs.json` (`job-endcard-001`, model `nano_banana_2`).
 - `end_card.html` (the overlay layer) is screenshotted by Playwright over that
   background, then encoded to a `dwell_sec` (3.0s) mp4:
-  - `overlay.headline` (demo: "FIND YOUR DAILY.") — Inter 900, one key word outlined via
+  - `overlay.headline` (demo: "STEEP SLOWER.") — Inter 900, one key word outlined via
     `-webkit-text-stroke`, rise-in animation. Approved brand copy only.
   - `overlay.scent_labels[]` — three handwritten Caveat-font product/variant labels, each with a
-    hand-drawn SVG arrow (staggered `drawArrow` animation) pointing to its bottle.
-  - `overlay.wordmark` (demo: "WILDROOT / PURE") (Playfair Display, two rows) + `url`.
+    hand-drawn SVG arrow (staggered `drawArrow` animation) pointing to its product.
+  - `overlay.wordmark` (demo: "KETTLE / & FERN") (Playfair Display, two rows) + `url`.
   - Text animates across ~0–2.4s, then a ~0.6s hold (`scene-contract.json` S07).
 - **Rule:** the end-card text is HTML-composited, NEVER AI-rendered. NB2 = background only.
 
@@ -90,16 +91,16 @@ so the two worlds don't read as the same scent.
 - Muxes the music: `afade` in `master.fade_in_sec` / out `master.fade_out_sec` +
   `loudnorm master.loudnorm` (I=-16:TP=-1.5:LRA=11), AAC `master.audio_bitrate`, clamped
   to `duration_sec` (27.0s).
-- Output → `finals/master-v2.mp4`. Total = `3×(4.5+3.5) + 3.0 = 27.0s`.
+- Output → `finals/master.mp4`. Total = `3×(4.5+3.5) + 3.0 = 27.0s`.
 
 ## Source-of-truth files (in the demo project)
 
 - `production/scene-contract.json` — the 7-scene contract (worldLock, per-scene shot +
   frameDescription, transitionPlan, `visualVarietyAudit`).
 - `production/generation-jobs.json` — the job ledger (models, costs, re-rolls, the
-  sealed-bottle P0).
+  sealed-product P0).
 - `production/audio-plan.json` — silent/music-led config.
-- `working/<variant>_product.json` (demo: `lavender`, `blue_tansy`, `bergamot_eucalyptus`) —
+- `working/<variant>_product.json` (one per `worlds[].slug`) —
   the imported product refs (UUIDs + CloudFront media).
 - `working/endcard/{endcard.html, nb2_result.json}` — the overlay + the NB2 background job.
 - `working/{render_clips,render_endcard,build_master}.py` — the real render/assembly code.

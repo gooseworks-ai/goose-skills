@@ -12,6 +12,7 @@ Every video is synthesised here with ffmpeg and Pillow (lines, not fonts, so any
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -280,11 +281,16 @@ def test_a_hold_after_motion_is_frozen_while_the_encoder_catches_up(tmp_path):
        "-f", "lavfi", "-i", f"aevalsrc='{TONE}':s=44100:d=10.6",
        "-filter_complex", "[0:v]tpad=stop_mode=clone:stop_duration=3.6[a];[1:v]hue=h=90[b];"
        "[a][b]concat=n=2:v=1:a=0,format=yuv420p[v]",
-       "-map", "[v]", "-map", "2:a", "-c:v", "libx264", "-crf", "23", "-maxrate", "1M", "-bufsize", "1M",
-       "-c:a", "aac", out)
+       "-map", "[v]", "-map", "2:a", "-c:v", "libx264", "-threads", "1", "-crf", "23", "-maxrate", "1M",
+       "-bufsize", "1M", "-c:a", "aac", out)
     code, r = run(tmp_path, out)
     pacing = r["checks"]["pacing"]
-    assert pacing["status"] == "fail" and "picture frozen 3.0-6.6s" in pacing["note"], pacing
+    # Where the encoder stops refining varies by machine (3.0s here, 3.9s on a CI runner), so check
+    # what matters: a freeze that ends where the hold ends and is long enough to fail pacing.
+    m = re.search(r"picture frozen (\d+\.\d)-(\d+\.\d)s", pacing["note"])
+    assert pacing["status"] == "fail" and m, pacing
+    start, end = float(m.group(1)), float(m.group(2))
+    assert end == 6.6 and start <= 4.0, pacing
 
 
 @needs_ffmpeg

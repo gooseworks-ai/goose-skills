@@ -1,10 +1,9 @@
 # Pipeline — editorial-motion-podcast
 
 How `config.example.json` maps to the real production steps. This molecule ships a
-**config + this map**, not a bundled runner: the worked example (Claritude "Rat Park") was
-produced by hand-run bash + PIL scripts that live in
-that run's own `scripts/` folder, with the full reproducible
-recipe in that run's `how-to.md` and the gotchas in its `learnings.md` (L1–L13).
+**config + this map**, not a bundled runner: the worked example (the fictional Ironfern "The Trees With No Wind" demo) is
+produced by hand-run bash + PIL scripts that are not shipped; the steps below are the
+reproducible recipe, with the gotchas inline.
 
 The steps run **in order** because each depends on the last: the clipped audio sets the
 timeline, the timeline marks the beats, the style anchor locks the look pack, the anchor
@@ -23,22 +22,22 @@ clip_end_sec`, adding `afade=t=out` (`audio.fade_out`) so the trailing next sent
 doesn't bleed in:
 
 ```bash
-ffmpeg -y -ss 933.5 -to 973.30 -i <source_mp3> \
+ffmpeg -y -ss 412.0 -to 451.80 -i <source_mp3> \
   -af "afade=t=out:st=39.30:d=0.5" -c:a libmp3lame -b:a 192k \
-  audio/source-rat-park-40s.mp3     # -> 39.84s clip ending cleanly on "community."
+  audio/podcast-clip-40s.mp3        # -> 39.84s clip ending cleanly on "against."
 ```
 
 Then Whisper word timings via the **`caption-burn`** skill's `transcribe.py` (`fal-ai/whisper`,
-paid, <30s — default to it; local whisper ran 40min+ CPU and was killed, L8) →
+paid, <30s — default to it; local whisper ran 40min+ CPU and was killed) →
 `audio/words.json`. Mark every payoff word's time; each beat's visual must START within
-~0.5s of its line (never ahead = spoils the reveal, never lag = redundant, L3). There is
+~0.5s of its line (never ahead = spoils the reveal, never lag = redundant). There is
 **no generated song and no VO** — the host's real recorded line is the narration.
 
 ## 2. Style anchor → Nano Banana  (config: `look_pack.style_ref`, `look_pack.anchor_keyframe`, `keyframe_engine`)  [PAID]
 
 `create-image-fal` (nano-banana edit) from `look_pack.style_ref` (`moodboard/style-ref-01.png`)
-→ the FIRST keyframe (`generated/style-anchor/anchor-cage-1.png`, "Cage 1"). This anchor is
-the reference EVERY subsequent keyframe chains off (`--ref-image`), so cage/character
+→ the FIRST keyframe (`generated/style-anchor/anchor-dome-1.png`, the dome). This anchor is
+the reference EVERY subsequent keyframe chains off (`--ref-image`), so set/character
 geometry stays consistent. **Approve the anchor before fanning out** — it locks the whole
 look pack (palette, line weight, halftone discipline, geometry).
 
@@ -47,47 +46,47 @@ look pack (palette, line weight, halftone discipline, geometry).
 Per beat, build the prompt as `look_pack.style_opener + beats[i].keyframe_prompt +
 look_pack.negative_tail`, and call Nano Banana **passing the anchor (and any earlier
 matching frame) as an additional `--ref-image`** — otherwise Nano Banana invents a new
-cage every time (L2). One PNG per beat (or a small panel set for the decline arc). Full
+set every time. One PNG per beat (or a small panel set for the decline arc). Full
 set ≈ 26 rolls incl. re-rolls. Keep prompts **metaphor-forward, never clinical**
-(`cocaine` / `kept drinking till they died` trips FAL's `content_policy` filter; "energy
-fades / settle resting" gives the same visual and passes, L6). Review ALL N before motion;
-re-roll drift, leaked color, or a leaked "CAGE 1" label (add all-caps "ABSOLUTELY NO TEXT,
-NO LETTERS, NO LABELS", L-misc).
+(blunt words for harm or death can trip FAL's `content_policy` filter; "settles / lies down
+softly" gives the same visual and passes). Review ALL N before motion;
+re-roll drift, leaked color, or a stray leaked label (add all-caps "ABSOLUTELY NO TEXT,
+NO LETTERS, NO LABELS").
 
 ## 4. ffmpeg ken-burns motion + assembly → `build_v4.sh`  (config: `beats[].motion`, `motion_engine`)  [FREE]
 
-The run's own `scripts/build_v4.sh` renders each
+A hand-run `build_v4.sh` (not shipped) renders each
 keyframe as a ken-burns segment and hard-concats them. **NO generative i2v** — Seedance
-hallucinated a photoreal drawing hand + morphed rats into humanoids + hallucinated cartoon
-clouds; it's photoreal-trained and can't hold a flat limited-palette discipline (L1, retired). The two
+hallucinated a photoreal drawing hand + morphed flat silhouettes into naturalistic shapes +
+added stray cartoon elements; it's photoreal-trained and can't hold a flat limited-palette discipline (retired). The two
 reusable helpers:
 
 - `render_kb  <src> <out> <dur> [zoom_end=1.04]` — push-in: scale to 2×, crop, `zoompan
   z='min(zoom+step,zoom_end)' d=dur*fps`, `trim=duration=dur`, `-t dur`.
 - `render_kb_out <src> <out> <dur> [zoom_start=1.08]` — pull-back: `zoompan` from
-  `zoom_start` down to `1.0` (reflective held frames, e.g. the dead-rats hold).
+  `zoom_start` down to `1.0` (reflective held frames, e.g. the fallen-tree hold).
 
 Long beats split into micro-cuts (target **8–10 distinct visual moments**; anything held
-> 6s reads static even with active zoompan, L10). **Hard-concat on the beat — NO
-crossfades** (they ghost two drifting cages, L2). **Never `-loop 1` with `zoompan d=N`** —
-d runs per input frame per loop, so a 3s target ballooned to 225s (L7); feed a single
+> 6s reads static even with active zoompan). **Hard-concat on the beat — NO
+crossfades** (they ghost two slightly drifted frames). **Never `-loop 1` with `zoompan d=N`** —
+d runs per input frame per loop, so a 3s target ballooned to 225s; feed a single
 image, clamp with `-t` + `trim=duration`. Concat all beats → `edits/master-video-only.mp4`,
 then mux the real clip letting the video run a ~1.5s silent hold past the audio:
 
 ```bash
-ffmpeg -y -i edits/master-video-only.mp4 -i audio/source-rat-park-40s.mp3 \
+ffmpeg -y -i edits/master-video-only.mp4 -i audio/podcast-clip-40s.mp3 \
   -c:v copy -c:a aac -b:a 192k -map 0:v:0 -map 1:a:0 edits/master.mp4
 ```
 
 ## 5. End card → `build_endcard.py`  (config: `end_card`)  [FREE]
 
-`scripts/build_endcard.py` composites the brand lockup via **PIL** from the REAL brand
+A hand-run `build_endcard.py` (not shipped) composites the brand lockup via **PIL** from the REAL brand
 wordmark PNG (`end_card.brand_asset`): stretch a 1px center column of the source →
 1080×1920 + `GaussianBlur(80)` for the gradient bg; feathered radial-alpha ellipse crop of
 the brand mascot pasted centered-upper; wordmark (Helvetica 160) + tagline (Helvetica 48)
-drawn with `ImageDraw.text` → `generated/claritude-endcard-9x16-final.png`. **Never AI-render
-brand text** — Nano Banana spelled "therapists" as "therapits" (L4). Before building from
-scratch, `find <brand> -name "*wordmark*"` — the brand team already made the right asset (L9).
+drawn with `ImageDraw.text` → `generated/ironfern-endcard-9x16-final.png`. **Never AI-render
+brand text** — Nano Banana misspells words it renders. Before building from
+scratch, `find <brand> -name "*wordmark*"` — the brand team usually already made the right asset.
 
 ## 6. Captions + final  (config: `captions`)  [PAID]
 
@@ -108,7 +107,7 @@ cp edits/master.captions/master__frosted-subtle__ass.mp4 edits/master-captioned.
 
 `/watch:watch edits/master-captioned.mp4 --fps 2` and Read every 4–5 frames across the
 full duration — the ONLY honest loop (single frames miss timing drift, caption collisions,
-black first-frame, band artifacts, L5). Iterate on timing per findings.
+black first-frame, band artifacts). Iterate on timing per findings.
 
 ---
 

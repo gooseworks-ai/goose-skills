@@ -353,9 +353,16 @@
     "meta_status_get": "coworker server only (Meta connection status); the Meta skills say it may not be listed",
     "list_meta_entities": "coworker server only (Meta campaigns, ad sets and ads)",
     "query_meta_insights": "coworker server only (Meta insights)",
-    "get_meta_ad_context": "coworker server only (one Meta ad's context)"
+    "get_meta_ad_context": "coworker server only (one Meta ad's context)",
+    "fiber_person_search": "coworker server only (company-contact-finder runs inside the GooseWorks coworker)",
+    "crustdata_person_search": "coworker server only (company-contact-finder runs inside the GooseWorks coworker)",
+    "pdl_person_search": "coworker server only (company-contact-finder runs inside the GooseWorks coworker)",
+    "render_meta_connection": "coworker server only (the Meta skills' connect card)",
+    "render_ask_user": "coworker server only (the Meta skills' question card)"
   },
   "not_tools": {
-    "ads_read": "Meta's Marketing API read permission, named by the Meta skills"
+    "ads_read": "Meta's Marketing API read permission, named by the Meta skills",
+    "video_urls": "a fal Seedance input field",
+    "video_thruplay_watched_actions": "a Meta Insights field"
   }
 }

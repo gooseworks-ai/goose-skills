@@ -50,7 +50,13 @@ A skill may name only the tools the GooseWorks server lists to customers. The li
 - `removed`: names that are gone.
 - `other_tools`: tools of other servers a skill may name, each with its reason. `not_tools`: words that look like old tool names but mean something else.
 
-`npm run check:tools` (in `npm run ci`) reads every file under `skills/` and `docs/`. It fails on a renamed or removed name, on `gooseworks:<name>` or `mcp__gooseworks__<name>` for an unlisted name, and on "call `<name>`" or "`<name>` tool" for one. **When the server's tools change,** the GooseWorks team rebuilds the list from a gooseworks-app checkout:
+`npm run check:tools` (in `npm run ci`) reads every file under `skills/` and `docs/` (not test folders). It fails on:
+
+- a renamed or removed name, anywhere, with the listed tool to use;
+- `gooseworks:<name>` or `mcp__<any server with goose in its name>__<name>` for an unlisted name;
+- in Markdown, an unlisted name phrased as a tool call: "call `<name>`" (any case) or "`<name>` tool"; and, for a name that starts like a GooseWorks tool (`brand_`, `ads_`, `video_`…), "use/run/invoke `<name>`", `<name>(` and a backticked name alone in a table cell.
+
+It reads words, not meaning, so a tool named some other way (plain prose with no backticks, say) can still slip through: name tools in backticks. **When the server's tools change,** the GooseWorks team rebuilds the list from a gooseworks-app checkout:
 
 ```bash
 node scripts/refresh-action-names.js --app ../gooseworks-app --ref origin/dev

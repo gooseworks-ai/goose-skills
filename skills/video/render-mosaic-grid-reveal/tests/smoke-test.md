@@ -2,7 +2,7 @@
 
 Deterministic, no paid calls. Needs a `config.json` + its referenced assets (a wordmark SVG
 and `cols*rows` product stills). The runnable worked example (with real assets) lives in the
-content-goose molecule `one-shot-videos/create-mosaic-grid-reveal-video-from-refs/demo/`;
+goose-studio recipe `one-shot-videos/create-mosaic-grid-reveal-video-from-refs/demo/`;
 `scripts/config.example.json` here documents the same schema.
 
 ```bash

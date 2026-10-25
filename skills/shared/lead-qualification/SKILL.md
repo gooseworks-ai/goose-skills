@@ -219,14 +219,16 @@ python3 scripts/enrich_leads.py INPUT_CSV \
   --cache-hours 24
 ```
 
-Run it from this skill's folder. Use `--dry-run` first to show the cost estimate without calling Apify.
+Run it from this skill's folder. It runs on the user's GooseWorks credits through the GooseWorks Apify proxy when `GOOSEWORKS_API_KEY` is set; the user's own `APIFY_API_TOKEN` is only a fallback when it is not. Never ask the user for an Apify token.
+
+This is a paid run, billed for the actual run when it ends; there is no price quote before it. Run `--dry-run` first: it counts the profiles a real run would scrape (after the cache) without calling anything. Tell the user that count and that it is paid from their GooseWorks credits, and run it only after their yes.
 
 **What this does:**
 1. Reads all LinkedIn URLs from the input CSV
 2. Checks local cache (24h default) — skips profiles already enriched
 3. Sends uncached URLs to Apify in batches of 50
 4. Returns enriched CSV with: `enriched_title`, `enriched_company`, `enriched_industry`, `enriched_location`, `enriched_connections`, `enriched_education`, `enriched_experience_years`, `enriched_headline`, `enriched_about`, `enrichment_status`
-5. Cost: ~$3 per 1,000 profiles (~$0.03 per 100 leads)
+5. Charges GooseWorks credits for the actual run; cached profiles cost nothing
 
 **After enrichment, use the enriched CSV as input for Steps 2-4.** The enriched data lets the LLM qualification step work from structured fields instead of doing web searches, dramatically improving speed and consistency.
 
@@ -358,9 +360,9 @@ After output is complete, present a summary:
 The qualification agent should have access to:
 
 - **Apify LinkedIn Enrichment** — `scripts/enrich_leads.py` for batch profile enrichment before qualification
-  - Uses `harvestapi~linkedin-profile-scraper` Apify actor ($3/1k profiles, no cookies)
-  - Requires `APIFY_API_TOKEN` environment variable
-  - Run with `--dry-run` first to preview cost
+  - Uses the `harvestapi~linkedin-profile-scraper` Apify actor (no cookies)
+  - Runs on GooseWorks credits through the GooseWorks Apify proxy with `GOOSEWORKS_API_KEY`; the user's own `APIFY_API_TOKEN` is a fallback only
+  - Run with `--dry-run` first to count the profiles, then get the user's yes before the paid run
 - **Web Search** — to research leads when enrichment data is sparse or missing
 - **Fetch (web page)** — to pull LinkedIn profiles, company pages, etc.
 - **Read/Write** — for CSV I/O and saving qualification prompts

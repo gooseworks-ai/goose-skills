@@ -9,7 +9,7 @@ capability spends nothing — it takes the VO + `<vo>.words.json` + one clip per
 re-timed cards, a swapped end card, caption chunking) reuse the existing VO / clips / cutouts and
 spend nothing.
 
-`config.example.json` is the worked example (Solenne Beauty "5-Step Glassy Matte Routine", ~32s
+`config.example.json` is the worked example (Fernwick Skin "5-Step Glassy Matte Skincare Routine", ~32s
 1080×1920). Its creator, voice, setting, tone and music are the demo's picks; a new run takes them
 from the recipe's `choices`. `PIPELINE.md` maps every config block to its source step. This README documents the
 FREE assembly pieces that `render-glassy-matte-grwm` owns.
@@ -25,10 +25,10 @@ its VO window and **hard-concat on the cut** — no dissolves. **Re-encode `-c:v
 ## 2. Product cards — Playwright render + composite on the product-name beats
 
 Playwright renders the card template (`product-card.html.tmpl`) at **2× scale** → one PNG per
-product — a card in the brand's `palette.card_bg` with a `palette.accent` bar (the demo used warm
-cream + pink; never a default), the real white-bg cutout thumb, the product name,
-and the PDP-verified tagline. The cutout must match the REAL product (not the Seedance scene's
-hallucinated barrel), and the tagline is verified against the brand PDP (AI flat-lays hallucinate
+product — a card in the brand's `palette.card_bg` with a `palette.accent` bar (the demo used pale
+sage + fern green; never a default), the real white-bg cutout thumb, the product name,
+and the PDP-verified tagline. The cutout must match the REAL product (not the packaging shape a
+Seedance scene hallucinates), and the tagline is verified against the brand PDP (AI flat-lays hallucinate
 sublines). Each card is composited onto the master **snapped to its product-NAME word-start** (~1s
 after the scene cut), fading in over ~1s, held until the next product is named. **PNG overlay
 inputs NEED `-loop 1 -t <dur>`** — without it the PNG emits one frame at t=0 and the fade/enable

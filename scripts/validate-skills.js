@@ -163,6 +163,9 @@ for (const family of FAMILIES) {
         if (!allowed.has(key)) errors.push(`${where}/SKILL.md frontmatter has "${key}": allowed keys are ${[...allowed].join(', ')} (other metadata goes in skill.meta.json)`);
       }
     }
+    if (fm.description && /^\s*<[^<>]{3,}>\s*$/.test(fm.description)) {
+      errors.push(`${where}/SKILL.md description still has a template placeholder (<…>)`);
+    }
     if (!fm.description) errors.push(`description required in ${where}/SKILL.md`);
     else if (fm.description.length > DESCRIPTION_LIMIT) {
       errors.push(`description over ${DESCRIPTION_LIMIT} characters (${fm.description.length}) in ${where}`);
@@ -189,6 +192,15 @@ for (const family of FAMILIES) {
       errors.push(`tier is only for marketing and entry skills (${where})`);
     }
     published.push({ slug, where, meta });
+  }
+}
+// A marketing step (tier atom) is loaded by a playbook, so some marketing skill must list it.
+const requiredInMarketing = new Set(published
+  .filter(({ where }) => where.startsWith('skills/marketing/'))
+  .flatMap(({ meta }) => meta.requires_skills || []));
+for (const { slug, where, meta } of published) {
+  if (where.startsWith('skills/marketing/') && meta.tier === 'atom' && !requiredInMarketing.has(slug)) {
+    errors.push(`${where} is a marketing step, but no playbook lists it in requires_skills`);
   }
 }
 for (const { where, meta } of published) {

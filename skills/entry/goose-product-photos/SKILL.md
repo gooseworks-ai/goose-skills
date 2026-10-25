@@ -16,11 +16,13 @@ screen or an app is not a product photo.
 - Offer the brand's real products from brand_read; never describe one you can't see. A product
   that isn't listed yet: brand_update adds it from its page. A photo the customer sends:
   media_upload.
-- photos_generate makes the photos: get its price first, tell the customer the credit total, and
-  make them only after their yes. Show a person only when the customer asks for one and confirms
-  they have the rights.
+- photos_generate makes the photos: get its price first from the same call as a dry run (free,
+  it makes nothing), tell the customer the credit total, and make them only after their yes.
+  Show a person only when the customer asks for one and confirms they have the rights.
 - Follow the photos with photos_read until they are ready.
-- Keep or drop photos with media_update. Only kept photos join the brand kit and reach ads.
+- Keep or drop each photo with photos_update: brand_id, the photo's output id and action
+  "approve" (keep) or "archive" (drop, with an optional reason). Only kept photos join the brand
+  kit and reach ads.
 
 Then follow the next_step in every answer.
 

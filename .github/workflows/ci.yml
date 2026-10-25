@@ -98,7 +98,9 @@ jobs:
           base="$(node scripts/pick-base.js)"
           echo "BASE=$base" >> "$GITHUB_ENV"
 
-      # The checks' own tests run in the validate job (npm test).
+      - name: Install dependencies
+        # js-yaml, which atom-lint.js reads frontmatter with. The checks' own tests run in the validate job (npm test).
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Atom lint
         run: node scripts/atom-lint.js --base "$BASE" --direct --strict

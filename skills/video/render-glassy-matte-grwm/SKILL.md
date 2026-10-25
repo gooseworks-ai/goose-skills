@@ -18,7 +18,7 @@ This is the **multi-scene beauty demo**, distinct from the single-take apparel o
 (`ugc-grwm`, one Seedance reference-to-video call with native lip-sync and minimal post). Here the
 timeline is driven by a SEPARATE VO and the scenes are re-cut to its word-starts.
 
-`scripts/config.example.json` is the worked example (Solenne Beauty "5-Step Glassy Matte Routine",
+`scripts/config.example.json` is the worked example (Fernwick Skin "5-Step Glassy Matte Skincare Routine",
 ~32s 1080×1920 9:16, 12 VO-snapped cuts + 5 product cards); `scripts/PIPELINE.md` maps every
 config block to its source step and `scripts/README.md` documents the free assembly.
 
@@ -36,7 +36,7 @@ produced; it hardcodes none of them.
 - **music** — the bed under the VO (`music.prompt`; "none" = VO only, skip the music mix). The demo
   used a warm acoustic bed.
 
-Card colours come from `palette` (the brand kit), not the demo's cream + pink.
+Card colours come from `palette` (the brand kit), not the demo's pale sage + fern green.
 
 ## Run
 
@@ -64,7 +64,7 @@ flat-lay end card → the master. Re-cuts reuse the existing VO / clips / cutout
   chain.
 - **Product cards — Playwright, real cutout, PDP-verified tagline.** Playwright renders the card
   template at 2× scale (real white-bg cutout thumb + name + PDP tagline). The cutout must match the
-  REAL product, not the Seedance scene's hallucinated barrel; the tagline is verified against the
+  REAL product, not the packaging shape a Seedance scene hallucinates; the tagline is verified against the
   brand PDP (AI flat-lays hallucinate sublines). Composite each card onto the master snapped to its
   product-NAME word-start, 1s fade-in, held until the next product is named. **PNG overlay inputs
   need `-loop 1 -t <dur>`** — without it the PNG emits one frame at t=0 and the fade/enable filters

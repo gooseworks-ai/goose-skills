@@ -1,8 +1,8 @@
 # Pipeline — glassy-matte GRWM (multi-scene beauty demo)
 
 How `config.example.json` maps to the real production steps. This capability ships a
-**config + this map**, not a bundled runner: the worked example (Solenne Beauty "5-Step Glassy
-Matte Routine") was produced by the video-orchestrator's per-state steps plus three per-project
+**config + this map**, not a bundled runner: the worked example (Fernwick Skin "5-Step Glassy
+Matte Skincare Routine") was produced by the video-orchestrator's per-state steps plus three per-project
 drivers (`build_v4.py`, `render_cards.py`, `composite_cards.py` + `build_master.py`). The four
 paid stages (the SEPARATE VO, the ~7 Seedance scene clips, the ~5 gpt-image-2 product cutouts +
 the flat-lay) are separate capabilities; this cap owns the FREE assembly at the end.
@@ -64,10 +64,10 @@ duration when zoompan/PNG clips are in the chain.
 
 `create-image-gpt-image-fal` (gpt-image-2, white-bg) → ~5 **standalone** product cutouts (NOT
 on-body, NOT an AI flat-lay). **PDP-verify every tagline** — the gpt-image-2 flat-lay renders
-hallucinated sublines ("SCULPT + GLOW"), which are WRONG. The cutout must match the REAL product,
-not the Seedance scene's hallucinated barrel. Playwright renders `product-card.html.tmpl` at **2×
+hallucinated sublines, which are WRONG. The cutout must match the REAL product,
+not the packaging shape a Seedance scene hallucinates. Playwright renders `product-card.html.tmpl` at **2×
 scale** → one card PNG per product (a `palette.card_bg` card with a `palette.accent` bar from the
-brand kit — the demo used warm cream + pink — cutout thumb, name, PDP tagline).
+brand kit — the demo used pale sage + fern green — cutout thumb, name, PDP tagline).
 
 ## 6. Composite + mix + captions + end card → `composite_cards.py` + `build_master.py`  (config: `cards.timing`, `music`, `audio_mix`, `captions`, `end_card`)  [free assembly]
 

@@ -14,7 +14,7 @@ unboxing, a landing-page scroll), ~30 hard cuts on the VO cadence, closing on a 
 This capability is the **FREE, deterministic assembly** — trim-to-EDL, hard-concat, the VO+music
 mix, the word-by-word caption burn, the landing-page zoompan, and the end-card append.
 
-`scripts/config.example.json` is one worked example (Gutwise "Do NOT buy Gutwise Probiotics", ~37s
+`scripts/config.example.json` is one worked example (the fictional Sunnook "Don't buy Sunnook Tan Mousse" demo, ~37s
 1080×1920 9:16, ~30 body cuts + a ~2s end card) — its creator, voice, hook, worlds and music are
 that demo's answers, not defaults; `scripts/PIPELINE.md` maps every config block to
 its source step and `scripts/README.md` documents the free assembly.
@@ -25,12 +25,12 @@ The creative calls are made upstream by the user (the recipe's `choices`) and ar
 this assembly never picks them.
 
 - **creator** — who is on camera → `character.descriptor` / `character.name`. The demo used a
-  28-year-old blonde woman.
+  31-year-old curly-haired woman.
 - **voice** — the narration voice → `vo.voice_id` / `vo.settings`. The demo used an excited voice
   matched to its creator.
 - **hook_angle** — the testimonial's hook → `vo.hook_line` / `vo.script_md` / `vo.payoff_line`. The
-  demo used a "Do not buy <brand>" reversal.
-- **worlds** — the 3 places → `worlds.briefs`. The demo used bedroom / kitchen / bathroom.
+  demo used a "Don't buy <brand>" reversal.
+- **worlds** — the 3 places → `worlds.briefs`. The demo used bedroom / bathroom / balcony.
 - **music** — the bed under the VO, or none → `audio_mix.music_brief`. With "no music", skip the bed
   and mix the VO alone.
 
@@ -77,10 +77,10 @@ scripts of its own.
   drawtext/scale step shaves a clip a few ms below its window. No dissolves.
 - **Karaoke-pop captions on every word, throughout.** From the VO's `vo-final.words.json` (VEED
   Whisper preset, bold yellow), on every word; re-spell brand tokens Whisper mishears against the
-  locked script (Gutwise demo: "synbiotic" over "symbiotic"; kept "I'ma" verbatim) — never edit the script to
+  locked script (Sunnook demo: "Sunnook" over "Sunook"; kept "I'ma" verbatim) — never edit the script to
   match Whisper. Captions are suppressed over the end card. If VEED mis-captions a brand token,
   hand-patch that sentence with local ASS karaoke.
-- **Product B-roll breaks up the talking head.** Product macro (Gutwise: capsules), unboxing, and a landing-page
+- **Product B-roll breaks up the talking head.** Product macro (Sunnook: mousse on a mitt), unboxing, and a landing-page
   scroll are interspersed with the creator cuts. The landing-page scroll is FFmpeg **zoompan** over
   a Playwright-rendered PNG — **not** an i2v clip (i2v hallucinates the UI).
 - **VO over a ducked bed.** Mix the optional instrumental bed sidechain-ducked UNDER the VO

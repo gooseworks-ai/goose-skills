@@ -18,7 +18,7 @@ Whisper word-timestamps + an optional music bed), gated to its own capabilities.
 capability OWNS the whole FREE assembly: beat-snap → render → captions → mix → burn →
 master. Iterate the cut for free; re-roll only the offending paid audio beat.
 
-It ports the validated build from the Dermwise "acne myths" run — brand-neutralised,
+It ports a validated earlier build — brand-neutralised,
 config-driven, and portable (no `/Users`, no `clients/`; everything via `--config` +
 `--work-dir`).
 
@@ -50,7 +50,7 @@ its `role`, `duration`, and its copy; ONE role template renders any pair.
 - `scripts/compose.py` — the assembler: concat the beats → mix VO + optional music (music
   −20 dB, `amix normalize=0`, ~0.8s tail fade) → burn the `.ass` LAST → master mp4.
 - `scripts/config.example.json` — the shape of the brand `config` the recipe binds (the
-  brand-neutralised Dermwise values as a worked reference).
+  demo build, a made-up houseplant-care brand, as a worked reference).
 - `scripts/hyperframes/` — the bundled hyperframe scaffold: `_shared.css` (palette-tokened
   tokens + card/tag/fact/pill/chain type), `_shared.js` (the `initRenderer` /
   `springScale` / `buildLineStrikes` + `strikeLines` per-line-strike / `popIn` /
@@ -74,8 +74,8 @@ duration, captions, cues{...}}` plus the role's copy:
 
 The recipe's `myth_fact_pairs`, `hook_line`, `turn_slate`, `punch_line`, `palette`,
 `end_card_png`, and optional `actives_or_proof` map onto these beats 1:1. See
-`config.example.json` (a worked example — the Dermwise acne build; its copy and palette
-are that brand's, never defaults).
+`config.example.json` (a worked example — the Fernhollow houseplant demo; its copy and
+palette are that brand's, never defaults).
 
 ## Choices
 
@@ -87,7 +87,7 @@ renderer never picks them — it only consumes the rendered files and copy:
 - **Tone** → the VO direction + the hook / turn / punch copy. The demo was calm-authority,
   warm, plain-language.
 - **Music** → the optional `music` file (made by `create-music-elevenlabs`). The demo used a
-  calm clinical pad + sparse warm keys, no drums.
+  calm airy pad + sparse warm keys, no drums.
 
 The palette is a brand fact (brand kit), not a choice.
 

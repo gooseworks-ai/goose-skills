@@ -5,11 +5,11 @@ Free check that the renderer runs and produces a valid vertical master. No paid 
 ## Setup
 
 Point `--assets` at any dir with 5 product stills + a wordmark, and use the bundled example
-config (or your own). For a self-contained check, use the Dewlark demo stills.
+config (or your own). For a self-contained check, use the Inkwren demo stills.
 
 ```bash
 DIR=skills/video/render-ig-live-gallery
-ASSETS=<dir with 5 product stills + wordmark>   # e.g. the Dewlark demo brand stills
+ASSETS=<dir with 5 product stills + wordmark>   # e.g. the Inkwren demo brand stills
 ```
 
 ## 1. Stills (fastest)

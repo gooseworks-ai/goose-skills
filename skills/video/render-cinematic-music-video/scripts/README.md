@@ -8,7 +8,7 @@ clips) are separate capabilities — `create-music-elevenlabs`, `create-image-gp
 caption chunking, a swapped end card, re-timed windows) reuse the existing anthem / keyframes /
 clips and spend nothing.
 
-`config.example.json` is the worked example (Rally & Rogue "Game Day Girls", ~28s 1080×1920).
+`config.example.json` is the worked example (Sundrift "Roll On", ~28s 1080×1920).
 Its song style, vocalist, cast, setting and story arc are the demo's answers to the format's
 choices — a new run gets them from the user; copy the structure, not the values.
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE assembly
@@ -35,7 +35,7 @@ one photographer.
 
 The brand lockup is composited (PIL/ffmpeg) from the brand's REAL asset, or authored as a
 designed keyframe base, overlaid on the final window. The brand text is **never** AI-rendered as
-free diffusion text — a diffusion model garbles a wordmark ("therapits").
+free diffusion text — a diffusion model garbles a wordmark.
 
 ## 4. FFmpeg composite
 

@@ -42,7 +42,7 @@ judged on cost per lead or purchase, and write the one-line limit.
   `update_campaign_concept`, or `campaign_upsert` with `concepts` from outside.
 - Creatives: `request_campaign_generation` with **`planned_ads`** = the ads that will run. The
   tool triples it (the 3x rule). Use **`count`** only for a number the user named, and never pass
-  both. From outside, also pass `target: {brand_id}`. `planned_ads` can be at most 20.
+  both. The brand comes from `campaign_id`, so there is no brand argument. `planned_ads` can be at most 20.
 - Report `requested_creatives` / `planned_creatives`. If the result has a `shortfall`, tell the
   user and add templates or raise versions before requesting the rest.
 - **Nothing spends until the user approves** in the approval queue (the Generate button, or
