@@ -3510,7 +3510,7 @@
       "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads",
-      "version": "0.10.2",
+      "version": "0.10.3",
       "files": [
         "skills/marketing/make-static-ads/SKILL.md",
         "skills/marketing/make-static-ads/references/brand-profile.md",
@@ -3535,7 +3535,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.10.2",
+        "version": "0.10.3",
         "tags": [
           "ads",
           "design"

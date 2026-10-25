@@ -33,9 +33,9 @@ Write it once, reuse it word for word at the top of each prompt; only the Produc
 
 Write these, in this order, as plain sentences:
 
-1. **The style:** this ad's own style from its board row (`levels.md`, Style), described concretely: medium, lighting, finish ("glossy 3D render, soft studio light, glass and chrome"; "phone photo, daylight, slightly off-centre"). Never carried over from another ad.
+1. **The style:** this ad's own style from its board row (`levels.md`, Style), described concretely: medium, lighting, finish ("glossy 3D render, soft studio light, glass and chrome"; "phone photo, daylight, slightly off-centre"). Never carried over from another ad. End it with the finish, clean by default: "clean, sharp, noise-free image: smooth backgrounds and surfaces, no film grain, noise or speckle." Only two styles change it: phone/UGC ("a light phone-camera look, still no heavy noise") and collage (its paper texture is the style).
 2. **The layout** (close and balanced): the template described exactly, as the `make-static-ads-find-references` skill (`../../make-static-ads-find-references/SKILL.md`) recorded it: block positions and rough sizes, background, product position and scale, each text slot's position, length and weight. Every area does a job (`levels.md`, Text and fullness).
-3. **The event:** what physically happens. Use the board's visual-idea line, expanded. At close, this is the template's own scene with our product in it.
+3. **The event:** what physically happens. Use the board's visual-idea line, expanded. At close, this is the template's own scene with our product in it. Anything in motion has its cause in the frame: oil falls only from a bottle a hand is squeezing or tilting. With no cause, show the result at rest (oil already pooled on the bread). Keep motion simple; the build test (`ideas.md` §3) rules out fragile physics.
 4. **Setting and camera**, as the style needs: where, from what angle, what surface or background.
 5. **Props that explain the situation**, if the style uses any, and only those. "No generic spice piles."
 6. **Where the product sits and how big**, when it is shown ("standing right foreground, about a third of the image height, label facing camera").

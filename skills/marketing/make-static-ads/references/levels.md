@@ -14,7 +14,7 @@ Style is how the picture is made, separate from the level. Pick it after the vis
 
 | Style (`style:` tag) | Looks like |
 |---|---|
-| Premium product photo (`premium-photo`) | Studio light, clean surface, glossy or tactile detail, magazine finish |
+| Premium product photo (`premium-photo`) | Studio light, clean surface, glossy or tactile detail, a clean, noise-free magazine finish |
 | Lifestyle photo (`lifestyle`) | Real people and places, natural light, the product in use |
 | Phone / UGC photo (`ugc`) | Casual, imperfect, shot on a phone; looks native in the feed |
 | 3D render (`3d`) | Glass, chrome, clay or soft plastic; floating, glossy, premium |
