@@ -91,10 +91,10 @@
       "gooseworks:media_analyze",
       "gooseworks:file_url",
       "gooseworks:tools_load",
-      "gooseworks:brand_setup",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search",
+      "gooseworks:brand_setup_create",
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search",
       "gooseworks:marketing_data_describe",
       "gooseworks:marketing_data_lookup"
     ]

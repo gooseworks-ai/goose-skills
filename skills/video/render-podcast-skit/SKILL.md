@@ -1,10 +1,8 @@
 ---
 name: render-podcast-skit
 description: Render a two-host podcast ad from a brand config and dialogue script. Includes the working planner, full-frame and split-screen assembly, captions from measured character timings, brand end card, approved paid-step adapters, and 65 quality-check falsification cases. Use for short conversational ads with two stable hosts in one room.
-owner: team
 status: active
 version: "2.0.1"
-updated: 2026-10-05
 ---
 
 # Human version
@@ -64,5 +62,5 @@ alone does not establish final creative quality.
 
 ## Related
 
-[[composes::create-vo-elevenlabs]], [[composes::create-image-gpt-image-fal]],
-[[composes::create-video-fal]], [[composes::watch]].
+Uses the `create-vo-elevenlabs`, `create-image-gpt-image-fal`, `create-video-fal` and
+`watch` skills.

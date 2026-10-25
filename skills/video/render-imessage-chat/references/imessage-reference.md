@@ -83,7 +83,7 @@ No paid retry is needed for a deterministic layout or timing repair.
 
 ## Evidence and limits
 
-Lineage: [[derived-from::create-imessage-mockup]] and the archived Dermwise
+Lineage: derived from the `create-imessage-mockup` skill and the archived Dermwise
 Goa build. Private project files are optional maintainer evidence; this package
 contains the entire runtime and is sufficient from an empty customer folder.
 

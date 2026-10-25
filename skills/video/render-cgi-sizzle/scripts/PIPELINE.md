@@ -1,7 +1,7 @@
 # PIPELINE — config → source steps
 
 This molecule ships the **recipe** (`config.example.json`), not a re-built runnable
-pipeline. The engine is the working scripts from the source run's own
+pipeline. The engine is the working scripts from the first build's own
 `working/` folder (plus its `edits/` finalize).
 This maps each config field to the step that consumes it.
 

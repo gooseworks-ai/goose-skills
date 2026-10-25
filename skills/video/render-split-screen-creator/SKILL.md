@@ -15,8 +15,8 @@ This capability is the **FREE, deterministic assembly + captions** — the two-z
 composite (contain-fit + blurred-cover fill + divider + creator slice), the
 hard-concat, the end card, and the word-level caption burn from the assembled cut.
 
-`scripts/config.example.json` is one worked example (Askwell concept-10
-"Bloomberg terminal", ~40s 1080×1920 9:16, 6 scenes + an end card) — copy its
+`scripts/config.example.json` is one worked example (the fictional
+Larderloop "whole Sunday" demo, ~40s 1080×1920 9:16, 6 scenes + an end card) — copy its
 structure, never its creative values;
 `scripts/PIPELINE.md` maps every config block to its source step and
 `scripts/README.md` documents the free assembly.
@@ -28,9 +28,9 @@ The creative calls are made upstream by the user (the calling format's recipe
 
 - **`creator_gender` / `creator_age` / `creator_look`** — who the creator is
   (`creator.brief`); shapes the anchor and the voice upstream. Here it only
-  affects framing checks. The worked example used a man in his 20s.
+  affects framing checks. The worked example used a woman in her 30s.
 - **`setting`** — where the creator films from (`creator.brief.vibe_setting`).
-  The worked example used a lived-in room with window daylight.
+  The worked example used a lived-in kitchen with window daylight.
 - **`tone`** — the script and VO delivery; upstream only. The worked example
   was a confident, fast explainer.
 - **`caption_style`** — `captions.style` (`serif-accent`, `kinetic-pop`,

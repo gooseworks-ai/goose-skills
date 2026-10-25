@@ -19,6 +19,12 @@
  */
 
 const fs = require('fs');
+
+// Every problem the builder finds is a plain Error with a message that says the fix; print just that.
+process.on('uncaughtException', (err) => {
+  console.error(`build-index: ${err.message}`);
+  process.exit(1);
+});
 const path = require('path');
 
 // ROOT defaults to the repo root, but tests can override via env var.

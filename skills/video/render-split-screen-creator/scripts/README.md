@@ -11,8 +11,8 @@ master. Re-cuts (re-timed windows, a swapped blurred-fill, new caption chunking,
 restyle, a longer end-card hold) reuse the existing VO / lip-sync / clips and spend
 nothing.
 
-`config.example.json` is one worked example (Askwell concept-10 "Bloomberg
-terminal", ~40s 1080×1920). Its creator, voice, script, divider colour and
+`config.example.json` is one worked example (the fictional Larderloop
+"whole Sunday" demo, ~40s 1080×1920). Its creator, voice, script, divider colour and
 caption style were that build's choices — copy the structure, not the values. `PIPELINE.md` maps every config block to its source
 step. This README documents the FREE assembly pieces that
 `render-split-screen-creator` owns.

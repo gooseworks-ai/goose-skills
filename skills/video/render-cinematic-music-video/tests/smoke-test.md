@@ -6,7 +6,7 @@ cut each clip to its beat window, hard-cut on the beat, build cinematic lower-th
 mux the anthem → 1080×1920 h264+aac (~28s).
 
 Use any cast, setting and song style for the placeholder inputs — they are user choices, not
-part of the format (the Rally & Rogue demo is one example). Nothing in the assembly may assume
+part of the format (the Sundrift demo is one example). Nothing in the assembly may assume
 the demo's people, place, vocalist or accent words.
 
 Pass when the assembly runs to a valid MP4 and:

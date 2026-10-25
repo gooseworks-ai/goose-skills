@@ -1,10 +1,12 @@
 ---
 name: render-street-interview
 description: Write a street-interview ad from a complete inspected commercial interaction and current brand facts. Render product guessing, or prepare mic-only, prepared-sample or visible-task conversation script/prompt previews. Premise, actions and ad connection vary; capture rules stay fixed. Conversation media delivery is unverified.
-status: active
+status: superseded
 version: "2.0.7"
-updated: 2026-10-12
+superseded_by: video-h3max@1.0.0, transcribe-whisper@1.1.2, speech-recut@1.0.2, html-frames@1.2.1, end-card@1.1.1, assemble@1.2.0
 ---
+
+> **Superseded:** the video kit now makes street interviews with goose-studio's street-interview style, which uses the video-h3max part, version 1.0.0 (the take), the transcribe-whisper part, version 1.1.2 and the speech-recut part, version 1.0.2 (the cut), the html-frames part, version 1.2.1 (the overlay), the end-card part, version 1.1.1 and the assemble part, version 1.2.0, in the parts folder of this repository. Its recipes are retired in goose-studio. This renderer stays, unchanged in behaviour, because the write-video-ad-script skill runs its script-context step; its scripts still run.
 
 # Human version
 
@@ -34,7 +36,7 @@ service conversation or reduce every brand to a routine problem followed by a lo
 | `product-sample` | Conversation preview; prepared sample in a plain cup, no exact package reference | forbidden | 1 |
 | `concept-challenge` | Conversation preview; described visible task using non-UI props | forbidden | 1 |
 
-Use [[composes::write-video-ad-script]] with the scoped angle bank, current facts and
+Use the `write-video-ad-script` skill with the scoped angle bank, current facts and
 selected complete commercial street interactions. `scripts/prepare_script_context.py`
 requires a brief with `offering_type=physical|service|digital` and
 `interaction_type=product-guess|mic-only|product-sample|concept-challenge`. Inspect the full

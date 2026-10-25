@@ -1,7 +1,7 @@
 # Pipeline — food-product sizzle
 
 How `config.example.json` maps to the real production steps. This ships a **config + this map**, not
-a bundled runner: the worked example (Hearthline Provisions "Beef Sticks Sizzle") was produced by
+a bundled runner: the worked example (Fernhollow Cacao "Dark Bar Sizzle") is built with
 per-project scripts (`gen_keyframes` / `.hf_S0*.json`, `gen_clips_hf.sh`, `gen_music_v2.py`,
 `make_sfx.sh`, `make_end_card.py`, `build_master_v2.sh`). Drive the whole run via a control-plane
 video orchestrator, or reference those steps directly.
@@ -30,7 +30,7 @@ grain pass + audio composite + optional callouts.
 Per scene, build the prompt as `look_pack.style_descriptor` + `scenes[i].keyframe_prompt` +
 `look_pack.negative_tail`, at 9:16. The box / pack hero (`uses_product_ref: true`) passes the REAL
 product PNG as `media[role=image]` with "reproduce the box label EXACTLY, invent no text". Texture-only
-shots (tear, flat-lay, bite) pass no product ref. The "NO studio polish, NO bokeh, NO invented label
+shots (snap, flat-lay, bite) pass no product ref. The "NO studio polish, NO bokeh, NO invented label
 text" negative is load-bearing. Review all before step 2.
 
 ## 2. Clips → `create-video-fal` i2v  (config: `scenes[].motion_hint`, `clip_engine`)  [PAID]
@@ -39,15 +39,15 @@ Per keyframe, build the prompt as `scenes[i].motion_hint` + `clip_engine.anti_sh
 image-to-video off the clean keyframe, 9:16, at the scene's duration (3–4s). **Locked-off,
 anti-shake** — every prompt ends with "Camera is locked off, tripod-stable. NO shake, NO wobble.
 Slow, deliberate motion only." Submit **sequentially** (burst-credit reserve). The motion IS the
-tactile beat: the tear parts the fibers, a gentle push-in on the flat lay, a clean jaw-line bite,
-a hand lifting one stick straight out of the box.
+tactile beat: the bar snaps along its score line, a gentle push-in on the flat lay, a clean jaw-line bite,
+a hand lifting one bar straight out of the box.
 
 ## 3. Music + SFX → ElevenLabs Music + ffmpeg lavfi  (config: `music`, `sfx`)  [PAID music]
 
-ElevenLabs Music requests ~22s of the `music` choice (the demo: upbeat bluegrass — banjo + guitar
-+ light brush percussion; always NO vocals, no artist names). Then **trim the ~2.5s sparse intro** (`atrim=start=2.5`),
+ElevenLabs Music requests ~22s of the `music` choice (the demo: upbeat acoustic jazz — felt piano + upright bass
++ light brushed snare; always NO vocals, no artist names). Then **trim the ~2.5s sparse intro** (`atrim=start=2.5`),
 `loudnorm`, and fade in / out to the master length. `make_sfx.sh` synthesizes two diegetic hits with
-ffmpeg lavfi `anoisesrc` — a crisp ~120ms `snap.wav` (white noise, fast envelope) at the fiber-tear
+ffmpeg lavfi `anoisesrc` — a crisp ~120ms `snap.wav` (white noise, fast envelope) at the bar-snap
 cue (~1.5s) and a ~180ms `tear.wav` (pink noise) at the box-open cue (~11s). Time each to its beat.
 
 ## 4. End card + assembly → `make_end_card.py` + `build_master_v2.sh`  (config: `end_card`, `stat_callouts`, `grain_pass`, `audio_mix`)

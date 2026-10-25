@@ -8,6 +8,9 @@ import unittest
 
 import cv2
 import numpy as np
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+
 import repair_patch as repair
 
 

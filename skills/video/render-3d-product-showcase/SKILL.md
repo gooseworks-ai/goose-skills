@@ -13,7 +13,7 @@ rotation, a macro push-in on the surface detail, a physics reveal (`exploded_vie
 close. This capability is the **FREE, deterministic assembly** that stitches the delivered
 beats into the master; it spends nothing.
 
-`scripts/config.example.json` is the worked example (Solenne Beauty "Dune Duo", ~15s
+`scripts/config.example.json` is the worked example (Quillmere Pen Co. "Meridian 14", ~15s
 720×1280 9:16); `scripts/build_endcard.py` + `scripts/build_masters.py` are the runnable free
 assembly; `scripts/PIPELINE.md` maps every config block to its source step; `scripts/README.md`
 documents the assembly.
@@ -24,12 +24,12 @@ The recipe asks these before any paid step; this capability only assembles their
 demo's value is an example, never a default:
 
 - **`backdrop`** → `studio_look.bg` (the pad colour `build_masters.py` uses) + the beat prompts.
-  Demo: bubblegum pink `#F8B8C6`.
+  Demo: deep teal `#1F4E5A`.
 - **`lighting_mood`** → `studio_look.lighting_preset` / `rim_light` + the beat prompts. Demo:
   `luxe_botanical_warm` (warm rim light upper-right, warm bokeh).
 - **`reveal`** → `reveal_variant` + `beats[2]`. Demo: `exploded_view`.
-- **`music`** → `music.prompt` (the bed passed to `build_masters.py --music`). Demo: uplifting
-  pop-ambient, drop at 7s, 100 BPM.
+- **`music`** → `music.prompt` (the bed passed to `build_masters.py --music`). Demo: minimal
+  ambient-electronic, drop at 7s, 100 BPM.
 
 ## Run
 

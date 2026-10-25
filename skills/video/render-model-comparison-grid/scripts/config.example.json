@@ -1,5 +1,5 @@
 {
-  "_comment": "This IS the shipped worked example: the 3-model image comparison (2026-07-08). Cell paths point at the source project; re-point them at your own media. Cells accept images (.png/.jpg/.webp) AND muted video clips (.mp4/.mov/.webm) interchangeably. Creative fields -- columns (the contenders), beats[].tag (axes), beats[].prompt (prompt subject), endcard.headline/subline and music.prompt -- come from the recipe's choices (contenders, axes, prompt_subject, music); never copy them as defaults.",
+  "_comment": "This IS the shipped worked example: the 3-model image comparison (2026-07-08). Cell paths are the demo's; re-point them at your own media. Cells accept images (.png/.jpg/.webp) AND muted video clips (.mp4/.mov/.webm) interchangeably. Creative fields -- columns (the contenders), beats[].tag (axes), beats[].prompt (prompt subject), endcard.headline/subline and music.prompt -- come from the recipe's choices (contenders, axes, prompt_subject, music); never copy them as defaults.",
   "canvas": {
     "width": 1280,
     "height": 720,

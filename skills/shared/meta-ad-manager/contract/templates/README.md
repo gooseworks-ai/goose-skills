@@ -7,9 +7,9 @@ updated_at: <date>
 ads/README.md — the campaign index. Every harness run reads this file FIRST, then opens
 only the campaign folder it needs.
 
-brand_id           The GooseWorks brand id (from brand_list). Never the brand name.
+brand_id           The GooseWorks brand id (from brand_read). Never the brand name.
                    Outside GooseWorks (a local ads/ folder): `local`, here and below.
-coworker_agent_id  The brand's coworker agent (brand_list → coworker_agent_id). This agent's
+coworker_agent_id  The brand's coworker agent (brand_read → coworker_agent_id). This agent's
                    workspace is where this folder lives; outside hosts pass it as the file-tool scope.
 updated_at         Date of the last write to this file (YYYY-MM-DD).
 -->

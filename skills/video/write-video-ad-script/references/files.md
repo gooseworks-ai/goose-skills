@@ -222,7 +222,7 @@ two speakers and a real source pointer are required. **Street ads additionally n
   retain/link the complete transcript evidence;
 - allowed_offering_types, interaction_types, transfer_rule and observation limitations.
 
-Run [[references::render-street-interview]]'s prepare_script_context with offering_type,
+Run the `render-street-interview` skill's prepare_script_context with offering_type,
 interaction_type and participants before writing; needs-reference or unsupported-route stops
 the script. Its detailed street-script-writing guide explains
 the shared record. Keep source-brand claims separate from current product facts.

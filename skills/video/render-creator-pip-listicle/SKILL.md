@@ -25,14 +25,14 @@ The creative calls are the user's, asked by the format recipe before any paid st
 renders whatever the config holds.
 
 - **creator** — who counts down the list (gender, age, look, wardrobe) → `creator.descriptor`.
-  *The demo used a young woman beauty creator.*
+  *The demo used a home-cook creator in his thirties.*
 - **setting** — where the creator films → `creator.setting` / the anchor prompt. *The demo used a
-  plain neutral wall.*
+  home kitchen counter.*
 - **tone** — bubbly, calm and honest, dry and funny, or fast expert → `beats[].dialogue`. *The demo
   was chatty and enthusiastic.*
 
-`scripts/config.example.json` is the worked example (Solenne Beauty "5 products that replaced my whole
-makeup bag", ~46s 1080×1920 9:16, a hook + 5 product beats + a CTA) — copy its structure, never its
+`scripts/config.example.json` is the worked example (Pantrywise Kitchen "5 tools that replaced my whole
+utensil drawer", ~46s 1080×1920 9:16, a hook + 5 product beats + a CTA) — copy its structure, never its
 creative values; `scripts/PIPELINE.md` maps
 every config block to its source step and `scripts/README.md` documents the free assembly.
 

@@ -3,10 +3,10 @@
 Batch LinkedIn Profile Enrichment via Apify
 
 Enriches a CSV of leads by bulk-scraping their LinkedIn profiles.
-Uses the harvestapi~linkedin-profile-scraper Apify actor ($3/1k profiles, no cookies).
+Uses the harvestapi~linkedin-profile-scraper Apify actor (no cookies).
 
 Usage:
-    # Dry run — show cost estimate, don't call Apify
+    # Dry run — count the profiles a real run would scrape, don't call Apify
     python3 enrich_leads.py leads.csv --dry-run
 
     # Enrich and output to new CSV
@@ -19,7 +19,11 @@ Usage:
     python3 enrich_leads.py leads.csv --no-cache
 
 Environment:
-    APIFY_API_TOKEN: Required. Get at https://console.apify.com/account/integrations
+    GOOSEWORKS_API_KEY: Preferred. Runs through the GooseWorks Apify proxy and is paid
+        from your GooseWorks credits (billed for the actual run when it ends).
+    APIFY_API_TOKEN: Fallback only, when GOOSEWORKS_API_KEY is not set. Calls Apify
+        directly on your own Apify account.
+    Either can also go in the skill folder's .env file.
 """
 import argparse
 import csv
@@ -38,19 +42,7 @@ except ImportError:
     print("Error: requests library required. Install with: pip3 install requests")
     sys.exit(1)
 
-# --- Constants ---
-ACTOR_ID = "harvestapi~linkedin-profile-scraper"
-GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
-GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
-
-if GOOSEWORKS_API_KEY:
-    BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
-else:
-    BASE_URL = "https://api.apify.com/v2"
-COST_PER_1K = 3.00  # $3 per 1,000 profiles
-ACTOR_URL = "https://console.apify.com/actors/harvestapi~linkedin-profile-scraper"
-
-# --- .env loading ---
+# --- .env loading (before reading keys, so a key in .env is used) ---
 script_dir = Path(__file__).parent
 env_path = script_dir.parent / ".env"
 if env_path.exists():
@@ -60,6 +52,17 @@ if env_path.exists():
             if line and not line.startswith("#") and "=" in line:
                 key, _, value = line.partition("=")
                 os.environ.setdefault(key.strip(), value.strip())
+
+# --- Constants ---
+ACTOR_ID = "harvestapi~linkedin-profile-scraper"
+GOOSEWORKS_API_BASE = os.environ.get("GOOSEWORKS_API_BASE", "https://api.gooseworks.ai")
+GOOSEWORKS_API_KEY = os.environ.get("GOOSEWORKS_API_KEY")
+
+if GOOSEWORKS_API_KEY:
+    BASE_URL = f"{GOOSEWORKS_API_BASE}/v1/proxy/apify"
+else:
+    BASE_URL = "https://api.apify.com/v2"
+ACTOR_URL = "https://console.apify.com/actors/harvestapi~linkedin-profile-scraper"
 
 # --- Cache directory ---
 CACHE_DIR = script_dir.parent / ".cache"
@@ -113,11 +116,6 @@ class LinkedInEnricher:
 
     def __init__(self, api_token: str):
         self.api_token = api_token
-
-    def estimate_cost(self, num_profiles: int) -> str:
-        """Return human-readable cost estimate."""
-        cost = (num_profiles / 1000) * COST_PER_1K
-        return f"${cost:.2f}"
 
     def _start_actor_run(self, urls: List[str]) -> str:
         """Start an Apify actor run with a batch of URLs. Returns run ID."""
@@ -399,7 +397,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-    # Dry run — see cost estimate
+    # Dry run — count the profiles to scrape
     python3 enrich_leads.py leads.csv --dry-run
 
     # Enrich leads
@@ -409,7 +407,8 @@ Examples:
     python3 enrich_leads.py leads.csv --no-cache
 
 Environment:
-    APIFY_API_TOKEN: Required. Get at https://console.apify.com/account/integrations
+    GOOSEWORKS_API_KEY: Preferred; paid from your GooseWorks credits.
+    APIFY_API_TOKEN: Fallback only, when GOOSEWORKS_API_KEY is not set.
         """,
     )
 
@@ -418,7 +417,7 @@ Environment:
     parser.add_argument("--url-column", default="linkedin_url", help="LinkedIn URL column name (default: linkedin_url)")
     parser.add_argument("--no-cache", action="store_true", help="Skip cache, always fetch fresh")
     parser.add_argument("--cache-hours", type=int, default=24, help="Cache max age in hours (default: 24)")
-    parser.add_argument("--dry-run", action="store_true", help="Show cost estimate and exit")
+    parser.add_argument("--dry-run", action="store_true", help="Show how many profiles a real run would scrape, and exit")
     parser.add_argument("--batch-size", type=int, default=50, help="Profiles per Apify run (default: 50)")
     parser.add_argument("--timeout", type=int, default=300, help="Timeout per batch in seconds (default: 300)")
 
@@ -457,7 +456,6 @@ Environment:
                 cached_count += 1
 
     need_enrichment = len(unique_urls) - cached_count
-    cost = (need_enrichment / 1000) * COST_PER_1K
 
     # Print summary
     print(f"\nEnrichment plan:")
@@ -465,7 +463,7 @@ Environment:
     print(f"  With LinkedIn URL:   {len(valid_urls)} ({len(unique_urls)} unique)")
     print(f"  Already cached:      {cached_count}")
     print(f"  Need enrichment:     {need_enrichment}")
-    print(f"  Estimated cost:      {need_enrichment} profiles x ${COST_PER_1K}/1k = ${cost:.2f}")
+    print(f"  Paid by:             {'GooseWorks credits' if GOOSEWORKS_API_KEY else 'your own Apify account (APIFY_API_TOKEN)'}")
     print()
 
     if args.dry_run:

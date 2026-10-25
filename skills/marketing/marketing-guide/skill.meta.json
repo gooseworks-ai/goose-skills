@@ -27,9 +27,9 @@
       "gooseworks:knowledge_search",
       "gooseworks:file_read",
       "gooseworks:file_write",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search"
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search"
     ]
   }
 }

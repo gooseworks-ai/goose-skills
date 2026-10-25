@@ -8,5 +8,9 @@
   ],
   "requires_skills": [
     "watch"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
   ]
 }

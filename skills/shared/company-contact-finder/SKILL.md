@@ -1,15 +1,28 @@
 ---
 name: company-contact-finder
 description: >
-  Find decision-makers at a specific company using Apollo, Crustdata, Fiber,
-  and PDL people search via Gooseworks MCP. Given a company name and target
+  Find decision-makers at a specific company using Fiber, Crustdata and PDL
+  people search inside the GooseWorks coworker. Given a company name and target
   titles, returns a list of contacts with name, title, LinkedIn URL, and location.
-tags: [lead-generation]
 ---
 
 # company-contact-finder
 
-Find decision-makers at a specific company by name and target titles. Uses Gooseworks MCP tools (Apollo, Crustdata, Fiber, PDL) with a layered fallback strategy to maximize results while minimizing cost.
+Find decision-makers at a specific company by name and target titles. Uses the GooseWorks coworker's people-search tools (Fiber, Crustdata, PDL) with a layered fallback, so you only pay for the next source when the last one came up short.
+
+## Where this runs
+
+**This skill runs only inside the GooseWorks coworker** (the coworker in the GooseWorks app). The people-search tools it uses exist only there. They are not on the GooseWorks server that Claude, ChatGPT and other outside agents connect to.
+
+If `fiber_person_search`, `crustdata_person_search` and `pdl_person_search` are not in your tool list, you are outside the coworker. Tell the user that this contact search runs only inside the GooseWorks coworker, and stop. Do not try other tools in their place.
+
+## Spend rule
+
+Every search in this skill is paid. **Before each paid search or page, tell the customer what it costs and wait for their yes.**
+
+- Take the price from the tool's own description, for the page size you are about to ask for. Do not quote a price from memory or from this file.
+- Ask again before every next page or next source. A yes covers one search, not the whole fallback chain.
+- If they say no, stop and show what you have so far.
 
 ## Inputs
 
@@ -35,34 +48,28 @@ If the user does not provide target titles, ask for them. Suggest common senior 
 - For tech companies: VP Engineering, CTO, Head of Product, Director of Engineering
 - For general B2B: VP, Director, C-Level, Head of
 
-### Step 2: Apollo Search (Primary — cheapest at $0.01/call)
+### Step 2: Fiber Search (Primary)
 
-Apollo is the cheapest search provider. Start here for all searches.
+Fiber takes a natural-language query and charges per record returned, so ask only for as many records as you need.
 
-**Call:**
+Quote the price for this page size and get the customer's yes. Then use `fiber_person_search`:
 ```
-apollo_person_search(
-  person_titles: ["Partner", "Controller", "VP Finance"],
-  organization_domains: ["eisneramper.com"],
-  per_page: 25
+fiber_person_search(
+  query: "[title1] OR [title2] OR [title3] at [company_name]",
+  page_size: 10
 )
 ```
 
-If you don't have the company domain, use `q_keywords` with the company name:
-```
-apollo_person_search(
-  person_titles: ["Partner", "Controller", "VP Finance"],
-  q_keywords: "EisnerAmper",
-  per_page: 25
-)
-```
+Set `page_size` to `num_results` (at most 100). For a next page, pass the `cursor` from the previous response, after a new yes.
+
+You can pass structured filters in `search_params` instead of `query` (for example `{"job_titles": ["CFO"], "locations": ["New York"]}`). If you pass both, `query` wins.
 
 **Parse the response:**
-Each result contains: name, title, company, LinkedIn URL, location, email, and other profile fields. Extract and collect all results into a working list.
+Extract name, title, company, LinkedIn URL and location from each result into a working list.
 
 ### Step 3: Evaluate Results
 
-Check how many results from Step 2 match the target titles at the target company.
+Check how many results so far match the target titles at the target company.
 
 **Quality checks:**
 1. Filter out results where the company name does not match (fuzzy match is fine -- "EisnerAmper LLP" matches "EisnerAmper")
@@ -70,93 +77,75 @@ Check how many results from Step 2 match the target titles at the target company
 3. Count remaining high-quality matches
 
 **Decision:**
-- If 3+ quality matches found: skip to Step 7 (Output)
+- If 3+ quality matches found: skip to Step 6 (Output)
 - If fewer than 3 quality matches: proceed to Step 4
 
-### Step 4: Fiber Search (Fallback 1 — $0.02/record)
+### Step 4: Crustdata Structured Search (Fallback 1)
 
-Fiber supports natural-language queries and may have profiles Apollo does not.
+Crustdata's filter search matches company and title more precisely. It charges per page, whatever the page size, so set `limit` to the most results you would use (at most 100).
 
-**Call:**
-```
-fiber_person_search(
-  query: "[title1] OR [title2] OR [title3] at [company_name]",
-  page_size: 25
-)
-```
-
-**After results return:**
-1. Parse results (extract name, title, company, LinkedIn URL, location)
-2. Merge with all previous results
-3. Deduplicate by LinkedIn URL
-
-**Decision:**
-- If 3+ total unique quality matches: skip to Step 7 (Output)
-- If still fewer than 3: proceed to Step 5
-
-### Step 5: Crustdata Structured Search (Fallback 2 — $0.66/page)
-
-Use Crustdata's structured filter search for more precise matching. Run one search per target title, then merge results.
-
-**For each target title, call:**
+Quote the price for one page and get the customer's yes. Then use `crustdata_person_search`:
 ```
 crustdata_person_search(
   conditions: [
-    {"column": "current_employers.name", "type": "in", "value": "[company_name]"},
-    {"column": "current_employers.title", "type": "(.)", "value": "[target_title]"}
+    {"column": "current_employers.name", "type": "=", "value": "[company_name]"},
+    {"column": "current_employers.title", "type": "(.)", "value": "[title1]|[title2]|[title3]"}
   ],
   filter_op: "and",
   limit: 25
 )
 ```
 
-**Example for "Partner" at EisnerAmper:**
+`(.)` is a contains / pattern match, so one search can cover several titles joined with `|`. If that finds nothing, run one search per title instead; each is its own paid page, so quote and ask for each. Use `(.)` on the company name too if the exact name finds nothing (e.g. "EisnerAmper LLP").
+
+**Example for Partners and Controllers at EisnerAmper:**
 ```
 crustdata_person_search(
   conditions: [
     {"column": "current_employers.name", "type": "=", "value": "EisnerAmper"},
-    {"column": "current_employers.title", "type": "(.)", "value": "Partner"}
+    {"column": "current_employers.title", "type": "(.)", "value": "Partner|Controller"}
   ],
   filter_op: "and",
   limit: 25
 )
 ```
 
-**Optional seniority filter:** If the user requests senior decision-makers broadly (rather than specific titles), add:
+**Senior leaders broadly:** if the user wants senior decision-makers rather than specific titles, match on the title instead of a seniority field:
 ```
-{"column": "current_employers.seniority_level", "type": "in", "value": "VP,C-Level,Director"}
+{"column": "current_employers.title", "type": "(.)", "value": "Chief|VP|Vice President|Director|Head of|Partner"}
 ```
 
-**TIP:** Use `preview: true` first to check result count for free before fetching full data.
+For a next page, pass the `cursor` from the previous response, after a new yes.
 
-**After all title searches complete:**
-1. Merge all results into one list
+**After results return:**
+1. Merge with all previous results
 2. Deduplicate by LinkedIn URL (keep the first occurrence)
-3. Combine with results from previous steps
 
 **Decision:**
-- If 3+ total unique quality matches: skip to Step 7 (Output)
-- If still fewer than 3: proceed to Step 6
+- If 3+ total unique quality matches: skip to Step 6 (Output)
+- If still fewer than 3: proceed to Step 5
 
-### Step 6: PDL Search (Fallback 3 — $0.30/record, most expensive)
+### Step 5: PDL Search (Fallback 2, last resort)
 
-PeopleDataLabs is the most expensive search provider. Only use as a last resort when other sources have insufficient results.
+PeopleDataLabs costs the most per record of the three. Use it only when the other sources came up short, and ask for only the records still missing.
 
-**Call:**
+Quote the price for this number of records and get the customer's yes. Then use `pdl_person_search`:
 ```
 pdl_person_search(
   job_titles: ["Partner", "Controller", "VP Finance"],
   company_names: ["EisnerAmper"],
-  num_results: 10
+  num_results: 5
 )
 ```
+
+`num_results` defaults to 1 and is at most 25. Use structured fields; `query` is only a fallback when they cannot express the search.
 
 **After results return:**
 1. Parse results (extract name, title, company, LinkedIn URL, location)
 2. Merge with all previous results
 3. Deduplicate by LinkedIn URL
 
-### Step 7: Output
+### Step 6: Output
 
 Present the final deduplicated contact list.
 
@@ -184,7 +173,7 @@ Present the final deduplicated contact list.
     }
   ],
   "total_found": 10,
-  "sources": ["apollo", "fiber", "crustdata", "pdl"]
+  "sources": ["fiber", "crustdata", "pdl"]
 }
 ```
 
@@ -196,38 +185,29 @@ If fewer than 3 contacts were found after all fallbacks, tell the user:
 
 ---
 
-## Gooseworks MCP Tools Reference
+## People-search tools reference
 
-### Cost Comparison (25 results)
+All three are on the GooseWorks coworker only, and all are paid. Each tool's description states its price; quote it before every search.
 
-| Provider | Cost | Tool |
-|----------|------|------|
-| Apollo | **$0.01** flat | `apollo_person_search` |
-| Fiber | $0.50 | `fiber_person_search` |
-| Crustdata | $0.66/page | `crustdata_person_search` |
-| PDL | $7.50 | `pdl_person_search` |
+| Tool | Purpose | How it charges | Arguments |
+|------|---------|----------------|-----------|
+| `fiber_person_search` | Natural-language or structured people search | Per record returned | `query` (natural language), `search_params` (structured), `page_size` (1-100, default 25), `cursor` |
+| `crustdata_person_search` | Structured filter search | Per page, whatever the `limit` | `conditions` (list of `column` / `type` / `value`), `filter_op` (`and` or `or`), `limit` (1-100, default 25), `cursor` |
+| `pdl_person_search` | Premium people search, last resort | Per record returned | `job_titles`, `company_names`, `job_title_levels`, `job_title_role`, `location_country`, `location_region`, `location_locality`, `num_results` (1-25, default 1), `query` (fallback) |
 
-Always start with Apollo. Escalate through Fiber → Crustdata → PDL only as fallbacks.
-
-### Tool Details
-
-| Tool | Purpose | Key Params |
-|------|---------|------------|
-| `apollo_person_search` | People search by title, location, company ($0.01/call) | `person_titles`, `person_locations`, `organization_domains`, `q_keywords`, `per_page` |
-| `fiber_person_search` | NL or structured people search ($0.02/record) | `query` (NL), `search_params` (structured), `page_size` |
-| `crustdata_person_search` | Structured filter search ($0.66/page of 100) | `conditions`, `filter_op`, `limit`, `preview` |
-| `pdl_person_search` | PDL people search ($0.30/record — last resort) | `job_titles`, `company_names`, `location_country`, `num_results` |
-| `fetch_linkedin_profile` | Enrich a single person by LinkedIn URL | `linkedin_url` |
+Apollo people search is deprecated in GooseWorks: it hides surnames, so it cannot be used for outreach. Do not use it.
 
 ### Crustdata Filter Columns
 
-| Column | Operators | Example Values |
-|--------|-----------|----------------|
+| Column | Types | Example Values |
+|--------|-------|----------------|
 | `current_employers.name` | `=` (exact), `(.)` (contains) | `"EisnerAmper"` |
-| `current_employers.title` | `(.)` (fuzzy), `=` (exact) | `"Partner"` |
-| `current_employers.seniority_level` | `=`, `(.)` | `"VP"`, `"C-Level"` |
+| `current_employers.title` | `(.)` (contains / pattern), `=` (exact) | `"Partner"`, `"CFO\|Controller"` |
 | `region` | `=` | `"San Francisco"` |
+| `country` | `=` | `"United States"` |
 | `skills` | `(.)` | `"python"` |
+| `years_of_experience` | `>`, `<`, `between` (`"min,max"`) | `"8"` |
+| `headline` | `(.)` | `"fractional CFO"` |
 
 ---
 
@@ -237,54 +217,49 @@ Always start with Apollo. Escalate through Fiber → Crustdata → PDL only as f
 ```
 Find Partners and Controllers at EisnerAmper
 ```
-Agent calls `apollo_person_search` with `person_titles: ["Partner", "Controller"], q_keywords: "EisnerAmper", per_page: 25`.
+Agent quotes the Fiber price for 10 records, gets a yes, then runs the Fiber search (Step 2) with `query: "Partner OR Controller at EisnerAmper", page_size: 10`.
 
 ### With more titles: Find VP Finance and CFO at Sage Intacct users
 ```
 Find VP Finance and CFO at companies using Sage Intacct
 ```
-Agent builds query: `"VP Finance OR CFO at Sage Intacct"`.
+Agent builds the Fiber query `"VP Finance OR CFO at companies using Sage Intacct"`.
 
-### Senior leaders at a specific firm
+### Senior leaders at a specific kind of firm
 ```
 Find Managing Directors at CPA firms in San Francisco
 ```
-Agent builds query: `"Managing Director at CPA firm San Francisco"`.
+Agent builds the Fiber query `"Managing Director at CPA firm San Francisco"`.
 
 ### With a LinkedIn URL for disambiguation
 ```
 Find Partners at EisnerAmper (https://linkedin.com/company/eisneramper)
 ```
-Agent uses the company name "EisnerAmper" and can use the LinkedIn URL for enrichment if needed.
+Agent searches by the company name "EisnerAmper" and uses the LinkedIn URL to tell it apart from similar names when checking results.
 
 ---
 
 ## Troubleshooting
 
-### MCP tools not available / connection errors
+### People-search tools not available
 
-The Gooseworks MCP tools require the Gooseworks MCP server to be configured in your environment. If you get errors like "tool not found" or connection failures:
-
-1. **Check MCP server configuration:** Ensure the Gooseworks MCP server is listed in your MCP configuration (e.g., `claude_desktop_config.json` or equivalent).
-2. **Server URL:** The Gooseworks server must be running and accessible. Check with your workspace admin for the correct server endpoint.
-3. **Authentication:** Gooseworks may require an API key or auth token. Ensure credentials are configured in your MCP server settings.
+You are outside the GooseWorks coworker. Tell the user this contact search runs only inside the GooseWorks coworker, and stop (see "Where this runs").
 
 ### No results returned
 
-- Try alternate spellings of the company name (e.g., "EisnerAmper" vs "Eisner Amper" vs "EisnerAmper LLP")
+- Try alternate spellings of the company name (e.g., "EisnerAmper" vs "Eisner Amper" vs "EisnerAmper LLP"), or `(.)` instead of `=` on the Crustdata company column
 - Broaden target titles (e.g., add "Managing Director" alongside "Partner")
-- Use the structured search (Step 4) with fuzzy title matching `(.)` operator
-- Try Fiber, Crustdata, or PDL as fallback databases (Steps 4-6)
+- Move to the next source (Steps 4-5), after the customer's yes to its price
 
 ### Too many irrelevant results
 
 - Add more specific title terms rather than broad ones
-- Use the structured search with the `in` operator for exact title matching instead of fuzzy `(.)`
-- Filter results by seniority_level to restrict to senior roles
+- In Crustdata, use `=` for an exact title match instead of `(.)`
+- Add a `region` or `country` condition
 
 ### Duplicate contacts across sources
 
-The skill deduplicates by LinkedIn URL automatically. If you see near-duplicates with slightly different URLs (e.g., trailing slashes), normalize URLs before deduplication by stripping trailing slashes and query parameters.
+The skill deduplicates by LinkedIn URL. If you see near-duplicates with slightly different URLs (e.g., trailing slashes), normalize URLs before deduplication by stripping trailing slashes and query parameters.
 
 ---
 
@@ -294,5 +269,6 @@ The skill deduplicates by LinkedIn URL automatically. If you see near-duplicates
 metadata:
   requires:
     mcp_servers: ["gooseworks"]
-  cost: "From $0.01 (Apollo) to $7.50 (PDL) depending on provider and result count"
+    runs_in: "GooseWorks coworker only"
+  cost: "Paid per search; quote the price the tool states and get the customer's yes first"
 ```

@@ -16,7 +16,7 @@ How this playbook uses [the `run-memory` skill](../../run-memory/SKILL.md): Star
 - **The roster** (`creators/roster.csv`, outcomes-ledger `entity: creator`) — the per-creator truth. Recount from it: shortlisted, contacted, replied, quoted, declined, signed, posted — and for each wave, `wave_result` against its criterion (`win · partial · miss · no-data`), grouped by role, tier, deal structure and vetting depth.
 - **Wave files** (`creators/<D>/wave-<n>.md`): each wave's criteria and read window — is the window over, and were the results reported?
 - **Lessons** (`creators/lessons/`) and their proposed changes.
-- **The brain**, with `brain_*` tools: `brain_search` since the last record, `source_types: ["learning", "creative", "meta_ad"]` — new `[creators …]` rules, and creator content turned into ads since (chapter 22, "Everything we have made and run"), so a creator whose content now runs as an ad is visible. Otherwise `knowledge_search`. `campaign_read` for a campaign's creator leg.
+- **The brain**, with `brand_knowledge_*` tools: `brand_knowledge_search` since the last record, `source_types: ["learning", "creative", "meta_ad"]` — new `[creators …]` rules, and creator content turned into ads since (chapter 22, "Everything we have made and run"), so a creator whose content now runs as an ad is visible. Otherwise `knowledge_search`. `campaign_read` for a campaign's creator leg.
 
 **Check last run's recommendations:** "send wave 1 to these 8" is `done` when the roster shows them `contacted`; "re-vet after their next 10 posts" when the roster's `revet_by` passed and a vet ran; a price band is judged against the quotes that came back (`quoted_rate` vs the recommended range). Verdicts only from what the roster shows — reported by the founder.
 

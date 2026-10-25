@@ -1,88 +1,88 @@
 {
-  "_comment": "Wildroot Pure 'Three-Place Tour' multi-world product tour \u2014 THE WORKED EXAMPLE (the source run's finals/master-v2.mp4). Copy to config.json and edit. Three scent worlds, each = a WIDE kinetic-calm ARRIVAL clip (bottle small, environment dominates) + a top-down MACRO product MOMENT clip. Six Higgsfield Marketing Studio product_showcase clips grounded on imported product UUIDs, an NB2 text-free flat-lay end-card BACKGROUND + an HTML/Playwright text overlay, one ElevenLabs music bed. Silent otherwise (no VO, no captions in scenes). FFmpeg trims to the grid + hard-cut concats + muxes music. 720x1280 9:16, 27.0s. SEALED-BOTTLE is a hard safety rule. WORKED EXAMPLE ONLY: creative fields — visual_style, worlds[*].world / palette / botanical / arrival_prompt / macro_prompt, end_card.nb2_prompt, end_card.overlay.headline, music.prompt — come from the recipe's choices (worlds, visual_style, music) and brand fields (brand_name, product, product_uuid, overlay copy/url) from the brand kit; never copy them as defaults. Provider note: this demo used Higgsfield Marketing Studio (higgsfield.*, product_uuid); the current recipe uses create-image-fal keyframe -> create-video-fal i2v — see recipe.json config.keyframe / config.i2v / config._example_worlds for the live schema.",
-  "brand_name": "Wildroot Pure",
+  "_comment": "Kettle & Fern 'Three-Place Tour' multi-world product tour \u2014 THE WORKED EXAMPLE, a fictional brand and product line. Copy to config.json and edit. Three tea worlds, each = a WIDE kinetic-calm ARRIVAL clip (tin small, environment dominates) + a top-down MACRO product MOMENT clip. Six Higgsfield Marketing Studio product_showcase clips grounded on imported product UUIDs, an NB2 text-free flat-lay end-card BACKGROUND + an HTML/Playwright text overlay, one ElevenLabs music bed. Silent otherwise (no VO, no captions in scenes). FFmpeg trims to the grid + hard-cut concats + muxes music. 720x1280 9:16, 27.0s. SEALED-TIN is a hard safety rule. WORKED EXAMPLE ONLY: creative fields \u2014 visual_style, worlds[*].world / palette / botanical / arrival_prompt / macro_prompt, end_card.nb2_prompt, end_card.overlay.headline, music.prompt \u2014 come from the recipe's choices (worlds, visual_style, music) and brand fields (brand_name, product, product_uuid, overlay copy/url) from the brand kit; never copy them as defaults. Each product_uuid is a placeholder for the brand's own imported product. Provider note: this demo used Higgsfield Marketing Studio (higgsfield.*, product_uuid); the current recipe uses create-image-fal keyframe -> create-video-fal i2v \u2014 see recipe.json config.keyframe / config.i2v / config._example_worlds for the live schema.",
+  "brand_name": "Kettle & Fern",
   "width": 720,
   "height": 1280,
   "fps": 24,
   "duration_sec": 27.0,
-  "visual_style": "Sunlit-natural / handmade / farm-to-skin. Soft daylight from upper-left, faint contact shadows, linen + clay + cedar. Camera language KINETIC-CALM (slow drift, lateral track, soft push) \u2014 NOT whip-pan/fast-dolly. Each scent gets its own color world; bottles are NOT color-coded so world palette + botanical companion carry scent identity.",
+  "visual_style": "Sunlit-natural / handmade / farm-to-cup. Soft daylight from upper-left, faint contact shadows, linen + clay + oak. Camera language KINETIC-CALM (slow drift, lateral track, soft push) \u2014 NOT whip-pan/fast-dolly. Each tea gets its own color world; the tins are only lightly color-coded, so world palette + botanical companion carry the variant's identity.",
   "higgsfield": {
     "model": "marketing_studio_video/product_showcase",
     "arrival_duration_sec": 5,
     "macro_duration_sec": 4,
-    "safety_block": " No bare skin, no exposed body parts in frame. NO smoke, NO vapor, NO aerosol, NO atomizer spray, NO scent visualization \u2014 bottle is a sealed twist-stick deodorant, never depict it open, extruded, or spraying. NO whip pans, NO shake, NO wobble, NO earthquake. Label identical to imported product reference. No on-screen text."
+    "safety_block": " No faces in frame. NO steam, NO pouring, NO brewing, NO loose leaves spilling \u2014 the product is a sealed tea tin, never depict it open, tipped out or with the lid off. NO whip pans, NO shake, NO wobble, NO earthquake. Label identical to imported product reference. No on-screen text."
   },
   "worlds": [
     {
-      "slug": "lavender",
-      "product": "Lavender Deodorant",
-      "product_uuid": "f805f78e-5b74-41da-85fe-eb40b3435202",
-      "world": "Private sunrise reformer pilates studio \u2014 sheer linen curtains diffusing mauve-pink dawn light, blonde-pine floor, one wood reformer with cream-strap loops, folded cream linen towel on the carriage edge.",
-      "palette": "Mauve dawn + cream linen + blonde pine",
-      "botanical": "fresh lavender sprig",
-      "bottle_color": "cream/beige",
-      "arrival_prompt": "9:16 KINETIC-CALM WIDE inside a sunrise reformer pilates studio for Wildroot Pure Lavender Deodorant. Bottle stays small; environment dominates, never macro. Sheer linen curtains diffusing mauve-pink dawn light, blonde-pine floor, one wood reformer with cream-strap loops, a folded cream linen towel on the carriage edge. The cream-colored sealed Lavender Deo + a fresh lavender sprig rest on the towel. The toe of a cream canvas sneaker visible at the very lower edge of frame implies a recent presence. 3 ambient-not-frenetic cuts: slow drift past the linen curtain catching mauve light; lateral track past the reformer past the bottle; soft push-in to the towel at medium scale. Sunlit-natural palette: mauve dawn + cream linen + blonde pine. Soft daylight from upper-left.",
-      "macro_prompt": "9:16 top-down macro product-only shot for Wildroot Pure Lavender Deodorant. Cream-colored sealed Lavender Deo lies horizontally nested into a folded cream linen towel on a pale-pine surface, fresh lavender sprig draped across the cap, small unglazed clay bud vase to the side. Slow parallax tilt revealing more of the linen weave. Soft mauve-warm daylight from upper-left, faint contact shadow. Cream + mauve + blonde pine palette. NO hands in frame."
+      "slug": "hibiscus_rose",
+      "product": "Hibiscus Rose Tea",
+      "product_uuid": "<product_uuid>",
+      "world": "Sunrise window-seat reading nook \u2014 sheer linen curtains diffusing rose-pink dawn light, blonde-pine window seat, a stack of cream linen cushions, an open hardback face-down on the seat edge.",
+      "palette": "Rose dawn + cream linen + blonde pine",
+      "botanical": "dried hibiscus petals + a single rosebud",
+      "bottle_color": "blush pink",
+      "arrival_prompt": "9:16 KINETIC-CALM WIDE inside a sunrise window-seat reading nook for Kettle & Fern Hibiscus Rose Tea. Tin stays small; environment dominates, never macro. Sheer linen curtains diffusing rose-pink dawn light, blonde-pine window seat, a stack of cream linen cushions, an open hardback face-down on the seat edge. The blush-pink sealed Hibiscus Rose tin + a small scatter of dried hibiscus petals rest beside the book. The toe of a knitted wool sock visible at the very lower edge of frame implies a recent presence. 3 ambient-not-frenetic cuts: slow drift past the linen curtain catching rose light; lateral track along the window seat past the tin; soft push-in to the book and tin at medium scale. Sunlit-natural palette: rose dawn + cream linen + blonde pine. Soft daylight from upper-left.",
+      "macro_prompt": "9:16 top-down macro product-only shot for Kettle & Fern Hibiscus Rose Tea. Blush-pink sealed Hibiscus Rose tin lies horizontally on a folded cream linen napkin on a pale-pine surface, dried hibiscus petals and one rosebud laid loose beside the lid, small unglazed clay cup to the side. Slow parallax tilt revealing more of the linen weave. Soft rose-warm daylight from upper-left, faint contact shadow. Cream + rose + blonde pine palette. NO hands in frame."
     },
     {
-      "slug": "blue_tansy",
-      "product": "Blue Tansy Deodorant",
-      "product_uuid": "fa4e5e33-ee9e-45de-8db5-4b4d71fe9ba9",
-      "world": "Spa / sauna threshold anteroom \u2014 vertical cedar slat wall, dark sage-teal slate floor, fresh eucalyptus bundle hanging from a leather loop, low slate bench in foreground, faint soft steam drifting laterally in the back.",
-      "palette": "Sage-teal + bone + warm cedar",
-      "botanical": "blue tansy flower + eucalyptus bundle",
-      "bottle_color": "cream/beige",
-      "arrival_prompt": "9:16 KINETIC-CALM WIDE spa anteroom for Wildroot Pure Blue Tansy Deodorant. BOTTLE STAYS SEALED, CAP STAYS ON. Bottle stays small; environment dominates, never macro. Vertical cedar slat wall, dark sage-teal slate floor, fresh bundle of eucalyptus hanging from a leather loop on the wall, low slate bench in foreground. Cream-colored sealed Blue Tansy Deo sits on the bench next to a cracked-glaze sage-blue ceramic bowl holding small blue tansy flowers. Faint soft steam drifting laterally in the back, NOT billowing. Bare ankle in cream linen robe just visible at upper-right edge, no face. 3 ambient cuts: lateral track from hanging eucalyptus down past wall; soft tracking past bench catching bottle and bowl; gentle push-in at medium scale. Sage-teal + bone + warm cedar palette. Soft cool daylight from upper-right.",
-      "macro_prompt": "9:16 top-down macro product-only shot for Wildroot Pure Blue Tansy Deodorant. Cream-colored sealed Blue Tansy Deo rests horizontally on a large cracked-glaze sage-blue ceramic dish on smooth slate stone surface. Two small blue tansy flowers + two fresh eucalyptus leaves arranged loose around it. Cool sage-teal + bone palette, soft cool daylight from upper-left. Slow parallax tilt. NO hands in frame.",
-      "_note": "Arrival re-rolled once (S03 v1 \u2192 v2): v1 rendered the bottle with the cap removed \u2014 violated the sealed-bottle safety rule. v2 front-loads 'BOTTLE STAYS SEALED, CAP STAYS ON'."
+      "slug": "mint_green",
+      "product": "Mint Green Tea",
+      "product_uuid": "<product_uuid>",
+      "world": "Glasshouse potting bench \u2014 whitewashed glass panes, terracotta pots of fresh mint in rows, a weathered oak bench, a coiled garden hose and a canvas apron hanging from a hook.",
+      "palette": "Sage + terracotta + bone",
+      "botanical": "fresh mint sprigs + a few rolled green tea leaves",
+      "bottle_color": "sage green",
+      "arrival_prompt": "9:16 KINETIC-CALM WIDE glasshouse potting bench for Kettle & Fern Mint Green Tea. TIN STAYS SEALED, LID STAYS ON. Tin stays small; environment dominates, never macro. Whitewashed glass panes, rows of terracotta pots holding fresh mint, a weathered oak bench in the foreground, a canvas apron hanging from a hook. The sage-green sealed Mint Green tin sits on the bench next to a small terracotta saucer of rolled green tea leaves. A gardener's gloved hand just visible at the upper-right edge, no face. 3 ambient cuts: lateral track along the rows of mint pots; soft tracking past the bench catching tin and saucer; gentle push-in at medium scale. Sage + terracotta + bone palette. Soft cool daylight from upper-right.",
+      "macro_prompt": "9:16 top-down macro product-only shot for Kettle & Fern Mint Green Tea. Sage-green sealed Mint Green tin rests horizontally on a weathered oak board. Two fresh mint sprigs + a few rolled green tea leaves arranged loose around it, a terracotta saucer to the side. Cool sage + bone palette, soft cool daylight from upper-left. Slow parallax tilt. NO hands in frame.",
+      "_note": "Arrival re-rolled once (S03 v1 \u2192 v2): v1 rendered the tin with the lid off \u2014 broke the sealed-tin safety rule. v2 front-loads 'TIN STAYS SEALED, LID STAYS ON'."
     },
     {
-      "slug": "bergamot_eucalyptus",
-      "product": "Bergamot + Eucalyptus Deodorant",
-      "product_uuid": "fc4369ce-8060-4125-b0f0-36202f0463d9",
-      "world": "Outdoor Saturday farmers market stall \u2014 cream linen-canvas market tent overhead with dappled morning sunlight, wooden crates of yellow bergamot fruit and sage stems, cream open-weave linen tote bag on a weathered wood crate.",
-      "palette": "Citrus yellow + warm linen + sage",
-      "botanical": "bergamot fruit + eucalyptus stems",
+      "slug": "smoked_chai",
+      "product": "Smoked Chai",
+      "product_uuid": "<product_uuid>",
+      "world": "Autumn Saturday farmers market stall \u2014 cream canvas market tent overhead with dappled morning sunlight, wooden crates of apples and squash, a cream open-weave linen tote bag on a weathered wood crate.",
+      "palette": "Cinnamon + warm linen + brass",
+      "botanical": "cinnamon sticks + star anise",
       "bottle_color": "matte black",
-      "arrival_prompt": "9:16 KINETIC-CALM WIDE outdoor Saturday farmers market for Wildroot Pure Bergamot + Eucalyptus Deodorant. Bottle stays small; environment dominates, never macro. Cream linen-canvas market tent overhead with dappled morning sunlight breaking through, wooden crates of yellow bergamot fruit and sage stems in foreground, cream open-weave linen tote bag set on weathered wood crate. The matte-black sealed B+E Deo pokes out of the tote alongside three long fresh eucalyptus stems. Bare hand at lower edge reaching to pick a bergamot fruit (only fingers, no face). 3 ambient cuts (slightly more energy to mirror the brighter morning palette, still NO whip pans): slow push past canvas tent catching dappled light; lateral track past crates landing on tote; soft push-in to bottle at medium scale. Citrus yellow + warm linen + sage palette. Crisp contact shadows.",
-      "macro_prompt": "9:16 top-down macro product-only shot for Wildroot Pure Bergamot + Eucalyptus Deodorant. Matte-black sealed B+E Deo rests horizontally on cream linen napkin on pale wood farmhouse table. Halved bergamot fruit (cut face up showing citrus pulp) + one long fresh eucalyptus stem with leaves arranged loose around the bottle. Bright warm morning daylight from upper-left, faint contact shadow. Cream linen + citrus yellow + sage palette. Slow parallax tilt. NO hands in frame.",
-      "_note": "Arrival's mid-clip frame showed a gloved leather hand (storyboard called for bare fingertips) \u2014 minor deviation, accepted. Macro (S06) label misrendered 'Eucalyptus'\u2192'Eucaiyptus' at the upright extreme; not visible in the top-down portion the trim dominates."
+      "arrival_prompt": "9:16 KINETIC-CALM WIDE autumn Saturday farmers market for Kettle & Fern Smoked Chai. Tin stays small; environment dominates, never macro. Cream canvas market tent overhead with dappled morning sunlight breaking through, wooden crates of apples and squash in foreground, a cream open-weave linen tote bag set on a weathered wood crate. The matte-black sealed Smoked Chai tin pokes out of the tote alongside a bundle of cinnamon sticks tied with twine. Bare hand at lower edge reaching to pick an apple (only fingers, no face). 3 ambient cuts (slightly more energy to mirror the brighter morning palette, still NO whip pans): slow push past the canvas tent catching dappled light; lateral track past crates landing on tote; soft push-in to tin at medium scale. Cinnamon + warm linen + brass palette. Crisp contact shadows.",
+      "macro_prompt": "9:16 top-down macro product-only shot for Kettle & Fern Smoked Chai. Matte-black sealed Smoked Chai tin rests horizontally on a cream linen napkin on a pale wood farmhouse table. Three cinnamon sticks + two star anise pods arranged loose around the tin, a small brass spoon to the side. Bright warm morning daylight from upper-left, faint contact shadow. Cream linen + cinnamon + brass palette. Slow parallax tilt. NO hands in frame.",
+      "_note": "Arrival's mid-clip frame showed a gloved hand (storyboard called for bare fingertips) \u2014 minor deviation, accepted. Macro (S06) label misrendered one letter of the product name at the upright extreme; not visible in the top-down portion the trim dominates."
     }
   ],
   "scene_grid": [
     {
       "scene": "S01",
-      "world": "lavender",
+      "world": "hibiscus_rose",
       "shape": "arrival",
       "duration_sec": 4.5
     },
     {
       "scene": "S02",
-      "world": "lavender",
+      "world": "hibiscus_rose",
       "shape": "macro",
       "duration_sec": 3.5
     },
     {
       "scene": "S03",
-      "world": "blue_tansy",
+      "world": "mint_green",
       "shape": "arrival",
       "duration_sec": 4.5
     },
     {
       "scene": "S04",
-      "world": "blue_tansy",
+      "world": "mint_green",
       "shape": "macro",
       "duration_sec": 3.5
     },
     {
       "scene": "S05",
-      "world": "bergamot_eucalyptus",
+      "world": "smoked_chai",
       "shape": "arrival",
       "duration_sec": 4.5
     },
     {
       "scene": "S06",
-      "world": "bergamot_eucalyptus",
+      "world": "smoked_chai",
       "shape": "macro",
       "duration_sec": 3.5
     },
@@ -96,35 +96,35 @@
   "end_card": {
     "nb2_model": "nano_banana_2",
     "nb2_input_product_uuids": [
-      "f805f78e-5b74-41da-85fe-eb40b3435202",
-      "fa4e5e33-ee9e-45de-8db5-4b4d71fe9ba9",
-      "fc4369ce-8060-4125-b0f0-36202f0463d9"
+      "<product_uuid>",
+      "<product_uuid>",
+      "<product_uuid>"
     ],
-    "nb2_prompt": "Editorial top-down flat-lay product photograph of three Wildroot Pure deodorant bottles arranged casually on a soft warm cream-blush gradient background. Bottle 1 (cream-beige cylindrical twist-stick, identical to the Lavender reference) tilted at a 15-degree angle in the upper-right with a small fresh lavender sprig laid beside its base. Bottle 2 (cream-beige cylindrical twist-stick, identical to the Blue Tansy reference) standing upright in the center foreground with two small blue tansy flowers and a single fresh eucalyptus leaf laid beside its base. Bottle 3 (matte-black cylindrical twist-stick, identical to the Bergamot + Eucalyptus reference) tilted at a 15-degree angle in the lower-left with a sprig of fresh eucalyptus and one halved bergamot fruit (cut face up) laid beside its base. The three bottles overlap slightly but each is clearly visible, with soft diffused shadows pooling beneath them on the cream-blush surface. All three bottles have identical Wildroot Pure black thin-serif labels exactly matching the imported product references. Pinterest-style editorial product photography, soft natural overhead daylight, clean and uncluttered farm-to-skin sunlit-natural register, generous negative space at the top of the frame. No text overlays, no typography, no captions, no logos other than what is printed on the bottles.",
+    "nb2_prompt": "Editorial top-down flat-lay product photograph of three Kettle & Fern loose-leaf tea tins arranged casually on a soft warm cream-blush gradient background. Tin 1 (blush-pink round tin, identical to the Hibiscus Rose reference) tilted at a 15-degree angle in the upper-right with a few dried hibiscus petals and one rosebud laid beside its base. Tin 2 (sage-green round tin, identical to the Mint Green reference) standing upright in the center foreground with two fresh mint sprigs laid beside its base. Tin 3 (matte-black round tin, identical to the Smoked Chai reference) tilted at a 15-degree angle in the lower-left with three cinnamon sticks and two star anise pods laid beside its base. The three tins overlap slightly but each is clearly visible, lids on, with soft diffused shadows pooling beneath them on the cream-blush surface. All three tins have identical Kettle & Fern black thin-serif labels exactly matching the imported product references. Pinterest-style editorial product photography, soft natural overhead daylight, clean and uncluttered farm-to-cup sunlit-natural register, generous negative space at the top of the frame. No text overlays, no typography, no captions, no logos other than what is printed on the tins.",
     "html": "endcard.html",
     "dwell_sec": 3.0,
     "overlay": {
-      "headline": "FIND YOUR DAILY.",
-      "headline_font": "Inter 900, 'DAILY' outlined via -webkit-text-stroke",
+      "headline": "STEEP SLOWER.",
+      "headline_font": "Inter 900, 'SLOWER' outlined via -webkit-text-stroke",
       "scent_labels": [
         {
-          "label": "lavender.",
+          "label": "hibiscus rose.",
           "font": "Caveat 600",
-          "arrow": "hand-drawn, points to upper-right bottle"
+          "arrow": "hand-drawn, points to upper-right tin"
         },
         {
-          "label": "blue tansy.",
+          "label": "mint green.",
           "font": "Caveat 600",
-          "arrow": "hand-drawn, points to center bottle"
+          "arrow": "hand-drawn, points to center tin"
         },
         {
-          "label": "bergamot + eucalyptus.",
+          "label": "smoked chai.",
           "font": "Caveat 600",
-          "arrow": "hand-drawn, points to lower-left bottle"
+          "arrow": "hand-drawn, points to lower-left tin"
         }
       ],
-      "wordmark": "WILDROOT / PURE (Playfair Display serif, two rows)",
-      "url": "wildrootpure.example",
+      "wordmark": "KETTLE / & FERN (Playfair Display serif, two rows)",
+      "url": "kettleandfern.example",
       "text_compositing_rule": "Headline + labels + arrows + wordmark composited via HTML/Playwright/ffmpeg, NEVER AI-rendered. NB2 generates the flat-lay BACKGROUND ONLY (no text)."
     }
   },
@@ -152,7 +152,7 @@
     },
     "end_card": {
       "default": "on",
-      "note": "HTML 'FIND YOUR DAILY.' end card, default on"
+      "note": "HTML 'STEEP SLOWER.' end card, default on"
     }
   }
 }

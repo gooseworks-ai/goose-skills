@@ -10,5 +10,9 @@
   "requires_skills": [
     "create-image-fal",
     "media-proxy"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
   ]
 }

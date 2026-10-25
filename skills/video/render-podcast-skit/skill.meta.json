@@ -21,6 +21,7 @@
   ],
   "requires_tools": [
     "ffmpeg",
-    "python"
+    "python",
+    "ffprobe"
   ]
 }

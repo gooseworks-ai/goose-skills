@@ -37,12 +37,12 @@ A **brand watch** record keeps only: the window and its length in days, the watc
 ## Recommendations and how to check them
 
 The report's "What to do" moves become the record's recommendations. **Owner mapping:** the founder, "whoever runs the website", the ad or content maker → `marketer` (or the maker playbook once it takes the move); waiting for a yes in GooseWorks → `approval page`; this job's next run → `agent`. **Not yet due** (review-by not reached, nothing shows): carried forward, never asked about — recorded with status `open` and its review-by date. Typical tests, with their **baseline recipe**:
-- **A move to compete in the recommended market** (a homepage or category change): the brand's site or brand record shows the new category by <date> — fetch the page; `gooseworks:brain_search` / `brand_read` for the positioning field.
+- **A move to compete in the recommended market** (a homepage or category change): the brand's site or brand record shows the new category by <date> — fetch the page; `gooseworks:brand_knowledge_search` / `brand_read` for the positioning field.
 - **A post or content move on a trend or a voice's topic:** posted by its post-by date — `gooseworks:social_post_list`; its result belongs to analyze-performance.
 - **Running audience research** (when there were no buyer groups): `research/audience/buyer-groups.md` exists by <date>.
 - **A risk alert:** handled or not, from the marketer's answer only; never inferred.
 
-`outcome_sources` = the brand's own sitemap, blog feed and pages (fetch; a planned page is matched by the title or slug stored in "how we'll know"), `gooseworks:brain_search` (or `brand_read`), `social_post_list`, the workspace files of research-audience and analyze-performance.
+`outcome_sources` = the brand's own sitemap, blog feed and pages (fetch; a planned page is matched by the title or slug stored in "how we'll know"), `gooseworks:brand_knowledge_search` (or `brand_read`), `social_post_list`, the workspace files of research-audience and analyze-performance.
 
 ## The founder's answers
 
@@ -56,7 +56,7 @@ Run-memory's scheduled rules apply in full. Free reads only; ask nothing; `unkno
 
 ```text
 Market pulse (monthly, nobody present) for brand <brand name> (<brand_id>), workspace scope <scope>. Method version <version>, copied <date>. Read with file_read: research/market/method/pulse.md, listening.md, run-memory.md, and shared/*.md as referred to. Ask nothing; free reads only unless a ceiling is named below; never accept a proposal.
-1. Start: the last record is the newest under runs/research-market/market-pulse/ or runs/research-market/market-research/ (either). None → first tracked run; an earlier report in research/market/ gives the before, labelled with its date. Check each open recommendation from a source (sitemap, blog feed, pages, social_post_list, brain_search or brand_read, research/audience/ files); not due yet → keep open, don't ask.
+1. Start: the last record is the newest under runs/research-market/market-pulse/ or runs/research-market/market-research/ (either). None → first tracked run; an earlier report in research/market/ gives the before, labelled with its date. Check each open recommendation from a source (sitemap, blog feed, pages, social_post_list, brand_knowledge_search or brand_read, research/audience/ files); not due yet → keep open, don't ask.
 2. Re-read free: news for the brand and the category, the pricing pages in the last pricing table, Google Trends where it opens, what people are saying (listening.md, report mode, its depth caps). Compare with the record's numbers.
 3. Write a one-page pulse report (research/market/<YYYY-MM-DD>-read.md, title "Market pulse — <brand name> — <YYYY-MM-DD>", tags research-market, market-pulse; In short: what was re-read since <last run date>, the 2–3 changes with how sure, then "So, do this first (because of …)"; unknown statuses once in Decisions for you) and import it; a serious risk goes in "Act now".
 4. Write the run record at runs/research-market/market-pulse/<YYYY-MM-DD>.md (title "Run record — market pulse — <brand name> — <YYYY-MM-DD>", tags research-market, run-record; keep-history; import). If an import answer shows a price, skip it, keep the file, say so. A run that couldn't read its sources writes "Not run: <why>".

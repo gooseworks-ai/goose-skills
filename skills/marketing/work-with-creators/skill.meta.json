@@ -39,7 +39,7 @@
     "Find LinkedIn, YouTube, newsletter or podcast creators for our B2B product"
   ],
   "reads": [
-    "Brand Brain when brain_* tools are listed: brain_map first (core rules, never-list, waiting items, products, audience, rivals, 14, 22, 23), brain_search for creators in talks and past deals; fallback brand_read + knowledge_search",
+    "Brand Brain when brand_knowledge_* tools are listed: brand_knowledge_browse first (core rules, never-list, waiting items, products, audience, rivals, 14, 22, 23), brand_knowledge_search for creators in talks and past deals; fallback brand_read + knowledge_search",
     "claims: sign-off and 'Claims you may use' / dont / must facts via claims-gate (written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
     "brand brain: products with price, brand kit and voice, learnings (GooseWorks brand research and the app; learn-my-brand, unreleased); gift unit cost and who approves spend are usually not on file — asked of the human",
     "brand brain: the brand's and competitors' recent organic posts and the competitor set (research-competitors / server)",
@@ -84,9 +84,9 @@
       "gooseworks:media_list",
       "gooseworks:media_update",
       "gooseworks:automation_list",
-      "gooseworks:brain_map",
-      "gooseworks:brain_open",
-      "gooseworks:brain_search"
+      "gooseworks:brand_knowledge_browse",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_search"
     ]
   }
 }

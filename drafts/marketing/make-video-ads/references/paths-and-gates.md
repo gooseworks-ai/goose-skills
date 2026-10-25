@@ -30,7 +30,7 @@ Both: the final video comes back for the human's keep/reject (`video_review`) â€
 | Routes | Styles, reference remix, owned-footage cuts | Ready-made styles only; references as structure inspiration ("remaking that exact ad needs the desktop or terminal app") |
 | Precondition | â€” | `account_whoami` `coworker_enabled` |
 | Uploads | `media_upload` `file` (presigned) for large clips | `bytes` up to ~8 MB; larger files: the human uploads in the GooseWorks app library, then `media_search` finds them |
-| Make | `video_make`'s next step runs here (the gate question says the video maker will be set up on their computer) | The GooseWorks coworker makes it; tell the human it will appear here and end the turn; on return find it with `video_read` |
+| Make | `video_production`'s next step runs here (the gate question says the video maker will be set up on their computer) | The GooseWorks coworker makes it; tell the human it will appear here and end the turn; on return find it with `video_read` |
 | Review | `video_read` + `media_analyze` on the render; you may also download and view frames | `video_read` + `media_analyze` on the render |
 | Never | Show a make command the app starts itself | Ask the human to install or run anything |
 

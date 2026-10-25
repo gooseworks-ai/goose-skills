@@ -5,11 +5,11 @@ Load when the ask is a replan ("plan next month", "rebalance the budget", a trig
 ## Monthly replan
 
 Reads, in order (run-memory's Start steps, `run-memory.md`, do the reading and score last month's bets):
-0. The last plan record and its bets — `runs/plan-campaign/campaign-plan/<slug>/`; then analyze-performance's monthly and weekly run records and run-paid-campaigns' run records since that date (scorecards, money moves with their verdicts). With `brain_*` tools, chapter 23 readouts and worn-out angles and chapter 20 decisions and experiments.
+0. The last plan record and its bets — `runs/plan-campaign/campaign-plan/<slug>/`; then analyze-performance's monthly and weekly run records and run-paid-campaigns' run records since that date (scorecards, money moves with their verdicts). With `brand_knowledge_*` tools, chapter 23 readouts and worn-out angles and chapter 20 decisions and experiments.
 1. The current campaign record(s) — `campaign_read` — the brief, its targets, test plan and channel decisions.
 2. The last four weekly performance reads and the latest monthly unit-economics read from analyze-performance (`reports/performance/` in the brand's coworker workspace).
 3. The change log from run-paid-campaigns — the `### YYYY-MM-DD — <title>` blocks of `ads/campaigns/<slug>/decisions.md` (its own and the server's Meta outcomes: approved, declined, paused) and the open recommendations in `state.md` — what was actually done, so results are not credited to moves that never happened.
-4. The learnings log (`brain_map` chapters 14 and 23 where listed; else `brand_read` learnings and `knowledge_search` `source_types: ["learning"]`).
+4. The learnings log (`brand_knowledge_browse` chapters 14 and 23 where listed; else `brand_read` learnings and `knowledge_search` `source_types: ["learning"]`).
 5. Anything new: stock, offers, the promo calendar for the coming month, a competitor digest.
 
 Then:

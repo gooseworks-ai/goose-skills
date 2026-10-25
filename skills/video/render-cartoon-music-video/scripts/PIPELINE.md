@@ -1,7 +1,7 @@
 # Pipeline — cartoon music-video
 
 How `config.example.json` maps to the real production steps. This molecule ships a
-**config + this map**, not a bundled runner: the worked example (Coinmesa "Bet on anything")
+**config + this map**, not a bundled runner: the worked example (Sudsabout "Fresh by morning")
 was produced by the video-orchestrator's per-state steps plus two per-project drivers that
 live in that project's own `scripts/` folder (`stitch.py`, `rebuild_captions.py`).
 Reference those directly, or drive the whole run via `video-orchestrator-with-control-plane`.
@@ -32,12 +32,12 @@ assembly stitches all of it with the logo bug + end card.
 
 **Lock the song FIRST — it sets the timeline.** Either feed `song.structure` + `song.prompt`
 to ElevenLabs `music_v1` (`source: generate`), or ingest a user-supplied mp3 (`source:
-user_supplied`, the Coinmesa path — the mp3 landed before the API call could fire). Get
+user_supplied`, the demo path — the mp3 landed before the API call could fire). Get
 word-level timestamps: native from `music_v1`, or Groq `whisper-large-v3` word-level for a
 supplied track → `audio/word-timestamps.json`. Then `librosa.beat.beat_track` → `audio/beats.json`
 + `audio/bars.json` (4/4). **The BAR GRID sets the timeline** — one bar = one shot (default);
 snap every `tableaux[].t_start/t_end` to the bar boundaries. The delivered track often shifts
-tempo (brief said 124 BPM; the track landed at 73.83 BPM half-time). **Strip `[…]` section
+tempo (the demo track landed at 73.83 BPM half-time, not the planned tempo). **Strip `[…]` section
 markers from the lyric text before any music-gen call** — the model sings them literally
 ("CTA, two bars"). Trim the degraded outro (`recommended_trim_end_s` = 51.9).
 
@@ -64,18 +64,18 @@ without it the model reads "miniature" by adding a scale-reference prop. Review 
 ## 4. Clips → Seedance 2.0 i2v  (config: `tableaux[].motion_hint`, `clip_engine`)  [PAID]
 
 Per keyframe, build the prompt as `clip_engine.motion_opener` + `tableaux[i].motion_hint` and
-call `seedance_2_0` image-to-video, `--duration 4`, 9:16, off the clean keyframe → `generated/animated/scene-NN.mp4`.
+run the `clip_engine.model` image-to-video model (`seedance_2_0` in the example config), `--duration 4`, 9:16, off the clean keyframe → `generated/animated/scene-NN.mp4`.
 **Lead with the CHARACTER VERB, not the camera move** — camera-led openers ("slow push-in…")
 read static; this was the single biggest v1→v4 quality jump. Auto-fall back to `veo3_1_lite`
-when Seedance returns `ip_detected` (Oscar-trophy shapes) or `nsfw` ("intimate"/"leans toward"
-false positives — S03, S05). Pre-flight the prompt strategy on scenes 1/mid/climax before
+when Seedance returns `ip_detected` (trophy- or logo-like shapes) or `nsfw` ("intimate"/"leans toward"
+false positives). Pre-flight the prompt strategy on scenes 1/mid/climax before
 firing all N. Batches of 3.
 
 ## 5. Captions → `scripts/rebuild_captions.py`  (config: `captions`)
 
 Reads the song's `word-timestamps.json` and **re-spells the timed tokens against the locked
-lyrics** (`align_to_lyrics`) — Whisper mishears shouted accents ("BETS" → "Hearts", "WIN" →
-"Went"); never edit the lyrics to match Whisper. Feed a `lyrics-plain.md` (lyric text only, no
+lyrics** (`align_to_lyrics`) — Whisper mishears shouted accents (e.g. "FRESH" → "Flesh", "BACK" →
+"Black"); never edit the lyrics to match Whisper. Feed a `lyrics-plain.md` (lyric text only, no
 bar-grid table) so the parser doesn't ingest 700+ markdown-table "words". It chunks ~4–5 words per
 cue, times each event, and renders VEED-whisper style — clean white **bold sans** in the **BOTTOM
 third** (Alignment 2, `margin_v` above the bottom-left logo bug, NO pill, 6px outline, ≥0.9s on
@@ -84,7 +84,7 @@ screen) — and STOPS captions at `caption_end_s` (= body end = 51.9) so the end
 NOTE: if the host ffmpeg lacks libass (no `subtitles`/`ass` filter), render the cues as timed PIL
 PNG overlays composited with ffmpeg `overlay=…:enable='between(t,st,en)'` instead — same bottom
 placement, no libass dependency.
-The repeated "you called it" ×3 hook had a Whisper gap — hand-patch the chorus repetitions.
+The repeated "you got it" ×3 hook had a Whisper gap — hand-patch the chorus repetitions.
 
 ## 6. Logo bug + end card + assembly → `scripts/stitch.py`  (config: `logo_bug`, `end_card`, `audio_mix`)
 
@@ -92,7 +92,7 @@ The repeated "you called it" ×3 hook had a Whisper gap — hand-patch the choru
   the persistent bottom-left bug (`width_px` 220, `margin_px` 56), burned over the 16 body bars,
   **suppressed on the end card**. **Never AI-render brand text.**
 - `build_endcard()`: cairosvg white wordmark (`wordmark_scale` 0.62) + PIL subhead on a solid
-  `end_card.background` (#0052FF) card → a silent 3.0s end-card mp4. macOS New York Semibold
+  `end_card.background` (#12B5B0) card → a silent 3.0s end-card mp4. macOS New York Semibold
   lacks the em-dash glyph (U+2014) — the subhead uses a middle dot ` · `.
 - Assembly (`stitch.py`): cut each body clip to its bar window from `bars.json`, **hard-cut**
   concat on the bar (the shipped v4 used hard cuts — the tested v5 0.3s xfade read less punchy),

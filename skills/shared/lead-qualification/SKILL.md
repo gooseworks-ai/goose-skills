@@ -17,12 +17,17 @@ Qualify leads against custom criteria through a structured intake process, then 
 ### Mode 1: Full Intake + Qualify
 No existing qualification prompt. Run intake to build one, save it, then qualify leads.
 
-**Trigger:** User provides no qualification prompt file.
+**Trigger:** User provides no qualification prompt.
 
 ### Mode 2: Reuse Prompt + Qualify
-User references an existing qualification prompt file — skip intake, go straight to scoring.
+User supplies an existing qualification prompt — skip intake, go straight to scoring.
 
-**Trigger:** User tags or references a file in `skills/lead-qualification/qualification-prompts/`.
+**Trigger:** User attaches or names a qualification prompt file (for example one saved earlier in
+`qualification-prompts/` in their working directory), or pastes the criteria in the message. If
+the pasted criteria are loose, write them into the structure below first and confirm it with the user.
+
+This skill ships no ready-made prompts: every prompt comes from the user, or the agent writes it
+through intake.
 
 ### Mode 3: Refine / Calibrate
 User has seen results and wants to adjust criteria. Update the saved prompt, re-run.
@@ -95,10 +100,11 @@ This round catches implicit criteria the user hasn't articulated.
 
 ### Generate & Save Qualification Prompt
 
-After intake is complete, synthesize all answers into a structured qualification prompt. Save it to:
+After intake is complete, synthesize all answers into a structured qualification prompt. Save it
+in the user's working directory (or wherever they prefer), so it can be reused next time:
 
 ```
-skills/lead-qualification/qualification-prompts/[campaign-name].md
+qualification-prompts/[campaign-name].md
 ```
 
 The saved prompt MUST follow this structure:
@@ -161,6 +167,28 @@ When evaluating a lead, structure your reasoning as:
 7. Write 2-3 sentence reasoning summarizing the decision.
 ```
 
+**A short example** (fictional company, for shape only):
+
+```markdown
+# Qualification Prompt: Acme Payroll — Seed-Stage Founders
+
+## Campaign Context
+- **Product:** Payroll software for small startups
+- **Campaign Angle:** Founders who just raised a seed round and are making their first hires
+
+## Hard Disqualifiers (Instant No)
+- Agencies and consultancies (they resell, they don't buy)
+- Companies with more than 200 employees
+
+## Hard Qualifiers (Instant Yes)
+- Founder or CEO at a US startup that raised a seed round in the last 6 months
+
+## Person Criteria
+| Criterion | Qualified | Disqualified | Notes |
+|-----------|-----------|--------------|-------|
+| Titles | Founder, CEO, COO, Head of People | Engineer (IC), Intern | A founder qualifies in any department |
+```
+
 ---
 
 ## Phase 2: Lead Qualification
@@ -186,19 +214,21 @@ Before LLM qualification, batch-enrich all leads to gather structured profile da
 **Run the enrichment script:**
 
 ```bash
-python3 skills/lead-qualification/scripts/enrich_leads.py INPUT_CSV \
+python3 scripts/enrich_leads.py INPUT_CSV \
   --output ENRICHED_CSV \
   --cache-hours 24
 ```
 
-Use `--dry-run` first to show the cost estimate without calling Apify.
+Run it from this skill's folder. It runs on the user's GooseWorks credits through the GooseWorks Apify proxy when `GOOSEWORKS_API_KEY` is set; the user's own `APIFY_API_TOKEN` is only a fallback when it is not. Never ask the user for an Apify token.
+
+This is a paid run, billed for the actual run when it ends; there is no price quote before it. Run `--dry-run` first: it counts the profiles a real run would scrape (after the cache) without calling anything. Tell the user that count and that it is paid from their GooseWorks credits, and run it only after their yes.
 
 **What this does:**
 1. Reads all LinkedIn URLs from the input CSV
 2. Checks local cache (24h default) — skips profiles already enriched
 3. Sends uncached URLs to Apify in batches of 50
 4. Returns enriched CSV with: `enriched_title`, `enriched_company`, `enriched_industry`, `enriched_location`, `enriched_connections`, `enriched_education`, `enriched_experience_years`, `enriched_headline`, `enriched_about`, `enrichment_status`
-5. Cost: ~$3 per 1,000 profiles (~$0.03 per 100 leads)
+5. Charges GooseWorks credits for the actual run; cached profiles cost nothing
 
 **After enrichment, use the enriched CSV as input for Steps 2-4.** The enriched data lets the LLM qualification step work from structured fields instead of doing web searches, dramatically improving speed and consistency.
 
@@ -242,7 +272,7 @@ Once calibration is approved, process ALL remaining leads using parallel subagen
 
 2. **Prepare batch inputs:**
    For each batch, create a self-contained context package:
-   - The full qualification prompt (from `qualification-prompts/` file)
+   - The full qualification prompt (the saved or supplied prompt)
    - The batch of lead rows (with ALL columns including enriched data from Step 1.5)
    - Instructions for output format: Name, Qualified (Yes/No), Confidence (High/Medium/Low), Reasoning (2-3 sentences)
    - Instruction: "For leads with `enrichment_status=failed` or `no_url`, do a quick web search. Spend no more than 30 seconds per lead on search."
@@ -320,7 +350,7 @@ After output is complete, present a summary:
 3. [reason] — X leads
 
 **Output:** [Google Sheet link or CSV path]
-**Qualification prompt saved to:** skills/lead-qualification/qualification-prompts/[campaign-name].md
+**Qualification prompt saved to:** qualification-prompts/[campaign-name].md
 ```
 
 ---
@@ -330,9 +360,9 @@ After output is complete, present a summary:
 The qualification agent should have access to:
 
 - **Apify LinkedIn Enrichment** — `scripts/enrich_leads.py` for batch profile enrichment before qualification
-  - Uses `harvestapi~linkedin-profile-scraper` Apify actor ($3/1k profiles, no cookies)
-  - Requires `APIFY_API_TOKEN` environment variable
-  - Run with `--dry-run` first to preview cost
+  - Uses the `harvestapi~linkedin-profile-scraper` Apify actor (no cookies)
+  - Runs on GooseWorks credits through the GooseWorks Apify proxy with `GOOSEWORKS_API_KEY`; the user's own `APIFY_API_TOKEN` is a fallback only
+  - Run with `--dry-run` first to count the profiles, then get the user's yes before the paid run
 - **Web Search** — to research leads when enrichment data is sparse or missing
 - **Fetch (web page)** — to pull LinkedIn profiles, company pages, etc.
 - **Read/Write** — for CSV I/O and saving qualification prompts
@@ -351,14 +381,14 @@ Qualify leads for our outbound campaign. Here's the lead list: leads.csv
 
 ### Reuse existing prompt:
 ```
-Qualify these leads using @skills/lead-qualification/qualification-prompts/series-a-founders.md
+Qualify these leads using @qualification-prompts/seed-founders.md
 — lead list: leads.csv
 ```
 → Agent skips intake, goes straight to calibration + qualification.
 
 ### Qualify LinkedIn profiles directly:
 ```
-Using the series-a-founders qualification prompt, qualify these people:
+Using the seed-founders qualification prompt, qualify these people:
 - https://linkedin.com/in/person1
 - https://linkedin.com/in/person2
 - https://linkedin.com/in/person3

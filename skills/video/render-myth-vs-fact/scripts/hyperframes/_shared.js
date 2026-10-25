@@ -1,5 +1,5 @@
 // render-myth-vs-fact — shared helpers + renderer init for hyperframes.
-// Ported (generalized, brand-neutral) from the validated Dermwise "acne myths" run.
+// Ported (generalized, brand-neutral) from the validated demo build.
 //
 // Each beat's HTML calls initRenderer(duration, renderFn) at the end of its <script>.
 // initRenderer wires up window.renderAt(t) for the headless renderer (render_beats.py

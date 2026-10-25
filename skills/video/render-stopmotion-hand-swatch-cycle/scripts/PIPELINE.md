@@ -1,7 +1,7 @@
 # Pipeline — stop-motion hand-swatch-cycle
 
 How `config.example.json` maps to the real production steps. This capability ships a **config + this
-map**, not a bundled runner: the worked example (Solenne Beauty "Pick Your Match") was produced by the
+map**, not a bundled runner: the worked example (Kestrel Art Supply "Swipe Your Color") was produced by the
 shared stop-motion template scripts plus a per-project plate spec — `generate_plates.py`,
 `build_video.py`, `render_endcard.py`, `finalize_video.py` / `add_endcard_and_music.py` — driven by
 a plate spec (`plates-v3.json`). Reference those directly, or drive the whole run via the video
@@ -27,8 +27,8 @@ cadence, the plate mp4s concat into a silent master, and the end card + music cl
 ## 1. Master-anchor plate → `gpt-image-2`  (config: `anchor`, `background`, `plate_engine`)  [PAID]
 
 **Generate the master-anchor FIRST — it locks the frame.** One `gpt-image-2` render: the chosen hand
-(the demo's fair hand) in the lower-left third holding the barrel, the EMPTY test surface (the demo's
-cream skin-patch) in the upper-right third, on the chosen background (the demo's bubblegum pink), grounded on a product-hero ref. The `background.hand` + `.skin_patch`
+(the demo's medium-tan hand) in the lower-left third holding the product (the demo's oil-pastel stick), the EMPTY test surface (the demo's
+round paper card) in the upper-right third, on the chosen background (the demo's mustard yellow), grounded on a product-hero ref. The `background.hand` + `.skin_patch`
 + `.lighting` + `.camera` constants are held **verbatim** here and in every subsequent plate so the
 frame never moves. This plate is the LOCK for the whole cycle.
 
@@ -54,7 +54,7 @@ hero BG.
 Encode each plate PNG→mp4 at its own `pose_hold_ms` (`ffmpeg -loop 1 -t <hold>`, scale/crop to
 1080×1920 @ 30fps crf18) — motion / half-painted plates 150–250ms, per-shade ~380ms (or ~1000ms for a
 slower cycle), hero / bookend beats 1100–1800ms — then concat-**demux** the plate mp4s in order
-(`ffmpeg -f concat`) into the silent master. HARD cuts between plates, no dissolves. Solenne v3 ran 27
+(`ffmpeg -f concat`) into the silent master. HARD cuts between plates, no dissolves. The demo ran 27
 plate clips (15 unique plates, some reused across the cycle). Concat-demux (not `filter_complex`) is
 correct because the plates are silent stills. Free — a re-cut reuses the existing plate PNGs.
 

@@ -34,7 +34,7 @@ is not a defect:
     left alone, so a brand "MG" never becomes "milligrams")
   - URLs: "example.com" == "example dot com"; a leading "www." is optional
   - contractions: "don't" == "do not", "can't" == "cannot" == "can not"
-  - fused/split words: "braxleybands" == "braxley bands" (exact concatenation of
+  - fused/split words: "larkfieldstraps" == "larkfield straps" (exact concatenation of
     2-3 words only, never fuzzy; letters spelled one by one are NOT fused)
   - confirmed spoken aliases (--alias / --pronunciations): "TG1" == "T G one"
 Always a HIGH failure: a different, added or dropped number, unit or negation;
@@ -671,7 +671,7 @@ def _brand_positions(s_texts: list[str], brand_seqs: list[tuple[str, ...]]) -> s
             if tuple(s_texts[i:i + L]) == seq:
                 pos.update(range(i, i + L))
         if L == 1 and seq[0].isalpha():
-            # brand written split in the script: "Braxley Bands" for --brand-term Braxleybands
+            # brand written split in the script: "Larkfield Straps" for --brand-term Larkfieldstraps
             for k in (2, 3):
                 for i in range(len(s_texts) - k + 1):
                     if "".join(s_texts[i:i + k]) == seq[0]:
@@ -1049,7 +1049,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--brand-term", action="append", default=[], dest="brand_terms",
                     help="brand name (repeatable). Brand words are NEVER removed from the diff: a brand "
                          "word not heard as approved is a HIGH failure; fused/split spellings "
-                         "(braxleybands = braxley bands) count as equal.")
+                         "(larkfieldstraps = larkfield straps) count as equal.")
     ap.add_argument("--alias", action="append", default=[], dest="aliases",
                     help='confirmed spoken form, "TERM=SPOKEN" (repeatable), e.g. --alias "TG1=T G one". '
                          "Only pass forms the user confirmed; never infer one from the transcript.")

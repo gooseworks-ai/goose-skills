@@ -8,8 +8,8 @@ own autocropped UI stills / screen recordings) + the real product photos + the b
 title copy and stitches the finished master. Re-cuts (new beat durations, a swapped card, a re-cropped
 demo, a caption re-chunk, toggled overlays) reuse the existing native clips + overlays and spend nothing.
 
-`config.example.json` is the worked example (Solenne Beauty "5 products that replaced my whole makeup
-bag", ~46s 1080×1920). `PIPELINE.md` maps every config block to its source step. This README
+`config.example.json` is the worked example (Pantrywise Kitchen "5 tools that replaced my whole utensil
+drawer", ~46s 1080×1920). `PIPELINE.md` maps every config block to its source step. This README
 documents the FREE assembly pieces that `render-creator-pip-listicle` owns.
 
 **The one thing to get right:** the creator stays **FULL-FRAME the whole beat** — there is **NO cut

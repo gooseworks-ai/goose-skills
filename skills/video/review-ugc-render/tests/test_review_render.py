@@ -92,15 +92,15 @@ def test_brand_name_misvoicing_flagged_high():
 # and the Brume→Brune row PASSED.
 AUDIT_CASES = [
     ("Take 5mg daily", "Take five milligrams daily", {}, True),
-    ("Visit braxleybands.com today", "Visit braxleybands dot com today", {}, True),
+    ("Visit larkfieldstraps.com today", "Visit larkfieldstraps dot com today", {}, True),
     ("Only 15 dollars", "Only fifteen dollars", {}, True),
     ("Get 30% off now", "Get thirty percent off now", {}, True),
     ("Don't miss it", "Do not miss it", {}, True),
-    ("Meet Braxleybands today", "Meet Braxley Bands today", {"brand_terms": ["Braxleybands"]}, True),
+    ("Meet Larkfieldstraps today", "Meet Larkfield Straps today", {"brand_terms": ["Larkfieldstraps"]}, True),
     ("Meet Drinktg1 now", "Meet drink TG1 now", {"brand_terms": ["Drinktg1"]}, True),
     ("Brume makes the band", "Brune makes the band", {"brand_terms": ["Brume"]}, False),
     ("It costs 49 dollars", "It costs 59 dollars", {}, False),
-    ("Visit braxleybands.com today", "Visit braxley bands dot com today", {}, True),
+    ("Visit larkfieldstraps.com today", "Visit larkfield straps dot com today", {}, True),
     ("Our bands never slip", "Our bands slip", {}, False),
 ]
 
@@ -245,7 +245,7 @@ def test_negation_flip_fails_high():
 # ── Fused / split words ─────────────────────────────────────────────────────
 def test_fused_and_split_words_are_equal():
     _check([
-        ("Meet Braxleybands today", "Meet Braxley Bands today", {}, True),
+        ("Meet Larkfieldstraps today", "Meet Larkfield Straps today", {}, True),
         ("Try Gooseworks today", "Try goose works today", {}, True),
         ("Try Goose Works today", "Try Gooseworks today", {}, True),
         ("Meet Drinktg1 now", "Meet drink TG1 now", {}, True),
@@ -254,7 +254,7 @@ def test_fused_and_split_words_are_equal():
 
 def test_fusion_is_exact_not_fuzzy():
     _check([
-        ("Meet Braxleybands today", "Meet Braxly Bands today", {"brand_terms": ["Braxleybands"]}, False),
+        ("Meet Larkfieldstraps today", "Meet Larkfeld Straps today", {"brand_terms": ["Larkfieldstraps"]}, False),
         ("Try Gooseworks today", "Try goose work today", {"brand_terms": ["Gooseworks"]}, False),
     ])
 

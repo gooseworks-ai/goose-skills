@@ -12,7 +12,7 @@ script and one recurring animated character carries every shot, cut to the bar w
 line on the drop. This capability is the **FREE, deterministic assembly** — cut-to-bar,
 hard-concat, the logo bug + captions burn, and the solid-color end card.
 
-`scripts/config.example.json` is the worked example (Coinmesa "Bet on anything", ~55s 1080×1920
+`scripts/config.example.json` is the worked example (Sudsabout "Fresh by morning", ~55s 1080×1920
 9:16, 16 body bars + a 3s end card — its felt look, character, story and song are that demo's
 picks, never defaults); `scripts/PIPELINE.md` maps every config block to its source
 step and `scripts/README.md` documents the free assembly.
@@ -23,7 +23,7 @@ The creative calls are the caller's (the video-format recipe asks the user); thi
 never picks them. The demo's value is an example only:
 
 - **Art style / look pack** (felt stop-motion, claymation, 2D toon, cut-out…) — demo: felt-and-foam diorama.
-- **Character** — the ONE recurring animated figure — demo: a gender-neutral felt figure in a brand-blue jersey.
+- **Character** — the ONE recurring animated figure — demo: a gender-neutral felt figure in a brand-teal hoodie.
 - **Story arc** — demo: underdog payoff.
 - **Song style + lead vocal** — demo: hype dance-pop / EDM-trap, male half-rapped lead.
 
@@ -47,7 +47,7 @@ keyframes / clips and spend nothing.
   (assume 4/4); one bar = one shot (default). Snap every tableau window to the bar boundaries —
   never trim the song to a pre-planned grid.
 - **Captions from the song's word timings, re-spelled against the locked lyrics.** Whisper
-  mishears shouted accents ("BETS" → "Hearts"); re-spell the timed tokens against the locked
+  mishears shouted accents (e.g. "FRESH" → "Flesh"); re-spell the timed tokens against the locked
   lyric file (never edit lyrics to match Whisper). VEED-whisper white **bold sans** in the
   **BOTTOM third** (Alignment 2, `margin_v` above the bottom-left logo bug), ~4–5 words per cue,
   NO background pill; captions STOP at the end-card boundary. Never mid-frame — it covers the

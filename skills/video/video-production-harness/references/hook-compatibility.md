@@ -2,7 +2,7 @@
 
 A new opening must lead into the body's real proof and payoff. A compatible hook test stays local to the opening; a new promise needs a script and body proposal. Compare complete videos before choosing.
 
-Use [[composes::render-hook-replacement]] when it is actually available; this guide adds the editorial decisions, not a second renderer.
+Use the `render-hook-replacement` skill when it is actually available; this guide adds the editorial decisions, not a second renderer.
 
 ---
 

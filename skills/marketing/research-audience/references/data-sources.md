@@ -53,7 +53,7 @@ What it adds, in plain words: confirming titles hidden on public pages, firmogra
 
 Paths are from the provider's public documentation as checked on 2026-10-16. The live tool is the truth: if a path is refused or changed, say so in one line and use another route. Never put a key, token or secret in a query.
 
-Not usable for this playbook even though it exists: `/v1/find-creator-emails` (built for creators' public business emails — fine for work-with-creators, not for B2B people); `/v1/detect-age-gender` (never infer protected traits about prospects).
+Not usable for this playbook even though it exists: `/v1/detect-age-gender` (never infer protected traits about prospects). There is no creator-email or social-profile finder on the proxy: work emails come only from the managed reads below.
 
 ## Managed people and work-contact reads
 
@@ -61,8 +61,8 @@ Load the two managed marketing data tools. Call `marketing_data_describe` for th
 
 1. **Search before you pay per person.** People search returns a count and a sample first — show "≈<n> match; here are 10" in the report before any reveals. One broad search ("<titles> at <industry> companies, <size>, <country>") beats one search per company; list title variants with OR; use explicit title lists, never seniority buckets (they pull in juniors and recruiters); filter companies by domain.
 2. **Accounts before people, still.** Only accounts that passed the gates get people looked up.
-3. **Cheapest route first, stop early.** Per account: the public pages you already read → the cheapest finder → the next. Stop at three good people per account (company matches, title matches a target); per person, stop at the first found address the checker passes. Merge and dedupe by profile URL at every step.
-4. **Check every address before it counts as sendable** — one checker by default; a second only when the first says `unknown`. `valid` → `verified-by-tool (<checker>, <date>)`; `accept_all` → `catch-all` (small batches only); `unknown` → re-check later, not sendable yet; `invalid` → drop the address (keep the row if another route exists). Disposable or webmail → drop for person rows at companies with their own domain. Two checkers agree → high confidence; one finder alone (no check) → never "verified".
+3. **Public pages first, stop early.** Per account: the public pages you already read, then the one managed finder (`work_email_find`) for the people still missing an address. Stop at three good people per account (company matches, title matches a target); per person, one find, and it counts only once the checker passes it. Merge and dedupe by profile URL at every step.
+4. **Check every address before it counts as sendable** — with the one managed checker (`work_email_verify`). There is no second checker. `valid` → `verified-by-tool (work_email_verify, <date>)`; `accept_all` → `catch-all` (small batches only); `unknown` → re-check later, not sendable yet; `invalid` → drop the address (keep the row if the public pages give another route). Disposable or webmail → drop for person rows at companies with their own domain. A found address with no check → never "verified".
 5. **Never:** phone finders or "enrich mobile" options, "personal" email modes, reveal-by-name when a record id exists, the deprecated free people search that hides surnames.
 6. **Log** every charge (query kind and count, never a person's name or address) and stop before the next call could pass the ceiling.
 

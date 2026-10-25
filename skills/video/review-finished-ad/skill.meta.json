@@ -6,5 +6,9 @@
   "tags": [
     "ads",
     "brand"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
   ]
 }

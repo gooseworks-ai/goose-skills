@@ -14,6 +14,8 @@
  *     for a playbook's step, the playbook that runs it), because only listed
  *     dependencies are delivered with the skill;
  *   - no old-layout path (`ATOM.md`, `../../atoms/…`, `foundation/…`) is left;
+ *   - no goose-lab wikilink (`[[type::slug]]`): readers of this catalog cannot follow one,
+ *     so name the skill in words ("the `slug` skill");
  *   - requires_skills is flat: a skill also lists what each skill it requires
  *     needs (a required playbook is not expanded).
  *
@@ -83,6 +85,9 @@ for (const e of entries) {
     for (const re of STALE) {
       const m = text.match(re);
       if (m) errors.push(`${rel}: old-layout path "${m[0].trim()}"`);
+    }
+    for (const m of text.matchAll(/\[\[[a-z-]+::[a-z0-9-]+\]\]/g)) {
+      errors.push(`${rel}: goose-lab wikilink ${m[0]}; write "the \`${m[0].slice(2, -2).split('::')[1]}\` skill"`);
     }
     const targets = [];
     for (const m of text.matchAll(LINK)) targets.push(m[1]);

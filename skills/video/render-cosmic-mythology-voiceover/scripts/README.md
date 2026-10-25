@@ -8,8 +8,8 @@ separate capabilities — `create-vo-elevenlabs`, `create-image-fal`. This capab
 windows, new hook timing, caption chunking, zoom params) reuse the existing VO / stills and spend
 nothing.
 
-`config.example.json` is the worked example (Starwhim "Saturn isn't your villain", ~31s
-1080×1920) — its script, voice, look and shots are the demo's; the recipe's choices supply yours. `PIPELINE.md` maps every config block to its source step. This README documents the
+`config.example.json` is the worked example (Peerlark Optics "The North Star isn't the brightest", ~31s
+1080×1920) — its script, voice, look and shots are the demo's; the recipe's choices supply yours. `PIPELINE.md` maps every config block to its production step. This README documents the
 FREE assembly pieces that `render-cosmic-mythology-voiceover` owns.
 
 ## 0. Run it — `render.py` (config-driven, portable)
@@ -38,7 +38,7 @@ stills for free.
 
 The delivered VO duration sets the timeline. For each cut in `sequence.cuts[]`, the cut duration is
 `cut_dur = VO_dur × weight / Σweights` — so heavier weights **hold longer** on the emotional beats
-(in the demo: the open, the reframe, the "he builds you" close) and the lighter setup cuts run shorter. Every
+(in the demo: the open, the reframe, the "look north" close) and the lighter setup cuts run shorter. Every
 cut stays proportional to the whole VO; never trim the VO to a pre-planned grid. Stills are
 reusable — the sequence repeats a few across the ~10–12 cuts.
 

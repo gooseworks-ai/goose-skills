@@ -1,17 +1,15 @@
 # PIPELINE — flat-vector-explainer engine map
 
 This molecule is **documentation-grade**. Rather than re-implement a 14-scene Remotion
-app here, it maps every `config.json` field to the **real, runnable script** that
-produced the worked example. The executable reference is the source project's own folder (the
-run that made the demo).
+app here, it maps every `config.json` field to the **per-project script** that
+builds that step of the demo. Those scripts are not shipped here.
 
-Its `HOW_TO.md` + `LEARNINGS.md` are the authoritative v3 recipe (Kling i2v + Remotion
-overlay). Run the pipeline there (or port these scripts into a new brand's project
-folder), then bring the config here as the recipe of record.
+Port or rebuild them in the new brand's project folder (Kling i2v + Remotion overlay),
+run the pipeline there, then keep the config here as the recipe of record.
 
 **The demo's creative values are examples, not defaults.** The host, setting, tone, narrator
 voice and music come from the recipe's `choices` (`host`, `setting`, `tone`,
-`narrator_voice`, `music`). The demo (a late-20s woman at a bathroom counter, faintly
+`narrator_voice`, `music`). The demo (a mid-30s woman at a sunny windowsill, faintly
 comedic, "Eryn" VO, lo-fi pop) is one worked example.
 
 ## Config field → source script
@@ -40,7 +38,7 @@ comedic, "Eryn" VO, lo-fi pop) is one worked example.
 2. **Real assets ≠ AI assets.** `build_scene08.py` PIL-composites the real product webps.
    AI gen duplicates SKUs in a grid — it is only for the character vignettes + backgrounds.
 
-## The cut-down trap (LEARNINGS L6)
+## The cut-down trap
 
 `build_30s.py` MUST slice from `working/silent-master.mp4` (the Kling-animated master),
 NOT from `working/segs/` (an earlier static Ken-Burns round). The mtime is the tell.

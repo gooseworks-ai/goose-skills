@@ -1,11 +1,8 @@
 ---
 name: create-video-seedance-2-fal
 description: Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (charged to your GooseWorks credits). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.
-owner: team
 status: superseded
 version: "2.0.5"
-created: 2026-05-26
-updated: 2026-10-16
 superseded_by: video-seedance-2@1.3.0
 ---
 
@@ -41,7 +38,7 @@ Use this atom when:
 Required:
 - `--prompt` — structured prompt block (see "Prompt template" below). Long, multi-block.
 - `--output` — local MP4 destination.
-- `--image-url` (alias `--image-ref`) — at least one **PUBLIC** reference image URL (repeatable), passed as `image_urls`. Order matters — first = `@Image1` in prompt addressing. The proxy does NOT upload local files: host local refs via MCP `get_upload_url` → `get_download_url` and pass the URL (identical to `create-video-fal`).
+- `--image-url` (alias `--image-ref`) — at least one **PUBLIC** reference image URL (repeatable), passed as `image_urls`. Order matters — first = `@Image1` in prompt addressing. The proxy does NOT upload local files: host each local ref with MCP `file_url`: call it with `mode: "upload"` and a `path`, PUT the file to the returned `url`, then call it again with `mode: "download"` and the same `path`, and pass that `url` (set `expires_in_seconds` up to `3600` so it outlives the render).
 
 Optional:
 - `--resolution` — `480p` | `720p` (default) | `1080p`. No video above 720p unless the customer asks (16 Oct 2026): pass `1080p` only then.
@@ -244,8 +241,13 @@ Full template reference: `prompt-example.md`.
 
 A Seedance submit is billed as soon as it is accepted. The media proxy saves every submit's `request_id` (in `~/.gooseworks/pending-fal-jobs/`) before it starts polling, so a lost poller or a crashed shell never loses the render.
 
-1. List what can be resumed: `media-proxy`'s `resume.py --list`.
-2. Re-attach and download: `resume.py --request-id <id> --out <output>.mp4` (or `resume_fal(request_id)` in Python). It never re-submits, so it can't charge twice.
+Use the bundled `scripts/media_proxy.py` (run from this skill's folder):
+
+1. List what can be resumed:
+   `python3 -c "import sys; sys.path.insert(0, 'scripts'); from media_proxy import list_pending; print(list_pending())"`
+2. Re-attach and download:
+   `python3 -c "import sys; sys.path.insert(0, 'scripts'); from media_proxy import resume_fal, download; r = resume_fal('<request_id>'); download(r['video']['url'], '<output>.mp4')"`.
+   `resume_fal` never re-submits, so it can't charge twice.
 3. Save the seed and request id next to the clip (`<output>.mp4.meta.json`) so later calls can reuse the seed for continuity.
 
 ## References

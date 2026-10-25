@@ -3,7 +3,6 @@ name: media-proxy
 description: Shared helper that routes ALL paid media generation (FAL image/video, ElevenLabs music) through the GooseWorks proxies so every call is charged to your GooseWorks credits — never a provider SDK's default host. Host-swaps the FAL queue URLs, loads the agent token from the sandbox env (GW_MEDIA_PROXY_TOKEN) or ~/.gooseworks/credentials.json, and returns the result CDN URL. Every video-ad media capability imports this; templates never call a provider directly.
 status: active
 version: "2.0.6"
-updated: 2026-10-16
 ---
 
 # media-proxy
@@ -168,7 +167,7 @@ for that input's own ingredient_key + digest first, or the digest never matches.
   poll `queue.fal.run` directly (401 + burns credits).
 - **FAL inputs that are local files must be PUBLIC urls.** The orchestrator hosts a
   local image/audio with the MCP `media_upload` (its returned url) and
-  passes THAT url in, or call `fal_upload(path)`, which puts the file on the fal CDN
+  passes THAT url in, or use this module's `fal_upload(path)` function, which puts the file on the fal CDN
   through the fal-storage-proxy (free, verified 2026-09-28) and returns its public url.
 - **Only the final `*.fal.media` url is a real public URL** — everything else is behind
   the proxy.
@@ -218,10 +217,9 @@ file over instead of its contents:
    `media` row and an `upload` block.
 2. PUT the file to `upload.url` with `upload.method` and `upload.required_headers`
    (`curl -X PUT -T <file> "<upload.url>"`).
-3. Finish the upload. With the current actions `media_upload` finishes it itself once the
-   PUT lands; a connector that still exposes a separate confirm action needs that call
-   after the PUT, and `media.status` stays `pending` until then. Only a finished upload's
-   `media.id` is accepted.
+3. Finish the upload: after the PUT, call `media_confirm` with `brand_id` and `media_id`
+   (the `media.id` from step 1). The upload is not finished until then: `media.status`
+   stays `pending`, and a pending `media.id` is refused as `body_asset_id`.
 4. Send the compact call with that `media.id` as `body_asset_id` and omit `body`.
 
 A connector whose `media_upload` takes source `bytes` (base64 inline, up to about 8 MB)

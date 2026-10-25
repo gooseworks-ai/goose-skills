@@ -17,8 +17,8 @@ is the **FREE assembly stage only**. All generative work (nano-banana keyframes,
 i2v clips, ElevenLabs VO + music) happens upstream in the recipe and is handed to this
 capability as files.
 
-It ports the validated compose recipe from two reference runs (a cortisol/stress
-supplement and a baby-eczema cream; both happened to use the villain arc). The recipe is
+It ports the compose recipe validated on two earlier reference runs (both happened to
+use the villain arc). The recipe is
 deterministic — iterate the cut for free, re-roll only the offending paid beat.
 
 ## Choices
@@ -86,8 +86,8 @@ story shape, a cast, a look, a narrator or a music style.
   concat -> static end card (voiced if `end_card.vo` is set) -> VO/music loudnorm mix
   -> master loudness pass -> burn captions -> master mp4.
 - `scripts/config.example.json` — the shape of the `config` the recipe binds. Its values
-  are a labelled worked example (the demo build: a villain-arc eczema story, placeholder
-  brand).
+  are a labelled worked example (the demo build: a villain-arc story where Rust
+  loses to Glidefern, a made-up bike-chain wax).
   Captions, end-card copy and palette come from the user's brand and choices — never copy
   them as defaults.
 

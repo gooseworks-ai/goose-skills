@@ -28,7 +28,7 @@ Research and opening-only diagnostic: 2026-10-03.
 | [Faber Academy: dialogue](https://faberacademy.com/reading-room/writing-exercises/how-to-write-better-dialogue/) | Intentions, relationships and the moment shape what people say. Read dialogue aloud; avoid characters explaining facts solely for the reader. | A street-ad example or instructions to add fictional conflict to every interview. |
 
 These are technique sources. **They do not replace the complete commercial reference**
-required by [[references::render-street-interview]]. No human script authorship, advertising
+required by the `render-street-interview` skill. No human script authorship, advertising
 performance or accepted benchmark score is inferred from a real person appearing on camera.
 
 ### One observed published opening

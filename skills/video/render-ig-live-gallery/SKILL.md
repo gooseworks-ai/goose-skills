@@ -25,7 +25,7 @@ python3 scripts/build.py --config config.json --assets <stills-dir> --out master
 python3 scripts/build.py --config config.json --assets <stills-dir> --stills <dir>
 ```
 
-`config.example.json` is a full worked config (the fictional brand Dewlark) — its phrases, comments, payoff and
+`config.example.json` is a full worked config (the fictional stationery brand Inkwren) — its phrases, comments, payoff and
 music prompt are that demo's creative answers, not defaults. Config shape:
 
 - `username`, `verified`, `palette`, `slide_dur`, `endcard_dur`, `crossfade`
@@ -39,9 +39,9 @@ Image paths in the config resolve against `--assets`.
 
 The recipe asks the user these before any paid step; the renderer just draws what the config says.
 
-- `slide_story` — what the slides show and how the sentence builds → `slides[].image`, `slides[].phrase`, `endcard.payoff`. Asked of the user; the demo used a makeup routine, one product per step.
-- `copy_tone` — voice of the phrases and live comments → `slides[].phrase`, `slides[].comments`. Asked of the user; the demo used a soft, effortless beauty voice.
-- `music` — the bed's genre/mood → `music.prompt`. Asked of the user; the demo used soft dreamy pads + bells.
+- `slide_story` — what the slides show and how the sentence builds → `slides[].image`, `slides[].phrase`, `endcard.payoff`. Asked of the user; the demo used a journaling routine, one product per step.
+- `copy_tone` — voice of the phrases and live comments → `slides[].phrase`, `slides[].comments`. Asked of the user; the demo used a cozy, unhurried voice.
+- `music` — the bed's genre/mood → `music.prompt`. Asked of the user; the demo used cozy lo-fi keys + bells.
 
 ## Craft rules (baked into the renderer)
 

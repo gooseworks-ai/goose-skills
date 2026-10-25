@@ -60,7 +60,7 @@
       "gooseworks:video_create",
       "gooseworks:video_change",
       "gooseworks:video_approve",
-      "gooseworks:video_make",
+      "gooseworks:video_production",
       "gooseworks:video_read",
       "gooseworks:video_fix",
       "gooseworks:video_review",

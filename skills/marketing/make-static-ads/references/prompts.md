@@ -6,13 +6,13 @@ The idea survives generation only if the prompt **describes the event concretely
 
 ## 1. Images, in a fixed order
 
-`image_urls` holds only images the brand owns or may use (rights: the `make-static-ads-find-references` skill (`../../make-static-ads-find-references/SKILL.md`) §4). Another brand's device or craft goes into the prompt as words.
+`image_urls` holds only images the brand owns or may use (rights: the `make-static-ads-find-references` skill (`../../make-static-ads-find-references/SKILL.md`) §4). Another brand's ad from an ad library goes into the prompt as words.
 
 Name every attached image's job in the prompt, numbered by its position in `image_urls` ("Image 1", "Image 2"…), in this order:
 
 1. **Product identity** (first whenever the ad shows the product; for software, the real UI screenshot or the mascot; a type-led ad with neither attaches none; never the logo file): "Image 1 is the official product. Reproduce this exact pouch: yellow top, dark teal bottom, black MASALA LANE CHAI wordmark, label layout and proportions. Never substitute another package."
 2. **The logo:** the image model redraws logos even when the file is attached, so on a shell host it never draws one. Don't attach the logo file; write "Leave a clear, quiet area in the <corner> about <N>% of the width for a logo added later; draw no logo, wordmark or brand name there or anywhere except the real product label." (A graphic request's exact text may name the brand, in plain type: the `make-static-ads-graphic-request` skill (`../../make-static-ads-graphic-request/SKILL.md`) step 4.) After the render, place the real file with `scripts/place_logo.py` (`scripts/README.md`). On a host with no shell, follow the marketer's logo choice (playbook Step 2, or graphic-request step 3): the clear corner, or attach the file ("Image 2 is our logo: copy it exactly at <position>; never redraw or recolour it"). More product angles follow if needed.
-3. **The template**, only when `levels.md` allows its image (close, the brand's own past ad): "Image <N> is the layout to follow: keep its composition, block positions and text slots; replace its product, words and colours with ours." At every other level, or for any other brand's template, describe the layout in words (§3).
+3. **The template**, when `levels.md` allows its image (close and balanced). Close: "Image <N> is the ad to follow: keep its composition, block positions and text slots; replace every product, word, logo, person and colour with ours." Balanced: "Image <N> is the layout only: keep its block and text-slot positions and background treatment; the scene, product, words and colours are ours." At bold, describe only its device or look in words; for an ad-library ad at close or balanced, describe the layout in words (§3.2).
 
 Describe the product's identity in words too (colours, shape, label wording, cap). The model drifts on labels; words and pixels together hold it better than either alone.
 
@@ -55,6 +55,7 @@ Read the finished prompt once as the image model would. Check:
 - every word you want drawn is in quotes, and nothing else is asked to be drawn;
 - each attached image's role is named, in order;
 - every text slot can hold its words at the size asked (a 15-word line will not fit two lines at 4% of the image height: shorten it or move it to the post text);
+- at close and balanced, the template is attached as its numbered image when it is the brand's own ad or a library template; an ad-library ad is in words only;
 - it is under 12,000 characters.
 
 Then run the claims check on the exact prompt (the `make-static-ads-claims-extract` skill (`../../make-static-ads-claims-extract/SKILL.md`), Pass A).

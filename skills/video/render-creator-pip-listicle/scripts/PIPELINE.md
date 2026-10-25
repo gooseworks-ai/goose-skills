@@ -1,8 +1,8 @@
 # Pipeline — creator-pip-listicle
 
 How `config.example.json` maps to the real production steps. This capability ships a
-**config + this map**, not a bundled runner: the worked example (Solenne Beauty "5 products that
-replaced my whole makeup bag") was produced by the video-orchestrator's per-state steps plus a set
+**config + this map**, not a bundled runner: the worked example (Pantrywise Kitchen "5 tools that
+replaced my whole utensil drawer") is built with the video-orchestrator's per-state steps plus a set
 of per-project drivers (`render_product_cards.py`, `composite_pip.py`) and the shared
 native-Seedance driver (`gen_seedance_native.py`).
 
@@ -13,7 +13,7 @@ caption burn lands last on the stitched master.
 
 ## Field → source-script map
 
-| Config field | Phase | Source step / script (in the run) | Paid? |
+| Config field | Phase | Source step / script | Paid? |
 |---|---|---|---|
 | `beats[]` (dialogue / duration / pip / card / badge / show_title), `listicle` | 1 Script | concept + conversational script lock → `native-beats.json` | free |
 | `creator.anchor`, `creator.image_model`, `creator.realism`, `creator.descriptor` | 2 Creator | **Seedream v5 Pro** candid portrait (`bytedance/seedream/v5/pro/text-to-image`, no `fal-ai/` prefix), realism-gated | **PAID** |
@@ -38,7 +38,7 @@ whole on its beat.
 One **Seedream v5 Pro** candid portrait — `create-image-fal`, model
 `bytedance/seedream/v5/pro/text-to-image` (**no `fal-ai/` prefix**). A plain, calm, candid
 head-and-shoulders portrait of the creator from `choices.creator` in the place from
-`choices.setting` (the Solenne demo: a young woman on a neutral wall) — un-retouched (pores, fine
+`choices.setting` (the demo: a home cook at a kitchen counter) — un-retouched (pores, fine
 lines, no perfect teeth), soft natural light. AVOID "beautiful/perfect/8k/hyperreal/studio". Gate on realism →
 `anchor.png`. **CRITICAL:** Seedance 2.0's partner-validation gate REJECTS photoreal faces from
 **gpt-image-2 AND Seedream v4** ("may contain likenesses of real people") — Seedream v5 Pro **passes**.

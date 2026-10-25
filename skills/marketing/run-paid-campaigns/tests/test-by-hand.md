@@ -57,11 +57,11 @@ Set up a campaign folder with last week's run record: a raise of about 40% on a 
 
 ## Staging run — 2026-10-16
 
-Ask simulated: "It's Monday — what should we kill, scale or pause this week?" on Clearday, Braxley Bands and Gooseworks.
+Ask simulated: "It's Monday — what should we kill, scale or pause this week?" on Clearday, Kestrel Straps and Gooseworks.
 
 | Step | Call | What came back | Playbook consequence |
 |---|---|---|---|
-| Plan | `campaign_read` | Clearday / Braxley: no campaigns; Gooseworks: 3 campaigns (awareness, `paid_social`, no budget, no economics, no test plan — written by the app, not plan-campaign) | No approved brief → recommend plan-campaign; "no plan on file" mode only if the human names platforms and allowable cost. |
+| Plan | `campaign_read` | Clearday / Kestrel Straps: no campaigns; Gooseworks: 3 campaigns (awareness, `paid_social`, no budget, no economics, no test plan — written by the app, not plan-campaign) | No approved brief → recommend plan-campaign; "no plan on file" mode only if the human names platforms and allowable cost. |
 | Account | `meta_read` performance (3 brands) | `status: not_connected`, scope note: Goose creatives only; excludes reconciliation to store revenue | Whole run in written-instruction mode; tells the human connecting Meta unlocks approval-page levers. |
 | Pages | `meta_read` pages (Clearday) | error `meta_not_connected`, "do not guess a Page id" | Launch blocked; said plainly. |
 | Change log | `file_list` brand coworker workspace | only `agent-config/`; no `ads/campaigns/` | First run creates `state.md`; path convention unconfirmed. |

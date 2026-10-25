@@ -8,7 +8,7 @@ hard-concat on the VO cadence via `filter_complex concat`, burn karaoke-pop capt
 over the ducked bed, close on the brand end-card PNG → 1080×1920 h264+aac (~37s).
 
 Use any creator / worlds / hook / music (the recipe's `choices`) — the test must not depend on the
-Gutwise demo's blonde woman, bedroom / kitchen / bathroom, or "Do not buy" hook.
+Sunnook demo's curly-haired woman, bedroom / bathroom / balcony, or "Don't buy" hook.
 
 Pass when the assembly runs to a valid MP4 and:
 - one shot per EDL cut, hard-cut on the VO cadence via `filter_complex concat` (no crossfades, no

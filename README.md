@@ -24,8 +24,8 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 | Folder | What it holds | Count |
 |---|---|---:|
 | `skills/marketing/` | **14 marketing playbooks** (one marketer job each, end to end), the 70 steps they load, and 2 foundation skills. Every folder is published | 86 |
-| `skills/video/` | **Video-ad skills**: render atoms, format renderers, mockups, voice, music and the production harness | 67 |
-| `skills/shared/` | Skills used across families: the 3 current goose-graphics skills, and 24 older skills that a video skill, a playbook or the GooseWorks app still uses. [retired-skills.json](retired-skills.json) lists each one and its user | 27 |
+| `skills/video/` | **Video-ad skills**: render atoms, format renderers, mockups, voice, music and the production harness | 63 |
+| `skills/shared/` | Skills used across families: the 3 current goose-graphics skills, and 23 older skills that a video skill, a playbook or the GooseWorks app still uses. [retired-skills.json](retired-skills.json) lists each one and its user | 26 |
 | `skills/entry/` | **The entry skills** `gooseworks install` puts in every agent: the `gooseworks` router, `goose-ads`, `goose-video`, `make-custom-video`, `goose-video-local`, `goose-product-photos`. Routing lives in `skills/entry/gooseworks/routes.json`. The same folder is the Claude Code and Codex plugin (see [Entry skills and the plugin](#entry-skills-and-the-plugin)) | 6 |
 
 The old GTM library was deleted on 23 Oct 2026. [retired-skills.json](retired-skills.json) maps every retired name to the playbook that replaced it (or says why none did), and the old source stays readable at tag `legacy-gtm-final`.
@@ -191,8 +191,10 @@ cd goose-skills
 node scripts/build-index.js      # Generate skills-index.json
 node scripts/validate-skills.js  # Validate SKILL.md + skill.meta.json contract
 node scripts/check-skill-links.js     # Every link in every skill resolves as installed
+npm run check:tools              # Every GooseWorks tool a skill names is one the server lists
 npm test
 npm run ci                       # The checks above in one command (see CONTRIBUTING.md)
+npm run check:all                # Every CI job that runs offline (atom checks, part, browser and media tests too)
 npm run test:parts               # Part tests (needs ffmpeg; browser tests need playwright-core)
 ```
 

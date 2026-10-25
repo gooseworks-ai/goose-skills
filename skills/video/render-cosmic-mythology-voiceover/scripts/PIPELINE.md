@@ -2,9 +2,8 @@
 
 How `config.example.json` maps to the real production steps. The free assembly (steps 3+) now ships
 as a **runnable script — `scripts/render.py`** (config-driven; ffmpeg + Pillow only; see
-`README.md` §0). The worked example (Starwhim "Saturn isn't your villain") was originally produced
-by per-project drivers (`vo.py`, `gen_images2.py`, `build_video2.py` in that
-post's own `working/` folder); `render.py` is the
+`README.md` §0). The worked example (Peerlark Optics "The North Star isn't the brightest") was first produced
+by the demo's own drivers (`vo.py`, `gen_images2.py`, `build_video2.py`, not shipped); `render.py` is the
 generalized, config-driven successor to `build_video2.py`. The paid steps (VO, stills) remain the
 media capabilities.
 
@@ -13,20 +12,20 @@ delivered, atempo-stretched duration), the timeline + the weight array drive eac
 the one look pack drives the stills, the stills seed the Ken-Burns clips, and assembly concats
 them + composites the VO + fades the hook on + burns the captions.
 
-## Field → source-script map
+## Field → production-step map
 
-| Config field | Phase | Source step / script (in the run) | Paid? |
+| Config field | Phase | Production step / script (in the demo) | Paid? |
 |---|---|---|---|
 | `vo.script`, `vo.tone_tags`, `vo.model`, `vo.voice_id`, `vo.voice_settings` | 1 VO | ElevenLabs `eleven_v3` (tone-tagged) → mp3 | **PAID** |
 | `vo.atempo_factor`, `vo.atempo_clamp_max`, `vo.target_duration_s` | 1 VO | atempo time-stretch to target, clamp ≤ 1.25 → `working/vo2/*_atempo1.25.mp3` | free |
-| `vo.outputs.manifest` (rendered / final duration) | 1 VO | `working/vo2/saturn-vo2.manifest.json` | free |
+| `vo.outputs.manifest` (rendered / final duration) | 1 VO | `working/vo2/northstar-vo2.manifest.json` | free |
 | `look_pack.style_descriptor`, `look_pack.palette_anchors` | 2 Stills | threaded verbatim into every image prompt | (defines cost) |
 | `shots[].prompt`, `image_engine` | 2 Stills | `working/gen_images2.py` → `fal-ai/flux-pro/v1.1`, `portrait_16_9`, `safety_tolerance 5` → `assets/img*.png` | **PAID** |
 | `sequence.cuts[].still/zoom_out/weight`, `sequence.zoom_end` | 3 Assembly | `working/build_video2.py` weighted formula `cut_dur = VO_dur × weight / Σweights` | free |
 | `sequence.fade_in_first_s`, `.fade_out_last_s`, Ken-Burns clips | 3 Assembly | `working/build_video2.py` (not shipped) renders each still as a Ken Burns move with ffmpeg (scale 2×, zoompan) → `working/kb_NN.mp4` | free |
 | `hook.text`, `hook.fade_in_s`, `.hold_until_s`, `.fade_out_s` | 3 Assembly | `working/build_video2.py` ffmpeg `drawtext` alpha window | free |
 | assembly (`fps`, `crf`, dims) | 3 Assembly | `working/build_video2.py` ffmpeg concat → composite BG + VO (libx264 crf18, aac 192k) → `working/draft2.mp4` | free |
-| `captions` | 3 Assembly | VEED/Whisper subtitle burn on `working/draft2.mp4` → `finals/saturn-myth-v2.mp4` (free local Whisper + ffmpeg fallback) | ~$ (VEED) / free (local) |
+| `captions` | 3 Assembly | VEED/Whisper subtitle burn on `working/draft2.mp4` → `finals/northstar-myth-v2.mp4` (free local Whisper + ffmpeg fallback) | ~$ (VEED) / free (local) |
 
 ## 1. VO → ElevenLabs `eleven_v3`  (config: `vo`)  [PAID]
 
@@ -64,7 +63,7 @@ is the hook + captions, added in post. Review all before step 3.
   ending `t=3.0`) over the open, maps `0:v` + `1:a`, encodes libx264 `-crf 18` + aac 192k
   `-shortest` → `working/draft2.mp4`.
 - **Captions:** VEED/Whisper subtitle burn (`veed/subtitles`, `whisper` preset, bottom, white
-  `#FFFFFF`) on `draft2.mp4` → `finals/saturn-myth-v2.mp4`. A local Whisper + ffmpeg `subtitles`
+  `#FFFFFF`) on `draft2.mp4` → `finals/northstar-myth-v2.mp4`. A local Whisper + ffmpeg `subtitles`
   burn (or timed PIL PNG overlays if libass is missing) is the **free** fallback to the VEED tier.
 
 Re-cuts (re-weighted windows, new hook timing, caption chunking, zoom params) reuse the existing

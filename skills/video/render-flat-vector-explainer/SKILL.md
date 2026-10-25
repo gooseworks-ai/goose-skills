@@ -6,7 +6,7 @@ status: active
 
 # render-flat-vector-explainer
 
-Assembles a flat-vector product-routine explainer: one illustrated host character walks through a countable N-step routine (e.g. the demo's collagen -> serum -> eye cream -> hair), one step per beat, each beat carrying a large corner numeral, a labelled chip + one-line tagline, and the step's real product photo, closing on an "N products" grid + brand CTA. It reads as a premium DTC explainer (Spotify/Anchor flat-vector lineage), not UGC.
+Assembles a flat-vector product-routine explainer: one illustrated host character walks through a countable N-step routine (e.g. the demo's soil mix -> plant food -> leaf mist -> root tonic), one step per beat, each beat carrying a large corner numeral, a labelled chip + one-line tagline, and the step's real product photo, closing on an "N products" grid + brand CTA. It reads as a premium DTC explainer (Spotify/Anchor flat-vector lineage), not UGC.
 
 This capability is **documentation-grade**. The format's source recipe is a documented recipe, not a runnable end-to-end app, so this capability ships the **config schema** (`scripts/config.example.json`), the **field-to-script map** (`scripts/PIPELINE.md`), and a **README** (`scripts/README.md`) describing the FREE assembly steps the agent runs by hand with ffmpeg + Remotion + PIL. The paid generative steps are separate capabilities the recipe orchestrates and gates.
 
@@ -14,13 +14,13 @@ This capability is **documentation-grade**. The format's source recipe is a docu
 
 Creative calls the user makes (the recipe's `choices`, asked in one round before any paid step). The demo's value is only an example, never the default. The flat-vector 2D style itself is the format, not a choice.
 
-- **`host`** — who the illustrated host is (gender, age, look, outfit) -> `character.anchor_prompt`. Asked; the demo used a late-20s woman with brown wavy hair in a cream slip-dress.
-- **`setting`** — where the routine happens -> the character keyframe prompts. Asked; the demo used a bathroom counter.
+- **`host`** — who the illustrated host is (gender, age, look, outfit) -> `character.anchor_prompt`. Asked; the demo used a mid-30s woman with a short black bob in green overalls.
+- **`setting`** — where the routine happens -> the character keyframe prompts. Asked; the demo used a sunny windowsill full of houseplants.
 - **`tone`** — the script's tone -> VO lines + expressions. Asked; the demo used faintly comedic overwhelm -> satisfied payoff.
 - **`narrator_voice`** — the VO voice -> `voice.voice_id`. Asked; the demo used ElevenLabs "Eryn".
 - **`music`** — the bed -> `music.prompt` (or none). Asked; the demo used lo-fi pop, 95-105 BPM.
 
-`scripts/config.example.json` is the Little Wilder worked example: copy its structure, never its creative values or its brand palette.
+`scripts/config.example.json` is the Greenmoth worked example: copy its structure, never its creative values or its brand palette.
 
 ## The two non-negotiable separations
 

@@ -14,8 +14,8 @@ a hero-pick payoff and a branded end card. The hand, background color, test surf
 and music are the recipe's user choices; this capability only assembles the plates it is given. This capability is the **FREE, deterministic assembly** —
 the per-plate PNG→mp4 loop encode, the concat-demux, the end-card render, and the music mux.
 
-`scripts/config.example.json` is the worked example — reference only, never the default (Solenne
-Beauty "Pick Your Match": a fair hand, bubblegum-pink background, cream skin-patch; ~16.6s 1080×1920
+`scripts/config.example.json` is the worked example — reference only, never the default (Kestrel
+Art Supply "Swipe Your Color": an oil-pastel stick, a medium-tan hand, mustard-yellow background, round paper card; ~16.6s 1080×1920
 9:16, ~24 cycle plates + finale beats + a 3s end card); `scripts/PIPELINE.md` maps every config
 block to its source step and `scripts/README.md` documents the free assembly.
 

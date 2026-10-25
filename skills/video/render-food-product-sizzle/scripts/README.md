@@ -8,7 +8,7 @@ the diegetic SFX + the real logo PNG + the real product PNG and stitches the fin
 Re-cuts (new callout timing, a swapped end card, re-timed SFX cues, a grain-pass toggle) reuse the
 existing keyframes / clips / music and spend nothing.
 
-`config.example.json` is the worked example (Hearthline Provisions "Beef Sticks Sizzle", ~14s
+`config.example.json` is the worked example (Fernhollow Cacao "Dark Bar Sizzle", ~14s
 1080×1920). `PIPELINE.md` maps every config block to its source step. This README documents the FREE
 assembly pieces that `render-food-product-sizzle` owns.
 
@@ -23,13 +23,13 @@ garbles a wordmark and the packaging. On macOS pick a serif with the em-dash / m
 ## 2. Diegetic SFX — ffmpeg lavfi, on the tactile beats
 
 Two short diegetic hits are synthesized with ffmpeg lavfi `anoisesrc` (NO AI): a crisp ~120ms snap
-(white noise, fast envelope, highpass / lowpass, `acompressor`) on the fiber tear, and a ~180ms tear
+(white noise, fast envelope, highpass / lowpass, `acompressor`) on the bar snap, and a ~180ms tear
 (pink noise, low-end roll) on the box-open. They mix in at their **measured cue points** (~1.5s and
 ~11s in the demo), not round numbers — a couple of hits, not a wall of sound.
 
 ## 3. Music bed — no vocals, no sparse intro
 
-The supplied / generated instrumental bed (the `music` choice; the demo's was bluegrass) (no vocals — no VO to duck under) opens sparse; the
+The supplied / generated instrumental bed (the `music` choice; the demo's was acoustic jazz) (no vocals — no VO to duck under) opens sparse; the
 upstream step trims the ~2.5s intro so it kicks in from frame 0. The assembly `loudnorm`s it and
 fades it in / out to the master length, playing it UNDER the end card with a fade tail (no silent
 tail).
@@ -44,8 +44,8 @@ their beats, mux with a fade tail, and `loudnorm`. Output is a 1080×1920 h264 +
 Deterministic, no paid calls, no keys.
 
 **`%` in a callout** — ffmpeg `drawtext` reads a raw `%` as a strftime spec; write the callout string
-to a textfile and use `textfile=` + `expansion=none` (see the source `build_master_v2.sh` `c1.txt` /
-`c5.txt`).
+to a textfile and use `textfile=` + `expansion=none` (the demo's `build_master_v2.sh` writes `c1.txt` /
+`c5.txt` this way).
 
 **No libass needed** — the sizzle body carries no burned captions (it is wordless); the stat-callout
 pills are `drawtext` / `drawbox` overlays, not subtitle events.

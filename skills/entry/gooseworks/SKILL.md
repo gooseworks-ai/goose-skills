@@ -65,13 +65,14 @@ Supplied surveys use ordinary report writing. Skip unrelated calendar/campaign i
 ## Data work
 
 In chat: catalog_search finds skills, catalog_fetch opens them, data_call_provider and
-data_post_provider run paid data calls, account_whoami shows credits.
+data_post_provider make data calls, data_price_provider prices fal/ElevenLabs ones free,
+account_whoami shows credits.
 
 In a terminal:
 
 - `gooseworks search "<task>"` finds a skill; `gooseworks fetch <slug>` prints instructions and dependencies.
-- Save scripts/files under `/tmp/gooseworks-scripts/<slug>/` (files under `tools/` go to
-  `/tmp/gooseworks-scripts/tools/`), never in the user's project.
+- Save a skill's files (`tools/` too) in `/tmp/gooseworks-scripts/<slug>/`, never in the
+  user's project.
 - `gooseworks call <provider> <path>` calls a provider through GooseWorks; `--query` and `--body`
   take JSON. Use it in place of any raw request a skill shows. A script that needs the GooseWorks
   settings gets them from `gooseworks env`.

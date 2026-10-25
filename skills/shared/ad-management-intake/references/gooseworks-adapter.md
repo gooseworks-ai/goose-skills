@@ -6,17 +6,17 @@ Use this mode when the GooseWorks tools are callable. Research, products and the
 come from GooseWorks; the `ads/` docs live in the brand's coworker workspace. Check a tool name
 against the live tool list before trusting it: a tool can exist and still be hidden from a surface.
 
-**The research step** (Step 1) is GooseWorks brand onboarding: inside the coworker `get_brand_kit`,
-from outside `brand_onboarding` then `brand_read` (use `brand_get_context` only if advertised). **The brief's budget and date fields** are
+**The research step** (Step 1) is GooseWorks brand onboarding: `brand_setup_status` until setup is
+complete, then `brand_knowledge_browse` and `brand_read`. **The brief's budget and date fields** are
 `campaign_upsert`'s `budget_cents`, `starts_on` and `ends_on`.
 
 ## Inside the coworker (chat, messaging turns, scheduled runs)
 
 | Step | Tool |
 |---|---|
-| Read the brand research and products | `get_brand_kit` (omit `brand_id`; the coworker's own brand is authoritative). `status: no_brand` means research is still running: say so and wait. Never substitute your own web research |
-| Claims, proof, past learnings | `search_brain`. Brand kit context is **not** an approved claim |
-| Existing campaigns and briefs | `list_campaigns`, `get_campaign` (`campaign_read` where the surface shows it) |
+| Read the brand research and products | `brand_knowledge_browse` for the core rules, then `brand_read` with sections `kit` and `products` for the coworker's own brand (it is authoritative). If research is still running, say so and wait. Never substitute your own web research |
+| Claims, proof, past learnings | `brand_knowledge_search`. Brand kit context is **not** an approved claim |
+| Existing campaigns and briefs | `campaign_read` (omit `campaign_id` to list the brand's campaigns) |
 | Write the brief | `campaign_upsert` (shape below) |
 | Ask structured questions | `render_ask_user`: 1–4 questions, each with 2–4 options, `header` at most 50 characters. The answer arrives as the next user message. The built-in AskUserQuestion is **disallowed** in the coworker, so never call it there |
 | Read and write `ads/` | built-in `Read` / `Write` / `Edit` with **relative** paths (`ads/brand.md`). No `file_*` tools here. Never an absolute path, never shell edits |
@@ -25,12 +25,12 @@ from outside `brand_onboarding` then `brand_read` (use `brand_get_context` only 
 
 | Step | Tool |
 |---|---|
-| Research not done yet | `brand_onboarding` with `action: status`, then follow only its `next_step` until onboarding is complete |
-| Read research and products | `brand_read` with `brand_id` and sections `kit`, `products`, `learnings`, `onboarding` (use older `brand_get_context` only if advertised). `catalog_search` searches skills and templates, **not** products |
+| Research not done yet | `brand_setup_status`, then follow only its `next_step` until onboarding is complete |
+| Read research and products | `brand_knowledge_browse` for the core rules, then `brand_read` with `brand_id` and sections `kit`, `products`, `learnings`, `onboarding`. `catalog_search` searches skills and templates, **not** products |
 | Existing campaigns and briefs | `campaign_read` (omit `campaign_id` and pass `brand_id` to list) |
 | Write the brief | `campaign_upsert` (shape below) |
 | Ask structured questions | the host's own question control (in Claude Code, AskUserQuestion: 1–4 questions, 2–4 options, "Other" added automatically) |
-| Read and write `ads/` | `file_read` / `file_write` with `scope: { type: "agent", agent_id: <brand.coworker_agent_id> }`, from `brand_read` without `brand_id` (older `brand_list` only if advertised). **Always pass `scope`**, or the write lands in the user's default agent. Do not write a file and immediately start a coworker run that reads it: the coworker's file cache can be up to two minutes behind |
+| Read and write `ads/` | `file_read` / `file_write` with `scope: { type: "agent", agent_id: <brand.coworker_agent_id> }`, from `brand_read` without `brand_id`. **Always pass `scope`**, or the write lands in the user's default agent. Do not write a file and immediately start a coworker run that reads it: the coworker's file cache can be up to two minutes behind |
 
 ## The brief: `campaign_upsert`
 
@@ -48,14 +48,13 @@ from outside `brand_onboarding` then `brand_read` (use `brand_get_context` only 
 ## Ids
 
 `brand_id` and `coworker_agent_id` in `ads/README.md` and `ads/brand.md` come from `brand_read`
-with no `brand_id` (use the older `brand_list` only if advertised).
+with no `brand_id` (it lists the brands).
 
 ## Author concepts in this agent, then save
 
-Read the saved brand/product and campaign context before writing. Outside the coworker, use
-`brand_read` (kit, products, learnings, onboarding) and `campaign_read`. Inside the coworker, use
-`get_brand_kit`, `get_product_knowledge` and `get_campaign` (`list_campaigns` to find existing campaigns).
-Check the advertised tool list. **You write the campaign and its ideas.** `propose_campaign_concepts` remains a compatibility server proposal; do not call
+Read the saved brand/product and campaign context before writing, on either surface:
+`brand_read` (kit, products, learnings, onboarding) and `campaign_read` (omit `campaign_id` to
+find existing campaigns). Check the advertised tool list. **You write the campaign and its ideas.** `propose_campaign_concepts` remains a compatibility server proposal; do not call
 it to outsource creative reasoning. Keep the supplied occasion, offer, audiences and product ids.
 Give each audience a distinct angle, a short complete title and one usable message about the
 selected product. Use only that product's facts.
@@ -89,7 +88,7 @@ Each concept requires `person`, `message`, `proof` (empty when missing). Optiona
 follow the tool's current auto-pick guidance. Keep `product_id` stable when editing its copy.
 
 Use `add_campaign_concept` for one new idea and `update_campaign_concept` for one existing idea.
-`save_campaign_concepts` or `campaign_upsert.concepts` replaces the entire ordered list: read ids,
+`campaign_upsert.concepts` replaces the entire ordered list: read ids,
 retain the concepts to keep, and send the whole list only when replacement/reordering is intended.
-Read back with `campaign_read` outside or `get_campaign` inside before claiming saved. Saving planning data does not approve paid
+Read back with `campaign_read` before claiming saved. Saving planning data does not approve paid
 creative generation; preserve the tool's existing credit estimate and explicit user approval.

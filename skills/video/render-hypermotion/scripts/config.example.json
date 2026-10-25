@@ -1,25 +1,25 @@
 {
-  "_comment": "WORKED EXAMPLE ONLY (the Boomcrate build). Creative fields \u2014 brand_voice, hypermotion_i2v.prompt_blocks.1_style_anchor / 2_cinematography / 3_subject_environment / 4_multi_shot_timecodes, music.prompt, music.bpm \u2014 come from the recipe's choices (energy, environment, lighting, music); brand fields (brand_name, product_image, logo_png, accent/bg hex, spec_callouts, text_cards.*.text, end_card copy) come from the brand kit. Never copy them as defaults. Card labels equal their text_cards keys (spec_1..spec_5, cta) so beat_structure.concat_order resolves. Boomcrate 'product hypermotion + specs' \u2014 the worked example (V10 shipped 2026-05-28). Copy to config.json and edit. ONE 12-15s Seedance 2.0 i2v hypermotion clip of the hero product, diced into 5-6 segments, INTERCUT with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo end card, over a 124 BPM bass bed. 1080x1920 9:16. Two PAID model calls total (Seedance i2v + ElevenLabs Music); every text card + all assembly is free PIL/ffmpeg. Guard both paid calls with skip-if-exists so re-runs never re-bill.",
-  "brand_name": "Boomcrate",
-  "brand_voice": "party",
+  "_comment": "WORKED EXAMPLE ONLY (the demo build: Glowmule, a made-up camp-lantern brand). Creative fields \u2014 brand_voice, hypermotion_i2v.prompt_blocks.1_style_anchor / 2_cinematography / 3_subject_environment / 4_multi_shot_timecodes, music.prompt, music.bpm \u2014 come from the recipe's choices (energy, environment, lighting, music); brand fields (brand_name, product_image, logo_png, accent/bg hex, spec_callouts, text_cards.*.text, end_card copy) come from the brand kit. Never copy them as defaults. Card labels equal their text_cards keys (spec_1..spec_5, cta) so beat_structure.concat_order resolves. Glowmule 'product hypermotion + specs' \u2014 the worked example. Copy to config.json and edit. ONE 12-15s Seedance 2.0 i2v hypermotion clip of the hero product, diced into 5-6 segments, INTERCUT with 5-7 PIL kinetic-typography spec/CTA cards, capped by a real-logo end card, over a 124 BPM bass bed. 1080x1920 9:16. Two PAID model calls total (Seedance i2v + ElevenLabs Music); every text card + all assembly is free PIL/ffmpeg. Guard both paid calls with skip-if-exists so re-runs never re-bill.",
+  "brand_name": "Glowmule",
+  "brand_voice": "adventure",
   "width": 1080,
   "height": 1920,
   "fps": 30,
   "duration_s": 25.0,
-  "accent_color_hex": "#FF6B1A",
+  "accent_color_hex": "#FFB000",
   "bg_color_hex": "#0C0C0C",
-  "product_image": "assets/product/boomcrate_4_black_float.png",
-  "logo_png": "assets/logo/boomcrate_logo_white.png",
+  "product_image": "assets/product/glowmule_3_olive_float.png",
+  "logo_png": "assets/logo/glowmule_logo_white.png",
   "font_bold": "assets/fonts/SpaceGrotesk-Bold.ttf",
   "spec_callouts": [
-    "126 dB SPL",
-    "40-HOUR BATTERY",
-    "SWAPPABLE BATTERY",
-    "IP65 RATED",
-    "PAIR 5 SPEAKERS"
+    "3000 LUMENS",
+    "72-HOUR RUNTIME",
+    "DROP-PROOF SHELL",
+    "IPX7 WATERPROOF",
+    "LINK 8 LANTERNS"
   ],
   "intro_text": "INTRODUCING",
-  "cta_text": "OWN THE PARTY.",
+  "cta_text": "LIGHT UP CAMP.",
   "hypermotion_i2v": {
     "model": "fal-ai/bytedance/seedance/v2/pro/image-to-video",
     "duration": "15",
@@ -27,11 +27,11 @@
     "aspect_ratio": "1:1",
     "generate_audio": false,
     "prompt_blocks": {
-      "1_style_anchor": "STYLE ANCHOR: hypermotion product film, 124 BPM cuts, raw festival energy, modern.",
-      "2_cinematography": "CINEMATOGRAPHY: ARRI Alexa, 50mm anamorphic, deep-focus, slight handheld, dusk lighting with magenta/blue rim, slight lens flare.",
-      "3_subject_environment": "SUBJECT + ENVIRONMENT: Boomcrate 4 (black) on beach festival deck, salt air, dusk lighting with magenta/blue rim, distant crowd silhouettes.",
-      "4_multi_shot_timecodes": "MULTI-SHOT TIMECODES:\n  - 0-3s: crash-zoom from 6m wide to product hero\n  - 3-6s: lateral orbit 180 degrees around the speaker\n  - 6-10s: slow-mo dust kick from bass thump (dust in air, NOT on product)\n  - 10-13s: pull-back to wide hero\n  - 13-15s: final stillness hero",
-      "5_absolute_constraints": "ABSOLUTE CONSTRAINTS:\n  - Locked label geometry: Boomcrate wordmark stays sharp + horizontal across all cuts\n  - No character contact: no hands, no people, no body parts touching product\n  - No multi-product: only the one speaker, no clutter, no secondary items\n  - Physics effects (dust, heat-shimmer, salt mist) in environment only, NOT on product surface\n  - No text overlays inside the clip\n  - Single product identity preserved across all camera moves (no shape morph, no color shift)"
+      "1_style_anchor": "STYLE ANCHOR: hypermotion product film, 124 BPM cuts, raw outdoor-adventure energy, modern.",
+      "2_cinematography": "CINEMATOGRAPHY: ARRI Alexa, 50mm anamorphic, deep-focus, slight handheld, blue-hour lighting with warm amber rim, slight lens flare.",
+      "3_subject_environment": "SUBJECT + ENVIRONMENT: Glowmule 3 lantern (olive) on a granite ledge at a mountain campsite, pine air, blue-hour lighting with warm amber rim, distant tent silhouettes.",
+      "4_multi_shot_timecodes": "MULTI-SHOT TIMECODES:\n  - 0-3s: crash-zoom from 6m wide to product hero\n  - 3-6s: lateral orbit 180 degrees around the lantern\n  - 6-10s: slow-mo light burst as the lantern clicks to full power (drifting dust and moths in the air, NOT on product)\n  - 10-13s: pull-back to wide hero\n  - 13-15s: final stillness hero",
+      "5_absolute_constraints": "ABSOLUTE CONSTRAINTS:\n  - Locked label geometry: Glowmule wordmark stays sharp + horizontal across all cuts\n  - No character contact: no hands, no people, no body parts touching product\n  - No multi-product: only the one lantern, no clutter, no secondary items\n  - Physics effects (dust, pine mist, moths) in environment only, NOT on product surface\n  - No text overlays inside the clip\n  - Single product identity preserved across all camera moves (no shape morph, no color shift)"
     }
   },
   "text_cards": {
@@ -44,37 +44,37 @@
     },
     "spec_1": {
       "label": "spec_1",
-      "text": "126 dB SPL",
+      "text": "3000 LUMENS",
       "duration_s": 1.5,
       "treatment": "extruded_3d_accent"
     },
     "spec_2": {
       "label": "spec_2",
-      "text": "40-HOUR BATTERY",
+      "text": "72-HOUR RUNTIME",
       "duration_s": 1.5,
       "treatment": "italic_slam_white_on_black"
     },
     "spec_3": {
       "label": "spec_3",
-      "text": "SWAPPABLE BATTERY",
+      "text": "DROP-PROOF SHELL",
       "duration_s": 1.5,
       "treatment": "italic_outline_echo"
     },
     "spec_4": {
       "label": "spec_4",
-      "text": "IP65 RATED",
+      "text": "IPX7 WATERPROOF",
       "duration_s": 1.5,
       "treatment": "italic_sparkle_accent"
     },
     "spec_5": {
       "label": "spec_5",
-      "text": "PAIR 5 SPEAKERS",
+      "text": "LINK 8 LANTERNS",
       "duration_s": 1.5,
       "treatment": "italic_shadow_stack"
     },
     "cta": {
       "label": "cta",
-      "text": "OWN THE PARTY",
+      "text": "LIGHT UP CAMP",
       "duration_s": 1.5,
       "treatment": "extruded_3d_color_flash"
     }
@@ -82,16 +82,16 @@
   "end_card": {
     "label": "endcard",
     "duration_s": 3.5,
-    "logo_png": "assets/logo/boomcrate_logo_white.png",
+    "logo_png": "assets/logo/glowmule_logo_white.png",
     "logo_target_w": 920,
-    "subtitle": "126 dB \u00b7 40 HRS \u00b7 IP65",
-    "cta": "OWN THE PARTY.",
+    "subtitle": "3000 LM \u00b7 72 HRS \u00b7 IPX7",
+    "cta": "LIGHT UP CAMP.",
     "slam_motion_blur": true,
     "micro_motion": true,
     "inversion_flash_at_frac": 0.6,
     "inversion_colors": [
       "#0C0C0C",
-      "#FF6B1A"
+      "#FFB000"
     ]
   },
   "beat_structure": {
@@ -141,7 +141,7 @@
   },
   "music": {
     "model": "fal-ai/elevenlabs/music",
-    "prompt": "124 BPM bass-driven party banger, driving low-end kick, festival energy, no vocals except a single rallying lyric hook near the end for the CTA/end-card sync. Kick drop at 1s for the cut into product hero, build through 10-20s, peak energy + lyric hook at 20s for the CTA reveal, lyric land at 22s for the brand wordmark inversion flash.",
+    "prompt": "124 BPM driving outdoor-adventure anthem, punchy low-end kick, big open-air energy, no vocals except a single rallying chant hook near the end for the CTA/end-card sync. Kick drop at 1s for the cut into product hero, build through 10-20s, peak energy + chant hook at 20s for the CTA reveal, chant lands at 22s for the brand wordmark inversion flash.",
     "bpm": 124,
     "length_ms": 25000,
     "output_format": "mp3_44100_192",

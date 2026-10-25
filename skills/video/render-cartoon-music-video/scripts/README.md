@@ -8,7 +8,7 @@ the N Seedance i2v clips) are separate capabilities — `create-music-elevenlabs
 finished master. Re-cuts (new caption chunking, a swapped end card, re-timed windows, a logo-bug
 toggle) reuse the existing song / keyframes / clips and spend nothing.
 
-`config.example.json` is the worked example (Coinmesa "Bet on anything", ~55s 1080×1920); its felt look,
+`config.example.json` is the worked example (Sudsabout "Fresh by morning", ~55s 1080×1920); its felt look,
 character, story and song are that demo's answers to the recipe choices — never defaults).
 `PIPELINE.md` maps every config block to its source step. This README documents the FREE assembly
 pieces that `render-cartoon-music-video` owns.
@@ -16,7 +16,7 @@ pieces that `render-cartoon-music-video` owns.
 ## 1. Captions — from the song's word timings, re-spelled against the locked lyrics
 
 Captions come from the song's `word-timestamps.json` **re-spelled against the locked lyrics**
-(`align_to_lyrics`) — Whisper mishears shouted accents ("BETS" → "Hearts", "WIN" → "Went"), so
+(`align_to_lyrics`) — Whisper mishears shouted accents (e.g. "FRESH" → "Flesh", "BACK" → "Black"), so
 the timed tokens are re-spelled against the locked lyric file (never edit the lyrics to match
 Whisper). Feed a `lyrics-plain.md` (lyric text only, no bar-grid table) so the parser doesn't
 ingest hundreds of markdown-table "words". It chunks ~4–5 words per cue and renders VEED-whisper
@@ -65,4 +65,4 @@ watch misses in a ~55s master:
 Extract a **2 fps** contact sheet across the whole master + a per-bar **FACE** crop and **HAND**
 crop (across each clip's full duration); audit ALL bars at head-crop resolution to find the true
 drift boundary; then re-extract frames from the **served** bytes (download the published file), not the local
-file, after publish. (cartoon-music-video, Figma run 2026-07-18.)
+file, after publish. (cartoon-music-video demo run, 2026-07.)

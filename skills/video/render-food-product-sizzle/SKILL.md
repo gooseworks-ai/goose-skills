@@ -8,13 +8,13 @@ status: active
 
 Assemble a **food-product sizzle** ad from a config: a wordless macro-tabletop photorealistic sizzle
 for a physical food / CPG product — tactile tabletop photography in ONE look pack (setting + light
-chosen per brand; the demo's is a warm tungsten kitchen), ~4 dynamic macro scenes (hands tearing, a flat lay, a partial-face bite, a box / pack
+chosen per brand; the demo's is a warm tungsten pantry), ~4 dynamic macro scenes (hands tearing, a flat lay, a partial-face bite, a box / pack
 hero) flowing into a static end card, carried by a non-diegetic instrumental music bed + a few diegetic
 SFX with NO voiceover. This capability is the **FREE, deterministic assembly** — normalized concat,
 the anti-AI grain pass, the audio (music bed + SFX) composite, the PIL end card, and the optional
 serif stat-callout pills.
 
-`scripts/config.example.json` is the worked example (Hearthline Provisions "Beef Sticks Sizzle", ~14s
+`scripts/config.example.json` is the worked example (Fernhollow Cacao "Dark Bar Sizzle", ~14s
 1080×1920 9:16, ~4 macro scenes + a static end card); `scripts/PIPELINE.md` maps every config block
 to its source step and `scripts/README.md` documents the free assembly.
 
@@ -24,11 +24,11 @@ The recipe asks these before any paid step; this capability only assembles what 
 The demo's value is an example, never a default:
 
 - **`setting`** — surface + room → `look_pack.style_descriptor`, `scenes[].keyframe_prompt`,
-  `end_card.background`. Demo: warm rustic kitchen (linen, wood, butcher paper, cast iron).
+  `end_card.background`. Demo: warm pantry (parchment, walnut board, marble slab, linen).
 - **`light`** → `look_pack.style_descriptor` + `palette_anchors`. Demo: warm tungsten window light.
 - **`hands`** — whose hands / mouth appear, or product-only → `scenes[].keyframe_prompt` +
-  `motion_hint`. Demo: a man's weathered hands, stubbled jaw.
-- **`music`** → `music.prompt`. Demo: upbeat bluegrass (banjo, acoustic guitar, brush percussion).
+  `motion_hint`. Demo: a baker's flour-dusted hands, a woman's jaw.
+- **`music`** → `music.prompt`. Demo: upbeat acoustic jazz (felt piano, upright bass, brushed snare).
 
 ## Run
 
@@ -48,12 +48,12 @@ clips / music and spend nothing.
   bed; do not add a spoken voiceover. The brand name + claim land on the STATIC end card, never in
   the body.
 - **~4 macro scenes, concat in order.** Normalize fps / SAR across the body clips and concat them in
-  their scene order (tear → flat-lay → bite → box-hero by default); the box / pack hero shows the
+  their scene order (snap / tear → flat-lay → bite → box-hero by default); the box / pack hero shows the
   REAL label (grounded on the product PNG upstream — the assembly must not re-render it).
 - **Anti-AI grain pass, applied globally.** Apply `eq=contrast=1.06:saturation=0.93,hqdn3d=1.5:1.5:3:3,noise=alls=8:allf=t+u`
   across the whole video — the noise on a food macro is load-bearing for the tactile / photographic
   read, otherwise the sizzle looks AI-smooth.
-- **Diegetic SFX on the tactile beats.** Mix a crisp ~120ms snap on the fiber tear and a ~180ms tear
+- **Diegetic SFX on the tactile beats.** Mix a crisp ~120ms snap on the break / tear and a ~180ms tear
   on the box-open at their measured cue points — a couple of short hits, not a wall of sound. Time
   each to its beat, not a round number.
 - **Music bed with no sparse intro.** The supplied / generated bed opens sparse — the upstream step

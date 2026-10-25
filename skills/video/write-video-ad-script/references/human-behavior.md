@@ -8,7 +8,7 @@ scripts; correct grammar, a naturalness score and factual claims do not establis
 ## Give the writer usable evidence
 
 Use the brand message, product facts and selected commercial interaction from
-[[composes::ad-angle-miner]] and [dialogue-writing](dialogue-writing.md). Add a small
+the `ad-angle-miner` skill and [dialogue-writing](dialogue-writing.md). Add a small
 matched set of language evidence when the project lacks it:
 
 - Public social discussions: retain the question or parent, reply, source URL and medium.

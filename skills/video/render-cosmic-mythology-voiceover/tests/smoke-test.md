@@ -1,6 +1,6 @@
 # Smoke Test
 
-Given the spoken VO (atempo mp3) and N curated stills in ONE coherent look (the Starwhim demo is
+Given the spoken VO (atempo mp3) and N curated stills in ONE coherent look (the Peerlark demo is
 deep-indigo + gold cosmic; the look is the user's choice), the per-cut weight array, and the ONE hook
 line, `scripts/render.py` assembles the master: distribute the cuts across the VO duration by the
 weighted formula (`cut_dur = VO_dur × weight / Σweights`), Ken-Burns-render each still (fade-in

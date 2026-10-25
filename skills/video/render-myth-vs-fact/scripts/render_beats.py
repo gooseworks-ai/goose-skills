@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """render_beats.py — deterministically render each myth-vs-fact beat to an mp4.
 
-Ports the validated Playwright + ffmpeg renderer from the Dermwise "acne myths" run,
+Ports the validated Playwright + ffmpeg renderer from the demo build,
 generalized to be config-driven and portable (no hardcoded /Users or clients/ paths).
 
 For every `mg` beat the renderer:

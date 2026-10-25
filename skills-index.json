@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-24",
+  "generated": "2026-10-25",
   "retired_skills": [
     {
       "slug": "battlecard-generator",
@@ -1046,6 +1046,11 @@
       "slug": "render-photo-grid-card",
       "replacement": null,
       "reason": "Ported into the html-frames part; goose-studio's photo-grid-promo-card style renders it. No recipe or app runs this renderer."
+    },
+    {
+      "slug": "product-photoshoot",
+      "replacement": "goose-product-photos",
+      "reason": "Every GooseWorks tool it named is gone from the server; the goose-product-photos entry skill makes the same studio, lifestyle and on-model product photos with the live photo tools."
     }
   ],
   "skills": [
@@ -1332,7 +1337,7 @@
           "human (one message): the type's referee (store, CRM, app consoles, bookings), exports per rostered channel, retailer sell-through, customer-level export monthly",
           "its own last run records runs/analyze-performance/<job-slug>/<date>.md (up to four weekly back: scorecards, angle history, calls) — run-memory",
           "run-paid-campaigns' run records runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md (money moves, baseline recipes, verdicts, per-ad scorecard)",
-          "Brand Brain (brain_map, brain_open, brain_search where listed): chapters 18, 20, 22, 23 (experiment_readout.*, worn_out_angle.*, lessons)",
+          "Brand Brain (brand_knowledge_browse, brand_knowledge_read, brand_knowledge_search where listed): chapters 18, 20, 22, 23 (experiment_readout.*, worn_out_angle.*, lessons)",
           "connectors the marketer already has (ads platforms, store, CRM, billing, product analytics) — read-only, never their write tools",
           "local mode: gooseworks-local/<brand-slug>/ (brand-notes.md, its own contract, reports and run records, the paid run's local state.md and decisions.md) — the marketing-guide skill (../marketing-guide/SKILL.md) §5"
         ],
@@ -1375,9 +1380,9 @@
             "gooseworks:media_update",
             "gooseworks:account_whoami",
             "gooseworks:tools_load",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search",
             "gooseworks:automation_list"
           ]
         }
@@ -1667,6 +1672,10 @@
         ],
         "requires_skills": [
           "media-proxy"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -1675,10 +1684,10 @@
       "name": "claims-gate",
       "category": "capabilities",
       "domain": "marketing-agent",
-      "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 to 5 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
+      "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 or 4 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
       "tags": "brand",
       "path": "skills/marketing/claims-gate",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "files": [
         "skills/marketing/claims-gate/SKILL.md",
         "skills/marketing/claims-gate/claim-types.md",
@@ -1690,7 +1699,7 @@
         "slug": "claims-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.5",
+        "version": "0.1.6",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
@@ -1755,7 +1764,7 @@
       "name": "company-contact-finder",
       "category": "capabilities",
       "domain": "lead-generation",
-      "description": "Find decision-makers at a specific company using Apollo, Crustdata, Fiber, and PDL people search via Gooseworks MCP. Given a company name and target titles, returns a list of contacts with name, title, LinkedIn URL, and location.",
+      "description": "Find decision-makers at a specific company using Fiber, Crustdata and PDL people search inside the GooseWorks coworker. Given a company name and target titles, returns a list of contacts with name, title, LinkedIn URL, and location.",
       "tags": "lead-generation",
       "path": "skills/shared/company-contact-finder",
       "version": "1.0.0",
@@ -1824,6 +1833,10 @@
         "tags": [
           "ads",
           "content"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -1933,6 +1946,10 @@
         "requires_skills": [
           "create-image-fal",
           "media-proxy"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -2055,6 +2072,9 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -2083,6 +2103,9 @@
         ],
         "requires_skills": [
           "media-proxy"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -2166,6 +2189,9 @@
         ],
         "requires_skills": [
           "media-proxy"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -2239,7 +2265,7 @@
           "a send went wrong, help me fix it"
         ],
         "reads": [
-          "brand brain — brain_map core and required reads, then chapters 2, 5, 11, 15, 17, 18, 20, brain_open and brain_search for gaps when brain_* tools are listed; else brand_read summary, kit, products (price, offers, notes), learnings (server research and the app; learn-my-brand, unreleased)",
+          "brand brain — brand_knowledge_browse core and required reads, then chapters 2, 5, 11, 15, 17, 18, 20, brand_knowledge_read and brand_knowledge_search for gaps when brand_knowledge_* tools are listed; else brand_read summary, kit, products (price, offers, notes), learnings (server research and the app; learn-my-brand, unreleased)",
           "claims — the shared claims-gate atom over the sign-off contract (signed-off marker → 'Claims you may use' facts; written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
           "standing offer and brand-wide policies — the shared Standing offer: fact, any Policy: facts (written earlier by learn-my-brand, unreleased) and earlier [lifecycle] rules, else the Brand record",
           "voice and banned words — brand learnings (server research and the app; learn-my-brand, unreleased); voice cards brand/voices/<handle>.md via the shared voice-card atom (make-content, run-organic-social)",
@@ -2283,9 +2309,9 @@
             "gooseworks:media_update",
             "gooseworks:knowledge_search",
             "gooseworks:automation_list",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search"
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search"
           ]
         }
       }
@@ -2466,6 +2492,10 @@
         "tags": [
           "ads",
           "content"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -2631,7 +2661,7 @@
       "name": "goose-product-photos",
       "category": "playbooks",
       "domain": "gooseworks",
-      "description": "Make product photos (studio, lifestyle or on a model) of a brand's real products with GooseWorks in this chat. Start brand work with brain_map and follow the next_step in every answer.",
+      "description": "Make product photos (studio, lifestyle or on a model) of a brand's real products with GooseWorks in this chat. Start brand work with brand_knowledge_browse and follow the next_step in every answer.",
       "tags": "ads, brand",
       "path": "skills/entry/goose-product-photos",
       "version": "1.1.0",
@@ -2867,7 +2897,7 @@
           "plan programmatic SEO page sets"
         ],
         "reads": [
-          "brand brain — brain_map core and required reads, then chapters 2, 5, 7, 8, 9, 17 and brain_search for gaps when brain_* tools are listed; else brand_read summary, products, onboarding, competitors, learnings, sources (server research and the app; learn-my-brand, unreleased)",
+          "brand brain — brand_knowledge_browse core and required reads, then chapters 2, 5, 7, 8, 9, 17 and brand_knowledge_search for gaps when brand_knowledge_* tools are listed; else brand_read summary, products, onboarding, competitors, learnings, sources (server research and the app; learn-my-brand, unreleased)",
           "claims — the shared claims-gate atom over the sign-off contract (signed-off marker → 'Claims you may use' facts; written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
           "voice-of-customer bank and demand read — research/audience/voc-bank.md (research-audience), research/market/demand.md (research-market); knowledge_search document/evidence",
           "tracked competitors — competitor_read (research-competitors)",
@@ -2915,9 +2945,9 @@
             "gooseworks:media_list",
             "gooseworks:media_update",
             "gooseworks:automation_list",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search",
             "gooseworks:file_url",
             "gooseworks:marketing_data_describe",
             "gooseworks:marketing_data_lookup"
@@ -3182,8 +3212,6 @@
       "version": "1.0.0",
       "files": [
         "skills/shared/lead-qualification/SKILL.md",
-        "skills/shared/lead-qualification/qualification-prompts/ai-event-attendees-gtm.md",
-        "skills/shared/lead-qualification/qualification-prompts/talentloop-linkedin-commenters.md",
         "skills/shared/lead-qualification/scripts/enrich_leads.py",
         "skills/shared/lead-qualification/skill.meta.json"
       ],
@@ -3462,7 +3490,11 @@
           "ad-angle-miner",
           "comment-mining",
           "competitor-ad-intelligence",
+          "create-video-fal",
+          "create-video-seedance-2-fal",
+          "media-proxy",
           "reddit-post-finder",
+          "render-street-interview",
           "scrapecreators-api",
           "transcript-intelligence",
           "watch",
@@ -3478,7 +3510,7 @@
       "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads/SKILL.md",
         "skills/marketing/make-static-ads/references/brand-profile.md",
@@ -3496,15 +3528,14 @@
         "skills/marketing/make-static-ads/scripts/place_logo.py",
         "skills/marketing/make-static-ads/scripts/repair_patch.md",
         "skills/marketing/make-static-ads/scripts/repair_patch.py",
-        "skills/marketing/make-static-ads/scripts/test_place_logo.py",
-        "skills/marketing/make-static-ads/scripts/test_repair_patch.py",
+        "skills/marketing/make-static-ads/scripts/template_sheet.py",
         "skills/marketing/make-static-ads/skill.meta.json"
       ],
       "metadata": {
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "tags": [
           "ads",
           "design"
@@ -3683,7 +3714,7 @@
       "description": "Step of make-static-ads: writes each ad's render prompt and ordered image list from its concept-board row, one per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-compose",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads-compose/SKILL.md",
         "skills/marketing/make-static-ads-compose/skill.meta.json"
@@ -3692,7 +3723,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -3723,7 +3754,7 @@
       "description": "Step of make-static-ads: turns the chosen angles into messages, visual ideas and a template per ad, checks each against the brand profile and recent ads, writes the concept board and has a fresh critic attack it before any copy, prompt or spend. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-concept-grid",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads-concept-grid/SKILL.md",
         "skills/marketing/make-static-ads-concept-grid/skill.meta.json"
@@ -3732,7 +3763,7 @@
         "slug": "make-static-ads-concept-grid",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -3793,7 +3824,7 @@
       "description": "Step of make-static-ads: picks a template for every ad in its chosen style, after its visual idea and style are set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-find-references",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads-find-references/SKILL.md",
         "skills/marketing/make-static-ads-find-references/skill.meta.json"
@@ -3802,7 +3833,7 @@
         "slug": "make-static-ads-find-references",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -3905,7 +3936,7 @@
       "description": "Step of make-static-ads: a fresh judge checks every render against its concept-board row and the official product photos, one retry inside the marketer's approval, then the claims and set checks; records each verdict in tags and the batch file. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-render-review",
-      "version": "0.9.1",
+      "version": "0.10.1",
       "files": [
         "skills/marketing/make-static-ads-render-review/SKILL.md",
         "skills/marketing/make-static-ads-render-review/skill.meta.json"
@@ -3914,7 +3945,7 @@
         "slug": "make-static-ads-render-review",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.9.1",
+        "version": "0.10.1",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -4026,9 +4057,9 @@
             "gooseworks:knowledge_search",
             "gooseworks:file_read",
             "gooseworks:file_write",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search"
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search"
           ]
         }
       }
@@ -4186,6 +4217,10 @@
         "version": "1.0.4",
         "tags": [
           "ads"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -4301,7 +4336,7 @@
           "creator roster creators/roster.csv (wave results) — work-with-creators, when a creator leg is Run/Test",
           "its own last run record runs/plan-campaign/campaign-plan/<slug>/<date>.md (the plan's bets) — run-memory",
           "analyze-performance's run records (runs/analyze-performance/weekly-performance-read/, monthly-read/) and run-paid-campaigns' run records (runs/run-paid-campaigns/weekly-ads-check/<slug>/) — scorecards, money moves, verdicts",
-          "Brand Brain (brain_map, brain_open, brain_search where listed): chapters 2, 3, 5, 15, 18, 19, 20 (target_cpa, target_roas, decision.*, experiment.*), 23 (experiment_readout.*, worn_out_angle.*)"
+          "Brand Brain (brand_knowledge_browse, brand_knowledge_read, brand_knowledge_search where listed): chapters 2, 3, 5, 15, 18, 19, 20 (target_cpa, target_roas, decision.*, experiment.*), 23 (experiment_readout.*, worn_out_angle.*)"
         ],
         "writes": [
           "readable campaign plan gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-campaign-plan.md (local file, via write-report) — the marketer",
@@ -4342,9 +4377,9 @@
             "gooseworks:media_upload",
             "gooseworks:knowledge_import",
             "gooseworks:job_get",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search",
             "gooseworks:automation_list"
           ]
         }
@@ -4470,31 +4505,6 @@
       }
     },
     {
-      "slug": "product-photoshoot",
-      "name": "product-photoshoot",
-      "category": "composites",
-      "domain": "ads",
-      "description": "Create faithful studio, lifestyle, and on-model product photography through the GooseWorks Product Photos workflow, then approve selected results for reuse in future creative work.",
-      "tags": "ads, design, brand",
-      "path": "skills/shared/product-photoshoot",
-      "version": "1.0.0",
-      "files": [
-        "skills/shared/product-photoshoot/SKILL.md",
-        "skills/shared/product-photoshoot/skill.meta.json"
-      ],
-      "metadata": {
-        "slug": "product-photoshoot",
-        "category": "composites",
-        "version": "1.0.0",
-        "domain": "ads",
-        "tags": [
-          "ads",
-          "design",
-          "brand"
-        ]
-      }
-    },
-    {
       "slug": "reddit-post-finder",
       "name": "reddit-post-finder",
       "category": "capabilities",
@@ -4550,7 +4560,7 @@
           "create-image-gpt-image-fal",
           "verify-product-image",
           "brand-research",
-          "product-photoshoot",
+          "goose-product-photos",
           "comment-mining",
           "competitor-ad-intelligence",
           "scrapecreators-api",
@@ -4584,6 +4594,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -4616,6 +4630,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -4646,6 +4664,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -4676,6 +4698,9 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -4710,6 +4735,9 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -4807,6 +4835,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -4867,6 +4899,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -4924,7 +4960,9 @@
           "ads"
         ],
         "requires_skills": [
-          "watch"
+          "watch",
+          "caption-burn",
+          "media-proxy"
         ]
       }
     },
@@ -5040,6 +5078,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -5134,6 +5176,9 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -5177,6 +5222,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -5231,6 +5280,10 @@
         "tags": [
           "ads",
           "content"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -5260,6 +5313,9 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -5290,6 +5346,9 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -5358,6 +5417,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -5387,7 +5450,9 @@
         "version": "1.0.2",
         "requires_skills": [
           "watch",
-          "stitch-videos-ffmpeg"
+          "stitch-videos-ffmpeg",
+          "caption-burn",
+          "media-proxy"
         ]
       }
     },
@@ -5431,6 +5496,9 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -5496,7 +5564,8 @@
         ],
         "requires_tools": [
           "ffmpeg",
-          "python"
+          "python",
+          "ffprobe"
         ]
       }
     },
@@ -5528,6 +5597,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -5694,6 +5767,10 @@
           "reddit-post-finder",
           "scrapecreators-api",
           "transcript-intelligence"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -5741,6 +5818,9 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg"
         ]
       }
     },
@@ -5772,6 +5852,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -5847,6 +5931,10 @@
           "create-image-gpt-image-fal",
           "create-vo-elevenlabs",
           "media-proxy"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -5922,7 +6010,7 @@
           "Tell me when a past champion changes jobs / when target accounts start hiring (list mode, watch)"
         ],
         "reads": [
-          "Brand Brain when brain_* tools are listed: brain_map first (core rules, never-list, items waiting for a yes, audience and customer chapters, 14, 22, 23), brain_open / brain_search for the task; fallback brand_read + knowledge_search",
+          "Brand Brain when brand_knowledge_* tools are listed: brand_knowledge_browse first (core rules, never-list, items waiting for a yes, audience and customer chapters, 14, 22, 23), brand_knowledge_read / brand_knowledge_search for the task; fallback brand_read + knowledge_search",
           "the brand's own customer data, asked for once up front when it has customers: customer or order export, cancel reasons, win/loss notes, support themes (counts and patterns only reach the brain)",
           "brand brain: summary, kit audience text, products, competitors, organic, learnings (server research and the app; learn-my-brand, unreleased); customer evidence via knowledge_search",
           "workspace research/market/ — latest market report (research-market): its market figures are context, group sizes are counted here; read for consistency",
@@ -5938,7 +6026,7 @@
           "local gooseworks-reports/<brand-slug>/<date>-audience.md and workspace research/audience/<date>-report.md → 'Audience report — <Brand> — <date>' (keep-history) via write-report and save-to-brain — read by the marketer, the next run, research-market and research-competitors",
           "workspace research/audience/buyer-groups.md → 'Buyer groups — <Brand> — <date>' (supersede) — the one list of buyer groups; read by research-market, plan-campaign, make-content, run-organic-social, the static-ad maker (make-static-ads), work-with-creators, list mode",
           "workspace research/audience/voc-bank.md → 'Voice-of-customer bank — <Brand> — <date>' (supersede) and voc-bank.jsonl (not imported) — the quote bank; read by the static-ad maker (make-static-ads), make-content, run-organic-social, research-competitors, plan-campaign",
-          "brand audience: one brain_save audience item per group when brain_* tools are listed (waits for the marketer's yes), else brand_update knowledge.audience agent_proposal — skipped when the lead is provisional",
+          "brand audience: one brand_knowledge_save audience item per group when brand_knowledge_* tools are listed (waits for the marketer's yes), else brand_update knowledge.audience agent_proposal — skipped when the lead is provisional",
           "workspace research/audience/segments/<slug>.md — read by the next run",
           "research/credits-log/<YYYY-MM>.md rows — read by every playbook's spend estimates",
           "list mode: local gooseworks-reports/<brand-slug>/<date>-list.md + <date>-list.csv; workspace research/audience/<date>-<list>/report.md → 'Prospect list report — <Brand> — <date>' (keep-history, no people's data), list.csv, segments.csv, catch-all.csv, dropped.csv (not imported); research/audience/ledger.csv via outcomes-ledger — read by write-outreach, the marketer's outreach tool and later runs",
@@ -5967,10 +6055,10 @@
             "gooseworks:media_list",
             "gooseworks:media_update",
             "gooseworks:automation_list",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search",
-            "gooseworks:brain_save",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search",
+            "gooseworks:brand_knowledge_save",
             "gooseworks:marketing_data_describe",
             "gooseworks:marketing_data_lookup"
           ]
@@ -6278,10 +6366,10 @@
             "gooseworks:media_analyze",
             "gooseworks:file_url",
             "gooseworks:tools_load",
-            "gooseworks:brand_setup",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search",
+            "gooseworks:brand_setup_create",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search",
             "gooseworks:marketing_data_describe",
             "gooseworks:marketing_data_lookup"
           ]
@@ -6452,7 +6540,7 @@
             "gooseworks:automation_list",
             "gooseworks:automation_upsert",
             "gooseworks:brand_read",
-            "gooseworks:brand_setup",
+            "gooseworks:brand_setup_create",
             "gooseworks:competitor_read",
             "gooseworks:competitor_save",
             "gooseworks:data_call_provider",
@@ -6474,9 +6562,9 @@
             "gooseworks:social_inspiration_save",
             "gooseworks:social_inspiration_search",
             "gooseworks:tools_load",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search"
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search"
           ]
         }
       }
@@ -6584,6 +6672,10 @@
         "tags": [
           "ads",
           "brand"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -6592,7 +6684,7 @@
       "name": "review-ugc-render",
       "category": "capabilities",
       "domain": "ads",
-      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates keeping the render as the final version (video_review) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"braxleybands\" said \"braxley bands\", a confirmed pronunciation like \"TG1\" said \"T G one\") passes. Runnable, gating counterpart to GooseWorks' fuller transcript-integrity review. Every ugc-video-formats recipe runs this after render and BEFORE keeping the final version.",
+      "description": "Mandatory pre-publish review gate for a UGC video render. Transcribes the finished render's AUDIO with Whisper and word-diffs it against the approved spoken script, then gates keeping the render as the final version (video_review) — blocking a render whose generated audio mis-voices a word (e.g. the approved \"human-vetted\" spoken as \"human witted\"), says a different number or brand name, flips a negation, drops an approved phrase, or comes back silent. Correct speech written differently (\"5mg\" said \"five milligrams\", \"30%\" said \"thirty percent\", a spoken URL, \"don't\" said \"do not\", \"larkfieldstraps\" said \"larkfield straps\", a confirmed pronunciation like \"TG1\" said \"T G one\") passes. Runnable, gating counterpart to GooseWorks' fuller transcript-integrity review. Every ugc-video-formats recipe runs this after render and BEFORE keeping the final version.",
       "tags": "ads",
       "path": "skills/video/review-ugc-render",
       "version": "2.0.5",
@@ -6609,7 +6701,10 @@
         "tags": [
           "ads"
         ],
-        "requires_skills": []
+        "requires_skills": [],
+        "requires_tools": [
+          "ffmpeg"
+        ]
       }
     },
     {
@@ -6728,10 +6823,10 @@
           "My accounts went quiet, keep them alive"
         ],
         "reads": [
-          "brand brain: brain_map core (rules, never-list, items waiting for a yes) then chapters 11, 14, 15, 17, 19, 20, 23 and brain_search, when brain_* tools are listed; otherwise brand_read lean (kit voice, tone, do/don't, learnings) and knowledge_search (server research and the app, analyze-performance; learn-my-brand, unreleased)",
+          "brand brain: brand_knowledge_browse core (rules, never-list, items waiting for a yes) then chapters 11, 14, 15, 17, 19, 20, 23 and brand_knowledge_search, when brand_knowledge_* tools are listed; otherwise brand_read lean (kit voice, tone, do/don't, learnings) and knowledge_search (server research and the app, analyze-performance; learn-my-brand, unreleased)",
           "brand brain: claims sign-off marker in learnings + 'Claims you may use' must facts, with proof in the 'Brand record — <brand>' document (claims-gate's scoped sign-off, or earlier records by learn-my-brand, unreleased); before sign-off, plain product facts only",
-          "brand brain: operating rules, disclosure, topics off limits via brain_map chapter 14 and brain_search when listed, otherwise knowledge_search (server research and the app; learn-my-brand, unreleased); person-post approver (this playbook, asked once and saved as a fact)",
-          "this week's focus, promotions, launches via brain_map chapters 19–20 when listed (otherwise knowledge_search) and campaign_read (the human / plan-campaign)",
+          "brand brain: operating rules, disclosure, topics off limits via brand_knowledge_browse chapter 14 and brand_knowledge_search when listed, otherwise knowledge_search (server research and the app; learn-my-brand, unreleased); person-post approver (this playbook, asked once and saved as a fact)",
+          "this week's focus, promotions, launches via brand_knowledge_browse chapters 19–20 when listed (otherwise knowledge_search) and campaign_read (the human / plan-campaign)",
           "workspace research/audience/voc-bank.md and buyer-groups.md, or their brand documents (research-audience)",
           "brand_read organic: own TikTok/IG posts with metrics and posted_at; competitor top posts (server sync)",
           "social_account_list + social_strategy_get: managed TikTok/IG accounts and their strategy (the product; this playbook after a yes)",
@@ -6747,7 +6842,7 @@
           "workspace social/research/<date>-<platform>.md from earlier runs (this playbook; refreshed after 30 days)",
           "Bluesky public author feeds (public.api.bsky.app, keyless) and bsky.app pages, for B2B and developer niches (free)",
           "the goose-graphics skill (GooseWorks catalog, via catalog_fetch when not installed) to render carousels, LinkedIn documents, diagrams and cards",
-          "the last run record for the social calendar: runs/run-organic-social/social-calendar/<date>.md, or its brand document via brain_search / knowledge_search (this playbook's previous run, via run-memory)"
+          "the last run record for the social calendar: runs/run-organic-social/social-calendar/<date>.md, or its brand document via brand_knowledge_search / knowledge_search (this playbook's previous run, via run-memory)"
         ],
         "writes": [
           "workspace social/calendar/<start-date>.md: calendar, format tests and their verdicts, drafts, checks, flags, posting sheet, reconciliation (the human; the next run; analyze-performance for what went out); per-slot reconciled dates",
@@ -6771,9 +6866,9 @@
             "gooseworks:get_started",
             "gooseworks:brand_read",
             "gooseworks:knowledge_search",
-            "gooseworks:brain_search",
-            "gooseworks:brain_open",
-            "gooseworks:brain_map",
+            "gooseworks:brand_knowledge_search",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_browse",
             "gooseworks:competitor_read",
             "gooseworks:social_account_list",
             "gooseworks:social_strategy_get",
@@ -7024,7 +7119,7 @@
           "this week's input summary (reports/performance/inputs/<date>.md) — analyze-performance, to reuse exports",
           "demand read research/market/demand.md — research-market (search keyword proposals)",
           "its own last run record runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md (scorecard, money moves with baseline recipes) — run-memory",
-          "Brand Brain (brain_map, brain_open, brain_search where listed): chapter 20 target_cpa / target_roas / decision.* / experiment.*, chapter 15, chapter 23 readouts, the operating plan (daily cap, protected entities, emergency stop)",
+          "Brand Brain (brand_knowledge_browse, brand_knowledge_read, brand_knowledge_search where listed): chapter 20 target_cpa / target_roas / decision.* / experiment.*, chapter 15, chapter 23 readouts, the operating plan (daily cap, protected entities, emergency stop)",
           "analyze-performance's newest run record and report (store-joined numbers for the scorecard's return column)",
           "the marketer's own ads-platform connector, when they have one: account-wide results, frequency, CPM, learning and delivery status, disapprovals, ads GooseWorks didn't make; store, CRM and billing connectors read-only",
           "local mode: gooseworks-local/<brand-slug>/ (the approved plan in plans/<slug>/, brand-notes.md, its own state.md, decisions.md and run records) — the marketing-guide skill (../marketing-guide/SKILL.md) §5"
@@ -7040,7 +7135,7 @@
           "run record runs/run-paid-campaigns/weekly-ads-check/<slug>/<date>.md + brand document (keep-history) — per-ad scorecard, money moves with baseline recipes and verdicts, open moves — read by its own next run, analyze-performance and plan-campaign",
           "proposal file ads/campaigns/<slug>/proposals/<date>.md (the weekly proposal, saved every run)",
           "measured readouts (kind 23 experiment_readout.<slug>-r<n>, worked / didn't work only, never from a scheduled run) via save-learning",
-          "proposed targets (kind 20 target_cpa / target_roas via save-learning, the marketer's words) and a stated daily cap (operating_plan daily_spend_cap_minor_units / spend_cap_currency via brain_save) — wait for the marketer's yes",
+          "proposed targets (kind 20 target_cpa / target_roas via save-learning, the marketer's words) and a stated daily cap (operating_plan daily_spend_cap_minor_units / spend_cap_currency via brand_knowledge_save) — wait for the marketer's yes",
           "ads/method/ (copied method for the scheduled worker: SKILL, references, atoms, shared atoms) — read by the weekly automation",
           "connector changes on the marketer's ads account, any platform (the connector rule in references/meta-levers.md: one card and one named yes each, read back, created paused, budget steps at most 30%) — logged in decisions.md",
           "local mode: the same files under gooseworks-local/<brand-slug>/ — read by its own next run and analyze-performance in local mode"
@@ -7071,10 +7166,10 @@
             "gooseworks:video_read",
             "gooseworks:video_share",
             "gooseworks:tools_load",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search",
-            "gooseworks:brain_save",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search",
+            "gooseworks:brand_knowledge_save",
             "gooseworks:knowledge_search",
             "gooseworks:media_upload",
             "gooseworks:knowledge_import",
@@ -7389,7 +7484,11 @@
         "tags": [
           "ads"
         ],
-        "version": "1.3.1"
+        "version": "1.3.1",
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
+        ]
       }
     },
     {
@@ -7445,6 +7544,10 @@
         ],
         "requires_skills": [
           "watch"
+        ],
+        "requires_tools": [
+          "ffmpeg",
+          "ffprobe"
         ]
       }
     },
@@ -7551,16 +7654,20 @@
           "ad-angle-miner",
           "comment-mining",
           "competitor-ad-intelligence",
+          "create-video-fal",
+          "create-video-seedance-2-fal",
+          "media-proxy",
           "reddit-post-finder",
+          "render-street-interview",
           "scrapecreators-api",
           "transcript-intelligence",
           "watch",
           "write-video-ad-script"
         ],
         "slug": "video-production-harness",
-        "source_commit": "2f924f6e93c9225df5a42121a88aaf4381835ea8",
-        "source_hash": "0aa021946580d4b2b795d581d7d87b589f97455000d654d489af8a20bac55f95",
-        "source_version": "5-0aa021946580",
+        "source_commit": "37cdb257c52b7825ba0e64fca2732e15ba1c344e",
+        "source_hash": "c2cfbfd6caa49d126ecbc524daacd0ed6e2e120bbf02eeadeab4293de00d1078",
+        "source_version": "5-c2cfbfd6caa4",
         "tags": [
           "ads",
           "content"
@@ -7828,7 +7935,7 @@
           "Find LinkedIn, YouTube, newsletter or podcast creators for our B2B product"
         ],
         "reads": [
-          "Brand Brain when brain_* tools are listed: brain_map first (core rules, never-list, waiting items, products, audience, rivals, 14, 22, 23), brain_search for creators in talks and past deals; fallback brand_read + knowledge_search",
+          "Brand Brain when brand_knowledge_* tools are listed: brand_knowledge_browse first (core rules, never-list, waiting items, products, audience, rivals, 14, 22, 23), brand_knowledge_search for creators in talks and past deals; fallback brand_read + knowledge_search",
           "claims: sign-off and 'Claims you may use' / dont / must facts via claims-gate (written by its scoped sign-off, or earlier by learn-my-brand, unreleased)",
           "brand brain: products with price, brand kit and voice, learnings (GooseWorks brand research and the app; learn-my-brand, unreleased); gift unit cost and who approves spend are usually not on file — asked of the human",
           "brand brain: the brand's and competitors' recent organic posts and the competitor set (research-competitors / server)",
@@ -7873,9 +7980,9 @@
             "gooseworks:media_list",
             "gooseworks:media_update",
             "gooseworks:automation_list",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search"
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search"
           ]
         }
       }
@@ -8064,7 +8171,7 @@
           "Why is nobody replying to my outreach?"
         ],
         "reads": [
-          "Brand Brain when brain_* tools are listed: brain_map first (core rules, never-list, waiting items, chapters 14, 22, 23, products), brain_search for lessons and signed-off claims; fallback brand_read + knowledge_search",
+          "Brand Brain when brand_knowledge_* tools are listed: brand_knowledge_browse first (core rules, never-list, waiting items, chapters 14, 22, 23, products), brand_knowledge_search for lessons and signed-off claims; fallback brand_read + knowledge_search",
           "workspace research/audience/ — newest <date>-<list>/list.csv (rows, segments, signals, hooks, region flags), fit-definition.md, buyer-groups.md, voc-bank.md, ledger.csv, lessons/ (research-audience)",
           "workspace outreach/ — earlier packs, results and lessons (this playbook)",
           "claims via claims-gate (its scoped sign-off, or earlier records by learn-my-brand, unreleased) — every proof line",
@@ -8094,9 +8201,9 @@
             "gooseworks:knowledge_import",
             "gooseworks:job_get",
             "gooseworks:brand_update",
-            "gooseworks:brain_map",
-            "gooseworks:brain_open",
-            "gooseworks:brain_search"
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search"
           ]
         }
       }
@@ -8289,7 +8396,11 @@
           "watch",
           "comment-mining",
           "competitor-ad-intelligence",
+          "create-video-fal",
+          "create-video-seedance-2-fal",
+          "media-proxy",
           "reddit-post-finder",
+          "render-street-interview",
           "scrapecreators-api",
           "transcript-intelligence"
         ]

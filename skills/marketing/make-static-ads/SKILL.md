@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.9.1
+version: 0.10.1
 ---
 
 # make-static-ads
@@ -21,7 +21,7 @@ Finished, reviewed images with their ad copy, the concept board behind them, wha
 - **Render tool.** No `ads_render` → stop before spending and say so; `ads_generate` rewrites your prompt through templates and is not a substitute.
 - **Server hints.** Answers like "one short line and wait" or "recommend one plan" govern GooseWorks' own cards, setup, rights and spending. They never replace this playbook's research, board or critic.
 - **Product identity.** A physical product needs real product photos (`brand_read` with `product_ids`). Software or a service: real UI screenshots and any brand character it owns (never a generated fake UI). The logo is never the identity image; it is placed after the render on every ad (no shell: the marketer's Step 2 choice). Missing photos or screenshots → ask in Step 2. Still none: a physical product stops at the board (no quotes) with an offer of the product-photos job; software goes ahead only with ideas that need no screen (type-led, the mascot).
-- **Run memory.** The `run-memory` skill (`../run-memory/SKILL.md`), Start of run (§1–5) only: playbook `make-static-ads`, job `static ads`, subject the product's slug, cadence `ad hoc`, outcomes from the `picked` tags and `gooseworks:meta_read` `view: "performance"` matched to this playbook's creative ids. Its "since last time" note goes into the Step 2 message as one line (this replaces run-memory §4's 3–5 lines). Add every ad already made in this conversation to the history.
+- **Run memory.** The `run-memory` skill (`../run-memory/SKILL.md`), Start of run (§1–5) only: playbook `make-static-ads`, job `static ads`, subject the product's slug, cadence `ad hoc`, outcomes from the `picked` tags and `gooseworks:meta_read` `view: "performance"` matched to this playbook's creative ids. Its "since last time" note goes in one sentence before the first Step 2 question (this replaces run-memory §4's 3–5 lines). Add every ad already made in this conversation to the history.
 - **Files.** Work in `ads/batches/<YYYY-MM-DD>-<slug>/` in the brand's workspace: `profile.md`, `board.md`, prompts. The batch file `ads/batches/<YYYY-MM-DD>-<slug>.md` is started at Step 3 and filled in as you go (`references/reading-the-brain.md` §7).
 
 ## Steps
@@ -39,20 +39,27 @@ Write what you actually read, with counts, at the top of the profile: "Read 14 r
 
 **Done:** `profile.md` has every section of its template; the Read line names own ads, social posts, website and kit, each with a count or "not checked: <why>"; five product truths and up to five customer lines with sources (fewer, or "none found", when the sources hold fewer; never a made-up quote).
 
-### 2. One combined question
+### 2. Quick questions
 
-One message, in plain words, numbered as below, with each recommendation in **bold** so the marketer can accept it with one word. Open with the run-memory line, if any; end with "Reply 'go' to take every recommendation (claim lines need your own yes)."
-1. **How creative?** Close ("a proven ad layout with your words; safest"), balanced ("a new idea inside a proven layout") or bold ("the idea comes first, in your own style; most surprising"). Recommended: **balanced**. If the reply answers the rest but not this, ask this one again in one line before going on.
-2. **Angles:** the profile's angles first, then at most one new angle per five ads (one in any set of five or fewer), marked "new"; one recommended per ad; room to write their own. As a small table: angle · yours or new · the claim line it needs · recommended for ad #. Recommend only angles whose lines are already usable. This is the one home of the new-angle rule.
-3. **Claim lines that need approval:** put them in this message the way the `claims-gate` skill §4 says, at most five, including who approves, ending "Reply e.g. 'Yes, approve 1 and 3'." "Your choice" never approves a claim.
-4. **Logo:** on every ad (recommended) or none, and which file. Under about 300 px wide: ask for a bigger one, a transparent PNG if possible; use the small one if none comes. No logo file on record → ask for one. On a host that can't run scripts: offer a clear corner they fill themselves (recommended) or a model-drawn logo that may change.
-5. **Product, how many ads (recommend 5), placements and ratios** (Meta or Instagram: 4:5 feed recommended; 9:16 for Stories and Reels and 1:1 only if they say), destination link, any live offer and, if an ad will show it, the price. Missing product photos or UI screenshots: ask for them here.
-6. **Paid reads**, only if there's no browser and nothing imported: the one "up to N credits" ask from the `spend-gate` skill (`../spend-gate/SKILL.md`) branch B.
-7. **Every conflict** the profile found, with your recommendation.
+Ask with the host's question tool when it has one (Claude Code: `AskUserQuestion`): up to four questions per call, each with a header of at most 12 characters, 2–4 options of about five words (details go in the option's description), the recommendation first and labelled "(Recommended)". Never a long paragraph. Without a question tool, the same questions as a short numbered list, one line each, options inline, recommendations in **bold**. Put the run-memory line, if any, in one sentence before the first call.
 
-"Your choice" or "just give me the images" takes every recommendation (balanced, no new claims); say what you chose on the board. No other questions until the board.
+**First call:**
+1. **Creativity:** Balanced (Recommended: "a new idea inside a proven layout"), Close ("a proven ad layout with your words; safest"), Bold ("the idea comes first, in your own style; most surprising"). One level for the whole set unless the marketer asks for one ad per level.
+2. **Angles:** multi-select, up to four options: the profile's strongest angles first, at most one marked "(new)" per five ads (one in any set of five or fewer); each description names the claim line it needs; others via Other. Recommend only angles whose lines are already usable. This is the one home of the new-angle rule.
+3. **Settings:** "Use these (Recommended)", its description spelling out every default ("<product>, 5 ads, 4:5 feed, link: <page>, logo on every ad"); "Change something".
+4. **Approver**, only when claim lines will need approval and no approver is on record (claims-gate §4.2): "Who approves what the ads claim?" "I do", "Someone else" (named in Other; no name back → ask it in the next call).
 
-**Done:** one message sent; the answers, or "recommended", recorded in `board.md`.
+**Next call, only for what is open** (a further call if more than four are open or "Change something" needs details):
+- **Claims:** only when lines for the chosen angles need approval and the marketer approves them; the `claims-gate` skill §4 says how (one multi-select question, ticks are the sign-off). Someone else approves → claims-gate §4.2, no question. Record the ticks by claims-gate §5 and read them back before Step 4.
+- each conflict the profile found, your pick first;
+- the logo, when there is no file, it is under about 300 px wide (ask for a bigger one, a transparent PNG if possible), or the host can't run scripts ("Clear corner you fill (Recommended)", "Model draws it, may change");
+- missing product photos or UI screenshots;
+- a live offer and, if an ad will show it, the price;
+- paid reads, only if there's no browser and nothing imported (the one "up to N credits" ask from the `spend-gate` skill (`../spend-gate/SKILL.md`) branch B). Other placements: 9:16 for Stories and Reels and 1:1 only if they say.
+
+An unanswered creativity question is asked again alone. "Your choice" or "just give me the images" takes every recommendation (balanced, no new claims); say what you chose on the board. No other questions until the board.
+
+**Done:** the answers, or "recommended", recorded in `board.md` under `## Step 2 answers`; ticked claim lines saved by claims-gate §5 and read back, or none were needed.
 
 ### 3. Find the ideas → the concept board
 
@@ -80,7 +87,17 @@ Pass A of the `make-static-ads-claims-extract` skill (`../make-static-ads-claims
 
 ### 7. Show the board and the quote
 
-`gooseworks:ads_render` with `dry_run: true` for every ad and ratio. Show the board as `references/handoff-format.md` §2 says, each quote exactly as given (never your own total). The marketer's yes covers the quotes shown plus one retry per ad and ratio, each at that ratio's quoted price; the `spend-gate` skill applies to anything beyond that.
+First tick this run check under `## Run check` in `board.md`. The template sheets and the quotes are never skipped: do them now. Anything else unticked is done now, or listed below the cards as skipped, with why:
+- Step 2 asked with the question tool (or a short list); answers in `board.md`; ticked claim lines saved (or none needed);
+- run memory read (or "first run"); the Read line covers own ads, posts, website and kit with counts;
+- the last 10 approved ads and every live static checked for repeats;
+- three looked-at templates per ad in different styles; one template sheet per ad, shown to the marketer;
+- at close and balanced, the template image attached when it is the brand's own ad or a library template, otherwise the layout in words;
+- the critic got the records as they came back;
+- three headline candidates per ad; Pass A and the policy check on every prompt;
+- every ad and ratio ready to quote (the dry runs come next).
+
+Then `gooseworks:ads_render` with `dry_run: true` for every ad and ratio. Show the board as `references/handoff-format.md` §2 says, each quote exactly as given (never your own total). The marketer's yes covers the quotes shown plus one retry per ad and ratio, each at that ratio's quoted price; the `spend-gate` skill applies to anything beyond that.
 
 Changes at this gate, then show only the changed ads with their new quotes for a yes:
 - a template swap → Steps 4–6 for that ad (its words follow the new slots), and the set's style and no-repeat tests again;
@@ -100,9 +117,9 @@ Submit the exact quoted requests and wait for them (`references/engine-notes.md`
 
 ### 9. Deliver and remember
 
-Hand over as `references/handoff-format.md` §3 says; finish the batch file and the tags. Ask which ads the marketer prefers; offer copy variants for those. Save lasting human feedback through the `save-learning` skill (`../save-learning/SKILL.md`). Run `run-memory` End of run (§6–7) on every exit, including a stop or partial run.
+Hand over as `references/handoff-format.md` §3 says; finish the batch file and the tags. Ask which ads the marketer prefers (a multi-select question); offer copy variants for those. Save lasting human feedback through the `save-learning` skill (`../save-learning/SKILL.md`). Run `run-memory` End of run (§6–7) on every exit, including a stop or partial run.
 
-**Done:** the marketer has one image per ad with its copy; the batch file, tags and run record are saved, or a failed save is reported.
+**Done:** the marketer has each ad with its "Based on" sheet and copy, and was offered copy variants; the batch file, tags and the run-memory record (End of run) are saved, or a failed save is reported.
 
 ## Other modes
 

@@ -42,10 +42,10 @@
     "My accounts went quiet, keep them alive"
   ],
   "reads": [
-    "brand brain: brain_map core (rules, never-list, items waiting for a yes) then chapters 11, 14, 15, 17, 19, 20, 23 and brain_search, when brain_* tools are listed; otherwise brand_read lean (kit voice, tone, do/don't, learnings) and knowledge_search (server research and the app, analyze-performance; learn-my-brand, unreleased)",
+    "brand brain: brand_knowledge_browse core (rules, never-list, items waiting for a yes) then chapters 11, 14, 15, 17, 19, 20, 23 and brand_knowledge_search, when brand_knowledge_* tools are listed; otherwise brand_read lean (kit voice, tone, do/don't, learnings) and knowledge_search (server research and the app, analyze-performance; learn-my-brand, unreleased)",
     "brand brain: claims sign-off marker in learnings + 'Claims you may use' must facts, with proof in the 'Brand record — <brand>' document (claims-gate's scoped sign-off, or earlier records by learn-my-brand, unreleased); before sign-off, plain product facts only",
-    "brand brain: operating rules, disclosure, topics off limits via brain_map chapter 14 and brain_search when listed, otherwise knowledge_search (server research and the app; learn-my-brand, unreleased); person-post approver (this playbook, asked once and saved as a fact)",
-    "this week's focus, promotions, launches via brain_map chapters 19–20 when listed (otherwise knowledge_search) and campaign_read (the human / plan-campaign)",
+    "brand brain: operating rules, disclosure, topics off limits via brand_knowledge_browse chapter 14 and brand_knowledge_search when listed, otherwise knowledge_search (server research and the app; learn-my-brand, unreleased); person-post approver (this playbook, asked once and saved as a fact)",
+    "this week's focus, promotions, launches via brand_knowledge_browse chapters 19–20 when listed (otherwise knowledge_search) and campaign_read (the human / plan-campaign)",
     "workspace research/audience/voc-bank.md and buyer-groups.md, or their brand documents (research-audience)",
     "brand_read organic: own TikTok/IG posts with metrics and posted_at; competitor top posts (server sync)",
     "social_account_list + social_strategy_get: managed TikTok/IG accounts and their strategy (the product; this playbook after a yes)",
@@ -61,7 +61,7 @@
     "workspace social/research/<date>-<platform>.md from earlier runs (this playbook; refreshed after 30 days)",
     "Bluesky public author feeds (public.api.bsky.app, keyless) and bsky.app pages, for B2B and developer niches (free)",
     "the goose-graphics skill (GooseWorks catalog, via catalog_fetch when not installed) to render carousels, LinkedIn documents, diagrams and cards",
-    "the last run record for the social calendar: runs/run-organic-social/social-calendar/<date>.md, or its brand document via brain_search / knowledge_search (this playbook's previous run, via run-memory)"
+    "the last run record for the social calendar: runs/run-organic-social/social-calendar/<date>.md, or its brand document via brand_knowledge_search / knowledge_search (this playbook's previous run, via run-memory)"
   ],
   "writes": [
     "workspace social/calendar/<start-date>.md: calendar, format tests and their verdicts, drafts, checks, flags, posting sheet, reconciliation (the human; the next run; analyze-performance for what went out); per-slot reconciled dates",
@@ -85,9 +85,9 @@
       "gooseworks:get_started",
       "gooseworks:brand_read",
       "gooseworks:knowledge_search",
-      "gooseworks:brain_search",
-      "gooseworks:brain_open",
-      "gooseworks:brain_map",
+      "gooseworks:brand_knowledge_search",
+      "gooseworks:brand_knowledge_read",
+      "gooseworks:brand_knowledge_browse",
       "gooseworks:competitor_read",
       "gooseworks:social_account_list",
       "gooseworks:social_strategy_get",

@@ -27,7 +27,7 @@ renders as Regular in PIL — always the `/static/` file):
   reserved for the hero stat and the CTA.
 - **Slam-with-shake** — scale 0.3→1.10 cubic-ease + sin/cos shake decaying over ~0.20s for
   a killer-stat reveal.
-- **Color / inversion flash** — full-frame BG↔type swap (bg↔accent; demo: black↔orange) for the
+- **Color / inversion flash** — full-frame BG↔type swap (bg↔accent; demo: black↔amber) for the
   CTA energy and the mid-clip art moment; invert the type too or legibility drops.
 
 Cards rendered per `config.text_cards`: an intro ("INTRODUCING", italic + outline echo),
@@ -43,7 +43,7 @@ scaled to `end_card.logo_target_w` (LANCZOS, ~80px margin) with a **slam motion-
 entry (GaussianBlur the entry frames), settle, **continuous micro-motion** (±1% scale
 pulse + ±3px drift for the full hold — never freeze, or 3+ frozen seconds read as a JPEG),
 an **inversion flash** at ~60% of the card, and a cascade reveal of the spec-dot subtitle
-("126 dB · 40 HRS · IP65") + CTA.
+("3000 LM · 72 HRS · IPX7") + CTA.
 
 ### 3. FFmpeg dice + intercut concat
 - **Center-crop** the ONE hypermotion clip 1:1 → 9:16

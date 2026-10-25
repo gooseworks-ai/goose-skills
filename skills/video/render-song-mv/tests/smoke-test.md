@@ -1,12 +1,12 @@
 # Smoke Test
 
 Given a delivered sung song (mp3 + `audio/words.json`), one keyframe + one i2v clip per
-tableau, and the brand's real app icon, `render-song-mv` assembles the master: cut each clip
+tableau, and the brand's real logo asset, `render-song-mv` assembles the master: cut each clip
 to its lyric window, hard-concat on the beat, build lyric-synced captions, composite the PIL
 end card, mux the song → 1080×1920 h264+aac (~28s).
 
 Use any visual style / song / protagonist (the recipe's `choices`) — the test must not depend on
-the Driftlume demo's paper-craft look, lullaby, or young-woman paper-doll.
+the Fernhollow demo's paper-craft look, bedroom-pop song, or young-man paper-doll.
 
 Pass when the assembly runs to a valid MP4 and:
 - captions are built from the song's OWN `words.json` (script-window, NOT Whisper) and every

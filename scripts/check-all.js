@@ -17,7 +17,7 @@
  *   imessage     render-imessage-chat's browser tests (needs
  *                `npm ci --prefix skills/video/render-imessage-chat/scripts` and
  *                `npx playwright install chromium` there)
- *   media        pytest over skills/ and test/, the custom-video regressions and
+ *   media        pytest over skills/ and test/ (a skip fails), the custom-video regressions and
  *                the podcast-skit gates (needs ffmpeg, pytest, Pillow, numpy,
  *                requests, opencv)
  *
@@ -76,7 +76,6 @@ const groups = [
     run: ({ base }) => {
       if (!base) return { skip: 'no base: fetch origin/dev, or pass --base <ref>' };
       const steps = [
-        'node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-skill-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js',
         `node scripts/atom-lint.js --base ${base} --direct --strict`,
         `node scripts/check-atom-versions.js --base ${base} --direct`,
         `node scripts/check-skill-versions.js --base ${base} --direct`,
@@ -118,8 +117,12 @@ const groups = [
       if (quiet(py, ['-c', 'import pytest, PIL, numpy, requests, cv2']) === null) {
         return { skip: `${py} lacks pytest, pillow, numpy, requests or opencv-python-headless` };
       }
+      // As CI: an OFL font in the repo for render-hook-replacement's text route, and a skip fails.
+      const font = path.join(ROOT, 'parts/captions-layer/1.5.0/assets/fonts/Montserrat-Bold.ttf');
+      const log = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'gs-pytest-')), 'pytest.log');
+      const ran = sh(`set -o pipefail; ${py} -m pytest -q -rs skills test 2>&1 | tee "${log}"`, { env: { HOOK_TEST_FONT: process.env.HOOK_TEST_FONT || font }, shell: 'bash' });
       return [
-        sh(`${py} -m pytest -q skills test`),
+        ran && sh(`node scripts/require-all-tests-ran.js "${log}"`),
         sh(`${py} -m pytest -q test/custom-video-regressions.py`),
         sh(`${py} skills/video/render-podcast-skit/scripts/selftest.py`),
       ].every(Boolean);

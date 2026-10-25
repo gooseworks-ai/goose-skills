@@ -18,11 +18,11 @@ beat-driven music bed.
 
 This capability ships the FREE, deterministic assembly — everything between the two paid
 model calls. It is **documentation-grade + config**: the format has no runnable driver.
-`scripts/` carries the worked config + the step-by-step pipeline doc; the Boomcrate
+`scripts/` carries the worked config + the step-by-step pipeline doc; the demo's
 reference PIL impls (`gen_kinetic_v6.py`, `gen_endcard_v10.py`, `assemble_v10.py`) are
-copied + adapted per run, not vendored.
+not vendored; rebuild them per run from PIPELINE.md.
 
-- **config.example.json** — the Boomcrate worked example: hero product, 5 spec callouts,
+- **config.example.json** — the Glowmule worked example (a made-up camp lantern): hero product, 5 spec callouts,
   the 5-block Seedance prompt, per-card treatments, beat structure, end-card spec, music
   brief, dims. Copy its structure to `config.json`; never its creative values. Card
   `label`s equal their `text_cards` keys (`intro`, `spec_1`..`spec_N`, `cta`) so
@@ -36,12 +36,12 @@ copied + adapted per run, not vendored.
 ## Choices
 
 The calling recipe asks the user these before any paid step; this capability only assembles
-what they produced. The Boomcrate values are a worked example, never defaults.
+what they produced. The Glowmule values are a worked example, never defaults.
 
-- **energy** → `config.brand_voice`, Seedance block 1, `music.bpm` (demo: party, 124 BPM).
-- **environment** → Seedance blocks 3–4 (demo: beach festival deck).
-- **lighting** → Seedance blocks 2–3 (demo: dusk, magenta/blue rim).
-- **music** → `config.music.prompt` (demo: bass-driven party banger).
+- **energy** → `config.brand_voice`, Seedance block 1, `music.bpm` (demo: adventure, 124 BPM).
+- **environment** → Seedance blocks 3–4 (demo: mountain campsite ledge).
+- **lighting** → Seedance blocks 2–3 (demo: blue hour, warm amber rim).
+- **music** → `config.music.prompt` (demo: driving outdoor-adventure anthem).
 
 The assembly itself is choice-agnostic: segment cut points, card order and the end card
 read only from config.

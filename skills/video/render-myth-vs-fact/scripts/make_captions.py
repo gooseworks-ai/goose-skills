@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """make_captions.py — emit a libass .ass karaoke caption file from Whisper words.
 
-Ports the validated caption recipe from the Dermwise run (build_master.build_ass):
+Ports the validated caption recipe from the demo build:
   - <=3 words per cue; close a chunk on a >0.4s word gap, a beat-window edge, OR a
     sentence-ending punctuation mark (. ? !) so the last word of one beat never merges
     with the first of the next.

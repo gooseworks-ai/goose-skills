@@ -17,8 +17,10 @@ not a fallback for the missing playbook.
 
 - Save lasting human brand facts with the connection's listed knowledge action in their words.
 - A batch on its way: job_get. Finished ads: ads_creative_read.
-- One finished ad: a new size with ads_creative_resize, an animation with ads_creative_animate
-  (price it with ads_creative_animation_quote), its tags or rating with ads_creative_update.
+- One finished ad: an animation with ads_creative_animate (price it first, free, with
+  ads_creative_animation_quote), its tags or rating with ads_creative_update. A new size with
+  ads_creative_resize only when the customer asks: it spends credits and has no free price
+  check, so say that and wait for their yes before calling it.
 - The customer's own image as a template: ads_template_create. Their files: media_upload.
 - Campaign planning/launch requests use their matching marketing playbook. Static creation for
   a campaign still uses make-static-ads; a campaign record is input, not a generation fallback.

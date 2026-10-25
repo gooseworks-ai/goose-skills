@@ -1,8 +1,6 @@
 ---
 name: create-kinetic-typography
 description: Render a deterministic text-only video ad from approved copy, font, colors, timing and CTA. Use when a brand needs an animated message without product photography or a creator.
-tags:
-  - ads
 ---
 
 # Kinetic typography

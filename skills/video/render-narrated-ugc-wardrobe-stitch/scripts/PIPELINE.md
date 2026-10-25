@@ -1,8 +1,8 @@
 # Pipeline — narrated-ugc-wardrobe-stitch
 
 How `config.example.json` maps to the real production steps. This capability is the FREE assembly.
-The worked example (Gutwise "Do NOT buy Gutwise Probiotics") was built in a private run whose
-per-project driver scripts are not shipped. Run the paid steps with the capabilities named below,
+The worked example (the fictional Sunnook "Don't buy Sunnook Tan Mousse" demo) uses per-project
+driver scripts that are not shipped. Run the paid steps with the capabilities named below,
 and the free steps (EDL, assembly, captions, mix) with the shared `montage.py` helper from
 `stitch-videos-ffmpeg`, which installs with this package (see `README.md` §0). Or drive the whole
 run via `video-orchestrator-with-control-plane`.
@@ -10,8 +10,8 @@ run via `video-orchestrator-with-control-plane`.
 **Creative values are choices, not defaults.** The creator (`character.descriptor`), voice
 (`vo.voice_id`), hook angle (`vo.hook_line` / `vo.script_md` / `vo.payoff_line`), the 3 worlds
 (`worlds.briefs`) and the music bed (`audio_mix.music_brief`) come from the recipe's `choices`. The
-Gutwise values in `config.example.json` (blonde woman creator, "Do not buy" reversal, bedroom / kitchen
-/ bathroom) are one worked example.
+Sunnook values in `config.example.json` (curly-haired woman creator, "Don't buy" reversal, bedroom /
+bathroom / balcony) are one worked example.
 
 The seven steps run **in order** because each depends on the last: the VO sets the timeline (via
 its Whisper word boundaries), the word boundaries build the EDL, the EDL drives the cut count, the
@@ -40,8 +40,8 @@ captions, and end card.
 **Lock the VO FIRST — it sets the timeline.** Render the verbatim ~13-sentence testimonial with
 ElevenLabs v3 (`vo.voice_id` + `vo.settings`), atempo-clamp to the target pace (~1.24× → ~30–32s),
 then Whisper word-align → `audio/vo-final.mp3` + `audio/vo-final.words.json`. The word boundaries
-set the cut grid. Keep the testimonial verbatim (Gutwise demo: "I'ma" kept; "synbiotic" locked over
-Whisper's "symbiotic").
+set the cut grid. Keep the testimonial verbatim (Sunnook demo: "I'ma" kept; "Sunnook" locked over
+Whisper's "Sunook").
 
 ## 2. EDL → `montage.py edl`  (config: `edl`)  [FREE]
 
@@ -59,7 +59,7 @@ payoff line gets a HELD `payoff-hold` beat. Each cut binds its start-frame `sour
 ## 4. Per-cut start-frames → gpt-image-2 + product composites + Playwright  (config: `edl.timeline[].source`, `keyframe_engine`, `landing_page`)  [PAID]
 
 Per cut, one start-frame. Creator cuts = gpt-image-2/edit off the matching wardrobe + world wide.
-Product B-roll = capsule/unboxing composites grounded on the real `product.hero_png`. Landing-page
+Product B-roll = product-macro/unboxing composites grounded on the real `product.hero_png`. Landing-page
 cuts = a Playwright render → `assets/overlays/landing-page.png` (the scroll is FFmpeg zoompan in
 assembly — NOT i2v). Review before step 5.
 

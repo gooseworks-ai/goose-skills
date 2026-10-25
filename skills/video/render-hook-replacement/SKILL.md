@@ -1,14 +1,8 @@
 ---
 name: render-hook-replacement
 description: Replace an existing video's opening with a supplied clip or free kinetic text hook while retaining and verifying every original body frame, audio, captions and ending. Use for surgical hook tests rather than regenerating the complete ad.
-owner: team
 status: active
 version: "1.0.2"
-created: 2026-10-05
-updated: 2026-10-05
-level: atom
-variant-of: null
-tags: [video, editing, hooks]
 ---
 
 # Human version
@@ -151,6 +145,6 @@ remain available if one fails; retry the failed target with the single renderer.
 
 ## Related
 
-[[used-by::create-hook-variant-pack]], [[references::preflight-concat]],
-[[references::trim-video-clips]], [[references::retime-captions-to-words]],
-[[references::watch]].
+Used by the `create-hook-variant-pack` recipe. Check each candidate with the `watch`
+skill. This renderer's own scripts handle the source preflight, the cut and the caption
+shift.

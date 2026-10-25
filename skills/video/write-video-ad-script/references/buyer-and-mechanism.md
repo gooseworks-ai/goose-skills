@@ -8,7 +8,7 @@ do not turn the explanation into a feature list or a product quiz.
 ## Establish the buyer's case
 
 Use the current audience decision and relevant evidence from
-[[composes::ad-angle-miner]]. A historical brand profile may describe a broader audience
+the `ad-angle-miner` skill. A historical brand profile may describe a broader audience
 than today's campaign. Record which audience this script serves; do not silently
 overwrite historical research. Write a short case containing:
 

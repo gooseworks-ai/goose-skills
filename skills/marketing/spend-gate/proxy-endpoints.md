@@ -74,12 +74,12 @@ Added for research-audience and work-with-creators (keys checked against the ven
 | YouTube video sponsors | `/v1/youtube/video/sponsors` | `url*`, `language` |
 | LinkedIn person profile | `/v1/linkedin/profile` | `url*` |
 | LinkedIn company page | `/v1/linkedin/company` | `url*` |
-| A creator's other social profiles | `/v1/find-social-profiles` | `platform*` (instagram · tiktok · youtube · x · twitter · facebook), `handle*`, `cache_max_age` |
-| A creator's public contact emails | `/v1/find-creator-emails` | `platform*` (same values), `handle*`, `cache_max_age` — personal contact data: the calling playbook's privacy and do-not-contact rules apply, and it is never logged in the credits log |
 | Link-in-bio pages | `/v1/linktree`, `/v1/komi`, `/v1/pillar`, `/v1/linkbio`, `/v1/linkme` | `url*`, `cache_max_age` |
 | Podcasts and shows | `/v1/spotify/search` | `query*` |
 
 `cache_max_age` lets a repeat read reuse a recent result; set it on repeat lookups of the same profile.
+
+There is no route for a creator's other social profiles or contact emails: the proxy refuses `/v1/find-social-profiles` and `/v1/find-creator-emails` (unsupported path). Read them from the creator's own profile and link-in-bio page above. A contact found there is personal data: the calling playbook's privacy and do-not-contact rules apply, and it is never logged in the credits log.
 
 ## Reviews
 

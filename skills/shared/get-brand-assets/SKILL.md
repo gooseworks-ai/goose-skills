@@ -1,7 +1,6 @@
 ---
 name: get-brand-assets
 description: Get company logos, brand colors, fonts, and style guides
-source: orthogonal
 ---
 
 

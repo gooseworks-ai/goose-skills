@@ -5,7 +5,7 @@
 - An LLM judge (Opus by default) scores every criterion **pass** or **fail** with a one-line evidence quote, once for the run with the skill and once for the baseline.
 - **A run passes only if every must-pass criterion passes.** Should-pass criteria show quality beyond the bar.
 - Criteria judge what the marketer received, not which method the agent used, so the baseline can pass too.
-- Sources: playbooks/where-to-start/SKILL.md "Done when" and Steps; playbooks/where-to-start/tests/test-by-hand.md "Scoring (the reviewer's rubric)"; the four failure modes from the 17–18 Oct hand tests (asked before doing free work; stopped after one source; procedure over craft; chat summary instead of a document); `atoms/write-report/ATOM.md` §3.
+- Sources: skills/marketing/where-to-start/SKILL.md "Done when" and Steps; skills/marketing/where-to-start/tests/test-by-hand.md "Scoring (the reviewer's rubric)"; the four failure modes from the 17–18 Oct hand tests (asked before doing free work; stopped after one source; procedure over craft; chat summary instead of a document); `skills/marketing/write-report/SKILL.md` §3.
 
 Format for the runner: one criterion per line as `- **<Id>** — <text>`. Ids: M = must, S = should, E = expert (an E line containing "(must)" counts as must).
 

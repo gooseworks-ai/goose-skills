@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "legacy_revision": "caa9dbf17fa844adce5bba77acff9ca5d15b86ef",
-  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved 2026-10-23. The old skills stay readable at tag legacy-gtm-final. Shared skills (skills/shared/) are the skills used across families: current_shared lists the current ones, retained the older ones still needed, each with its users (used_by) and when it can go (remove_when). Approved 2026-10-24. Superseded video atoms (status: superseded; the video kit's parts now do their job) are listed in superseded, each with the parts that replace it, who still uses it and when it can go. Listed 2026-10-24.",
+  "decision": "Keep the marketing playbooks, the video skills and only the old skills that a video skill, a playbook or the GooseWorks app still uses; delete the rest. Approved 2026-10-23. The old skills stay readable at tag legacy-gtm-final. Shared skills (skills/shared/) are the skills used across families: current_shared lists the current ones, retained the older ones still needed, each with its direct users (used_by; flat requires_skills lists repeat them elsewhere, and those go when their direct user does) and when it can go (remove_when). Approved 2026-10-24. Superseded video atoms (status: superseded; the video kit's parts now do their job) are listed in superseded, each with the parts that replace it, who still uses it and when it can go. Listed 2026-10-24.",
   "retired": [
     {
       "slug": "battlecard-generator",
@@ -1047,6 +1047,11 @@
       "slug": "render-photo-grid-card",
       "replacement": null,
       "reason": "Ported into the html-frames part; goose-studio's photo-grid-promo-card style renders it. No recipe or app runs this renderer."
+    },
+    {
+      "slug": "product-photoshoot",
+      "replacement": "goose-product-photos",
+      "reason": "Every GooseWorks tool it named is gone from the server; the goose-product-photos entry skill makes the same studio, lifestyle and on-model product photos with the live photo tools."
     }
   ],
   "retained": [
@@ -1291,16 +1296,6 @@
         }
       ],
       "remove_when": "the meta-ads-report playbook moves to analyze-performance"
-    },
-    {
-      "slug": "product-photoshoot",
-      "reason": "remix-graphic-ad-from-reference requires it.",
-      "used_by": [
-        {
-          "skill": "remix-graphic-ad-from-reference"
-        }
-      ],
-      "remove_when": "remix-graphic-ad-from-reference stops requiring it"
     },
     {
       "slug": "reddit-post-finder",
@@ -1658,6 +1653,40 @@
         }
       ],
       "remove_when": "the goose-studio create-chatgpt-video-ad molecule is retired (retire this with replacement null)"
+    },
+    {
+      "slug": "render-logo-equation-card",
+      "replaced_by": [
+        "html-frames@1.2.1",
+        "cut-footage@1.2.1",
+        "audio-mix@1.1.0"
+      ],
+      "reason": "goose-studio's logo-equation-card style renders this format with parts; only a goose-studio molecule still runs this renderer.",
+      "used_by": [
+        {
+          "repo": "goose-studio",
+          "file": "skills/molecules/create-logo-equation-card-video-ad/SKILL.md"
+        }
+      ],
+      "remove_when": "the goose-studio create-logo-equation-card-video-ad molecule is retired (retire this with replacement null: the logo-equation-card style draws the card)"
+    },
+    {
+      "slug": "render-street-interview",
+      "replaced_by": [
+        "video-h3max@1.0.0",
+        "transcribe-whisper@1.1.2",
+        "speech-recut@1.0.2",
+        "html-frames@1.2.1",
+        "end-card@1.1.1",
+        "assemble@1.2.0"
+      ],
+      "reason": "Its recipes are retired in goose-studio and the street-interview style uses parts, but write-video-ad-script still runs its prepare_script_context step.",
+      "used_by": [
+        {
+          "skill": "write-video-ad-script"
+        }
+      ],
+      "remove_when": "write-video-ad-script stops running render-street-interview's prepare_script_context"
     },
     {
       "slug": "review-finished-ad",

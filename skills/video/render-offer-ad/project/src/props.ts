@@ -9,7 +9,7 @@ import { FPS, beatFrames } from "./lib/anim";
 // ---------------------------------------------------------------------------
 
 export interface Palette {
-  primary_ground: string; // beats 1 & 4 ground (the "rust" role in the source run)
+  primary_ground: string; // beats 1 & 4 ground (the "rust" role in the first build)
   light_ground: string; // beats 2 & 3 ground (the "cream" role)
   ink: string; // dark type on light grounds
   highlight_chip: string; // chip/pill border accent (the "soft pink" role)
