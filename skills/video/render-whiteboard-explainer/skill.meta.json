@@ -1,0 +1,20 @@
+{
+  "slug": "render-whiteboard-explainer",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.1.1",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Make a whiteboard explainer for this brand: a narrator talks while a real whiteboard fills up in black marker.",
+  "requires_skills": [
+    "watch",
+    "create-image-gpt-image-fal",
+    "create-vo-elevenlabs",
+    "media-proxy"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
+  ]
+}

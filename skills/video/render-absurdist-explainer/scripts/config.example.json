@@ -1,0 +1,55 @@
+{
+  "_comment": "Worked example only (the demo build: a fictional bike-chain wax, Glidefern, told with the villain-arc story shape — the problem (rust) as a cartoon villain narrating its own defeat; brand, product and URL are made up). The villain arc is ONE story option, not the format: a new run's scenes follow whatever choices.story_shape and choices.cast the user picked. Creative fields — scenes[].caption (wording follows choices.story_shape + choices.narrator), scenes[].vo (choices.narrator + choices.narrator_voice), scenes[].clip (choices.visual_style + choices.cast), music_bed (choices.music), end_card.wordmark/product_line/claims/cta and brand_palette (the user's brand) — come from the recipe's choices and brand inputs; never copy them as defaults. No cure claims in captions or end-card copy. The recipe binds a NEW brand's own clips / VO / product / palette / copy here. Every path is a placeholder to REPLACE with an absolute path or a runtime working/ path. `target_sec` per scene is the MEASURED VO window (ffprobe each VO mp3 — never a planned word count). Scene order follows the recipe's neutral beat slots (hook: the problem -> teach the mechanism -> what it costs -> the product arrives -> CLIMAX: the fix -> payoff); the end card is a SEPARATE block (built by build_endcard.py), not a scene. end_card.vo is OPTIONAL: the path to the end card's spoken line. It plays from the start of the end-card window, and the dwell becomes the larger of dwell_sec and the line's duration + 0.5s. Remove the key for a silent end card. The end card is held static; add end_card.zoom_to (for example 1.04) only if you want a slow zoom.",
+
+  "atempo": 1.3,
+  "music_bed": "/abs/or/working/audio/music-bed.mp3",
+  "music_volume": 0.62,
+  "captions_ass": "/abs/or/working/audio/captions.ass",
+
+  "caption_style": {
+    "font": "Arial",
+    "size": 64,
+    "outline": 6,
+    "shadow": 3,
+    "marginv": 330
+  },
+
+  "scenes": [
+    { "id": "01", "clip": "/abs/or/working/clips/scene-01.mp4", "target_sec": 3.13, "vo": "/abs/or/working/audio/vo/vo-01-intro.mp3",   "caption": "I'm Rust." },
+    { "id": "02", "clip": "/abs/or/working/clips/scene-02.mp4", "target_sec": 5.41, "vo": "/abs/or/working/audio/vo/vo-02-film.mp3", "caption": "Meet the oil film." },
+    { "id": "03", "clip": "/abs/or/working/clips/scene-03.mp4", "target_sec": 1.40, "vo": "/abs/or/working/audio/vo/vo-03-break.mp3",   "caption": "So I eat it." },
+    { "id": "04", "clip": "/abs/or/working/clips/scene-04.mp4", "target_sec": 3.42, "vo": "/abs/or/working/audio/vo/vo-04-secret.mp3",  "caption": "It's really a water problem." },
+    { "id": "05", "clip": "/abs/or/working/clips/scene-05.mp4", "target_sec": 4.56, "vo": "/abs/or/working/audio/vo/vo-05-clean.mp3", "caption": "Dry links = zero grip for me" },
+    { "id": "06", "clip": "/abs/or/working/clips/scene-06.mp4", "target_sec": 3.94, "vo": "/abs/or/working/audio/vo/vo-06-drop.mp3",  "caption": "Let one drop sit — the links seize." },
+    { "id": "07", "clip": "/abs/or/working/clips/scene-07.mp4", "target_sec": 3.39, "vo": "/abs/or/working/audio/vo/vo-07-cost.mp3",    "caption": "Squeak. Grind. Snap." },
+    { "id": "08", "clip": "/abs/or/working/clips/scene-08.mp4", "target_sec": 2.41, "vo": "/abs/or/working/audio/vo/vo-08-home.mp3",   "caption": "The bike stays home." },
+    { "id": "09", "clip": "/abs/or/working/clips/scene-09.mp4", "target_sec": 2.59, "vo": "/abs/or/working/audio/vo/vo-09-arrive.mp3",  "caption": "Until Glidefern rolls in." },
+    { "id": "10", "clip": "/abs/or/working/clips/scene-10.mp4", "target_sec": 4.64, "vo": "/abs/or/working/audio/vo/vo-10-seal.mp3",    "caption": "Its wax coat beads every drop off" },
+    { "id": "11", "clip": "/abs/or/working/clips/scene-11.mp4", "target_sec": 6.27, "vo": "/abs/or/working/audio/vo/vo-11-defeat.mp3",  "caption": "Quiet chain. Nowhere left to grow." }
+  ],
+
+  "end_card": {
+    "product_image": "/abs/or/working/raw-materials/product-endcard.jpg",
+    "image": "/abs/or/working/generated/endcard/endcard.png",
+    "dwell_sec": 3.97,
+    "vo": "/abs/or/working/audio/vo/vo-12-endcard.mp3",
+    "background": null,
+    "product_height": 1015,
+    "product_y": 88,
+    "copy_y": 1190,
+    "wordmark": "Glidefern",
+    "product_line": "Rainline Chain Wax",
+    "claims": [
+      "Powered by a plant-wax seal",
+      "Rainproof   ·   Whisper-quiet   ·   Lasts 300 km"
+    ],
+    "cta": "glidefern.example"
+  },
+
+  "brand_palette": {
+    "primary": "#1F4E79",
+    "primary_lite": "#2F6FA8",
+    "accent": "#F2A541",
+    "grey": "#5E6670"
+  }
+}

@@ -1,13 +1,12 @@
 name: CI
 
 on:
-  # Every pull request is checked, whatever its base: dev, main, the
-  # video-merged integration branch and video/** lane branches included.
+  # Every pull request is checked, whatever its base.
   pull_request:
   # Pushes run the same checks. Only dev and main deploy or publish (see the
-  # jobs' if: lines); video-merged is checked after each merge.
+  # jobs' if: lines).
   push:
-    branches: [dev, main, video-merged]
+    branches: [dev, main]
 
 jobs:
   validate:
@@ -19,8 +18,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Test catalog deployment
-        run: node --test scripts/__tests__/deploy-catalog.test.mjs
+      - name: Install dependencies
+        # js-yaml, for the atom-lint tests that npm test runs.
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Validate skill metadata
         run: node scripts/validate-skills.js
@@ -31,36 +31,54 @@ jobs:
       - name: Verify generated index is committed
         run: git diff --exit-code skills-index.json
 
-      - name: Marketing agent skills resolve as published
-        # Every reference in marketing-agent/skills resolves when skills sit side by side, names a listed dependency, and the lists are flat.
-        run: node scripts/check-marketing-agent-links.js
+      - name: Skill links resolve as published
+        # In every family, each reference resolves when skills sit side by side and names a listed dependency, and requires_skills lists are flat.
+        # Also: a skill named in prose exists here (or is retired), and the relative links in docs/, drafts/, evals/ and the top-level docs resolve.
+        run: node scripts/check-skill-links.js
 
-      - name: Test the Git LFS pointer check
-        run: node --test scripts/__tests__/check-lfs-pointers.test.js
+      - name: Every GooseWorks tool a skill names is listed
+        # Every family. Old and hidden names fail with the listed tool to use (scripts/lib/action-names.json).
+        run: node scripts/check-tool-names.js
+
+      - name: No internal ticket ids in published files
+        # GOOSE-/GV-/QA-… ids mean nothing to a reader outside the team.
+        run: node scripts/check-internal-ids.js
+
+      - name: No real client or person names in the repo
+        # Every tracked text file, against SHA-256 digests (scripts/lib/client-name-hashes.json).
+        # Frozen part versions and parts/_lib/ are skipped (accepted risk, see the script).
+        run: node scripts/check-client-names.js
+
+      - name: Router tables match skills/entry/gooseworks/routes.json
+        run: node scripts/build-router.js --check
 
       - name: No unresolved Git LFS pointers
         # A file whose LFS object was never pushed is a short text stub; the catalog release refuses it.
         # Reads the indexed blobs through git, so the working tree cannot hide one.
         run: node scripts/check-lfs-pointers.js
 
-      - name: Test CLI
+      - name: Test the scripts, the repo tests and the Node tests in skill folders
+        # Discovery, not a list: every test/*.test.js and scripts/__tests__/*.test.{js,mjs} runs.
         run: npm test
 
       - name: Verify packaged writer handoff
-        run: python3 skills/ads/capabilities/write-video-ad-script/scripts/verify_handoff.py
+        run: python3 skills/video/write-video-ad-script/scripts/verify_handoff.py
 
       - name: Test review-ugc-render speech gate
         # Pure stdlib Python: no ffmpeg, pytest or network (transcription is stubbed).
-        run: python3 skills/ads/packs/ugc-video-formats/review-ugc-render/tests/test_review_render.py
+        run: python3 skills/video/review-ugc-render/tests/test_review_render.py
 
       - name: Test street-interview prompt preflight
         run: |
-          python3 skills/ads/capabilities/render-street-interview/scripts/selftest.py
-          python3 -m unittest discover -s skills/ads/capabilities/render-street-interview/tests -p 'test_prompt_budget.py' -v
+          python3 skills/video/render-street-interview/scripts/selftest.py
+          python3 -m unittest discover -s skills/video/render-street-interview/tests -p 'test_prompt_budget.py' -v
+
+      - name: Test improve-search-visibility report fixtures
+        run: python3 skills/marketing/improve-search-visibility/tests/run-fixtures.py
 
   atom-checks:
-    # What video atoms may say, their version bumps, and the parts index.
-    # Old debt warns; debt a branch adds fails (scripts/atom-lint.js).
+    # What video atoms may say, every skill's version bumps, and the parts index.
+    # Every finding fails (--strict): the old debt is cleared (scripts/atom-lint.js).
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -81,18 +99,19 @@ jobs:
           echo "BASE=$base" >> "$GITHUB_ENV"
 
       - name: Install dependencies
-        # npm install, not npm ci: the lockfile predates this Node's npm, which
-        # refuses it for ci (the npm release step installs the same way).
-        run: npm install --ignore-scripts --no-audit --no-fund
-
-      - name: Test the atom and part checks
-        run: node --test scripts/__tests__/atom-lint.test.js scripts/__tests__/check-atom-versions.test.js scripts/__tests__/check-parts.test.js scripts/__tests__/pick-base.test.js
+        # js-yaml, which atom-lint.js reads frontmatter with. The checks' own tests run in the validate job (npm test).
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Atom lint
-        run: node scripts/atom-lint.js --base "$BASE" --direct
+        run: node scripts/atom-lint.js --base "$BASE" --direct --strict
 
       - name: Atom version bumps
         run: node scripts/check-atom-versions.js --base "$BASE" --direct
+
+      - name: Skill version bumps (every family, and the entry plugin manifests)
+        # A changed marketing, shared, entry or non-atom video skill raises its version;
+        # a changed entry skill also raises the version in both plugin manifests.
+        run: node scripts/check-skill-versions.js --base "$BASE" --direct
 
       - name: Parts index and frozen versions
         run: node scripts/check-parts.js --base "$BASE" --direct
@@ -135,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: skills/ads/capabilities/render-imessage-chat
+        working-directory: skills/video/render-imessage-chat
     steps:
       - uses: actions/checkout@v4
 
@@ -152,8 +171,8 @@ jobs:
         run: node --test --test-concurrency=1 tests/test_safe_area.js tests/test_chat.js
 
   media-tests:
-    # The media helpers are pinned to macOS system fonts (render-imessage-cascade), so these
-    # run on macOS. Local ffmpeg fixtures only; no provider calls.
+    # Some media tests are pinned to macOS system fonts (review-finished-ad's Arial checks), so
+    # these run on macOS. Local ffmpeg fixtures only; no provider calls.
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -164,23 +183,29 @@ jobs:
 
       - name: Install ffmpeg and test deps
         run: |
-          brew install ffmpeg
-          python -m pip install pytest pillow numpy requests
+          # librsvg: review-finished-ad's SVG logo test.
+          brew install ffmpeg librsvg
+          # opencv: make-static-ads' repair-patch test.
+          python -m pip install pytest==8.3.5 pillow==11.1.0 numpy==2.2.6 requests==2.32.3 opencv-python-headless==4.12.0.88
 
-      - name: Test video media helpers
-        run: >
-          python -m pytest -q
-          test/recipe-media-fixes
-          skills/ads/capabilities/review-finished-ad/tests
-          skills/ads/capabilities/create-vo-elevenlabs/tests
-          skills/ads/capabilities/create-creator-takes-h3/tests
-          skills/ads/capabilities/create-image-fal/tests
-          skills/ads/capabilities/media-proxy/tests
-          skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/tests
-          skills/ads/capabilities/render-street-interview/tests/test_single_gen_rejection.py
-          skills/ads/packs/video-ad-formats/stitch-videos-ffmpeg/tests
-          skills/ads/capabilities/compose-creator-layer/tests
-          skills/ads/capabilities/write-video-ad-script/tests
+      - name: Test every Python test under skills/ and test/ (a skip fails the job)
+        # Discovery, not a list: a new test_*.py runs without editing this file.
+        shell: bash
+        env:
+          # An OFL font already in the repo, for render-hook-replacement's text route.
+          HOOK_TEST_FONT: ${{ github.workspace }}/parts/captions-layer/1.5.0/assets/fonts/Montserrat-Bold.ttf
+        run: |
+          python -m pytest -q -rs skills test 2>&1 | tee "$RUNNER_TEMP/pytest.log"
+          node scripts/require-all-tests-ran.js "$RUNNER_TEMP/pytest.log"
+
+      - name: Test custom-video regressions
+        # Its own run: named on one command line with test/, pytest drops the
+        # recipe-media-fixes tests.
+        run: python -m pytest -q test/custom-video-regressions.py
+
+      - name: Test podcast-skit gates
+        # Each gate passes good input and fails its mutation; needs ffmpeg and Pillow.
+        run: python skills/video/render-podcast-skit/scripts/selftest.py
 
   deploy-catalog:
     # Ships only after every check passes, and only from dev or main.
@@ -218,37 +243,3 @@ jobs:
           repository: ${{ secrets.GOOSEWORKS_APP_REPO }}
           event-type: goose_skills_updated
           client-payload: '{"source":"goose-skills","ref":"${{ github.ref }}","sha":"${{ github.sha }}"}'
-
-  npm-release:
-    # The npm package publishes from main only, after every check passes.
-    # The npm-release environment holds NPM_TOKEN and is limited to main in
-    # the repository settings. On other changes it opens or updates the
-    # release pull request.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [validate, atom-checks, part-tests, imessage-chat-browser-tests, media-tests]
-    runs-on: ubuntu-latest
-    environment: npm-release
-    concurrency:
-      group: npm-release
-      cancel-in-progress: false
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-
-      - run: npm install
-
-      - name: Create release pull request or publish
-        uses: changesets/action@v1
-        with:
-          publish: npm publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

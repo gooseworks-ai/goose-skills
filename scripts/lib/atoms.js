@@ -5,9 +5,11 @@
  * which folders are video atoms, how to read a file as it was on the base
  * branch, and semver.
  *
- * A video atom is a skill folder with a SKILL.md directly under
- * skills/ads/capabilities/ or under skills/ads/packs/<pack>/. The few
- * non-video skills that live there are listed in atom-lint/config.json.
+ * A video atom is a skill folder skills/video/<slug>/ whose skill.meta.json
+ * category is not composites or playbooks (those are the formats and the
+ * production harness). Skills listed in atom-lint/config.json not_video are
+ * skipped. Before 2026-10-23 atoms lived in skills/ads/capabilities/ and
+ * skills/ads/packs/<pack>/; baseAtomDir still finds them there on an old base.
  */
 
 const fs = require('fs');
@@ -22,8 +24,10 @@ const CONFIG = JSON.parse(
   fs.readFileSync(path.join(__dirname, '..', 'atom-lint', 'config.json'), 'utf8'),
 );
 
-const CAPABILITIES_DIR = 'skills/ads/capabilities';
-const PACKS_DIR = 'skills/ads/packs';
+const VIDEO_DIR = 'skills/video';
+const NOT_ATOM_CATEGORIES = new Set(['composites', 'playbooks']);
+// Where atoms lived before the flat layout, for comparing with an older base.
+const OLD_ATOM_DIRS = ['skills/ads/capabilities', 'skills/ads/packs'];
 const SKIP_DIRS = new Set(['node_modules', '.git', '__pycache__', '.tmp', '.pytest_cache']);
 
 function toPosix(p) {
@@ -42,29 +46,16 @@ function isDir(p) {
 function listAtoms(root = ROOT) {
   const notVideo = new Set(CONFIG.not_video);
   const atoms = [];
-  const add = (dir, slug) => {
-    if (notVideo.has(slug)) return;
-    if (!fs.existsSync(path.join(root, dir, 'SKILL.md'))) return;
+  const video = path.join(root, VIDEO_DIR);
+  if (!isDir(video)) return atoms;
+  for (const slug of fs.readdirSync(video).sort()) {
+    const dir = `${VIDEO_DIR}/${slug}`;
+    if (notVideo.has(slug) || !fs.existsSync(path.join(root, dir, 'SKILL.md'))) continue;
+    const meta = readMeta(root, dir);
+    if (meta && NOT_ATOM_CATEGORIES.has(meta.category)) continue;
     atoms.push({ slug, dir });
-  };
-
-  const caps = path.join(root, CAPABILITIES_DIR);
-  if (isDir(caps)) {
-    for (const slug of fs.readdirSync(caps).sort()) {
-      if (isDir(path.join(caps, slug))) add(`${CAPABILITIES_DIR}/${slug}`, slug);
-    }
   }
-  const packs = path.join(root, PACKS_DIR);
-  if (isDir(packs)) {
-    for (const pack of fs.readdirSync(packs).sort()) {
-      const packDir = path.join(packs, pack);
-      if (!isDir(packDir)) continue;
-      for (const slug of fs.readdirSync(packDir).sort()) {
-        if (isDir(path.join(packDir, slug))) add(`${PACKS_DIR}/${pack}/${slug}`, slug);
-      }
-    }
-  }
-  return atoms.sort((a, b) => a.slug.localeCompare(b.slug));
+  return atoms;
 }
 
 /** The atom folder a repo path belongs to, or null. */
@@ -169,14 +160,14 @@ function readAt(root, base, filePath) {
 
 /**
  * Where an atom lived on the base commit: its own folder when that held a
- * SKILL.md, else the folder of the same slug anywhere under capabilities/ or
- * packs/<pack>/ (an atom moved between the two trees). Null for a new atom.
+ * SKILL.md, else the folder of the same slug anywhere under skills/video/ or
+ * the pre-2026-10-23 atom folders (an atom that moved). Null for a new atom.
  */
 function baseAtomDir(root, base, atom) {
-  const out = git(root, ['ls-tree', '-r', '-z', '--name-only', base, '--', CAPABILITIES_DIR, PACKS_DIR]);
+  const out = git(root, ['ls-tree', '-r', '-z', '--name-only', base, '--', VIDEO_DIR, ...OLD_ATOM_DIRS]);
   const dirs = new Set();
   for (const p of out.split('\0')) {
-    const m = p.match(/^(skills\/ads\/capabilities\/[^/]+|skills\/ads\/packs\/[^/]+\/[^/]+)\/SKILL\.md$/);
+    const m = p.match(/^(skills\/video\/[^/]+|skills\/ads\/capabilities\/[^/]+|skills\/ads\/packs\/[^/]+\/[^/]+)\/SKILL\.md$/);
     if (m) dirs.add(m[1]);
   }
   if (dirs.has(atom.dir)) return atom.dir;

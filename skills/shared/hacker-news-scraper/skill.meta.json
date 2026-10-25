@@ -1,0 +1,9 @@
+{
+  "slug": "hacker-news-scraper",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "tags": [
+    "monitoring"
+  ],
+  "domain": "monitoring"
+}

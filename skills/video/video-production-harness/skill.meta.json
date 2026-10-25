@@ -1,0 +1,33 @@
+{
+  "author": "GooseWorks",
+  "category": "playbooks",
+  "domain": "ads",
+  "features": [
+    "Original video production",
+    "Human review gates",
+    "Shared Studio production source"
+  ],
+  "requires_skills": [
+    "ad-angle-miner",
+    "comment-mining",
+    "competitor-ad-intelligence",
+    "create-video-fal",
+    "create-video-seedance-2-fal",
+    "media-proxy",
+    "reddit-post-finder",
+    "render-street-interview",
+    "scrapecreators-api",
+    "transcript-intelligence",
+    "watch",
+    "write-video-ad-script"
+  ],
+  "slug": "video-production-harness",
+  "source_commit": "37cdb257c52b7825ba0e64fca2732e15ba1c344e",
+  "source_hash": "c2cfbfd6caa49d126ecbc524daacd0ed6e2e120bbf02eeadeab4293de00d1078",
+  "source_version": "5-c2cfbfd6caa4",
+  "tags": [
+    "ads",
+    "content"
+  ],
+  "version": "3.1.2"
+}

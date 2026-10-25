@@ -1,0 +1,99 @@
+{
+  "_comment": "Illustrative worked config — the demo build: a houseplant-care myths spot for Fernhollow, a made-up plant-care brand. Worked example only. Creative fields — beats[] copy (hook_line, myth/fact lines, turn_slate, punch_line), palette, and the vo/music files (recipe choices narrator_voice, tone, music) — come from the recipe's choices / brand kit; never copy them as defaults. The recipe binds a NEW brand's own copy / VO / palette / end-card here. Every /abs/or/working/... path is a placeholder to REPLACE with an absolute path or a runtime work-dir path. Pipeline: (1) beat_snap.py re-snaps every beat boundary to the RENDERED VO's Whisper word onsets (writes beat-manifest.json + whisper/words-flat.json into the work dir); (2) render_beats.py renders each beat to frames/beat-NN.mp4 via Playwright at `fps`; (3) make_captions.py emits captions.ass from the manifest + words; (4) compose.py concats the beats + mixes VO/music + burns captions. VO-FIRST: render the VO, then beat_snap, then render_beats.",
+
+  "fps": 25,
+  "width": 1080,
+  "height": 1920,
+
+  "vo": "/abs/or/working/voice/vo.mp3",
+  "music": "/abs/or/working/music/music.mp3",
+  "mix": { "music_db": -20, "tail_fade": 0.8 },
+
+  "brand_name": "Fernhollow",
+  "display_font": "DM Serif Display",
+
+  "palette": {
+    "bg": "#F4F1F7",
+    "myth_strike": "#C0392B",
+    "fact_accent": "#108474",
+    "headline_ink": "#411A1F",
+    "accent": "#5E3FA0"
+  },
+
+  "end_card_png": "/abs/or/working/assets/end_card.png",
+  "end_card_fade": 0.35,
+
+  "caption_style": {
+    "font": "Inter",
+    "size": 58,
+    "primary": "&H001F1A41",
+    "outline_colour": "&H00F7F1F4",
+    "back_colour": "&H66F7F1F4",
+    "border_style": 3,
+    "outline": 10,
+    "marginv": 150
+  },
+
+  "_suppress_note": "The proof beat + end card carry their own low-area text; captions there collide. beats flagged captions:false and any role:end-card are auto-suppressed; suppress_beats adds more by beat n.",
+  "suppress_beats": ["06", "08"],
+
+  "beats": [
+    {
+      "n": "01", "role": "hook", "duration": 3.97, "captions": true,
+      "eyebrow": "3 PLANT \"TIPS\"",
+      "hook_line": "Habits that quietly kill your plants.",
+      "emphasis": "quietly",
+      "strike_word": "TIPS",
+      "cues": { "strike": [2.89, 3.40], "wordmark": [3.45, 3.85] }
+    },
+    {
+      "n": "02", "role": "myth-fact", "duration": 3.44, "captions": true,
+      "myth_index": "01",
+      "myth_line": "“Water it a little every day.”",
+      "fact_line": "Daily sips rot the roots — [yellow leaves, then mush.]",
+      "cues": { "strike": [1.36, 1.96], "fact": [2.14, 2.59] }
+    },
+    {
+      "n": "03", "role": "myth-fact", "duration": 4.84, "captions": true,
+      "myth_index": "02",
+      "myth_line": "“Coffee grounds feed any plant.”",
+      "fact_line": "Most soils turn sour fast — [mold, gnats, slow growth.]",
+      "cues": { "strike": [0.82, 1.42], "fact": [1.42, 1.91] }
+    },
+    {
+      "n": "04", "role": "myth-fact", "duration": 3.54, "captions": true,
+      "myth_index": "03",
+      "myth_line": "“Bigger pot, faster growth.”",
+      "fact_clauses": [
+        { "text": "Extra soil stays wet for days" },
+        { "text": "roots sit in the soggy middle" },
+        { "text": "more rot.", "hot": true }
+      ],
+      "cues": { "strike": [0.82, 1.42], "clauses": [1.42, 2.24, 2.72] }
+    },
+    {
+      "n": "05", "role": "turn", "duration": 4.44, "captions": true,
+      "turn_slate": "What actually works is [simple.]",
+      "turn_sub": "Habits with [real growers behind them.]",
+      "cues": { "head": [0.10, 0.70], "sub": [2.18, 2.78] }
+    },
+    {
+      "n": "06", "role": "proof", "duration": 5.06, "captions": false,
+      "proof_eyebrow": "What works — season after season",
+      "proof_items": [
+        { "name": "Soak-and-dry watering", "badge": "Root-safe" },
+        { "name": "Chunky bark mix", "badge": "Root-safe" },
+        { "name": "Bright, indirect light", "badge": "Root-safe" }
+      ],
+      "proof_footnote": "Grower-tested — [matched to your plant by a real person.]",
+      "cues": { "items": [0.00, 0.92, 2.00], "footnote": [2.58, 3.10] }
+    },
+    {
+      "n": "07", "role": "punch", "duration": 1.12, "captions": true,
+      "punch_line": "Stop overwatering."
+    },
+    {
+      "n": "08", "role": "end-card", "duration": 3.11, "captions": false
+    }
+  ]
+}

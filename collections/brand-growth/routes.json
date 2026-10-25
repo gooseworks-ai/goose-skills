@@ -1,52 +1,51 @@
 {
-  "$comment": "DERIVED, do not hand-edit. The single source for GooseWorks skill routing is gooseworks/src/skills/routes.ts (GOOSE-3190), published as skills/routes.json in the gooseworks CLI package. This file mirrors the Brand Growth half of it so the collection, the CLI router SKILL.md, and the backend hosted-connector pointer cannot drift apart. Regenerate by copying from the source below, then run: npm run build:index && npm test",
+  "$comment": "DERIVED by scripts/build-router.js from skills/entry/gooseworks/routes.json, the single source for GooseWorks routing. Do not hand-edit.",
   "source": {
-    "repo": "gooseworks-ai/gooseworks",
-    "file": "src/skills/routes.ts",
-    "published_as": "skills/routes.json",
-    "raw_url": "https://raw.githubusercontent.com/gooseworks-ai/gooseworks/main/skills/routes.json"
+    "file": "skills/entry/gooseworks/routes.json"
   },
-  "route_table_version": 1,
-  "captured": "2026-10-20",
-  "$comment_entry_skills": "Vendored by the CLI and installed to ~/.agents/skills/ — they are NOT members of this collection, they are the entry points into it.",
+  "route_table_version": 2,
+  "$comment_entry_skills": "Installed into every agent by `gooseworks install`; they are the entry points into this collection, not members of it.",
   "entry_skills": [
     "goose-ads",
     "goose-product-photos",
-    "goose-video"
+    "goose-video",
+    "goose-video-local",
+    "gooseworks",
+    "make-custom-video"
   ],
   "brand_growth_routes": [
     {
-      "job": "Not sure what to do first",
+      "job": "Grow the brand, get more customers or sales, or not sure where to start",
       "skills": [
         "where-to-start"
       ]
     },
     {
-      "job": "Market size, trends, what people say, brand watch",
+      "job": "Market size, trends, brand watch and launch positioning",
       "skills": [
         "research-market"
       ]
     },
     {
-      "job": "What rivals run and what works",
+      "job": "Competitor research, battlecards, landing-page tools and post engagers",
       "skills": [
         "research-competitors"
       ]
     },
     {
-      "job": "Who buys and why; lists of companies and people",
+      "job": "Who buys and why; prospect lists, lead enrichment and work contacts",
       "skills": [
         "research-audience"
       ]
     },
     {
-      "job": "Cold emails and LinkedIn messages",
+      "job": "Cold email and LinkedIn drafts, replies and an import file; you send",
       "skills": [
         "write-outreach"
       ]
     },
     {
-      "job": "A campaign plan from a budget and a date",
+      "job": "A campaign plan from a launch, budget or date",
       "skills": [
         "plan-campaign"
       ]
@@ -70,13 +69,13 @@
       ]
     },
     {
-      "job": "Email flows and sends to subscribers",
+      "job": "Subscriber email flows and broadcast drafts; you send",
       "skills": [
         "email-lifecycle"
       ]
     },
     {
-      "job": "SEO and AI-answer visibility",
+      "job": "SEO audits, metrics, keyword gaps, topic clusters, page-set plans and AI visibility",
       "skills": [
         "improve-search-visibility"
       ]
@@ -88,13 +87,13 @@
       ]
     },
     {
-      "job": "One post, article or newsletter",
+      "job": "Posts, articles, newsletters and one or more content briefs",
       "skills": [
         "make-content"
       ]
     },
     {
-      "job": "Posting calendar and social plan",
+      "job": "Organic social research, posts, voices, calendar and drafts",
       "skills": [
         "run-organic-social"
       ]

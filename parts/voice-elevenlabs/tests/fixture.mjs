@@ -6,12 +6,12 @@ import { fakeAlignment, fileRef, makeTone } from '../../_tools/kit-harness.mjs';
 export const sample = {
   inputs: () => ({
     scenes: [
-      { id: 's1', line: 'Meet Drinkag1 today.', on_screen: 'Hello', picture: 'a glass' },
+      { id: 's1', line: 'Meet Drinkqx9 today.', on_screen: 'Hello', picture: 'a glass' },
       { id: 's2', line: '' },
       { id: 's3', line: 'It tastes great.' },
     ],
     voice_id: 'dMyQqiVXTU80dDl2eNK8',
-    pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }],
+    pronunciations: [{ term: 'Drinkqx9', say_as: 'drink Q X nine' }],
   }),
   async line(order, ctx) {
     const seconds = Math.max(0.5, order.body.text.length * 0.05);

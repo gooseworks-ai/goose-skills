@@ -1,0 +1,310 @@
+{
+  "_comment": "Worked example (the Sundrift 'Roll On' build: four young women roller skaters, a seaside boardwalk town in late-summer golden hour, a sunny indie surf-pop anthem with a bright female lead, one summer day morning -> peak -> twilight). Creative fields — brand_name, campaign, title, song.prompt, song.bpm, song.global_styles, song.structure[].lines, song.hook_line, song.hook_word, look_pack.name, look_pack.style_opener (place + light clause), look_pack.palette_anchors, look_pack.continuity_anchor, tableaux[] (role, lyric_anchor, keyframe_prompt, motion_hint, caption), captions.accent_words, end_card.wordmark_text/wordmark_font/tagline_text/tagline_font/background/brand_asset — come from the recipe's choices (song_style, vocalist, cast, setting, story_arc) and the brand kit; never copy them as defaults. Copy the structure and field names only. Provider note: the demo ran keyframes/clips on Higgsfield; the recipe runs the same models on fal (create-image-gpt-image-fal / create-video-fal). A ~28s 35mm-film-look (FILM_BOARDWALK_35MM) 9:16 LIVE-ACTION-STYLE short film cut to an original anthem (NO separate VO). Pipeline: (1) ElevenLabs music_v1 anthem from song.structure -> mp3 + music_metadata.json (words_timestamps) -> build_word_timestamps.py -> words.json; (2) one Higgsfield gpt_image_2 keyframe per tableau (2k, 2:3~=9:16, one look_pack); (3) one Higgsfield kling3_0 i2v clip per tableau; (4) beat-locked hard-cut assembly + anthem mux (-14 LUFS) + cinematic lower-third serif captions via sync-captions-to-music (music-video preset, --placement low). Master 1080x1920. See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Sundrift",
+  "campaign": "roll on into the sun",
+  "title": "Roll On",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_sec": 28,
+  "keyframe_resolution": "2k",
+  "aspect_ratio": "9:16",
+  "song": {
+    "_comment": "Generated FIRST. The anthem carries the narration — there is NO separate voiceover. The delivered track sets the timeline; snap every tableau boundary to its lyric window (the stitch.py TIMELINE). music_v1 returns music_metadata.json with words_timestamps (ms); build_word_timestamps.py derives audio/words.json (s). No artist names in the prompt (ElevenLabs Music ToS filter — describe the arrangement only).",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "lyrics_md": "source/lyrics-locked.md",
+    "bpm": 120,
+    "prompt": "Sunny indie surf-pop anthem, 120 BPM, bright and warm female lead vocal, uplifting. Verse: gentle piano intro + soft kick, hopeful and close. Pre-chorus: drums build, strings rise in, rising tension. Chorus: full-band drop + big string swell + jangly electric guitar, the hook lands on the one. Outro: stripped back to acoustic guitar + vocal for a warm landing. Female pop vocal, carefree.",
+    "force_instrumental": false,
+    "hook_line": "roll on into the sun",
+    "hook_word": "roll",
+    "_note_hook_target": "The chorus L1 'roll on, roll on, roll on into the sun' lands at ~14.4s (chorus drop). The hero tableau T08 (split-screen colorway-range frame) is timed to it.",
+    "hook_target_sec": 14.4,
+    "structure": [
+      {
+        "_note": "music_metadata.json also carries positive_local_styles / negative_local_styles per section — feed those to music_v1 as the per-section style arrays.",
+        "section": "Verse",
+        "duration_ms": 9000,
+        "positive_local_styles": ["gentle piano intro", "soft kick pattern", "bright warm female vocal", "hopeful mood", "even groove"],
+        "negative_local_styles": ["full band", "electric guitar", "loud drums", "lush string section"],
+        "lines": [
+          "Sun up, salt in the air.",
+          "Laces tight, ribbon in hair.",
+          "Down the boards where the gulls fly low.",
+          "All July, we roll this coast."
+        ]
+      },
+      {
+        "section": "Pre-Chorus",
+        "duration_ms": 5000,
+        "positive_local_styles": ["drums building", "strings rising in", "tension climbing", "lifting build", "vocal grows stronger"],
+        "negative_local_styles": ["piano only", "acoustic guitar", "sparse", "quiet"],
+        "lines": [
+          "The waves, the wind, the boards, the way we glide.",
+          "Every evening, we chase the tide."
+        ]
+      },
+      {
+        "section": "Chorus",
+        "duration_ms": 8000,
+        "positive_local_styles": ["full-band lift", "soaring sing-along chorus", "propulsive groove", "electric guitar", "big drums", "big string swell"],
+        "negative_local_styles": ["acoustic", "minimalist", "soft", "reflective"],
+        "lines": [
+          "Roll on, roll on, roll on into the sun.",
+          "Roll on, roll on, roll on till the day is done.",
+          "Sundrift, the wheels we run.",
+          "Roll on, roll on, roll on, roll on."
+        ]
+      },
+      {
+        "section": "Outro",
+        "duration_ms": 6000,
+        "positive_local_styles": ["sparse arrangement", "acoustic guitar", "warm vocal", "wistful mood", "gentle fade", "tidy final chord"],
+        "negative_local_styles": ["full band", "loud", "heavy drums", "electric guitar"],
+        "lines": [
+          "The crew that found this road.",
+          "The crew that rides it home.",
+          "Roll on into the sun."
+        ]
+      }
+    ],
+    "global_styles": {
+      "_note": "music_metadata.composition_plan.positive_global_styles / negative_global_styles — the top-level vibe. Demo values (indie pop + female vocal, negating rap/male vocal): write these from choices.song_style + choices.vocalist, never copy.",
+      "positive": ["indie pop", "surf pop", "anthem", "bright female pop vocal", "uplifting", "120 bpm", "acoustic guitar"],
+      "negative": ["rap", "male vocal", "slow tempo", "lo-fi", "dark"]
+    },
+    "outputs": {
+      "audio": "audio/music.mp3",
+      "word_timings": "audio/words.json",
+      "metadata": "audio/music_metadata.json"
+    }
+  },
+  "look_pack": {
+    "name": "FILM_BOARDWALK_35MM",
+    "_comment": "ONE look pack held across all N beats (14 in the demo) so they read as shot by one cinematographer. The style_opener (the 35mm-film clause) is prepended to EVERY keyframe prompt; the negative_tail is appended. This is the divider from the paper-craft molecule: a NAMED FILM STOCK + grain + flares + natural light (the light of choices.setting; golden hour in the demo) + handheld, hard-negating the AI-glossy sheen. The continuity_anchor (the brand's REAL product in every frame; the branded roller skates in the demo) stitches the N shots into one ad.",
+    "continuity_anchor": "The SUNDRIFT roller skates appear in EVERY tableau in a different colorway but the same brand mark + similar silhouette.",
+    "palette_anchors": [
+      "Kodak Portra warm skin tones",
+      "golden hour",
+      "coral",
+      "seafoam",
+      "butter-cream yellow",
+      "lilac",
+      "sea-glass greens",
+      "blown highlights",
+      "sunset orange to indigo"
+    ],
+    "style_opener": "A cinematic 35mm film photograph shot on Kodak Portra 400. Visible film grain, warm color profile, slightly blown highlights, soft light leaks bleeding from the corners, a faint diagonal lens flare. Handheld framing — not perfectly leveled, lived-in documentary composition. Seaside boardwalk town setting in late summer — weathered shingles, dune grass, sun-bleached wooden boards. Late afternoon golden hour light. Cinematic indie-film mood, like a still from an indie short film. ",
+    "negative_tail": " AVOID: studio-glossy AI render, smoothed AI skin, fashion-magazine airbrush, perfectly symmetric AI faces, plastic-skin look, oversaturated Instagram filter, sterile lighting, perfect studio backdrop. Vertical 9:16 composition."
+  },
+  "keyframe_engine": {
+    "_note": "Higgsfield CLI: `higgsfield generate create gpt_image_2 --prompt ... --aspect_ratio 2:3 --resolution 2k --wait --json`. 2:3 is the closest supported ratio to 9:16; assembly scale/crops to 1080x1920. Parallel batches of 3 (burst-credit reserve). Prompt = style_opener + tableaux[i].keyframe_prompt + negative_tail.",
+    "provider": "higgsfield",
+    "model": "gpt_image_2",
+    "resolution": "2k",
+    "aspect_ratio": "9:16",
+    "batch_size": 3
+  },
+  "clip_engine": {
+    "_note": "Higgsfield CLI: `higgsfield generate create kling3_0 --prompt ... --start-image <keyframe> --duration 5 --wait --json`. Kling 3.0 (not Seedance) holds the film register + real faces through the motion. Prompt = motion_opener + tableaux[i].motion_hint. Subtle documentary micro-motion only.",
+    "provider": "higgsfield",
+    "model": "kling3_0",
+    "duration_sec": 5,
+    "batch_size": 3,
+    "motion_opener": "Subtle cinematic 35mm-film documentary motion. Handheld micro-drift, natural breath, slight forward push-in. Film grain holds. NO smooth AI-camera glide, NO photoreal CGI swoop. "
+  },
+  "captions": {
+    "_comment": "Cinematic lower-third serif (film-credit feel), NOT a TikTok word-burst. Built from the song's OWN word timings (audio/words.json, derived by build_word_timestamps.py from music_metadata.words_timestamps), NEVER Whisper (Whisper on sung audio returns 'Music Playing'). Burned by the sync-captions-to-music atom: --style-preset music-video --placement low --chunk-size 4 --accent-words <list>. Accent words get bold-italic; the chorus hook line gets the accent treatment for the hero moment. The rendered ASS uses a serif font (New York).",
+    "source": "audio/words.json",
+    "style": "cinematic_lower_third_serif_italic",
+    "style_preset": "music-video",
+    "placement": "low",
+    "font": "New York",
+    "font_size": 64,
+    "base_color": "#FFFFFF",
+    "chunk_words": 4,
+    "accent_words": ["sun", "on", "roll", "done", "Sundrift", "wheels", "run", "crew", "found", "home"]
+  },
+  "tableaux": [
+    {
+      "id": "T01",
+      "role": "INTRO_HOOK",
+      "t_start": 0.0,
+      "t_end": 2.1,
+      "lyric_anchor": "(instrumental intro / 'Sun up, salt in the air')",
+      "caption": "",
+      "keyframe_prompt": "Hero subject: a pair of coral SUNDRIFT roller skates hanging by their laces from a brass hook inside a sunlit beach-cottage bedroom. A hand from the right edge of frame reaches in to lift the skates off the hook. Morning golden side-light streams through gauzy curtains, dust motes visible in the beam. A small analog alarm clock on a nightstand in the foreground reads 7:00. Composition: low angle on the skates, intimate and hopeful. The skates are the hero.",
+      "motion_hint": "The hand reaches in slow motion and lifts the coral skates off the hook. Dust motes drift through the morning light beam. Quiet, hopeful. 5 seconds."
+    },
+    {
+      "id": "T02",
+      "role": "GETTING_READY",
+      "t_start": 2.1,
+      "t_end": 4.1,
+      "lyric_anchor": "Laces tight, ribbon in hair",
+      "caption": "Laces tight, ribbon in hair",
+      "keyframe_prompt": "Two young women sit side-by-side on a weathered cottage porch step, lacing up roller skates. The left woman wears seafoam SUNDRIFT skates. The right woman wears butter-cream yellow SUNDRIFT skates and ties a ribbon into her friend's hair. Warm morning light. A striped beach towel hangs over the porch railing, a straw sun hat beside it. They are laughing softly together.",
+      "motion_hint": "Both women pull laces tight and finish the ribbon in slight motion. A breeze lifts the towel on the railing. Their shoulders shake with soft laughter. 5 seconds."
+    },
+    {
+      "id": "T03",
+      "role": "STEP_OUT",
+      "t_start": 4.1,
+      "t_end": 6.2,
+      "lyric_anchor": "Down the boards where the gulls fly low",
+      "caption": "Down the boards where the",
+      "keyframe_prompt": "A young woman rolls out through the gate of a weathered seaside cottage onto the boardwalk. She wears coral SUNDRIFT roller skates, denim shorts and a striped tee. An ice pop in her hand. Faded blue shingles behind her, a hand-painted house number on the gatepost. Mid-morning sun. Tracking-shot framing, low angle, forward dolly perspective.",
+      "motion_hint": "Slow forward tracking dolly as she rolls fully out of the gate and glides toward camera. Sunlight catches her hair. Confident glide. 5 seconds."
+    },
+    {
+      "id": "T04",
+      "role": "WIDE_ENSEMBLE",
+      "t_start": 6.2,
+      "t_end": 9.4,
+      "lyric_anchor": "All July, we roll this coast",
+      "caption": "All July, we roll this coast",
+      "keyframe_prompt": "Wide cinematic shot — FOUR young women skating toward camera down a long wooden boardwalk, arms linked, each in a different SUNDRIFT colorway (coral, seafoam, butter-cream yellow, lilac). Golden hour lens flare cuts diagonally across the frame. Beach shacks and dune grass line both sides of the boardwalk. Slightly out-of-focus beach grass frames the foreground. The glide is confident, lived-in.",
+      "motion_hint": "Slow forward glide by all four skaters. Their hair moves naturally. The lens flare drifts diagonally across the frame as the camera moves. Cinematic dolly-in. 5 seconds."
+    },
+    {
+      "id": "T05",
+      "role": "BOARDWALK_WIDE",
+      "t_start": 9.4,
+      "t_end": 11.0,
+      "lyric_anchor": "The waves, the wind, the boards",
+      "caption": "The waves, the wind, the boards",
+      "keyframe_prompt": "Wide establishing shot of a summer boardwalk evening — dozens of young people, food stands, a portable speaker, string lights overhead. The hero subject: a young woman in lilac SUNDRIFT skates spins mid-twirl while her friend cheers beside her, both laughing, soda in hand. Late afternoon golden light, long shadows. Seaside town in late summer — shingles, dune grass, the ocean beyond the rail.",
+      "motion_hint": "Wide boardwalk scene comes alive — the hero skater spins, her friend cheers, the surrounding crowd claps, slight handheld wobble, music carries through the scene. 5 seconds."
+    },
+    {
+      "id": "T06",
+      "role": "JOY_CLOSEUP",
+      "t_start": 11.0,
+      "t_end": 11.9,
+      "lyric_anchor": "the way we glide",
+      "caption": "the way we glide",
+      "keyframe_prompt": "Tight close-up portrait of a young woman's face mid-laugh of pure joy, wind whipping her hair, eyes bright and shining, a single streak of coral zinc sunscreen across her cheekbone. A SUNDRIFT skate held up by its laces is visible at the edge of frame. Slight motion blur on her hair suggests speed. The background is a soft out-of-focus ocean. Tight framing.",
+      "motion_hint": "Tight close-up. Her laugh plays out, hair streaming across her face, eyes squinting in the sun. Single tight moment. 5 seconds."
+    },
+    {
+      "id": "T07",
+      "role": "SUSPENDED_TIME",
+      "t_start": 11.9,
+      "t_end": 14.4,
+      "lyric_anchor": "Every evening, we chase the tide",
+      "caption": "Every evening, we chase the tide",
+      "keyframe_prompt": "Slow-motion mid-air sea spray and drifting flower petals — coral, seafoam, butter-cream yellow and lilac — frozen mid-fall in front of an out-of-focus young woman skating in SUNDRIFT skates. The spray is the subject; she is a soft-focus presence behind it. Pier-light backdrop, late golden hour. Cinematic frozen-time quality.",
+      "motion_hint": "The droplets and petals drift downward in true slow-motion. The out-of-focus skater behind glides slightly through the frame. Cinematic suspended-time moment. 5 seconds."
+    },
+    {
+      "id": "T08",
+      "role": "HOOK_HERO",
+      "t_start": 14.4,
+      "t_end": 16.0,
+      "lyric_anchor": "Roll on, roll on, roll on into the sun",
+      "caption": "Roll on, roll on, roll on into the sun",
+      "is_hook": true,
+      "keyframe_prompt": "A SPLIT-SCREEN four-quadrant tableau. Each quadrant is a separate documentary-style 35mm film photograph of a different young woman at a different seaside spot, each in a different SUNDRIFT colorway. TOP-LEFT: coral skates on a fishing pier. TOP-RIGHT: seafoam skates in a beach-parking-lot skate circle. BOTTOM-LEFT: butter-cream yellow skates on a lighthouse path. BOTTOM-RIGHT: lilac skates on a harbor promenade. Each quadrant separately framed with a thin cream divider. Hero composition — this is the colorway range frame.",
+      "motion_hint": "Four-quadrant split — each quadrant pulses gently to the beat in alternation: coral, then seafoam, then butter-cream yellow, then lilac. Each skater has subtle individual motion (hair, smile, a glide). 5 seconds."
+    },
+    {
+      "id": "T09",
+      "role": "SKATE_BOWL_PEAK",
+      "t_start": 16.0,
+      "t_end": 18.0,
+      "lyric_anchor": "Roll on, roll on, roll on till the day is done",
+      "caption": "Roll on, roll on, roll on till the day is done",
+      "keyframe_prompt": "Low-angle wide shot from the lip of a seaside concrete skate bowl — a crowd of young women in SUNDRIFT skates carving the bowl and cheering with hands raised. Late afternoon golden hour light streams horizontally across the concrete, casting long shadows. Coral, seafoam, butter-cream yellow and lilac scattered through the crowd. One skater in the foreground stands with arms wide, head back in celebration.",
+      "motion_hint": "Skaters carve the bowl in slow motion, raised hands sway, the foreground skater tilts her head back, joy on her face. Golden light moves across the concrete. 5 seconds."
+    },
+    {
+      "id": "T10",
+      "role": "PRODUCT_HERO",
+      "t_start": 18.0,
+      "t_end": 19.9,
+      "lyric_anchor": "Sundrift, the wheels we run",
+      "caption": "Sundrift, the wheels we run",
+      "keyframe_prompt": "Close-up product hero — a young woman's hands set a coral SUNDRIFT roller skate down onto a weathered wooden plank in slow motion against a moody dark background lit by a single warm side-light. The front wheel spins, the stitched SUNDRIFT brand mark on the ankle cuff catches the light. The skate IS the subject. No face, just skate and hands. Dramatic side-lit composition, like a product still life.",
+      "motion_hint": "Slow-motion hands set the skate down. The front wheel spins freely. The brand mark catches the light briefly. Pure product moment. 5 seconds."
+    },
+    {
+      "id": "T11",
+      "role": "MICRO_MONTAGE",
+      "t_start": 19.9,
+      "t_end": 22.3,
+      "lyric_anchor": "Roll on, roll on, roll on, roll on",
+      "caption": "Roll on, roll on, roll on, roll on",
+      "keyframe_prompt": "A QUAD-FRAME composition like a contact sheet — four small photographic frames arranged 2x2, each a different moment from the day. TOP-LEFT: two young women lacing SUNDRIFT skates on a porch step. TOP-RIGHT: a lilac-skate twirl on the boardwalk. BOTTOM-LEFT: hands raised in the skate bowl. BOTTOM-RIGHT: an empty boardwalk at twilight. Each panel separately framed. Treat like a 35mm contact-sheet of one summer day.",
+      "motion_hint": "Each of the four contact-sheet panels has its own subtle motion: panel 1 laces pulled, panel 2 twirl, panel 3 raised hands, panel 4 wind across the empty boardwalk. Rapid alternating accents. 5 seconds."
+    },
+    {
+      "id": "T12",
+      "role": "ORIGIN_WINK",
+      "t_start": 22.3,
+      "t_end": 24.2,
+      "lyric_anchor": "the crew that found this road",
+      "caption": "the crew that found this road",
+      "keyframe_prompt": "A nostalgic 1990s-coded beach photograph with a slightly heavier film grain and warmer faded color (like a recovered old photo). Two young women in 90s fashion — high-waisted shorts, oversized windbreakers — sit on a sea wall with a pair of thrifted roller skates. One holds a small paintbrush and is mid-stroke painting a coral stripe on a skate. The other smiles at her. The mood is the origin story — two friends about to start something.",
+      "motion_hint": "The 90s-coded scene plays — one girl finishes the brushstroke, holds up the painted skate, both girls laugh together. Slight VHS warmth on the motion. 5 seconds."
+    },
+    {
+      "id": "T13",
+      "role": "TWILIGHT_OUTRO",
+      "t_start": 24.2,
+      "t_end": 26.1,
+      "lyric_anchor": "the crew that rides it home",
+      "caption": "the crew that rides it home",
+      "keyframe_prompt": "Silhouettes against a deep orange sunset — a dozen young women in SUNDRIFT skates roll away from camera down a long pier, arms around each other's shoulders. The sky is full sunset orange into deep red into indigo. Their silhouettes are dark but you can read the high-top skate shapes and the colorway hints. Slow tracking-out shot. Emotional, wistful.",
+      "motion_hint": "Twilight silhouettes roll slowly away from camera, arms around each other, hair moving in the sea breeze. The sunset deepens slightly as they go. Slow tracking-out. 5 seconds."
+    },
+    {
+      "id": "T14",
+      "role": "END_CARD",
+      "t_start": 26.1,
+      "t_end": 28.0,
+      "lyric_anchor": "roll on into the sun",
+      "caption": "",
+      "keyframe_prompt": "A moody end-card composition. CENTER: the brand wordmark 'SUNDRIFT' rendered in an ivory hand-lettered script against a warm dark brown background. BELOW the wordmark in smaller italic serif: 'roll on into the sun.' RIGHT SIDE of frame: a single pair of coral SUNDRIFT roller skates hangs by its laces from a wooden peg in soft cinematic side-light, slightly out of focus. The wordmark is the hero. Cinematic side-lit still-life feel. (Wordmark authored as a designed base — do NOT trust free diffusion text; composite the real lockup in post if drift appears.)",
+      "motion_hint": "End card holds. The wordmark stays still. The hanging skates on the right sway imperceptibly. Dust motes drift in the warm side-light. Static, screenshot-ready. 5 seconds."
+    }
+  ],
+  "end_card": {
+    "_comment": "Brand lockup — NEVER AI-rendered as free diffusion text (LEARNINGS L4 — diffusion garbles a wordmark). In the demo the end card was authored as a designed keyframe base (T14): ivory hand-lettered script wordmark on a warm-dark background with the real skates hung in soft side-light. Prefer a PIL/ffmpeg composite from the real brand wordmark/asset where one exists; overlaid on the final tableau window.",
+    "engine": "designed_keyframe",
+    "brand_asset": "brand-assets/sundrift-wordmark.png",
+    "wordmark_text": "SUNDRIFT",
+    "wordmark_font": "ivory hand-lettered script",
+    "tagline_text": "roll on into the sun",
+    "tagline_font": "serif italic",
+    "cta_text": "",
+    "background": "warm dark brown, soft tungsten side-light, real brand roller skates hung from a wooden peg",
+    "overlay_window_sec": [26.1, 28.0]
+  },
+  "audio_mix": {
+    "_comment": "The sung anthem IS the bed (no VO). afade in 0.15s / out 0.6s, atrim 0:28, loudnorm to -14 LUFS. climax_beat_id T08 is the hook drop.",
+    "loudness_lufs": -14,
+    "fade_in_sec": 0.15,
+    "fade_out_sec": 0.6,
+    "climax_beat_id": "T08",
+    "duck_under_vo": false
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "the sung generated ElevenLabs anthem IS the bed (force_instrumental false); no separate VO"
+    },
+    "captions": {
+      "default": "on",
+      "note": "cinematic lower-third serif captions from the song's word timings, hook line accent-treated, default on"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "brand lockup from the real brand asset (designed keyframe / PIL composite), never diffusion text, default on"
+    },
+    "film_grain": {
+      "default": "on",
+      "note": "baked into each keyframe by the look pack (the anti-AI signal); no separate post grain pass needed"
+    }
+  }
+}

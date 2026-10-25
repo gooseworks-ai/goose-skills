@@ -8,147 +8,173 @@ const { execFileSync } = require('node:child_process');
 const VALIDATE = path.resolve(__dirname, '..', 'validate-skills.js');
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 
-// Post-reorg layout is skills/<domain>/<level>/<slug>. Fixtures live under one
-// real domain folder so the validator's domain-enum check passes.
-const DOMAIN = 'monitoring';
-
+// Layout: skills/<family>/<slug>/ (see build-index.js).
 function makeFixtureRoot() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'gs-validate-'));
-  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'capabilities'), { recursive: true });
   // Schemas are looked up under ROOT — symlink the real schemas dir so we
   // don't have to copy/maintain a fixture schema.
   fs.symlinkSync(path.join(REPO_ROOT, 'schemas'), path.join(root, 'schemas'));
   return root;
 }
 
-function writeSkill(root, slug, frontmatter, meta) {
-  const dir = path.join(root, 'skills', DOMAIN, 'capabilities', slug);
+function writeSkill(root, family, slug, frontmatter, meta) {
+  const dir = path.join(root, 'skills', family, slug);
   fs.mkdirSync(dir, { recursive: true });
   const fm = Object.entries(frontmatter)
     .map(([k, v]) => `${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`)
     .join('\n');
-  fs.writeFileSync(
-    path.join(dir, 'SKILL.md'),
-    `---\n${fm}\n---\n\n# ${slug}\nBody.\n`,
-  );
+  fs.writeFileSync(path.join(dir, 'SKILL.md'), `---\n${fm}\n---\n\n# ${slug}\nBody.\n`);
   fs.writeFileSync(path.join(dir, 'skill.meta.json'), JSON.stringify(meta, null, 2));
+}
+
+function writeIndex(root, skills) {
+  fs.writeFileSync(
+    path.join(root, 'skills-index.json'),
+    JSON.stringify({ version: '1.4.0', generated: '2026-10-23', skills, packs: [] }, null, 2),
+  );
 }
 
 function runValidate(root) {
   return execFileSync('node', [VALIDATE], {
     env: { ...process.env, GOOSE_SKILLS_ROOT: root },
     encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
 }
 
-const baseMeta = (slug) => ({
+const baseMeta = (slug, extra = {}) => ({
   slug,
   category: 'capabilities',
-  tags: ['monitoring'],
-  installation: {
-    base_command: `npx goose-skills install ${slug}`,
-    supports: ['claude', 'cursor', 'codex'],
-  },
+  version: '1.0.0',
+  tags: ['ads'],
+  ...extra,
 });
 
-test('FAILS when a SKILL.md exists nested-only in packs[].skills[] (regression guard for RC1)', () => {
+function withRoot(fn) {
   const root = makeFixtureRoot();
-  // One regular capability so the index isn't empty.
-  writeSkill(root, 'twitter-scraper', { name: 'twitter-scraper', description: 'x' }, baseMeta('twitter-scraper'));
+  try {
+    fn(root);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+}
 
-  // Add a pack sub-skill on disk.
-  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'packs', 'lead-pack', 'lead-discovery'), { recursive: true });
-  fs.writeFileSync(
-    path.join(root, 'skills', DOMAIN, 'packs', 'lead-pack', 'lead-discovery', 'SKILL.md'),
-    '---\nname: lead-discovery\ndescription: Pack-only.\n---\n\n# lead-discovery\n',
-  );
+test('PASSES when every skill folder is a top-level skills[] entry', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'Watch a video.' }, baseMeta('watch'));
+  writeIndex(root, [{ slug: 'watch', category: 'capabilities', path: 'skills/video/watch' }]);
+  assert.match(runValidate(root), /Skill validation passed for 1 skills/);
+}));
 
-  // Hand-craft a stale skills-index.json that mimics the broken pre-fix shape:
-  // pack sub-skill present in packs[].skills[] only, NOT in top-level skills[].
-  const staleIndex = {
-    version: '1.2.0',
-    generated: '2026-04-28',
-    skills: [
-      {
-        slug: 'twitter-scraper',
-        name: 'twitter-scraper',
-        category: 'capabilities',
-        path: 'skills/monitoring/capabilities/twitter-scraper',
-        files: ['skills/monitoring/capabilities/twitter-scraper/SKILL.md'],
-      },
-    ],
-    packs: [
-      {
-        slug: 'lead-pack',
-        skills: [
-          {
-            slug: 'lead-discovery',
-            path: 'skills/monitoring/packs/lead-pack/lead-discovery',
-            source: 'pack',
-          },
-        ],
-      },
-    ],
-  };
-  fs.writeFileSync(path.join(root, 'skills-index.json'), JSON.stringify(staleIndex, null, 2));
+test('FAILS when a skill folder is missing from top-level skills[]', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch'));
+  writeSkill(root, 'video', 'mix-master', { name: 'mix-master', description: 'x' }, baseMeta('mix-master'));
+  writeIndex(root, [{ slug: 'watch', category: 'capabilities', path: 'skills/video/watch' }]);
+  assert.throws(() => runValidate(root), /missing from top-level idx\.skills\[\][\s\S]*skills\/video\/mix-master/);
+}));
 
-  // The regression: previous validator would PASS this because the path
-  // existed under packs[].skills[]. Top-level-only check must REJECT it.
-  assert.throws(
-    () => runValidate(root),
-    /missing from top-level idx\.skills\[\]/,
-    'validator must fail when a SKILL.md is only nested under packs[].skills[]',
-  );
+test('FAILS on a folder under skills/ that is not a family', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch'));
+  fs.mkdirSync(path.join(root, 'skills', 'ads', 'capabilities'), { recursive: true });
+  writeIndex(root, [{ slug: 'watch', category: 'capabilities', path: 'skills/video/watch' }]);
+  assert.throws(() => runValidate(root), /Unknown folder skills\/ads/);
+}));
 
-  fs.rmSync(root, { recursive: true, force: true });
+test('FAILS on a description over the 1,024-character Agent Skills limit', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x'.repeat(1025) }, baseMeta('watch'));
+  writeIndex(root, [{ slug: 'watch', category: 'capabilities', path: 'skills/video/watch' }]);
+  assert.throws(() => runValidate(root), /description over 1024 characters/);
+}));
+
+test('FAILS when a shared skill has no domain, or requires a skill that does not exist', () => withRoot((root) => {
+  writeSkill(root, 'shared', 'brand-research', { name: 'brand-research', description: 'x' }, baseMeta('brand-research', { requires_skills: ['ghost'] }));
+  writeIndex(root, [{ slug: 'brand-research', category: 'capabilities', path: 'skills/shared/brand-research' }]);
+  assert.throws(() => runValidate(root), /domain required[\s\S]*requires unknown skill "ghost"/);
+}));
+
+const indexFor = (root, family, slug) => writeIndex(root, [{ slug, category: 'capabilities', path: `skills/${family}/${slug}` }]);
+
+test('FAILS when a meta still carries the retired installation field', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch', { installation: { base_command: 'npx goose-skills install watch', supports: ['claude'] } }));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /installation/);
+}));
+
+test('FAILS on a meta field the schema does not define, and on a missing version', () => withRoot((root) => {
+  const meta = baseMeta('watch', { visibility: 'dependency' });
+  delete meta.version;
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, meta);
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /version is required[\s\S]*visibility: is not an allowed field/);
+}));
+
+test('FAILS when SKILL.md frontmatter repeats a category or version that differs from the meta', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x', category: 'video', version: '2.0.0' }, baseMeta('watch'));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /version in SKILL\.md \(2\.0\.0\) and skill\.meta\.json \(1\.0\.0\) differ[\s\S]*category in SKILL\.md \(video\)/);
+}));
+
+test('a generated package (release.json) waits for its generator on version and frontmatter', () => withRoot((root) => {
+  const meta = baseMeta('harness', { category: 'playbooks' });
+  delete meta.version;
+  writeSkill(root, 'video', 'harness', { name: 'harness', description: 'x', category: 'video', version: '3.1.0' }, meta);
+  fs.writeFileSync(path.join(root, 'skills', 'video', 'harness', 'release.json'), '{}');
+  indexFor(root, 'video', 'harness');
+  assert.match(runValidate(root), /passed for 1 skills/);
+}));
+
+test('FAILS when a family-only domain is used outside its family', () => withRoot((root) => {
+  writeSkill(root, 'shared', 'brand-research', { name: 'brand-research', description: 'x' }, baseMeta('brand-research', { domain: 'marketing-agent' }));
+  indexFor(root, 'shared', 'brand-research');
+  assert.throws(() => runValidate(root), /domain "marketing-agent" is only for skills\/marketing\//);
+}));
+
+test('FAILS when requires_tools names a file tool instead of a program', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x' }, baseMeta('watch', { requires_tools: ['meta_marketing_api'] }));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /requires_tools\[0\]: does not match/);
+}));
+
+test('the real catalog passes', () => {
+  assert.match(execFileSync('node', [VALIDATE], { encoding: 'utf8' }), /Skill validation passed/);
 });
 
-test('PASSES when every SKILL.md is in top-level skills[]', () => {
-  const root = makeFixtureRoot();
-  writeSkill(root, 'twitter-scraper', { name: 'twitter-scraper', description: 'x' }, baseMeta('twitter-scraper'));
+test('FAILS when a skill folder carries a builder note (critique.md or server-needs.md)', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'Watch a video.' }, baseMeta('watch', { version: '1.0.0' }));
+  fs.writeFileSync(path.join(root, 'skills', 'video', 'watch', 'critique.md'), 'notes');
+  writeIndex(root, [{ slug: 'watch', category: 'capabilities', path: 'skills/video/watch' }]);
+  assert.throws(() => runValidate(root), /critique\.md is a builder note/);
+}));
 
-  // Add a pack sub-skill BOTH on disk AND in top-level (mimics the fix shape).
-  fs.mkdirSync(path.join(root, 'skills', DOMAIN, 'packs', 'lead-pack', 'lead-discovery'), { recursive: true });
-  fs.writeFileSync(
-    path.join(root, 'skills', DOMAIN, 'packs', 'lead-pack', 'lead-discovery', 'SKILL.md'),
-    '---\nname: lead-discovery\ndescription: Pack-only.\n---\n\n# lead-discovery\n',
-  );
+test('FAILS on a builder HTML page; a template a script reads, and other HTML, may stay', () => withRoot((root) => {
+  writeSkill(root, 'video', 'chat-mockup', { name: 'chat-mockup', description: 'Draw a chat.' }, baseMeta('chat-mockup'));
+  const dir = path.join(root, 'skills', 'video', 'chat-mockup');
+  fs.mkdirSync(path.join(dir, 'scripts'), { recursive: true });
+  fs.mkdirSync(path.join(dir, 'tests'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'build-review.html'), '<html>review board</html>');
+  fs.writeFileSync(path.join(dir, 'chat-skill-build.html'), '<html>build page</html>');
+  fs.writeFileSync(path.join(dir, 'scripts', 'review-card.html'), '<html>{{text}}</html>');
+  fs.writeFileSync(path.join(dir, 'scripts', 'render.js'), "fs.readFileSync(path.join(__dirname, 'review-card.html'))\n");
+  fs.writeFileSync(path.join(dir, 'scripts', 'scene.html'), '<html>scene</html>');
+  fs.writeFileSync(path.join(dir, 'tests', 'proof-board.html'), '<html>tests are not published</html>');
+  writeIndex(root, [{ slug: 'chat-mockup', category: 'capabilities', path: 'skills/video/chat-mockup' }]);
+  let message = '';
+  try {
+    runValidate(root);
+  } catch (err) {
+    message = `${err.stdout}${err.stderr}`;
+  }
+  const pages = [...message.matchAll(/chat-mockup\/(\S+) is a builder page/g)].map((m) => m[1]).sort();
+  assert.deepEqual(pages, ['build-review.html', 'chat-skill-build.html']);
+}));
 
-  const goodIndex = {
-    version: '1.2.0',
-    generated: '2026-04-28',
-    skills: [
-      {
-        slug: 'twitter-scraper',
-        category: 'capabilities',
-        path: 'skills/monitoring/capabilities/twitter-scraper',
-        files: ['skills/monitoring/capabilities/twitter-scraper/SKILL.md'],
-      },
-      {
-        slug: 'lead-discovery',
-        category: 'capabilities',
-        path: 'skills/monitoring/packs/lead-pack/lead-discovery',
-        files: ['skills/monitoring/packs/lead-pack/lead-discovery/SKILL.md'],
-        metadata: { pack: 'lead-pack' },
-      },
-    ],
-    packs: [
-      {
-        slug: 'lead-pack',
-        skills: [
-          {
-            slug: 'lead-discovery',
-            path: 'skills/monitoring/packs/lead-pack/lead-discovery',
-            source: 'pack',
-          },
-        ],
-      },
-    ],
-  };
-  fs.writeFileSync(path.join(root, 'skills-index.json'), JSON.stringify(goodIndex, null, 2));
+test('FAILS on a SKILL.md frontmatter key outside the one style; entry skills keep the CLI keys', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: 'x', owner: 'team', level: 'atom' }, baseMeta('watch'));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /watch\/SKILL\.md frontmatter has "owner"[\s\S]*frontmatter has "level"/);
+}));
 
-  const out = runValidate(root);
-  assert.match(out, /Skill validation passed/);
-
-  fs.rmSync(root, { recursive: true, force: true });
-});
+test('FAILS on a template placeholder description', () => withRoot((root) => {
+  writeSkill(root, 'video', 'watch', { name: 'watch', description: '<What it does and when to use it>' }, baseMeta('watch'));
+  indexFor(root, 'video', 'watch');
+  assert.throws(() => runValidate(root), /template placeholder/);
+}));

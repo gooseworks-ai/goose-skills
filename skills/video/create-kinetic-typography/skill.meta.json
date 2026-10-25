@@ -1,0 +1,15 @@
+{
+  "slug": "create-kinetic-typography",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.0.1",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "watch"
+  ],
+  "requires_tools": [
+    "ffmpeg"
+  ]
+}

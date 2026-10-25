@@ -1,0 +1,164 @@
+{
+  "_comment": "Worked example (the fictional Larderloop 'whole Sunday' demo). Creative fields — creator.brief.*, creator.voice, creator.lipsync_output, voiceover.outputs.*, scenes[].vo / top_visual, captions.style / ass_sidecar, plus the brand identity (brand_name, campaign, title, layout.divider_color, endcard) — come from the calling recipe's choices (creator_gender, creator_age, creator_look, setting, tone, caption_style) and the user's brand; never copy them as defaults. Copy the STRUCTURE to config.json and fill it for this brand. A ~40s 9:16 two-zone ad where an AI creator anchor (VEED Fabric lip-sync) fills the bottom ~48% and real Larderloop app UI screen-recordings run uncropped in the top ~52%, a 3px brand-color divider between. The creator delivers the WHOLE VO cold-to-camera and each top clip PROVES its VO line's claim. Pipeline: (1) lock the script into 6 scenes + ElevenLabs eleven_v3 with-timestamps VO + per-scene timing.json; (2) gpt-image creator anchor + ONE VEED Fabric 1.0 @720p lip-sync take of the whole VO (paid, the largest spend); (3) source 16:9 top clips + the scene-1 hook graphic; (4) assemble.py two-zone composite (contain-fit + blurred-cover fill + 3px divider + creator slice), hard-concat + end card; (5) transcribe the ASSEMBLED cut + burn serif-accent word captions. Master 1080x1920 h264+aac 30fps, ~40.37s. See scripts/PIPELINE.md.",
+  "brand_name": "Larderloop",
+  "campaign": "Larderloop Week Planner",
+  "title": "Larderloop — the dinner plan that plans itself",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "aspect_ratio": "9:16",
+  "duration_sec": 40.37,
+  "layout": {
+    "_comment": "Two-zone split. TOP ~52% (top_height 998) runs the 16:9 UI screen-recording contain-fit + a darkened blurred cover-scale fill of the SAME clip (never black/charcoal bars). Brand-color divider (keep stacked heights EVEN: 998+4+918=1920, or libx264 rejects the odd frame). BOTTOM ~48% is the creator lip-sync framed head-to-shoulders: scale-to-width x a small ZOOM (~1.15-1.2) then crop with a DOWNWARD offset so the face is upper-middle and the shoulders enter (a plain crop-toward-top shows only the head and cuts the shoulders). Requires a MEDIUM chest-up anchor (see creator._comment).",
+    "canvas_w": 1080,
+    "canvas_h": 1920,
+    "top_height": 998,
+    "top_pct": 0.52,
+    "bottom_pct": 0.48,
+    "divider_px": 3,
+    "divider_color": "#E07A3F",
+    "top_fill": "blurred-cover",
+    "bottom_fit": "cover-crop-top"
+  },
+  "creator": {
+    "_comment": "ONE AI-creator anchor lip-synced to the WHOLE VO in ONE VEED Fabric 1.0 take @ 720p (480p reads soft). THE ANCHOR MUST BE a PHOTOREAL, candid MEDIUM chest-up shot at natural webcam distance (whole head with headroom + shoulders + upper chest, real lived-in room, anti-AI skin cues) — NOT a plain-background close-up headshot (reads as AI) and NOT a phone-selfie / arm-extended pose copied from another format (wrong for a fixed talking-head, and too-close can't be reframed). Watch the source video and match its creator distance. gpt-image-2, quality high, 1024x1536. VEED handles photoreal fine. VEED Fabric is a NO-ATOM paid step: image_url = the anchor, audio_url = voiceover/vo-arlo.mp3; billed per second of VO, the largest spend. Run its calls SEQUENTIALLY with sleep 3 — veed/fabric-1.0 storage-auth 403s under parallel load. Trying a 2nd voice after the lip-sync DOUBLES that spend — lock the voice first. Re-run VEED only when the anchor IMAGE changes; a crop/zoom tweak is a free re-assemble.",
+    "anchor": "avatar/creator-anchor.png",
+    "brief": {
+      "_comment": "Asked of the user upstream (choices creator_gender / creator_age / creator_look / setting). These are the demo's answers — never reuse the demo creator.",
+      "gender": "woman",
+      "age": "30s",
+      "look": "East Asian woman with a short bob and round glasses (demo only)",
+      "vibe_setting": "lived-in kitchen, open shelves with jars, window daylight"
+    },
+    "anchor_model": "gpt-image-2",
+    "anchor_shot": "medium chest-up, natural webcam distance, headroom + shoulders — not a tight close-up, not a phone selfie",
+    "lipsync_engine": "veed/fabric-1.0",
+    "lipsync_resolution": "720p",
+    "lipsync_provider": "fal",
+    "lipsync_output": "avatar/larderloop-demo-creator-arlo.mp4",
+    "voice": "arlo",
+    "voice_locked": true
+  },
+  "voiceover": {
+    "_comment": "The creator delivers the ENTIRE VO cold-to-camera — the VO IS the audio bed (no music). ElevenLabs eleven_v3 with-timestamps -> voiceover/vo-arlo.mp3 + timestamp JSON. Per-scene start/end sliced from the char timestamps into voiceover/timing.json. speed 1.2 (creator-native VO reads ~1.15-1.2x).",
+    "provider": "elevenlabs",
+    "model": "eleven_v3",
+    "endpoint": "with-timestamps",
+    "speed": 1.2,
+    "script_txt": "voiceover/script.txt",
+    "outputs": {
+      "audio": "voiceover/vo-arlo.mp3",
+      "word_timings": "voiceover/vo-arlo.timestamps.json",
+      "timing": "voiceover/timing.json"
+    }
+  },
+  "scenes": [
+    {
+      "id": "S01",
+      "role": "HOOK",
+      "start": 0.0,
+      "end": 5.602,
+      "uses_top_clip": false,
+      "vo": "Okay, planning a week of dinners used to eat my whole Sunday and three grocery runs. Watch this.",
+      "top_visual": "Scene-1 hook graphic — a kinetic 'a whole Sunday + 3 grocery runs' title-card (HTML-rendered, NOT a demo clip).",
+      "top_clip": "assets/scene-01-graphic.png",
+      "top_start": 0.0,
+      "top_end": 5.602,
+      "notes": "Scene 1 is the designed hook graphic, not a product clip."
+    },
+    {
+      "id": "S02",
+      "role": "DEMO",
+      "start": 6.105,
+      "end": 14.725,
+      "uses_top_clip": true,
+      "vo": "I gave Larderloop one photo of my fridge — basically, use what's here, feed two adults, keep it under thirty minutes. And it just went.",
+      "top_visual": "Larderloop taking the one fridge photo and kicking off — the UI accepts the request and starts working.",
+      "top_clip": "assets/scene-02-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 8.6,
+      "notes": "The clip shows the exact photo going in and the app starting."
+    },
+    {
+      "id": "S03",
+      "role": "DEMO",
+      "start": 15.093,
+      "end": 20.82,
+      "uses_top_clip": true,
+      "vo": "It spotted every single ingredient, flagged what was about to go off, and checked it against, like, four hundred recipes at once.",
+      "top_visual": "Ingredients tagged in the photo, near-expiry items flagged, recipe matches scrolling in.",
+      "top_clip": "assets/scene-03-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 5.7,
+      "notes": "Set top_start/top_end to the on-message window — never loop a short clip."
+    },
+    {
+      "id": "S04",
+      "role": "DEMO",
+      "start": 21.092,
+      "end": 27.244,
+      "uses_top_clip": true,
+      "vo": "And in a few seconds, it literally laid out seven dinners AND built a grocery list sorted by aisle that I can actually tick off.",
+      "top_visual": "The seven-dinner plan filling in + the aisle-sorted grocery list being ticked off.",
+      "top_clip": "assets/scene-04-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 6.1,
+      "notes": "The clip proves the plan + list claim as it is said."
+    },
+    {
+      "id": "S05",
+      "role": "DEMO",
+      "start": 27.825,
+      "end": 31.23,
+      "uses_top_clip": true,
+      "vo": "Oh — and it set itself to re-plan every Sunday based on whatever is left over.",
+      "top_visual": "The weekly auto re-plan setting being switched on in the UI.",
+      "top_clip": "assets/scene-05-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 3.4,
+      "notes": "One feature, shown."
+    },
+    {
+      "id": "S06",
+      "role": "PAYOFF_ENDCARD",
+      "start": 31.55,
+      "end": 39.358,
+      "uses_top_clip": true,
+      "vo": "Like, look at that. It didn't send me to a recipe blog. It didn't give me homework. It just planned the whole week. That's Larderloop.",
+      "top_visual": "The finished week plan into the Larderloop end card (held on the last SHARP frame ~3s).",
+      "top_clip": "assets/scene-06-clip.mp4",
+      "top_start": 0.0,
+      "top_end": 7.8,
+      "endcard_clip_end": 7.8,
+      "notes": "Note the last SHARP second before any fade-to-black as endcard.clip_end."
+    }
+  ],
+  "endcard": {
+    "_comment": "The Larderloop end card held on the last SHARP frame ~3s. If the end-card clip fades to black, hold the last sharp second (clip_end), NOT the black tail.",
+    "clip": "assets/scene-06-clip.mp4",
+    "clip_end": 7.8,
+    "hold_sec": 3.0
+  },
+  "captions": {
+    "_comment": "Word-level captions burned from the ASSEMBLED cut (transcribe master-precaption.mp4 with local faster-whisper, NOT vo-arlo.mp3 — concat drops inter-scene silence so the ad timeline != the VO timeline). Sentence-aware chunking. style comes from choices.caption_style (serif-accent / kinetic-pop / neon-glow / clean-bubble); the demo uses serif-accent. Kept: master-precaption cut + captions/serif-accent.ass sidecar for restyle without re-render.",
+    "source": "assembled-cut",
+    "engine": "faster-whisper",
+    "style": "serif-accent",
+    "chunk": "sentence-aware word-level",
+    "ass_sidecar": "captions/serif-accent.ass",
+    "keep_precaption": true,
+    "keep_ass_sidecar": true
+  },
+  "audio_mix": {
+    "_comment": "The creator VO is the entire audio bed — no separate music to duck under. Body audio = the concatenated creator VO slices; the end card holds under the VO tail.",
+    "duck_under_music": false,
+    "loudness_lufs": -14,
+    "bed": "creator_vo"
+  },
+  "post_production": {
+    "vo": { "default": "on", "note": "the creator's ElevenLabs VO IS the audio bed; the lip-sync drives the mouth (no music)" },
+    "captions": { "default": "on", "note": "word-level captions burned from the ASSEMBLED cut (in captions.style), tracking the ad timeline not the raw VO" },
+    "divider": { "default": "on", "note": "a 3px brand-color divider between the two zones" },
+    "endcard": { "default": "on", "note": "the brand's end card (Larderloop in the demo) held on the last sharp frame ~3s" }
+  }
+}
