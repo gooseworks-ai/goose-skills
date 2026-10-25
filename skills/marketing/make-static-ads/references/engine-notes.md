@@ -3,6 +3,7 @@
 The live tool answers are the truth for parameters. These notes cover what the tool descriptions don't say.
 
 - **`ads_render` is thin.** It sends the agent's `prompt` and `image_urls` (public https, in order) to the image model word for word and does nothing else. The agent writes the whole prompt (`prompts.md`) and judges the result (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`)). Every retry is a paid render.
+- **What an ad is based on.** `ads_render` takes `template_id` or `reference_image_url` (one, not both) and records it on the creative so the app shows it; neither attaches an image. The dry run returns `template: {id, title}` when the id resolves, and refuses an unknown id before any quote.
 - **Read small, read once.** Tool answers can be huge (a full kit is 50–150K characters; an unfiltered creatives list is over 1 MB). Use these calls, and on a shell host save the big ones to a file once per batch and read fields from the file (`jq`) instead of reading the answer again:
 
 | Need | Call | Size |

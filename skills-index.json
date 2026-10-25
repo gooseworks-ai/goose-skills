@@ -3510,7 +3510,7 @@
       "description": "Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads",
-      "version": "0.10.1",
+      "version": "0.10.2",
       "files": [
         "skills/marketing/make-static-ads/SKILL.md",
         "skills/marketing/make-static-ads/references/brand-profile.md",
@@ -3535,7 +3535,7 @@
         "slug": "make-static-ads",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.10.1",
+        "version": "0.10.2",
         "tags": [
           "ads",
           "design"
@@ -3714,7 +3714,7 @@
       "description": "Step of make-static-ads: writes each ad's render prompt and ordered image list from its concept-board row, one per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-compose",
-      "version": "0.10.1",
+      "version": "0.10.2",
       "files": [
         "skills/marketing/make-static-ads-compose/SKILL.md",
         "skills/marketing/make-static-ads-compose/skill.meta.json"
@@ -3723,7 +3723,7 @@
         "slug": "make-static-ads-compose",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.10.1",
+        "version": "0.10.2",
         "playbook": "make-static-ads",
         "tags": [
           "ads",
@@ -3824,7 +3824,7 @@
       "description": "Step of make-static-ads: picks a template for every ad in its chosen style, after its visual idea and style are set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.",
       "tags": "ads, design",
       "path": "skills/marketing/make-static-ads-find-references",
-      "version": "0.10.1",
+      "version": "0.10.2",
       "files": [
         "skills/marketing/make-static-ads-find-references/SKILL.md",
         "skills/marketing/make-static-ads-find-references/skill.meta.json"
@@ -3833,7 +3833,7 @@
         "slug": "make-static-ads-find-references",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.10.1",
+        "version": "0.10.2",
         "playbook": "make-static-ads",
         "tags": [
           "ads",

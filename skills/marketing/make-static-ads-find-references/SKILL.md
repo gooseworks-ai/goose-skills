@@ -2,12 +2,12 @@
 name: make-static-ads-find-references
 description: >-
   Step of make-static-ads: picks a template for every ad in its chosen style, after its visual idea and style are set, from the brand's own ads, the GooseWorks library or category leaders, and records what the chosen creativity level keeps from it. Run make-static-ads instead; not for direct use.
-version: 0.10.1
+version: 0.10.2
 ---
 
 # find-references
 
-**Reads:** each board row's angle, message, visual idea and style; the chosen level (`../make-static-ads/references/levels.md`); `profile.md`. **Writes:** the Template column of `board.md` and a short template list under the board (source, page link, the image's public https URL (a brand's own ad from a page or file goes through `gooseworks:media_upload` first), whether its image goes to the model at this level, and what it keeps).
+**Reads:** each board row's angle, message, visual idea and style; the chosen level (`../make-static-ads/references/levels.md`); `profile.md`. **Writes:** the Template column of `board.md` and a short template list under the board (source, its template id from `ads_template_read` when it has one (library or the brand's own imported ad), page link, the image's public https URL (a brand's own ad from a page or file goes through `gooseworks:media_upload` first), whether its image goes to the model at this level, and what it keeps).
 
 Every ad has a template. Without one the image model falls back on its own default layout, and every brand's ads end up looking the same. A template is a finished ad with a layout: text slots, blocks, a background treatment. A plain product photo or lifestyle shot is not a template; it is a style reference at most.
 

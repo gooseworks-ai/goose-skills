@@ -2,7 +2,7 @@
 name: make-static-ads
 description: >-
   Make new static image ads, a fresh batch, more ads, a winner's variations, copy variants or a rejected ad fix. Reads the brand, its customers and the ads it already runs, turns real product facts and customer situations into distinct visual ideas, shows a concept board, writes each render prompt, quotes, renders and reviews through GooseWorks. Also handles requested branded header/social graphics. Use for static ad creation rather than goose-ads. Not for video, product photos or launching campaigns.
-version: 0.10.1
+version: 0.10.2
 ---
 
 # make-static-ads
@@ -92,7 +92,7 @@ First tick this run check under `## Run check` in `board.md`. The template sheet
 - run memory read (or "first run"); the Read line covers own ads, posts, website and kit with counts;
 - the last 10 approved ads and every live static checked for repeats;
 - three looked-at templates per ad in different styles; one template sheet per ad, shown to the marketer;
-- at close and balanced, the template image attached when it is the brand's own ad or a library template, otherwise the layout in words;
+- at close and balanced, the template image attached when it is the brand's own ad or a library template, otherwise the layout in words; every ad's render call names its template (`template_id` or `reference_image_url`);
 - the critic got the records as they came back;
 - three headline candidates per ad; Pass A and the policy check on every prompt;
 - every ad and ratio ready to quote (the dry runs come next).
