@@ -2,14 +2,14 @@
 name: make-static-ads-compose
 description: >-
   Step of make-static-ads: writes each ad's render prompt and ordered image list from its concept-board row, one per ad and ratio, ready for a quoted render. Run make-static-ads instead; not for direct use.
-version: 0.10.1
+version: 0.10.2
 ---
 
 # compose
 
 **Read first:** `../make-static-ads/references/prompts.md`.
 **Reads:** the `board.md` row with its final copy, level and template; `profile.md` (the brand's real look); `../make-static-ads/references/levels.md`; the product record and photos, the logo, the brand kit's colours and fonts, every `must` and `dont` rule.
-**Writes:** per ad and ratio, the exact prompt and `image_urls` into the batch file, a `title` that names the template so the app shows it ("<brand> — <headline> (<level> · based on: <template name or 'your ad: <name>'>)"), plus a `render-<ad>-<ratio>.json` holding the `gooseworks:ads_render` arguments on a host with files.
+**Writes:** per ad and ratio, the exact prompt and `image_urls` into the batch file, the template it is based on as `template_id` (its id from `ads_template_read`) or, with no id, as `reference_image_url` (the template's public image URL), never both, so the app shows "Based on" (this only records it; the image still goes in `image_urls` when `levels.md` says so), a `title` ("<brand> — <headline> (<level>)"), plus a `render-<ad>-<ratio>.json` holding the `gooseworks:ads_render` arguments on a host with files.
 
 1. **Product images.** Pick the official photo(s) that show the label most clearly from the angle the scene needs; for software, real UI screenshots or the mascot, never the logo (`../make-static-ads/SKILL.md`, Before you start). Public https URLs only; a local or attached file goes through `gooseworks:media_upload` first. Look at each one before using it.
 2. **Shared foundation.** Write it once for the batch (`prompts.md` §2) with the brand's look from `profile.md`, its fonts and rules. Reuse it word for word.
