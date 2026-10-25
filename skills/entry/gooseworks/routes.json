@@ -57,7 +57,7 @@
   },
   "brand_growth_routes": [
     {
-      "job": "Not sure what to do first",
+      "job": "Grow the brand, get more customers or sales, or not sure where to start",
       "skills": [
         "where-to-start"
       ]
@@ -87,7 +87,7 @@
       ]
     },
     {
-      "job": "A campaign plan from a budget and a date",
+      "job": "A campaign plan from a launch, budget or date",
       "skills": [
         "plan-campaign"
       ]

@@ -2737,7 +2737,7 @@
       "description": "GooseWorks growth coworker and router for markets, competitors, audiences, creators, campaigns, ads, photos, graphics, video, content, email, SEO, social, leads and contacts. Use for brand facts or copy too, so offers, prices, rules, audience and bestsellers reach the brand's Marketing Brain.",
       "tags": "research, ads, lead-generation, social",
       "path": "skills/entry/gooseworks",
-      "version": "2.2.2",
+      "version": "2.2.3",
       "files": [
         "skills/entry/gooseworks/SKILL.md",
         "skills/entry/gooseworks/routes.json",
@@ -2748,7 +2748,7 @@
         "category": "playbooks",
         "domain": "gooseworks",
         "tier": "entry",
-        "version": "2.2.2",
+        "version": "2.2.3",
         "tags": [
           "research",
           "ads",
@@ -4268,10 +4268,10 @@
       "name": "plan-campaign",
       "category": "playbooks",
       "domain": "marketing-agent",
-      "description": "Campaign planner: turns a product, offer, goal, budget and date into a plan the marketer can approve and a designer can start from today, with every channel kept or dropped for a reason. Zero paid is a valid answer; it never spends. Use when: I have this budget and a launch date — what do I run, where?; plan my launch, drop or Black Friday push; plan a campaign; should we even run ads, and where?; how should I split $5k; plan next month; our CAC blew up — replan. Not for pausing ads on a sold-out product — use run-paid-campaigns; not for an email-only send plan — use email-lifecycle; not for reading this week's numbers — use analyze-performance.",
+      "description": "Campaign planner: turns a product, offer, goal, budget and date into a plan the marketer can approve and a designer can start from today, with every channel kept or dropped for a reason. Zero paid is a valid answer; it never spends. Use when the ask names a campaign, a launch, drop or season push, a budget or a date: I have this budget and a launch date — what do I run, where?; plan my launch, drop or Black Friday push; plan a campaign; how should I split $5k; plan next month's campaign; our CAC blew up — replan. Not for a broad \"grow my brand\", \"get more customers\" or \"where do I start\" with no campaign, budget or date — use where-to-start; not for pausing ads on a sold-out product — use run-paid-campaigns; not for an email-only send plan — use email-lifecycle; not for reading this week's numbers — use analyze-performance.",
       "tags": "ads, brand",
       "path": "skills/marketing/plan-campaign",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "files": [
         "skills/marketing/plan-campaign/SKILL.md",
         "skills/marketing/plan-campaign/references/brief-template.md",
@@ -4289,7 +4289,7 @@
         "slug": "plan-campaign",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "tags": [
           "ads",
           "brand"
@@ -7749,10 +7749,10 @@
       "name": "where-to-start",
       "category": "playbooks",
       "domain": "marketing-agent",
-      "description": "First-move advice for an open-ended marketing ask: looks at what GooseWorks already knows and at the site, asks at most five plain questions, names the one thing in the way, and recommends the first one or two moves. Use when the marketer says \"help me with marketing\", \"where do I start\", \"we need more customers\", \"sales are flat\", \"what should I focus on this month\", or \"I'm back, what's next?\". Recommends only; never runs the work. Not for a named job like \"make me ads\" (go straight to it); not for why this week's numbers moved — use analyze-performance.",
+      "description": "First-move advice for a broad growth or marketing ask with no job named: looks at what GooseWorks already knows and at the site, asks a few short questions in one message, names the one thing in the way, and sends the marketer to the right next job. Use when the marketer says \"help me grow my brand\", \"I need to grow my business\", \"how do I get more customers / sales\", \"help me with marketing\", \"where do I start\", \"sales are flat\", \"what should I focus on this month\", or \"I'm back, what's next?\". Recommends only; never runs the work. Not for a named job like \"make me ads\" or \"grow my Instagram\" (go straight to it); not for a campaign with a launch, budget or date — use plan-campaign; not for why this week's numbers moved — use analyze-performance.",
       "tags": "brand, research",
       "path": "skills/marketing/where-to-start",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "files": [
         "skills/marketing/where-to-start/SKILL.md",
         "skills/marketing/where-to-start/references/base-rates.md",
@@ -7766,7 +7766,7 @@
         "slug": "where-to-start",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "tags": [
           "brand",
           "research"
@@ -7788,6 +7788,10 @@
         ],
         "pillar": "1 — Strategy and planning",
         "intents": [
+          "help me grow my brand",
+          "I need to grow my business",
+          "how do I get more customers",
+          "how do I get more sales",
           "help me with marketing",
           "where do I start",
           "what should I do first",
@@ -8456,7 +8460,7 @@
         {
           "slug": "plan-campaign",
           "name": "plan-campaign",
-          "description": "Campaign planner: turns a product, offer, goal, budget and date into a plan the marketer can approve and a designer can start from today, with every channel kept or dropped for a reason. Zero paid is a valid answer; it never spends. Use when: I have this budget and a launch date — what do I run, where?; plan my launch, drop or Black Friday push; plan a campaign; should we even run ads, and where?; how should I split $5k; plan next month; our CAC blew up — replan. Not for pausing ads on a sold-out product — use run-paid-campaigns; not for an email-only send plan — use email-lifecycle; not for reading this week's numbers — use analyze-performance.",
+          "description": "Campaign planner: turns a product, offer, goal, budget and date into a plan the marketer can approve and a designer can start from today, with every channel kept or dropped for a reason. Zero paid is a valid answer; it never spends. Use when the ask names a campaign, a launch, drop or season push, a budget or a date: I have this budget and a launch date — what do I run, where?; plan my launch, drop or Black Friday push; plan a campaign; how should I split $5k; plan next month's campaign; our CAC blew up — replan. Not for a broad \"grow my brand\", \"get more customers\" or \"where do I start\" with no campaign, budget or date — use where-to-start; not for pausing ads on a sold-out product — use run-paid-campaigns; not for an email-only send plan — use email-lifecycle; not for reading this week's numbers — use analyze-performance.",
           "stage": "research",
           "path": "skills/marketing/plan-campaign"
         },
@@ -8498,7 +8502,7 @@
         {
           "slug": "where-to-start",
           "name": "where-to-start",
-          "description": "First-move advice for an open-ended marketing ask: looks at what GooseWorks already knows and at the site, asks at most five plain questions, names the one thing in the way, and recommends the first one or two moves. Use when the marketer says \"help me with marketing\", \"where do I start\", \"we need more customers\", \"sales are flat\", \"what should I focus on this month\", or \"I'm back, what's next?\". Recommends only; never runs the work. Not for a named job like \"make me ads\" (go straight to it); not for why this week's numbers moved — use analyze-performance.",
+          "description": "First-move advice for a broad growth or marketing ask with no job named: looks at what GooseWorks already knows and at the site, asks a few short questions in one message, names the one thing in the way, and sends the marketer to the right next job. Use when the marketer says \"help me grow my brand\", \"I need to grow my business\", \"how do I get more customers / sales\", \"help me with marketing\", \"where do I start\", \"sales are flat\", \"what should I focus on this month\", or \"I'm back, what's next?\". Recommends only; never runs the work. Not for a named job like \"make me ads\" or \"grow my Instagram\" (go straight to it); not for a campaign with a launch, budget or date — use plan-campaign; not for why this week's numbers moved — use analyze-performance.",
           "stage": "research",
           "path": "skills/marketing/where-to-start"
         },
