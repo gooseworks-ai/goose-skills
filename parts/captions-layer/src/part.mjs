@@ -35,6 +35,12 @@
 // every caption box clears every box shown with it by 0.02 of the height;
 // when none does, the one with the least overlap, with a warning. With no
 // boxes the cut is drawn exactly as in 1.3.1.
+//
+// 1.6.0: when the next caption's first word comes just after a cut (up to
+// 0.25 s), the caption held over the cut stops on it and the next one starts
+// on it, so a new shot never opens on the last shot's caption. When the
+// look's y, 0.80 and 0.30 all meet a box, 0.45 and then 0.62 are tried before
+// the least overlap. The linked assembly_timeline passes through as in 1.5.0.
 import { readFile, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
@@ -69,10 +75,14 @@ const PILL_UPCOMING = '#A39D92';
 const SENTENCE_INK = 'rgb(255,253,248)';
 const SENTENCE_STROKE = 'rgb(18,14,10)';
 const HEX = /^#[0-9a-fA-F]{6}$/;
-// Caption heights tried, in order, when a scene's captions would meet a keep-clear box: the look's y, then low, then high.
-const CLEAR_YS = [0.8, 0.3];
+// Caption heights tried, in order, when a scene's captions would meet a keep-clear box: the look's y, then low,
+// then high, then (1.6.0) the middle: a label low in the frame and a face high in it leave only the middle clear
+// (a knee sleeve ad, 2026-10-15: the captions moved off the sleeve's label onto the man's face).
+const CLEAR_YS = [0.8, 0.3, 0.45, 0.62];
 // How far a caption must stay from a keep-clear box, as a share of the height.
 const CLEAR_MARGIN = 0.02;
+// How far after a cut a caption may start and still be moved onto the cut (1.6.0).
+const CUT_LEAD_S = 0.25;
 
 /**
  * The caption look to draw, read from expect.caption_look. Never throws: every
@@ -413,6 +423,28 @@ function captionCuts(timeline, duration) {
   return cuts.sort((a, b) => a - b);
 }
 
+/**
+ * 1.6.0: a new shot never opens on the last shot's caption. A cut lands on the frame at or before its
+ * line's first word (assemble's spans), so the next caption, timed to the word, came up to a frame
+ * after the cut and the frame on the cut still showed the old one (two voiceover ads, 2026-10-15).
+ * When a cue whose words all end by a cut is still showing at that cut (its hold ran on) and the next
+ * cue's first word comes at most CUT_LEAD_S after the cut, the held cue stops on the cut and the next
+ * one starts on it. Anything else (a cue whose words run across the cut, a cut no caption is held
+ * over, a next word further off, as in a street interview's held answer) is left as 1.5.0 drew it.
+ * Mutates the cues; they are in time order and do not overlap.
+ */
+export function holdsStopAtCuts(cues, cuts) {
+  for (const t of cuts) {
+    const i = cues.findIndex((c) => c.start_s < t - 1e-6 && c.end_s > t + 1e-6);
+    if (i < 0) continue;
+    const c = cues[i];
+    const next = cues[i + 1];
+    if (c.words.at(-1).end_s > t + 1e-6 || !next || next.start_s <= t || next.start_s - t > CUT_LEAD_S) continue;
+    c.end_s = t;
+    next.start_s = t;
+  }
+}
+
 /** Preserve word/line order while keeping each batch inside one final shot. */
 function wordsByShot(words, cuts) {
   const batches = [];
@@ -497,6 +529,7 @@ async function buildCues(ctx, inputs, duration, look) {
     cues[i].end_s = Math.min(cues[i].end_s, cues[i + 1].start_s);
   }
   cues.at(-1).end_s = Math.max(cues.at(-1).end_s, duration);
+  holdsStopAtCuts(cues, captionCuts(inputs.timeline, duration));
   for (const c of cues) {
     c.start_s = Math.max(0, floor, Math.min(c.start_s, duration));
     c.end_s = Math.max(c.start_s, Math.min(c.end_s, duration));
@@ -735,7 +768,7 @@ function sceneOf(timeline, t) {
 
 /**
  * Sets c.y (a share of the height) for every cue: one height per timeline scene, the first of the look's y,
- * 0.80 and 0.30 at which every caption of the scene clears every keep-clear box shown with it, else the one
+ * 0.80, 0.30, 0.45 and 0.62 (the middle two from 1.6.0) at which every caption of the scene clears every keep-clear box shown with it, else the one
  * with the least overlap (logged). c.overlap is what is left, in square pixels.
  */
 async function chooseHeights(ctx, page, cues, clear, timeline, look, layoutArgs) {
