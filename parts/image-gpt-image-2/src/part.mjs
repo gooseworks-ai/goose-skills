@@ -34,7 +34,7 @@ import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitPieceName, kitStopIfAborted } from '../../_lib/part.mjs';
 import { kitTierDefault } from '../../_lib/tier.mjs';
 import { KitPromptGap, kitLoadTemplate, kitPromptJoin, kitScenePrompt } from '../../_lib/prompt.mjs';
-import { kitNamedProducts, kitPickScenes } from '../../_lib/scene-match.mjs';
+import { kitNamedProducts, kitPickScenes, kitSceneTag } from '../../_lib/scene-match.mjs';
 import { kitStillAnchorMembers, kitStillAnchorPrompt, kitStillCastFiles, kitStillJobs, kitStillOutputs, kitStillPrompt, kitStillRefs, kitStillStrip, kitStillTemplate, kitStillTrimJobs, kitStillTrimProducts, kitStillWantsStrip, kitStillWithoutBorders } from '../../_lib/scene-stills.mjs';
 import { kitProductReferenceEvidence, kitProductScenePhotos, kitRequireProductRequest, kitRequireSceneTags } from '../../_lib/product-tag-contract.mjs';
 import { giPlatePixels, giPlateRestore, giRelightFieldFor, giRelightFrame } from './plate.mjs';
@@ -45,7 +45,7 @@ const GI_PROMPT_MIN = 2;
 const GI_PROMPT_MAX = 32000;
 const GI_AT_ONCE = 4;
 const GI_DEFAULT_SIZE = '1088x1920';
-const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore', 'relight', 'require_scene_tags', 'require_product_refs', 'borders'];
+const GI_SCENE_ONLY = ['scenes', 'products', 'pick', 'skip_first', 'skip_last', 'anchor', 'multi_ref', 'restore', 'relight', 'require_scene_tags', 'require_product_refs', 'borders', 'same_look'];
 const GI_NOT_IN_SHOTS = ['images', 'cast', 'cast_size', 'anchor', 'multi_ref', 'require_scene_tags', 'require_product_refs', 'borders'];
 const GI_MAX_REFS = 10;
 const GI_NOT_IN_IMAGES = [...GI_SCENE_ONLY, 'template', 'look', 'answers', 'brand', 'cast', 'cast_size', 'style_refs'];
@@ -216,6 +216,23 @@ async function giCast(inputs, ctx, manifest, opts) {
   return kitCheckOutputs(ctx, manifest, { images: [], cast: outCast, anchors: outAnchors });
 }
 
+/**
+ * 1.4.0 same_look: the look number of a scene tagged "Look N" or "Hold N" (any case or spacing), else null.
+ * A Hold N scene is drawn after, and with the still of, the first Look N scene, so the outfit and room match.
+ */
+export function giLookTag(scene) {
+  const m = /^(look|hold)\s*(\d+)$/i.exec(String(kitSceneTag(scene) || '').trim());
+  return m ? { kind: m[1].toLowerCase(), n: Number(m[2]) } : null;
+}
+
+/** The still a Hold N job is drawn with: the first Look N job's id, or null. */
+export function giLookSource(jobs, job) {
+  const tag = giLookTag(job.scene);
+  if (!tag || tag.kind !== 'hold') return null;
+  const look = jobs.find((j) => { const t = giLookTag(j.scene); return t && t.kind === 'look' && t.n === tag.n; });
+  return look ? look.id : null;
+}
+
 async function giScenes(inputs, ctx, manifest, opts) {
   const model = opts.model;
   const anchor = inputs.anchor || 'none';
@@ -224,6 +241,8 @@ async function giScenes(inputs, ctx, manifest, opts) {
   if (inputs.restore !== undefined) throw ctx.error('bad_input', 'restore works only in shots mode');
   if (inputs.relight !== undefined) throw ctx.error('bad_input', 'relight works only in shots mode');
   if (model === TEXT && anchor !== 'none') throw ctx.error('bad_input', `anchor ${anchor} needs ${EDIT}, which takes reference images`);
+  if (inputs.same_look && model === TEXT) throw ctx.error('bad_input', `same_look needs ${EDIT}, which takes reference images`);
+  if (inputs.same_look && anchor === 'first_scene') throw ctx.error('bad_input', 'same_look and anchor first_scene both send a scene still; use one');
   if (model === TEXT && inputs.style_refs && inputs.style_refs.length) throw ctx.error('bad_input', `style_refs need ${EDIT}, which takes reference images`);
   const cast = inputs.cast || [];
   giCheckCast(ctx, cast);
@@ -244,7 +263,7 @@ async function giScenes(inputs, ctx, manifest, opts) {
         // Reserve the exact reference slots before buying missing cast anchors.
         const members = job.cast.filter((member) => member.image || anchor === 'cast');
         const castSlots = job.strip && members.length > 1 ? [{ file: null }] : members.slice(0, 3).map(() => ({ file: null }));
-        const firstSlot = anchor === 'first_scene' && job !== jobs[0] ? { kind: 'file' } : null;
+        const firstSlot = (anchor === 'first_scene' && job !== jobs[0]) || (inputs.same_look && giLookSource(jobs, job)) ? { kind: 'file' } : null;
         const preview = kitStillRefs(job, { cast: castSlots, first: firstSlot, style_refs: inputs.style_refs || [] });
         kitRequireProductRequest(job.id, job.required_products, preview.files, model);
       }
@@ -290,14 +309,19 @@ async function giScenes(inputs, ctx, manifest, opts) {
   };
   const stills = new Map();
   const productEvidence = [];
-  const drawJob = async (job, first) => {
+  const drawJob = async (job, first, sameLook = false) => {
     let refs = { files: [], strip_at: null, names: null };
+    let prompt;
     if (model === EDIT) {
       const castFiles = kitStillCastFiles(job, anchors);
       const castRefs = kitStillWantsStrip(job, castFiles) ? [await stripFor(castFiles)] : castFiles.slice(0, 3);
       refs = kitStillRefs(job, { cast: castRefs, first, style_refs: styleRefs });
     }
-    const drawn = await giDraw(ctx, { piece: job.piece, refs: refs.files, prompt: kitStillPrompt(job, refs), size: opts.size, quality: opts.quality,
+    prompt = kitStillPrompt(job, refs);
+    const at = sameLook && first ? refs.files.indexOf(first) : -1;
+    // same_look: say which reference is the matching look, so the outfit, hair and room are copied from it.
+    if (at >= 0) prompt = kitPromptJoin([prompt, `Reference image ${at + 1} is this same person in this same look: the same outfit, hair, room and light; match them exactly, and only the pose and what is in hand change`]);
+    const drawn = await giDraw(ctx, { piece: job.piece, refs: refs.files, prompt, size: opts.size, quality: opts.quality,
       product_scene: inputs.require_product_refs ? { id: job.id, required: job.required_products } : null });
     const image = fix
       ? (await kitStillWithoutBorders(ctx, { file: drawn, name: job.piece, about: `the still for scene ${job.id}`, refusal: `The picture for scene ${job.index + 1} came back with a border; change the scene picture and try again.` })).file
@@ -314,7 +338,15 @@ async function giScenes(inputs, ctx, manifest, opts) {
     first = stills.get(jobs[0].id);
     rest = jobs.slice(1);
   }
-  await giEach(rest, (job) => drawJob(job, first));
+  if (inputs.same_look) {
+    // Every scene a Hold scene copies is drawn first; then each Hold N is drawn with its Look N still.
+    const sources = new Set(jobs.map((j) => giLookSource(jobs, j)).filter(Boolean));
+    await giEach(jobs.filter((j) => sources.has(j.id)), (job) => drawJob(job, null));
+    rest = jobs.filter((j) => !sources.has(j.id));
+    await giEach(rest, (job) => { const src = giLookSource(jobs, job); return drawJob(job, src ? stills.get(src) : null, Boolean(src)); });
+  } else {
+    await giEach(rest, (job) => drawJob(job, first));
+  }
 
   const out = kitStillOutputs({ scenes: inputs.scenes, cast, jobs, stills, anchors });
   // All four outputs every time (empty lists without a cast), so a style can bind step.<id>.cast or .anchors.
