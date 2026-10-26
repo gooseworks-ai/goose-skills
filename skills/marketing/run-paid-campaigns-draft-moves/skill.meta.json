@@ -1,0 +1,12 @@
+{
+  "slug": "run-paid-campaigns-draft-moves",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "run-paid-campaigns",
+  "tags": [
+    "ads"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

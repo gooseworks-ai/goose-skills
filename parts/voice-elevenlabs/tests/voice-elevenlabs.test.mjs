@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fakeAlignment, loadNewest, hasFfmpeg, loadPart, makeCtx, probe } from '../../_tools/kit-harness.mjs';
+import { canonicalJson, fakeAlignment, loadNewest, hasFfmpeg, loadPart, makeCtx, probe, run } from '../../_tools/kit-harness.mjs';
 import { recordedReply, sample } from './fixture.mjs';
 
 const { dir, mod } = await loadNewest('voice-elevenlabs');
@@ -8,6 +8,8 @@ const { dir, mod } = await loadNewest('voice-elevenlabs');
 const v110 = await loadPart('voice-elevenlabs', '1.1.0');
 // 1.2.1 defaulted to eleven_v3 and had no target pace.
 const v121 = await loadPart('voice-elevenlabs', '1.2.1');
+// 1.3.0 had no lead_s; with lead_s 0 or absent the newest version must give exactly what 1.3.0 gave.
+const v130 = await loadPart('voice-elevenlabs', '1.3.0');
 const ffmpeg = await hasFfmpeg();
 
 /**
@@ -45,14 +47,14 @@ test('orders one timestamped line per spoken scene, with the brand pronunciation
   assert.deepEqual(
     orders.map((o) => [o.provider, o.path, o.body]),
     [
-      ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'Meet drink A G one today.', model_id: 'eleven_v4' }],
+      ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'Meet drink Q X nine today.', model_id: 'eleven_v4' }],
       ['elevenlabs', '/v1/text-to-speech/dMyQqiVXTU80dDl2eNK8/with-timestamps', { text: 'It tastes great.', model_id: 'eleven_v4' }],
     ],
   );
   assert.deepEqual(orders.map((o) => o.piece), ['line-s1', 'line-s3']);
-  // Captions keep the written name: the swapped words map back to "Drinkag1".
-  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkag1', 'today.']);
-  assert.equal(out.speech[0].spoken, 'Meet drink A G one today.');
+  // Captions keep the written name: the swapped words map back to "Drinkqx9".
+  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkqx9', 'today.']);
+  assert.equal(out.speech[0].spoken, 'Meet drink Q X nine today.');
   // The second line starts after the first line's length plus the default gap (0.08 s since 1.2.0; each line ends a sentence).
   const first = out.speech[0].end_s - out.speech[0].start_s;
   assert.ok(Math.abs(out.speech[1].start_s - (first + 0.08)) < 0.01, `second line at ${out.speech[1].start_s}`);
@@ -178,11 +180,11 @@ test('eleven_multilingual_v2 is sent as the model and strips audio tags by defau
 
 test('eleven_v3 keeps audio tags in what is sent, and captions never show them', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
   // A tagged read is timed only from a reviewed alignment of its tag-free speech.
-  const { out, orders } = await reviewedRun({ scenes: [{ id: 's1', line: '[whispers] Meet Drinkag1 [laughs] today.' }], voice_id: A, model: 'eleven_v3', pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }] });
-  assert.equal(orders[0].body.text, '[whispers] Meet drink A G one [laughs] today.');
-  assert.equal(out.speech[0].text, 'Meet Drinkag1 today.');
-  assert.equal(out.speech[0].spoken, 'Meet drink A G one today.');
-  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkag1', 'today.']);
+  const { out, orders } = await reviewedRun({ scenes: [{ id: 's1', line: '[whispers] Meet Drinkqx9 [laughs] today.' }], voice_id: A, model: 'eleven_v3', pronunciations: [{ term: 'Drinkqx9', say_as: 'drink Q X nine' }] });
+  assert.equal(orders[0].body.text, '[whispers] Meet drink Q X nine [laughs] today.');
+  assert.equal(out.speech[0].text, 'Meet Drinkqx9 today.');
+  assert.equal(out.speech[0].spoken, 'Meet drink Q X nine today.');
+  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkqx9', 'today.']);
   const [meet, name, today] = out.speech[0].words;
   assert.ok(meet.start_s > 0, 'the opening tag is not timed as part of the first word');
   assert.ok(name.start_s >= meet.end_s && today.start_s >= name.end_s, 'words run forward');
@@ -303,18 +305,18 @@ test('join: sentence starts a new request where the speaker changes', { skip: !f
 test('join: one sends the whole read once, with tags and pronunciations, and captions keep the written words', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
   const { out, orders } = await reviewedRun({
     scenes: [
-      { id: 'a', line: '[soft] Meet Drinkag1.' },
+      { id: 'a', line: '[soft] Meet Drinkqx9.' },
       { id: 'b', line: null },
       { id: 'c', line: 'It tastes great.' },
     ],
     voice_id: A,
     join: 'one',
-    pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }],
+    pronunciations: [{ term: 'Drinkqx9', say_as: 'drink Q X nine' }],
   });
   assert.equal(orders.length, 1);
-  assert.equal(orders[0].body.text, '[soft] Meet drink A G one. It tastes great.');
-  assert.deepEqual(out.speech.map((s) => s.text), ['Meet Drinkag1.', 'It tastes great.']);
-  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkag1.']);
+  assert.equal(orders[0].body.text, '[soft] Meet drink Q X nine. It tastes great.');
+  assert.deepEqual(out.speech.map((s) => s.text), ['Meet Drinkqx9.', 'It tastes great.']);
+  assert.deepEqual(out.speech[0].words.map((w) => w.text), ['Meet', 'Drinkqx9.']);
   assert.ok(out.speech[0].words[0].start_s > 0, 'the tag is not timed as the first word');
   assert.deepEqual(out.scenes.map((s) => s.id), ['a', 'c']);
   assert.equal(out.scenes[1].start_s, out.speech[1].words[0].start_s);
@@ -622,4 +624,107 @@ test('a tagged read waiting for review is not paced: pace_report says it was not
   assert.equal(out.tempo, 1);
   assert.equal(out.pace_report.tempo_applied, false);
   assert.match(out.pace_report.note, /not measured/);
+});
+
+// 1.4.0: lead_s, silence before the first line with every timing moved later by it.
+
+/** Where the stretch of silence at the very start of a track ends, measured on the file (0 when it opens on sound). */
+async function leadingSilence(path) {
+  const { stderr } = await run('ffmpeg', ['-hide_banner', '-nostdin', '-i', path, '-af', 'silencedetect=noise=-50dB:d=0.02', '-f', 'null', '-']);
+  const start = /silence_start:\s*(-?[\d.]+)/.exec(stderr);
+  const end = /silence_end:\s*([\d.]+)/.exec(stderr);
+  if (!start || Math.abs(Number(start[1])) > 0.005 || !end) return 0;
+  return Number(end[1]);
+}
+
+const leadReads = [
+  [
+    'line mode, each line keeps its own file',
+    { scenes: [{ id: 's1', line: 'Meet Drinkag1 today.' }, { id: 's2', line: '' }, { id: 's3', line: 'It tastes great.' }], voice_id: A, join: 'line', pronunciations: [{ term: 'Drinkag1', say_as: 'drink A G one' }] },
+  ],
+  ['join: sentence, lines cut from a joined read', { scenes: [{ id: 's1', line: 'Do not' }, { id: 's2', line: 'buy this.' }, { id: 's3', line: 'Ever!' }], voice_id: A, join: 'sentence', gap_s: 0.2 }],
+  ['join: one with pace.target_wps', { scenes: [{ id: 's1', line: 'aaaa bbbb' }, { id: 's2', line: 'cccc.' }], voice_id: A, join: 'one', pace: { target_wps: 5 } }],
+];
+
+for (const [what, inputs] of leadReads) {
+  test(`lead_s 0 or absent gives byte for byte what 1.3.0 gave: ${what}`, { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+    const old = makeCtx({ partDir: v130.dir, line: sample.line });
+    const was = await v130.mod.run(inputs, old.ctx);
+    for (const extra of [{}, { lead_s: 0 }]) {
+      const now = makeCtx({ partDir: dir, line: sample.line });
+      const out = await mod.run({ ...inputs, ...extra }, now.ctx);
+      assert.deepEqual(now.orders.map((o) => [o.piece, o.path, o.body]), old.orders.map((o) => [o.piece, o.path, o.body]), 'the same requests');
+      // canonicalJson reduces every file to its media and sha256, so this compares every audio file's bytes too.
+      assert.equal(canonicalJson(out), canonicalJson(was), `outputs with ${JSON.stringify(extra)}`);
+      assert.equal(out.audio.sha256, was.audio.sha256, 'the voice track is byte-identical');
+      assert.equal(out.provenance.lead_s, undefined);
+    }
+  });
+
+  test(`lead_s puts exactly that much silence first and moves every timing later by it: ${what}`, { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+    const lead = 0.4;
+    const before = makeCtx({ partDir: dir, line: sample.line });
+    const plain = await mod.run(inputs, before.ctx);
+    const now = makeCtx({ partDir: dir, line: sample.line });
+    const out = await mod.run({ ...inputs, lead_s: lead }, now.ctx);
+    // The same paid requests: the lead-in is made locally and never reaches the provider.
+    assert.deepEqual(now.orders.map((o) => [o.piece, o.body]), before.orders.map((o) => [o.piece, o.body]));
+    // The audio, measured on the file: it opens on lead_s of silence and runs lead_s longer.
+    assert.equal(await leadingSilence(plain.audio.path), 0, 'without a lead the read starts at once');
+    const heardLead = await leadingSilence(out.audio.path);
+    assert.ok(near(heardLead, lead, 0.01), `the track opens on ${heardLead} s of silence, want ${lead}`);
+    const [a, b] = [await probe(plain.audio.path), await probe(out.audio.path)];
+    assert.ok(near(b.duration_s - a.duration_s, lead, 0.03), `the track runs ${b.duration_s - a.duration_s} s longer`);
+    assert.ok(near(out.seconds, plain.seconds + lead, 0.0011), `seconds ${out.seconds} vs ${plain.seconds}`);
+    // timeline.speech and every word move later by exactly lead_s.
+    assert.equal(out.speech.length, plain.speech.length);
+    out.speech.forEach((s, i) => {
+      const p = plain.speech[i];
+      assert.equal(s.text, p.text);
+      assert.ok(near(s.start_s, p.start_s + lead, 0.0011) && near(s.end_s, p.end_s + lead, 0.0011), `speech ${i}`);
+      assert.equal(s.words.length, p.words.length);
+      s.words.forEach((w, k) => assert.ok(near(w.start_s, p.words[k].start_s + lead, 0.0011) && near(w.end_s, p.words[k].end_s + lead, 0.0011), `word ${i}.${k}`));
+    });
+    assert.ok(out.speech[0].words[0].start_s >= lead - 1e-9, 'no word starts inside the lead-in');
+    // Scene spans move later too; the first still starts at 0, so the spans tile the whole track.
+    assert.equal(out.scenes[0].start_s, 0);
+    out.scenes.forEach((sc, i) => {
+      if (i > 0) assert.ok(near(sc.start_s, plain.scenes[i].start_s + lead, 0.0011), `scene ${i} start`);
+      assert.ok(near(sc.end_s, plain.scenes[i].end_s + lead, 0.0011), `scene ${i} end`);
+      if (i > 0) assert.equal(sc.start_s, out.scenes[i - 1].end_s, 'scenes tile');
+    });
+    assert.equal(out.scenes.at(-1).end_s, out.seconds);
+    // Each line file still holds just its line: the lead is only on the joined track.
+    out.lines.forEach((l, i) => assert.equal(l.audio.sha256, plain.lines[i].audio.sha256, `line ${i} audio unchanged`));
+    // Silence is not speech: the rates and tempo are unchanged.
+    assert.equal(out.words_per_second, plain.words_per_second);
+    assert.equal(out.measured_words_per_second, plain.measured_words_per_second);
+    assert.equal(out.tempo, plain.tempo);
+    assert.equal(out.provenance.lead_s, lead);
+  });
+}
+
+test('lead_s outside 0 to 2 s is refused before anything is ordered', async () => {
+  for (const lead_s of [-0.1, 2.5, '0.4']) {
+    const { ctx, orders } = makeCtx({ partDir: dir, line: sample.line });
+    await assert.rejects(mod.run({ scenes: [{ id: 's1', line: 'Hi.' }], voice_id: A, lead_s }, ctx), (e) => e.code === 'bad_input', String(lead_s));
+    assert.equal(orders.length, 0);
+  }
+});
+
+test('lead_s counts toward max_seconds, since the track runs that much longer', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  // One 40-character line runs 2 s.
+  const scenes = [{ id: 's1', line: 'x'.repeat(40) }];
+  await mod.run({ scenes, voice_id: A, max_seconds: 2.2 }, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  await assert.rejects(mod.run({ scenes, voice_id: A, max_seconds: 2.2, lead_s: 0.4 }, makeCtx({ partDir: dir, line: sample.line }).ctx), (e) => e.code === 'bad_input' && /max_seconds/.test(e.message));
+});
+
+test('a tagged read waiting for review gets the same lead-in on its pending track', { skip: !ffmpeg && 'ffmpeg is not installed' }, async () => {
+  const inputs = { scenes: [{ id: 's1', line: '[warm] First sentence here.' }, { id: 's2', line: 'And a second one.' }], voice_id: A };
+  const plain = await mod.run(inputs, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  const out = await mod.run({ ...inputs, lead_s: 0.5 }, makeCtx({ partDir: dir, line: sample.line }).ctx);
+  assert.equal(out.timing_status, 'requires_reviewed_alignment');
+  assert.ok(near(out.seconds, plain.seconds + 0.5, 0.0011));
+  assert.ok(near(await leadingSilence(out.audio.path), 0.5, 0.01));
+  assert.equal(out.provenance.lead_s, 0.5);
 });

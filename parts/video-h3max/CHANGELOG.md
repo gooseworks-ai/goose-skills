@@ -13,7 +13,7 @@ frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 - Mode takes: `takes.pad_s` (one number or one per take) fits each take to its lines: words at `words_per_second`
   plus a breath per beat, plus `pad_s`, rounded up, 4 to 15 s. Spare seconds are where H3 invents words and lets
   the product drift down into the caption band. Not with `seconds`.
-- Paid test (GOOSE-4034, Graza, seed 1): a 9 s take for two lines and a 6 s take for the use line and the cap flip,
+- Paid test (GOOSE-4034, seed 1): a 9 s take for two lines and a 6 s take for the use line and the cap flip,
   both started on one composed held-high still; the join could not be seen, the bottle stayed above the caption band
   in both, and the cap stayed visible as it opened. One 15 s take with the same still lowered the bottle into the
   captions for the use and swung it back to meet the last frame.
@@ -22,7 +22,7 @@ frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
 - `end_on_start_tags` (mode stills): scene tags whose clips end on their own first frame (`end_image_url`
   set to the fitted still, as `image_to_video` does with `end_image: start`). For held or shown products: in
-  a paid test (GOOSE-4034, four 4 s 1080P clips of The Cumin Club pouch, same stills and seeds) H3 turned the
+  a paid test (GOOSE-4034, four 4 s 1080P clips of Northleaf Kitchen pouch, same stills and seeds) H3 turned the
   pouch to its back in 3 of 4 unlocked clips and in none of 4 locked ones, and no locked clip froze. Other
   scenes, other modes and seeds are unchanged; the input is refused outside mode stills. Everything else is
   1.3.0 (`quality_tier`, 768P by default).

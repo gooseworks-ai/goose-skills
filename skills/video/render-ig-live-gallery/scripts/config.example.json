@@ -1,0 +1,46 @@
+{
+  "_note": "Worked example (the fictional stationery brand Inkwren). At remix time the orchestrator binds the brand's real product stills, wordmark, benefit phrases, and claim-free comments. Image paths are relative to --assets.",
+  "_comment": "Worked example (the Inkwren build). Creative fields — slides[].phrase, slides[].comments, endcard.payoff, music.prompt — come from the recipe's choices (slide_story, copy_tone, music); never copy them as defaults.",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "username": "inkwren",
+  "verified": true,
+  "slide_dur": 3.4,
+  "endcard_dur": 3.8,
+  "crossfade": 0.35,
+  "palette": {
+    "ink": [26, 24, 25],
+    "prod_bg": [247, 247, 247],
+    "pink": [240, 122, 158],
+    "pink_hi": [250, 176, 197],
+    "pink_bg": [252, 230, 233],
+    "plum": [58, 20, 34],
+    "red": [233, 0, 47],
+    "live_red": [237, 28, 76]
+  },
+  "slides": [
+    { "image": "product-1-notebook.jpg", "phrase": "A fresh page,", "viewers": "8.2k",
+      "comments": [["mara.k", "so crisp"], ["devon.r", "love this paper"]] },
+    { "image": "product-2-fineliner.png", "phrase": "a few quick lines,", "viewers": "9.6k",
+      "comments": [["noor.b", "smooth ink"], ["els", "so neat"]] },
+    { "image": "product-3-highlighter.jpg", "phrase": "a streak of yellow,", "viewers": "11k",
+      "comments": [["jules", "cutest pastel"], ["tay.m", "so cheerful"]] },
+    { "image": "product-4-washi-tape.jpg", "phrase": "one strip of tape,", "viewers": "12k",
+      "comments": [["remi", "cute pattern"], ["dana.k", "tape addict"]] },
+    { "image": "product-5-sticker-sheet.jpg", "phrase": "a tiny sticker —", "viewers": "13k",
+      "comments": [["cleo", "so sweet"], ["suki", "need these"]] }
+  ],
+  "endcard": {
+    "logo": "inkwren-logo-white.png",
+    "logo_is_white": true,
+    "payoff": "your day, on paper.",
+    "handle": "@inkwren",
+    "cta": "shop the set  ·  inkwren.example"
+  },
+  "music": {
+    "prompt": "Cozy lo-fi stationery-ad instrumental: warm mellow keys, light plucky bells, a gentle uplifting build, subtle soft kick, clean modern and unhurried, calm and bright, no vocals. Instrumental only.",
+    "length_ms": 22000,
+    "trim_intro_sec": 1.2
+  }
+}

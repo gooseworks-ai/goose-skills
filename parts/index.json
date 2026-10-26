@@ -1568,6 +1568,50 @@
       "models": []
     },
     {
+      "id": "check-layer",
+      "version": "1.9.0",
+      "interface": 1,
+      "kind": "check",
+      "layer": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "ebur128",
+            "freezedetect",
+            "blackdetect",
+            "scale",
+            "format",
+            "fps",
+            "crop",
+            "aresample",
+            "highpass",
+            "lowpass"
+          ],
+          "encoders": [
+            "pcm_s16le",
+            "pcm_f32le",
+            "rawvideo"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/check-layer/1.9.0",
+      "files": {
+        "README.md": "90bdb7b3c321ecdfe452edffdaa4bfea58cef252e60c0b0f88644bfab160fac8",
+        "part.json": "df100eede9d4f89c3bd90186b906ba3d9fc1daa92ad68db92d9295ab2f87d6fe",
+        "part.mjs": "e7df8c41d0b5bdd7414a798e64f42fb9dc2b5d21befa56ddd5c336620b30e233"
+      },
+      "models": []
+    },
+    {
       "id": "creator-h3",
       "version": "1.0.0",
       "interface": 1,
@@ -2530,6 +2574,75 @@
         "README.md": "c28bcb8270f077b8504b39805f0f3afb7f02c0fb8cc3a085e602e1946e4b2155",
         "part.json": "eb10ae5127ce570f604951f57157741ef9b09ddf12b99ff57c5729edae992d2f",
         "part.mjs": "246792dad29f802986503e52a24924d7f0a4dcc3d217bf37d630ecaf38243db6"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
+      "id": "creator-h3",
+      "version": "1.8.0",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.1 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "silencedetect",
+            "tpad",
+            "trim",
+            "setpts",
+            "fps",
+            "settb",
+            "setsar",
+            "format",
+            "xfade",
+            "concat",
+            "aresample",
+            "pan",
+            "aformat",
+            "adelay",
+            "apad",
+            "atrim",
+            "asetpts",
+            "acrossfade"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/max_seconds",
+          "as": "value"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.4
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/creator-h3/1.8.0",
+      "files": {
+        "README.md": "3e28ded85855a9fd59f7ef1b7bd65ec2f251f1fa02831899d6b84b1a45a20409",
+        "part.json": "01d890f83b38f7b8ea9ed87d0d4a96e8e1111c23e50f024a96a35aefe1f65daa",
+        "part.mjs": "950316e129b2df6e37a540678405da1d1722ddcce3de0e6198434a3126945e1f"
       },
       "models": [
         {
@@ -3796,6 +3909,71 @@
         "README.md": "89878cf4fc1e623c70477982a7d08d7f3011bc14b00841c733d7a9d8f83dc12f",
         "part.json": "62608fcedcf411973af4fe66c2f37df5ceb88610d47f30c26497d0029c0b3213",
         "part.mjs": "cb6854f177726627e3401d7270bd8203d673ea8c098d2c1cbbce21ecc8ff39c9"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2"
+        },
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
+      "id": "image-gpt-image-2",
+      "version": "1.4.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "setsar",
+            "format",
+            "hstack",
+            "crop"
+          ],
+          "encoders": [
+            "png",
+            "rawvideo"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2"
+          },
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 300
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "image",
+        "measure": {
+          "from": "/images/*",
+          "as": "count"
+        },
+        "rates_usd": {
+          "openai/gpt-image-2": 0.19,
+          "openai/gpt-image-2/edit": 0.19
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/image-gpt-image-2/1.4.0",
+      "files": {
+        "README.md": "ae647c8592cddb96fc2ea6799ae365f8a2bc6c5741d7e6f7acd32a924e84d98a",
+        "part.json": "e7e50898c998a7ee907df717ed9a64783d900fe8a2b6a05362a885ffb30cbdcc",
+        "part.mjs": "ce9d02bfe7270732000c713c668f3a006f46ea0c87adbe7b7a4d76d7549aac4e"
       },
       "models": [
         {
@@ -5261,6 +5439,49 @@
       "models": []
     },
     {
+      "id": "read-labels",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "check",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "mjpeg"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openrouter/router/vision"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "openrouter/router/vision": 0.08
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/read-labels/1.0.0",
+      "files": {
+        "README.md": "6bf585fd19c98566df98ab4fcd6e863300b2318b8c605983ec3de9080c314de3",
+        "part.json": "689685cc833f630bcab077c335fef3770dafc371a4c2d726fb9d57a2692f2d1a",
+        "part.mjs": "1112b3f3d50d502a2a830f6f4e7ce5255e6da2e18cc254b487f8a0fe868688fd"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openrouter/router/vision"
+        }
+      ]
+    },
+    {
       "id": "sfx-elevenlabs",
       "version": "1.0.0",
       "interface": 1,
@@ -5814,6 +6035,64 @@
       "models": []
     },
     {
+      "id": "speech-recut",
+      "version": "1.0.3",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "select",
+            "showinfo",
+            "trim",
+            "setpts",
+            "tpad",
+            "atrim",
+            "asetpts",
+            "aresample",
+            "aformat",
+            "apad",
+            "afade",
+            "pan",
+            "concat",
+            "split",
+            "fps",
+            "setsar",
+            "format",
+            "asplit",
+            "areverse",
+            "volume",
+            "aloop",
+            "amix",
+            "curves",
+            "unsharp"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/speech-recut/1.0.3",
+      "files": {
+        "README.md": "f983d801e0d679bd2ff5a0844663d4533691d555bad3278c72eadcf0100364be",
+        "part.json": "8a6d1f7781f9702a2b58251852fab5a3b9ca4238d3c8c28e1439db72fea5f2d1",
+        "part.mjs": "7abac2dc77ddbe7d33ed0b70f874836bd207f2ee3e3d6a0d8ca632a3d5dcf1ca"
+      },
+      "models": []
+    },
+    {
       "id": "transcribe-whisper",
       "version": "1.0.0",
       "interface": 1,
@@ -6028,6 +6307,53 @@
         {
           "provider": "fal",
           "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "unmirror-take",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "encoders": [
+            "mjpeg",
+            "libx264"
+          ],
+          "filters": [
+            "hflip"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openrouter/router/vision"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "openrouter/router/vision": 0.05
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/unmirror-take/1.0.0",
+      "files": {
+        "README.md": "74ecdc80da85f2add653e2b31ea7e2531feb9833899614d101596cbd81452b33",
+        "part.json": "1d88296cfc0a523f4c0c71008b1fd499dc68dc8181453b3e4823ef970db3439c",
+        "part.mjs": "984029c7fb944c32f16f686b57f6d4a63017afc716db2a2ad790022ed8a4717c"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openrouter/router/vision"
         }
       ]
     },
@@ -7258,6 +7584,93 @@
         "README.md": "b430802a39f5c9950fb94303263b0c282a2b761391915db0397f9f225445f4ce",
         "part.json": "3dbbc8d454a1c317ddd32dab4d9ecf39d71a02b9633e3a0638030c411908f9aa",
         "part.mjs": "5af5f625057aa1c11010715e48af236e8dabb9fe69179eac2f0ff577c133bab6"
+      },
+      "models": [
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v3"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_multilingual_v2"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v4"
+        },
+        {
+          "provider": "elevenlabs",
+          "model": "eleven_v4_turbo"
+        }
+      ]
+    },
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.4.0",
+      "interface": 1,
+      "kind": "generate_voice",
+      "kit": ">=1.0.1 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "aresample",
+            "aformat",
+            "atrim",
+            "asetpts",
+            "apad",
+            "concat",
+            "atempo",
+            "asplit",
+            "adelay"
+          ],
+          "encoders": [
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v3"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_multilingual_v2"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v4"
+          },
+          {
+            "provider": "elevenlabs",
+            "model": "eleven_v4_turbo"
+          }
+        ],
+        "disk_mb": 50
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "1k_chars",
+        "measure": {
+          "from": "/scenes/*/line",
+          "as": "length"
+        },
+        "rates_usd": {
+          "eleven_v3": 0.1,
+          "eleven_multilingual_v2": 0.1,
+          "eleven_v4": 0.08,
+          "eleven_v4_turbo": 0.04
+        },
+        "model_from": "/model"
+      },
+      "determinism": "provider",
+      "path": "parts/voice-elevenlabs/1.4.0",
+      "files": {
+        "README.md": "a752c62631074ae1f5d44d7b7dfa2fb9a760feea0143a4526d0786eb531220e6",
+        "part.json": "c4568bfae9d8b9bd5e393dc1def80e024d51cc558f5894b761b3f28b128029dd",
+        "part.mjs": "b2f6891ea3470118dfdaf4bce18d1cc99a43564dbde7d335b96daa9405613e8e"
       },
       "models": [
         {

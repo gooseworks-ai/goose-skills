@@ -65,14 +65,14 @@ test('pill: about three lower-case words on a cream pill, the brand name keeps i
 test('serif-word: one word at a time, the brand name kept whole, quoted and highlighted; no plate', { skip }, async () => {
   const { ctx } = makeCtx({ partDir: dir });
   const video = await cut(ctx, 3);
-  const words = timed([['Try', 0.2, 0.5], ['Drink', 0.6, 0.8], ['AG1,', 0.85, 1.2], ['today.', 1.3, 1.8]]);
+  const words = timed([['Try', 0.2, 0.5], ['Drink', 0.6, 0.8], ['QX9,', 0.85, 1.2], ['today.', 1.3, 1.8]]);
   const inputs = await layerInputsFor(video, {
-    brand: { name: 'Drink AG1', colors: {}, fonts: {}, pronunciations: [] },
+    brand: { name: 'Drink QX9', colors: {}, fonts: {}, pronunciations: [] },
     expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'serif-word', highlight: ['brand'] } },
-    timeline: { speech: [{ text: 'Try Drink AG1, today.', start_s: 0.2, end_s: 1.8, words }] },
+    timeline: { speech: [{ text: 'Try Drink QX9, today.', start_s: 0.2, end_s: 1.8, words }] },
   });
   const out = await mod.run(inputs, ctx);
-  assert.deepEqual(vttTexts(out.captions.path), ['Try', '“Drink AG1”', 'today.']);
+  assert.deepEqual(vttTexts(out.captions.path), ['Try', '“Drink QX9”', 'today.']);
   const record = JSON.parse(readFileSync(out.words.path, 'utf8'));
   assert.equal(record.look.max_words, 1);
   for (const c of record.cues) assert.ok(Math.abs(c.box.y + c.box.h / 2 - 0.75 * 960) < 2, `${c.text} centred at 0.75 (${JSON.stringify(c.box)})`);
@@ -88,14 +88,14 @@ test('serif-word: one word at a time, the brand name kept whole, quoted and high
 test('serif-word ignores a larger max_words with a warning, and keeps an unhighlighted brand name whole and unquoted', { skip }, async () => {
   const { ctx, logs } = makeCtx({ partDir: dir });
   const video = await cut(ctx, 3);
-  const words = timed([['Try', 0.2, 0.5], ['Drink', 0.6, 0.8], ['AG1', 0.85, 1.2], ['today', 1.3, 1.8]]);
+  const words = timed([['Try', 0.2, 0.5], ['Drink', 0.6, 0.8], ['QX9', 0.85, 1.2], ['today', 1.3, 1.8]]);
   const inputs = await layerInputsFor(video, {
-    brand: { name: 'Drink AG1', colors: {}, fonts: {}, pronunciations: [] },
+    brand: { name: 'Drink QX9', colors: {}, fonts: {}, pronunciations: [] },
     expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'serif-word', max_words: 3 } },
-    timeline: { speech: [{ text: 'Try Drink AG1 today', start_s: 0.2, end_s: 1.8, words }] },
+    timeline: { speech: [{ text: 'Try Drink QX9 today', start_s: 0.2, end_s: 1.8, words }] },
   });
   const out = await mod.run(inputs, ctx);
-  assert.deepEqual(vttTexts(out.captions.path), ['Try', 'Drink AG1', 'today']);
+  assert.deepEqual(vttTexts(out.captions.path), ['Try', 'Drink QX9', 'today']);
   assert.ok(logs.some((l) => l[0] === 'warn' && String(l[1]).includes('one word at a time')), JSON.stringify(logs));
   assert.equal(countColor(await frame(out, 1.0), YELLOW, 40), 0, 'not highlighted without highlight: [brand]');
 });
@@ -235,7 +235,7 @@ test('serif-word: a highlighted call to action stays one word at a time, highlig
   const video = await cut(ctx, 3);
   const words = timed([['Shop', 0.2, 0.5], ['now', 0.6, 0.9], ['today', 1.0, 1.5]]);
   const inputs = await layerInputsFor(video, {
-    brand: { name: 'Drink AG1', colors: {}, fonts: {}, pronunciations: [], cta: { text: 'Shop now' } },
+    brand: { name: 'Drink QX9', colors: {}, fonts: {}, pronunciations: [], cta: { text: 'Shop now' } },
     expect: { speech: 'voiceover', captions: true, caption_look: { preset: 'serif-word', highlight: ['cta'] } },
     timeline: { speech: [{ text: 'Shop now today', start_s: 0.2, end_s: 1.5, words }] },
   });

@@ -1,0 +1,23 @@
+{
+  "slug": "run-organic-social-account-audit",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "run-organic-social",
+  "tags": [
+    "social",
+    "content"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "run-organic-social",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

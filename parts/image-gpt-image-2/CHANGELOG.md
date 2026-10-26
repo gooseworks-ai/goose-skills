@@ -1,5 +1,11 @@
 # image-gpt-image-2
 
+## 1.4.0
+
+- `same_look` (scenes mode): a scene tagged Hold N is drawn after the first scene tagged Look N and sends its still as a
+  reference, named in the prompt, so the outfit, hair and room match (GOOSE-4034: one montage drew Look 1 and two Hold 1 shots
+  in three tops and two kitchens). Needs /edit; refused with `anchor: first_scene`. Off by default; nothing else changed.
+
 ## 1.3.0
 
 - `quality_tier` (`standard`, the default, or `best`) sets the default quality: medium for Standard, high for Best. An explicit `quality` still wins for the whole step. 1.2.0 always defaulted to high.

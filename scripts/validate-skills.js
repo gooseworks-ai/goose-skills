@@ -2,16 +2,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const { validate: validateSchema } = require('./lib/json-schema');
 
 // ROOT defaults to the repo root, but tests can override via env var
 // (matches the same convention used by build-index.js).
 const ROOT = process.env.GOOSE_SKILLS_ROOT
   ? path.resolve(process.env.GOOSE_SKILLS_ROOT)
   : path.resolve(__dirname, '..');
-// Abstraction levels (the second path segment). Domain is the first segment.
-const LEVELS = ['capabilities', 'composites', 'playbooks'];
 const SCHEMA_PATH = path.join(ROOT, 'schemas', 'skill-meta.schema.json');
-const SKIP_DIRS = new Set(['.tmp', '__pycache__', 'node_modules', '.git']);
 
 function fail(messages) {
   console.error('Skill validation failed:');
@@ -27,131 +25,193 @@ function isDir(p) {
   return fs.existsSync(p) && fs.statSync(p).isDirectory();
 }
 
+// Builder HTML pages: a review board or build page (build-review.html,
+// <x>-skill-build.html) is how a skill was made, not something it runs, so it
+// stays out of the public repo like critique.md. A page with a builder name
+// may stay only when a script in the skill reads it (a runtime template).
+// Other HTML (templates, scenes) is not touched. tests/ folders are not
+// published and are skipped.
+const CODE_EXT = new Set(['.py', '.js', '.mjs', '.cjs', '.ts', '.sh', '.bash']);
+const BUILDER_PAGE = /(^|[-_.])(build|builder|review|critique|audit|board|proof)([-_.]|$)/i;
+const SKIP_WALK = new Set(['tests', 'node_modules', '.git', '__pycache__', '.tmp']);
+
+function skillFiles(dir, rel = '') {
+  const out = [];
+  for (const entry of fs.readdirSync(path.join(dir, rel), { withFileTypes: true })) {
+    const child = rel ? `${rel}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      if (!SKIP_WALK.has(entry.name)) out.push(...skillFiles(dir, child));
+    } else if (entry.isFile()) out.push(child);
+  }
+  return out;
+}
+
+function builderPages(skillDir) {
+  const files = skillFiles(skillDir);
+  const pages = files.filter((f) => /\.html?$/i.test(f) && BUILDER_PAGE.test(path.posix.basename(f).replace(/\.html?$/i, '')));
+  if (!pages.length) return [];
+  const scripts = files.filter((f) => CODE_EXT.has(path.extname(f))).map((f) => fs.readFileSync(path.join(skillDir, f), 'utf8'));
+  return pages
+    .filter((page) => !scripts.some((text) => text.includes(path.posix.basename(page))))
+    .map((page) => `${page} is a builder page (a build or review board, not something the skill runs); keep it in goose-lab, not in this public repo. A template a script reads may stay`);
+}
+
+// One metadata contract for every family: schemas/skill-meta.schema.json. The
+// rules below are the ones a schema cannot say, because they depend on the
+// folder or on SKILL.md.
 const schema = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
-const allowedTags = new Set(schema.properties.tags.items.enum);
-// The set of valid domain folders comes from the schema's `domain` enum.
-const allowedDomains = new Set(
-  (schema.properties.domain && schema.properties.domain.enum) || [],
-);
 
 const errors = [];
 const slugs = new Set();
 
-// Walk the skills/ tree to find every SKILL.md location (skipping dependency
-// dirs). Used at the end to assert every skill is represented in the index that
-// build-index.js produces (catches drift where skills exist on disk but aren't
-// visible to downstream consumers).
-function collectSkillMdDirs(dir, results = []) {
-  if (!fs.existsSync(dir)) return results;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entry.isDirectory()) {
-      if (SKIP_DIRS.has(entry.name)) continue;
-      collectSkillMdDirs(path.join(dir, entry.name), results);
-    } else if (entry.name === 'SKILL.md') {
-      results.push(path.relative(ROOT, dir));
+// Skill families: skills/<family>/<slug>/ (see build-index.js). Every folder in
+// a family is published; work that is not ready to publish lives in drafts/.
+const FAMILIES = ['marketing', 'video', 'shared', 'entry'];
+// The domain a family's skills get when their meta names none. Shared skills must name one.
+const FAMILY_DOMAIN = { marketing: 'marketing-agent', video: 'ads', shared: null, entry: 'gooseworks' };
+// Domains that belong to one family only.
+const OWN_DOMAIN = { 'marketing-agent': 'marketing', gooseworks: 'entry' };
+const MA_TIERS = new Set(['playbook', 'atom', 'foundation']);
+// Entry skills come with the GooseWorks CLI; every other skill installs alone, by slug.
+const DESCRIPTION_LIMIT = 1024;
+// One SKILL.md frontmatter style. Everything else about a skill lives in skill.meta.json.
+const FRONTMATTER = new Set(['name', 'description', 'version', 'status', 'superseded_by']);
+// Entry skills keep the gooseworks CLI's frontmatter, and make-custom-video carries its dependencies and harness.
+const ENTRY_FRONTMATTER = new Set([...FRONTMATTER, 'slug', 'author', 'tags', 'requires_skills', 'harness_binding']);
+
+function blockFrontmatter(text) {
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  if (!m) return null;
+  const lines = m[1].split('\n');
+  const out = {};
+  for (let i = 0; i < lines.length; i++) {
+    const kv = lines[i].match(/^(\w[\w-]*):\s*(.*)$/);
+    if (!kv) continue;
+    if (/^[>|][-+]?$/.test(kv[2].trim())) {
+      const block = [];
+      while (i + 1 < lines.length && (/^\s+/.test(lines[i + 1]) || lines[i + 1] === '')) block.push(lines[++i].trim());
+      out[kv[1]] = block.join(' ').replace(/\s+/g, ' ').trim();
+    } else {
+      out[kv[1]] = kv[2].trim().replace(/^['"]|['"]$/g, '');
     }
   }
-  return results;
+  return out;
 }
 
 const skillsRoot = path.join(ROOT, 'skills');
-const domains = fs.existsSync(skillsRoot)
-  ? fs.readdirSync(skillsRoot).filter((d) => isDir(path.join(skillsRoot, d)))
-  : [];
-
-// Folder names that were TOP-LEVEL abstraction levels before the 2026-06-17
-// domain-first reorg. Nothing in git creates them any more, but a working copy
-// checked out before the reorg still has them lying around untracked, and they
-// then fail validation with a confusing "unknown domain" error (GOOSE-3191).
-// Name the real problem instead.
-const PRE_REORG_LEFTOVERS = new Set(['capabilities', 'composites', 'playbooks', 'packs']);
-
-for (const domain of domains) {
-  if (allowedDomains.size && !allowedDomains.has(domain)) {
-    errors.push(
-      PRE_REORG_LEFTOVERS.has(domain)
-        ? `skills/${domain} is a stale pre-reorg leftover, not a domain. Levels live UNDER a ` +
-            `domain now (skills/<domain>/${domain}/). Nothing in git creates skills/${domain} — ` +
-            `it is an untracked remnant of a pre-2026-06-17 checkout. Delete it: rm -rf skills/${domain}`
-        : `Unknown domain folder skills/${domain} — allowed: ${[...allowedDomains].sort().join(', ')}`,
-    );
-  }
-
-  for (const category of LEVELS) {
-    const categoryPath = path.join(skillsRoot, domain, category);
-    if (!isDir(categoryPath)) continue;
-
-    for (const slug of fs.readdirSync(categoryPath)) {
-      const skillDir = path.join(categoryPath, slug);
-      if (!isDir(skillDir)) continue;
-
-      const where = `${domain}/${category}/${slug}`;
-      const skillMd = path.join(skillDir, 'SKILL.md');
-      const metaPath = path.join(skillDir, 'skill.meta.json');
-
-      if (!fs.existsSync(skillMd)) {
-        errors.push(`Missing SKILL.md for ${where}`);
-        continue;
-      }
-      if (!fs.existsSync(metaPath)) {
-        errors.push(`Missing skill.meta.json for ${where}`);
-        continue;
-      }
-
-      let meta;
-      try {
-        meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-      } catch (err) {
-        errors.push(`Invalid JSON in ${where}/skill.meta.json`);
-        continue;
-      }
-
-      if (!isValidSlug(slug)) {
-        errors.push(`Directory slug has invalid format: ${where}`);
-      }
-      if (meta.slug !== slug) {
-        errors.push(`Slug mismatch in ${where}: meta.slug=${meta.slug}`);
-      }
-      if (meta.category !== category) {
-        errors.push(`Category mismatch in ${where}: meta.category=${meta.category}`);
-      }
-      if (!Array.isArray(meta.tags)) {
-        errors.push(`tags must be an array in ${where}`);
-      } else {
-        const invalidTags = meta.tags.filter((t) => !allowedTags.has(t));
-        if (invalidTags.length) {
-          errors.push(
-            `invalid tag(s) in ${where}: ${invalidTags.join(', ')}. ` +
-              `Allowed: ${[...allowedTags].sort().join(', ')}`,
-          );
-        }
-      }
-      if (
-        meta.version !== undefined &&
-        (typeof meta.version !== 'string' || !/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(meta.version))
-      ) {
-        errors.push(`version must be a semver string (x.y.z) in ${where}: ${JSON.stringify(meta.version)}`);
-      }
-      if (!meta.installation || typeof meta.installation.base_command !== 'string' || !meta.installation.base_command.trim()) {
-        errors.push(`installation.base_command required in ${where}`);
-      }
-      if (!meta.installation || !Array.isArray(meta.installation.supports) || meta.installation.supports.length === 0) {
-        errors.push(`installation.supports required in ${where}`);
-      }
-
-      if (slugs.has(slug)) {
-        errors.push(`Duplicate slug: ${slug}`);
-      }
-      slugs.add(slug);
-    }
+for (const entry of isDir(skillsRoot) ? fs.readdirSync(skillsRoot) : []) {
+  if (isDir(path.join(skillsRoot, entry)) && !FAMILIES.includes(entry)) {
+    errors.push(`Unknown folder skills/${entry}: skills live in skills/{${FAMILIES.join(',')}}/<slug>/`);
   }
 }
 
-// Tree ⊆ index check — every SKILL.md on disk must be representable in the
-// index that build-index.js produces. Catches the class of bugs where skills
-// exist on disk but the build script drops them (e.g., pack sub-skills missing
-// from top-level skills[]).
-const allSkillMdDirs = collectSkillMdDirs(skillsRoot);
+const published = [];
+for (const family of FAMILIES) {
+  const familyDir = path.join(skillsRoot, family);
+  if (!isDir(familyDir)) continue;
+  for (const slug of fs.readdirSync(familyDir).sort()) {
+    const skillDir = path.join(familyDir, slug);
+    if (slug.startsWith('.') || !isDir(skillDir)) continue;
+    const where = `skills/${family}/${slug}`;
+    const skillMd = path.join(skillDir, 'SKILL.md');
+    const metaPath = path.join(skillDir, 'skill.meta.json');
+    if (!fs.existsSync(skillMd)) { errors.push(`Missing SKILL.md for ${where}`); continue; }
+    for (const note of ['critique.md', 'server-needs.md']) {
+      if (fs.existsSync(path.join(skillDir, note))) {
+        errors.push(`${where}/${note} is a builder note; it belongs in goose-lab plan/marketing-agent/, not in this public repo`);
+      }
+    }
+    for (const problem of builderPages(skillDir)) errors.push(`${where}/${problem}`);
+    if (!fs.existsSync(metaPath)) { errors.push(`Missing skill.meta.json for ${where}`); continue; }
+    let meta;
+    try {
+      meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    } catch (err) {
+      errors.push(`Invalid JSON in ${where}/skill.meta.json`);
+      continue;
+    }
+    const fm = blockFrontmatter(fs.readFileSync(skillMd, 'utf8'));
+    if (!fm) { errors.push(`${where}/SKILL.md has no frontmatter`); continue; }
+    // A generated package (release.json, published from goose-studio) is checked
+    // byte for byte against its provenance, so its SKILL.md and meta are fixed in
+    // the generator, not here; the version and frontmatter rules wait for that.
+    const generated = fs.existsSync(path.join(skillDir, 'release.json'));
+
+    if (!isValidSlug(slug)) errors.push(`Directory slug has invalid format: ${where}`);
+    if (meta.slug !== slug) errors.push(`Slug mismatch in ${where}: meta.slug=${meta.slug}`);
+    if (slugs.has(slug)) errors.push(`Duplicate slug: ${slug}`);
+    slugs.add(slug);
+
+    // The shared contract.
+    for (const problem of validateSchema(schema, meta)) {
+      if (generated && problem === '$: version is required') continue;
+      const at = problem.replace(/^\$\.?/, '');
+      errors.push(`${where}/skill.meta.json${at.startsWith(':') ? '' : ' '}${at}`);
+    }
+
+    // SKILL.md frontmatter repeats some fields; a copy must agree with the meta.
+    if (fm.name !== slug) errors.push(`Frontmatter name must be the slug in ${where}: name=${fm.name}`);
+    if (!generated && fm.version !== undefined && fm.version !== meta.version) {
+      errors.push(`version in SKILL.md (${fm.version}) and skill.meta.json (${meta.version}) differ in ${where}`);
+    }
+    if (!generated && fm.category !== undefined && fm.category !== meta.category) {
+      errors.push(`category in SKILL.md (${fm.category}) and skill.meta.json (${meta.category}) differ in ${where}: delete the SKILL.md line`);
+    }
+    if (!generated) {
+      const allowed = family === 'entry' ? ENTRY_FRONTMATTER : FRONTMATTER;
+      for (const key of Object.keys(fm)) {
+        if (!allowed.has(key)) errors.push(`${where}/SKILL.md frontmatter has "${key}": allowed keys are ${[...allowed].join(', ')} (other metadata goes in skill.meta.json)`);
+      }
+    }
+    if (fm.description && /^\s*<[^<>]{3,}>\s*$/.test(fm.description)) {
+      errors.push(`${where}/SKILL.md description still has a template placeholder (<…>)`);
+    }
+    if (!fm.description) errors.push(`description required in ${where}/SKILL.md`);
+    else if (fm.description.length > DESCRIPTION_LIMIT) {
+      errors.push(`description over ${DESCRIPTION_LIMIT} characters (${fm.description.length}) in ${where}`);
+    }
+
+    // Family rules.
+    const domain = meta.domain || FAMILY_DOMAIN[family];
+    if (!domain) errors.push(`domain required in ${where}/skill.meta.json`);
+    else if (OWN_DOMAIN[domain] && OWN_DOMAIN[domain] !== family) {
+      errors.push(`domain "${domain}" is only for skills/${OWN_DOMAIN[domain]}/ (${where})`);
+    } else if (FAMILY_DOMAIN[family] && OWN_DOMAIN[FAMILY_DOMAIN[family]] && domain !== FAMILY_DOMAIN[family]) {
+      errors.push(`skills/${family}/ skills have domain "${FAMILY_DOMAIN[family]}" (${where}: ${domain})`);
+    }
+    if (family === 'marketing') {
+      if (!MA_TIERS.has(meta.tier)) errors.push(`tier must be one of ${[...MA_TIERS].join(', ')} in ${where}`);
+      if (fm.version === undefined) errors.push(`version required in ${where}/SKILL.md frontmatter (same as skill.meta.json)`);
+      if (!Array.isArray(meta.tags) || meta.tags.length === 0) errors.push(`tags must be a non-empty array in ${where}`);
+      if (!Array.isArray(meta.requires_skills)) errors.push(`requires_skills must be an array in ${where}`);
+    } else if (family === 'entry') {
+      // Entry skills are installed by `gooseworks install` and compared by version.
+      if (meta.tier !== 'entry') errors.push(`tier must be "entry" in ${where}`);
+      if (fm.version === undefined) errors.push(`version required in ${where}/SKILL.md frontmatter (same as skill.meta.json)`);
+    } else if (meta.tier !== undefined) {
+      errors.push(`tier is only for marketing and entry skills (${where})`);
+    }
+    published.push({ slug, where, meta });
+  }
+}
+// A marketing step (tier atom) is loaded by a playbook, so some marketing skill must list it.
+const requiredInMarketing = new Set(published
+  .filter(({ where }) => where.startsWith('skills/marketing/'))
+  .flatMap(({ meta }) => meta.requires_skills || []));
+for (const { slug, where, meta } of published) {
+  if (where.startsWith('skills/marketing/') && meta.tier === 'atom' && !requiredInMarketing.has(slug)) {
+    errors.push(`${where} is a marketing step, but no playbook lists it in requires_skills`);
+  }
+}
+for (const { where, meta } of published) {
+  for (const dep of meta.requires_skills || []) {
+    if (!slugs.has(dep)) errors.push(`${where} requires unknown skill "${dep}"`);
+  }
+}
+
+// Folder ⊆ index check: every skill folder must be a top-level entry in
+// skills[]. Downstream consumers (the backend sync and the Payload CMS push)
+// iterate idx.skills[] only.
 const indexPath = path.join(ROOT, 'skills-index.json');
 if (fs.existsSync(indexPath)) {
   let index;
@@ -160,23 +220,12 @@ if (fs.existsSync(indexPath)) {
   } catch (err) {
     errors.push(`skills-index.json is not valid JSON: ${err.message}`);
   }
-
   if (index) {
-    // STRICT: every SKILL.md on disk must appear in the TOP-LEVEL skills[].
-    // Nested presence in packs[].skills[] does NOT satisfy this — that's the
-    // exact regression the validator must catch. Downstream consumers (the
-    // backend sync and the Payload CMS push) iterate idx.skills[] only.
-    const topLevelPaths = new Set();
-    for (const s of index.skills || []) {
-      if (s.path) topLevelPaths.add(s.path);
-    }
-
-    const missing = allSkillMdDirs.filter((d) => !topLevelPaths.has(d));
+    const topLevelPaths = new Set((index.skills || []).map((s) => s.path));
+    const missing = published.map(({ where }) => where).filter((d) => !topLevelPaths.has(d));
     if (missing.length) {
       errors.push(
-        `${missing.length} SKILL.md file(s) are missing from top-level idx.skills[]. ` +
-          `Pack sub-skills must be promoted to top-level — nested presence in ` +
-          `packs[].skills[] is invisible to the backend DB sync and Payload CMS push. ` +
+        `${missing.length} skill folder(s) are missing from top-level idx.skills[]. ` +
           `Run \`npm run build:index\` to regenerate. Missing:\n  ${missing.join('\n  ')}`,
       );
     }

@@ -19,7 +19,7 @@ async function firstTake(extra = {}, edit = (inputs) => inputs) {
 }
 
 test('the both-hands words match plan_takes.py BOTH_HANDS exactly', () => {
-  const py = readFileSync(join(dir, '..', '..', '..', 'skills/ads/capabilities/create-creator-takes-h3/scripts/plan_takes.py'), 'utf8');
+  const py = readFileSync(join(dir, '..', '..', '..', 'skills/video/create-creator-takes-h3/scripts/plan_takes.py'), 'utf8');
   const m = /^BOTH_HANDS = (".*")$/m.exec(py);
   assert.ok(m, 'plan_takes.py defines BOTH_HANDS on one line');
   assert.equal(mod.H3_BOTH_HANDS, JSON.parse(m[1]));

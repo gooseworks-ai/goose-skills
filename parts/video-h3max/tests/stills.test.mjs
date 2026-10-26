@@ -50,11 +50,11 @@ async function stillsInputs(workDir, extra = {}) {
       negative: 'talking, text, captions, watermark',
       banned: ['reveal'],
     }, 'motion.prompt.json'),
-    products: [{ id: 'p1', name: 'Bioma Probiotic' }],
+    products: [{ id: 'p1', name: 'Gutleaf Probiotic' }],
     scenes: [
       { id: 's1', line: 'Do not buy this.', picture: 'Look 1: MCU, she lifts the jar and squints at it' },
       { id: 's2', line: null, picture: 'Cutaway: a crowded supplement aisle' },
-      { id: 's3', line: 'Unless you hate bloating.', picture: 'Product: Bioma Probiotic on a bathroom shelf' },
+      { id: 's3', line: 'Unless you hate bloating.', picture: 'Product: Gutleaf Probiotic on a bathroom shelf' },
       { id: 's4', line: 'Three weeks in and I feel lighter every single morning.', picture: 'Look 2: MS, she laughs and spins toward the window' },
       { id: 's5', line: 'Link below.', on_screen: 'Link below', picture: null },
     ],
@@ -128,7 +128,7 @@ test('mode stills makes one clip per picked scene from its still, timed to the v
   assert.deepEqual(orders.map((x) => [x.piece, x.body.duration]).sort(), [['clip-s1', 4], ['clip-s2', 4], ['clip-s3', 4], ['clip-s4', 7]]);
   assert.equal(new Set(orders.map((x) => x.body.seed)).size, 4, 'each scene gets its own seed');
   assert.match(o['clip-s1'].body.prompt, /^Vertical 9:16 UGC phone footage, natural daylight\. .*she lifts the jar and squints at it\. Handheld phone video at real-time speed\. The person does not talk.*Avoid: talking, text, captions, watermark$/s);
-  assert.match(o['clip-s3'].body.prompt, /The Bioma Probiotic keeps its exact pack, colours and label/);
+  assert.match(o['clip-s3'].body.prompt, /The Gutleaf Probiotic keeps its exact pack, colours and label/);
   assert.deepEqual(out.clips.map((c) => c.id), ['s1', 's2', 's3', 's4']);
   assert.ok(out.clips.every((c) => c.video && !c.image));
   assert.ok(Math.abs(out.clips[3].seconds - 7) < 0.2, 'seconds is the measured length');

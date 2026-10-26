@@ -538,3 +538,14 @@ test('recutCheckSpeech: the pure refusals, the same as the plan\'s', () => {
   assert.throws(() => recutCheckSpeech([take.speech[0]], take.scenes), /scene a's line has no heard words/);
   assert.doesNotThrow(() => recutCheckSpeech(take.speech, [...take.scenes, { id: 'c', line: null }]));
 });
+
+test('1.0.3: a room-tone window louder than the ceiling is speech, not room tone', async () => {
+  const { recutRoomTooLoud, RECUT_ROOM_MAX_DB } = await import('../src/recut.mjs');
+  assert.equal(RECUT_ROOM_MAX_DB, -35);
+  // The Cryo Cure UGC window that held a voice, and the two street windows that were real room tone.
+  assert.equal(recutRoomTooLoud({ level_db: -21 }), true);
+  assert.equal(recutRoomTooLoud({ level_db: -67.91 }), false);
+  assert.equal(recutRoomTooLoud({ level_db: -64.03 }), false);
+  assert.equal(recutRoomTooLoud({ level_db: -40 }, -45), true, 'a style can set its own ceiling');
+  assert.equal(recutRoomTooLoud(null), false);
+});

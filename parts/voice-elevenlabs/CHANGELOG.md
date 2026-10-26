@@ -1,5 +1,11 @@
 # voice-elevenlabs
 
+## 1.4.0
+
+- New `lead_s` (0 to 2 s, default 0): that much silence before the first line, with every speech, word and scene timing and `seconds` moved later by it. The first scene still starts at 0, so the scenes tile the track. html-frames and captions-layer take their timings from `speech`, so they stay in sync with no change.
+- Line files, rates and tempo are unchanged; `lead_s` counts toward `max_seconds`; `provenance.lead_s` records it. With `lead_s` 0 or absent the output is byte for byte 1.3.0's.
+- Found on the whiteboard explainer: the voice started at 0.00, so the poster frame showed a caption over a blank board, or writing already on it.
+
 ## 1.3.0
 
 - Default model `eleven_v4` (1.2.x defaulted to `eleven_v3`). A plan that locked v3 must name it.

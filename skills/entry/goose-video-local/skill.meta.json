@@ -1,0 +1,10 @@
+{
+  "slug": "goose-video-local",
+  "category": "capabilities",
+  "domain": "gooseworks",
+  "tier": "entry",
+  "version": "1.0.3",
+  "tags": [
+    "ads"
+  ]
+}
