@@ -6093,6 +6093,50 @@
       "models": []
     },
     {
+      "id": "take-frames",
+      "version": "1.0.0",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [],
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "openai/gpt-image-2/edit": 0.38
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/take-frames/1.0.0",
+      "files": {
+        "README.md": "b77fd4868c28ba9846c482a9ad7faa9c3e266dbeb2673d2c6eb63a1c63db18ca",
+        "part.json": "5bcc0d8cd180f091de3eb8028fbec63ca7a0301d2dbc41649af5baf8d2b75943",
+        "part.mjs": "f19895dc99d0d05f2c40dfce9eedf3f03ae9d03e6ae00850f251377ae0e7884c"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
       "id": "transcribe-whisper",
       "version": "1.0.0",
       "interface": 1,
