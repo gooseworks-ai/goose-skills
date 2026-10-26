@@ -20,7 +20,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitDuration, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
-import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RECUT_ROOM_PAD_S, RecutRefusal, recutCheckSpeech, recutIsExtra, recutLevels, recutPlan, recutQuietWindow, recutSpeechBusy } from './recut.mjs';
+import { RECUT_LEVEL_RATE, RECUT_LEVEL_STEP_S, RECUT_ROOM_MAX_DB, RECUT_ROOM_PAD_S, RecutRefusal, recutCheckSpeech, recutIsExtra, recutLevels, recutPlan, recutQuietWindow, recutRoomTooLoud, recutSpeechBusy } from './recut.mjs';
 
 /** ffmpeg's scene score above which a frame starts a new shot (recut.py measured at 0.30). */
 export const RECUT_SCENE_THRESHOLD = 0.3;
@@ -208,8 +208,11 @@ export async function run(inputs, ctx) {
   let room = null;
   if (inputs.room_tone) {
     const win = await recutFindRoomTone(ctx, inputs.video, inputs.speech, duration, plan.heard);
+    const max = inputs.room_tone.max_level_db ?? RECUT_ROOM_MAX_DB;
     if (!win) ctx.log.warn('speech-recut found no speech-free window of 0.4 s or more with room tone in it; the edit has no room-tone bed');
-    else {
+    else if (recutRoomTooLoud(win, max)) {
+      ctx.log.warn('speech-recut: the quietest speech-free window is too loud to be room tone (likely speech the transcript missed); the edit has no room-tone bed', { start_s: win.start_s, end_s: win.end_s, level_db: win.level_db, max_level_db: max });
+    } else {
       const gain = inputs.room_tone.gain_db ?? RECUT_ROOM_GAIN_DB;
       room = { ...win, gain_db: gain, path: await recutRoomLoop(ctx, inputs.video, win, mono) };
       ctx.log.info('speech-recut room tone', { start_s: win.start_s, end_s: win.end_s, level_db: win.level_db, gain_db: gain });
