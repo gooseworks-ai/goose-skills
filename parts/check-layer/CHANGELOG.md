@@ -1,5 +1,12 @@
 # check-layer
 
+## 1.9.0
+
+- `speech_extra_words` (GOOSE-4034): fails when the transcript has words the script does not, and says whether they repeat the script or are new. Three H3 takes of one creator review said made-up words ("It's Popiclin Xiao Fistazin") or repeated an earlier line and passed; on a local stand-in take that said "glugging" twice, `speech_matches_script` scored 0.984 and passed, because a few extra words barely move the similarity. Fillers alone (um, uh, er, ah, hmm) and Whisper's "thank you" or "thanks for watching" as the very last words heard do not count; a changed word is still `speech_matches_script`'s.
+- `flag:no_unscripted_speech`, for a style that lists it in `qc_flags`: on on-camera speech with word timings for every line, fails a voice between the timed scripted words, which the transcript never shows because Whisper drops sounds that are not words. A voice is at least 3 windows (0.15 s) in one gap whose 300 Hz to 3.4 kHz level (50 ms windows) is 3 dB or more over the median inside the words; 0.15 s around each word belongs to the word, and the end card is not judged. On the "glugging" take it fails 6.8 to 8.8 s with no bed and under three real music beds (audio-mix 1.0.1, then the sound layer); the beds alone reach +0.3 dB over the voice. The same take with the extra word muted passes, and six clean H3 takes had no gap over the bar. It is a flag, not a default, until street ambience and unscripted reactions in other formats are measured.
+- Declares the `highpass` and `lowpass` filters the voice-band read uses.
+- A minor version: it reaches new quotes through layers.json.
+
 ## 1.8.0
 
 - `setup_count_vs_reference`: with `expect.reference_setups`, fails when the final cut has more than 30 % fewer distinct setups than the reference; otherwise `not_applicable`. Setups are shot keyframes (one per shot of at least 0.5 s, flat cards skipped) clustered by 64-bit dHash within 10 bits. A test video had 4 setups against about 10 in the reference.

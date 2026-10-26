@@ -1,5 +1,9 @@
 # speech-recut
 
+## 1.0.3
+
+- The room-tone bed is skipped, with a warning, when the quietest speech-free window is louder than `room_tone.max_level_db` (default -35 dB mean). Such a window is speech the transcript never timed: in the Cryo Cure UGC run (2026-10-17) the bed was cut from a -21 dB stretch that held a voice, and it looped that voice under the whole edit ("background voice"). Real room tone in H3 takes measured -64 to -68 dB.
+
 ## 1.0.2
 
 - Heard speech in no line (transcribe-whisper 1.1.2's speech entries with no `scene_id` and empty `text`: a repeated line, a filler) is cut out with `drop: repeats`, with the silence around it down to `max_gap_s` (the join on a picture cut when one is in reach; at the head or tail with the trim; inside a silent beat only the words). New cut kind `extra`. 1.0.1 kept such words, and with 1.1.1's placement a repeated question made later lines look unheard, so the take was refused as needing a re-roll (staging, 13 Oct 2026).
