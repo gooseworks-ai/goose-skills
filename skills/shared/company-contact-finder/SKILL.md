@@ -82,37 +82,41 @@ Check how many results so far match the target titles at the target company.
 
 ### Step 4: Crustdata Structured Search (Fallback 1)
 
-Crustdata's filter search matches company and title more precisely. It charges per page, whatever the page size, so set `limit` to the most results you would use (at most 100).
+Crustdata's filter search matches company and title more precisely. It charges per result you ask for, so set `limit` to the number you will actually use (at most 100).
 
-Quote the price for one page and get the customer's yes. Then use `crustdata_person_search`:
+Quote the price for that `limit` and get the customer's yes. Then use `crustdata_person_search`:
 ```
 crustdata_person_search(
   conditions: [
-    {"column": "current_employers.name", "type": "=", "value": "[company_name]"},
-    {"column": "current_employers.title", "type": "(.)", "value": "[title1]|[title2]|[title3]"}
+    {"field": "experience.employment_details.current.company_name", "type": "=", "value": "[company_name]"},
+    {"field": "experience.employment_details.current.title", "type": "(.)", "value": "[title1]|[title2]|[title3]"}
   ],
   filter_op: "and",
   limit: 25
 )
 ```
 
-`(.)` is a contains / pattern match, so one search can cover several titles joined with `|`. If that finds nothing, run one search per title instead; each is its own paid page, so quote and ask for each. Use `(.)` on the company name too if the exact name finds nothing (e.g. "EisnerAmper LLP").
+`(.)` matches every word of a value, in any order, ignoring case. Join several titles with `|` and the search matches any of them, so one search covers them all. Use `(.)` on the company name too if the exact name finds nothing (e.g. "EisnerAmper LLP").
 
 **Example for Partners and Controllers at EisnerAmper:**
 ```
 crustdata_person_search(
   conditions: [
-    {"column": "current_employers.name", "type": "=", "value": "EisnerAmper"},
-    {"column": "current_employers.title", "type": "(.)", "value": "Partner|Controller"}
+    {"field": "experience.employment_details.current.company_name", "type": "=", "value": "EisnerAmper"},
+    {"field": "experience.employment_details.current.title", "type": "(.)", "value": "Partner|Controller"}
   ],
   filter_op: "and",
   limit: 25
 )
 ```
 
-**Senior leaders broadly:** if the user wants senior decision-makers rather than specific titles, match on the title instead of a seniority field:
+**Senior leaders broadly:** if the user wants senior decision-makers rather than specific titles, filter on seniority:
 ```
-{"column": "current_employers.title", "type": "(.)", "value": "Chief|VP|Vice President|Director|Head of|Partner"}
+{"field": "experience.employment_details.current.seniority_level", "type": "in", "value": ["CXO", "Vice President", "Director"]}
+```
+or on the title:
+```
+{"field": "experience.employment_details.current.title", "type": "(.)", "value": "Chief|VP|Vice President|Director|Head of|Partner"}
 ```
 
 For a next page, pass the `cursor` from the previous response, after a new yes.
@@ -192,22 +196,26 @@ All three are on the GooseWorks coworker only, and all are paid. Each tool's des
 | Tool | Purpose | How it charges | Arguments |
 |------|---------|----------------|-----------|
 | `fiber_person_search` | Natural-language or structured people search | Per record returned | `query` (natural language), `search_params` (structured), `page_size` (1-100, default 25), `cursor` |
-| `crustdata_person_search` | Structured filter search | Per page, whatever the `limit` | `conditions` (list of `column` / `type` / `value`), `filter_op` (`and` or `or`), `limit` (1-100, default 25), `cursor` |
+| `crustdata_person_search` | Structured filter search | Per result, by `limit` | `conditions` (list of `field` / `type` / `value`), `filter_op` (`and` or `or`), `limit` (1-100, default 25), `cursor` |
 | `pdl_person_search` | Premium people search, last resort | Per record returned | `job_titles`, `company_names`, `job_title_levels`, `job_title_role`, `location_country`, `location_region`, `location_locality`, `num_results` (1-25, default 1), `query` (fallback) |
 
 Apollo people search is deprecated in GooseWorks: it hides surnames, so it cannot be used for outreach. Do not use it.
 
-### Crustdata Filter Columns
+### Crustdata Filter Fields
 
-| Column | Types | Example Values |
-|--------|-------|----------------|
-| `current_employers.name` | `=` (exact), `(.)` (contains) | `"EisnerAmper"` |
-| `current_employers.title` | `(.)` (contains / pattern), `=` (exact) | `"Partner"`, `"CFO\|Controller"` |
-| `region` | `=` | `"San Francisco"` |
-| `country` | `=` | `"United States"` |
-| `skills` | `(.)` | `"python"` |
-| `years_of_experience` | `>`, `<`, `between` (`"min,max"`) | `"8"` |
-| `headline` | `(.)` | `"fractional CFO"` |
+| Field | Types | Example Values |
+|-------|-------|----------------|
+| `experience.employment_details.current.company_name` | `=` (exact), `(.)` (all words) | `"EisnerAmper"` |
+| `experience.employment_details.current.title` | `(.)` (all words; `\|` for any of several), `=` (exact) | `"Partner"`, `"CFO\|Controller"` |
+| `experience.employment_details.current.seniority_level` | `in` | `["CXO", "Vice President", "Director"]` |
+| `basic_profile.location.city` | `=` | `"San Francisco"` |
+| `basic_profile.location.full_location` | `(.)` | `"San Francisco Bay Area"` |
+| `basic_profile.location.country` | `=` | `"United States"` |
+| `skills.professional_network_skills` | `(.)` | `"python"` |
+| `years_of_experience_raw` | `>`, `<`, `between` (`"min,max"`) | `8` |
+| `basic_profile.headline` | `(.)` | `"fractional CFO"` |
+
+The older column names (`current_employers.title`, `region`, …) still work; the tool translates them.
 
 ---
 
@@ -247,7 +255,7 @@ You are outside the GooseWorks coworker. Tell the user this contact search runs 
 
 ### No results returned
 
-- Try alternate spellings of the company name (e.g., "EisnerAmper" vs "Eisner Amper" vs "EisnerAmper LLP"), or `(.)` instead of `=` on the Crustdata company column
+- Try alternate spellings of the company name (e.g., "EisnerAmper" vs "Eisner Amper" vs "EisnerAmper LLP"), or `(.)` instead of `=` on the Crustdata company field
 - Broaden target titles (e.g., add "Managing Director" alongside "Partner")
 - Move to the next source (Steps 4-5), after the customer's yes to its price
 
@@ -255,7 +263,7 @@ You are outside the GooseWorks coworker. Tell the user this contact search runs 
 
 - Add more specific title terms rather than broad ones
 - In Crustdata, use `=` for an exact title match instead of `(.)`
-- Add a `region` or `country` condition
+- Add a city or country condition
 
 ### Duplicate contacts across sources
 
