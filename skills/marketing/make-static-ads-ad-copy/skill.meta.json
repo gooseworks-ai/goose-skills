@@ -1,0 +1,13 @@
+{
+  "slug": "make-static-ads-ad-copy",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.9.1",
+  "playbook": "make-static-ads",
+  "tags": [
+    "ads",
+    "design"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

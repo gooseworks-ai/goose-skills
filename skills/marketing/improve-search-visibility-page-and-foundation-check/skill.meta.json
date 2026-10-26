@@ -1,0 +1,12 @@
+{
+  "slug": "improve-search-visibility-page-and-foundation-check",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.2.1",
+  "playbook": "improve-search-visibility",
+  "tags": [
+    "seo"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

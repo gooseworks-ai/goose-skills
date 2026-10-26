@@ -81,14 +81,14 @@ test('storybook: sung scenes start on their first word, the intro holds to the s
   assert.ok(near(tl.ending_seconds, 28.2 - tl.scenes[13].start_s), String(tl.ending_seconds));
   // Captions: the 12 sung scenes before the end card; the end card's words are sung but not captioned.
   assert.deepEqual(tl.speech.map((s) => s.scene_id), ['s2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12', 's13']);
-  const loona = tl.speech.find((s) => s.scene_id === 's11');
-  assert.equal(loona.text, 'Loona takes me there.');
-  assert.equal(loona.spoken, 'Loo nah takes me there.');
-  assert.equal(loona.words[0].text, 'Loona');
-  const loo = p.words.written.findIndex((w) => w.text === 'Loona');
+  const lunah = tl.speech.find((s) => s.scene_id === 's11');
+  assert.equal(lunah.text, 'Lunah takes me there.');
+  assert.equal(lunah.spoken, 'Loo nah takes me there.');
+  assert.equal(lunah.words[0].text, 'Lunah');
+  const loo = p.words.written.findIndex((w) => w.text === 'Lunah');
   const [first, second] = p.words.written[loo].sent;
-  assert.equal(loona.words[0].start_s, a.sent[first].start_s);
-  assert.equal(loona.words[0].end_s, a.sent[second].end_s, 'the written brand spans both sung syllables');
+  assert.equal(lunah.words[0].start_s, a.sent[first].start_s);
+  assert.equal(lunah.words[0].end_s, a.sent[second].end_s, 'the written brand spans both sung syllables');
   assert.equal(tl.speech.find((s) => s.scene_id === 's2').spoken, undefined, 'spoken only when it differs');
   assert.equal(tl.words.length, 49);
   // The hook lands 0.1 s after the chorus starts at 15 s: inside the gate.

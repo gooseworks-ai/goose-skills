@@ -3,18 +3,28 @@
 /**
  * Build skills-index.json from SKILL.md + skill.meta.json files.
  *
- * Layout (2026-06-17 reorg): skills are organized by DOMAIN first, then by
- * abstraction level:
- *   skills/<domain>/<level>/<slug>/{SKILL.md, skill.meta.json, …}
- *   skills/<domain>/packs/<pack>/<sub-skill>/…
- * where level ∈ { capabilities, composites, playbooks } and <domain> is one of
- * the folders directly under skills/ (ads, lead-generation, research-tools, …).
+ * Layout (2026-10-23): one flat folder per skill, grouped by family:
+ *   skills/marketing/<slug>/   marketing playbooks, their steps and foundations
+ *   skills/video/<slug>/       video skills (atoms, formats, the production harness)
+ *   skills/shared/<slug>/      skills used across families: current ones and the
+ *                              older ones still needed (see retired-skills.json)
+ *   skills/entry/<slug>/       the skills `gooseworks install` puts in every agent
+ *                              (the gooseworks router, goose-ads, goose-video…)
+ * Every folder is one installable skill. A reference to another skill is
+ * `../<slug>/SKILL.md`.
  *
- * `category` in the index = the LEVEL (backend gates is_active on it).
- * `domain` in the index = the top folder (the human-browsable grouping).
+ * `category` and `domain` come from skill.meta.json (a family can supply a
+ * default domain), never from the folder, so moving a folder changes only
+ * `path` and `files` in the index. The backend gates is_active on `category`.
  */
 
 const fs = require('fs');
+
+// Every problem the builder finds is a plain Error with a message that says the fix; print just that.
+process.on('uncaughtException', (err) => {
+  console.error(`build-index: ${err.message}`);
+  process.exit(1);
+});
 const path = require('path');
 
 // ROOT defaults to the repo root, but tests can override via env var.
@@ -60,6 +70,11 @@ function parseFrontmatter(content) {
     }
     result[kvMatch[1]] = value;
   }
+  // Legacy cards use YAML block descriptions too; never publish the marker as copy.
+  const blocks = parseBlockFrontmatter(content);
+  for (const [key, value] of Object.entries(result)) {
+    if (typeof value === 'string' && /^[>|][-+]?$/.test(value)) result[key] = blocks[key];
+  }
   return result;
 }
 
@@ -96,161 +111,108 @@ function collectFiles(dir) {
   return files;
 }
 
-/** Domains = the directories directly under skills/. */
-function listDomains() {
-  const skillsRoot = path.join(ROOT, 'skills');
-  if (!fs.existsSync(skillsRoot)) return [];
-  return fs
-    .readdirSync(skillsRoot)
-    .filter((d) => fs.statSync(path.join(skillsRoot, d)).isDirectory())
-    .sort();
+// Each family's folder, and the domain its skills get when their meta names none.
+const FAMILIES = [
+  { dir: 'skills/marketing', domain: 'marketing-agent' },
+  { dir: 'skills/video', domain: 'ads' },
+  { dir: 'skills/shared', domain: null },
+  { dir: 'skills/entry', domain: 'gooseworks' },
+];
+// A skill's own tests (hand tests, fixtures, unit tests), at any depth, run in this
+// repo's CI; installs never need them.
+const BUILDER_DIRS = new Set(['tests']);
+
+/** Frontmatter with folded/literal block scalars (`description: >-`), which parseFrontmatter reads as ">-". */
+function parseBlockFrontmatter(content) {
+  const match = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) return {};
+  const lines = match[1].split('\n');
+  const result = {};
+  for (let i = 0; i < lines.length; i++) {
+    const kv = lines[i].match(/^(\w[\w-]*):\s*(.*)$/);
+    if (!kv) continue;
+    const rest = kv[2].trim();
+    if (/^[>|][-+]?$/.test(rest)) {
+      const block = [];
+      while (i + 1 < lines.length && (/^\s+/.test(lines[i + 1]) || lines[i + 1] === '')) {
+        block.push(lines[++i].trim());
+      }
+      result[kv[1]] = rest.startsWith('|')
+        ? block.join('\n').trim()
+        : block.join(' ').replace(/\s+/g, ' ').trim();
+    } else {
+      result[kv[1]] = rest.replace(/^['"]|['"]$/g, '');
+    }
+  }
+  return result;
 }
 
-/** Scan one level (capabilities|composites|playbooks) across every domain. */
-function scanCategory(category) {
-  const skills = [];
-
-  for (const domain of listDomains()) {
-    const categoryDir = path.join(ROOT, 'skills', domain, category);
-    if (!fs.existsSync(categoryDir)) continue;
-
-    const slugs = fs.readdirSync(categoryDir).filter((d) =>
-      fs.statSync(path.join(categoryDir, d)).isDirectory(),
-    );
-
-    for (const slug of slugs) {
-      const skillDir = path.join(categoryDir, slug);
-      const skillMd = path.join(skillDir, 'SKILL.md');
+/** Every published skill folder: [{ slug, dir, family, meta, frontmatter, files }]. */
+function scanFolders() {
+  const found = [];
+  const seen = new Map();
+  for (const family of FAMILIES) {
+    const root = path.join(ROOT, family.dir);
+    if (!fs.existsSync(root)) continue;
+    for (const slug of fs.readdirSync(root).sort()) {
+      const skillDir = path.join(root, slug);
+      // Dot folders hold plugin manifests (skills/entry/.claude-plugin), not skills.
+      if (slug.startsWith('.') || !fs.statSync(skillDir).isDirectory()) continue;
+      const relDir = `${family.dir}/${slug}`;
+      if (!fs.existsSync(path.join(skillDir, 'SKILL.md'))) {
+        throw new Error(`Missing SKILL.md in ${relDir}`);
+      }
       const metaPath = path.join(skillDir, 'skill.meta.json');
-
-      if (!fs.existsSync(skillMd)) continue;
-      if (!fs.existsSync(metaPath)) {
-        throw new Error(`Missing skill.meta.json for skills/${domain}/${category}/${slug}`);
+      if (!fs.existsSync(metaPath)) throw new Error(`Missing skill.meta.json for ${relDir}`);
+      if (seen.has(slug)) {
+        throw new Error(`Skill slug "${slug}" is in both ${seen.get(slug)} and ${relDir}; slugs must be unique`);
       }
-
-      const content = fs.readFileSync(skillMd, 'utf8');
-      const metaFromFrontmatter = parseFrontmatter(content);
+      seen.set(slug, relDir);
       const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-
-      const allFiles = collectFiles(skillDir).map((f) => relFromRoot(f));
-
-      skills.push({
+      found.push({
         slug,
-        name: metaFromFrontmatter.name || slug,
-        category,
-        domain,
-        description: metaFromFrontmatter.description || '',
-        tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
-        path: `skills/${domain}/${category}/${slug}`,
-        // Atom version (GV-29): recipes and styles pin it, so it is a top-level
-        // field. Only skills that declare one carry it.
-        ...(meta.version !== undefined ? { version: meta.version } : {}),
-        files: allFiles,
-        metadata: meta,
+        relDir,
+        family,
+        meta,
+        frontmatter: parseFrontmatter(fs.readFileSync(path.join(skillDir, 'SKILL.md'), 'utf8')),
+        files: collectFiles(skillDir)
+          .map((f) => relFromRoot(f))
+          .filter((f) => {
+            const rel = f.slice(relDir.length + 1);
+            return !rel.split('/').slice(0, -1).some((d) => BUILDER_DIRS.has(d));
+          }),
       });
     }
   }
-
-  return skills;
+  return found;
 }
 
-/** Scan packs across every domain (skills/<domain>/packs/<pack>). */
-function scanPacks(registrySkills) {
-  const registryBySlug = {};
-  for (const s of registrySkills) {
-    registryBySlug[s.slug] = s;
-  }
-
-  const packs = [];
-
-  for (const domain of listDomains()) {
-    const packsDir = path.join(ROOT, 'skills', domain, 'packs');
-    if (!fs.existsSync(packsDir)) continue;
-
-    const slugs = fs.readdirSync(packsDir).filter((d) =>
-      fs.statSync(path.join(packsDir, d)).isDirectory(),
-    );
-
-    for (const slug of slugs) {
-      const packDir = path.join(packsDir, slug);
-      const metaPath = path.join(packDir, 'pack.meta.json');
-
-      if (!fs.existsSync(metaPath)) continue;
-
-      const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-
-      // Build pack-local sub-skill entries
-      const subSkills = [];
-      for (const skillSlug of (meta.skills || [])) {
-        const skillDir = path.join(packDir, skillSlug);
-        const skillMd = path.join(skillDir, 'SKILL.md');
-
-        if (!fs.existsSync(skillMd)) {
-          throw new Error(`Pack "${slug}": missing SKILL.md in ${skillSlug}/`);
-        }
-
-        const content = fs.readFileSync(skillMd, 'utf8');
-        const frontmatter = parseFrontmatter(content);
-        const allFiles = collectFiles(skillDir).map((f) => relFromRoot(f));
-        const subMetaPath = path.join(skillDir, 'skill.meta.json');
-        const subMeta = fs.existsSync(subMetaPath)
-          ? JSON.parse(fs.readFileSync(subMetaPath, 'utf8'))
-          : {};
-
-        subSkills.push({
-          slug: skillSlug,
-          name: frontmatter.name || skillSlug,
-          description: frontmatter.description || '',
-          path: `skills/${domain}/packs/${slug}/${skillSlug}`,
-          ...(subMeta.version !== undefined ? { version: subMeta.version } : {}),
-          files: allFiles,
-          source: 'pack',
-        });
-      }
-
-      // Resolve registry skill references
-      for (const regSlug of (meta.registry_skills || [])) {
-        const regSkill = registryBySlug[regSlug];
-        if (!regSkill) {
-          throw new Error(`Pack "${slug}": registry_skills references unknown skill "${regSlug}"`);
-        }
-        subSkills.push({
-          slug: regSkill.slug,
-          name: regSkill.name,
-          description: regSkill.description,
-          path: regSkill.path,
-          files: regSkill.files,
-          source: 'registry',
-        });
-      }
-
-      // Collect shared files
-      const sharedFiles = (meta.shared_files || [])
-        .map((f) => `skills/${domain}/packs/${slug}/${f}`)
-        .filter((f) => fs.existsSync(path.join(ROOT, f)));
-
-      packs.push({
-        slug,
-        name: meta.name || slug,
-        type: 'pack',
-        domain,
-        description: meta.description || '',
-        tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
-        path: `skills/${domain}/packs/${slug}`,
-        shared_files: sharedFiles,
-        skills: subSkills,
-        metadata: meta,
-      });
-    }
-  }
-
-  return packs;
+/** A skill folder as a catalog entry. */
+function skillEntry(folder) {
+  const { slug, relDir, family, meta, frontmatter, files } = folder;
+  const domain = meta.domain || family.domain;
+  if (!domain) throw new Error(`${relDir}: skill.meta.json needs a "domain"`);
+  if (!meta.category) throw new Error(`${relDir}: skill.meta.json needs a "category"`);
+  return {
+    slug,
+    name: frontmatter.name || slug,
+    category: meta.category,
+    domain,
+    description: frontmatter.description || '',
+    tags: Array.isArray(meta.tags) ? meta.tags.join(', ') : '',
+    path: relDir,
+    // Atom version (GV-29): recipes and styles pin it, so it is a top-level
+    // field. Only skills that declare one carry it.
+    ...(meta.version !== undefined ? { version: meta.version } : {}),
+    files,
+    metadata: meta,
+  };
 }
 
 /**
  * Scan editorial collections from collections/<slug>/collection.meta.json.
  *
- * Collections are discovery metadata, not installable packs. Membership stays
+ * Collections are discovery metadata, not installable bundles. Membership stays
  * on each skill's metadata.collections field so there is only one source of
  * truth for which skills belong to a collection.
  */
@@ -273,7 +235,7 @@ function scanCollections(skills) {
       throw new Error(`Collection slug mismatch: directory=${slug}, metadata=${meta.slug}`);
     }
     if (meta.installable !== false) {
-      throw new Error(`Collection "${slug}" must set installable=false; collections are not packs`);
+      throw new Error(`Collection "${slug}" must set installable=false; collections are not installable`);
     }
 
     const validStages = new Set((meta.stages || []).map((stage) => stage.slug));
@@ -319,74 +281,12 @@ function scanCollections(skills) {
   return collections;
 }
 
-const registrySkills = [
-  ...scanCategory('capabilities'),
-  ...scanCategory('composites'),
-  ...scanCategory('playbooks'),
-];
-
-const packs = scanPacks(registrySkills).sort((a, b) => a.slug.localeCompare(b.slug));
-
-// Promote pack-only sub-skills (source: 'pack') into the top-level skills[]
-// so downstream consumers (DB sync, CMS push) that iterate idx.skills[] see them.
-// Registry-source sub-skills are intentionally NOT promoted here — they already
-// exist top-level via scanCategory and pack.skills[] just references them.
-const promotedFromPacks = [];
-const registrySlugs = new Set(registrySkills.map((s) => s.slug));
-const promotedSlugs = new Map(); // slug -> originating pack slug
-for (const pack of packs) {
-  for (const sub of pack.skills) {
-    if (sub.source !== 'pack') continue;
-
-    if (registrySlugs.has(sub.slug)) {
-      throw new Error(
-        `Pack "${pack.slug}": sub-skill slug "${sub.slug}" collides with a top-level registry skill`,
-      );
-    }
-
-    const existingPack = promotedSlugs.get(sub.slug);
-    if (existingPack) {
-      throw new Error(
-        `Pack-only sub-skill slug "${sub.slug}" appears in multiple packs ` +
-          `("${existingPack}" and "${pack.slug}"). ` +
-          `Sub-skill slugs must be globally unique — downstream consumers upsert by slug.`,
-      );
-    }
-    promotedSlugs.set(sub.slug, pack.slug);
-
-    promotedFromPacks.push({
-      slug: sub.slug,
-      name: sub.name,
-      ...(sub.version !== undefined ? { version: sub.version } : {}),
-      // Treat pack sub-skills as capabilities for catalog purposes.
-      // The backend's PredefinedSkillsSyncService gates is_active by category;
-      // anything outside ACTIVE_REPO_CATEGORIES gets retired immediately.
-      category: 'capabilities',
-      domain: pack.domain,
-      description: sub.description,
-      tags: Array.isArray(pack.metadata && pack.metadata.tags) ? pack.metadata.tags.join(', ') : '',
-      path: sub.path,
-      files: sub.files,
-      metadata: {
-        slug: sub.slug,
-        category: 'capabilities',
-        pack: pack.slug,
-        ...(sub.version !== undefined ? { version: sub.version } : {}),
-        tags: Array.isArray(pack.metadata && pack.metadata.tags) ? pack.metadata.tags : [],
-        // Pack sub-skills aren't installable standalone — install the parent pack.
-        installation: {
-          base_command: `npx goose-skills install ${pack.slug}`,
-          supports: ['claude', 'cursor', 'codex'],
-        },
-      },
-    });
-  }
-}
-
-const skills = [
-  ...registrySkills,
-  ...promotedFromPacks,
-].sort((a, b) => a.slug.localeCompare(b.slug));
+const skills = scanFolders()
+  .map(skillEntry)
+  .sort((a, b) => a.slug.localeCompare(b.slug));
+// Packs (install bundles) were dropped on 24 Oct 2026; every skill installs by its own slug.
+// The key stays, empty, for older goose-skills CLIs that read it.
+const packs = [];
 
 const collections = scanCollections(skills).sort((a, b) => a.slug.localeCompare(b.slug));
 const collectionSlugs = new Set(collections.map((collection) => collection.slug));
@@ -397,14 +297,6 @@ for (const skill of skills) {
         `Skill "${skill.slug}" references unknown collection "${collectionSlug}"`,
       );
     }
-  }
-}
-
-// Validate no slug collisions between packs and skills
-const skillSlugs = new Set(skills.map((s) => s.slug));
-for (const pack of packs) {
-  if (skillSlugs.has(pack.slug)) {
-    throw new Error(`Pack slug "${pack.slug}" collides with an existing skill slug`);
   }
 }
 
@@ -426,9 +318,15 @@ if (fs.existsSync(OUTPUT)) {
   } catch {}
 }
 
+const retirementFile = path.join(ROOT, 'retired-skills.json');
+const retirementManifest = fs.existsSync(retirementFile) ? JSON.parse(fs.readFileSync(retirementFile, 'utf8')) : {};
+const { validateRetirements, supersededOnDisk } = require('./lib/retirements');
+const retiredSkills = validateRetirements(retirementManifest, skills, { superseded: supersededOnDisk(ROOT, skills) });
+
 const index = {
   version: '1.4.0',
   generated: generatedDate,
+  retired_skills: retiredSkills,
   skills,
   packs,
   collections,
@@ -436,6 +334,5 @@ const index = {
 
 fs.writeFileSync(OUTPUT, JSON.stringify(index, null, 2) + '\n');
 console.log(
-  `Generated ${OUTPUT} with ${skills.length} skills, ${packs.length} packs, ` +
-    `and ${collections.length} collections.`,
+  `Generated ${OUTPUT} with ${skills.length} skills and ${collections.length} collections.`,
 );

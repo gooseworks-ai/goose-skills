@@ -1,0 +1,119 @@
+{
+  "_comment": "Fernhollow Cacao 'Dark Bar Sizzle' food-product sizzle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~14s warm-tungsten macro-tabletop 9:16 sizzle for a physical small-batch dark-chocolate bar: WORDLESS (no VO), driven by a non-diegetic acoustic-jazz bed + diegetic snap/tear SFX. Pipeline: (1) ~4 photographic macro keyframes via create-image-fal (the box hero grounds on the REAL product PNG); (2) one locked-off anti-shake create-video-fal i2v clip per keyframe (snap / flat-lay / bite / box-hero); (3) an ElevenLabs Music ~22s acoustic-jazz bed trimmed of its 2.5s sparse intro + two ffmpeg-lavfi diegetic SFX; (4) a STATIC PIL end card (real Fernhollow logo PNG + real product PNG + serif headline + CTA) + ffmpeg filter_complex concat + anti-AI grain pass + audio composite + 5 serif stat-callout pills. Master 1080x1920 h264+aac, ~14.04s (24fps). See scripts/PIPELINE.md for the pipeline steps. Creative fields — look_pack.style_descriptor, look_pack.palette_anchors, scenes[].keyframe_prompt, scenes[].motion_hint, end_card.background, music.prompt — come from the recipe's choices (setting, light, hands, music); never copy them as defaults. The warm-tungsten pantry, the baker's hands and the acoustic-jazz bed are this demo's picks, not the format.",
+  "brand_name": "Fernhollow Cacao",
+  "campaign": "Dark Bar Sizzle",
+  "title": "Roasted slow. Snapped fresh.",
+  "width": 1080,
+  "height": 1920,
+  "fps": 24,
+  "aspect_ratio": "9:16",
+  "duration_sec": 14.04,
+  "look_pack": {
+    "name": "WARM_TUNGSTEN_PANTRY",
+    "_name_note": "the demo's look pack (setting + light choices); name yours after the chosen setting + light",
+    "palette_anchors": [
+      "cream #F4EEE3 background tone",
+      "cocoa brown #3A2419 shadows",
+      "deep cacao #4A2A1C on the chocolate",
+      "soft copper glints",
+      "warm tungsten window daylight, slightly desaturated"
+    ],
+    "style_descriptor": "Tactile macro-tabletop food photography, warm tungsten pantry register, parchment + walnut board + marble slab + linen surfaces, warm window daylight raking from camera-left, slight 35mm film grain. Photographic, NOT cinematic, NOT smooth. iPhone-shot daytime kitchen feel, NOT studio polish. Sharp focus on the product. 1080x1920 vertical.",
+    "negative_tail": "NO studio polish, NO bokeh, NOT shallow DOF, NO smooth digital 3D render, NO AI-illustration look. NO invented label text, NO captions, NO brand wordmarks rendered by the model (the brand appears only on the composited end card). NO faces beyond a partial jaw / hands crop. Vertical 9:16 composition.",
+    "_note": "ONE look pack drives all 4 keyframes so the sizzle reads as one spot. Palette sampled from the brand's packaging + site (brand-research/visual-identity.md). The 'no invented label text' negative is load-bearing — the box hero grounds on the real product PNG so the label is real."
+  },
+  "keyframe_engine": {
+    "atom": "create-image-fal",
+    "aspect_ratio": "9:16",
+    "product_ref": "S04 (box hero) passes the real dark-bar-72.png (+ the second-flavor box) as media[role=image] with 'reproduce the label EXACTLY, invent no text'; S01/S02/S03 pass no product ref",
+    "_note": "The box-hero request threads the real product PNGs as media input and tells the model to reproduce the label exactly. NEVER include readable brand text in a prompt — the model garbles it into typos."
+  },
+  "clip_engine": {
+    "atom": "create-video-fal",
+    "duration_sec": 4,
+    "resolution": "720p",
+    "aspect_ratio": "9:16",
+    "submission": "sequential",
+    "anti_shake_tail": "Camera is locked off, tripod-stable. NO shake, NO wobble, NO earthquake. Slow, deliberate motion only.",
+    "_note": "Locked-off, anti-shake. Submitted SEQUENTIALLY (gen_clips_hf.sh) to avoid the burst-credit reserve gate. Per-scene durations match tStart/tEnd — S01/S02 3s, S03/S04 4s."
+  },
+  "music": {
+    "atom": "create-music-elevenlabs",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "request_length_ms": 22000,
+    "trim_intro_sec": 2.5,
+    "target_length_sec": 17.04,
+    "fade_in_sec": 0.4,
+    "fade_out_sec": 1.0,
+    "loudnorm_i": -16,
+    "prompt": "Upbeat warm acoustic jazz instrumental. Bright felt-piano melody as the lead voice with a walking upright bass and very light brushed snare. Cozy café register, small-batch artisan food-brand feel. NO vocals, NO horn solo, NO heavy drums. Mid-tempo, major key, gently swinging groove. The piano and bass should start IMMEDIATELY with a clear melodic phrase — do NOT begin with silence or a long sparse intro. Builds slightly in energy toward the end with one tasteful piano run around the 16-second mark.",
+    "force_instrumental": true,
+    "outputs": {
+      "raw": "audio/music_raw_v2.mp3",
+      "bed": "audio/music-bed-v2.mp3"
+    },
+    "_note": "gen_music_v2.py requests 22s to allow the 2.5s sparse-intro trim; build_master_v2.sh step 1 trims start=2.5, loudnorm I=-16, fade in 0.4s + fade out 1.0s, clamps -t to the FULL master length. target_length_sec MUST equal duration_sec (body, 14.04) + end_card.hold_sec (3.0) = 17.04 so the bed plays under the end card and fades on the tail — audio_mix.music_over_end_card is true, so a 14.04 bed would leave the 3s end card silent. No artist names (ElevenLabs Music ToS filter)."
+  },
+  "sfx": {
+    "engine": "ffmpeg-lavfi-anoisesrc",
+    "script": "make_sfx.sh",
+    "cues": [
+      { "name": "snap", "wav": "audio/snap.wav", "dur_ms": 120, "cue_t": 1.5, "note": "crisp white-noise crack at the bar snap (S01), highpass 900 / lowpass 5500, acompressor" },
+      { "name": "tear", "wav": "audio/tear.wav", "dur_ms": 180, "cue_t": 11.0, "note": "pink-noise pull at the box-open / hand reach (S04), highpass 350 / lowpass 4000" }
+    ],
+    "_note": "Two short diegetic hits synthesized with ffmpeg lavfi anoisesrc (make_sfx.sh) at measured cue points."
+  },
+  "scenes": [
+    { "id": "S01", "role": "MACRO_TEAR", "t_start": 0.0, "t_end": 3.0, "uses_product_ref": false, "keyframe_prompt": "Slow-motion macro: two flour-dusted hands hold a thick dark chocolate bar at a scored break line on parchment, glossy snap edge visible, a few cocoa crumbs. Warm window daylight from camera-left.", "motion_hint": "The two flour-dusted hands snap the dark chocolate bar in half along the score line; the clean glossy break edge catches the light; a few cocoa crumbs fall straight down with gravity; hands stay in frame, daylight steady from camera-left." },
+    { "id": "S02", "role": "FLAT_LAY", "t_start": 3.0, "t_end": 6.0, "uses_product_ref": false, "keyframe_prompt": "Top-down flat lay of four chocolate squares fanned on parchment next to a small pile of cacao nibs and flaky salt. Warm daylight, slight film grain.", "motion_hint": "Gentle slow 2% top-down push-in on the flat lay; a tiny breath of air lifts one parchment corner slightly; salt flakes catch the light; otherwise still life." },
+    { "id": "S03", "role": "BITE", "t_start": 6.0, "t_end": 10.0, "uses_product_ref": false, "keyframe_prompt": "Side profile, ONLY the jaw and lower lip in frame (eyes and forehead cropped OUT), a woman about to bite a chocolate square. Background defocused warm cream-brown, small gold stud earring consistent.", "motion_hint": "The woman bites cleanly into the chocolate square — a crisp snap, then a slow, satisfied chew; background stays defocused warm cream-brown; the earring stays consistent." },
+    { "id": "S04", "role": "BOX_HERO", "t_start": 10.0, "t_end": 14.04, "uses_product_ref": true, "keyframe_prompt": "Locked medium shot. The EXACT Fernhollow Cacao Dark 72 bar box (from the reference PNG) stands upright on a walnut pantry shelf with a linen cloth. A woman's hand enters from the right edge, fingers reaching to slide one wrapped bar out. A second-flavor box (from the reference) sits in soft focus behind. Reproduce the box label EXACTLY as in the reference — invent no text, no captions, no stickers.", "motion_hint": "The hand enters from the right, fingers gently grasp one wrapped bar and slide it slowly straight up out of the box; the box itself stays put; the second box stays still in soft focus behind; daylight from camera-left holds steady." }
+  ],
+  "end_card": {
+    "engine": "pil",
+    "script": "make_end_card.py",
+    "background": "#F4EEE3",
+    "brand_logo_png": "brand-assets/logo/fernhollow-logo.png",
+    "product_png": "brand-assets/products/dark-bar-72.png",
+    "logo_scale": 0.62,
+    "product_scale": 0.62,
+    "headline": "Roasted slow. Snapped fresh.",
+    "headline_font": "Times New Roman / Georgia (serif heritage)",
+    "cta": "15% off your first box  ·  fernhollowcacao.example",
+    "hold_sec": 3.0,
+    "_note": "make_end_card.py composes scene-S05.png entirely in PIL — cream #F4EEE3 bg + the real brand wordmark PNG (upper third) + the real product PNG (centered, soft shadow) + the serif headline + the CTA. NEVER AI-rendered. A promo line in the CTA is optional. Uses a middle dot ' · ' (macOS serif em-dash gap)."
+  },
+  "stat_callouts": {
+    "enabled": true,
+    "style": "serif-pill",
+    "font": "Georgia Bold / Big Caslon (serif)",
+    "_note": "The demo burns 5 serif stat-callout pills (cream or deep-cacao pill, serif type) at choreographed beats via build_master_v2.sh drawtext. % strings ('72% CACAO', '15% OFF') are written to textfiles (c1.txt / c5.txt) with expansion=none — drawtext reads a raw % as a strftime spec.",
+    "callouts": [
+      { "text": "72% CACAO · SINGLE-ORIGIN BEANS", "t_start": 0.6, "t_end": 2.4, "pill": "cream" },
+      { "text": "TWO INGREDIENTS", "t_start": 2.7, "t_end": 4.7, "pill": "deep-cacao" },
+      { "text": "NO EMULSIFIERS · NO VANILLIN", "t_start": 5.0, "t_end": 7.0, "pill": "cream" },
+      { "text": "SMALL BATCH / stone-ground 48 hours · 3 origins", "t_start": 7.5, "t_end": 9.5, "pill": "cream" },
+      { "text": "15% OFF YOUR FIRST BOX", "t_start": 13.5, "t_end": 14.04, "pill": "deep-cacao" }
+    ]
+  },
+  "grain_pass": {
+    "enabled": true,
+    "filter": "eq=contrast=1.06:saturation=0.93,hqdn3d=1.5:1.5:3:3,noise=alls=8:allf=t+u",
+    "_note": "Anti-AI-look grain applied globally in build_master_v2.sh so the sizzle doesn't read AI-smooth."
+  },
+  "audio_mix": {
+    "loudness_lufs": -16,
+    "duck_under_vo": false,
+    "music_over_end_card": true,
+    "audio_fade_out_sec": 1.0,
+    "_note": "The acoustic-jazz bed is the full audio bed — no VO to duck under. snap.wav (~1.5s) + tear.wav (~11s) mix in at their cue points. The bed plays UNDER the end card and fades out over the tail — no trailing silence."
+  },
+  "post_production": {
+    "music": { "default": "on", "note": "non-diegetic acoustic-jazz bed (no vocals), sparse intro trimmed, loudnorm + fades" },
+    "sfx": { "default": "on", "note": "diegetic snap (bar break) + tear (box-open) at measured cue points" },
+    "grain": { "default": "on", "note": "anti-AI-look grain (eq + hqdn3d + noise) applied globally" },
+    "stat_callouts": { "default": "on", "note": "5 serif stat-callout pills at beats (cacao % / ingredients / process / promo)" },
+    "end_card": { "default": "on", "note": "static PIL end card (real logo PNG + real product PNG + serif headline + CTA), music under it" }
+  }
+}

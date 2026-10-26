@@ -556,11 +556,11 @@ function useTake() {
     duration: 8,
     fps: FPS,
     scenes: [
-      { id: 'a', line: 'Graza Sizzle is made for heat.', extra: { shot: 'selfie' } },
+      { id: 'a', line: 'Northleaf Sizzle is made for heat.', extra: { shot: 'selfie' } },
       { id: 'u', line: 'This one is a squeeze bottle.', extra: { shot: 'use' } },
     ],
     speech: [
-      line('a', 'Graza Sizzle is made for heat.', [w('Graza', 0.3, 0.6), w('Sizzle', 0.6, 1.0), w('is', 1.0, 1.1), w('made', 1.1, 1.4), w('for', 1.4, 1.6), w('heat.', 1.6, 2.0)], 'Graza Sizzle is made for heat.'),
+      line('a', 'Northleaf Sizzle is made for heat.', [w('Northleaf', 0.3, 0.6), w('Sizzle', 0.6, 1.0), w('is', 1.0, 1.1), w('made', 1.1, 1.4), w('for', 1.4, 1.6), w('heat.', 1.6, 2.0)], 'Northleaf Sizzle is made for heat.'),
       line('u', 'This one is a squeeze bottle.', [w('This', 3.2, 3.3), w('one', 3.3, 3.45), w('is', 3.45, 3.55), w('a', 3.55, 3.6), w('squeeze', 3.6, 3.8), w('bottle.', 3.8, 4.0)], 'This one is a squeeze bottle.'),
       { text: '', spoken: 'And Ayan has the green sting', start_s: 4.5, end_s: 7.5, words: [w('And', 4.5, 4.7), w('Ayan', 4.8, 5.3), w('has', 5.5, 5.8), w('the', 6.0, 6.2), w('green', 6.4, 6.9), w('sting', 7.0, 7.5)] },
     ],

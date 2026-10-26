@@ -1,0 +1,12 @@
+{
+  "slug": "create-image-fal",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.4.1",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "media-proxy"
+  ]
+}

@@ -1,135 +1,118 @@
 {
-  "$comment": "DERIVED, do not hand-edit. The single source for GooseWorks skill routing is gooseworks/src/skills/routes.ts (GOOSE-3190), published as skills/routes.json in the gooseworks CLI package. This file mirrors the Brand Growth half of it so the collection, the CLI router SKILL.md, and the backend hosted-connector pointer cannot drift apart. Regenerate by copying from the source below, then run: npm run build:index && npm test",
+  "$comment": "DERIVED by scripts/build-router.js from skills/entry/gooseworks/routes.json, the single source for GooseWorks routing. Do not hand-edit.",
   "source": {
-    "repo": "gooseworks-ai/gooseworks",
-    "file": "src/skills/routes.ts",
-    "published_as": "skills/routes.json",
-    "raw_url": "https://raw.githubusercontent.com/gooseworks-ai/gooseworks/main/skills/routes.json"
+    "file": "skills/entry/gooseworks/routes.json"
   },
-  "route_table_version": 1,
-  "captured": "2026-08-31",
-  "$comment_entry_skills": "Vendored by the CLI and installed to ~/.agents/skills/ — they are NOT members of this collection, they are the entry points into it.",
+  "route_table_version": 2,
+  "$comment_entry_skills": "Installed into every agent by `gooseworks install`; they are the entry points into this collection, not members of it.",
   "entry_skills": [
     "goose-ads",
     "goose-product-photos",
-    "goose-video"
+    "goose-video",
+    "goose-video-local",
+    "gooseworks",
+    "make-custom-video"
   ],
   "brand_growth_routes": [
     {
-      "job": "Brand foundation",
+      "job": "Grow the brand, get more customers or sales, or not sure where to start",
       "skills": [
-        "brand-research"
+        "where-to-start"
       ]
     },
     {
-      "job": "Competitor ads",
+      "job": "Market size, trends, brand watch and launch positioning",
       "skills": [
-        "competitor-ad-intelligence"
+        "research-market"
       ]
     },
     {
-      "job": "Customer language and angles",
+      "job": "Competitor research, battlecards, landing-page tools and post engagers",
       "skills": [
-        "comment-mining",
-        "ad-angle-miner"
+        "research-competitors"
       ]
     },
     {
-      "job": "Competitor social content",
+      "job": "Who buys and why; prospect lists, lead enrichment and work contacts",
       "skills": [
-        "competitor-social-research"
+        "research-audience"
       ]
     },
     {
-      "job": "Audience definition",
+      "job": "Cold email and LinkedIn drafts, replies and an import file; you send",
       "skills": [
-        "audience-research"
+        "write-outreach"
       ]
     },
     {
-      "job": "Creator discovery and evaluation",
+      "job": "A campaign plan from a launch, budget or date",
       "skills": [
-        "influencer-prospecting",
-        "creator-profile-teardown"
+        "plan-campaign"
       ]
     },
     {
-      "job": "Trends and outlier posts",
+      "job": "New static image ads",
       "skills": [
-        "trend-discovery",
-        "outlier-post-finder"
+        "make-static-ads"
       ]
     },
     {
-      "job": "Social listening and product demand",
+      "job": "Launch, scale or pause paid ads",
       "skills": [
-        "social-listening-brief",
-        "product-demand-research"
+        "run-paid-campaigns"
       ]
     },
     {
-      "job": "Long-form source material (calls, podcasts, videos)",
+      "job": "What worked; performance reports",
       "skills": [
-        "transcript-intelligence"
+        "analyze-performance"
       ]
     },
     {
-      "job": "Meta performance, policy, and landing-page match",
+      "job": "Subscriber email flows and broadcast drafts; you send",
       "skills": [
-        "meta-ads-analyzer",
-        "meta-ad-policy-checker",
-        "ad-to-landing-page-auditor"
+        "email-lifecycle"
       ]
     },
     {
-      "job": "Static ads",
+      "job": "SEO audits, metrics, keyword gaps, topic clusters, page-set plans and AI visibility",
       "skills": [
-        "goose-ads",
-        "remix-graphic-ad-from-reference"
+        "improve-search-visibility"
       ]
     },
     {
-      "job": "Product photos",
+      "job": "Influencers and UGC creators",
       "skills": [
-        "goose-product-photos",
-        "product-photoshoot"
+        "work-with-creators"
       ]
     },
     {
-      "job": "Written content and repurposing",
+      "job": "Posts, articles, newsletters and one or more content briefs",
       "skills": [
-        "content-repurposing"
+        "make-content"
       ]
     },
     {
-      "job": "Graphics and animation",
+      "job": "Organic social research, posts, voices, calendar and drafts",
       "skills": [
-        "goose-graphics",
-        "animate-image"
+        "run-organic-social"
       ]
     }
   ],
   "brand_growth_skills": [
-    "ad-angle-miner",
-    "ad-to-landing-page-auditor",
-    "animate-image",
-    "audience-research",
-    "brand-research",
-    "comment-mining",
-    "competitor-ad-intelligence",
-    "competitor-social-research",
-    "content-repurposing",
-    "creator-profile-teardown",
-    "goose-graphics",
-    "influencer-prospecting",
-    "meta-ad-policy-checker",
-    "meta-ads-analyzer",
-    "outlier-post-finder",
-    "product-demand-research",
-    "product-photoshoot",
-    "remix-graphic-ad-from-reference",
-    "social-listening-brief",
-    "transcript-intelligence",
-    "trend-discovery"
+    "analyze-performance",
+    "email-lifecycle",
+    "improve-search-visibility",
+    "make-content",
+    "make-static-ads",
+    "plan-campaign",
+    "research-audience",
+    "research-competitors",
+    "research-market",
+    "run-organic-social",
+    "run-paid-campaigns",
+    "where-to-start",
+    "work-with-creators",
+    "write-outreach"
   ]
 }

@@ -1,0 +1,23 @@
+{
+  "slug": "ad-management-intake",
+  "category": "composites",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "features": [
+    "research first, then only the questions a wrong guess would make expensive",
+    "at most four questions a turn, in plain business language",
+    "states every assumption out loud before writing it down",
+    "writes the brand facts, the campaign brief and a log of what was asked vs assumed",
+    "corrections update one fact without re-interviewing"
+  ],
+  "requires_skills": [
+    "meta-ad-manager",
+    "ads-north-star-strategy",
+    "answer-ads-questions",
+    "launch-meta-ad-campaign"
+  ],
+  "example_prompt": "Help me set up Meta ads for my shop. Ask me only what you really need."
+}

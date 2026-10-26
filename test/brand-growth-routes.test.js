@@ -1,16 +1,11 @@
 /**
- * GOOSE-3190 — routing drift guard for the Brand Growth collection.
+ * Routing drift guard for the Brand Growth collection.
  *
- * Routing used to be declared in three hand-synced places:
- *   1. `gooseworks/src/skills/routes.ts` — now the SINGLE SOURCE,
- *   2. `gooseworks-app/backend/src/app-mcp-server/lib/ads-skill.ts`,
- *   3. this repo's `collections/brand-growth`.
- *
- * This repo no longer declares routing of its own: `collections/brand-growth/
- * routes.json` is a derived mirror of the source, and collection membership
- * lives in each skill's `skill.meta.json`. These tests fail when the mirror and
- * the membership name different skills — i.e. when one routing source knows
- * about a skill the others don't.
+ * GooseWorks routing has ONE source: skills/entry/gooseworks/routes.json. From
+ * it, scripts/build-router.js writes the route tables in the gooseworks router
+ * (skills/entry/gooseworks/SKILL.md) and collections/brand-growth/routes.json.
+ * Collection membership lives in each skill's skill.meta.json. These tests
+ * fail when the route table and the membership name different skills.
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -26,14 +21,13 @@ const meta = JSON.parse(
 );
 const index = JSON.parse(fs.readFileSync(path.join(repoRoot, 'skills-index.json'), 'utf8'));
 
-const SOURCE = `${routes.source.repo}/${routes.source.file}`;
-const FIX = `Update ${SOURCE} (the single source), re-run \`npm run generate:skills\` there, copy the result into collections/brand-growth/routes.json, then \`npm run build:index\` here.`;
+const SOURCE = routes.source.file;
+const FIX = `Update ${SOURCE} (the single source), then run \`node scripts/build-router.js && npm run build:index\`.`;
 
 test('the collection points at the single routing source instead of declaring its own', () => {
   assert.equal(meta.routes.$ref, './routes.json');
-  assert.equal(meta.routes.source_repo, routes.source.repo);
   assert.equal(meta.routes.source_file, routes.source.file);
-  assert.ok(routes.source.raw_url.endsWith('/skills/routes.json'));
+  assert.equal(routes.source.file, 'skills/entry/gooseworks/routes.json');
 });
 
 test('routes.json is internally consistent (skills list matches the route table)', () => {
@@ -80,14 +74,16 @@ test('routed Brand Growth skills and collection membership are the same set', ()
   );
 });
 
-test('entry skills are vendored by the CLI, not published as collection members', () => {
+test('entry skills are published from skills/entry and are not collection members', () => {
   const bySlug = new Map(index.skills.map((s) => [s.slug, s]));
   for (const slug of routes.entry_skills) {
+    const skill = bySlug.get(slug);
+    assert.ok(skill, `${slug} is an entry skill but is not in the catalog`);
+    assert.ok(skill.path.startsWith('skills/entry/'), `${slug} must live in skills/entry/`);
     assert.equal(
-      bySlug.has(slug),
+      skill.metadata?.collections?.includes('brand-growth') ?? false,
       false,
-      `${slug} is a CLI-vendored entry skill; it must not also be published here as a catalog ` +
-        `skill (that is exactly the duplicate-contract problem the single source exists to prevent).`,
+      `${slug} is an entry point into the collection, not a member of it.`,
     );
   }
 });

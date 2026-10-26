@@ -1,0 +1,26 @@
+{
+  "slug": "make-static-ads-compose",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.10.2",
+  "playbook": "make-static-ads",
+  "tags": [
+    "ads",
+    "design"
+  ],
+  "standalone": false,
+  "requires_skills": [
+    "claims-gate",
+    "honest-review",
+    "make-static-ads-ad-copy",
+    "make-static-ads-claims-extract",
+    "make-static-ads-render-review",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

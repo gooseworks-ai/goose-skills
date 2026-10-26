@@ -1,0 +1,31 @@
+{
+  "slug": "marketing-data-access",
+  "category": "capabilities",
+  "tier": "foundation",
+  "version": "0.1.2",
+  "tags": [
+    "research-tools"
+  ],
+  "requires_skills": [
+    "claims-gate",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "pillar": "all",
+  "intents": [],
+  "reads": [],
+  "writes": [],
+  "needs": {
+    "mcp": [
+      "gooseworks:data_call_provider",
+      "gooseworks:data_post_provider",
+      "gooseworks:data_price_provider",
+      "gooseworks:marketing_data_describe",
+      "gooseworks:marketing_data_lookup"
+    ]
+  }
+}

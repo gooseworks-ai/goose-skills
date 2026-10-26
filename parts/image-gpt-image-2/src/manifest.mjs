@@ -53,7 +53,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-gpt-image-2',
-  version: '1.3.0',
+  version: '1.4.0',
   kind: 'generate_image',
   title: 'Stills (GPT Image 2)',
   summary: 'Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back, a closing shot re-lit).',
@@ -131,6 +131,7 @@ export const manifest = {
         description: 'scenes mode. none (default): members with an image are still sent. cast: draw a portrait (an anchor) for every named member without an image, first, and send it with each scene that names them. first_scene: the first still is a reference for every later one. cast and first_scene need /edit.',
         enum: ['none', 'cast', 'first_scene'],
       },
+      same_look: { description: 'scenes mode (1.4.0). A scene tagged Hold N is drawn after the first scene tagged Look N and sends its still as a reference, named in the prompt, so the outfit, hair and room match. Needs /edit; not with anchor first_scene.', type: 'boolean' },
       style_refs: { description: 'The style\'s own reference pictures, sent last with every scene and anchor. Needs /edit.', type: 'array', maxItems: 4, items: file('image', PICTURE) },
       restore: {
         description: 'shots mode: put the plate\'s own pixels back wherever a frame did not change, so the surface is identical in every frame of a shot (free). Default true.',

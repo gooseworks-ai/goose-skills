@@ -32,12 +32,13 @@ test('Brand Growth has first-class, non-installable collection metadata', () => 
   );
 });
 
-test('new Brand Growth workflows are indexed in the intended stages', () => {
+test('the marketing playbooks are indexed in the intended stages', () => {
   const expected = {
-    'audience-research': 'research',
-    'creator-profile-teardown': 'analyze',
-    'content-repurposing': 'create',
-    'transcript-intelligence': 'analyze',
+    'research-market': 'research',
+    'research-audience': 'research',
+    'analyze-performance': 'analyze',
+    'make-content': 'create',
+    'write-outreach': 'create',
   };
 
   for (const [slug, stage] of Object.entries(expected)) {
@@ -62,32 +63,16 @@ test('every indexed skill dependency resolves to another indexed skill', () => {
   }
 });
 
-test('content repurposing has a terminal-free path and never requires FFmpeg', () => {
-  const content = fs.readFileSync(
-    path.join(
-      __dirname,
-      '..',
-      'skills/content/composites/content-repurposing/SKILL.md',
-    ),
-    'utf8',
-  );
-
-  assert.match(content, /Transcript or text supplied.*fully terminal-free/i);
-  assert.match(content, /Do not require FFmpeg or a local terminal/i);
-  assert.match(content, /call_data_provider/i);
-  assert.match(content, /request pasted captions or a transcript/i);
-});
-
 test('ScrapeCreators skills describe operations without assuming the CLI', () => {
   const dependencyPath = path.join(
     __dirname,
     '..',
-    'skills/social/capabilities/scrapecreators-api/SKILL.md',
+    'skills/shared/scrapecreators-api/SKILL.md',
   );
   const dependency = fs.readFileSync(dependencyPath, 'utf8');
 
   assert.match(dependency, /Runtime selection/i);
-  assert.match(dependency, /call_data_provider/i);
+  assert.match(dependency, /\bdata_call_provider\b/);
   assert.match(dependency, /GooseWorks CLI available/i);
   assert.match(dependency, /User-owned ScrapeCreators key/i);
   assert.doesNotMatch(
@@ -112,16 +97,7 @@ test('ScrapeCreators skills describe operations without assuming the CLI', () =>
     );
   }
 
-  const operationSkills = [
-    'competitor-ad-intelligence',
-    'find-twitter-influencers',
-    'gtm-enrichment-smart',
-    'instagram-scraper',
-    'linkedin-scraper',
-    'social-listening',
-    'tiktok-search',
-    'twitter-profile-lookup',
-  ];
+  const operationSkills = ['competitor-ad-intelligence'];
   for (const slug of operationSkills) {
     const skill = skillsBySlug.get(slug);
     assert.ok(skill, `${slug} should be indexed`);

@@ -1,0 +1,13 @@
+{
+  "slug": "analyze-performance-rank-and-read",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "analyze-performance",
+  "tags": [
+    "ads",
+    "monitoring"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}
