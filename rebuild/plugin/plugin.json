@@ -1,0 +1,43 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "gooseworks-next",
+  "version": "2.3.1",
+  "description": "Make on-brand ads with GooseWorks: image ads, short video ads, variations of an ad you have with new hooks to test against it, ideas for what to make next, checks that an ad is on brand, and a look at what competitors run. Every ad is made from your brand's own facts, claims and files.",
+  "author": {
+    "name": "GooseWorks",
+    "email": "goose@gooseworks.ai",
+    "url": "https://gooseworks.ai"
+  },
+  "homepage": "https://gooseworks.ai",
+  "license": "UNLICENSED",
+  "keywords": [
+    "ads",
+    "marketing",
+    "brand",
+    "video",
+    "creative",
+    "competitors",
+    "hooks",
+    "creative testing",
+    "UGC"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "GooseWorks Next",
+        "shortDescription": "Make on-brand ads",
+        "longDescription": "GooseWorks learns your brand from your website, reviews and files, then makes image ads and short video ads from what it learned. It can also make variations of an ad you already have, like 3 new hooks for your best ad or a video you uploaded, and test them against it. It only uses the claims, prices and proof you approve, shows the credit cost before anything is made, and says why it chose each angle. It can also suggest what to make next, check an ad is on brand, and show what your competitors run.",
+        "developerName": "GooseWorks",
+        "category": "Creativity",
+        "websiteURL": "https://gooseworks.ai",
+        "defaultPrompt": [
+          "Set up my brand from our website",
+          "Make three ads for our best seller",
+          "Make 3 new hooks for my best ad"
+        ],
+        "logo": "./assets/goose.png",
+        "composerIcon": "./assets/goose.png"
+      }
+    }
+  }
+}
