@@ -261,6 +261,18 @@ export function h3SceneTakePrompt(tpl, base, { id, index, beats, head, seconds, 
 }
 
 /** Whole-second takes keep the authored beat contract; H3 receives a number. */
+/**
+ * 1.5.0 takes.pad_s: one take's length fitted to its beats, in whole seconds from 4 to 15. Each spoken beat needs
+ * its words at wps plus a breath, each silent beat H3SCENE_TAKE_SILENT_S, and the take gets `pad` more; rounded up.
+ * Spare seconds are where H3 invents words or wanders off the framing, so a take is no longer than its lines need.
+ */
+export function h3SceneTakeFitSeconds(words, wps, pad, who) {
+  const need = words.reduce((a, w) => a + (w ? w / wps + H3SCENE_TAKE_BREATH_S : H3SCENE_TAKE_SILENT_S), 0) + pad;
+  const seconds = Math.max(4, Math.ceil(need - 1e-9));
+  if (seconds > 15) throw new Error(`${who}'s beats need ${need.toFixed(1)} s with its pad, more than 15 s; cut words, beats or pad_s`);
+  return seconds;
+}
+
 export function h3SceneTakeDuration(seconds) {
   if (!Number.isInteger(seconds) || seconds < 4 || seconds > 15) throw new Error(`a take lasts ${seconds} s; this part takes whole seconds from 4 to 15`);
   return seconds;
@@ -275,11 +287,11 @@ export function h3SceneTakeJobs(inputs, tpl) {
   const count = many ? spec.count ?? 1 : 1;
   if (inputs.chain && count < 2) throw new Error('chain needs at least two takes');
   const groups = many ? h3SceneTakeGroups(picked, count) : [picked];
+  const pads = spec.pad_s == null ? null : Array.isArray(spec.pad_s) ? spec.pad_s : groups.map(() => spec.pad_s);
+  if (pads && pads.length !== groups.length) throw new Error(`takes.pad_s has ${pads.length} entries for ${groups.length} takes`);
   const limit = many ? H3SCENE_TAKES_MAX_BEATS : H3SCENE_TAKE_MAX_BEATS;
-  const seconds = inputs.seconds ?? H3SCENE_TAKE_DEFAULT_SECONDS;
-  const duration = h3SceneTakeDuration(seconds);
+  if (pads && inputs.seconds != null) throw new Error('takes.pad_s fits each take to its lines; give seconds or takes.pad_s, not both');
   const wps = inputs.words_per_second ?? H3SCENE_TAKE_DEFAULT_WPS;
-  const maxWords = inputs.max_words ?? Math.floor(seconds * wps);
   const named = (key) => tpl.templates && typeof tpl.templates[key] === 'string';
   let first = null;
   let later = null;
@@ -299,7 +311,11 @@ export function h3SceneTakeJobs(inputs, tpl) {
   for (const [k, beats] of groups.entries()) {
     const id = `t${k + 1}`;
     if (beats.length > limit) throw new Error(`take ${id} has ${beats.length} scenes; a take holds at most ${limit} beats`);
-    const words = beats.reduce((a, b) => a + h3SceneTakeWords(h3SceneTakeSpokenLine(b.scene, pairs)), 0);
+    const beatWords = beats.map((b) => h3SceneTakeWords(h3SceneTakeSpokenLine(b.scene, pairs)));
+    const words = beatWords.reduce((a, w) => a + w, 0);
+    const seconds = pads ? h3SceneTakeFitSeconds(beatWords, wps, pads[k], `take ${id}`) : inputs.seconds ?? H3SCENE_TAKE_DEFAULT_SECONDS;
+    const duration = h3SceneTakeDuration(seconds);
+    const maxWords = inputs.max_words ?? Math.floor(seconds * wps);
     if (words > maxWords) throw new Error(`take ${id} has ${words} spoken words, more than ${maxWords} for ${seconds} s`);
     const job = h3SceneTakePrompt(tpl, base, { id, index: beats[0].index, beats, head: k === 0 ? first : later, seconds, wps, pairs, offScreen });
     if (!job.refs.length) throw new Error(`take ${id} has no reference image: give cast pictures, product photos or scene pictures the template's refs can use`);
