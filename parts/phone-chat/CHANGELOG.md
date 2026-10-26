@@ -1,5 +1,9 @@
 # phone-chat
 
+## 1.3.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.3.0.
+
 ## 1.3.0
 
 - The notification cascade fits the plan instead of refusing it. Each banner is as tall as its own body (up to four lines, iOS's limit), not the tallest one's; when the pile would reach the top band, the oldest banners fold into an iOS-style stack behind the newer ones as the next arrives (up to two slivers peek above, the pill rides above them), so 3 to 5 notifications of up to two lines and a success message always fit. Five two-line notifications were refused before. Every message still arrives open at the bottom with its pop.

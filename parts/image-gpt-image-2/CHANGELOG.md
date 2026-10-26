@@ -1,5 +1,9 @@
 # image-gpt-image-2
 
+## 1.4.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.4.0.
+
 ## 1.4.0
 
 - `same_look` (scenes mode): a scene tagged Hold N is drawn after the first scene tagged Look N and sends its still as a

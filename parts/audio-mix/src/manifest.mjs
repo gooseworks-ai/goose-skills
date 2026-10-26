@@ -4,7 +4,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'audio-mix',
-  version: '1.1.0',
+  version: '1.1.1',
   kind: 'mix',
   title: 'Audio mix',
   summary: 'Lays voice, a ducked music bed, timed sound effects, sounds at the cut\'s marks and a room tone under the picture in one pass, balanced and peak-limited.',

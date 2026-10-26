@@ -1,5 +1,9 @@
 # check-layer
 
+## 1.9.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.9.0.
+
 ## 1.9.0
 
 - `speech_extra_words` (GOOSE-4034): fails when the transcript has words the script does not, and says whether they repeat the script or are new. Three H3 takes of one creator review said made-up words ("It's Popiclin Xiao Fistazin") or repeated an earlier line and passed; on a local stand-in take that said "glugging" twice, `speech_matches_script` scored 0.984 and passed, because a few extra words barely move the similarity. Fillers alone (um, uh, er, ah, hmm) and Whisper's "thank you" or "thanks for watching" as the very last words heard do not count; a changed word is still `speech_matches_script`'s.

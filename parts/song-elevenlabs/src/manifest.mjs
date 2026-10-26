@@ -23,7 +23,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'song-elevenlabs',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'generate_music',
   title: 'Sung song (ElevenLabs Music)',
   summary: "Sings the plan's scene lines as one song with ElevenLabs Music (a composition plan with word timings), then times every scene's picture and caption to the sung words.",

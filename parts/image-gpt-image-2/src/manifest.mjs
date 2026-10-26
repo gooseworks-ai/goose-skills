@@ -53,7 +53,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'image-gpt-image-2',
-  version: '1.4.0',
+  version: '1.4.1',
   kind: 'generate_image',
   title: 'Stills (GPT Image 2)',
   summary: 'Photoreal stills with OpenAI GPT Image 2 on fal, one piece per image: a hand-built list, one still per plan scene, the cast portraits, or locked-camera shots (each frame an edit on its plate, plate pixels put back, a closing shot re-lit).',

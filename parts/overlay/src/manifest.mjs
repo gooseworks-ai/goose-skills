@@ -6,7 +6,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'overlay',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'compose',
   title: 'Overlay pictures',
   summary: "Lays pictures over a video at set times: a corner logo for the whole video or until the end card, or a product's real photo over each scene that names it, with an optional scale-in.",

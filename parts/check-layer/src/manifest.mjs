@@ -16,7 +16,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'check-layer',
-  version: '1.9.0',
+  version: '1.9.1',
   kind: 'check',
   layer: 'check',
   title: 'Check layer',
