@@ -156,7 +156,7 @@ export function kitTemplateFrom(tpl, where = 'template') {
 export async function kitLoadTemplate(file) {
   const path = typeof file === 'string' ? file : file && file.path;
   if (!path) throw new Error('template: no file');
-  const name = String(path).split('/').at(-1);
+  const name = String(path).split(/[\\/]/).at(-1);
   const text = await readFile(path, 'utf8');
   if (Buffer.byteLength(text) > KIT_TEMPLATE_MAX_BYTES) throw new Error(`template ${name}: over 64 KB`);
   let tpl;

@@ -18,7 +18,7 @@
 //
 //   node parts/_tools/lint.mjs     prints findings, exit 1 when there are any
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, extname, join, relative, resolve } from 'node:path';
+import { dirname, extname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { kitSchemaErrors } from '../_lib/schema.mjs';
@@ -293,7 +293,8 @@ export function lintParts(partsRoot = PARTS) {
     if (manifest.id !== folder.id) add(partJson, 'manifest', `id ${manifest.id} is not its folder ${folder.id}`);
     if (manifest.version !== folder.version) add(partJson, 'manifest', `version ${manifest.version} is not its folder ${folder.version}`);
 
-    const present = walk(folder.dir).map((p) => relative(folder.dir, p) + (p.endsWith('/') ? '/' : ''));
+    // '/' separators, as part.json lists them (path.relative gives backslashes on Windows)
+    const present = walk(folder.dir).map((p) => relative(folder.dir, p).split(sep).join('/') + (p.endsWith('/') ? '/' : ''));
     const listed = new Set(manifest.files || []);
     let total = 0;
     for (const rel of present) {

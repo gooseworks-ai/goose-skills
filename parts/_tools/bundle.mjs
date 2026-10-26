@@ -12,7 +12,7 @@
 // `export default` or export lists. Top-level names must be unique across the
 // inlined modules (the bundle fails to load otherwise, and the tests import it).
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const PARTS = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -53,7 +53,8 @@ export function bundlePart(entry) {
   function visit(file, isEntry) {
     if (seen.has(file)) return;
     seen.add(file);
-    const where = relative(PARTS, file);
+    // posix separators, so a bundle built on Windows is byte-identical to one built on Linux
+    const where = relative(PARTS, file).split(sep).join('/');
     const lines = readFileSync(file, 'utf8').split('\n');
     const body = [];
     for (const line of lines) {
