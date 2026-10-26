@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-25",
+  "generated": "2026-10-26",
   "retired_skills": [
     {
       "slug": "battlecard-generator",
@@ -1767,7 +1767,7 @@
       "description": "Find decision-makers at a specific company using Fiber, Crustdata and PDL people search inside the GooseWorks coworker. Given a company name and target titles, returns a list of contacts with name, title, LinkedIn URL, and location.",
       "tags": "lead-generation",
       "path": "skills/shared/company-contact-finder",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/shared/company-contact-finder/SKILL.md",
         "skills/shared/company-contact-finder/skill.meta.json"
@@ -1775,7 +1775,7 @@
       "metadata": {
         "slug": "company-contact-finder",
         "category": "capabilities",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "lead-generation"
         ],
