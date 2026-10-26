@@ -11,16 +11,16 @@ const ffmpeg = await hasFfmpeg();
 const skip = !ffmpeg && 'ffmpeg is not installed';
 const status = (out) => Object.fromEntries(out.verdict.checks.map((c) => [c.code, c.status]));
 
-const GRAZA_SCRIPT = ["Okay, this is the oil I cook with now.", "It's a squeeze bottle, so no more glugging.", "Extra virgin, but made for high heat. I'm not going back."];
+const NORTHLEAF_SCRIPT = ["Okay, this is the oil I cook with now.", "It's a squeeze bottle, so no more glugging.", "Extra virgin, but made for high heat. I'm not going back."];
 const extra = (script, heard) => {
   const s = script.join(' ');
   return chkExtraWords(speechReview(s, heard, {}), speechTokenize(s), speechTokenize(heard));
 };
 
-test('speech_extra_words: the Graza take said "glugging" twice and passed the similarity bar at 0.984', () => {
+test('speech_extra_words: the Northleaf take said "glugging" twice and passed the similarity bar at 0.984', () => {
   const heard = "Okay, this is the oil I cook with now. It's a squeeze bottle, so no more glugging, glugging, extra virgin, but made for high heat. I'm not going back.";
-  assert.equal(speechReview(GRAZA_SCRIPT.join(' '), heard, {}).passed, true, 'the bar alone lets it through');
-  assert.deepEqual(extra(GRAZA_SCRIPT, heard), { words: ['glugging'], text: 'glugging', repeat: true });
+  assert.equal(speechReview(NORTHLEAF_SCRIPT.join(' '), heard, {}).passed, true, 'the bar alone lets it through');
+  assert.deepEqual(extra(NORTHLEAF_SCRIPT, heard), { words: ['glugging'], text: 'glugging', repeat: true });
 });
 
 test('speech_extra_words: made-up words and a repeated line fail; the script as written passes', () => {
@@ -59,8 +59,8 @@ function levels(seconds, spans, gapDb = -60) {
 }
 const WORDS = [{ start_s: 0.5, end_s: 2.5 }, { start_s: 3.5, end_s: 6 }];
 
-test('no_unscripted_speech: a voice between the lines fails; the measured Graza gap had 6 windows over the bar', () => {
-  // The Graza stand-in: the second "glugging" peaked 6 to 11 dB over the voice's median in the gap.
+test('no_unscripted_speech: a voice between the lines fails; the measured Northleaf gap had 6 windows over the bar', () => {
+  // The Northleaf stand-in: the second "glugging" peaked 6 to 11 dB over the voice's median in the gap.
   const babble = chkUnscriptedVoice(levels(7, [[0.5, 2.5, -20], [3.5, 6, -20], [2.85, 3.15, -12]]), CHK_GAP_WINDOW_S, WORDS, 7);
   assert.equal(babble.voice_db, -20);
   assert.deepEqual(babble.loud, [{ start_s: 2.65, end_s: 3.35, loud_windows: 6 }]);
@@ -69,7 +69,7 @@ test('no_unscripted_speech: a voice between the lines fails; the measured Graza 
 });
 
 test('no_unscripted_speech controls: a music bed near the voice level, one click, the end card and a word edge pass', () => {
-  // Three real beds under the Graza take, after audio-mix and the sound layer, reached +0.3 dB over the voice.
+  // Three real beds under the Northleaf take, after audio-mix and the sound layer, reached +0.3 dB over the voice.
   const bed = chkUnscriptedVoice(levels(7, [[0.5, 2.5, -20], [3.5, 6, -20]], -19.7), CHK_GAP_WINDOW_S, WORDS, 7);
   assert.deepEqual(bed.loud, [], 'a bed at the voice level is not a voice');
   // One clean H3 take (Arcads g1-seed61601) had a single 50 ms spike 16.7 dB over the voice in a gap.
@@ -87,7 +87,7 @@ test('no_unscripted_speech on a real cut: a voice-band burst between the lines f
   const w = ctx.workDir;
   const pic = join(w, 'pic.mp4');
   await makeVideo(pic, 7, { width: 720, height: 1280, tone: 0 });
-  // The lines hold a steady tone; the burst is 10 dB over it, as the Graza take's babble peaked 6 to 11 dB
+  // The lines hold a steady tone; the burst is 10 dB over it, as the Northleaf take's babble peaked 6 to 11 dB
   // over its speech's median (a steady tone has no peaks over its own median, real speech does).
   const lines = [[0.5, 2.5], [3.5, 6]];
   const cut = async (name, burst) => {
