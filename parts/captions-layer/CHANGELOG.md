@@ -1,5 +1,11 @@
 # captions-layer
 
+## 1.6.0
+
+- A new shot never opens on the last shot's caption: when the next caption's first word is at most 0.25 s after a final cut, the caption held over that cut (its words all said before it) stops on the cut and the next caption starts on it. Assemble cuts on the frame at or before a line's first word, so the next caption used to come up one frame after the cut. A caption whose words run across a cut, or a hold before a longer pause, is drawn as in 1.5.0.
+- When a scene's captions meet a keep-clear box at the look's height, at 0.80 and at 0.30, the middle heights 0.45 and then 0.62 are tried before the least overlap. A label low in the frame and a face high in it leave only the middle clear.
+- The linked `assembly_timeline` passes through as in 1.5.0. A minor version: it reaches new quotes through layers.json.
+
 ## 1.5.0
 
 - Declares `timeline.assembly_timeline` (input and output) and passes it through unchanged. Captions, transcription requests and looks are as in 1.4.0. A minor version: it reaches new quotes through layers.json.

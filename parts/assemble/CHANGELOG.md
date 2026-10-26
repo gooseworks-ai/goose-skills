@@ -1,5 +1,9 @@
 # assemble
 
+## 1.3.0
+
+- `clips[].keep_clear`: where the product is in a still, as shares of the picture. Each box is moved onto the cut the way `fit` places the still and grown to cover the Ken Burns push, then returned in `timeline.keep_clear` for that clip's span, so captions-layer 1.4.0 and later keep the captions off the label. Without it the cut and timeline are 1.2.0's.
+
 ## 1.2.0
 
 - Shot recipes per scene tag: `shots` (still, clip, video, montage, freeze; seconds, fill, zoom, speed limits, `skip_first`), drawn from `sources` and matched to `scenes` and `products`. `clips` is no longer required.
