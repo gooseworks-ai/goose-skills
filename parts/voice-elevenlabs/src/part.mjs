@@ -1,4 +1,8 @@
-// voice-elevenlabs 1.3.0: Eleven v4 is the default model. Every line reports its
+// voice-elevenlabs 1.4.0: an optional lead_s puts that much silence before the first
+// line and moves every speech, word and scene timing later by the same amount, so a
+// picture can open clean before the voice starts and the captions still sit on it.
+// lead_s 0 or absent is 1.3.0 exactly.
+// 1.3.0: Eleven v4 is the default model. Every line reports its
 // measured words per second from the provider (or reviewed) timestamps, and an
 // optional pace.target_wps speeds a narration that reads more than 10 % below the
 // target, by at most 1.25x, before any lip-sync step. That tempo is applied only to
@@ -28,6 +32,28 @@ const DEFAULT_MAX_TEMPO = 1.25;
 const TARGET_SLACK = 0.1;
 const TARGET_MAX_TEMPO = 1.25;
 const DEFAULT_MODEL = V4;
+// lead_s: the most silence put before the first line, and the track's sample rate it is counted in.
+const LEAD_MAX = 2;
+const LEAD_RATE = 48000;
+
+/** The lead-in in seconds (0 when absent); refuses one outside 0 to 2 s before anything is ordered. */
+function leadSeconds(inputs, ctx) {
+  const lead = inputs.lead_s ?? 0;
+  if (typeof lead !== 'number' || !Number.isFinite(lead) || lead < 0 || lead > LEAD_MAX) {
+    throw ctx.error('bad_input', `lead_s must be a number of seconds from 0 to ${LEAD_MAX}`);
+  }
+  return lead;
+}
+
+/** The filter that puts `lead` seconds of silence before a track, counted in whole samples so it is exact. */
+function leadFilter(lead) {
+  return `adelay=delays=${Math.round(lead * LEAD_RATE)}S:all=1`;
+}
+
+/** A time moved later by the lead, kept to the millisecond like every other timing here. */
+function leadLater(t, lead) {
+  return +(t + lead).toFixed(3);
+}
 
 /** The request's model_id, always one of the listed model constants (the input schema allows only these). */
 function modelBody(model) {
@@ -371,6 +397,8 @@ function rateOf(heard, tempo = 1) {
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);
   const gap = inputs.gap_s ?? 0.08;
+  // Silence before the first line; every timing returned moves later by it. 0 leaves 1.3.0's read as it was.
+  const lead = leadSeconds(inputs, ctx);
   const model = inputs.model ?? DEFAULT_MODEL;
   const joinMode = inputs.join ?? 'sentence';
   // Eleven v4 and v4 Turbo are generally available: no model_support gate (an old
@@ -445,7 +473,10 @@ export async function run(inputs, ctx) {
       );
       at += s.seconds + hold;
     });
-    const graph = `${chains.join(';')};${spoken.map((_, i) => `[l${i}]`).join('')}concat=n=${spoken.length}:v=0:a=1[out]`;
+    let graph = `${chains.join(';')};${spoken.map((_, i) => `[l${i}]`).join('')}concat=n=${spoken.length}:v=0:a=1`;
+    // The pending preview gets the same lead-in as the timed read will, so it runs as long.
+    graph += lead > 0 ? `[cat];[cat]${leadFilter(lead)}[out]` : '[out]';
+    at += lead;
     await kitFfmpeg(ctx, [...args, '-filter_complex', graph, '-map', '[out]', ...ctx.tools.encodeArgs('aac'), join(ctx.workDir, 'voice-pending.m4a')]);
     const preview = await ctx.file('voice-pending.m4a', 'audio');
     if (inputs.max_seconds !== undefined && at > inputs.max_seconds) {
@@ -457,7 +488,7 @@ export async function run(inputs, ctx) {
       content_review_status: 'pending', timing_status: 'requires_reviewed_alignment',
       source_files: spoken.map((source) => source.file),
       sources: spoken.map((source) => ({ piece: source.piece, audio: source.file, timing_method: source.timing_method, scene_ids: source.call.lines.map((line) => line.id), spoken_text: source.call.lines.map((line) => voiceWithoutTags(line.sayAs.spoken).text).join(' ') })),
-      provenance: { speech_mode: 'narration', model, voice_ids: [...new Set(lines.map((line) => line.voiceId))], content_review: 'pending', timing_is_content_review: false, tempo: 1, tempo_applied_before_lipsync: true, pending_reason: 'tagged_read_needs_reviewed_alignment' },
+      provenance: { speech_mode: 'narration', model, voice_ids: [...new Set(lines.map((line) => line.voiceId))], content_review: 'pending', timing_is_content_review: false, tempo: 1, tempo_applied_before_lipsync: true, pending_reason: 'tagged_read_needs_reviewed_alignment', ...(lead > 0 ? { lead_s: lead } : {}) },
     });
   }
 
@@ -521,7 +552,8 @@ export async function run(inputs, ctx) {
     sc.start_s = scale(sc.start_s);
     sc.end_s = scale(sc.end_s);
   }
-  const total = at / tempo;
+  // The track runs the lead-in plus the paced read.
+  const total = at / tempo + lead;
   const wps = words ? +(words / (speakingSeconds(speech) || 1)).toFixed(2) : 0;
   // The band is checked on the exact paced rate (every span divided by tempo), not the rounded report, so a
   // tempo fitted to the band is never refused for a rounding step after the voice was paid for.
@@ -546,18 +578,35 @@ export async function run(inputs, ctx) {
     if (tempo === 1 && files[i]) return;
     cuts.push({ i, name: `voice-line-${i + 1}.wav`, start: e.start_s, end: Math.max(e.end_s, e.start_s + 0.01) });
   });
+  // The lead-in: every timing moves later by it. The line files above are cut from the read before the
+  // lead, so each one still holds just its line. The first scene keeps starting at 0, so the scenes
+  // still tile the whole track and a picture step covers the lead-in with its first shot.
+  if (lead > 0) {
+    for (const e of speech) {
+      e.start_s = leadLater(e.start_s, lead);
+      e.end_s = leadLater(e.end_s, lead);
+      e.words = e.words.map((w) => ({ ...w, start_s: leadLater(w.start_s, lead), end_s: leadLater(w.end_s, lead) }));
+    }
+    for (const sc of scenes) {
+      sc.start_s = sc === scenes[0] ? 0 : leadLater(sc.start_s, lead);
+      sc.end_s = leadLater(sc.end_s, lead);
+    }
+  }
+  // The joined track goes to [out], through the lead-in when there is one.
+  const trackLabel = lead > 0 ? '[pre]' : '[out]';
   let graph = `${chains.join(';')};${spoken.map((_, i) => `[l${i}]`).join('')}concat=n=${spoken.length}:v=0:a=1`;
   graph += tempo === 1 ? '[read]' : `[joined];[joined]atempo=${kitNum(tempo)}[read]`;
   const maps = [];
   if (cuts.length) {
-    graph += `;[read]asplit=${cuts.length + 1}[out]${cuts.map((_, k) => `[c${k}]`).join('')}`;
+    graph += `;[read]asplit=${cuts.length + 1}${trackLabel}${cuts.map((_, k) => `[c${k}]`).join('')}`;
     cuts.forEach((c, k) => {
       graph += `;[c${k}]atrim=start=${kitNum(c.start)}:end=${kitNum(c.end)},asetpts=PTS-STARTPTS[o${k}]`;
       maps.push('-map', `[o${k}]`, '-c:a', 'pcm_s16le', '-ar', '48000', join(ctx.workDir, c.name));
     });
   } else {
-    graph = graph.replace(/\[read\]$/u, '[out]');
+    graph = graph.replace(/\[read\]$/u, trackLabel);
   }
+  if (lead > 0) graph += `;[pre]${leadFilter(lead)}[out]`;
   await kitFfmpeg(ctx, [...args, '-filter_complex', graph, '-map', '[out]', ...ctx.tools.encodeArgs('aac'), join(ctx.workDir, 'voice.m4a'), ...maps]);
   const audio = await ctx.file('voice.m4a', 'audio');
   for (const c of cuts) files[c.i] = await ctx.file(c.name, 'audio');
@@ -574,6 +623,6 @@ export async function run(inputs, ctx) {
     content_review_status: 'pending', timing_status: 'provider_or_reviewed_alignment',
     source_files: spoken.map((source) => source.file),
     sources: spoken.map((source) => ({ piece: source.piece, audio: source.file, timing_method: source.timing_method, scene_ids: source.call.lines.map((line) => line.id), spoken_text: source.call.lines.map((line) => voiceWithoutTags(line.sayAs.spoken).text).join(' ') })),
-    provenance: { speech_mode: 'narration', model, voice_ids: [...new Set(lines.map((line) => line.voiceId))], content_review: 'pending', timing_is_content_review: false, tempo, tempo_applied_before_lipsync: true, tempo_scope: 'new_narration_only', target_wps: inputs.pace?.target_wps ?? null },
+    provenance: { speech_mode: 'narration', model, voice_ids: [...new Set(lines.map((line) => line.voiceId))], content_review: 'pending', timing_is_content_review: false, tempo, tempo_applied_before_lipsync: true, tempo_scope: 'new_narration_only', target_wps: inputs.pace?.target_wps ?? null, ...(lead > 0 ? { lead_s: lead } : {}) },
   });
 }
