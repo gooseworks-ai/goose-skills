@@ -20,7 +20,7 @@ test('the use is the last scene with a use tag; placeholders fill, and one left 
   const scenes = [{ id: 'a', extra: { shot: 'Use' } }, { id: 'b', picture: 'Selfie: smiles' }, { id: 'c', picture: 'USE: opens it' }];
   assert.equal(tfUseScene(scenes, ['use']).id, 'c');
   assert.equal(tfUseScene(scenes, ['hands']), null);
-  assert.equal(tfFill('{name} holds {product.name}. {before} Then: {after}.', { name: 'Maya', 'product.name': 'Graza', before: '', after: 'open' }), 'Maya holds Graza. Then: open.');
+  assert.equal(tfFill('{name} holds {product.name}. {before} Then: {after}.', { name: 'Maya', 'product.name': 'Northleaf', before: '', after: 'open' }), 'Maya holds Northleaf. Then: open.');
   assert.throws(() => tfFill('{look} in {room}', { look: 'x' }), /does not fill: \{room\}/);
 });
 
@@ -42,7 +42,7 @@ test('draws the first frame from the cast picture and product photo, then the la
   assert.equal(last.image_urls[0].path, out.first_frame.path, 'the last frame is an edit of the first');
   assert.deepEqual(last.image_urls[1], inputs.products[0].images[0], 'with the product photo again');
   assert.match(first.prompt, /a deep red knit sweater/);
-  assert.match(first.prompt, /Graza Sizzle bottle/);
+  assert.match(first.prompt, /Northleaf Sizzle bottle/);
   assert.match(first.prompt, /bottom edge is no lower than the chin/);
   assert.match(first.prompt, /The lime green flip cap is closed\. The lips/);
   assert.match(last.prompt, /Only one change: the lime green flip cap is flipped open, the nozzle showing\. The product/);
@@ -57,7 +57,7 @@ test('a template replaces both prompts', { skip }, async () => {
   writeFileSync(tpl, JSON.stringify({ first: '{name} holds {product.name} high.', last: 'Same photo; {after}.' }));
   const { ctx, orders } = makeCtx({ partDir: dir, workDir: join(w, 'step'), line: pngLine });
   await mod.run(await inputsFor(w, { template: await fileRef(tpl, 'json') }), ctx);
-  assert.equal(orders[0].body.prompt, 'Maya holds Graza Sizzle bottle high.');
+  assert.equal(orders[0].body.prompt, 'Maya holds Northleaf Sizzle bottle high.');
   assert.equal(orders[1].body.prompt, 'Same photo; the lime green flip cap is flipped open, the nozzle showing.');
 });
 
