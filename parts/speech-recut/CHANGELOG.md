@@ -1,5 +1,13 @@
 # speech-recut
 
+## 1.1.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.1.0.
+
+## 1.1.0
+
+- `mute_tags` and `mute_hold_s`: speech in no line that starts inside a scene with a listed tag (the use) is silenced instead of cut, with the picture kept from the last line word before it for up to `mute_hold_s` (default 1.5 s); then the take ends, or the rest of the silence is cut down to `max_gap_s`. New output `mutes` (edit time). In a paid GOOSE-4034 review take the creator said made-up words while flipping the cap open, and 1.0.2 cut the flip with them; the same edit made by hand with the words muted kept the flip and passed every check. Without `mute_tags` the plan and render are 1.0.3's. Built on 1.0.3, so it keeps the room-tone ceiling (`room_tone.max_level_db`).
+
 ## 1.0.3
 
 - The room-tone bed is skipped, with a warning, when the quietest speech-free window is louder than `room_tone.max_level_db` (default -35 dB mean). Such a window is speech the transcript never timed: in the Cryo Cure UGC run (2026-10-17) the bed was cut from a -21 dB stretch that held a voice, and it looped that voice under the whole edit ("background voice"). Real room tone in H3 takes measured -64 to -68 dB.

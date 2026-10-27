@@ -18,7 +18,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'read-labels',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'check',
   title: 'Read the product label in a cut',
   summary: "Reads the large words on the product in frames of a cut against the real product photo, with a vision model, and stops the run when one is misspelled or the label is mirrored, so a garbled label is never called ready.",

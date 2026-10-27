@@ -4,10 +4,10 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'speech-recut',
-  version: '1.0.3',
+  version: '1.1.1',
   kind: 'compose',
   title: 'Re-cut on-camera speech',
-  summary: 'Re-cuts one take of on-camera speech: dead air cut on its own picture cuts, repeats dropped inside a line and speech that is in no line dropped, a minimum shot, 30 fps; optional room tone from its quietest window and a light street grade.',
+  summary: 'Re-cuts one take of on-camera speech: dead air cut on its own picture cuts, repeats and speech in no line dropped (muted with the picture kept in mute_tags scenes), a minimum shot, 30 fps; optional room tone and a light street grade.',
   runtime: 'node',
   entry: 'part.mjs',
   files: ['README.md', 'part.mjs'],
@@ -53,6 +53,8 @@ export const manifest = {
       },
       min_shot_s: { description: 'The shortest shot. A shorter one with no speech is dropped; one that holds speech takes back dead air beside it, else its picture is covered by the shot before or after it. Default 0.4.', type: 'number', minimum: 0.1, maximum: 2 },
       max_gap_s: { description: 'Silences longer than this are cut down to it, on a picture cut where one falls in the silence. Default 0.25.', type: 'number', minimum: 0.12, maximum: 2 },
+      mute_tags: { description: '1.1.0: scene tags (extra.shot or a leading "Tag:", compared without case or spacing) whose made-up speech is muted, not cut: speech in no line that starts inside such a scene is silenced, and its picture is kept from the last line word before it for up to mute_hold_s, then cut. For the use (a cap opened, a pack torn), where the picture is the point.', type: 'array', maxItems: 20, uniqueItems: true, items: { type: 'string', minLength: 1, maxLength: 40 } },
+      mute_hold_s: { description: '1.1.0: how long the picture is held after a line in a mute_tags scene. Default 1.5.', type: 'number', minimum: 0.2, maximum: 5 },
       drop: { description: "repeats (default): drop repeated words and stutters inside a line, and heard speech that is in no line (transcribe-whisper 1.1.2's entries with no scene_id and no text: a repeated line, a filler), never a line of the plan. none: cut only dead air.", enum: ['repeats', 'none'] },
       room_tone: {
         description: "Loop the take's quietest speech-free window (0.4 to 1 s, measured on the original take) under the whole edit, so the background does not step at the joins. gain_db is the bed's level against that window (default -6). A window whose mean level is over max_level_db (default -35) is speech the transcript missed, so no bed is laid and a warning is logged. Null or left out for none. The key is `source`, not `from`: a style reads any object with a `from` key as a reference.",
@@ -68,11 +70,16 @@ export const manifest = {
   outputs: {
     type: 'object',
     additionalProperties: false,
-    required: ['video', 'seconds', 'timeline', 'cuts'],
+    required: ['video', 'seconds', 'timeline', 'cuts', 'mutes'],
     properties: {
       video: file('video'),
       seconds: { type: 'number', exclusiveMinimum: 0 },
       timeline,
+      mutes: {
+        description: '1.1.0: stretches of the output whose sound is silenced (made-up speech in a mute_tags scene), in seconds. Empty without mute_tags.',
+        type: 'array',
+        items: { type: 'object', additionalProperties: false, required: ['start_s', 'end_s'], properties: { start_s: { type: 'number', minimum: 0 }, end_s: { type: 'number', minimum: 0 } } },
+      },
       cuts: {
         description: 'Each removed stretch: where the join lands in the output, how much was removed and why.',
         type: 'array',

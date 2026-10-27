@@ -1,5 +1,9 @@
 # unmirror-take
 
+## 1.0.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.0.0.
+
 ## 1.0.0
 
 - New (GOOSE-4034). Sends the real product photo and four frames of a selfie take to a vision model (fal

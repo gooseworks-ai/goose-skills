@@ -1,0 +1,587 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "overlay",
+  "version": "1.0.1",
+  "kind": "compose",
+  "title": "Overlay pictures",
+  "summary": "Lays pictures over a video at set times: a corner logo for the whole video or until the end card, or a product's real photo over each scene that names it, with an optional scale-in.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "filters": [
+        "fps",
+        "format",
+        "split",
+        "scale",
+        "fade",
+        "colorchannelmixer",
+        "overlay"
+      ],
+      "encoders": [
+        "libx264"
+      ]
+    },
+    "network": false,
+    "models": [],
+    "disk_mb": 500
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "timeline",
+      "items"
+    ],
+    "properties": {
+      "video": {
+        "description": "The cut to draw on. Its sound is copied unchanged.",
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "timeline": {
+        "description": "The cut's timeline: scene windows come from its scenes by id, and until end_card stops at its end_card. Passed through unchanged.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "scenes": {
+        "description": "plan.scenes, for items with scenes naming_product. A scene names a product when its picture text does (its id, its name, or two of its name's words; the phone-chat rule), or when it is tagged Product (\"Product: ...\" or extra.shot product) and the plan has one product.",
+        "type": "array",
+        "maxItems": 60,
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "integer",
+                "null"
+              ]
+            },
+            "line": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            },
+            "on_screen": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            },
+            "picture": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                {
+                  "type": "object",
+                  "x-kit-file": {
+                    "media": "image"
+                  }
+                }
+              ]
+            },
+            "extra": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "products": {
+        "description": "plan.products. image product_of_scene shows the named product's first photo.",
+        "type": "array",
+        "maxItems": 12,
+        "items": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            },
+            "images": {
+              "type": "array",
+              "maxItems": 20,
+              "items": {
+                "type": "object",
+                "x-kit-file": {
+                  "media": "image"
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {
+        "description": "What to draw, bottom first.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 8,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "image": {
+              "description": "A picture file (PNG, JPEG or WebP; PNG transparency is kept), or \"product_of_scene\": the first photo of the product each window's scene names. An item with no picture (a brand.logo binding for a brand with no logo) is skipped with a warning.",
+              "anyOf": [
+                {
+                  "const": "product_of_scene"
+                },
+                {
+                  "type": "object",
+                  "x-kit-file": {
+                    "media": "image"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "corner": {
+              "description": "Where the picture sits. Default center.",
+              "enum": [
+                "top_left",
+                "top_right",
+                "bottom_left",
+                "bottom_right",
+                "center"
+              ]
+            },
+            "width_px": {
+              "description": "Width at a 1080-pixel short side (scaled to the video). Default 60% of the width in the centre (no taller than half the height), 15% in a corner. Never larger than the video less its margins.",
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 4096
+            },
+            "margin_px": {
+              "description": "Distance from the corner's edges at a 1080-pixel short side. Default 40.",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "opacity": {
+              "description": "Default 1.",
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 1
+            },
+            "from_s": {
+              "description": "When the picture appears. Default 0. Not with scenes.",
+              "type": "number",
+              "minimum": 0
+            },
+            "to_s": {
+              "description": "When it goes. Default: until. Not with scenes.",
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "scenes": {
+              "description": "naming_product: one window per scene that names a product, timed by the timeline. Touching windows of one picture merge.",
+              "enum": [
+                "naming_product"
+              ]
+            },
+            "until": {
+              "description": "end (default) or end_card: no window runs into the timeline's end card (a video with no end card runs to its end).",
+              "enum": [
+                "end",
+                "end_card"
+              ]
+            },
+            "scale_in_s": {
+              "description": "Grow from 85% to full size, fading in, over this many seconds at the start of each window. Default 0 (no animation).",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "timeline"
+    ],
+    "properties": {
+      "video": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "free"
+  },
+  "determinism": "pure",
+  "timing": {
+    "typical_s": 30,
+    "timeout_s": 1200
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": []
+}

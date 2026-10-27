@@ -1,5 +1,9 @@
 # voice-elevenlabs
 
+## 1.4.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.4.0.
+
 ## 1.4.0
 
 - New `lead_s` (0 to 2 s, default 0): that much silence before the first line, with every speech, word and scene timing and `seconds` moved later by it. The first scene still starts at 0, so the scenes tile the track. html-frames and captions-layer take their timings from `speech`, so they stay in sync with no change.

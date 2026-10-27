@@ -1,5 +1,9 @@
 # video-seedance-2
 
+## 1.3.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.3.0.
+
 ## 1.3.0
 
 - The default resolution is now 720p (1.2.0: 1080p). Custom videos run no video above 720p/768p unless the customer asks (16 Oct 2026); send `resolution: 1080p` explicitly then. Seedance stays for shots with no face: it refuses photoreal faces.

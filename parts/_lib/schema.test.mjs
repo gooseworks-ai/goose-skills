@@ -20,3 +20,14 @@ test('a FileRef property is checked as a file, with its media', () => {
   assert.equal(kitSchemaErrors(fileSchema, { audio: { ...ref, media: 'video' } }).length, 1);
   assert.equal(kitSchemaErrors(fileSchema, { audio: { ...ref, path: 'relative.mp3' } }).length, 1);
 });
+
+test('a FileRef path is absolute on Windows too, and still never relative', () => {
+  const fileSchema = { type: 'object', additionalProperties: false, properties: { audio: { type: 'object', 'x-kit-file': { media: 'audio' } } } };
+  const ref = { kind: 'file', path: '/a.mp3', sha256: 'a'.repeat(64), bytes: 1, media: 'audio', mime: 'audio/mpeg' };
+  for (const path of ['/run/a.mp3', 'C:\\run\\a.mp3', 'c:/run/a.mp3']) {
+    assert.deepEqual(kitSchemaErrors(fileSchema, { audio: { ...ref, path } }), [], path);
+  }
+  for (const path of ['a.mp3', './a.mp3', 'C:a.mp3', '']) {
+    assert.deepEqual(kitSchemaErrors(fileSchema, { audio: { ...ref, path } }), ['$.audio.path: expected an absolute path'], path);
+  }
+});

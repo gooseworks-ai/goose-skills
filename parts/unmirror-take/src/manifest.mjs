@@ -16,7 +16,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'unmirror-take',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'compose',
   title: 'Flip a mirrored selfie take',
   summary: "Checks a selfie take against the real product photo with a vision model and flips it left to right when the product's text is mirrored in most frames, so a front-camera mirror never ships. Otherwise the take passes through.",

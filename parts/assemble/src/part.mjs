@@ -16,11 +16,15 @@
 // marks where a shot asks for a sound, cuts moved into the gaps between words
 // (snap), and card_from, which starts the card span (no captions) at a scene
 // before the end card.
+//
+// 1.3.0 adds, optional: keep_clear on a still clip (where the product is, as
+// shares of the picture), moved onto the cut through fit and the push and
+// returned as timeline.keep_clear, so the captions layer keeps off it.
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
 import { kitMediaLength } from '../../_lib/length.mjs';
 import { kitSceneTag, kitTagKey } from '../../_lib/scene-match.mjs';
-import { ASSEMBLE_MAX_BYTES, assembleClampScenes, assembleClampSpeech, assembleFit, assembleGradeChain, assembleIsCutProblem, assembleKenBurns, assembleMapZone, assembleRateCap, assembleSpanCuts } from './cuts.mjs';
+import { ASSEMBLE_MAX_BYTES, assembleClampScenes, assembleClampSpeech, assembleFit, assembleGradeChain, assembleIsCutProblem, assembleKenBurns, assembleMapKeepClear, assembleMapZone, assembleRateCap, assembleSpanCuts } from './cuts.mjs';
 import { ASSEMBLE_MIN_FILL_S, assembleCardScene, assembleSpeedBounds, assembleMontageLengths, assembleRecipeFor, assembleSceneProduct, assembleShotLengths, assembleSnapCuts, assembleWords, assembleZoom } from './shots.mjs';
 
 const SHORT_TOLERANCE_S = 0.1;
@@ -94,8 +98,10 @@ async function clipPieces(inputs, ctx, fps, { ending, endingFrames, fills, tail,
   for (const cut of plan.cuts) {
     const clip = inputs.clips[cut.index];
     const piece = { id: cut.id, scene_id: cut.id, start_f: cut.start_f, frames: cut.frames };
-    if (clip.image) Object.assign(piece, { kind: 'image', media: clip.image, zoom: kenBurns ? [1, zoomTo] : null, hold_s: 0 });
-    else {
+    if (clip.image) {
+      Object.assign(piece, { kind: 'image', media: clip.image, zoom: kenBurns ? [1, zoomTo] : null, hold_s: 0 });
+      if (clip.keep_clear && clip.keep_clear.length) piece.keep_clear = clip.keep_clear;
+    } else {
       Object.assign(piece, { kind: 'video', media: clip.video, in_s: clip.in_s ?? 0, speed: 1, hold_s: 0 });
       if (inputs.spans) {
         // A clip shorter than its cut holds its last frame; one that starts past its own end is refused.
@@ -472,6 +478,17 @@ export async function run(inputs, ctx) {
     if (moved) zones = [...zones.filter((z) => z.use !== 'logo'), moved];
   }
   if (zones.length) timeline.safe_zones = zones;
+  // 1.3.0: where each still holds the product, on the cut, for the time its piece shows.
+  const keep = [];
+  for (const p of pieces) {
+    if (!p.keep_clear) continue;
+    const info = await ctx.tools.probe(p.media.path);
+    for (const b of p.keep_clear) {
+      const box = assembleMapKeepClear(b, info.width, info.height, w, h, fit, p.zoom ? p.zoom[1] : 1);
+      if (box) keep.push({ scene_id: String(p.scene_id), start_s: t3(p.start_f, fps), end_s: t3(Math.min(p.start_f + p.frames, bodyEnd_f), fps), use: 'product', box });
+    }
+  }
+  if (keep.length) timeline.keep_clear = keep.slice(0, 200);
   const marks = pieces.filter((p) => p.mark).map((p) => ({ kind: p.mark, at_s: t3(p.start_f, fps) }));
   return kitCheckOutputs(ctx, manifest, { video, seconds, timeline, marks });
 }

@@ -1,5 +1,9 @@
 # creator-h3
 
+## 1.8.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.8.0.
+
 ## 1.8.0
 
 - A take's content review may be measured: `coverage.motion` is `watched` or `measured`, `coverage.audio` is `listened` or `measured` (full-resolution frames plus word timing against the line). The old `video_watched` / `audio_listened` booleans still read as watched / listened. A measured review must list its `evidence`. The same goes for `qualification`. A check is `fail` only for a must_fix problem; an `ask` look is `pass` with the finding in `evidence`. Gate audit, 16 Oct 2026: an agent that can't play video was stuck on "watched/listened" claims; quality checks warn and never block.

@@ -34,8 +34,8 @@ test('the prompt names every frame by its image number and time', () => {
 });
 
 test('the reply is read from fenced JSON; a capitals-only difference is not a misspelling', () => {
-  const r = parseLabelReply('```json\n{"label_words":["CUMIN CLUB","DAL CHAWAL"],"frames":[{"image":2,"product_seen":true,"words_read":["CUMIN CLUB"],"misspelled":[{"read":"Cumin Club","should_be":"CUMIN CLUB"},{"read":"CUMlN","should_be":"CUMIN"}]}]}\n```');
-  assert.deepEqual(r.label_words, ['CUMIN CLUB', 'DAL CHAWAL']);
+  const r = parseLabelReply('```json\n{"label_words":["NORTHLEAF KITCHEN","DAL CHAWAL"],"frames":[{"image":2,"product_seen":true,"words_read":["NORTHLEAF KITCHEN"],"misspelled":[{"read":"Northleaf Kitchen","should_be":"NORTHLEAF KITCHEN"},{"read":"CUMlN","should_be":"CUMIN"}]}]}\n```');
+  assert.deepEqual(r.label_words, ['NORTHLEAF KITCHEN', 'DAL CHAWAL']);
   assert.deepEqual(r.frames[0].misspelled, [{ read: 'CUMlN', should_be: 'CUMIN' }]);
   assert.equal(parseLabelReply('I cannot see a product.'), null);
   assert.equal(parseLabelReply('{"frames": "none"}'), null);

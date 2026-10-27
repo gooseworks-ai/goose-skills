@@ -7,7 +7,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'lipsync-veed',
-  version: '1.1.0',
+  version: '1.1.1',
   kind: 'generate_video',
   title: 'Lipsync to approved audio (Veed Fabric)',
   summary: 'Each spoken line\'s own audio drives its speaker\'s face with Veed Fabric 1.0 on fal, one piece per line, plus an optional silent "listening" clip per face.',

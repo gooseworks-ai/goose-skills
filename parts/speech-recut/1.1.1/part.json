@@ -1,0 +1,673 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "speech-recut",
+  "version": "1.1.1",
+  "kind": "compose",
+  "title": "Re-cut on-camera speech",
+  "summary": "Re-cuts one take of on-camera speech: dead air cut on its own picture cuts, repeats and speech in no line dropped (muted with the picture kept in mute_tags scenes), a minimum shot, 30 fps; optional room tone and a light street grade.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "filters": [
+        "scale",
+        "select",
+        "showinfo",
+        "trim",
+        "setpts",
+        "tpad",
+        "atrim",
+        "asetpts",
+        "aresample",
+        "aformat",
+        "apad",
+        "afade",
+        "pan",
+        "concat",
+        "split",
+        "fps",
+        "setsar",
+        "format",
+        "asplit",
+        "areverse",
+        "volume",
+        "aloop",
+        "amix",
+        "curves",
+        "unsharp"
+      ],
+      "encoders": [
+        "libx264",
+        "aac",
+        "pcm_s16le"
+      ]
+    },
+    "network": false,
+    "models": [],
+    "disk_mb": 500
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "timeline",
+      "scenes"
+    ],
+    "properties": {
+      "video": {
+        "description": "One take, or video-seedance-2's joined takes. Its sound is the speech.",
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "timeline": {
+        "description": "That video's timeline (scenes = plan scene ids). Its scenes are re-timed by id and its safe zones passed on.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "speech": {
+        "description": "Timeline.speech with words, from transcribe-whisper on that video. Left out: the timeline's own speech is used (bind timeline to transcribe-whisper's timeline). Either way it needs timed words.",
+        "type": "array",
+        "maxItems": 200,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "text",
+            "start_s",
+            "end_s"
+          ],
+          "properties": {
+            "scene_id": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "spoken": {
+              "type": "string"
+            },
+            "start_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "words": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "text",
+                  "start_s",
+                  "end_s"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "start_s": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "end_s": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "scenes": {
+        "description": "plan.scenes: the lines to keep, with speaker. A scene with no line is a silent beat; its span in the timeline is kept whole.",
+        "type": "array",
+        "maxItems": 40,
+        "items": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "integer",
+                "null"
+              ]
+            },
+            "line": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 2000
+            },
+            "speaker": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 24
+            },
+            "on_screen": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "picture": {
+              "type": [
+                "string",
+                "null",
+                "object"
+              ]
+            }
+          }
+        }
+      },
+      "min_shot_s": {
+        "description": "The shortest shot. A shorter one with no speech is dropped; one that holds speech takes back dead air beside it, else its picture is covered by the shot before or after it. Default 0.4.",
+        "type": "number",
+        "minimum": 0.1,
+        "maximum": 2
+      },
+      "max_gap_s": {
+        "description": "Silences longer than this are cut down to it, on a picture cut where one falls in the silence. Default 0.25.",
+        "type": "number",
+        "minimum": 0.12,
+        "maximum": 2
+      },
+      "mute_tags": {
+        "description": "1.1.0: scene tags (extra.shot or a leading \"Tag:\", compared without case or spacing) whose made-up speech is muted, not cut: speech in no line that starts inside such a scene is silenced, and its picture is kept from the last line word before it for up to mute_hold_s, then cut. For the use (a cap opened, a pack torn), where the picture is the point.",
+        "type": "array",
+        "maxItems": 20,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        }
+      },
+      "mute_hold_s": {
+        "description": "1.1.0: how long the picture is held after a line in a mute_tags scene. Default 1.5.",
+        "type": "number",
+        "minimum": 0.2,
+        "maximum": 5
+      },
+      "drop": {
+        "description": "repeats (default): drop repeated words and stutters inside a line, and heard speech that is in no line (transcribe-whisper 1.1.2's entries with no scene_id and no text: a repeated line, a filler), never a line of the plan. none: cut only dead air.",
+        "enum": [
+          "repeats",
+          "none"
+        ]
+      },
+      "room_tone": {
+        "description": "Loop the take's quietest speech-free window (0.4 to 1 s, measured on the original take) under the whole edit, so the background does not step at the joins. gain_db is the bed's level against that window (default -6). A window whose mean level is over max_level_db (default -35) is speech the transcript missed, so no bed is laid and a warning is logged. Null or left out for none. The key is `source`, not `from`: a style reads any object with a `from` key as a reference.",
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "enum": [
+              "quiet_window"
+            ]
+          },
+          "gain_db": {
+            "type": "number",
+            "minimum": -40,
+            "maximum": 12
+          },
+          "max_level_db": {
+            "type": "number",
+            "minimum": -80,
+            "maximum": -10
+          }
+        }
+      },
+      "fps": {
+        "description": "Output frame rate. Default 30.",
+        "type": "integer",
+        "minimum": 24,
+        "maximum": 60
+      },
+      "grade": {
+        "description": "none (default) or street-light: a 0.03 black lift and a 0.12 unsharp halo, no grain (the street-interview phone look).",
+        "enum": [
+          "none",
+          "street-light"
+        ]
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "seconds",
+      "timeline",
+      "cuts",
+      "mutes"
+    ],
+    "properties": {
+      "video": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "seconds": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "mutes": {
+        "description": "1.1.0: stretches of the output whose sound is silenced (made-up speech in a mute_tags scene), in seconds. Empty without mute_tags.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start_s",
+            "end_s"
+          ],
+          "properties": {
+            "start_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end_s": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "cuts": {
+        "description": "Each removed stretch: where the join lands in the output, how much was removed and why.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "at_s",
+            "removed_s"
+          ],
+          "properties": {
+            "at_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "removed_s": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "kind": {
+              "enum": [
+                "dead_air",
+                "repeat",
+                "extra",
+                "short_shot",
+                "head",
+                "tail"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "free"
+  },
+  "determinism": "pure",
+  "timing": {
+    "typical_s": 30,
+    "timeout_s": 900
+  },
+  "retry": {
+    "transient": 1
+  }
+}

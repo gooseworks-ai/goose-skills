@@ -1,5 +1,9 @@
 # lipsync-veed
 
+## 1.1.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.1.0.
+
 ## 1.1.0
 
 - `quality_tier` (`standard`, the default, or `best`) sets the default resolution: 480p for Standard, 720p for Best. An explicit `resolution` still wins for the whole step. 1.0.0 always defaulted to 720p.

@@ -1,5 +1,9 @@
 # image-nano-banana
 
+## 2.0.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 2.0.0.
+
 ## 2.0.0
 
 - Cartoons only (fix-forward contract section 5). Requires `subject: cartoon`; products mode is withdrawn; a scene whose references would include a real product photo is refused before anything is ordered. Real people and real products use `image-gpt-image-2` edit, and packaging comes from the real photo through `overlay`.
