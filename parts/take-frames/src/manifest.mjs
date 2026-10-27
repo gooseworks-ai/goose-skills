@@ -9,7 +9,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'take-frames',
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'generate_image',
   title: 'Take frames (GPT Image 2)',
   summary: 'The first and last frame of a creator take, from the cast picture and the real product photo: the product held high beside the face, clear of the caption band, then the same photo with the use done (a cap open).',

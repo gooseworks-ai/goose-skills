@@ -1,5 +1,9 @@
 # captions-layer
 
+## 1.6.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.6.0.
+
 ## 1.6.0
 
 - A new shot never opens on the last shot's caption: when the next caption's first word is at most 0.25 s after a final cut, the caption held over that cut (its words all said before it) stops on the cut and the next caption starts on it. Assemble cuts on the frame at or before a line's first word, so the next caption used to come up one frame after the cut. A caption whose words run across a cut, or a hold before a longer pause, is drawn as in 1.5.0.

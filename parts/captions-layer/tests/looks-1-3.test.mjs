@@ -28,9 +28,9 @@ async function cut(ctx, seconds = 3) {
 
 const frame = (out, at) => framePixels(out.video.path, at, 540, 960);
 
-test('the newest captions layer is 1.6.0 and ships its three fonts with their licenses', () => {
+test('the newest captions layer is 1.6.1 and ships its three fonts with their licenses', () => {
   const part = JSON.parse(readFileSync(join(dir, 'part.json'), 'utf8'));
-  assert.equal(part.version, '1.6.0');
+  assert.equal(part.version, '1.6.1');
   for (const f of ['Montserrat-Bold.ttf', 'Montserrat-OFL.txt', 'PTSerif-Bold.ttf', 'PTSerif-OFL.txt', 'TitanOne-Regular.ttf', 'TitanOne-OFL.txt']) {
     assert.ok(part.files.includes(`assets/fonts/${f}`), f);
   }

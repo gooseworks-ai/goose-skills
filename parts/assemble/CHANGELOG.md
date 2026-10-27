@@ -1,5 +1,9 @@
 # assemble
 
+## 1.3.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.3.0.
+
 ## 1.3.0
 
 - `clips[].keep_clear`: where the product is in a still, as shares of the picture. Each box is moved onto the cut the way `fit` places the still and grown to cover the Ken Burns push, then returned in `timeline.keep_clear` for that clip's span, so captions-layer 1.4.0 and later keep the captions off the label. Without it the cut and timeline are 1.2.0's.

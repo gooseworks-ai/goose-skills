@@ -3,6 +3,10 @@
 This part provides H3 Max scene clips and timed takes for recipes that need native dialogue or first/last
 frames. Published `video-seedance-2` and `creator-h3` versions are unchanged.
 
+## 1.5.1
+
+- A file path may be a Windows path (`C:\...` or `C:/...`). Every file going in or out was refused on Windows before, because a path had to start with `/`. Rebuilt with the shared path fix; nothing else changed from 1.5.0.
+
 ## 1.5.0
 
 - Modes take and takes: `first_frame` (the take starts on it) and `last_frame` (it ends on it; needs `first_frame`),

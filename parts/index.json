@@ -304,6 +304,61 @@
       "models": []
     },
     {
+      "id": "assemble",
+      "version": "1.3.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "scale",
+            "crop",
+            "pad",
+            "setsar",
+            "tpad",
+            "trim",
+            "setpts",
+            "format",
+            "concat",
+            "aresample",
+            "aformat",
+            "apad",
+            "atrim",
+            "anullsrc",
+            "zoompan",
+            "eq",
+            "hqdn3d",
+            "noise",
+            "xfade",
+            "settb",
+            "null",
+            "atempo"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 800
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/assemble/1.3.1",
+      "files": {
+        "README.md": "76a05e916256730e55092b36f586e4fa6e46c1f81a9b9b10cb78159c3d1be428",
+        "part.json": "329c4663a98f3656673c83c0e2e6a9221a49bd920016f7a5fa42eab8f451fd99",
+        "part.mjs": "60de624ff19b8902e8adc40eafb295f14a619bb3c69837d867d2cff3cace3294"
+      },
+      "models": []
+    },
+    {
       "id": "audio-mix",
       "version": "1.0.0",
       "interface": 1,
@@ -1085,6 +1140,62 @@
         "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
         "part.json": "3df1607a0129370e66119a9c0e5237d4d0d31c50a177a8a6d6f407b3fdaf0b39",
         "part.mjs": "95449350717d866468ce5d04e0dab084183a2685a610c5618f4f38115e723cf1"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "fal-ai/whisper"
+        }
+      ]
+    },
+    {
+      "id": "captions-layer",
+      "version": "1.6.1",
+      "interface": 1,
+      "kind": "caption",
+      "layer": "captions",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": true,
+        "ffmpeg": {
+          "filters": [
+            "fps",
+            "format",
+            "overlay"
+          ],
+          "encoders": [
+            "libx264",
+            "aac"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "fal-ai/whisper"
+          }
+        ],
+        "disk_mb": 400
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "fal-ai/whisper": 0.02
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/captions-layer/1.6.1",
+      "files": {
+        "README.md": "9791f7ac40cc55b217896451daf61194da73a74cb3154668d239b13512b9d2c2",
+        "assets/fonts/Montserrat-Bold.ttf": "bc6e854971cea46b463be6f9eef4d9cd52f51cfc1fc0dd90c9d3e6483dc0ec61",
+        "assets/fonts/Montserrat-OFL.txt": "ea6b176076abe6950aa25de2fcd199c56fa8409946e883370e10bec68596573c",
+        "assets/fonts/PTSerif-Bold.ttf": "038ba7336bd7ea14f12ad155bed51a4345cac5153275d521dec3ba04021c526e",
+        "assets/fonts/PTSerif-OFL.txt": "ddf311c28ddf5a5ad9747649837346b67bed9d356789c3072bb27dbce49e514d",
+        "assets/fonts/TitanOne-OFL.txt": "2abc52c3268db4de42e3b625d604d062f2410c620b0a88d29e1b007116df253e",
+        "assets/fonts/TitanOne-Regular.ttf": "bcac194b2c80941682789e854d0515855a41dfa0d3f209fbf1725b15cd9fd063",
+        "part.json": "1238c23286c09192e3a4c22dda15a2249c7a875ac39ccf19f6b3e3cb57614d29",
+        "part.mjs": "2d7d4fe768951ea522705e9f841bfeba701cab4e9d9e473478ed49b74b59eeb1"
       },
       "models": [
         {
@@ -7208,6 +7319,64 @@
       "models": []
     },
     {
+      "id": "speech-recut",
+      "version": "1.1.1",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "select",
+            "showinfo",
+            "trim",
+            "setpts",
+            "tpad",
+            "atrim",
+            "asetpts",
+            "aresample",
+            "aformat",
+            "apad",
+            "afade",
+            "pan",
+            "concat",
+            "split",
+            "fps",
+            "setsar",
+            "format",
+            "asplit",
+            "areverse",
+            "volume",
+            "aloop",
+            "amix",
+            "curves",
+            "unsharp"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/speech-recut/1.1.1",
+      "files": {
+        "README.md": "64f5ccb8fb08fca91da1778813a4682d2ace4462bf95761282d77f86e46af3b1",
+        "part.json": "85c080103dd83cf06a9fcc11a7227d6141c424c097dfd0df3a2b8f5654a0f4cb",
+        "part.mjs": "89da4067a7f30d1800d946db07ef2848b44139d72279bd998ddb0a2e2342895a"
+      },
+      "models": []
+    },
+    {
       "id": "take-frames",
       "version": "1.0.0",
       "interface": 1,
@@ -7243,6 +7412,50 @@
         "README.md": "b77fd4868c28ba9846c482a9ad7faa9c3e266dbeb2673d2c6eb63a1c63db18ca",
         "part.json": "5bcc0d8cd180f091de3eb8028fbec63ca7a0301d2dbc41649af5baf8d2b75943",
         "part.mjs": "f19895dc99d0d05f2c40dfce9eedf3f03ae9d03e6ae00850f251377ae0e7884c"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "openai/gpt-image-2/edit"
+        }
+      ]
+    },
+    {
+      "id": "take-frames",
+      "version": "1.0.1",
+      "interface": 1,
+      "kind": "generate_image",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [],
+          "encoders": [
+            "png"
+          ]
+        },
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "openai/gpt-image-2/edit"
+          }
+        ],
+        "disk_mb": 100
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "call",
+        "rates_usd": {
+          "openai/gpt-image-2/edit": 0.38
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/take-frames/1.0.1",
+      "files": {
+        "README.md": "1c0cba30ca784c1158cd31e48fa8cd4d8e17c13009c267aac6c2d1dc4adde734",
+        "part.json": "1128ad7111ca0d5c087872a5a4b0a290bdc2f2c6da5603b09719748612c33c08",
+        "part.mjs": "da694b8e7061d0017200c24ebf17b0bcf0ba547a90c23e26b53199150b5dd68f"
       },
       "models": [
         {
@@ -7860,6 +8073,49 @@
         "README.md": "7208a7fe4d0de565068a6ececc4e3e12e127ac83ea1dc17bd228c77a5411fd63",
         "part.json": "1a794f474b9fc7671a706446c12f05ea2e88df9b16f5a23669fc191a81546cb9",
         "part.mjs": "e526aa49c0b0f35b1459aaee65876353d45caaac909144fef92df0f857680c34"
+      },
+      "models": [
+        {
+          "provider": "fal",
+          "model": "minimax/h3-max/reference-to-video"
+        }
+      ]
+    },
+    {
+      "id": "video-h3max",
+      "version": "1.5.1",
+      "interface": 1,
+      "kind": "generate_video",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": true,
+        "network": true,
+        "models": [
+          {
+            "provider": "fal",
+            "model": "minimax/h3-max/reference-to-video"
+          }
+        ],
+        "disk_mb": 1500
+      },
+      "cost": {
+        "basis": "per_unit",
+        "unit": "second",
+        "measure": {
+          "from": "/clips/*/seconds",
+          "as": "sum"
+        },
+        "rates_usd": {
+          "minimax/h3-max/reference-to-video": 0.16
+        }
+      },
+      "determinism": "provider",
+      "path": "parts/video-h3max/1.5.1",
+      "files": {
+        "README.md": "7208a7fe4d0de565068a6ececc4e3e12e127ac83ea1dc17bd228c77a5411fd63",
+        "part.json": "6a1b7251949b083c363423d8b8349fdf72a9370f8f881351837ad18699761789",
+        "part.mjs": "6b0c13a2191fb09e7c1780948e407fd57bab098009621cbda8de14bce10eec7f"
       },
       "models": [
         {

@@ -49,7 +49,7 @@ export const manifest = {
   $schema: '../../_contract/part-manifest.schema.json',
   interface: 1,
   id: 'video-h3max',
-  version: '1.5.0',
+  version: '1.5.1',
   kind: 'generate_video',
   title: 'Scene clips with native audio (H3 Max)',
   summary: 'H3 Max clips: native dialogue, reference or first/last-frame clips, timed takes, and up to 40 scene stills moved with the voice, incl. silent B-roll with one named action. Clips keep their first frame\'s light.',
