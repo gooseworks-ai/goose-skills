@@ -7,7 +7,8 @@
 // What it cuts (src/recut.mjs has the rules): dead air down to max_gap_s,
 // with the join on a picture cut when one falls in the silence; repeats and
 // stutters inside a line (never a whole line); shots under min_shot_s that
-// hold no speech. Output at `fps` (30 by default; Seedance returns 24). A
+// hold no speech; (1.1.0) speech in no line inside a mute_tags scene is
+// silenced with its picture kept for up to mute_hold_s, not cut. Output at `fps` (30 by default; Seedance returns 24). A
 // short shot that holds speech takes back some of the dead air beside it, or
 // (1.0.1) has its picture covered by the shot before or after it while its
 // sound plays on, so the cut never flashes a shot under min_shot_s.
@@ -194,6 +195,8 @@ export async function run(inputs, ctx) {
       min_shot_s: inputs.min_shot_s ?? 0.4,
       max_gap_s: inputs.max_gap_s ?? 0.25,
       drop: inputs.drop ?? 'repeats',
+      mute_tags: inputs.mute_tags ?? [],
+      mute_hold_s: inputs.mute_hold_s,
     });
   } catch (err) {
     if (err instanceof RecutRefusal) throw ctx.error('bad_input', err.message);
@@ -266,7 +269,14 @@ export async function run(inputs, ctx) {
       return b > a ? { a, b, from: c.from } : null;
     })
     .filter(Boolean);
-  graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[${covers.length ? 'joined' : 'cv'}][${room ? 'cut' : 'speech'}]`);
+  const said = room ? 'cut' : 'speech';
+  graph.push(`${plan.keep.map((_, k) => `[v${k}][a${k}]`).join('')}concat=n=${n}:v=1:a=1[${covers.length ? 'joined' : 'cv'}][${plan.mutes.length ? 'unmuted' : said}]`);
+  // 1.1.0: made-up words in a mute_tags scene are silenced in place; the picture under them plays on.
+  if (plan.mutes.length) {
+    const when = plan.mutes.map((m) => `between(t,${kitNum(m.start_s, 3)},${kitNum(m.end_s, 3)})`).join('+');
+    graph.push(`[unmuted]volume=0:enable='${when}'[${said}]`);
+    ctx.log.info('speech-recut muted made-up speech in a mute_tags scene', { mutes: plan.mutes });
+  }
   if (covers.length) graph.push(...recutCoverGraph('joined', covers, joined, 'cv'));
   if (room) {
     // The bed under the whole edit, at gain_db against its window; the speech is untouched.
@@ -322,5 +332,6 @@ export async function run(inputs, ctx) {
   }));
   const timeline = { duration_s: outSeconds, width: w, height: h, fps, scenes, speech };
   if (inputs.timeline.safe_zones) timeline.safe_zones = inputs.timeline.safe_zones;
-  return kitCheckOutputs(ctx, manifest, { video, seconds: outSeconds, timeline, cuts: plan.cuts });
+  const mutes = plan.mutes.map((m) => ({ start_s: Math.min(m.start_s, outSeconds), end_s: Math.min(m.end_s, outSeconds) })).filter((m) => m.end_s > m.start_s);
+  return kitCheckOutputs(ctx, manifest, { video, seconds: outSeconds, timeline, cuts: plan.cuts, mutes });
 }

@@ -7039,6 +7039,64 @@
       "models": []
     },
     {
+      "id": "speech-recut",
+      "version": "1.1.0",
+      "interface": 1,
+      "kind": "compose",
+      "kit": ">=1.0.0 <2.0.0",
+      "needs": {
+        "browser": false,
+        "ffmpeg": {
+          "filters": [
+            "scale",
+            "select",
+            "showinfo",
+            "trim",
+            "setpts",
+            "tpad",
+            "atrim",
+            "asetpts",
+            "aresample",
+            "aformat",
+            "apad",
+            "afade",
+            "pan",
+            "concat",
+            "split",
+            "fps",
+            "setsar",
+            "format",
+            "asplit",
+            "areverse",
+            "volume",
+            "aloop",
+            "amix",
+            "curves",
+            "unsharp"
+          ],
+          "encoders": [
+            "libx264",
+            "aac",
+            "pcm_s16le"
+          ]
+        },
+        "network": false,
+        "models": [],
+        "disk_mb": 500
+      },
+      "cost": {
+        "basis": "free"
+      },
+      "determinism": "pure",
+      "path": "parts/speech-recut/1.1.0",
+      "files": {
+        "README.md": "ccdb10ccd1e8cd44d9168de1694f613b25e0ea42d0d77ffd69d87890180e69c3",
+        "part.json": "787041d19ddaf511426e13c9da25005735fda80d84951f99a5c5120f5ec09d47",
+        "part.mjs": "4ca1fac0d413155d17ee4d5530334c476d0fbdfc8d3332f9eda99a93791a37b5"
+      },
+      "models": []
+    },
+    {
       "id": "take-frames",
       "version": "1.0.0",
       "interface": 1,

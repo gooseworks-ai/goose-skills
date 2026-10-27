@@ -365,3 +365,34 @@ test('a word that runs to the end of the take is never trimmed: the output round
   const info = await probe(out.video.path);
   assert.ok(info.duration_s >= last.end_s - 1e-3, `the file is ${info.duration_s}s`);
 });
+
+test('1.1.0 mute_tags: made-up words in the use are silent in the render, and the picture under them stays', async (t) => {
+  if (skip) return t.skip('no ffmpeg');
+  // The answer is the use; a tone at 3.8-4.2 s is made-up speech after it.
+  const path = join(dir, 'use-take.mp4');
+  await runTool('ffmpeg', [
+    '-hide_banner', '-nostdin', '-loglevel', 'error', '-y',
+    '-f', 'lavfi', '-i', 'testsrc2=size=360x640:rate=24:duration=2',
+    '-f', 'lavfi', '-i', 'smptebars=size=360x640:rate=24:duration=2.5',
+    '-f', 'lavfi', '-i', 'sine=frequency=440:sample_rate=48000:duration=4.5',
+    '-filter_complex', "[0:v][1:v]concat=n=2:v=1:a=0[v];[2:a]volume='if(between(t,0.5,1.0)+between(t,3.0,3.5)+between(t,3.8,4.2),1,0)':eval=frame[a]",
+    '-map', '[v]', '-map', '[a]', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', path,
+  ]);
+  const useTake = await fileRef(path, 'video');
+  const scenes = [SCENES[0], { ...SCENES[1], extra: { shot: 'use' } }];
+  const speech = [...SPEECH, { text: '', spoken: 'la la', start_s: 3.8, end_s: 4.2, words: [w('la', 3.8, 4.0), w('la', 4.0, 4.2)] }];
+  const plainOut = await run({ ...inputsFor(), video: useTake, scenes, speech }, ctxFor().ctx);
+  assert.deepEqual(plainOut.mutes, []);
+  const { ctx } = ctxFor();
+  const out = await run({ ...inputsFor(), video: useTake, scenes, speech, mute_tags: ['use'], mute_hold_s: 1.0 }, ctx);
+  assert.equal(out.mutes.length, 1);
+  const [m] = out.mutes;
+  assert.ok(out.seconds > plainOut.seconds + 0.3, `the hold keeps more picture: ${out.seconds} vs ${plainOut.seconds}`);
+  assert.ok(m.end_s <= out.seconds + 1e-6 && m.end_s - m.start_s > 0.3, `mute ${m.start_s}-${m.end_s} of ${out.seconds}`);
+  const lvl = await levelDb(out.video.path, m.start_s + 0.03, m.end_s - 0.03);
+  assert.ok(lvl < -50, `the made-up words are silent: ${lvl} dB`);
+  const a = out.timeline.speech.find((e) => e.scene_id === 'a');
+  const line = await levelDb(out.video.path, a.start_s + 0.03, a.end_s - 0.03, 440);
+  assert.ok(line > -30, `the use line itself is heard: ${line} dB`);
+  assert.deepEqual(out.timeline.speech.map((e) => e.scene_id), ['q', 'a']);
+});
