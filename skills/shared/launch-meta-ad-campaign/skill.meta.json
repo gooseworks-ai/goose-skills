@@ -1,0 +1,24 @@
+{
+  "slug": "launch-meta-ad-campaign",
+  "category": "composites",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "features": [
+    "automatic launch-intent routing",
+    "goal-first intake that never asks the user to pick a Meta setting",
+    "objective, optimization goal and structure derived from the brief",
+    "readiness findings in a fixed what/why/blocks/I-fix/you-fix template",
+    "a stated test frame before spend: one variable, winner metric, evidence threshold",
+    "GooseWorks and direct Meta Marketing API adapters",
+    "planning-only fallback",
+    "existing Meta campaign inspection",
+    "destination and policy preflight",
+    "nine-section launch brief and two separate human confirmations",
+    "paused creation and readback verification",
+    "recoverable partial-failure reporting"
+  ],
+  "example_prompt": "I want more trial signups from agency owners. $400 over two weeks — can you get some ads running?"
+}

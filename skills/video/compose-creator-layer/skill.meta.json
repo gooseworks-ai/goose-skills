@@ -1,0 +1,14 @@
+{
+  "slug": "compose-creator-layer",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.1.1",
+  "tags": [
+    "ads",
+    "content"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
+  ]
+}

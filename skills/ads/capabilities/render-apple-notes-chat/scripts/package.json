@@ -1,9 +1,0 @@
-{
-  "name": "render-apple-notes-chat",
-  "private": true,
-  "version": "0.1.0",
-  "description": "Free renderer for the apple-notes video ad format (Playwright frame capture + ffmpeg stitch). Run `npm install` here so record-notes.js / render-end-card.js resolve Playwright.",
-  "dependencies": {
-    "playwright": "^1.40.0"
-  }
-}

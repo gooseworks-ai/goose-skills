@@ -1,0 +1,102 @@
+{
+  "job": "topic-cluster",
+  "completion": "complete",
+  "report_markdown": "**Fictional fixture example \u2014 supplied test evidence, not a live site check.**\n\n# Cold brew coffee \u2014 topic cluster, 22 October 2026\n\n## In short\n\nThis map serves a general reader learning to brew cold coffee at home. Use one broad cold-brew guide as the pillar and eight supporting pages for distinct decisions and tasks. Start with the pillar, ratio and dilution pages: brewing quantities and serving an already-made concentrate are connected but different jobs. This is a subject map, so no website, rivals, paid keyword numbers or publishing capacity is needed to complete it.\n\n## Page architecture\n\nAll URLs below are proposed working paths, not existing pages or ranked results.\n\n| Page | Role and intent | Useful content boundary | Order |\n|---|---|---|---|\n| `/cold-brew-coffee` | Pillar: understand cold brew and get started | Explain the overall process and route to each detailed task; avoid copying every supporting guide into it. | 1 |\n| `/cold-brew-ratio` | Supporting: choose coffee/water quantities | Explain concentrate vs ready-to-drink recipes with tested examples. Brewing quantities belong here. | 2 |\n| `/dilute-cold-brew-concentrate` | Supporting: serve existing concentrate | Explain adding water/milk after brewing. Cross-link to ratio rather than duplicating its recipe intent. | 3 |\n| `/cold-brew-beans-grind` | Supporting: choose beans and grind | Compare preparation choices with practical examples, without promising one universally best roast. | 4 |\n| `/cold-brew-steep-time` | Supporting: control extraction timing | Explain timing tradeoffs and how to test an adjustment; leave quantity decisions to ratio. | 5 |\n| `/cold-brew-troubleshooting` | Supporting: fix weak, bitter or gritty brew | A symptom-to-test guide pointing to the relevant quantity, grind or extraction page. | 6 |\n| `/cold-brew-storage` | Supporting: handle and store brewed coffee | Containers, handling and properly sourced safety guidance. Do not invent a safe storage duration. | 7 |\n| `/decaf-cold-brew` | Supporting: brew with decaf coffee | A practical variation with tested instructions, not health promises. | 8 |\n| `/iced-coffee-vs-cold-brew` | Supporting: choose a brewing method | Compare hot-brewed iced coffee with cold extraction; avoid a second generic \u201cwhat is cold brew\u201d page. | 9 |\n\n## Links and anchors\n\nThe pillar links to every supporting page with a clear task anchor, such as **choose your cold-brew ratio**, **dilute concentrate for serving**, **choose beans and grind**, **adjust steeping time**, **fix weak or bitter brew**, **store brewed coffee**, **make decaf cold brew**, and **compare iced coffee and cold brew**.\n\nEvery supporting page links back to the pillar using **cold-brew coffee guide**. Add useful sibling links in context: ratio \u2194 dilution, ratio \u2194 steeping time, beans/grind \u2194 troubleshooting, steeping time \u2194 troubleshooting, storage \u2192 dilution, and decaf \u2192 ratio plus beans/grind. Do not add every possible cross-link simply to inflate a link count.\n\n## What to write first\n\nBuild the first three pages together so the beginner guide has useful destinations and the two quantity-related tasks stay separate. Then add preparation/extraction help, troubleshooting and storage. Decaf and method comparison expand coverage after the core path works. This is an order, not a calendar; no assumed production capacity is hidden in the dates.\n\nThe map draws on the supplied subject notes about ratio, beans, timing, troubleshooting, storage, dilution and decaf questions. It does not claim measured search demand or current rankings. Volumes and difficulty were not measured; priorities follow reader need and judgment. If an existing site is later supplied, map its pages to these intents before creating new URLs and combine pages whose real content serves the same intent.\n\n\nSources: the supplied Coldfield fixture packet, dated 22 October 2026. These .test domains were not browsed. This local example was saved by the fixture exercise; saving to a live brand was not exercised. Nothing was changed, sent or published.\n",
+  "evidence": {
+    "pages": [
+      {
+        "slug": "/cold-brew-coffee",
+        "role": "pillar",
+        "intent": "Understand cold brew and choose the next brewing task",
+        "links_to": [
+          "/cold-brew-ratio",
+          "/cold-brew-beans-grind",
+          "/cold-brew-steep-time",
+          "/cold-brew-troubleshooting",
+          "/cold-brew-storage",
+          "/dilute-cold-brew-concentrate",
+          "/decaf-cold-brew",
+          "/iced-coffee-vs-cold-brew"
+        ]
+      },
+      {
+        "slug": "/cold-brew-ratio",
+        "role": "supporting",
+        "intent": "Choose coffee/water quantities for concentrate or ready-to-drink",
+        "links_to": [
+          "/cold-brew-coffee",
+          "/dilute-cold-brew-concentrate",
+          "/cold-brew-steep-time"
+        ]
+      },
+      {
+        "slug": "/cold-brew-beans-grind",
+        "role": "supporting",
+        "intent": "Choose roast and grind for the intended brewing method",
+        "links_to": [
+          "/cold-brew-coffee",
+          "/cold-brew-troubleshooting"
+        ]
+      },
+      {
+        "slug": "/cold-brew-steep-time",
+        "role": "supporting",
+        "intent": "Understand extraction timing and its tradeoffs",
+        "links_to": [
+          "/cold-brew-coffee",
+          "/cold-brew-ratio",
+          "/cold-brew-troubleshooting"
+        ]
+      },
+      {
+        "slug": "/cold-brew-troubleshooting",
+        "role": "supporting",
+        "intent": "Diagnose weak, bitter or gritty brew",
+        "links_to": [
+          "/cold-brew-coffee",
+          "/cold-brew-beans-grind",
+          "/cold-brew-steep-time",
+          "/cold-brew-ratio"
+        ]
+      },
+      {
+        "slug": "/cold-brew-storage",
+        "role": "supporting",
+        "intent": "Choose storage/container handling with sourced safety guidance",
+        "links_to": [
+          "/cold-brew-coffee",
+          "/dilute-cold-brew-concentrate"
+        ]
+      },
+      {
+        "slug": "/dilute-cold-brew-concentrate",
+        "role": "supporting",
+        "intent": "Serve an already brewed concentrate with water or milk",
+        "links_to": [
+          "/cold-brew-coffee",
+          "/cold-brew-ratio"
+        ]
+      },
+      {
+        "slug": "/decaf-cold-brew",
+        "role": "supporting",
+        "intent": "Brew using decaf coffee without medical claims",
+        "links_to": [
+          "/cold-brew-coffee",
+          "/cold-brew-ratio",
+          "/cold-brew-beans-grind"
+        ]
+      },
+      {
+        "slug": "/iced-coffee-vs-cold-brew",
+        "role": "supporting",
+        "intent": "Choose between hot-brewed iced coffee and cold extraction",
+        "links_to": [
+          "/cold-brew-coffee"
+        ]
+      }
+    ]
+  },
+  "remaining_prerequisites": [],
+  "execution": "manual fixture execution in this chat; local evidence checks only"
+}

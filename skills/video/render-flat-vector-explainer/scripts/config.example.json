@@ -1,0 +1,246 @@
+{
+  "_comment": "Worked example (the Greenmoth 'Happy Plants = 4 Products' build). Creative fields \u2014 character.anchor_prompt (host look), character.keyframe_variants + scenes[].keyframe_prompt + scenes[].motion (setting, poses), scenes[].vo + concept.hook_line (tone), voice.{voice_id,voice_chosen,casting_ab}, music.prompt \u2014 come from the recipe's choices (host, setting, tone, narrator_voice, music); never copy them as defaults. Brand fields (concept, brand_palette, scene grounds/accents, product_grid, overlay text, wordmark/url) are the demo brand's (Greenmoth): take them from the new brand's kit and real products. Copy the STRUCTURE to config.json. A flat-vector creator-character walks a countable 4-step routine, one step per beat: large corner numeral + labelled chip + tagline + the step's REAL product photo. Character scenes are Kling i2v off text-stripped clean plates (subtle motion, style-preserving negative); ALL text is an animated Remotion DOM overlay (NEVER baked); slate/grid/CTA scenes get no i2v; the closing grid is a PIL composite of real product webps. eleven_v3 full-sentence VO drives word-by-word burned captions over a VO-forward music bed. Built as a ~50s animated master, then re-cut to 30s FROM the animated master. The demo's runnable scripts are not shipped (see PIPELINE.md).",
+  "brand_name": "Greenmoth",
+  "concept": {
+    "single_point": "Happy houseplants need just 4 products (soil mix, plant food, leaf mist, root tonic) \u2014 not twenty.",
+    "motif_phrase": "HAPPY PLANTS = 4 PRODUCTS",
+    "closing_phrase": "4 is plenty.",
+    "hook_line": "Your plant shelf holds twenty different bottles. Really?",
+    "concept_label": "plant-care routine (NOT 'fertilizer' \u2014 step 3 is a leaf mist)"
+  },
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "master_duration_sec": 50.0,
+  "deliverable_duration_sec": 30.0,
+  "brand_palette": [
+    "#F7F8F3",
+    "#3E7C59",
+    "#DCE8C8",
+    "#101411",
+    "#7FB7B0",
+    "#E3B66A"
+  ],
+  "_palette_comment": "brand_palette, every scenes[].overlay.ground/accent and product_grid.ground are the demo brand's hexes (Greenmoth) \u2014 brand facts, replace with the new brand's colours; never reuse them.",
+  "display_font": "Inter",
+  "character": {
+    "mode": "anchor-ref (fresh flat-vector \u2014 NOT a chained photoreal ref)",
+    "anchor_prompt": "Flat-vector illustration of a woman, mid 30s, short black bob, deep-brown skin tone, green canvas overalls over a striped tee. Clean 2D flat-vector style (Spotify/Anchor lineage), no gradients, no photoreal shading. Consistent character across every scene.",
+    "anchor_path": "assets/character-lock/creator-anchor.png",
+    "style_reference_note": "If the brand already has a photoreal character (e.g. assets/characters/anchor/character-anchor.png), use it ONLY as a written descriptor source, NEVER as a `medias` chained ref (it flattens gens to photoreal).",
+    "keyframe_variants": [
+      "shelf-overwhelmed",
+      "smile-shrug",
+      "scooping-soil",
+      "capful-pour",
+      "leaf-mist",
+      "watering-can",
+      "windowsill-satisfied"
+    ]
+  },
+  "kling": {
+    "model": "fal-ai/kling-video/v3/standard/image-to-video",
+    "duration_sec": 5,
+    "cfg_scale": 0.5,
+    "negative_prompt": "photorealistic, 3D render, realistic skin, style change, gradient shading, text warp, camera shake",
+    "_note": "Holds flat-vector style at LOW motion only. TEST one scene before batching. v3 takes start_image_url (not image_url) and makes sound unless generate_audio is false."
+  },
+  "scenes": [
+    {
+      "n": 1,
+      "kind": "character",
+      "duration_sec": 4.0,
+      "motion": "gentle overwhelmed breathing + one blink",
+      "keyframe_prompt": "Creator at a sunny windowsill crowded with 20+ bottles/sprays/bags from many brands between potted plants; faintly comedic, overwhelmed.",
+      "overlay": null,
+      "vo": "Your plant shelf holds twenty different bottles."
+    },
+    {
+      "n": 2,
+      "kind": "character",
+      "duration_sec": 2.5,
+      "motion": "small natural smile + shrug; clutter settles",
+      "keyframe_prompt": "Same creator, small smile + shrug at the crowded windowsill.",
+      "overlay": null,
+      "vo": "Really?"
+    },
+    {
+      "n": 3,
+      "kind": "slate",
+      "duration_sec": 3.5,
+      "motion": "Remotion slate slam-in",
+      "keyframe_prompt": null,
+      "overlay": {
+        "headline": "HAPPY PLANTS = 4 PRODUCTS",
+        "ground": "#3E7C59"
+      },
+      "vo": "Happy plants only need four products."
+    },
+    {
+      "n": 4,
+      "kind": "character",
+      "duration_sec": 6.5,
+      "motion": "tips a scoop of chunky soil mix into a terracotta pot; minimal drift",
+      "keyframe_prompt": "Creator tips a scoop of chunky soil mix into a terracotta pot; teal accent panel.",
+      "overlay": {
+        "numeral": "1",
+        "chip": "01 \u00b7 SOIL MIX",
+        "tagline": "Airy potting mix that lets the roots breathe.",
+        "product_photo": "assets/products/soil-mix-bag.webp",
+        "accent": "#7FB7B0"
+      },
+      "vo": "One \u2014 a chunky soil mix. Repot once and the roots can finally breathe."
+    },
+    {
+      "n": 5,
+      "kind": "character",
+      "duration_sec": 6.5,
+      "motion": "tips a capful of plant food into a watering can",
+      "keyframe_prompt": "Creator tips a capful of plant food into a watering can; sand accent panel.",
+      "overlay": {
+        "numeral": "2",
+        "chip": "02 \u00b7 PLANT FOOD",
+        "tagline": "A gentle liquid feed for steady new leaves every single month.",
+        "product_photo": "assets/products/plant-food-bottle.webp",
+        "accent": "#E3B66A"
+      },
+      "vo": "Two \u2014 a gentle liquid plant food for steady new leaves every single month."
+    },
+    {
+      "n": 6,
+      "kind": "character",
+      "duration_sec": 5.5,
+      "motion": "gives a monstera leaf two soft mist sprays",
+      "keyframe_prompt": "Creator mists a monstera leaf; pale-sage accent panel.",
+      "overlay": {
+        "numeral": "3",
+        "chip": "03 \u00b7 LEAF MIST",
+        "tagline": "A fine leaf mist \u2014 dusty leaves look fresh in seconds.",
+        "product_photo": "assets/products/leaf-mist-spray.webp",
+        "accent": "#DCE8C8"
+      },
+      "vo": "Three \u2014 a leaf mist, and dusty leaves look fresh in seconds."
+    },
+    {
+      "n": 7,
+      "kind": "character",
+      "duration_sec": 6.0,
+      "motion": "pours from a watering can into a pot, soft light rays",
+      "keyframe_prompt": "Creator waters a pot with a watering can, soft light rays; leaf-green accent panel.",
+      "overlay": {
+        "numeral": "4",
+        "chip": "04 \u00b7 ROOT TONIC",
+        "tagline": "A monthly root tonic that keeps every single pot thriving.",
+        "product_photo": "assets/products/root-tonic-bottle.webp",
+        "accent": "#3E7C59"
+      },
+      "vo": "Four \u2014 a root tonic in the watering can that keeps every single pot thriving."
+    },
+    {
+      "n": 8,
+      "kind": "grid",
+      "duration_sec": 3.0,
+      "motion": "PIL grid + Remotion slate",
+      "keyframe_prompt": null,
+      "overlay": {
+        "headline": "4 is plenty.",
+        "ground": "#3E7C59"
+      },
+      "vo": "Four bottles. Done. That's all."
+    },
+    {
+      "n": 9,
+      "kind": "character",
+      "duration_sec": 5.0,
+      "motion": "satisfied smile, holding 1 bottle; tidy windowsill (callback to scene 1)",
+      "keyframe_prompt": "Creator at the windowsill, satisfied smile, holding one bottle; tidy, thriving plants.",
+      "overlay": null,
+      "vo": "Ditch the twenty-bottle shelf. Keep the four that work."
+    },
+    {
+      "n": 10,
+      "kind": "cta",
+      "duration_sec": 8.0,
+      "motion": "Remotion CTA",
+      "keyframe_prompt": null,
+      "overlay": {
+        "wordmark": "Greenmoth",
+        "cta_pill": "Build your plant-care kit \u2192",
+        "url": "greenmoth.example",
+        "ground": "#3E7C59"
+      },
+      "vo": "Greenmoth. Plant care, made simple. Greenmoth dot example."
+    }
+  ],
+  "product_grid": {
+    "method": "PIL composite of the 4 REAL product webps (never AI \u2014 AI duplicates SKUs)",
+    "ground": "#3E7C59",
+    "layout": "2x2",
+    "preserve_aspect": true,
+    "images": [
+      "assets/products/soil-mix-bag.webp",
+      "assets/products/plant-food-bottle.webp",
+      "assets/products/leaf-mist-spray.webp",
+      "assets/products/root-tonic-bottle.webp"
+    ]
+  },
+  "voice": {
+    "engine": "ElevenLabs",
+    "model": "eleven_v3",
+    "endpoint": "text-to-speech/with-timestamps",
+    "voice_chosen": "Eryn",
+    "voice_id": "dMyQqiVXTU80dDl2eNK8",
+    "casting_ab": [
+      "Eryn (dMyQqiVXTU80dDl2eNK8)",
+      "Angela (FUfBrNit0NNZAwb58KWH)"
+    ],
+    "settings": {
+      "stability": 0.45,
+      "similarity_boost": 0.8,
+      "style": 0.1,
+      "use_speaker_boost": true,
+      "speed": 1.1
+    },
+    "_note": "Write VO as FULL SENTENCES (not keyword fragments). with-timestamps char-level timings drive the word-by-word captions."
+  },
+  "music": {
+    "engine": "ElevenLabs",
+    "prompt": "Lo-fi pop bed, 95-105 BPM, builds across sections (intro pad -> groove -> warm -> lo-fi build -> resolved). NOT cinematic, NOT moody. No melody hooks competing with VO. Instrumental only.",
+    "length_ms": 52000,
+    "force_instrumental": true,
+    "mix_profile": "VO-forward: vo loudnorm I=-15, music loudnorm I=-25 + volume 0.5, sidechaincompress duck, final alimiter limit=0.89, target ~-15 LUFS / -1 dBTP"
+  },
+  "captions": {
+    "method": "word-by-word burned from eleven_v3 with-timestamps (libass; Klap is the hosted equivalent)",
+    "style": "Inter/Arial 56 white + 4px outline, bottom-third (MarginV 360)",
+    "burned_last": true,
+    "suppress_on_scenes": [
+      3,
+      8,
+      10
+    ],
+    "_suppress_note": "slate/grid/CTA scenes carry their own on-screen text \u2014 two text layers collide."
+  },
+  "cutdowns": {
+    "source": "working/silent-master.mp4 (the ANIMATED master \u2014 NEVER a static intermediate)",
+    "rules": "trim short beats (never freeze); gently slow long beats (setpts, clamp <=1.6x); re-burn scaled captions (timestamps / vo_speedup, offset to new scene starts); suppress on 3/8/10",
+    "variants": {
+      "v1": "full 10-beat story, VO @1.25x (atempo), silences trimmed, ~30s \u2014 THE MAIN DELIVERABLE",
+      "v2": "hook-led montage: hook -> slate -> grid pulled forward -> rapid 4-product montage (number + product only) -> CTA, ~30s (>=4 cuts/10s)"
+    }
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "music bed under the VO in the style from choices.music (demo: lo-fi pop); off if the user chose no music"
+    },
+    "captions": {
+      "default": "on",
+      "note": "word-by-word burned captions (libass/Klap), default on"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "CTA + brand wordmark scene, default on"
+    }
+  }
+}

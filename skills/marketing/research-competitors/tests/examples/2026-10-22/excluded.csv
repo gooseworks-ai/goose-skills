@@ -1,0 +1,5 @@
+profile_url,name,headline,company,source_post_url,post_date,engagement_type,comment_text,engagement_date,retrieved_date,method,exclusion_reason
+https://www.linkedin.com/in/nila-fixture/,Nila Rao,Controller,Seabank Parts,https://www.linkedin.com/posts/billpilot_review-activity-101/,2026-10-10,comment,"I need to see who decided, not another score",2026-10-11,2026-10-22,supplied-export,duplicate person/post/type
+https://www.linkedin.com/in/seller-staff-fixture/,Sam Lee,Product lead,BillPilot,https://www.linkedin.com/posts/billpilot_export-activity-102/,2026-10-12,reaction,,2026-10-13,2026-10-22,supplied-export,"rival staff, supplied export"
+,Unknown,,Unknown,https://www.linkedin.com/posts/billpilot_export-activity-102/,2026-10-12,reaction,,2026-10-13,2026-10-22,supplied-export,missing profile URL
+https://www.linkedin.com/in/outside-fixture/,Terry Lane,Controller,Harbour Parts,https://www.linkedin.com/posts/other_post-activity-999/,2026-10-12,comment,Looks useful,2026-10-13,2026-10-22,supplied-export,not a selected source post

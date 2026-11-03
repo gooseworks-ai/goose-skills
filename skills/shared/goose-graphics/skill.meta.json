@@ -1,0 +1,20 @@
+{
+  "slug": "goose-graphics",
+  "category": "composites",
+  "version": "1.0.0",
+  "domain": "design",
+  "tags": [
+    "content",
+    "design",
+    "social",
+    "brand"
+  ],
+  "features": [
+    "Community-driven style catalog discovered via npx gooseworks styles list/search/get",
+    "Community-driven format catalog discovered via npx gooseworks formats list/search/get",
+    "Unsplash + ASCII image sourcing",
+    "Playwright PNG export",
+    "Image-to-style extraction with publish to the central catalog",
+    "Args-based slash command invocation"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "slug": "make-content-two-pass-edit",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.2",
+  "playbook": "make-content",
+  "tags": [
+    "content"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "ad-policy-check",
+    "claims-gate",
+    "make-content",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

@@ -18,7 +18,8 @@ test('draws the card at the size asked, with the logo file unchanged and a silen
   assert.ok(countColor(px, [224, 16, 32], 24) > 200, 'the red logo is drawn in its own colour');
 });
 
-test('a logo that does not contrast with the card sits on a plate, never recoloured', { skip }, async () => {
+test('1.1.0: a logo that does not contrast with the card sits on a plate, never recoloured', { skip }, async () => {
+  const { dir, mod } = await loadPart('end-card', '1.1.0');
   const { ctx } = makeCtx({ partDir: dir });
   const brand = await sampleBrand(ctx.workDir, { logoColor: '#f4f4f4', background: '#ffffff' });
   const out = await mod.run({ brand, width: 540, height: 960, seconds: 1 }, ctx);

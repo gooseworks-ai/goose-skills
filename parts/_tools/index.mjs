@@ -60,6 +60,7 @@ export function indexEntry(folder) {
     needs: manifest.needs,
     cost: manifest.cost,
     determinism: manifest.determinism,
+    ...(manifest.reuses_pieces_of !== undefined ? { reuses_pieces_of: manifest.reuses_pieces_of } : {}),
     path: `parts/${folder.id}/${folder.version}`,
     files,
     models: (manifest.needs && manifest.needs.models) || [],

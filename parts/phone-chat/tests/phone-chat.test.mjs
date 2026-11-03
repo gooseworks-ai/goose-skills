@@ -131,6 +131,10 @@ test('measure_only gives the chat length and counts from the plan, drawing, writ
   assert.equal(cg.words, cg2.words);
   assert.ok(cg.words >= 13, `answer words ${cg.words}`);
   assert.deepEqual([cg.messages, cg.photos], [2, 0]);
+  // Five two-line cascade notifications fit by folding the oldest, and the measure says so.
+  const cascade = Array.from({ length: 5 }, (_, i) => ({ id: `n${i + 1}`, on_screen: `Riya: Message ${i + 1}: we loved the demo and want to roll it out next quarter` }));
+  const nc = await mod.run({ skin: 'notification-cascade', scenes: [...cascade, { id: 'end', on_screen: 'Book a demo' }], ending_scenes: 1, brand_name: 'Gooseworks', plate: plans.imessage[0].image, measure_only: true }, ctx);
+  assert.deepEqual([nc.messages, nc.warnings], [5, ['When n5 arrives, n1 folds into a stack behind the newer banners, so the pile fits above the phone.']]);
   const { readdirSync } = await import('node:fs');
   assert.deepEqual(readdirSync(ctx.workDir).filter((f) => !['tmp', 'upload.png'].includes(f)), [], 'nothing is written');
   assert.deepEqual(readdirSync(ctx.tmpDir), []);

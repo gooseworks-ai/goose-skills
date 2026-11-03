@@ -1,0 +1,219 @@
+{
+  "_comment": "Kestrel Art Supply 'Swipe Your Color' stop-motion hand-swatch-cycle — THE WORKED EXAMPLE. Copy to config.json and edit. A ~16.6s vertical 9:16 stop-motion where a medium-tan hand swipes a Softline oil-pastel stick across a round off-white paper card on a saturated mustard-yellow background, cycling through the color family (~10 colors), exiting frame to reveal all 10 swatches, then returning on the hero pick (color 3), closing on a Kestrel end card. NO voiceover — a pre-sourced music track carries it. Pipeline: (1) ONE gpt-image-2 master-anchor plate (hand + stick + EMPTY paper card on yellow BG); (2) each color plate in gpt-image-2 EDIT mode anchored to [master-anchor, color-swatch, color-hero] — NEVER chained; (3) motion / half-painted transition plates + finale plates (hand-exits -> all-swatches -> hero-pick); (4) PNG->mp4 loop-encode at each plate's hold, concat-demux -> silent master; (5) Playwright HTML end card + brand music mux. Master 1080x1920 h264+aac, ~16.6s (13.6s body + 3.0s end card). See scripts/PIPELINE.md for the scripts. Creative fields -- background.hand, background.bg_hex/bg_desc, background.skin_patch (the test surface), anchor.prompt, the hero-pick plate and music.prompt/track -- come from the recipe's choices (hand, background, surface, hero variant, music); never copy them as defaults. Copy the structure and field names only.",
+  "brand_name": "Kestrel Art Supply",
+  "campaign": "Swipe Your Color",
+  "title": "Find your Softline color",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "crf": 18,
+  "duration_sec": 16.6,
+  "aspect_ratio": "9:16",
+  "background": {
+    "_comment": "Format constants held VERBATIM in EVERY plate prompt so the frame never moves — only the stick color + the painted swatch stripe change per plate.",
+    "bg_hex": "#E8C547",
+    "bg_desc": "saturated mustard-yellow (#E8C547) seamless paper background",
+    "hand": "single medium-tan hand (fingers + thumb, palm down, short unpainted nails) entering from the bottom edge in the LOWER-LEFT third, holding a Softline oil-pastel stick by its mid-section (chunky round stick in a kraft-paper sleeve, small printed 'kestrel' wordmark crisp, tip worn to a soft bevel)",
+    "skin_patch": "a round off-white textured paper card (~400px wide) in the UPPER-RIGHT third — the surface swatches are tested on, flat, cold-press texture, soft-shadowed, no markings",
+    "lighting": "editorial soft daylight, gentle matte highlights, top-down macro, 9:16 vertical, photorealistic product editorial, no text overlay",
+    "camera": "top-down editorial macro, LOCKED — no camera move, no zoom, no pan"
+  },
+  "anchor": {
+    "_comment": "The MASTER-ANCHOR plate. EVERY other plate is generated in gpt-image-2 EDIT mode anchored back to THIS plate (plus per-color swatch + hero refs) — NEVER chained plate-to-plate.",
+    "id": "master-anchor",
+    "out": "assets/plates-v3/v2-p01-hand-anchor.png",
+    "hero_ref": "source/product-photos/softline-03-hero.png",
+    "pose_hold_ms": 1600,
+    "prompt": "Top-down editorial macro on a saturated mustard-yellow (#E8C547) seamless paper background. In the LOWER-LEFT third, a single medium-tan hand enters from the bottom holding a Softline oil-pastel stick by its mid-section (chunky round stick in a kraft-paper sleeve, small printed 'kestrel' wordmark crisp, beveled tip toward upper-right). In the UPPER-RIGHT third, a round off-white textured paper card (~400px wide, flat, cold-press texture, soft-shadowed, no markings) — the surface swatches are tested on. Editorial soft daylight, gentle matte highlights. 9:16 vertical. Photorealistic product editorial. No text overlay."
+  },
+  "plate_engine": {
+    "_comment": "All plates + the end-card BG are gpt-image-2 via fal. EDIT mode: each color / motion / finale plate passes the master-anchor (`v2-p01-hand-anchor.png`) as the first EDIT anchor so the hand + crop + BG stay frozen; color plates ALSO pass that variant's real swatch + hero refs. NEVER pass a prior plate as the anchor.",
+    "provider": "fal",
+    "model": "gpt-image-2",
+    "mode": "edit",
+    "aspect_ratio": "9:16",
+    "always_anchor_master": true,
+    "never_chain": true,
+    "batch_size": 4
+  },
+  "cadence": {
+    "_comment": "Demo holds: half-painted / mid-swipe motion plates ~180ms; per-color plates ~380ms (some stretched to ~1000ms for a slower, more scannable cycle); the anchor + finale hero beats 1100-1800ms. HARD cuts between plates. Average ~380ms hold. 27 plate clips across the run.",
+    "motion_hold_ms": [
+      150,
+      250
+    ],
+    "shade_hold_ms": 380,
+    "shade_hold_ms_slow": 1000,
+    "hero_hold_ms": [
+      1100,
+      1800
+    ],
+    "cut_type": "hard"
+  },
+  "plates": [
+    {
+      "id": "master-anchor",
+      "beat_id": "hand-anchor-empty",
+      "phase": "intro",
+      "variant_slot": "none",
+      "pose_hold_ms": 1600,
+      "cut_type": "hard",
+      "anchors": [
+        "source/product-photos/softline-03-hero.png"
+      ],
+      "prompt": "MASTER-ANCHOR — hand holding the stick in the lower-left, EMPTY paper card in the upper-right, on the mustard-yellow BG. See config.anchor.prompt."
+    },
+    {
+      "id": "empty-swipe-demo",
+      "beat_id": "empty-swipe-demo",
+      "phase": "intro",
+      "variant_slot": "none",
+      "pose_hold_ms": 280,
+      "cut_type": "hard",
+      "anchors": [
+        "assets/plates-v3/v2-p01-hand-anchor.png"
+      ],
+      "prompt": "Same locked frame. The hand extends slightly toward the paper card, the stick tip hovering ~30mm above the card (about to swipe). No swatch yet. Preview gesture."
+    },
+    {
+      "id": "shade-01",
+      "beat_id": "swatch-shade-01",
+      "phase": "cycle",
+      "variant_slot": "shade",
+      "cycle_index": 1,
+      "pose_hold_ms": 380,
+      "cut_type": "hard",
+      "anchors": [
+        "assets/plates-v3/v2-p01-hand-anchor.png",
+        "source/swatches/softline-01-swatch.jpg",
+        "source/product-photos/softline-01-hero.png"
+      ],
+      "prompt": "Same locked frame. NEW: a thick waxy swatch stripe in COLOR 1 (pale butter yellow) swiped horizontally across the center of the paper card. The hand now holds the COLOR 1 stick. Only the color changed."
+    },
+    {
+      "id": "swipe-01",
+      "beat_id": "half-painted-02",
+      "phase": "cycle",
+      "variant_slot": "shade",
+      "pose_hold_ms": 180,
+      "cut_type": "hard",
+      "anchors": [
+        "assets/plates-v3/v2-p01-hand-anchor.png"
+      ],
+      "prompt": "Same locked frame, captured MID-SWIPE — the stick tip touches the card, the color 2 fresh swatch about half-painted, slight diagonal hand motion. Transition plate."
+    },
+    {
+      "id": "shade-02",
+      "beat_id": "swatch-shade-02",
+      "phase": "cycle",
+      "variant_slot": "shade",
+      "cycle_index": 2,
+      "pose_hold_ms": 380,
+      "cut_type": "hard",
+      "anchors": [
+        "assets/plates-v3/v2-p01-hand-anchor.png",
+        "source/swatches/softline-02-swatch.jpg",
+        "source/product-photos/softline-02-hero.png"
+      ],
+      "prompt": "Same locked frame. The swatch on the card is REPLACED with COLOR 2 (warm apricot); the hand holds the COLOR 2 stick. Same crop, same light — only the color changed."
+    },
+    {
+      "id": "shade-N",
+      "beat_id": "swatch-shade-N",
+      "phase": "cycle",
+      "variant_slot": "shade",
+      "cycle_index": 99,
+      "pose_hold_ms": 380,
+      "cut_type": "hard",
+      "anchors": [
+        "assets/plates-v3/v2-p01-hand-anchor.png",
+        "source/swatches/softline-N-swatch.jpg",
+        "source/product-photos/softline-N-hero.png"
+      ],
+      "prompt": "Repeat one {color plate + half-painted-transition} pair per color in the family (the demo ran 10 colors: 01-10 → ~24 cycle plates). Same locked frame throughout, each color EDIT-anchored to the master-anchor + its own swatch + hero."
+    },
+    {
+      "id": "hand-exits",
+      "beat_id": "hand-exits-reveal",
+      "phase": "finale",
+      "variant_slot": "none",
+      "pose_hold_ms": 1200,
+      "cut_type": "hard",
+      "anchors": [
+        "assets/plates-v3/v2-p01-hand-anchor.png",
+        "source/swatches/softline-all-colors-family.jpg"
+      ],
+      "prompt": "Same locked frame, but the HAND EXITS the frame, revealing ALL 10 swatch stripes stacked on the paper card. Grounded on the all-colors family reference."
+    },
+    {
+      "id": "all-swatches",
+      "beat_id": "all-swatches-reveal",
+      "phase": "finale",
+      "variant_slot": "none",
+      "pose_hold_ms": 1400,
+      "cut_type": "hard",
+      "anchors": [
+        "assets/plates-v3/v2-p01-hand-anchor.png",
+        "source/swatches/softline-all-colors-family.jpg"
+      ],
+      "prompt": "The full 10-swatch family on the card, no hand — the 'here's everything' reveal beat. Holds so the viewer scans for their favorite."
+    },
+    {
+      "id": "hero-pick",
+      "beat_id": "hero-pick-finale",
+      "phase": "finale",
+      "variant_slot": "shade",
+      "pose_hold_ms": 1800,
+      "cut_type": "hard",
+      "anchors": [
+        "assets/plates-v3/v2-p01-hand-anchor.png",
+        "source/product-photos/softline-03-hero.png"
+      ],
+      "prompt": "The hand RETURNS holding the HERO pick (COLOR 3), the other 9 swatches still visible underneath. The payoff — 'this one is yours'. Hero hold."
+    }
+  ],
+  "end_card": {
+    "_comment": "A Kestrel end card: a gpt-image-2 hero BG (endcard-bgs/color-hero.png) + a Playwright render of end-card-template-v3.html (serif tagline + sans subtitle + the Kestrel logo SVG) — NEVER AI-rendered text. Holds 3.0s WITH the music still playing under it, fade at the tail (no silent tail).",
+    "engine": "gpt-image-2-bg + playwright-html",
+    "bg_image": "assets/endcard-bgs/color-hero.png",
+    "template": "working/end-card-template-v3.html",
+    "logo_svg": "source/kestrel-logo-black.svg",
+    "tagline": "Swipe your color.",
+    "subtitle": "Softline Pastels · kestrelart.example",
+    "hold_sec": 3.0,
+    "audio_fade_out_sec": 0.5
+  },
+  "music": {
+    "_comment": "Pre-sourced brand track (brand-track.mp3, ~128 BPM instrumental). Volume 0.4, fade in/out. NO VO. `source` = generate would call create-music-elevenlabs music_v1 from `prompt` (no artist names — ElevenLabs ToS filter).",
+    "source": "brand_supplied",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "track": "source/music/brand-track.mp3",
+    "prompt": "Upbeat, bright, playful instrumental pop, ~128 BPM, light percussion, clean modern art-studio energy. No vocals.",
+    "volume": 0.4,
+    "fade_in_sec": 0.3,
+    "fade_out_sec": 0.5
+  },
+  "audio_mix": {
+    "_comment": "The music is the full bed — no VO to duck under. It plays UNDER the end card and fades over the tail, so the video ends WITH the music — no trailing silence.",
+    "duck_under_vo": false,
+    "audio_over_end_card": true,
+    "audio_fade_out_sec": 0.5,
+    "body_end_s": 13.6,
+    "master_duration_s": 16.6
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "the pre-sourced brand-track track IS the bed (no VO), volume 0.4, fade in/out"
+    },
+    "captions": {
+      "default": "off",
+      "note": "the swatch cycle reads visually; on-screen type is only the end-card tagline/subtitle"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "hero-BG + HTML-template card (serif 'Swipe your color.' + sans subtitle + Kestrel logo SVG), music under it, fade tail (no silent tail)"
+    }
+  }
+}

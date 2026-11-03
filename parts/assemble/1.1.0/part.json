@@ -1,0 +1,818 @@
+{
+  "$schema": "../../_contract/part-manifest.schema.json",
+  "interface": 1,
+  "id": "assemble",
+  "version": "1.1.0",
+  "kind": "compose",
+  "title": "Assemble scenes",
+  "summary": "Joins scene clips and stills in order into one cut of one size and frame rate, with exact frame counts and hard cuts; can time each picture to a voice or song, join an end card, push stills slowly in and add a grain look.",
+  "runtime": "node",
+  "entry": "part.mjs",
+  "files": [
+    "README.md",
+    "part.mjs"
+  ],
+  "kit": ">=1.0.0 <2.0.0",
+  "needs": {
+    "browser": false,
+    "ffmpeg": {
+      "filters": [
+        "fps",
+        "scale",
+        "crop",
+        "pad",
+        "setsar",
+        "tpad",
+        "trim",
+        "setpts",
+        "format",
+        "concat",
+        "aresample",
+        "aformat",
+        "apad",
+        "atrim",
+        "anullsrc",
+        "zoompan",
+        "eq",
+        "hqdn3d",
+        "noise"
+      ],
+      "encoders": [
+        "libx264",
+        "aac"
+      ]
+    },
+    "network": false,
+    "models": [],
+    "disk_mb": 800
+  },
+  "inputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "clips",
+      "width",
+      "height"
+    ],
+    "properties": {
+      "clips": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 60,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "video": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "video"
+              }
+            },
+            "image": {
+              "type": "object",
+              "x-kit-file": {
+                "media": "image"
+              }
+            },
+            "in_s": {
+              "description": "Where the cut starts in its clip. Default 0.",
+              "type": "number",
+              "minimum": 0
+            },
+            "seconds": {
+              "description": "Length of the cut. Default: the rest of the clip. Required for a still.",
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 300
+            }
+          }
+        }
+      },
+      "width": {
+        "type": "integer",
+        "minimum": 16,
+        "maximum": 4096
+      },
+      "height": {
+        "type": "integer",
+        "minimum": 16,
+        "maximum": 4096
+      },
+      "fps": {
+        "description": "Default 30.",
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 60
+      },
+      "fit": {
+        "description": "cover crops to fill (default); contain pads.",
+        "enum": [
+          "cover",
+          "contain"
+        ]
+      },
+      "background": {
+        "description": "Pad colour for contain. Default black.",
+        "type": "string",
+        "pattern": "^(#[0-9A-Fa-f]{6}|black|white)$"
+      },
+      "clip_audio": {
+        "description": "drop (default) or keep each clip's own sound, with silence under stills and the end card.",
+        "enum": [
+          "drop",
+          "keep"
+        ]
+      },
+      "spans": {
+        "description": "Where each scene's line is in the voice or song (step.<voice>.scenes), matched to clips by id. Each clip then starts on its span's start (the first at 0) and runs to the next one; the last runs to its span's end plus tail_s. A clip's seconds is not used.",
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 60,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "start_s",
+            "end_s"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "start_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end_s": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "silent": {
+        "description": "With spans: what a clip with no span (a scene with no line) gets. share_previous (default) splits the voiced clip before it evenly; fixed gives it seconds (default 1) of that clip.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "enum": [
+              "share_previous",
+              "fixed"
+            ]
+          },
+          "seconds": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          }
+        }
+      },
+      "speech": {
+        "description": "Copied into the output timeline (held to its length), so captions need no transcription.",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "text",
+            "start_s",
+            "end_s"
+          ],
+          "properties": {
+            "scene_id": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "spoken": {
+              "type": "string"
+            },
+            "start_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end_s": {
+              "type": "number",
+              "minimum": 0
+            },
+            "words": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "text",
+                  "start_s",
+                  "end_s"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "start_s": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "end_s": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        },
+        "description": "The clips' own timeline. Without spans the clips are already cut: its scenes, speech and safe zones are kept (scenes and zones moved onto the cut). With spans only its speech is used, when speech is not given."
+      },
+      "ending": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        },
+        "description": "The end card, joined with a hard cut and marked as timeline.end_card. Never graded."
+      },
+      "ending_timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        },
+        "description": "The end card's timeline: its logo safe zone is moved onto the cut and kept."
+      },
+      "ending_fills": {
+        "description": "after (default): the card follows the last cut. last_span (needs spans): the card takes the last span's place, from its start to its end plus tail_s, never shorter than the card.",
+        "enum": [
+          "last_span",
+          "after"
+        ]
+      },
+      "tail_s": {
+        "description": "With spans: how long the last picture holds after its span ends. Default 0.25.",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 5
+      },
+      "motion": {
+        "description": "stills: ken_burns pushes every still slowly in, centred, from 1.0 to `to` (default 1.05) over its cut. Clips and the end card never move.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {
+          "stills": {
+            "enum": [
+              "none",
+              "ken_burns"
+            ]
+          },
+          "to": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1.5
+          }
+        }
+      },
+      "grade": {
+        "description": "A finish on every body cut (never the end card). phone-grain: slight contrast, less colour, fine moving grain. phonecam: a 720p phone softness with grain. Grain looks cap the encode at 8 Mbps.",
+        "enum": [
+          "none",
+          "phone-grain",
+          "phonecam"
+        ]
+      }
+    }
+  },
+  "outputs": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "video",
+      "seconds",
+      "timeline"
+    ],
+    "properties": {
+      "video": {
+        "type": "object",
+        "x-kit-file": {
+          "media": "video"
+        }
+      },
+      "seconds": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "timeline": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "duration_s",
+          "width",
+          "height",
+          "fps",
+          "scenes",
+          "speech"
+        ],
+        "properties": {
+          "duration_s": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "scenes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "speech": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "text",
+                "start_s",
+                "end_s"
+              ],
+              "properties": {
+                "scene_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "spoken": {
+                  "type": "string"
+                },
+                "start_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "end_s": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text",
+                      "start_s",
+                      "end_s"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "start_s": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_s": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "end_card": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start_s",
+              "end_s"
+            ],
+            "properties": {
+              "start_s": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_s": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "safe_zones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "use",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "use": {
+                  "enum": [
+                    "captions",
+                    "logo"
+                  ]
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "basis": "free"
+  },
+  "determinism": "pure",
+  "timing": {
+    "typical_s": 30,
+    "timeout_s": 1200
+  },
+  "retry": {
+    "transient": 1
+  },
+  "replaces": [
+    "stitch-videos-ffmpeg"
+  ]
+}

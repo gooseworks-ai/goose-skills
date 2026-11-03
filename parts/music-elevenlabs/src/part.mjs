@@ -1,3 +1,5 @@
+// music-elevenlabs 1.1.0: asks for music_v2_5 by name (ElevenLabs' default is still
+// music_v1, so the model is always sent explicitly; see POST /v1/music `model_id`).
 // music-elevenlabs: an instrumental bed from ElevenLabs Music. Replaces the
 // create-music-elevenlabs atom: the same request (POST /v1/music with prompt,
 // music_length_ms and force_instrumental, plus the model_id the line checks),
@@ -8,7 +10,7 @@
 import { join } from 'node:path';
 import { kitCheckInputs, kitCheckOutputs, kitFfmpeg, kitNum } from '../../_lib/part.mjs';
 
-const MODEL = 'music_v1';
+const MODEL = 'music_v2_5';
 
 export async function run(inputs, ctx) {
   const manifest = await kitCheckInputs(ctx, inputs);

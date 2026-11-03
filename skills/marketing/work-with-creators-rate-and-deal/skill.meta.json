@@ -1,0 +1,15 @@
+{
+  "slug": "work-with-creators-rate-and-deal",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "work-with-creators",
+  "tags": [
+    "social",
+    "outreach"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "work-with-creators"
+  ]
+}

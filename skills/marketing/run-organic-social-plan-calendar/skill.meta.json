@@ -1,0 +1,22 @@
+{
+  "slug": "run-organic-social-plan-calendar",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "run-organic-social",
+  "tags": [
+    "social",
+    "content"
+  ],
+  "standalone": false,
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

@@ -3,7 +3,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { file, timeline } from '../../_tools/schemas.mjs';
 
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 const folder = join(dirname(fileURLToPath(import.meta.url)), '..', VERSION);
 const walk = (dir) => readdirSync(dir).flatMap((n) => (statSync(join(dir, n)).isDirectory() ? walk(join(dir, n)) : [relative(folder, join(dir, n))]));
 const files = walk(folder).filter((f) => f !== 'part.json' && !f.endsWith('.DS_Store')).sort();
@@ -82,7 +82,7 @@ export const manifest = {
       crossfade_ms: { description: 'Crossfade into the end card, rounded to whole frames; under one frame is a straight cut. Default 300.', type: 'integer', minimum: 0, maximum: 2000 },
       fps: { description: 'Default 30.', type: 'integer', minimum: 10, maximum: 60 },
       measure_only: {
-        description: "Measure the plan without drawing it: the chat's length and counts from the same code the render uses. Nothing is drawn, written or ordered. Default false.",
+        description: "Measure the plan without drawing it: the chat's length and counts, and what the skin fits (warnings), from the same code the render uses. Nothing is drawn, written or ordered. Default false.",
         type: 'boolean',
       },
       aspect: { description: 'Default 9:16. The screen is drawn at 1080 on the short side.', enum: ['9:16', '1:1', '4:5', '16:9'] },
@@ -109,6 +109,13 @@ export const manifest = {
         minimum: 0,
       },
       photos: { description: 'measure_only: the photos the chat shows.', type: 'integer', minimum: 0 },
+      warnings: {
+        description:
+          "measure_only, only when the skin changed something so the plan fits: the cascade folding its oldest banners into a stack, a body wrapping past two lines, a word broken across lines, a name cut with an ellipsis, a ChatGPT question scrolling in its composer. Each in plain words naming the scene.",
+        type: 'array',
+        maxItems: 50,
+        items: { type: 'string', minLength: 1, maxLength: 300 },
+      },
     },
     oneOf: [
       { description: 'A render.', required: ['video', 'timeline'] },

@@ -1,0 +1,79 @@
+# Pipeline — song-driven music-video
+
+How `config.example.json` maps to the real production steps. This molecule ships a
+**config + this map**, not a bundled runner: the worked example (Fernhollow "Bring The Green
+Back Home") was produced by the control-plane orchestrator, whose per-step scripts lived
+in the demo run's `working/` folder (not shipped). Drive
+the whole run via `video-orchestrator-with-control-plane`.
+
+**Creative values are choices, not defaults.** The visual style (`look_pack`,
+`clip_engine.motion_opener`), song genre / vocalist / mood (`song.prompt`, `song.bpm`, lyrics),
+protagonist (`look_pack.style_opener`) and setting (`tableaux[].keyframe_prompt`) come from the
+recipe's `choices`. The Fernhollow values in `config.example.json` (paper-craft rainy morning, bedroom-pop,
+airy male vocal, young-man paper-doll, grey apartment → paper indoor jungle) are one worked example.
+
+The five steps run **in order** because each depends on the last: the song sets the
+timeline, the timeline + look pack drive the keyframes, the keyframes seed the clips, the
+song's word timings drive the captions, and assembly stitches all of it.
+
+## 1. Song → ElevenLabs `music_v1`  (config: `song`)  [PAID]
+
+**Generate the song FIRST — it sets the timeline.** Feed `song.structure` (the
+intro/verse/pre-chorus/chorus/outro sections, each with `duration_ms` + exact `lines`) and
+`song.prompt` (genre + vocalist + mood from the choices) to ElevenLabs `music_v1`. The call returns:
+- `audio/music.mp3` — the sung track (the narration; **no separate VO**).
+- `audio/music_metadata.json` — the `composition_plan` echo **plus `words_timestamps`**
+  (word-level start/end in ms).
+- `audio/words.json` — the word timings normalized to seconds (used by captions).
+
+Then derive `working/timeline.json` — `[tableauId, tStart, tEnd]` per beat — by snapping
+each tableau boundary to the lyric-phrase edges in the returned word timings. The hook
+word (`song.hook_word`; demo: "green" at ~15.24s) lands on the chorus drop; the HOOK_HERO tableau
+(demo: T08 — set `audio_mix.climax_beat_id` to this run's id) is timed to it. No artist names in `song.prompt` (ElevenLabs ToS filter).
+
+## 2. Keyframes → Higgsfield `gpt_image_2`  (config: `tableaux[].keyframe_prompt`, `look_pack`, `keyframe_engine`)  [PAID]
+
+`working/render_keyframes.py` reads the scene list and, per tableau, builds the prompt as
+`look_pack.style_opener + tableaux[i].keyframe_prompt + look_pack.negative_tail`, then calls
+`higgsfield generate create gpt_image_2 --aspect_ratio 9:16 --resolution 2k --wait --json`.
+Parallel batches of 3 (Higgsfield burst-credit reserve). One PNG per beat → `keyframes/<id>/v1.png`
+(2k 9:16 ≈ 1520×2688). Idempotent — skips beats that already have a keyframe. The single
+`look_pack` is what makes N beats read as one film; review all N before step 3.
+
+## 3. Clips → Higgsfield `kling3_0` i2v  (config: `tableaux[].motion_hint`, `clip_engine`)  [PAID]
+
+`working/render_clips.py` reads each keyframe + its `motion_hint`, builds the prompt as
+`clip_engine.motion_opener + motion_hint`, and calls
+`higgsfield generate create kling3_0 --start-image keyframes/<id>/v1.png --duration 5 --wait --json`.
+One ~5s clip per beat → `clips/<id>/v1.mp4`. Batches of 3; stops cleanly on
+`not_enough_credits`. Kling 3.0 (not Seedance) held the demo's paper-craft register and the
+character-face discipline through the motion.
+
+## 4. Captions → `build_captions_v2.py`  (config: `captions`)
+
+`working/build_captions_v2.py` reads `audio/words.json` (the song's OWN word timings — **not
+Whisper**; Whisper on sung audio returns "🎵 Music Playing 🎵"). It hand-chunks ~3 words at
+lyric-phrase boundaries, times each caption event to its first/last word, and colors
+`captions.accent_words` in `accent_color` against `base_color` (demo: warm-glow #FFD89C on
+cream #F5EDE0), lower-third Georgia italic → `finals/master-final-v2.ass`. In the demo the final
+outro "back home again" is intentionally left uncaptioned so it doesn't double-stack with
+the end-card tagline overlay.
+
+## 5. End card + assembly → `build_end_card.py` + `promote_master*.py`  (config: `end_card`, `audio_mix`)
+
+- `working/build_end_card.py` composites the brand lockup via **PIL** from the REAL brand
+  asset (demo: `brand-assets/logo-mark-1024.png`, the logo mark from the brand kit): brand
+  gradient from the brand kit (demo: fern green) + soft paper leaves + circular logo mark with a warm-glow halo + "Fernhollow" wordmark
+  (Georgia Bold) + tagline (Georgia Italic) + CTA → `working/end-card.png`.
+  **Never AI-render brand text** (LEARNINGS L4 — a diffusion model garbles a wordmark).
+- Assembly (`working/promote_master.py` → `_v2` → `_v3`, the version chain): cut each clip
+  to its lyric window from `timeline.json`, hard-concat on the beat (one match-cut into the HOOK_HERO tableau),
+  burn the caption ASS via libass, overlay the PIL end card on the final window
+  (`end_card.overlay_window_sec` = 26.24–28.0), mux `audio/music.mp3`, boost the climax beat
+  (`audio_mix.climax_boost_db` on `audio_mix.climax_beat_id`), and loudnorm to `audio_mix.loudness_lufs` (−14 LUFS).
+  Output → `renders/master-v3.mp4` (1080×1920, 30fps, h264+aac, 28s). The `promote_master*.py`
+  scripts also register the render into `production/asset-manifest.json`,
+  `production/render-outputs.json`, and `history/versions.json` for the control-plane app.
+
+Re-cuts (new caption chunking, swapped end card, re-timed windows) reuse the existing
+keyframes/clips/song and spend nothing — only steps 1–3 spend.

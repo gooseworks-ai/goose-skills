@@ -1,0 +1,300 @@
+{
+  "_comment": "Fernhollow 'Bring The Green Back Home' song-driven music-video \u2014 Worked example (the Fernhollow paper-craft houseplant build). Creative fields \u2014 song.prompt, song.bpm, song.structure[].lines / lyrics_md / hook_line / hook_word, look_pack (name, style_opener incl. the protagonist, palette_anchors, negative_tail), clip_engine.motion_opener, tableaux[] (keyframe_prompt, motion_hint, caption), captions.accent_words, audio_mix.climax_beat_id (plus brand_name/title/campaign/end_card, which come from the brand) \u2014 come from the recipe's choices (visual_style, song_genre, vocalist, mood, protagonist, setting); never copy them as defaults. Copy to config.json and edit. A ~28s paper-craft (PAPER_BLOOM_MORNING) 9:16 music video where a GENERATED SUNG SONG carries the whole narrative (NO separate VO). Pipeline: (1) ElevenLabs music_v1 song from song.structure -> mp3 + words.json; (2) one Higgsfield gpt_image_2 keyframe per tableau (2k 9:16, one look_pack); (3) one Higgsfield kling3_0 i2v clip per tableau; (4) captions from the song's WORD timings, hook word landing on the chorus drop; (5) hard-cut assembly + PIL brand end card + song mux, -14 LUFS. Master 1080x1920 (keyframes rendered at 2k ~= 1520x2688 then downscaled in assembly). See scripts/PIPELINE.md for the source scripts.",
+  "brand_name": "Fernhollow",
+  "campaign": "bring the green back home",
+  "title": "Bring The Green Back Home",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_sec": 28,
+  "keyframe_resolution": "2k",
+  "aspect_ratio": "9:16",
+  "song": {
+    "_comment": "prompt/bpm/structure lines below are the DEMO song (bedroom-pop, airy male vocal, ~80 BPM) \u2014 build them from choices.song_genre + choices.vocalist + choices.mood. Generated FIRST. The song carries the narration \u2014 there is NO separate voiceover. The delivered track sets the timeline; snap every tableau boundary to its lyric window (record the windows in working/timeline.json). No artist names in the prompt (ElevenLabs Music ToS filter).",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "lyrics_md": "source/lyrics-locked.md",
+    "bpm": 80,
+    "prompt": "Breezy bedroom-pop with a warm, airy male lead vocal. Tape-soft synth pads, plucked kalimba arpeggios, brushed-snare shuffle, warm low-end. Verse: piano + hushed vocal. Pre-chorus: pads build, soft strings enter. Chorus: full airy lift, vocal floats over bright synths, hook lands on the word 'green'. Outro: stripped back to kalimba and breath.",
+    "force_instrumental": false,
+    "hook_line": "bring the green back home again",
+    "hook_word": "green",
+    "hook_target_sec": 15.24,
+    "structure": [
+      {
+        "section": "Intro",
+        "duration_ms": 3000,
+        "lines": []
+      },
+      {
+        "section": "Verse",
+        "duration_ms": 7000,
+        "lines": [
+          "grey on grey and the blinds pulled low",
+          "four white walls and the days go slow"
+        ]
+      },
+      {
+        "section": "Pre-Chorus",
+        "duration_ms": 5000,
+        "lines": [
+          "then a box at the door, so small",
+          "and a sprout starts to climb the wall"
+        ]
+      },
+      {
+        "section": "Chorus",
+        "duration_ms": 8000,
+        "lines": [
+          "bring the green back home again",
+          "leaves unfold where the grey room ends",
+          "fern-hollow, fern-hollow, let it in"
+        ]
+      },
+      {
+        "section": "Outro",
+        "duration_ms": 5000,
+        "lines": [
+          "bring the green back home again"
+        ]
+      }
+    ],
+    "outputs": {
+      "audio": "audio/music.mp3",
+      "word_timings": "audio/words.json",
+      "metadata": "audio/music_metadata.json"
+    }
+  },
+  "look_pack": {
+    "_comment": "DEMO look pack (paper-craft rainy morning that blooms green, young-man paper-doll protagonist). Build ONE pack per run from choices.visual_style + choices.protagonist + the brand palette.",
+    "name": "PAPER_BLOOM_MORNING",
+    "palette_anchors": [
+      "rainy-day grey",
+      "cream paper",
+      "sage",
+      "fern green",
+      "terracotta",
+      "pale lemon",
+      "diffused window glow"
+    ],
+    "style_opener": "A soft PAPER-CRAFT DIORAMA tableau on a quiet morning. Layered cut-paper construction-paper shapes with visible scissor-cut edges and crisp paper shadows, lit by soft diffused window light rather than harsh sun. Muted palette that warms as the story goes (rainy-day grey, cream, sage, fern green, terracotta, pale lemon, soft sky). Tiny paper raindrops, paper clouds, paper leaves. Cozy miniature-world quality \u2014 like a child's storybook diorama lit by a single desk lamp. When the protagonist appears, he is a young man paper-doll figure with short curly chestnut paper hair, soft 3D modeling on hair + head (NOT flat 2D silhouette). MINIMAL FACE DISCIPLINE: lidded/closed soft paper eyes, NO mouth, NO nose, NO eyebrows \u2014 face is just hair-frame + a hint of eye-curve.",
+    "negative_tail": "NO photoreal humans, NO photorealism, NO 3D render of the world itself (figure may have soft 3D hair only), NO AI-illustration look, NO smooth digital painting, NO oil-painting look, NO saturated neon colors, NO neon, NO harsh shadows, NO harsh midday sun, NO mouth on figure, NO nose on figure, NO text or words in the image. Vertical 9:16 composition."
+  },
+  "keyframe_engine": {
+    "provider": "higgsfield",
+    "model": "gpt_image_2",
+    "resolution": "2k",
+    "aspect_ratio": "9:16",
+    "batch_size": 3
+  },
+  "clip_engine": {
+    "_comment": "motion_opener below is the DEMO's paper-craft wording \u2014 rewrite it to keep choices.visual_style (clay stays clay, watercolor stays watercolor).",
+    "provider": "higgsfield",
+    "model": "kling3_0",
+    "duration_sec": 5,
+    "batch_size": 3,
+    "motion_opener": "Subtle paper-craft diorama motion. Tiny micro-drift, soft breath, very slow subtle camera push or pulse. Paper textures hold. NO smooth AI-camera glide, NO photoreal CGI swoop, NO sudden movement, NO morphing. "
+  },
+  "captions": {
+    "_comment": "Built from the song's OWN word timings (song.outputs.word_timings), NOT Whisper. Chunk ~3 words at natural lyric-phrase boundaries; accent words get the warm-glow color. The final outro 'back home again' is intentionally NOT captioned \u2014 the end-card overlay carries the tagline instead.",
+    "source": "audio/words.json",
+    "style": "lower_third_serif_italic",
+    "font": "Georgia",
+    "font_size": 56,
+    "base_color": "#F5EDE0",
+    "accent_color": "#FFD89C",
+    "accent_words": [
+      "green",
+      "bring",
+      "home",
+      "again",
+      "box",
+      "sprout",
+      "leaves",
+      "unfold",
+      "grey",
+      "fern-hollow"
+    ],
+    "chunk_words": 3
+  },
+  "tableaux": [
+    {
+      "id": "T01",
+      "role": "INTRO",
+      "t_start": 0.0,
+      "t_end": 3.179,
+      "lyric_anchor": "(instrumental intro)",
+      "caption": "",
+      "keyframe_prompt": "Paper-craft studio-apartment diorama on a rainy morning, viewed from above. A paper-doll figure sits on a cut-paper sofa in a flat grey room, knees pulled up. Paper blinds hang half-closed over a small paper-cut window streaked with tiny paper raindrops. Bare grey paper walls, one empty paper shelf. The greyness is the hero.",
+      "motion_hint": "Paper raindrops slide slowly down the window. The blinds sway ever so slightly."
+    },
+    {
+      "id": "T02",
+      "role": "PERSONAL_BEAT_1",
+      "t_start": 3.179,
+      "t_end": 6.299,
+      "lyric_anchor": "grey on grey, and the blinds pulled low",
+      "caption": "grey on grey and the / blinds pulled low",
+      "keyframe_prompt": "Close-up on the paper-doll's paper face, lit flat grey by the window, head tilted in soft boredom. A tiny ink-doodle rain cloud hovers above the head, dripping hand-drawn ink drops. Sage paper cushion beneath.",
+      "motion_hint": "The ink cloud drifts and drips. The figure's head sinks a little lower."
+    },
+    {
+      "id": "T03",
+      "role": "PERSONAL_BEAT_2",
+      "t_start": 6.299,
+      "t_end": 8.319,
+      "lyric_anchor": "four white walls, and the days go slow",
+      "caption": "four white walls and the",
+      "keyframe_prompt": "Macro overhead on a paper wall calendar \u2014 paper squares for each day flip past in a blur, every one the same pale grey. A paper hand cuts in from the bottom right edge of frame. Soft grey window light fills the negative space around the calendar.",
+      "motion_hint": "The paper calendar pages flip upward in a continuous loop, blurring slightly. The paper hand is still."
+    },
+    {
+      "id": "T04",
+      "role": "WIDE_ENSEMBLE",
+      "t_start": 8.319,
+      "t_end": 10.34,
+      "lyric_anchor": "(end of verse)",
+      "caption": "days go slow",
+      "keyframe_prompt": "Wide pull-back \u2014 the paper-craft apartment sits inside a much larger grey paper-craft apartment block, a diorama-within-a-diorama. Rows of identical grey paper windows. One empty terracotta paper flowerpot on the figure's sill is the only warm color. Paper rain falls across the whole block. Sense of scale: tiny figure, vast grey city.",
+      "motion_hint": "Very slow continuous pull-back. The paper rain keeps falling. One far window flickers once."
+    },
+    {
+      "id": "T05",
+      "role": "KINETIC_CLOSE_1",
+      "t_start": 10.34,
+      "t_end": 12.639,
+      "lyric_anchor": "then a box at the door, so small",
+      "caption": "then a box / at the door, so small",
+      "keyframe_prompt": "Tight close-up of the paper doorway: a small cut-paper parcel box stamped with a tiny Fernhollow mark (a cream fern leaf on a sage circle) sits on the paper doormat. The paper hand lifts the lid, and a small ripple of paper leaf-confetti radiates outward.",
+      "motion_hint": "The hand lifts the lid, the box flexes open. Paper leaves spill outward in a soft ripple."
+    },
+    {
+      "id": "T06",
+      "role": "KINETIC_CLOSE_2",
+      "t_start": 12.639,
+      "t_end": 14.059,
+      "lyric_anchor": "and a sprout starts to climb",
+      "caption": "and a sprout starts",
+      "keyframe_prompt": "Macro on the open box \u2014 a tiny paper-craft fern in a terracotta paper pot sits inside, fronds curled tight. Sage and fern green. The grey room behind recedes into blur.",
+      "motion_hint": "The paper fern fronds uncurl one by one. A paper butterfly-shape flutters past."
+    },
+    {
+      "id": "T07",
+      "role": "SUSPENDED_TIME",
+      "t_start": 14.059,
+      "t_end": 15.239,
+      "lyric_anchor": "the wall",
+      "caption": "to climb the wall",
+      "keyframe_prompt": "Slow-motion abstract beat \u2014 paper vines in sage and fern green climb upward across a grey paper wall. Paper-cut leaves pop into existence one at a time. Tiny hand-drawn ink doodle sparkles burst at intervals. A frozen-time quality. Pure pattern, no character.",
+      "motion_hint": "Vines climb slowly upward. Leaves pop in. Sparkles burst and fade. Frozen-time. (Match-cut into the hero reveal.)"
+    },
+    {
+      "id": "T08",
+      "role": "HOOK_HERO",
+      "t_start": 15.239,
+      "t_end": 18.579,
+      "lyric_anchor": "bring the green back home again",
+      "caption": "bring the green",
+      "is_hook": true,
+      "keyframe_prompt": "HERO FRAME. The grey apartment walls have folded away like paper opening up \u2014 the paper-doll figure now stands in a lush paper indoor jungle. Paper monstera leaves, trailing paper ivy and paper ferns in terracotta pots fill every shelf. Soft morning light pours through a big paper window, paper light-rays falling across the floor. The figure is small in frame, the GREENERY is the hero. Cinematic dolly-out composition.",
+      "motion_hint": "Subtle dolly-out reveals more of the jungle. Leaves sway gently. The light-rays shimmer in sequence to the beat."
+    },
+    {
+      "id": "T09",
+      "role": "KINETIC_PEAK",
+      "t_start": 18.579,
+      "t_end": 20.459,
+      "lyric_anchor": "leaves unfold where the grey room ends",
+      "caption": "back home again / leaves unfold where",
+      "keyframe_prompt": "Slow aerial pan over the paper apartment block from a higher angle. Every paper window now spills paper greenery. Paper vines drape down the facade. A tiny paper rooftop garden with a paper watering can. Paper trees with sage paper leaves. The whole block is alive in fresh green light.",
+      "motion_hint": "Slow continuous aerial pan forward, low altitude. Vines sway. The watering can tips once. Windows bloom one after another."
+    },
+    {
+      "id": "T10",
+      "role": "PRODUCT_HERO",
+      "t_start": 20.459,
+      "t_end": 22.34,
+      "lyric_anchor": "fern-hollow, fern-hollow",
+      "caption": "the grey room ends",
+      "keyframe_prompt": "PRODUCT HERO \u2014 the paper parcel box alone, centered, floating in soft light against a sage paper background, lid open, the potted paper fern rising out of it. A paper Fernhollow wordmark hovers in soft cream above the box. Single key-light from above.",
+      "motion_hint": "The box rotates a few degrees on its axis. The fern fronds sway softly. The light shifts angle gently."
+    },
+    {
+      "id": "T11",
+      "role": "MICRO_MONTAGE",
+      "t_start": 22.34,
+      "t_end": 23.279,
+      "lyric_anchor": "let it in",
+      "caption": "fern-hollow, fern-hollow",
+      "keyframe_prompt": "4-quadrant paper-craft contact sheet, each panel a different paper plant corner: TOP-LEFT a paper cactus on a bright paper sill; TOP-RIGHT a paper pothos trailing over a paper bookshelf; BOTTOM-LEFT a paper herb box on a paper kitchen counter; BOTTOM-RIGHT a paper fiddle-leaf tree beside a paper armchair. Each panel a different pastel palette tone.",
+      "motion_hint": "Each panel pulses a soft green glow in alternation to the kalimba arpeggio. Subtle leaf motion inside each."
+    },
+    {
+      "id": "T12",
+      "role": "ORIGIN_WINK",
+      "t_start": 23.279,
+      "t_end": 24.219,
+      "lyric_anchor": "(first outro line)",
+      "caption": "let it in",
+      "keyframe_prompt": "A single paper-craft fern frond unfurls in a hollow of a paper forest floor, mossy paper logs around it, paper mushrooms beside it. Cream and sage against a soft green wall. A nostalgic callback \u2014 a fern in a hollow, the brand's name origin. Slightly heavier paper grain.",
+      "motion_hint": "The fern frond unrolls very slowly. A paper mushroom wobbles."
+    },
+    {
+      "id": "T13",
+      "role": "TWILIGHT_OUTRO",
+      "t_start": 24.219,
+      "t_end": 26.239,
+      "lyric_anchor": "bring the green back home",
+      "caption": "bring the green",
+      "keyframe_prompt": "Return to the paper-craft apartment from T01 \u2014 now full of paper plants. The paper-doll figure sits on the sofa watering a paper fern with a tiny paper watering can. The blinds are wide open and the window shows the rain has cleared to a soft paper evening sky. A single warm lamp glow throws long paper shadows. Reflective, peaceful.",
+      "motion_hint": "Paper water drops fall from the can in two slow pours. The fern leaves bob once."
+    },
+    {
+      "id": "T14",
+      "role": "END_CARD",
+      "t_start": 26.239,
+      "t_end": 28.0,
+      "lyric_anchor": "again",
+      "caption": "",
+      "keyframe_prompt": "END CARD BASE \u2014 sage paper background with a soft paper fern frond and three small paper leaves in a soft spotlight. Brand lockup composited on top via PIL (NOT AI-rendered).",
+      "motion_hint": "Static hold. The paper fern frond sways imperceptibly on a hidden paper thread."
+    }
+  ],
+  "end_card": {
+    "_comment": "Brand lockup composited via PIL from the REAL brand asset (the Fernhollow logo mark from the brand kit) \u2014 NEVER AI-rendered text (LEARNINGS L4). Overlaid on the final tableau window.",
+    "engine": "pil",
+    "script": "build_end_card.py",
+    "brand_asset": "brand-assets/logo-mark-1024.png",
+    "wordmark_text": "Fernhollow",
+    "wordmark_font": "Georgia Bold",
+    "tagline_text": "bring the green back home",
+    "tagline_font": "Georgia Italic",
+    "cta_text": "Order at fernhollow.example",
+    "background": "deep fern green (#2F5D46) gradient + soft paper leaves + circular logo mark with a warm-glow halo",
+    "overlay_window_sec": [
+      26.24,
+      28.0
+    ]
+  },
+  "audio_mix": {
+    "_comment": "climax_beat_id T08 is the DEMO's hook tableau \u2014 set it to this run's HOOK_HERO tableau id.",
+    "loudness_lufs": -14,
+    "climax_beat_id": "T08",
+    "climax_boost_db": 2.0,
+    "duck_under_vo": false
+  },
+  "post_production": {
+    "music": {
+      "default": "on",
+      "note": "the sung generated ElevenLabs track IS the bed (force_instrumental false)"
+    },
+    "captions": {
+      "default": "on",
+      "note": "lyric-synced captions from the song's word timings, default on"
+    },
+    "end_card": {
+      "default": "on",
+      "note": "PIL end card from the real logo mark, default on"
+    }
+  }
+}

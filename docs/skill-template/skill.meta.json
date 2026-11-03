@@ -1,0 +1,9 @@
+{
+  "slug": "<slug>",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "tags": [
+    "<tag>"
+  ],
+  "requires_skills": []
+}

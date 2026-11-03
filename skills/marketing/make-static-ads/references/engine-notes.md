@@ -1,0 +1,23 @@
+# Engine notes — how the GooseWorks ad tools behave
+
+The live tool answers are the truth for parameters. These notes cover what the tool descriptions don't say.
+
+- **`ads_render` is thin.** It sends the agent's `prompt` and `image_urls` (public https, in order) to the image model word for word and does nothing else. The agent writes the whole prompt (`prompts.md`) and judges the result (the `make-static-ads-render-review` skill (`../../make-static-ads-render-review/SKILL.md`)). Every retry is a paid render.
+- **What an ad is based on.** `ads_render` takes `template_id` or `reference_image_url` (one, not both) and records it on the creative so the app shows it; neither attaches an image. The dry run returns `template: {id, title}` when the id resolves, and refuses an unknown id before any quote.
+- **Read small, read once.** Tool answers can be huge (a full kit is 50–150K characters; an unfiltered creatives list is over 1 MB). Use these calls, and on a shell host save the big ones to a file once per batch and read fields from the file (`jq`) instead of reading the answer again:
+
+| Need | Call | Size |
+|---|---|---|
+| Brand, products, competitors, `must`/`dont` learnings | `brand_read` `sections: ["summary","kit","products","competitors","learnings"]` (lean, the default) | small |
+| One product's full record | `brand_read` `product_ids: [<id>]` | small |
+| Kit and learnings in full, for prompts (once per batch) | `brand_read` `sections: ["kit","learnings"]`, `detail: "full"` → save to `kit.json` | very large: save once, read every field used by this batch |
+| Brand facts and claims | `brand_knowledge_browse` once, then `brand_knowledge_search` with `source_types` and `product_id`, `limit` ≤ 25 | medium |
+| Ads this playbook made before | `ads_creative_read` `tags: ["made-by:make-static-ads"]`, `limit: 20` | small |
+| Other ads made in GooseWorks (in the app, or before this tag existed), to reach the last 10 | the brand's batch files first; then `ads_creative_read` `approved_only: true`, `limit: 10`, saved to a file on a shell host; no shell → skip this read: the history is the batch files plus the tagged list above, and the Read line says so. Open single ones with `creative_id`. Never page through the list | very large: video projects ride along on every row (10 rows were over 700K characters in a test) |
+| Own and competitor imported ads | `ads_template_read` `mode: "mine"` / `"competitor"`, `filters.format: "image"`, `limit: 20` | medium |
+| One template | `ads_template_read` `template_id` | small |
+
+Never `detail: "full"` on every section at once, never the `sources` section (saved web passages; it alone can pass 100K characters), and never a creatives list without `tags`, `status`, `batch_id` or `approved_only`. An answer over about 50K characters: save it to a file once and read fields from the file.
+- **Polling.** `job_get` (`kind: "ads_batch"`) is done when every creative's `pending` is 0. Each answer repeats the full prompt, so poll every 30–60 seconds, or check the render's image URL instead.
+- **Edits are unquoted.** `regenerate`, `precision_edit` and `resize` return no dry-run price, so they are not used. Every remake, text fix, extra placement and copy variant is a written, quoted `ads_render` call.
+- **Campaign records are input only.** `campaign_read` gives an approved campaign's brief and concepts (use them only when the brief's Status line says "Approved"); this playbook never generates through the campaign tools.

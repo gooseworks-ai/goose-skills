@@ -1,0 +1,53 @@
+{
+  "job": "seo-metrics",
+  "completion": "incomplete",
+  "report_markdown": "**Fictional fixture example \u2014 supplied test evidence, not a live site check.**\n\n# Coldfield and two rivals \u2014 SEO metrics unavailable\n\n## In short\n\n**Incomplete:** the managed data connection is unavailable in this fixture, and there is no customer SEO connector or supplied metric report. I cannot obtain the requested SEO numbers for Coldfield, Brewbench and Slowcup. The next step is to restore that connection or provide access to an equivalent existing report. No paid request was executed.\n\n| Metric | Coldfield | Brewbench | Slowcup |\n|---|---|---|---|\n| Source-specific domain authority | Unavailable | Unavailable | Unavailable |\n| Search traffic estimate | Unavailable | Unavailable | Unavailable |\n| Backlinks | Unavailable | Unavailable | Unavailable |\n| Referring domains | Unavailable | Unavailable | Unavailable |\n| Organic keyword count | Unavailable | Unavailable | Unavailable |\n\nThese cells are missing values, not zeros. Page counts, product descriptions and prior AI mentions cannot fill them. A new source must be visible and supported before it is quoted and read; this result does not invent an endpoint or ask for a vendor key.\n\nAfter access is restored, inspect the supported operations, quote the exact three-domain work and obtain approval for its maximum cost. Then validate each returned metric's source, date, market and meaning before comparing values. A successful request that lacks some fields should leave those fields unavailable. The managed connection's absence is the prerequisite here; it is not evidence that the companies have no traffic or backlinks.\n\n\nSources: the supplied Coldfield fixture packet, dated 22 October 2026. These .test domains were not browsed. This local example was saved by the fixture exercise; saving to a live brand was not exercised. Nothing was changed, sent or published.\n",
+  "evidence": {
+    "metrics": [
+      {
+        "metric": "Ahrefs Domain Rating",
+        "kind": "authority_score",
+        "values": {
+          "coldfield.test": null,
+          "brewbench.test": null,
+          "slowcup.test": null
+        },
+        "source": "managed connection unavailable; no connector/export"
+      },
+      {
+        "metric": "Backlinks",
+        "kind": "backlinks",
+        "values": {
+          "coldfield.test": null,
+          "brewbench.test": null,
+          "slowcup.test": null
+        },
+        "source": "managed connection unavailable; no connector/export"
+      },
+      {
+        "metric": "Referring domains",
+        "kind": "referring_domains",
+        "values": {
+          "coldfield.test": null,
+          "brewbench.test": null,
+          "slowcup.test": null
+        },
+        "source": "managed connection unavailable; no connector/export"
+      },
+      {
+        "metric": "Search traffic estimate (provider field)",
+        "kind": "search_traffic_estimate",
+        "values": {
+          "coldfield.test": null,
+          "brewbench.test": null,
+          "slowcup.test": null
+        },
+        "source": "managed connection unavailable; no connector/export"
+      }
+    ]
+  },
+  "remaining_prerequisites": [
+    "Restore managed marketing-data connection or read an authorized customer SEO report"
+  ],
+  "execution": "manual fixture execution in this chat; local evidence checks only"
+}

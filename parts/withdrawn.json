@@ -100,6 +100,11 @@
       "id": "transcribe-whisper",
       "version": "1.0.0",
       "reason": "Replaced by 1.0.1 before publishing: A line the transcript does not match keeps evenly spread word timings, so captions never transcribe again."
+    },
+    {
+      "id": "voice-elevenlabs",
+      "version": "1.2.0",
+      "reason": "Replaced by 1.2.1: a tagged read without a reviewed alignment returned only its first request's audio as the whole voice, the model_id sent could not be proven against the listed models, and Eleven v4 was gated on evidence no host supplies. Shipped without CI in goose-skills #299."
     }
   ]
 }

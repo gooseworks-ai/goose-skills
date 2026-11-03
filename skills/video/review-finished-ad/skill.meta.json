@@ -1,0 +1,14 @@
+{
+  "slug": "review-finished-ad",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.1.2",
+  "tags": [
+    "ads",
+    "brand"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
+  ]
+}

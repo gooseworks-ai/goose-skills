@@ -1,0 +1,13 @@
+{
+  "slug": "work-with-creators-creator-discovery",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "work-with-creators",
+  "tags": [
+    "social",
+    "outreach"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

@@ -1,0 +1,18 @@
+{
+  "slug": "render-hook-replacement",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.0.2",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "watch",
+    "review-finished-ad"
+  ],
+  "requires_tools": [
+    "python3",
+    "ffmpeg",
+    "ffprobe"
+  ]
+}

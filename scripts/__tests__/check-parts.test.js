@@ -104,7 +104,7 @@ test('a stale index or a withdrawn version that was never published fails', () =
 test('a part that imports or carries the billing helper fails', () => {
   const { root, base } = makePartsRepo();
   const src = path.join(root, 'parts', 'clip-join', 'src', 'join.mjs');
-  fs.writeFileSync(src, "import { falGenerate } from '../../../skills/ads/capabilities/media-proxy/media_proxy.mjs';\n");
+  fs.writeFileSync(src, "import { falGenerate } from '../../../skills/video/media-proxy/media_proxy.mjs';\n");
   writePart(root, 'clip-join', '1.1.0');
   run('build-parts-index.js', root, []);
   commitAll(root);

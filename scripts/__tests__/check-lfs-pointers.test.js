@@ -22,10 +22,10 @@ function makeRepo() {
   git(root, 'config', 'user.email', 'fixture@example.com');
   git(root, 'config', 'user.name', 'Fixture');
   git(root, 'config', 'commit.gpgsign', 'false');
-  const dir = path.join(root, 'skills', 'ads', 'capabilities', 'mock', 'assets');
+  const dir = path.join(root, 'skills', 'video', 'mock', 'assets');
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'real.png'), PNG);
-  fs.writeFileSync(path.join(root, 'skills', 'ads', 'capabilities', 'mock', 'SKILL.md'), '# mock\n\nversion https://example.com is not a pointer.\n');
+  fs.writeFileSync(path.join(root, 'skills', 'video', 'mock', 'SKILL.md'), '# mock\n\nversion https://example.com is not a pointer.\n');
   commitAll(root, 'base');
   return { root, dir };
 }
@@ -36,7 +36,7 @@ test('a committed LFS pointer stub fails the check and is named', () => {
   commitAll(root, 'add pointer');
   const res = run('check-lfs-pointers.js', root, []);
   assert.equal(res.code, 1, res.out);
-  assert.match(res.out, /skills\/ads\/capabilities\/mock\/assets\/sample\.jpg is an unresolved Git LFS pointer/);
+  assert.match(res.out, /skills\/video\/mock\/assets\/sample\.jpg is an unresolved Git LFS pointer/);
   assert.match(res.out, /LFS pointers: 1 found, 0 blobs unreadable\./);
 });
 
@@ -56,7 +56,7 @@ test('a stub staged in the index is caught even when the working copy was overwr
 
 test('text that merely begins with the version sentence is not a pointer', () => {
   const { root, dir } = makeRepo();
-  fs.writeFileSync(path.join(root, 'skills', 'ads', 'capabilities', 'mock', 'notes.md'), `${VERSION}is the header a Git LFS pointer file starts with.\n`);
+  fs.writeFileSync(path.join(root, 'skills', 'video', 'mock', 'notes.md'), `${VERSION}is the header a Git LFS pointer file starts with.\n`);
   commitAll(root, 'add notes');
   fs.writeFileSync(path.join(dir, 'untracked.jpg'), POINTER); // never added: not the repository's problem
   const res = run('check-lfs-pointers.js', root, []);
@@ -79,7 +79,7 @@ test('a blob git cannot produce fails the check with the path named', () => {
   const { root, dir } = makeRepo();
   fs.writeFileSync(path.join(dir, 'sample.jpg'), POINTER);
   commitAll(root, 'add pointer');
-  const oid = git(root, 'rev-parse', 'HEAD:skills/ads/capabilities/mock/assets/sample.jpg');
+  const oid = git(root, 'rev-parse', 'HEAD:skills/video/mock/assets/sample.jpg');
   fs.unlinkSync(path.join(root, '.git', 'objects', oid.slice(0, 2), oid.slice(2)));
   const res = run('check-lfs-pointers.js', root, []);
   assert.equal(res.code, 1, res.out);

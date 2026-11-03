@@ -1,0 +1,10 @@
+profile_url,name,headline,company,source_post_url,post_date,engagement_type,comment_text,engagement_date,retrieved_date,method
+https://www.linkedin.com/in/nila-fixture/,Nila Rao,Controller,Seabank Parts,https://www.linkedin.com/posts/billpilot_review-activity-101/,2026-10-10,comment,"I need to see who decided, not another score",2026-10-11,2026-10-22,supplied-export
+https://www.linkedin.com/in/alex-one-fixture/,Alex Chen,AP lead,Orchard Parts,https://www.linkedin.com/posts/billpilot_review-activity-101/,2026-10-10,comment,"Does this export the reviewer decision?",2026-10-11,2026-10-22,supplied-export
+https://www.linkedin.com/in/alex-two-fixture/,Alex Chen,Marketing manager,Peak Retail,https://www.linkedin.com/posts/billpilot_export-activity-102/,2026-10-12,reaction,,,2026-10-22,supplied-export
+https://www.linkedin.com/in/nila-fixture/,Nila Rao,Controller,Seabank Parts,https://www.linkedin.com/posts/billpilot_review-activity-101/,2026-10-10,reaction,,2026-10-11,2026-10-22,supplied-export
+https://www.linkedin.com/in/nila-fixture/,Nila Rao,Controller,Seabank Parts,https://www.linkedin.com/posts/billpilot_review-activity-101/,2026-10-10,comment,"I need to see who decided, not another score",2026-10-11,2026-10-22,supplied-export
+https://www.linkedin.com/in/seller-staff-fixture/,Sam Lee,Product lead,BillPilot,https://www.linkedin.com/posts/billpilot_export-activity-102/,2026-10-12,reaction,,2026-10-13,2026-10-22,supplied-export
+,Unknown,,Unknown,https://www.linkedin.com/posts/billpilot_export-activity-102/,2026-10-12,reaction,,2026-10-13,2026-10-22,supplied-export
+https://www.linkedin.com/in/outside-fixture/,Terry Lane,Controller,Harbour Parts,https://www.linkedin.com/posts/other_post-activity-999/,2026-10-12,comment,Looks useful,2026-10-13,2026-10-22,supplied-export
+https://www.linkedin.com/in/csv-fixture/,Ira Vale,Controller,Stone Retail,https://www.linkedin.com/posts/billpilot_export-activity-102/,2026-10-12,comment,=SUM(1+1),2026-10-13,2026-10-22,supplied-export

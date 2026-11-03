@@ -1,0 +1,15 @@
+{
+  "slug": "research-competitors-category-pass",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "research-competitors",
+  "tags": [
+    "competitive-intel",
+    "research"
+  ],
+  "standalone": false,
+  "requires_skills": [
+    "research-competitors-rival-pass"
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "note": "Recorded W0-62 contracts (fal OpenAPI, fetched 2026-10-12): the request fields each Veo model takes, the answer the kit gets and the pointer the part reads. Tests check the part's requests against these.",
+  "models": {
+    "fal-ai/veo3.1/image-to-video": {
+      "required": [
+        "prompt",
+        "image_url"
+      ],
+      "fields": {
+        "seed": {},
+        "aspect_ratio": {
+          "enum": [
+            "auto",
+            "16:9",
+            "9:16"
+          ]
+        },
+        "auto_fix": {},
+        "safety_tolerance": {
+          "enum": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ]
+        },
+        "negative_prompt": {},
+        "image_url": {},
+        "resolution": {
+          "enum": [
+            "720p",
+            "1080p",
+            "4k"
+          ]
+        },
+        "generate_audio": {},
+        "prompt": {},
+        "duration": {
+          "enum": [
+            "4s",
+            "6s",
+            "8s"
+          ]
+        }
+      },
+      "answer": {
+        "json": {
+          "video": {
+            "url": "https://v3b.fal.media/files/b/fixture/clip.mp4",
+            "content_type": "video/mp4",
+            "file_name": "clip.mp4",
+            "file_size": 4404019
+          }
+        }
+      },
+      "pointer": "/json/video/url",
+      "unit_price_usd_per_s": 0.4
+    },
+    "fal-ai/veo3.1/fast/image-to-video": {
+      "required": [
+        "prompt",
+        "image_url"
+      ],
+      "fields": {
+        "seed": {},
+        "aspect_ratio": {
+          "enum": [
+            "auto",
+            "16:9",
+            "9:16"
+          ]
+        },
+        "auto_fix": {},
+        "safety_tolerance": {
+          "enum": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ]
+        },
+        "negative_prompt": {},
+        "image_url": {},
+        "resolution": {
+          "enum": [
+            "720p",
+            "1080p",
+            "4k"
+          ]
+        },
+        "generate_audio": {},
+        "prompt": {},
+        "duration": {
+          "enum": [
+            "4s",
+            "6s",
+            "8s"
+          ]
+        }
+      },
+      "answer": {
+        "json": {
+          "video": {
+            "url": "https://v3b.fal.media/files/b/fixture/clip.mp4",
+            "content_type": "video/mp4",
+            "file_name": "clip.mp4",
+            "file_size": 4404019
+          }
+        }
+      },
+      "pointer": "/json/video/url",
+      "unit_price_usd_per_s": 0.15
+    },
+    "fal-ai/veo3/image-to-video": {
+      "required": [
+        "prompt",
+        "image_url"
+      ],
+      "fields": {
+        "resolution": {
+          "enum": [
+            "720p",
+            "1080p"
+          ]
+        },
+        "seed": {},
+        "generate_audio": {},
+        "image_url": {},
+        "aspect_ratio": {
+          "enum": [
+            "auto",
+            "16:9",
+            "9:16"
+          ]
+        },
+        "negative_prompt": {},
+        "auto_fix": {},
+        "duration": {
+          "enum": [
+            "4s",
+            "6s",
+            "8s"
+          ]
+        },
+        "prompt": {},
+        "safety_tolerance": {
+          "enum": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ]
+        }
+      },
+      "answer": {
+        "json": {
+          "video": {
+            "url": "https://v3b.fal.media/files/b/fixture/clip.mp4",
+            "content_type": "video/mp4",
+            "file_name": "clip.mp4",
+            "file_size": 4404019
+          }
+        }
+      },
+      "pointer": "/json/video/url",
+      "unit_price_usd_per_s": 0.4
+    },
+    "fal-ai/veo3/fast/image-to-video": {
+      "required": [
+        "prompt",
+        "image_url"
+      ],
+      "fields": {
+        "resolution": {
+          "enum": [
+            "720p",
+            "1080p"
+          ]
+        },
+        "seed": {},
+        "generate_audio": {},
+        "image_url": {},
+        "aspect_ratio": {
+          "enum": [
+            "auto",
+            "16:9",
+            "9:16"
+          ]
+        },
+        "negative_prompt": {},
+        "auto_fix": {},
+        "duration": {
+          "enum": [
+            "4s",
+            "6s",
+            "8s"
+          ]
+        },
+        "prompt": {},
+        "safety_tolerance": {
+          "enum": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ]
+        }
+      },
+      "answer": {
+        "json": {
+          "video": {
+            "url": "https://v3b.fal.media/files/b/fixture/clip.mp4",
+            "content_type": "video/mp4",
+            "file_name": "clip.mp4",
+            "file_size": 4404019
+          }
+        }
+      },
+      "pointer": "/json/video/url",
+      "unit_price_usd_per_s": 0.15
+    }
+  }
+}

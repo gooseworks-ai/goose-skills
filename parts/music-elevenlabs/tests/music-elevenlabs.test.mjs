@@ -15,7 +15,7 @@ test("orders one bed of the style's length from its brief and the plan's mood", 
     prompt: 'Instrumental bed for a calm browse, no vocals. Mood: warm lofi.',
     music_length_ms: 6000,
     force_instrumental: true,
-    model_id: 'music_v1',
+    model_id: 'music_v2_5',
   });
   const info = await probe(out.audio.path);
   assert.ok(Math.abs(info.duration_s - 5) < 0.1, `bed is ${info.duration_s}s after a 1s intro trim`);

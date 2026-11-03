@@ -1,0 +1,194 @@
+{
+  "_comment": "Sudsabout 'Fresh by morning' cartoon music-video — THE WORKED EXAMPLE. Copy to config.json and edit. A ~55s felt-and-foam-core stop-motion 9:16 music video where a SUNG song carries the whole narrative (NO separate VO) and ONE recurring felt character walks miniature city-apartment dioramas. Pipeline: (1) lock the song (here user-supplied) + Groq Whisper word timings + librosa bars.json (the BAR GRID sets the timeline, one bar = one shot); (2) lock the felt character (nano_banana_2 anchor + 4 drift-checked angles); (3) one nano_banana_2 keyframe per bar (9:16, ONE look_pack, anchor ref threaded into character shots); (4) one seedance_2_0 i2v clip per bar (veo3_1_lite fallback on ip_detected/nsfw), CHARACTER-VERB-led motion; (5) captions from the word timings re-spelled against the locked lyrics, persistent logo bug, hard-cut assembly + solid-Sudsabout-Teal PIL end card + song-under-end-card. Master 1080x1920 h264+aac, ~54.9s (16 body bars + 3.0s end card). See scripts/PIPELINE.md for the source scripts. Worked example (the Sudsabout felt build). Creative fields — look_pack, clip_engine.motion_opener, character.descriptor/name, tableaux, song.prompt, song.structure[].lines (recipe choices art_style, character, story_arc, song_style, lead_vocal) — come from the recipe's choices; never copy them as defaults.",
+  "brand_name": "Sudsabout",
+  "campaign": "Fresh by morning",
+  "title": "Laundry pickup — now on Sudsabout",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "duration_sec": 54.9,
+  "aspect_ratio": "9:16",
+  "song": {
+    "_comment": "Locked FIRST — the song + its BAR GRID set the timeline (one bar = one shot). Here `source` = user_supplied: the mp3 landed before State 2.6 could fire ElevenLabs, so word timings came from Groq whisper-large-v3 word-level, not native music_v1 timestamps. `source` = generate would call ElevenLabs music_v1 from `structure` + `prompt`. STRIP `[...]` section markers from the lyric text before ANY music-gen call — a leftover `[CTA — 2 bars]` marker gets SUNG literally ('CTA, two bars') and ruins that bar. No artist names in `prompt` (ElevenLabs ToS filter).",
+    "source": "user_supplied",
+    "provider": "elevenlabs",
+    "model": "music_v1",
+    "lyrics_md": "lyrics/lyrics-locked.md",
+    "lyrics_plain": "lyrics/lyrics-plain.md",
+    "_note_lyrics_plain": "Feed sync-captions the lyric TEXT only (no bar-grid table / no headers). Feeding the full lyrics-locked.md parsed 700+ 'words' from markdown table rows and near-zero alignment.",
+    "bpm": 73.83,
+    "_note_bpm": "The plan may target one BPM while the delivered track lands at another (here 73.83 BPM half-time; a beat tracker can also read it as ~143.55 BPM — the classic half-time beat-track ambiguity). ~3.25s/bar gives a comfortable ~1 shot / 3.2s music-video rate. NOT a regression — the song sets the tempo, not the plan.",
+    "time_signature": "4/4",
+    "bar_duration_s": 3.25,
+    "prompt": "Hype, brash dance-pop / EDM-trap hybrid with jersey-club horn stabs. Male lead, half-shouted half-rapped, hyperpop pitched-up backing vocals on the chorus. Four-on-the-floor kick, trap snare/hat pattern, brass-stab hook, sub-bass on the drop. Verse: driving, end-of-a-long-week energy. Pre-drop: build. Chorus: full drop, shouted accent hits ('FRESH', 'BACK'). Bridge: climax line lands on the sub-bass drop. Late-night-city-apartment energy.",
+    "force_instrumental": false,
+    "hook_line": "FRESH — you got it",
+    "climax_line": "Whatever the load — you got it",
+    "climax_bar": 15,
+    "_note_climax": "Chorus B ('Whatever the load — you got it') is the payoff. It repeats bars 15–17; the accent word GOT lands on the drop. The song's attempt at the brand name (bar 18) is mumbled and in the unusable region — the brand name is delivered on the END CARD, not the song.",
+    "recommended_trim_end_s": 51.9,
+    "recommended_trim_end_bar": 17,
+    "_note_trim": "Full track is 78.24s; bars 18–24 are a degraded outro (a mumbled brand name + a sung section-marker artifact). Trim at 51.9s (end of the 3rd 'Whatever the load' — the strongest chorus repetition). Body video ends at bar 16 (51.9s); bar 17 window is the end card.",
+    "structure": [
+      { "section": "Verse", "bars": "1-4", "lines": [
+        "Sunday night and the hamper's a hill",
+        "Monday the socks don't match, never will",
+        "Shirts on the chair, the towels, the jeans",
+        "You had every load — and no time for machines"
+      ] },
+      { "section": "Pre-drop", "bars": "5-8", "lines": [
+        "They said there was no time",
+        "Said the laundromat line is a crime",
+        "But the time that you need is the tap on your screen",
+        "And tonight every shirt that you own comes back clean"
+      ] },
+      { "section": "Chorus A", "bars": "10-13", "lines": [
+        "FRESH — you got it",
+        "FRESH — you got it",
+        "FRESH — you got it",
+        "FRESH on the shirts, on the sheets, on the jeans"
+      ] },
+      { "section": "Bridge", "bars": "14", "lines": [
+        "BACK at the door, folded, pressed and steamed"
+      ] },
+      { "section": "Chorus B (climax)", "bars": "15-17", "lines": [
+        "Whatever the load — you got it",
+        "Whatever the load — you got it",
+        "Whatever the load — you got it"
+      ] }
+    ],
+    "outputs": {
+      "audio": "audio/sudsabout-fresh-by-morning.mp3",
+      "word_timings": "audio/word-timestamps.json",
+      "beats": "audio/beats.json",
+      "bars": "audio/bars.json"
+    }
+  },
+  "character": {
+    "_comment": "ONE recurring ANIMATED character, locked once (LOCKED.json). `descriptor` threads VERBATIM into every character-bearing keyframe; the approved anchor job is passed as the media ref so the figure holds across bars. Skip the ref on style-only shots (S03, S05, S06). Anchor drift here was < 5% (method anchor-ref); drift > 15% would escalate to Higgsfield Soul ID (a paid step).",
+    "name": "felt_protagonist_1",
+    "method": "anchor-ref",
+    "max_drift": 0.05,
+    "appears_in": "13 of 16 body shots (>60%)",
+    "descriptor": "Single felt figure, gender-neutral build, age ~25. Sudsabout Teal (#12B5B0) felt hoodie with a white felt stitched soap bubble on the front center. Medium-brown felt skin, short cropped tightly-coiled black-brown yarn hair, grey felt joggers, white felt low-top sneakers. Holds a tiny felt Sudsabout Teal phone with an embroidered white bubble icon. Calm posture, never frantic.",
+    "anchor": "generated/character-lock/anchor-portrait.png",
+    "anchor_job": "<anchor_job_request_id>",
+    "angles": {
+      "3q-left": "generated/character-lock/angle-3q-left.png",
+      "3q-right": "generated/character-lock/angle-3q-right.png",
+      "action-medium": "generated/character-lock/angle-phone-up.png",
+      "climax-hero": "generated/character-lock/angle-climax-confetti.png"
+    },
+    "_note_angles": "The climax-confetti angle doubles as the S15 (climax) keyframe."
+  },
+  "look_pack": {
+    "name": "DIORAMA_FELT",
+    "palette_anchors": [
+      "warm felt earth-tones",
+      "foam-core cream/white",
+      "Sudsabout Teal #12B5B0 (hoodie, phone, climax confetti only)",
+      "soft practical warm key light"
+    ],
+    "style_descriptor": "Stop-motion miniature diorama, felt and foam-core construction, hand-built scale, macro photography, soft key + practical lighting, 1080x1920 vertical, slight tilt-shift focus. Felt is the dominant texture for soft elements (people, clothing, crowd); foam-core for hard elements (rooms, laundromats, rooftops). Hand-articulated stop-motion craft feel preserved.",
+    "negative_tail": "NO photoreal humans, NO photorealism, NO smooth digital 3D render, NO AI-illustration look, NO oil-painting look. NO RULERS, NO PENCILS, NO MEASUREMENT TOOLS, NO HANDS (except the character's own felt hands), NO HUMAN-SCALE REFERENCE OBJECTS. NO readable text or brand logos in the world (brand appears only on the end card). Vertical 9:16 composition.",
+    "_note": "ONE look pack drives all N keyframes so the sequence reads as one film. The 'no human-scale reference objects' negative is load-bearing: without it the model reads 'miniature' by ADDING a ruler/pencil/hand as a scale prop (no-character shots came back with a literal pencil or an intruding hand)."
+  },
+  "keyframe_engine": {
+    "provider": "higgsfield",
+    "model": "nano_banana_2",
+    "aspect_ratio": "9:16",
+    "batch_size": 3,
+    "character_ref": "thread the locked anchor job (<anchor_job_request_id>) as media[role=image] on every character-bearing shot; for room continuity pass BOTH the anchor AND the prior keyframe (e.g. S04 off S02)",
+    "_note": "nano_banana_2 honors multiple media refs. Never include readable brand text in a keyframe prompt — the model garbles it into typos."
+  },
+  "clip_engine": {
+    "provider": "higgsfield",
+    "model": "seedance_2_0",
+    "fallback": "veo3_1_lite",
+    "fallback_triggers": ["ip_detected", "nsfw"],
+    "duration_sec": 4,
+    "batch_size": 3,
+    "motion_opener": "CHARACTER-VERB LEAD (never camera-led): the character does a specific action, THEN any secondary background motion. Hand-articulated stop-motion craft feel preserved. NO camera 'slow push-in' opener (reads static), NO morphing, NO human-scale reference objects. ",
+    "_note": "The single biggest quality lever (v1 -> v4): lead the prompt with the CHARACTER VERB, not the camera. 'Slow push-in toward the felt protagonist...' produced static clips; 'scrolls the phone with a thumb, glances up at the hamper...' read as music-video-grade animation. Auto-retry on veo3_1_lite when Seedance returns ip_detected (trophy- or logo-like shapes) or nsfw ('intimate'/'leans toward' false positives)."
+  },
+  "captions": {
+    "_comment": "VEED-whisper BOTTOM captions (matches the ugc-walk-and-talk recipe: add-captions-veed-fal --preset whisper --position bottom --font-color #FFFFFF): clean white BOLD SANS in the lower third (ASS Alignment 2 + margin_v so it clears the bottom-left logo bug), NO pill, ~4-5 words per cue, >=0.9s on screen. Built from the song's word timings RE-SPELLED against the locked lyrics via align_to_lyrics — Whisper mishears shouted accents (e.g. 'FRESH' -> 'Flesh', 'BACK' -> 'Black'). Captions STOP at the end-card boundary (BODY_END_S = 51.9) so the brand frame breathes. Repeated hook phrases ('you got it' x3) had a Whisper caption gap — hand-patch the chorus repetitions. DO NOT use Alignment 5 (mid-frame) — it covers the character; bottom placement fixed 2026-07.",
+    "source": "audio/word-timestamps.json",
+    "chunks": "edits/chunks.json",
+    "style": "whisper_bottom_sans",
+    "position": "bottom",
+    "font": "Arial Bold",
+    "font_fallback": ["/System/Library/Fonts/Supplemental/Arial Bold.ttf", "/System/Library/Fonts/Helvetica.ttc"],
+    "font_size": 76,
+    "accent_font_size": 88,
+    "accent_style": "bold",
+    "no_pill": true,
+    "alignment": 2,
+    "margin_v": 180,
+    "min_on_screen_s": 0.9,
+    "outline_px": 6,
+    "base_color": "#FFFFFF",
+    "chunk_words": 4,
+    "_note_chunk": "~4-5 words per cue (VEED whisper preset); >=0.9s minimum on screen, cue breaks on sentence-final punctuation.",
+    "accent_words": ["FRESH", "FRESHER", "BACK", "DONE", "GOT", "Whatever", "jeans", "Sudsabout", "folded", "steamed"],
+    "stop_at_end_card": true,
+    "caption_end_s": 51.9
+  },
+  "tableaux": [
+    { "id": "S01", "bar": 1, "role": "VERSE", "t_start": 0.0, "t_end": 3.25, "uses_character": true, "lyric_anchor": "Sunday night and the hamper's a hill", "caption": "Sunday night and / the hamper's a hill", "keyframe_prompt": "Miniature felt-and-foam-core bedroom under a tiny warm felt lamp, the felt protagonist beside a towering felt hamper overflowing with felt clothes, reading from a tiny felt Sudsabout-Teal phone, hoodie bubble visible. Character occupies ~60% of the vertical frame.", "motion_hint": "The protagonist scrolls the felt phone with a thumb and glances up at the hamper pile." },
+    { "id": "S02", "bar": 2, "role": "VERSE", "t_start": 3.25, "t_end": 6.5, "uses_character": true, "lyric_anchor": "Monday the socks don't match, never will", "caption": "Monday the socks don't match / never will", "keyframe_prompt": "Felt protagonist in a felt living room on a felt couch, holding up two mismatched felt socks, a tiny felt CRT TV glowing in the background. Warm felt lamp practical.", "motion_hint": "The protagonist holds the two socks side by side, eyes widen." },
+    { "id": "S03", "bar": 3, "role": "VERSE", "t_start": 6.5, "t_end": 9.7, "uses_character": false, "lyric_anchor": "Shirts on the chair, the towels, the jeans", "caption": "Shirts on the chair / the towels, the jeans", "keyframe_prompt": "Quad-split of four tiny felt-and-foam-core nouns: a felt shirt draped on a foam-core chair, a stack of folded felt towels, a pair of felt jeans, a single felt sock. No character. NO rulers, NO pencils, NO hands, NO human-scale reference objects.", "motion_hint": "Per-quadrant felt-prop micro-motions (shirt sleeve slides, towel stack tips, jeans leg swings, sock wiggles). [veo3_1_lite fallback if Seedance flags ip_detected.]" },
+    { "id": "S04", "bar": 4, "role": "VERSE", "t_start": 9.7, "t_end": 13.0, "uses_character": true, "lyric_anchor": "You had every load — and no time for machines", "caption": "You had every load / and no time for machines", "keyframe_prompt": "Felt protagonist slumped alone on a felt couch in the SAME felt living room as S02 (room continuity), half-buried under a pile of felt laundry. Reflective, deflated.", "motion_hint": "The protagonist slumps deeper, head drops, a felt sock slides off the cushion.", "_note": "Pass S02 as a second media ref for room continuity." },
+    { "id": "S05", "bar": 5, "role": "PRE_DROP", "t_start": 13.0, "t_end": 16.2, "uses_character": false, "lyric_anchor": "They said there was no time", "caption": "They said there was / no time", "keyframe_prompt": "Miniature foam-core laundromat entrance, a felt queue rope across the door, a tiny foam-core wall clock above it, a row of stuffed felt laundry bags waiting outside. No character. No readable brand text.", "motion_hint": "The queue rope sways, the clock hands spin. [veo3_1_lite fallback if Seedance returns an nsfw false-positive.]" },
+    { "id": "S06", "bar": 6, "role": "PRE_DROP", "t_start": 16.2, "t_end": 19.5, "uses_character": false, "lyric_anchor": "Said the laundromat line is a crime", "caption": "Said the laundromat line / is a crime", "keyframe_prompt": "Miniature foam-core laundromat floor: felt laundry baskets on tiny felt legs shuffling past in a line. Deadpan. No character.", "motion_hint": "Three felt baskets do a stop-motion walk-cycle across frame." },
+    { "id": "S07", "bar": 7, "role": "PRE_DROP", "t_start": 19.5, "t_end": 22.7, "uses_character": true, "lyric_anchor": "But the time that you need is the tap on your screen", "caption": "But the time that you need / is the tap on your screen", "keyframe_prompt": "Macro of the felt protagonist's felt hand cradling the felt Sudsabout-Teal phone with the embroidered bubble icon. Tilt-shift focus on the phone.", "motion_hint": "The thumb taps the felt phone screen twice." },
+    { "id": "S08", "bar": 8, "role": "PRE_DROP", "t_start": 22.7, "t_end": 26.0, "uses_character": true, "lyric_anchor": "And tonight every shirt that you own comes back clean", "caption": "And tonight every shirt / that you own comes back clean", "keyframe_prompt": "Felt protagonist standing on a tiny felt rooftop beside a felt clothesline of clean felt shirts, a foam-core city skyline behind, looking out. Character occupies ~55% of frame, world reads big.", "motion_hint": "The head turns across the skyline, a slow deep breath, the shirts flutter." },
+    { "id": "S09", "bar": 9, "role": "INSTRUMENTAL_SWELL", "t_start": 26.0, "t_end": 29.2, "uses_character": true, "lyric_anchor": "(instrumental lift, no lyric)", "caption": "", "keyframe_prompt": "Felt protagonist at a felt apartment front door, a tied felt laundry bag on the doorstep, looking up toward camera as the swell builds. Warm key + practical.", "motion_hint": "One step forward, looks up at camera." },
+    { "id": "S10", "bar": 10, "role": "CHORUS_A", "t_start": 29.2, "t_end": 32.4, "uses_character": true, "lyric_anchor": "FRESH — you got it", "caption": "FRESH / you got it", "keyframe_prompt": "Felt protagonist on a felt bed, arm extended pointing, a clean felt shirt mid-air, a neat stack of folded felt clothes beside them. Energy.", "motion_hint": "The arm extends to point, the felt shirt flips mid-air." },
+    { "id": "S11", "bar": 11, "role": "CHORUS_A", "t_start": 32.4, "t_end": 35.7, "uses_character": true, "lyric_anchor": "FRESH — you got it", "caption": "FRESH / you got it", "keyframe_prompt": "Felt protagonist at a felt closet hanging a crisp felt shirt on a tiny foam-core hanger. Decisive.", "motion_hint": "The hand hangs the shirt, the hanger swings." },
+    { "id": "S12", "bar": 12, "role": "CHORUS_A", "t_start": 35.7, "t_end": 38.9, "uses_character": true, "lyric_anchor": "FRESH — you got it", "caption": "FRESH / you got it", "keyframe_prompt": "Felt protagonist opening a felt laundry parcel tied with a felt ribbon, a small felt-bubble puff. Smiling.", "motion_hint": "Opens the parcel, the smile widens." },
+    { "id": "S13", "bar": 13, "role": "CHORUS_A", "t_start": 38.9, "t_end": 42.2, "uses_character": true, "lyric_anchor": "FRESH on the shirts, on the sheets, on the jeans", "caption": "on the shirts / on the sheets / on the jeans", "keyframe_prompt": "Triple-split: felt shirt / felt bedsheet / felt jeans, the protagonist small and IN the foreground of the center panel (NOT a silhouette). Cuts-within-a-cut energy.", "motion_hint": "Three independent panel motions, the character holds still in the center panel.", "_note": "A silhouette loses the character's look and invites misread details — say 'NOT a silhouette, character in foreground'." },
+    { "id": "S14", "bar": 14, "role": "BRIDGE", "t_start": 42.2, "t_end": 45.4, "uses_character": true, "lyric_anchor": "BACK at the door, folded, pressed and steamed", "caption": "BACK / at the door, folded / pressed and steamed", "keyframe_prompt": "Felt protagonist at a felt apartment doorway taking a folded felt laundry stack from a felt courier friend. Warm practical hallway lights.", "motion_hint": "Takes the stack, the courier nods." },
+    { "id": "S15", "bar": 15, "role": "CLIMAX", "t_start": 45.4, "t_end": 48.6, "uses_character": true, "is_climax": true, "lyric_anchor": "Whatever the load — you got it", "caption": "Whatever the load / you GOT it", "keyframe_prompt": "CLIMAX HERO. Sudsabout-Teal felt bubble-confetti rains across the frame, the felt protagonist arms raised, head tilted back, a foam-core skyline behind. Doubles as the character-lock climax angle.", "motion_hint": "CLIMAX: arms lift overhead, head tilts back, Sudsabout-Teal bubble-confetti rains." },
+    { "id": "S16", "bar": 16, "role": "CHORUS_B", "t_start": 48.6, "t_end": 51.9, "uses_character": true, "lyric_anchor": "Whatever the load — you got it", "caption": "Whatever the load / you got it", "keyframe_prompt": "Macro of the felt Sudsabout-Teal phone filling frame, screen lights up solid Sudsabout Teal. Last body shot before the end card.", "motion_hint": "Thumb taps the phone twice, the screen pulses." },
+    { "id": "END", "bar": 17, "role": "END_CARD", "t_start": 51.9, "t_end": 54.9, "uses_character": false, "lyric_anchor": "(end card — song plays under)", "caption": "", "keyframe_prompt": "END CARD — solid Sudsabout-Teal (#12B5B0) card, white 'sudsabout' wordmark centered + subhead 'Laundry pickup  ·  back by morning', composited via cairosvg + PIL (NOT AI-rendered). Logo bug suppressed. Holds 3s with the song under it.", "motion_hint": "Static hold (built by scripts/stitch.py, not i2v)." }
+  ],
+  "logo_bug": {
+    "_comment": "Persistent white Sudsabout wordmark burned bottom-left over the 16 body bars, SUPPRESSED on the end card (where the big wordmark dominates). Recolor the brand's black wordmark SVG to white via cairosvg + PIL. NEVER AI-render brand text.",
+    "engine": "cairosvg+pil",
+    "script": "scripts/stitch.py",
+    "brand_wordmark_svg": "brand-assets/logos/sudsabout-wordmark.svg",
+    "position": "bottom-left",
+    "width_px": 220,
+    "margin_px": 56,
+    "suppress_on_end_card": true
+  },
+  "end_card": {
+    "_comment": "Solid Sudsabout-Teal card + white wordmark (from the real SVG) + subhead, composited via cairosvg + PIL — NEVER AI-rendered. Holds 3.0s WITH the song still playing under it (1.85s was too short to read); the song afade-outs 0.5s over the tail so there is NO silent tail. macOS New York Semibold lacks the em-dash glyph (U+2014) — the subhead uses a middle dot ' · ' instead.",
+    "engine": "cairosvg+pil",
+    "script": "scripts/stitch.py",
+    "background": "#12B5B0",
+    "brand_wordmark_svg": "brand-assets/logos/sudsabout-wordmark.svg",
+    "wordmark_scale": 0.62,
+    "subhead_text": "Laundry pickup  ·  back by morning",
+    "subhead_font": "New York",
+    "hold_sec": 3.0,
+    "audio_fade_out_sec": 0.5
+  },
+  "audio_mix": {
+    "_comment": "The song is the full audio bed — no VO to duck under. The song plays UNDER the end card and afade-outs over the last 0.5s (master tail), so the video ends WITH the music — no trailing silence.",
+    "loudness_lufs": -14,
+    "climax_beat_id": "S15",
+    "duck_under_vo": false,
+    "audio_over_end_card": true,
+    "audio_fade_out_sec": 0.5,
+    "body_end_s": 51.9,
+    "master_duration_s": 54.9
+  },
+  "post_production": {
+    "music": { "default": "on", "note": "the sung supplied/generated track IS the bed (no VO to duck under)" },
+    "captions": { "default": "on", "note": "VEED-whisper white bold-sans captions in the BOTTOM third (Alignment 2, above the logo bug) from the word timings, no pill, ~4-5 words/cue, stop at the end card" },
+    "logo_bug": { "default": "on", "note": "persistent white wordmark bottom-left over the body, suppressed on the end card" },
+    "end_card": { "default": "on", "note": "solid-brand-color PIL end card + real wordmark, song plays under it, afade tail (no silent tail)" }
+  }
+}

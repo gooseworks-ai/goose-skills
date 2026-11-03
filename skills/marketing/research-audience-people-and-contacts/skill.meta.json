@@ -1,0 +1,15 @@
+{
+  "slug": "research-audience-people-and-contacts",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "research-audience",
+  "tags": [
+    "research",
+    "lead-generation"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "research-audience"
+  ]
+}

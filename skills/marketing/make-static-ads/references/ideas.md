@@ -1,0 +1,66 @@
+# Ideas — how a static ad gets an idea
+
+An ad idea is **a real product fact or human situation, turned into one small physical event the viewer understands at a glance.** Lighting, type and colour make a good idea easy to read. They cannot rescue a missing one.
+
+This file is the craft behind the `make-static-ads-concept-grid` skill (`../../make-static-ads-concept-grid/SKILL.md`), which says which parts to read.
+
+## 1. The failure this prevents
+
+Left alone, agents build ads from the feature list: product + headline + the product in use. An olive-oil batch came out as two bottles, oil on pasta, a refill pour, a bottle beside cookies, a gift box: polished, accurate, and any olive oil could run four of them.
+
+Each was a **demonstration**: the product doing its normal job. A demonstration is a valid ad when watching it answers the buyer's real question. It is not an idea, and five demonstrations are one idea five times.
+
+## 2. The method
+
+### Step A: gather material for each chosen angle
+
+In the message step, for each angle the marketer chose, list what is true about the product or the people who use it, one plain sentence each with its source. Start from the product's main job for its buyer, then what only this brand has; side features last.
+
+- **Product facts:** what it is, what's already done for you, what it leaves out, how it's made, how it's used. ("Tea and whole spices already blended." "Unsweetened." A fact can carry a scene; free-from words like "unsweetened" still need a sign-off before they are printed on the ad, `../../claims-gate/SKILL.md` §1.7.)
+- **Human situations around the product:** the moment of use, who else is involved, what gets in the way, what it means to people. ("A parent has opinions about how you make chai." "Recipe research spirals." "It tastes like home to people who moved away.")
+
+Situations come from customer words (reviews, the voice-of-customer bank, comments) when you have them. When you author one yourself, mark it **(hypothesis)**. A hypothesis can carry a scene. It cannot carry a factual claim.
+
+### Step B: find the tension in each
+
+For each starting point ask: **what does the person want, what gets in the way, and why does this product belong in that moment?** A starting point with no tension ("the oil is green") rarely makes an idea. Drop it or pair it with a situation.
+
+### Step C: make the tension physical
+
+Turn the tension into **one visible event**, shown in whatever style the ad uses (photo, 3D render, graphic, native format). Useful relationships:
+
+| Relationship | Masala Lane Chai example (fictional) |
+|---|---|
+| Someone interferes | Mum's hand reaches out of the video call to point at the pot |
+| Something gets in the way | Browser tabs become a paper maze around the saucepan |
+| Something claims space | The cup sits inside a recessed calendar appointment |
+| Two places connect | A miniature balcony from back home rises out of the saucepan |
+| Someone gets invited, or left out | Spices sit at a tiny table; sugar gets the optional plus-one chair |
+| A flat thing becomes real (or the reverse) | The recipe card's steps fold up into a paper staircase to the cup |
+| Scale changes the meaning | A giant cardamom pod is carried up the stairs like a sofa |
+| An object behaves like a person | The saucepan taps its watch at 4 pm |
+
+The event must have a **reason**. Advice crosses the screen because a parent is getting involved. Tabs become a maze because research got confusing. Sugar becomes a guest because adding it is optional. A strange image with no reason is decoration.
+
+### Step D: write the headline last
+
+The headline **names the relationship**, not the effect, in words a person might say: "Mum has notes." "Sugar is a plus-one." "Sorry. Already booked." The image carries the joke. Other text only where the template or the brand's own style has a slot for it (`levels.md`); a fact that doesn't fit goes in the post text.
+
+### Step E: name the choice worth protecting
+
+One sentence per ad: the detail that, if lost, kills the idea. "The hand must visibly cross the screen boundary; a normal video call loses the joke." "The sugar chair sits apart from the group." This sentence goes into the prompt word for word and is the first thing the reviewer checks.
+
+## 3. Six tests before an idea is kept
+
+1. **Swap test.** Replace our product with a competitor's. Does the ad still work? If yes, it is generic. Push it until the idea needs this product's fact or this brand's customer. ("Booked for chai" was the weakest back home idea by this test: any drink brand could run it.)
+2. **Stranger test.** Someone who has never heard of the brand sees only this ad. Do they know what the product is and what it does for them? A chai pouch explains itself; a new kind of product doesn't. A clever ad about a side feature ("skip the API keys") makes a stranger smile and scroll on. For a product in a new or unfamiliar category, most of the set must carry the **main promise**, with the surprise built on it, not beside it.
+3. **Thumbnail test.** Describe the image in one sentence a stranger understands. If you need two sentences, the scene is too busy.
+4. **Show-it test.** Show the real thing, not a symbol of it: an ad about video ads shows a frame of one playing on a phone, not a clapperboard; an ad about making ads shows the finished ads. Symbols read as stock and leave the frame empty.
+5. **Build test.** Can the image model draw it reliably? It fails at small handwriting, long text inside the scene (paragraphs on notes, screens or lists; a template's short slots are fine), many hands, crowds, and precise physics (an unbroken oil line, keys mid-fall). Keep the event big and simple; put words in the headline, not inside the picture.
+6. **Truth test.** What would a buyer take away as fact? That takeaway must be a usable fact (`claims-and-policy.md` §2). A visibly imagined scene is not a claim that it happened; a promised result is.
+
+## 4. Examples (do not copy)
+
+The Masala Lane Chai examples in §2 C and D (a fictional brand; Signature Masala Chai Mix) were five concepts, all good on their first render. These ideas belong to that brand. The method transfers; the jokes don't. All five were one style, conceptual still life; a real set varies its style (`levels.md`, Style).
+
+Software works the same way. GooseWorks (makes ads from a brand's own facts and look): the situation "generic ads don't fit my brand" → the goose mascot as a tailor, an ad pinned out on the table like a dress pattern → "Ads made to measure for your brand." Protect: the ad is the pattern being cut, not a picture on the wall.

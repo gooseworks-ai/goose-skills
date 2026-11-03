@@ -216,9 +216,12 @@ export async function run(inputs, ctx) {
   if (!Number.isFinite(chatDur) || chatDur <= 0 || chatDur > MAX_CHAT_S) {
     throw ctx.error('bad_input', `the chat would run ${chatDur} s; it must be a finite length up to ${MAX_CHAT_S} s`);
   }
+  // What the skin fitted, within the manifest's limits (50 notes of 300 characters).
+  const warnings = (built.warnings || []).slice(0, 50).map((w) => ([...w].length > 300 ? `${[...w].slice(0, 299).join('')}…` : w));
+  for (const w of warnings) ctx.log.warn(w);
   if (inputs.measure_only) {
     // The plan measured by the same code that renders it: nothing drawn, written or ordered.
-    return kitCheckOutputs(ctx, manifest, { seconds: chatDur, ...built.stats });
+    return kitCheckOutputs(ctx, manifest, { seconds: chatDur, ...built.stats, ...(warnings.length ? { warnings } : {}) });
   }
   const silent = await renderPage(ctx, built.html, { width, height, fps, total: chatDur, skin: inputs.skin, events: built.events });
   const sounds = built.cues.length ? await effectsTrack(ctx, join(skinDir, 'sfx'), built.cues, chatDur) : null;

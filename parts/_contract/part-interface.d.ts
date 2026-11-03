@@ -535,6 +535,15 @@ export interface Timeline {
   end_card?: { start_s: number; end_s: number };
   /** Areas captions and logos must stay inside, in pixels. */
   safe_zones?: Array<{ use: 'captions' | 'logo'; x: number; y: number; w: number; h: number }>;
+  /**
+   * Areas captions must stay off while they show, in pixels: a product a step knows it drew there. Any
+   * timeline step may add entries, but only brand-layer >= 1.0.2 (passes it on) and captions-layer >= 1.4.0
+   * (reads it, keeps each scene's captions at one height clear of it, and drops it from its output) accept it;
+   * every other part's timeline refuses the field, so it must be the last timeline step's output. A producer
+   * adds it only when the style's captions layer is on: with captions off nothing drops it, and the sound and
+   * check layers refuse the timeline.
+   */
+  keep_clear?: Array<{ scene_id?: string; start_s: number; end_s: number; use: 'product'; box: { x: number; y: number; w: number; h: number } }>;
 }
 
 /** What the finished video must be: from the style file (duration, traits) and the frozen plan (aspect). */
@@ -553,6 +562,40 @@ export interface OutputExpectation {
   qc_flags: string[];
   /** Approved lines from plan.scenes[].line, for speech_matches_script. */
   script?: string[];
+  /**
+   * style traits.caption_look, copied by the kit when it is an object. The captions layer reads it
+   * (captions-layer >= 1.2.0). It is never refused: a preset the layer version does not draw is drawn as
+   * `plate` with a warning, and any value it cannot use is dropped with a warning.
+   */
+  caption_look?: CaptionLook;
+  /**
+   * The style's layer switches (its layers block), so a layer can tell what ran before it: check-layer
+   * >= 1.5.0 holds loudness to the sound layer's mark only when `sound` is true. Absent from older kits.
+   */
+  layers?: StyleLayers;
+}
+
+/** How the captions layer draws captions. `pill`, `serif-word` and `sentence` need captions-layer 1.3.0. */
+export interface CaptionLook {
+  preset: 'plate' | 'stroke' | 'karaoke' | 'pill' | 'serif-word' | 'sentence';
+  /** Words per caption, 1-8. */
+  max_words?: number;
+  /** Caption centre, 0.40-0.82 of the height, clamped into the safe band. */
+  y?: number;
+  /** `serif` (PT Serif Bold) and `rounded` (Titan One) are bundled from captions-layer 1.3.0. */
+  font?: 'sans_bold' | 'serif' | 'rounded' | 'brand';
+  /** Words that spell the brand name or the call to action take the highlight colour. */
+  highlight?: Array<'brand' | 'cta'>;
+  /** #RRGGBB; default brand.colors.primary, else #FFD400. */
+  highlight_color?: string;
+  case?: 'as_written' | 'lower' | 'upper';
+  /** No captions on the timeline's first scene. */
+  skip_first_scene?: boolean;
+  /**
+   * captions-layer 1.4.0: where the style's shots hold the product, as shares of the frame (0-1), up to 8
+   * boxes, kept clear for the whole cut (end card aside). A bad value is dropped with a warning.
+   */
+  keep_clear?: Array<{ x: number; y: number; w: number; h: number }>;
 }
 
 /**
@@ -682,7 +725,8 @@ export interface StepRecord {
     inputs_hash: string;
     /** "<piece_key>:<inputs_hash>:<attempt>" */
     idempotency_key: string;
-    attempt: 1 | 2;
+    /** 1, 2, then one more per later run while the provider's failures are free. */
+    attempt: number;
     reused: boolean;
     /** From the line's answer (piece_credits); our ledger is the truth. */
     credits?: number;

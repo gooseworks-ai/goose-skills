@@ -1,0 +1,17 @@
+{
+  "name": "gooseworks",
+  "version": "1.1.2",
+  "description": "GooseWorks for your coding agent: the gooseworks router plus the ads, video and product-photo entry skills.",
+  "skills": "./",
+  "author": "GooseWorks",
+  "homepage": "https://gooseworks.ai",
+  "repository": "https://github.com/gooseworks-ai/goose-skills",
+  "license": "MIT",
+  "keywords": ["marketing", "ads", "video", "research", "gtm", "gooseworks"],
+  "interface": {
+    "displayName": "GooseWorks",
+    "shortDescription": "Marketing playbooks and video ads for your coding agent",
+    "category": "Productivity",
+    "developerName": "GooseWorks"
+  }
+}

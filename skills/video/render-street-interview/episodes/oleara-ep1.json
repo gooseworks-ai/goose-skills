@@ -1,0 +1,21 @@
+{
+ "_comment": "Oleara episode 1. Take B line 4 = first attempt up to 'on a' (0-7.80) joined to the second attempt from 'fancy' (10.23 on), because neither attempt had the whole line. Take C: invented speech removed (2.6-6.875). Colour matched to take A. Opening replaced by re-take 6214 (both people upright); 2.5s of silent standing removed (8.3-10.83).",
+ "episode": "oleara-ep1",
+ "brand": "Oleara",
+ "slug": "oleara",
+ "title": "What is inside this bottle",
+ "output": "episode-oleara-ep1c-seed6214-6212-6213",
+ "takes": [
+  "oleara-ep1-a2",
+  "oleara-ep1-b",
+  "oleara-ep1-c"
+ ],
+ "brand_layer": {
+  "logo": "projects/street-interview-brands/oleara/assets/oleara-logo.png",
+  "end_card": [
+   "IT IS OLIVE OIL YOU CAN SQUEEZE.",
+   "OLEARA SEAR."
+  ]
+ },
+ "extra_head_s": 4.0
+}

@@ -1,39 +1,32 @@
 {
   "name": "goose-skills",
+  "private": true,
   "version": "1.0.1",
-  "description": "GTM skills for Claude Code \u2014 install with npx goose-skills install <slug>",
-  "bin": {
-    "goose-skills": "./bin/goose-skills.js"
-  },
+  "description": "GooseWorks skill catalog: marketing playbooks, video skills and the entry skills the gooseworks CLI installs. Not published to npm; install with npx gooseworks@latest install --with <slug>.",
   "repository": {
     "type": "git",
     "url": "https://github.com/gooseworks-ai/goose-skills"
   },
   "scripts": {
-    "test": "node --test test/brand-growth-collection.test.js test/brand-growth-routes.test.js test/goose-skills-targets.test.js test/goose-skills-packs.test.js test/launch-meta-ad-campaign.test.js test/meta-ad-harness.test.js scripts/__tests__/build-index.test.js scripts/__tests__/validate-skills.test.js test/shared-video-harness.test.js test/podcast-package.test.js",
-    "test:eval": "node test/run-eval.js",
-    "test:eval:run": "node test/run-eval.js",
-    "test:eval:check": "node test/evaluate-run.js",
-    "test:eval:generate": "node scripts/generate-eval-prompts.js",
-    "eval": "node test/eval-harness.js",
-    "eval:report": "node test/report.js",
+    "test": "node --test test/*.test.js scripts/__tests__/*.test.js scripts/__tests__/*.test.mjs && node scripts/run-skill-node-tests.js",
+    "test:parts": "node --test parts/_tools/*.test.mjs parts/_lib/*.test.mjs parts/*/tests/*.test.mjs",
     "build:index": "node scripts/build-index.js",
     "validate:skills": "node scripts/validate-skills.js",
-    "ci": "npm run validate:skills && npm run build:index && npm test",
-    "test:parts": "node --test parts/_tools/*.test.mjs parts/_lib/*.test.mjs parts/*/tests/*.test.mjs"
+    "check:tools": "node scripts/check-tool-names.js",
+    "ci": "node scripts/validate-skills.js && node scripts/build-index.js && git diff --exit-code skills-index.json && node scripts/check-skill-links.js && node scripts/check-tool-names.js && node scripts/check-internal-ids.js && node scripts/check-client-names.js && node scripts/build-router.js --check && node scripts/check-lfs-pointers.js && npm test && python3 skills/video/write-video-ad-script/scripts/verify_handoff.py && python3 skills/video/review-ugc-render/tests/test_review_render.py && python3 skills/video/render-street-interview/scripts/selftest.py && python3 -m unittest discover -s skills/video/render-street-interview/tests -p test_prompt_budget.py && python3 skills/marketing/improve-search-visibility/tests/run-fixtures.py",
+    "check:all": "node scripts/check-all.js"
   },
   "keywords": [
     "claude-code",
     "skills",
-    "gtm",
-    "sales",
     "marketing",
-    "scraping"
+    "video",
+    "ads",
+    "gooseworks"
   ],
-  "author": "Athina AI",
+  "author": "GooseWorks",
   "license": "MIT",
   "devDependencies": {
-    "@changesets/cli": "^2.29.6",
     "js-yaml": "^4.1.1"
   }
 }

@@ -1,0 +1,19 @@
+{
+  "_source": "Shared reference-led creator builder, revised after the October 2026 output audits (fix-forward 15 Oct: phone capture, deep focus, no bokeh, real unretouched skin, no forced flaws). Prompt requests guide generation; they do not establish content acceptance.",
+  "slots": {
+    "identity": "the person chosen in the approved brief",
+    "skin_tone": "the selected skin tone",
+    "hair": "the selected hairstyle",
+    "wardrobe": "the selected ordinary clothing",
+    "imperfections": "ordinary texture; distinctive marks only when explicitly chosen",
+    "framing": "camera height, visible body area, headroom and action space",
+    "scene": "the actual approved setting and background",
+    "expression": "the intended relaxed expression",
+    "face_fill": "head size within the frame",
+    "capture": "phone (default), phone_observer or studio capture",
+    "recording": "counter support, selfie, or observer (phone_observer)",
+    "focus": "deep focus by default; shallow only when the reference is shot that way"
+  },
+  "prompt": "Photograph of {identity}. {skin_tone} skin. {hair} {wardrobe} {framing} {scene} {expression}\n\n{capture} {recording} {focus}\n\n{imperfections} The head occupies {face_fill} of the frame. Keep the complete face visible with space around it. Real skin at this viewing distance with no retouching or smoothing, believable eyes and teeth, relaxed facial muscles and ordinary posture. Preserve the stated wardrobe, setting and motivated lighting. Hands, when visible, have correct anatomy and hold only the stated objects. No artificial fixed grin or glamour pose.",
+  "negative_prompt": "waxy skin, beauty filter, airbrushing, skin smoothing, plastic gloss, painted acne scars, greasy shine, exaggerated pore craters, sharpening halos, cinematic colour grade, artificial grain overlay, bokeh background, portrait mode blur, shallow depth of field, ring light, beauty lighting, plain studio backdrop, white void, doll proportions, malformed hands, extra fingers, dead glassy eyes, cropped face, invented text, logos, watermarks, nude, bare shoulders, topless"
+}

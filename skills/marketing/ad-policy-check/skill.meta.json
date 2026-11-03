@@ -1,0 +1,29 @@
+{
+  "slug": "ad-policy-check",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.3",
+  "used_by": [
+    "email-lifecycle",
+    "make-content",
+    "make-static-ads",
+    "research-competitors",
+    "run-organic-social",
+    "run-paid-campaigns",
+    "work-with-creators"
+  ],
+  "tags": [
+    "ads"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

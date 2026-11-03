@@ -1,0 +1,15 @@
+{
+  "slug": "competitor-ad-intelligence",
+  "category": "composites",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads",
+    "competitive-intel",
+    "research"
+  ],
+  "requires_skills": [
+    "scrapecreators-api",
+    "transcript-intelligence"
+  ]
+}

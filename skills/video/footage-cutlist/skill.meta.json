@@ -1,0 +1,14 @@
+{
+  "slug": "footage-cutlist",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "1.0.2",
+  "tags": [
+    "ads",
+    "content"
+  ],
+  "requires_tools": [
+    "ffmpeg",
+    "ffprobe"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "slug": "research-market-listening",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "research-market",
+  "tags": [
+    "research",
+    "monitoring"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

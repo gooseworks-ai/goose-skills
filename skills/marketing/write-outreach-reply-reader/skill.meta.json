@@ -1,0 +1,23 @@
+{
+  "slug": "write-outreach-reply-reader",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "write-outreach",
+  "tags": [
+    "outreach",
+    "sales"
+  ],
+  "standalone": false,
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "outcomes-ledger",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

@@ -1,0 +1,9 @@
+# Research pattern
+
+For research-market, research-competitors, research-audience, work-with-creators and improve-search-visibility. Read it before the first search; the marketing-guide's §3 rules still apply.
+
+1. **Free pass first, ask nothing** — except, for a brand with customers, one specific question up front for its own customer data (a list or export, win/loss notes, churn reasons, support themes). Before the first message do everything free: the brain and saved files; web search, news first (launches, funding, hires, press), for the brand and every subject; public pages in the host browser, read as a person would, never bulk-scraped (sites, pricing, changelogs, ad libraries, app stores, Reddit, review sites); the server's free reads. Cover every dimension of every main subject, and the brand's own side.
+2. **Then one message:** the findings, the draft answer, and only the decisions left. Never ask what the free pass could find. A broad ask may get an area picker, "Everything" recommended.
+3. **One credit yes**, to a ceiling, for any paid top-up (spend-gate B). Paid reads deepen a free result; they never start one.
+4. **Every finding that matters ends in "For you":** fits us or not, and why; if yes, what to make (format, hook, product, the approved claim behind it) and which maker makes it. Add "You vs them" (ahead, behind, where everyone sounds the same). Weigh buyers' words over rivals' moves; never follow the herd. A move needing unapproved proof says "you'd need proof of X first". Research recommends; it never makes the asset. Facts-only asks (an investor update, a market map) skip "For you"; with an empty brain, say "I can't tell what fits you yet" and ask the few facts that decide fit.
+5. **The deliverable is a report** through the `write-report` skill (`../write-report/SKILL.md`).

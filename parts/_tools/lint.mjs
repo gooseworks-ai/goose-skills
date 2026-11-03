@@ -12,7 +12,9 @@
 //     and the frame renderer runs a page's timers on its own virtual clock; a
 //     guard that defines a function named fetch to refuse it is not a use);
 //   - size limits (part.mjs 2 MB, a version folder 20 MB);
-//   - index.json, layers.json and withdrawn.json agree with the folders.
+//   - index.json, layers.json and withdrawn.json agree with the folders;
+//   - a withdrawn version skips only the paid-call model proof (it can never
+//     be ordered again); every other rule still checks it.
 //
 //   node parts/_tools/lint.mjs     prints findings, exit 1 when there are any
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
@@ -262,6 +264,16 @@ export function lintParts(partsRoot = PARTS) {
   const schemaPath = join(partsRoot, '_contract', 'part-manifest.schema.json');
   const schema = JSON.parse(readFileSync(existsSync(schemaPath) ? schemaPath : join(PARTS, '_contract', 'part-manifest.schema.json'), 'utf8'));
   const manifests = new Map();
+  // A withdrawn version can never be locked into a new video, so its paid-call
+  // model proof is moot: a frozen version that shipped with an unprovable model
+  // expression is withdrawn and replaced, never edited. Every other rule still runs.
+  const withdrawnKeys = new Set();
+  try {
+    const w = JSON.parse(readFileSync(join(partsRoot, 'withdrawn.json'), 'utf8'));
+    for (const item of (w && Array.isArray(w.withdrawn) ? w.withdrawn : [])) if (item && item.id && item.version) withdrawnKeys.add(`${item.id}@${item.version}`);
+  } catch {
+    // A missing or unreadable withdrawn.json is reported below; nothing is skipped.
+  }
 
   for (const folder of versionFolders(partsRoot)) {
     const partJson = join(folder.dir, 'part.json');
@@ -307,7 +319,7 @@ export function lintParts(partsRoot = PARTS) {
     const entry = join(folder.dir, 'part.mjs');
     if (existsSync(entry) && statSync(entry).size > MAX_ENTRY) add(entry, 'size', 'part.mjs is over 2 MB');
     if (total > MAX_FOLDER) add(folder.dir, 'size', 'the version folder is over 20 MB');
-    if (existsSync(entry)) for (const f of paidCallFindings(readFileSync(entry, 'utf8'), manifest)) add(entry, f.rule, f.message);
+    if (existsSync(entry) && !withdrawnKeys.has(`${folder.id}@${folder.version}`)) for (const f of paidCallFindings(readFileSync(entry, 'utf8'), manifest)) add(entry, f.rule, f.message);
     if (existsSync(entry) && !/^export\s+(?:async\s+function\s+run\s*\(|(?:const|let|var)\s+run\b|\{[^}]*\brun\b[^}]*\})/m.test(readFileSync(entry, 'utf8'))) {
       add(entry, 'entry', 'part.mjs must export run(inputs, ctx)');
     }

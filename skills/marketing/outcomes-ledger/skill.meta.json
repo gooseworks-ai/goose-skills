@@ -1,0 +1,25 @@
+{
+  "slug": "outcomes-ledger",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.2",
+  "used_by": [
+    "research-audience",
+    "work-with-creators",
+    "write-outreach"
+  ],
+  "tags": [
+    "outreach"
+  ],
+  "standalone": false,
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}

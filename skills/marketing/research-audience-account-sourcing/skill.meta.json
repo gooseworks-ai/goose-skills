@@ -1,0 +1,13 @@
+{
+  "slug": "research-audience-account-sourcing",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "research-audience",
+  "tags": [
+    "research",
+    "lead-generation"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

@@ -11,7 +11,8 @@
  *   { "interface": 1, "parts": [ entry, ... ] }
  * with one entry per version: what the kit loader, the studio sync and the
  * server's lock builder read (kind, layer slot, kit range, needs, cost,
- * determinism, the folder, the models the line may let it order) and a
+ * determinism, the folder, the models the line may let it order, and the
+ * older versions whose paid requests it repeats byte for byte) and a
  * sha256 for every file in the folder, part.json included.
  *
  * Refused, so nothing unpublishable reaches the index:
@@ -155,6 +156,7 @@ function buildEntries(root = ROOT) {
       needs: manifest.needs,
       cost: manifest.cost,
       determinism: manifest.determinism,
+      ...(manifest.reuses_pieces_of !== undefined ? { reuses_pieces_of: manifest.reuses_pieces_of } : {}),
       path: dir,
       files,
       models: manifest.needs.models,

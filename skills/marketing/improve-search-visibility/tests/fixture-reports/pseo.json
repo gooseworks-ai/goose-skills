@@ -1,0 +1,106 @@
+{
+  "job": "pseo-plan",
+  "completion": "complete",
+  "report_markdown": "**Fictional fixture example \u2014 supplied test evidence, not a live site check.**\n\n# Coldfield \u2014 pSEO page-set blueprint, 22 October 2026\n\n## In short\n\nStart with **fit-tested brewer guides**, using two verified records: the Coldfield one-litre brewer and the listed 750 ml wide-mouth mason jar. Each page must help someone brew with that actual vessel, using verified fit, capacity and model-specific instructions. Hold the unverified variant. Reject city pages because there is no local offering or useful local dataset. Search evidence supports testing the brewer-guide idea; it does not supply search volumes or traffic forecasts.\n\n## Families considered\n\n| Family | Evidence and feasibility | Decision |\n|---|---|---|\n| `/brewer-guides/{model_slug}` | Two dated fit/capacity records; supplied mason-jar query shows specific how-to intent. The product can offer verified compatibility and instructions. | Recommend a two-page pilot after missing brewing-step tests. |\n| `/brew-method/{method}` | Method questions exist, but generic immersion content can overlap the existing pillar/ratio guides. French-press fit was not tested. | Park broad expansion. Reuse existing editorial pages; only add a distinct model/method page when it has real instructions and compatible product evidence. |\n| `/coffee-for/{city}` | The supplied Seattle query has caf\u00e9-shopping intent, but Coldfield has no local store or local dataset. | Reject. Substituting city names adds no useful local answer. |\n\n## Recommended family: fit-tested brewer guides\n\n**URL:** `/brewer-guides/{model_slug}`. Slugs come from reviewed canonical model records; normalize aliases into one model page. Existing URLs that already serve the same model intent should be updated rather than duplicated.\n\n**Title:** `Cold brew with {model_name}: fit and brewing guide | Coldfield`\n\n**Meta:** `Use the verified {capacity_ml} ml {model_name} setup. Check filter fit, follow tested brewing steps and find the matching care guide.`\n\n**H1:** `How to make cold brew with {model_name}`\n\nThe title/meta are templates for review, not approved product copy. Do not publish the \u201ctested steps\u201d wording until those steps exist for the record.\n\n**Sections:** what vessel/filter this guide covers; verified fit and capacity; required equipment; model-specific brewing steps with sourced quantities; handling/filter removal; troubleshooting specific to that vessel; care; links to the ratio/dilution pages and product when relevant.\n\n**Internal links:** a brewer-guide hub lists only complete useful guides. Each page links back to the hub, to the relevant product and to the existing ratio, dilution and care guidance. A sibling comparison link is useful only when it helps the user choose a genuinely different setup.\n\n## Data model and records\n\n| Field | Type | Source / publish requirement |\n|---|---|---|\n| `model_slug`, display name | string | Reviewed compatibility record; unique canonical slug. |\n| `capacity_ml` | integer | Product specification or measured vessel record; required. |\n| `fit_confirmed` | boolean | Dated physical fit test; true required. |\n| Filter and method | string | Product specification and actual setup test. |\n| `tested_steps` | list of instructions | Model-specific brewing test; required before publish. A generic name swap is insufficient. |\n| `care_url` | URL | Current matching care guide; check response and relevance. |\n| `source` | URL/record reference | Underlying specification and fit proof. |\n| `updated_at` | date | Most recent verification, with a named owner. |\n\n**Example record 1:** `coldfield-one-litre`, 1000 ml, reusable mesh, immersion, fit confirmed, product-page evidence dated 21 October; care guide `/guides/filter-care`. Model-specific tested steps are still needed.\n\n**Example record 2:** `glass-mason-jar`, 750 ml, compatible listed wide-mouth jar, immersion, fit confirmed by compatibility record C2 dated 18 October; same care reference, but vessel-specific steps and useful differences must be tested rather than copied.\n\n**Excluded record:** `unknown-wide-mouth` has no confirmed capacity, fit or source. Hold it out of the public page set until those facts and useful instructions exist.\n\n## Quality and technical plan\n\nCMS capabilities are unknown. Engineering should review the record schema and propose a route/template implementation in a PR; the rendered pilot previews are the human review surface. No CMS integration is assumed.\n\nPublish only complete, sourced and useful records. Empty, unsupported and unverified variants must not create public indexable pages. Use one canonical URL for each distinct model intent; resolve aliases and overlapping pages before launch. Include approved pages in the hub and sitemap, serve the essential instructions/links in crawler-visible HTML, and ensure canonical, status and structured facts agree. Do not add review or performance claims without approved evidence.\n\nAssign the product owner to refresh fit/specification records after product changes and the content owner to recheck instructions and care links. Retire or redirect a page to a relevant successor when a model no longer has a supported useful guide; review the destination and traffic paths first.\n\n## Pilot, review and expansion\n\n1. Validate the missing model-specific instructions for both verified records. Agent: 15 min (M) - Human: 20 min for reviewing existing physical-test evidence; any new physical brewing test has elapsed preparation time outside agent execution.\n2. Prepare the template and two rendered draft previews. Agent: 30 min (L) - Human: 15 min. Prerequisites: repository/CMS access, approved product facts and the completed records. Review in the engineering PR and preview URLs.\n3. Check both pages by eye and raw response: real differences beyond the names, complete instructions, correct sources, useful links, one intended canonical, no unsupported fields or claims. Agent: 15 min (M) - Human: 10 min. Publishing waits for approval.\n4. After an approved pilot, confirm indexing and read settled own-property query/page evidence if connected. Expand only when quality and useful data hold and measured demand justifies the next family. No fixed rank or traffic gain is promised.\n\nKeyword volume/difficulty and a full rival traffic breakdown were not supplied. That limits numerical demand confidence, but the product fit, data requirements, templates and pilot are concrete enough to review now.\n\n\nSources: the supplied Coldfield fixture packet, dated 22 October 2026. These .test domains were not browsed. This local example was saved by the fixture exercise; saving to a live brand was not exercised. Nothing was changed, sent or published.\n",
+  "evidence": {
+    "families": [
+      {
+        "pattern": "/brewer-guides/{model_slug}",
+        "recommended": true,
+        "fields": [
+          {
+            "name": "model_slug",
+            "type": "string",
+            "source": "reviewed compatibility record"
+          },
+          {
+            "name": "capacity_ml",
+            "type": "integer",
+            "source": "product specification or measured fit record"
+          },
+          {
+            "name": "fit_confirmed",
+            "type": "boolean",
+            "source": "dated physical compatibility test"
+          },
+          {
+            "name": "filter_and_method",
+            "type": "string",
+            "source": "product spec and actual method test"
+          },
+          {
+            "name": "tested_steps",
+            "type": "array[string]",
+            "source": "model-specific brewing test; required before publishing"
+          },
+          {
+            "name": "care_url",
+            "type": "url",
+            "source": "current care guide"
+          },
+          {
+            "name": "source",
+            "type": "url or record reference",
+            "source": "underlying proof"
+          },
+          {
+            "name": "updated_at",
+            "type": "date",
+            "source": "last verification"
+          }
+        ],
+        "example_records": [
+          {
+            "model": "coldfield-one-litre",
+            "capacity_ml": 1000,
+            "filter": "reusable mesh",
+            "fit_confirmed": true,
+            "source": "https://coldfield.test/products/brewer",
+            "method": "immersion",
+            "care_source": "https://coldfield.test/guides/filter-care",
+            "source_updated": "2026-10-21"
+          },
+          {
+            "model": "glass-mason-jar",
+            "capacity_ml": 750,
+            "filter": "Coldfield filter fits listed wide-mouth jar",
+            "fit_confirmed": true,
+            "source": "fixture compatibility test record C2",
+            "method": "immersion",
+            "care_source": "https://coldfield.test/guides/filter-care",
+            "source_updated": "2026-10-18"
+          }
+        ]
+      },
+      {
+        "pattern": "/brew-method/{method}",
+        "recommended": false,
+        "fields": [],
+        "example_records": []
+      },
+      {
+        "pattern": "/coffee-for/{city}",
+        "recommended": false,
+        "fields": [],
+        "example_records": []
+      }
+    ],
+    "pilot": {
+      "pages": [
+        "coldfield-one-litre",
+        "glass-mason-jar"
+      ],
+      "hold": [
+        "unknown-wide-mouth"
+      ],
+      "publish_prerequisites": [
+        "tested_steps",
+        "CMS/repository access",
+        "approved facts",
+        "human preview approval"
+      ]
+    }
+  },
+  "remaining_prerequisites": [],
+  "execution": "manual fixture execution in this chat; local evidence checks only"
+}

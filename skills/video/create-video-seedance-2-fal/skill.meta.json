@@ -1,0 +1,10 @@
+{
+  "slug": "create-video-seedance-2-fal",
+  "category": "capabilities",
+  "domain": "ads",
+  "version": "2.0.5",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": []
+}

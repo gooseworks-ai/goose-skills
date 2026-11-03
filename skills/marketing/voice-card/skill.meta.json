@@ -1,0 +1,30 @@
+{
+  "slug": "voice-card",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.2.1",
+  "used_by": [
+    "email-lifecycle",
+    "make-content",
+    "run-organic-social",
+    "write-outreach"
+  ],
+  "tags": [
+    "brand",
+    "content"
+  ],
+  "standalone": true,
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ],
+  "writes": [
+    "Sourced social/personal or company blog voice card at brand/voices/<handle>.md, supersede per handle; blog handle blog-<brand-slug>; provisional until confirmed"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "slug": "ads-north-star-strategy",
+  "category": "composites",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "features": [
+    "a one-minute strategy with the reason behind every choice",
+    "objective chosen from the business outcome, with an honest bridge when the host cannot launch it",
+    "one ad set on small budgets; 2-3 ads that differ in argument, generated at 3x so the user can choose",
+    "test frame and success metric with a threshold from the unit economics",
+    "safety rules proposed, saved only once accepted",
+    "re-read after a deep check names the assumption that changed"
+  ],
+  "requires_skills": [
+    "meta-ad-manager",
+    "launch-meta-ad-campaign",
+    "ad-management-intake",
+    "answer-ads-questions"
+  ],
+  "example_prompt": "We have $1,500 for three weeks to get demo requests. What should the Meta ads strategy be?"
+}

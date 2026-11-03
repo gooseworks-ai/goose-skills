@@ -1,0 +1,13 @@
+{
+  "slug": "research-competitors-edge-cases",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.1",
+  "playbook": "research-competitors",
+  "tags": [
+    "competitive-intel",
+    "research"
+  ],
+  "standalone": false,
+  "requires_skills": []
+}

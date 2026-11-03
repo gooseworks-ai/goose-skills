@@ -1,0 +1,25 @@
+{
+  "slug": "honest-review",
+  "category": "capabilities",
+  "tier": "atom",
+  "version": "0.1.3",
+  "used_by": [
+    "make-static-ads",
+    "run-organic-social"
+  ],
+  "tags": [
+    "design",
+    "ads"
+  ],
+  "standalone": false,
+  "requires_skills": [
+    "claims-gate",
+    "marketing-data-access",
+    "marketing-guide",
+    "run-memory",
+    "save-learning",
+    "save-to-brain",
+    "spend-gate",
+    "write-report"
+  ]
+}
