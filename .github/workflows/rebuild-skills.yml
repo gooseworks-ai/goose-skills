@@ -1,0 +1,25 @@
+name: Rebuild skills
+
+on:
+  pull_request:
+    paths:
+      - 'rebuild/**'
+      - '.github/workflows/rebuild-skills.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check rebuild package and preserve the current catalog
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha }}
+        run: node rebuild/scripts/verify.mjs --base "$BASE_COMMIT"

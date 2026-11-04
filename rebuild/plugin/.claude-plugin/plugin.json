@@ -1,0 +1,23 @@
+{
+  "name": "gooseworks-next",
+  "version": "2.3.1",
+  "description": "Make on-brand ads with GooseWorks: image ads, short video ads, variations of an ad you have with new hooks to test against it, ideas for what to make next, checks that an ad is on brand, and a look at what competitors run. Every ad is made from your brand's own facts, claims and files.",
+  "author": {
+    "name": "GooseWorks",
+    "email": "goose@gooseworks.ai",
+    "url": "https://gooseworks.ai"
+  },
+  "homepage": "https://gooseworks.ai",
+  "license": "UNLICENSED",
+  "keywords": [
+    "ads",
+    "marketing",
+    "brand",
+    "video",
+    "creative",
+    "competitors",
+    "hooks",
+    "creative testing",
+    "UGC"
+  ]
+}

@@ -1,0 +1,1262 @@
+{
+  "version": "2.3.1",
+  "skills": [
+    {
+      "folder": "ad-library",
+      "name": "ad-library",
+      "description": "Finds, sorts and tidies a brand's ads in GooseWorks, many at a time. Use when someone says \"show my ads\", \"find the ad about our sale\", \"approve these five\", \"reject all of those\", \"tag these as social proof\", \"archive the old ones\", \"bring back that ad\", \"delete these\", \"download my ads\" or \"send me a zip of the approved ones\".",
+      "steps": [
+        {
+          "number": 1,
+          "title": null,
+          "text": "Call `gooseworks:get_started` with what the person asked for.",
+          "tools": [
+            "get_started"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Find the ads",
+          "text": "Call `gooseworks:ads_read` with view ads. Search by the words the person remembers from the name, headline or text, sort newest, oldest or by name, and narrow by campaign, product, format or status when they say so. Archived ads only show with isArchived true. Show one short table, a row per ad with its name or headline, status, when it was made and its page link.",
+          "tools": [
+            "ads_read"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Say which",
+          "text": "Repeat back the ads you'll act on, by name or headline, before any change. When the person's words could match more ads than they meant, ask once.",
+          "tools": []
+        },
+        {
+          "number": 4,
+          "title": "Approve or reject",
+          "text": "Call `gooseworks:ads_decide` with choice kind ad and all the ads that get the same call, up to 100 at once. For a reject, pass the reasons they gave and their words. Only finished ads can be decided. Approving doesn't put an ad live anywhere.",
+          "tools": [
+            "ads_decide"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Tags",
+          "text": "When they want ads labeled, call `gooseworks:ads_organize` with action retag and only the tags they named. Every other tag on each ad stays as it was.",
+          "tools": [
+            "ads_organize"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Archive or bring back",
+          "text": "Archiving hides ads from the library without deleting them. Call `gooseworks:ads_organize` with action archive, or restore to bring archived ones back.",
+          "tools": [
+            "ads_organize"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Delete",
+          "text": "Deleting is for good. Ask once more, naming how many ads go, then call `gooseworks:ads_organize` with action remove. Ads that came from Meta or went to Meta are never deleted. When the answer refuses, say why in plain words and offer to archive them instead.",
+          "tools": [
+            "ads_organize"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Ads from Meta",
+          "text": "The library only reads ads from Meta. Approving, rejecting, tagging, archiving or downloading one here changes nothing in Meta. A video brought in from Meta shows here as a still, and the video itself stays on Meta. GooseWorks never launches, pauses or changes an ad on Meta. When the person wants that, carry on with the Meta ads steps.",
+          "tools": []
+        },
+        {
+          "number": 9,
+          "title": "Download",
+          "text": "Call `gooseworks:ads_organize` with action download and the ads, up to 500. Follow the ZIP with `gooseworks:job_get`, then call `gooseworks:ads_organize` with action zip for its link, and give the person that link.",
+          "tools": [
+            "ads_organize",
+            "job_get"
+          ]
+        },
+        {
+          "number": 10,
+          "title": null,
+          "text": "Say what changed in one line, with the ads' page links when they want to look.",
+          "tools": []
+        }
+      ]
+    },
+    {
+      "folder": "ad-variations",
+      "name": "ad-variations",
+      "description": "Variations of one ad, the original ad, that change only what the person picks, tested against it on Meta. An image ad changes its hook, product, background, offer, call to action, ad copy or placement. A Goose video changes its text hook, verbal hook, visual hook, voiceover, end card, ad copy or placement. An uploaded or Meta video changes its text hook, hook clip, end card, ad copy or placement. Use when someone wants variations or iterations of an ad, new hooks or a hook test on an ad or video they have, a winner iterated on, or a tired ad refreshed.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "The original ad",
+          "text": "Use the ad they named, found with `gooseworks:ads_read`. For \"my best\" or \"my tired one\", find the top Winning or Tired ad with `gooseworks:results_read` view ads, days 30, and offer it. Pass results_read's creativeId as adId, never its own adId, which is the Meta ad. An image ad Goose didn't make can't get variations yet: offer new ads in its look through the static-ads skill instead.",
+          "tools": [
+            "ads_read",
+            "results_read"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "A video not in Goose yet",
+          "text": "A video ad on Meta whose creativeId is null, or a video on their computer, goes to Goose's upload page: give it with `gooseworks:ad_variations` step upload, with that ad's adId from results_read as metaAdId, or metaAdId null for a file. There the person brings it in and ticks that they own it or have the rights to run it as an ad. Only they can tick it: never tick or claim it for them. When they say \"My video is in. Carry on with the test.\", find it with `gooseworks:ads_read` view ads, origin imported, format video, sort newest, limit 1.",
+          "tools": [
+            "ad_variations",
+            "ads_read"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Its parts",
+          "text": "Start the test with step parts on the original ad's id and a new requestKey. It's free, and shows what the ad is made of. A brought-in video shows on a card read into scenes, with its hook marked. When the person presses \"Keep the video, swap the hook\" there, the same words reach the chat with the test: carry on at step 4.",
+          "tools": []
+        },
+        {
+          "number": 4,
+          "title": "What to test",
+          "text": "Ask only which variables to change. When they didn't say, recommend 3 new hooks, one variable each, each from a different angle (pain point, question, bold claim, social proof, offer or curiosity), with a one-line reason: hooks on an image, verbal hooks on a Goose video, text hooks on a brought-in video.",
+          "tools": []
+        },
+        {
+          "number": 5,
+          "title": "The variables",
+          "text": "- Image ad: hook, product, background, offer, call to action, ad copy, placement.\n- Goose video: text hook (the words on screen in the first scene), verbal hook (its spoken line), visual hook (its picture), voiceover, end card and button, ad copy, placement.\n- Brought-in video, or a variation of one: text hook, hook clip, end card and button, ad copy, placement. No captions, and sizes 9:16, 4:5 and 1:1 only. A hook clip is a new first shot: a product photo, one of their own clips or a clip Goose makes of a product, with an optional line in a Goose voice, never the creator's. Each keeps the original ad's headline, text and button unless its row changes them.\n- Voices: a voiceover row or a hook clip line takes its voiceId from the test's voices, which the test answer lists, or with a card its next step.",
+          "tools": []
+        },
+        {
+          "number": 6,
+          "title": "Hooks",
+          "text": "On an image, pick an angle for each row: Goose writes the words when it makes the ad, unless the person typed their own. On a video, write each hook yourself, the same way the video-ads skill does: the first 2 seconds, 6 words at most, each from a different angle. Suggest a hook clip when the video's hook already has words on screen.",
+          "tools": []
+        },
+        {
+          "number": 7,
+          "title": "Products, offers and call to action",
+          "text": "Read the products and saved offers from `gooseworks:brain_pack`. Physical products and packages need real product shots. Software, services, plans and free offers can use conceptual image ads without a photo; an actual interface needs a real screenshot. Let the plan's checks decide whether a chosen video shot is supported. An image call-to-action row changes the words on the ad; the Meta button stays the original ad's.",
+          "tools": [
+            "brain_pack"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "The plan",
+          "text": "Save the rows with step plan, action set_up: one variable each unless the person wants every combination. With a card, the card shows the plan, where the person changes or leaves out rows: say one line and wait. With no card, show it in one short table, a row per variation with what it changes and its estimate, and the test's pageUrl.",
+          "tools": []
+        },
+        {
+          "number": 9,
+          "title": "Flags",
+          "text": "When Goose flags a row, fix exactly what it names with action edit, at most twice, then ask the person or leave the row out.",
+          "tools": []
+        },
+        {
+          "number": 10,
+          "title": "One price",
+          "text": "With a card, the person presses See the price on the plan card; price with step price only when they ask in the chat. With no card, price it with step price. Each price takes a new requestKey. An image test's price is a quote card, and a video test's price is the batch card. Never price a test's batch with `gooseworks:video_batch`. A brought-in video's headline, text and button must be saved before the price: the person adds them on Goose's upload page or on the test's page in Goose. The yes is a tap on the card. Where no card shows, it's at the link the price answer gives: the quote's page for an image test, the batch's page for a video test. Never take a typed yes. After the yes, the plan can't change.",
+          "tools": [
+            "video_batch"
+          ]
+        },
+        {
+          "number": 11,
+          "title": "Making",
+          "text": "Follow an image test with `gooseworks:job_get`. A video test is made on the person's computer like any batch of videos: follow it on the batch card, or with `gooseworks:video_batch_read`. A variation that didn't finish cost nothing; offer a new price when the answer does.",
+          "tools": [
+            "job_get",
+            "video_batch_read"
+          ]
+        },
+        {
+          "number": 12,
+          "title": "Review",
+          "text": "Read the test with step read, view plan, and show each made variation next to the original ad, with what it changes. Record what the person keeps or rejects with step review. Only image rows can be fixed: when the card's Fix sends \"Fix V1 …\", ask what's wrong, edit that ad with `gooseworks:ads_quote`, and once it's ready put it in the test with step fix. A video variation they don't like is rejected, and a new test tries a new take.",
+          "tools": [
+            "ads_quote"
+          ]
+        },
+        {
+          "number": 13,
+          "title": "On Meta",
+          "text": "Offer `gooseworks:meta_export` for the kept variations, one export per button: rows that change the call to action or end card with their own button, every other row with the original ad's. The person uploads them in Ads Manager; Goose never sends or changes ads on Meta.",
+          "tools": [
+            "meta_export"
+          ]
+        },
+        {
+          "number": 14,
+          "title": "Results",
+          "text": "After a few days on Meta, read them with step read, view results, or `gooseworks:results_read` view test with the testId. Give the summary as it is, and offer to test again from the winner. \"Test again from V1\" from the results card starts a new test with step parts on that variation's ad and a new requestKey. Save the learning with step save_learning only after the person says the words to keep.",
+          "tools": [
+            "results_read"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "ask-the-team",
+      "name": "ask-the-team",
+      "description": "Asks the person or someone on their team one question on GooseWorks' Waiting for review page, then reads the answer back. Use when the work needs an answer the brand can't settle, and the person wants someone else to give it or wants to answer later.",
+      "steps": [
+        {
+          "number": 1,
+          "title": null,
+          "text": "Call `gooseworks:get_started` with what the person asked for.",
+          "tools": [
+            "get_started"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Check the brand first",
+          "text": "Call `gooseworks:brain_pack` for the job. Ask only what the pack doesn't settle.",
+          "tools": [
+            "brain_pack"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Ask in chat when you can",
+          "text": "When the person is here and can answer now, ask them in chat instead. Use this skill when they want someone else to answer, or to answer later.",
+          "tools": []
+        },
+        {
+          "number": 4,
+          "title": "Write one question",
+          "text": "Keep it short and plain, with one sentence on why GooseWorks needs it. Give 2 to 5 short answers to pick from, each different. Let them write their own answer too, unless only the choices make sense.",
+          "tools": []
+        },
+        {
+          "number": 5,
+          "title": "Ask it",
+          "text": "Call `gooseworks:question_ask` with the question. Tell the person in one line that it's on the Waiting for review page, and give the link. Carry on with whatever doesn't need the answer.",
+          "tools": [
+            "question_ask"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Read the answer",
+          "text": "When the person says it's answered, or before you use the answer, call `gooseworks:question_read`. Use the answer exactly as given. When it changes a lasting fact about the brand, draft that with `gooseworks:brain_propose` for them to publish.",
+          "tools": [
+            "brain_propose",
+            "question_read"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Dismissed",
+          "text": "When the question was dismissed, don't ask it again. Carry on without it, or ask the person in chat.",
+          "tools": []
+        }
+      ]
+    },
+    {
+      "folder": "brand-files",
+      "name": "brand-files",
+      "description": "Keeps a brand's files in GooseWorks tidy and easy to share. Writes notes, briefs and reports as documents and changes them later, reads what's there, uploads files, sorts files and finished ads into folders, renames and deletes them, shares a file or folder with a link, and puts a folder in one download. Use when someone wants to save or change a document, see or read the brand's files, add a file, tidy files into folders, rename or delete one, share files or download a folder.",
+      "steps": [
+        {
+          "number": 1,
+          "title": null,
+          "text": "Call `gooseworks:get_started` with what the person asked for.",
+          "tools": [
+            "get_started"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "What's there",
+          "text": "Call `gooseworks:file_list`. View folders shows the folders. View files shows uploads, documents and finished ads, in one folder or none, newest first; search narrows it. View documents lists notes, briefs and reports. Say what you found in a few lines, with the folder each one is in. Offer more instead of listing everything.",
+          "tools": [
+            "file_list"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Read a file",
+          "text": "Call `gooseworks:file_read`. A document comes back as markdown with its revision. An uploaded PDF or text file comes back as its text; other uploads can't be read as text, so share their link instead.",
+          "tools": [
+            "file_read"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Save a note, brief or report",
+          "text": "Write it in short, plain markdown, then call `gooseworks:file_write` with step kind document and target action create, its kind (note, brief or report), a clear title and the whole text. Put it in a folder only when the person names one. Say in one line that it's saved, with its link.",
+          "tools": [
+            "file_write"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Change a document",
+          "text": "Read it first with `gooseworks:file_read`, change only what the person asked, then call `gooseworks:file_write` with target action revise, the revision you read as baseRevision, and the whole new title and text. Each save keeps the older version, and the person can see every version in Goose. If it's refused because someone changed it since, read it again and redo the change on the newest version.",
+          "tools": [
+            "file_read",
+            "file_write"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Bring back an older version",
+          "text": "Find it with `gooseworks:file_list` view revisions, read it with `gooseworks:file_read`, then save its title and text as a new version with `gooseworks:file_write`.",
+          "tools": [
+            "file_list",
+            "file_read",
+            "file_write"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Upload a file",
+          "text": "When the file is here, call `gooseworks:file_write` with step kind upload and follow nextStep to send it, then call it again with step kind upload_saved, saying what the file is and its folder. If you can't send files from here, ask the person to drop it on the Uploads page in Goose. Logos, fonts and product photos that the brand's ads should use go in with `gooseworks:brain_import` instead.",
+          "tools": [
+            "brain_import",
+            "file_write"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Sort files",
+          "text": "Call `gooseworks:file_move` with the uploads, documents and finished ads to move and where they go: a folder from `gooseworks:file_list`, a new folder by name, or out of every folder. Say in one line what moved where.",
+          "tools": [
+            "file_list",
+            "file_move"
+          ]
+        },
+        {
+          "number": 9,
+          "title": "Rename",
+          "text": "Call `gooseworks:file_rename` for an upload, a document's title or a folder.",
+          "tools": [
+            "file_rename"
+          ]
+        },
+        {
+          "number": 10,
+          "title": "Delete",
+          "text": "Only when the person asked to delete that file by name. Call `gooseworks:file_delete`. Deleting an upload can't be undone, so name what goes before you do it. A document is archived, and the person can bring it back on the Docs page. Removing a folder keeps what was in it, out of any folder. When it refuses, like for the brand's logo or a font the brand's look uses, say why in plain words and what they can do instead.",
+          "tools": [
+            "file_delete"
+          ]
+        },
+        {
+          "number": 11,
+          "title": "Share",
+          "text": "Call `gooseworks:file_link` with action kind share for one upload, one document or a whole folder, and give the person the link. Anyone with the link can open it without signing in, so share only what they asked for. Ask how long it should last only when they bring it up. Find a link with action kind shares. Turn one off only when they ask, with `gooseworks:file_delete` target kind share_link.",
+          "tools": [
+            "file_delete",
+            "file_link"
+          ]
+        },
+        {
+          "number": 12,
+          "title": "Download a folder",
+          "text": "Call `gooseworks:file_link` with action kind zip and the folder. It's long work: say in one line that GooseWorks is putting the folder together, follow it with `gooseworks:job_get`, then get the download link with action kind zip_link and give it to the person.",
+          "tools": [
+            "file_link",
+            "job_get"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "brand-setup",
+      "name": "brand-setup",
+      "description": "Brand brain setup and upkeep, the facts, products, claims, proof, voice and files every Goose ad is made from. Use when someone wants a brand set up or read again, shares links or files to learn from, asks what Goose knows about their brand, or says a fact is wrong or has changed.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "A brand to set up",
+          "text": "Add a brand the person asks for, or read one again, with `gooseworks:brain_setup`, and say what they can do while Goose learns it. Done when the learning job is shown on its card or at its returned Goose link. Where no card shows, use `gooseworks:job_get` as its nextStep directs. Go on to step 2 only after that job finishes; describe a partial or failed result without claiming learning is complete.",
+          "tools": [
+            "brain_setup",
+            "job_get"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "What Goose learned",
+          "text": "Once learning has finished, say what `gooseworks:brain_read` shows in five lines: the hero products, the best proof and where it came from, who buys, the category and market, and what's still missing from a **complete brain** (below). Ask two questions at most: what to push first, and the goal, with a target cost per sale or lead if they know one. Then offer, in one short list, the blog feed, Instagram, TikTok and LinkedIn company accounts, and review pages that `gooseworks:brain_setup` setup kind suggested_sources finds on their site. Done when their answers are one `gooseworks:brain_propose` draft and you're back on what they first asked for.",
+          "tools": [
+            "brain_propose",
+            "brain_read",
+            "brain_setup"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Competitors to suggest",
+          "text": "Right after step 2, when `gooseworks:competitors_read` shows the brand has no competitors yet, search the web for up to five brands that sell the same kind of product to the same buyers in the same market. Save each one you found on the web, with its real website and one line on why it competes, with `gooseworks:competitors_save` step save and status suggested. Skip any brand you only know from memory. They wait under **Goose suggests** on Competitors until the person picks Watch or Dismiss; offer, in one short list, to watch the ones they want from here too. Use the competitor-research guide to activate only the ones they choose.",
+          "tools": [
+            "competitors_read",
+            "competitors_save"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "More to learn from",
+          "text": "What the person shares goes in with `gooseworks:brain_import`.",
+          "tools": [
+            "brain_import"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Where Goose reads from",
+          "text": "To see, add, pause, resume, remove or read again the places Goose reads the brand from, or to answer a suggestion, use `gooseworks:sources`. Add the brand's LinkedIn company page with sourceKind linkedin; these are its own posts for learning, while the social-inspiration skill searches Instagram and TikTok for ideas.",
+          "tools": [
+            "sources"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "\"What do you know about us?\"",
+          "text": "Sum up from `gooseworks:brain_read`, in the brand's own words: the products, what the brand always says, what it never says, and what's missing from a complete brain. Offer more detail instead of listing everything.",
+          "tools": [
+            "brain_read"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "A specific question",
+          "text": "Search with `gooseworks:brain_search` in the person's own words and answer from what it finds, saying where it came from. When nothing comes back, say so and offer to add it.",
+          "tools": [
+            "brain_search"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "A wrong fact or a changed rule",
+          "text": "Find it with `gooseworks:brain_search` or `gooseworks:brain_read`, then draft the fix with `gooseworks:brain_propose`. Once they've published it in Goose, confirm it with `gooseworks:brain_read`. A product's kind is changed on My brand, Products, Edit, under What you sell. If software was saved as a physical product, have the person choose Software or app there before getting a new ad price; a facts draft cannot change the product's kind.",
+          "tools": [
+            "brain_propose",
+            "brain_read",
+            "brain_search"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "campaigns",
+      "name": "campaigns",
+      "description": "Goose campaigns, from a goal and a brief to the ideas the person ticks and the ads made from them. Use when someone wants a campaign set up or planned, ideas or ads for a campaign, or a campaign's results, or is launching a product.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "Campaign",
+          "text": "When the ask names a campaign, read it with `gooseworks:campaign` step read. Otherwise list the brand's campaigns with step list and ask whether this is for one of them or a new one. For a new one, settle the goal and the products in one question when the ask doesn't, then create it with step create. Done when you hold the campaign.",
+          "tools": [
+            "campaign"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Brief",
+          "text": "When the campaign has no brief, or the person wants it changed, write it with step write_brief: who it's for, what to say, what to show and what to stay away from, in a few short lines.",
+          "tools": []
+        },
+        {
+          "number": 3,
+          "title": "Ideas",
+          "text": "You pick the angles, a different one for each idea, so the person learns what works. Propose ideas with `gooseworks:ideas` step propose, planned by [references/concepts.md](references/concepts.md). Done when every proposed idea has the person's call.",
+          "tools": [
+            "ideas"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Ads",
+          "text": "For each ticked idea, plan its concepts by [references/concepts.md](references/concepts.md), one per ad, then quote them all with `gooseworks:ads_quote` work kind campaign_ads. When the job is done, show each ad it made with its reason.",
+          "tools": [
+            "ads_quote"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Videos",
+          "text": "When the campaign makes videos too, carry on with the video-ads skill for each ticked idea.",
+          "tools": []
+        },
+        {
+          "number": 6,
+          "title": "Results",
+          "text": "When they ask how it's doing, read the campaign's results with step results and say in two or three lines what's winning and what's tired, by [references/verdicts.md](references/verdicts.md).",
+          "tools": []
+        }
+      ]
+    },
+    {
+      "folder": "competitor-research",
+      "name": "competitor-research",
+      "description": "Competitor ad research, which ads rivals keep running, what people say about them, and which angles, hooks, formats and offers are crowded or open. Use when someone asks what competitors are running, what people say about a competitor, names a brand to watch or drop, asks about the competitors Goose suggested, or asks how to stand out.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "Saved competitors",
+          "text": "Read them with `gooseworks:competitors_read`. For one with no ads, follow any research job already returned; when none is running and the person asks for its ads, use step research of `gooseworks:competitors_save`. Read its actual ads with `gooseworks:competitors_ads` step kind list, then read for one whole ad, its media and its link.",
+          "tools": [
+            "competitors_ads",
+            "competitors_read",
+            "competitors_save"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Suggested competitors",
+          "text": "Show the ones Goose found on its own, from `gooseworks:competitors_read` status suggested, with why each might matter. For Watch, use `gooseworks:competitors_save` step save with the existing competitorId, its saved fields and status active. For Dismiss, preserve those fields and set status dismissed. Change only the ones the person picks.",
+          "tools": [
+            "competitors_read",
+            "competitors_save"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "A new competitor",
+          "text": "When the person explicitly asks to watch a new competitor, save it with `gooseworks:competitors_save` step save, then inspect the returned status. A new discovery is saved as suggested; activate that returned competitorId with step save, its saved fields and status active. Activating queues its first research automatically: follow the returned nextStep and job instead of starting another research call. Use step research only for an explicit refresh or when the returned nextStep asks for it. A competitor you merely suggest stays suggested.",
+          "tools": [
+            "competitors_save"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Not a competitor",
+          "text": "When the person says a saved brand isn't one, set it aside with `gooseworks:competitors_save`.",
+          "tools": [
+            "competitors_save"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "What people say",
+          "text": "When the person asks what customers like or complain about, search with `gooseworks:brain_search` for that question and the competitor's id, and quote what it finds with its link. A mention is one person's view: never pass it off as the brand's own proof.",
+          "tools": [
+            "brain_search"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "A deeper look",
+          "text": "Offer a deep read in Goose only when the normal look wasn't enough.",
+          "tools": []
+        },
+        {
+          "number": 7,
+          "title": "What was found",
+          "text": "Show, in this order:\n- the ads kept running longest, with what each says and how long it's run; run length is evidence of sustained use, never proof of sales or profit\n- the patterns, by angle, hook, format and offer: what those long-running ads keep doing across competitors\n- the open ground: what none of them does that this brand can back up with the claims and proof in its pack from `gooseworks:brain_pack`\nDone when every open angle has an approved claim or real proof behind it.",
+          "tools": [
+            "brain_pack"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Recommend",
+          "text": "one angle to try, and offer to make it as a static ad or a video.",
+          "tools": []
+        },
+        {
+          "number": 9,
+          "title": "\"Use its format.\"",
+          "text": "For a picture ad, call `gooseworks:competitors_ads` step kind save with its research itemId. The saved adId belongs to the brand's library. When canFollow is true, use it as referenceAdId in `gooseworks:ads_quote`; otherwise offer a template. For a video, find and read it with `gooseworks:video_references` and source ad_library, then follow the reference-videos skill. Rebuild only its layout: the words, claims, offer and pictures all come from this brand's pack.",
+          "tools": [
+            "ads_quote",
+            "competitors_ads",
+            "video_references"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "creative-review",
+      "name": "creative-review",
+      "description": "Creative review of an ad against the brand's brain, whether it's safe to run, how likely it is to win, and the fix, plus the person's calls on the product photos Goose made. Use when someone asks whether an ad, a claim or a price is right, asks to fix an ad, shares an ad, an image or copy to check, or wants product photos archived or restored.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "The ad",
+          "text": "For an ad Goose made, find it with `gooseworks:ads_read` and show its check from `gooseworks:creative_check`. For an ad the person shares, or a Goose ad with no check, get the pack for a review of this product with `gooseworks:brain_pack` and check it yourself in step 2.",
+          "tools": [
+            "ads_read",
+            "brain_pack",
+            "creative_check"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Safe to run",
+          "text": "Check these, most serious first, each with why and where the rule came from. When the brain doesn't say, say so.\n- every claim is one the pack approves for this product, even when it sounds true\n- the price and the offer are exactly the pack's\n- the logo, colors and product photo are the brand's own\n- a named customer's words appear only when the pack marks their consent granted or not needed\n- every person shown as a customer is a real one, speaking their own words\n- the viewer is never told they have a condition, a problem with their body, or money worries",
+          "tools": []
+        },
+        {
+          "number": 3,
+          "title": "Likely to win",
+          "text": "Say how it could do better: a hook in the first look, one message, proof the viewer can see, a clear offer, text readable on a phone, nothing important near the edges Meta covers, and a call to action that fits what the buyer already knows. This is an opinion on the craft, not a forecast. Done when every problem says what's wrong, why, and what to do about it.",
+          "tools": []
+        },
+        {
+          "number": 4,
+          "title": "One fix",
+          "text": "Recommend one, with the claim, photo or price it needs from the pack.",
+          "tools": []
+        },
+        {
+          "number": 5,
+          "title": "Fixing a Goose ad",
+          "text": "Quote the edit with `gooseworks:ads_quote`, every change in one instruction. Check the new version with `gooseworks:creative_check` before showing it.",
+          "tools": [
+            "ads_quote",
+            "creative_check"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Fixing an ad from elsewhere",
+          "text": "Give the corrected words, and say what to change in the picture.",
+          "tools": []
+        },
+        {
+          "number": 7,
+          "title": "A new rule",
+          "text": "When the person says something like \"we never say that\" or \"always show the price\", draft it with `gooseworks:brain_propose`.",
+          "tools": [
+            "brain_propose"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "A variation",
+          "text": "For a variation from an ad test, review it next to its original ad from `gooseworks:ad_variations` step read, view plan, and name the variable it changes. Judge only that change: everything else is the original ad's. A made image variation that misses is fixed as the ad-variations skill says; a video variation that misses is rejected, not fixed, and a new test tries a new take.",
+          "tools": [
+            "ad_variations"
+          ]
+        },
+        {
+          "number": 9,
+          "title": "Product photos",
+          "text": "When the person archives or restores product photos, find them in their sets with `gooseworks:ads_read` photo_batches then photo_batch, or with `gooseworks:photos_read` for archived ones or one photo by its id. Then record every photo they named in one `gooseworks:photos_decide` call.",
+          "tools": [
+            "ads_read",
+            "photos_decide",
+            "photos_read"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "footage-search",
+      "name": "footage-search",
+      "description": "Finds a moment in the brand's own videos, or a brand photo, from the person's own words, plays that moment, and has a video watched again when its reading failed. Use when someone wants a shot, clip or photo from their own files, wants a moment played, or asks why a video wasn't read.",
+      "steps": [
+        {
+          "number": 1,
+          "title": null,
+          "text": "Call `gooseworks:get_started` with what the person asked for.",
+          "tools": [
+            "get_started"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Find it",
+          "text": "Call `gooseworks:media_search` with the person's own words, the kinds they want (video, photo or both) and assetId null, or one file's id when they named a video. A scene whose match is meaning shows what they asked for; close only might fit, and words just shares a word, so say so when that's all there is.",
+          "tools": [
+            "media_search"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Show the moment",
+          "text": "For the best scene, call `gooseworks:media_excerpt` with its assetId, startMs and endMs. Give the person the link, which plays that moment, and say in one line what happens in it from the scene's words. Offer the next best match only when they ask.",
+          "tools": [
+            "media_excerpt"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Nothing found",
+          "text": "Say so plainly. Goose can only find videos whose scenes it has noted, so ask whether the video is in the brand's files, and tell them to choose Scenes next to it on the brand's Look page in Goose, then Find the scenes.",
+          "tools": []
+        },
+        {
+          "number": 5,
+          "title": "Watching didn't finish",
+          "text": "When the person says a video wasn't read, or a job says noting its scenes failed, call `gooseworks:media_retry` for that video. Follow the job with `gooseworks:job_get`. When it says there's nothing to retry, the video's last reading didn't fail: it may be read already, still being read, or never read. Search it again, and when nothing comes up, tell them to choose Scenes next to the video on the brand's Look page in Goose, then Find the scenes. When it says the stills are gone, tell them to choose Scenes next to the video on the brand's Look page in Goose, then Find the scenes.",
+          "tools": [
+            "job_get",
+            "media_retry"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Using a moment in an ad",
+          "text": "Hand the scene's assetId, startMs and endMs to the ad or video work the person wants next, and keep to that work's own steps.",
+          "tools": []
+        }
+      ]
+    },
+    {
+      "folder": "meta-ads",
+      "name": "meta-ads",
+      "description": "Meta connection, ad results in depth and tracking checks, plus ads packed for Ads Manager and new copy from what worked. Goose only reads Meta and never changes an ad there. Use when someone wants Meta connected, results by ad set or campaign, an ad set's setup or check, which ads deserve more spend or a pause, or whether their pixel sends sales to Meta, wants Meta ads launched, paused, swapped or given a new budget, wants finished ads packed for Ads Manager, or wants new copy written from what worked.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "Connection",
+          "text": "Read it with `gooseworks:meta_read` view connection and follow its nextStep. The person connects Meta, signs in again and picks ad accounts in Goose, never in chat.",
+          "tools": [
+            "meta_read"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Fresh numbers",
+          "text": "When the person asks for the latest results, read Meta again with `gooseworks:meta_read` view refresh.",
+          "tools": [
+            "meta_read"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Deeper results",
+          "text": "For results by ad set or one campaign, a list the person shapes, an ad set's setup or how it's doing, or ads worth more spend or a pause, read the matching `gooseworks:meta_read` view. For an ad test's results, the original ad next to each variation, read `gooseworks:results_read` view test with its testId.",
+          "tools": [
+            "meta_read",
+            "results_read"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Tracking",
+          "text": "To say whether an ad account's pixel sends the site's sales to Meta, read `gooseworks:results_read` view tracking for it.",
+          "tools": [
+            "results_read"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Changes on Meta",
+          "text": "Goose doesn't launch, pause or change ads on Meta. When the person wants a launch, pause, swap or new budget, handle it as the Meta rules below say: they make it in Ads Manager themselves. A budget is the person's call: never suggest an amount of your own.",
+          "tools": []
+        },
+        {
+          "number": 6,
+          "title": "Export for Ads Manager",
+          "text": "When the person wants to put ads into Ads Manager themselves, pack them with `gooseworks:meta_export`. Pack an ad test's variations one export per button, as the ad-variations skill says.",
+          "tools": [
+            "meta_export"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "New copy from what worked",
+          "text": "Read the best and worst copy with `gooseworks:meta_copy_context`, then write the new lines yourself.",
+          "tools": [
+            "meta_copy_context"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Daily reports and suggestions",
+          "text": "Goose syncs connected accounts on the server and saves a report after a complete account-local day is available. To read saved reports, call `gooseworks:file_list` with view kind documents and documentKind report, then `gooseworks:file_read` with target kind document for the chosen report. Check its account, dates and freshness before summarizing its suggestions. No client automation is needed. A missing report is not proof of no activity: check the connection and follow its nextStep. To save an analysis the person asks for, use `gooseworks:report_save` once, with the account, dates and exact returned numbers. Every account change remains the person's decision in Ads Manager.",
+          "tools": [
+            "file_list",
+            "file_read",
+            "report_save"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "reference-videos",
+      "name": "reference-videos",
+      "description": "Finds video ads worth learning from, reads one scene by scene, and starts a GooseWorks video that follows it in a style the person picks. Also brings in a video the person finished somewhere else. Use when someone wants a video like an ad they've seen, wants to know which video ads work for a competitor, or has a finished video to add.",
+      "steps": [
+        {
+          "number": 1,
+          "title": null,
+          "text": "Call `gooseworks:get_started` with what the person asked for.",
+          "tools": [
+            "get_started"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Find references",
+          "text": "Call `gooseworks:video_references` with action find, the sources that fit the ask (ad_library for competitors, meta for the brand's own ads, community for shared ones), the person's words as text when they describe what they want, and the product when they name one. When a card shows them, the person picks there. Otherwise show every reference with its link, best first, one line each: who ran it, how long it ran or its verdict, and what it's about. Recommend one with a one-line reason; the person picks.",
+          "tools": [
+            "video_references"
+          ]
+        },
+        {
+          "number": 3,
+          "title": null,
+          "text": "When nothing comes back, say there are no video ads to learn from yet and offer competitor research with the competitor-research guide.",
+          "tools": []
+        },
+        {
+          "number": 4,
+          "title": "Read it",
+          "text": "Call `gooseworks:video_references` with action read for the one they picked. When it isn't watched yet, give the person the link from its next step and ask them to press Watch it there. It's free and takes about a minute. Read it again when they say it's done.",
+          "tools": [
+            "video_references"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "The style",
+          "text": "Call `gooseworks:video_read` for the styles and show every one with its demo link. Suggest the one whose shots fit the reference best, in one line; the person picks. Settle the products the way the video-ads guide says.",
+          "tools": [
+            "video_read"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Pick",
+          "text": "Call `gooseworks:video_references` with action pick: the reference, the style, the products, a short name and the request in the person's words. It saves a batch of one draft video and gives the batchId, the videoId and its planRevision. Pick once: a second pick makes a second video.",
+          "tools": [
+            "video_references"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "The plan",
+          "text": "Call `gooseworks:brain_pack` for video and these products. Read the style with `gooseworks:video_read`, then write the plan the video-ads guide describes, following the reference: open the way it opens, keep its order of scenes and roughly its timing, and match its kind of shots where the style allows. Never copy the competitor's words, claims, offers, logo or people. Every claim, number and offer comes from this brand's pack, cited in the plan's facts.",
+          "tools": [
+            "brain_pack",
+            "video_read"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "The price and the make",
+          "text": "The pick already made the batch of one. Call `gooseworks:video_batch` with batch kind price, the pick's batchId, and one change: the pick's videoId, basedOnRevision from the pick and your plan. Never use batch kind new for it: that makes a second, separate video. After pricing this batch with kind price, follow the video-ads guide's yes and making steps. Any new price for this video uses kind price on this same batch, never kind new.",
+          "tools": [
+            "video_batch"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "resize-and-animate",
+      "name": "resize-and-animate",
+      "description": "Makes finished ads in other sizes for Meta placements, and turns one still ad or product photo into a 5-second moving ad. Use when someone wants an ad they have in more sizes or for another placement, or wants a still picture to move.",
+      "steps": [
+        {
+          "number": 1,
+          "title": null,
+          "text": "Call `gooseworks:get_started` with what the person asked for.",
+          "tools": [
+            "get_started"
+          ]
+        },
+        {
+          "number": 2,
+          "title": null,
+          "text": "Find the ad or photo with `gooseworks:ads_read`. When more than one could fit, show the likely ones and ask which.",
+          "tools": [
+            "ads_read"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "New sizes",
+          "text": "Call `gooseworks:ads_resize` with the ads and the sizes. Feed is square and 4:5, stories and reels are 9:16, and all of Meta adds 16:9 too. When they don't say where it will run, recommend all of Meta. Sizes an ad is already in are skipped. New sizes as part of an ad test are placement rows in the test plan: carry on with the ad-variations skill.",
+          "tools": [
+            "ads_resize"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "A moving ad",
+          "text": "Call `gooseworks:ads_animate` with the ad or photo and one short line on how it should move, like \"slow push in, steam rising\". Suggest a motion that fits the picture when they don't give one. The words, logo and product stay as they are.",
+          "tools": [
+            "ads_animate"
+          ]
+        },
+        {
+          "number": 5,
+          "title": null,
+          "text": "Follow the quote's next step for the yes. When they said yes at the link, follow the work with `gooseworks:job_get` for that quote. When the person wants it stopped, call `gooseworks:job_stop` for that job.",
+          "tools": [
+            "job_get",
+            "job_stop"
+          ]
+        },
+        {
+          "number": 6,
+          "title": null,
+          "text": "When it's done, say how many came out and where they are: under the original on the brand's Library page. Say plainly when one couldn't be made; nothing was charged for it.",
+          "tools": []
+        }
+      ]
+    },
+    {
+      "folder": "social-inspiration",
+      "name": "social-inspiration",
+      "description": "Finds Instagram and TikTok posts about a topic, saves the posts and ads a brand likes as inspiration with a note, watches accounts for their new posts and reads what's said in a saved video. Use when someone wants posts or reels about a topic, wants to keep a post or ad for later, asks what they saved, wants to follow an account for ideas, or asks what a video says.",
+      "steps": [
+        {
+          "number": 1,
+          "title": null,
+          "text": "Call `gooseworks:get_started` with what the person asked for.",
+          "tools": [
+            "get_started"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Find posts",
+          "text": "Call `gooseworks:social_search` with step kind `find`: the words to look for, the platforms (Instagram, TikTok or both), how recent (the last 7, 30, 90 or 365 days, or any time), videos, pictures or both, and the fewest views, or null. Use what the person said and leave the rest null. TikTok finds videos only. Only TikTok shows views, so the fewest views works only when searching TikTok alone. Each page of posts has a price: show it, and the person says yes on the card or on the link.",
+          "tools": [
+            "social_search"
+          ]
+        },
+        {
+          "number": 3,
+          "title": null,
+          "text": "When they've said yes, follow the job with `gooseworks:job_get`, then call `gooseworks:social_search_read` with step kind `read` and the search's id. Show the posts that fit, best first, each with its link, who posted it and its views. Give the link to the search in Goose, where they can watch the videos.",
+          "tools": [
+            "job_get",
+            "social_search_read"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "More posts",
+          "text": "Call `gooseworks:social_search` with step kind `more` and the search's id. It shows a new price for the next page. To change a search, like videos only or a shorter time, price a new `find` with the new filters.",
+          "tools": [
+            "social_search"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Searches they ran before",
+          "text": "Call `gooseworks:social_search_read` with step kind `list`. To repeat one, price a new `find` with its words and filters.",
+          "tools": [
+            "social_search_read"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Save",
+          "text": "When the person likes a post or an ad, call `gooseworks:inspiration_save` with step kind `save`, the post's or ad's id, and their note as they said it, or null. Saving it again changes the note. To take it out, use step kind `remove`; to undo that, use step kind `restore` with the removedAt it answered.",
+          "tools": [
+            "inspiration_save"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "What's saved",
+          "text": "Call `gooseworks:inspiration_list` with step kind `saved`, filtered by ads or posts, platform or product when they ask.",
+          "tools": [
+            "inspiration_list"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Watch an account",
+          "text": "Call `gooseworks:inspiration_watch` with step kind `watch`, the platform and the handle, like @masalachai. Goose reads its newest posts within the hour, then every week. `gooseworks:inspiration_list` with step kind `watched` lists the accounts, and `watched_posts` their newest posts. Stop one with step kind `unwatch`.",
+          "tools": [
+            "inspiration_list",
+            "inspiration_watch"
+          ]
+        },
+        {
+          "number": 9,
+          "title": "What's said in a video",
+          "text": "For a saved video post, call `gooseworks:inspiration_transcript`. The first time, it reads the words as a job: follow it with `gooseworks:job_get`, then call it again. No words back means the video has none, or is over two minutes.",
+          "tools": [
+            "inspiration_transcript",
+            "job_get"
+          ]
+        },
+        {
+          "number": 10,
+          "title": "Make my version",
+          "text": "When the person wants their own take on a saved post or ad, offer to make it as a static ad or a video, with this brand's own words, products and proof from `gooseworks:brain_pack`.",
+          "tools": [
+            "brain_pack"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "static-ads",
+      "name": "static-ads",
+      "description": "Static image ads, from one ad to a full set, and changes to ads already made. Use when someone wants image ads for a product, an offer or a feed, more like an ad they have or in the look of another ad, a product photo turned into an ad, wants a made ad changed or just one part of it, or says which made ads they'll keep.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "Product",
+          "text": "When the ask names no product and the brand has more than one, ask which; the pack settles everything else.",
+          "tools": []
+        },
+        {
+          "number": 2,
+          "title": "Concepts",
+          "text": "Plan one concept per ad by [references/concepts.md](references/concepts.md). When the person wants a set look, have them pick a template from `gooseworks:ads_read`; for the look of one ad from Meta or one Goose made, find it there. For a competitor's ad, find it with `gooseworks:competitors_ads`, save it there, then use the saved adId as referenceAdId only when canFollow is true. Done when every ad has a concept with its proof and what it tests.",
+          "tools": [
+            "ads_read",
+            "competitors_ads"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Quote",
+          "text": "In the same turn, quote the concepts with `gooseworks:ads_quote`, in the person's campaign when the ads belong in one, and with a goal only when they named one. With no card on screen, show them in one short table, a row per ad with who it's for, the angle, the hook, the format and what it tests.",
+          "tools": [
+            "ads_quote"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Making",
+          "text": "When the person asks how the ads are going, show the job with `gooseworks:job_get`; when they ask to stop them, stop it with `gooseworks:job_stop`.",
+          "tools": [
+            "job_get",
+            "job_stop"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Showing",
+          "text": "When the job is done, show each ad from `gooseworks:ads_read` with its concept, what it tests, and its reason: who it's for, the claim it makes and where that claim came from. For an ad whose check is flagged, read its check with `gooseworks:creative_check`. When some failed, say how many and what it charged, and offer a new quote for the missing ones. Done when every ad the job made is shown.",
+          "tools": [
+            "ads_read",
+            "creative_check"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Keep or drop",
+          "text": "Record each call the person makes on an ad with `gooseworks:ads_decide`, and keep a finished ad there as a team template when they want to reuse its look.",
+          "tools": [
+            "ads_decide"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Changes",
+          "text": "Put every change the person wants to one ad, like a new headline or photo, into one edit, quote it with `gooseworks:ads_quote`, and show the new version next to the old one. A finished product photo becomes an ad the same way, as an edit of that photo. An edit keeps the ad's size: for another size, use `gooseworks:ads_resize` as the resize-and-animate skill says. One change to one ad stays an edit here; several variations of one ad to test against it go to the ad-variations skill.",
+          "tools": [
+            "ads_quote",
+            "ads_resize"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "On Meta",
+          "text": "For finished ads going to their Meta ad account, carry on with the meta-ads skill.",
+          "tools": []
+        }
+      ]
+    },
+    {
+      "folder": "video-ads",
+      "name": "video-ads",
+      "description": "Short video ads, one or many at once, planned from real customer lines and hooks and made on the person's computer. Use when someone wants a video ad, a Reel or a TikTok, several videos at once, videos from their own sheet, asks how videos already started are going, wants one stopped, fixed or reviewed, or wants finished videos shared or downloaded.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "What to make",
+          "text": "Call `gooseworks:get_started` with make kind one_video or many_videos, my_sheet for their own sheet, or unnamed when they don't say what to make. It shows the start card, the picker or the sheet card when one is needed. Make variations on the start card, or new hooks for a video they already have, goes to the ad-variations skill. Later in a chat, show the picker with `gooseworks:video_picker` and what they named, with any avatar they name, like \"with Maya\", in avatarNames, or the sheet card with `gooseworks:video_sheet`. While a card is on screen, wait: the person's picks come back as their own message, with each id. Where no card shows, ask only what its nextStep says is missing. Done when the products, the style and the count are settled. Software image ads can work without photos; video rows must still meet their chosen style’s asset checks. Name a missing real asset and offer a supported style or the asset request, never an invented interface or package.",
+          "tools": [
+            "get_started",
+            "video_picker",
+            "video_sheet"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Style",
+          "text": "The person picks a style from `gooseworks:video_read` that fits how many products each video shows. Read that style, and pick the voice that fits the brand and the script. Done when the person has picked a style.\n**Avatar.** When the style shows a person (its avatarSlots is above 0), the person can pick who's on screen: one of the brand's own avatars or one of Goose's. When they pick none, Goose draws someone. An avatar is never the persona, which is who the ad speaks to. Where no card shows, list avatars with `gooseworks:avatar_read` and let them name one. To add their own where no card shows, call `gooseworks:avatar_create` with kind start, send the photo as its next step says, then call it with kind finish and the name; a video goes to the Avatars page, at the link its next step gives. When the picture is made, show it with `gooseworks:avatar_read`, and once they say to use it, call `gooseworks:avatar_update` with action choose. Rename, redraw or remove one of their own avatars only when they ask, with `gooseworks:avatar_update`.",
+          "tools": [
+            "avatar_create",
+            "avatar_read",
+            "avatar_update",
+            "video_read"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Customer line",
+          "text": "Use a real customer line from the pack only when one is available and fits the chosen style, word for word. When none exists, write from approved product facts and choose a style that does not require a testimonial; never invent a review.",
+          "tools": []
+        },
+        {
+          "number": 4,
+          "title": "Hooks",
+          "text": "Write three hooks for the first 2 seconds, 6 words at most each, each a different kind from [concepts](references/concepts.md). The ad-variations skill writes video hooks by this same rule. Put your pick first and say why in one line. For one video, each hook becomes its own row, up to 3, differing only in the hook; the person picks one on the price card. For many videos, make each one test something the others don't.",
+          "tools": []
+        },
+        {
+          "number": 5,
+          "title": "Scenes and copy",
+          "text": "Write the scenes in the style's shape, opening on the hook and earning any real customer line used, and the copy Meta shows with the video: primary text, headline and the button that fits the offer. Answer the style's questions from the pack and the plan. Use only brand videos that have scene notes; for one the person wants that has none, tell them to choose Scenes next to it on the brand's Look page in Goose, then Find the scenes.",
+          "tools": []
+        },
+        {
+          "number": 6,
+          "title": "Write the rows",
+          "text": "Write the batch row by row with `gooseworks:video_concepts`. Start it with step kind start, shape single for one video or bulk for many, source picker or chat, and the picked avatar ids in avatarIds in the order picked, or an empty list; a sheet already has its batch, and a reference pick follows the reference-videos guide instead. Read every row with kind read, from 0 then each nextFrom. Write with kind write, at most 6 rows per call, giving each row one size per ratio it lists, exactly those, and isLastWrite true on the last call. A row with an avatar shows that person: write lines they can say, one cast member in each plan, and leave avatar_id, image and image_asset_id out, so Goose fills in their name, look and picture. Never change an avatar's look. Write again any row it says isn't ready, at most twice; if it still isn't, say in one plain line what's in the way. Done when every row is ready or named.",
+          "tools": [
+            "video_concepts"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Price",
+          "text": "Price the batch with `gooseworks:video_batch`, batch kind price, its batchId and no changes. When a price runs out before a yes, price again the same way. When the person asks to change a row's avatar before their yes, read the rows with kind read, then call `gooseworks:video_concepts` with step kind avatar: those rows in conceptIds, that read's sheetRevision, and the new avatarId, or null for Goose to draw someone. That drops the price, so price again before the yes. Done when the price card is on screen, or its total is shown with the Goose link where they say yes.",
+          "tools": [
+            "video_batch",
+            "video_concepts"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Computer",
+          "text": "The price card shows whether the person's computer is ready, and sets it up when it isn't. After their yes, when a run's computer isn't running Goose Video and you can run commands on it, call `gooseworks:video_batch_start` with the run's roundId. Run a setup or `goose-video` command only as an answer gives it, exactly as given: in Claude Desktop with `set_up_goose_video` or `make_videos`, and elsewhere in the terminal you have.",
+          "tools": [
+            "video_batch_start"
+          ]
+        },
+        {
+          "number": 9,
+          "title": "Follow the run",
+          "text": "When the person asks how videos are going, read the batch's runs with `gooseworks:video_batch_read` view kind runs, then one run with kind run, and say in one plain line where it is, problems first, with the batch's pageUrl. For one video's detail, read it with `gooseworks:video_read`. When the run lists a check waiting, go as [bulk videos](references/bulk-videos.md#checks) says: the person answers a board check; you answer a nearby one with `gooseworks:video_check_answer` only after looking at and listening to every file.",
+          "tools": [
+            "video_batch_read",
+            "video_check_answer",
+            "video_read"
+          ]
+        },
+        {
+          "number": 10,
+          "title": "Done",
+          "text": "When the run ends, say the done line once. Show a finished video from `gooseworks:video_read` with its hook, any real customer line used and copy. The person reviews on the card with Keep, Reject with a reason, and Fix this.",
+          "tools": [
+            "video_read"
+          ]
+        },
+        {
+          "number": 11,
+          "title": "Fixes",
+          "text": "A Send fixes message, a fix hand-over from the review page (read with `gooseworks:video_review_fixes`), or a fix the person asks for goes as [bulk videos](references/bulk-videos.md#fixes) says.",
+          "tools": [
+            "video_review_fixes"
+          ]
+        },
+        {
+          "number": 12,
+          "title": "Export for Meta",
+          "text": "Pack the finished ads with `gooseworks:meta_export` when the person asks. They check and upload the pack in Ads Manager themselves; Goose never launches or changes ads on Meta. When they tell you the countries they ship to, draft it with `gooseworks:brain_propose`: topic market, key shipping.countries, value null, and the countries in its text.",
+          "tools": [
+            "brain_propose",
+            "meta_export"
+          ]
+        },
+        {
+          "number": 13,
+          "title": "Share",
+          "text": "To let someone see the work without signing in, make a link with `gooseworks:video_share`: kind video for one finished video (review collects notes), plan for one video's plan before it's made, batch for every video in a batch. Give the link exactly as it comes back. To turn one off, find it with `gooseworks:video_share_links`, then call `gooseworks:video_share_stop` with its shareLinkId and kind.",
+          "tools": [
+            "video_share",
+            "video_share_links",
+            "video_share_stop"
+          ]
+        },
+        {
+          "number": 14,
+          "title": "Download all",
+          "text": "Give the batch's pageUrl from `gooseworks:video_batch_read`: its Download all button makes one ZIP of every finished video.",
+          "tools": [
+            "video_batch_read"
+          ]
+        },
+        {
+          "number": 15,
+          "title": "Stop",
+          "text": "Only when the person asks to stop a video that's being made. When they name one video, stop only that one with `gooseworks:video_batch_stop`: its batchId, mode stop and videoIds with just that video's id. When it refuses because another video shares a part not made yet, name that video and ask whether to stop it too. Stop every video in the batch, with videoIds null, only when they ask to stop the whole batch. Say what it answers in one line. It's for videos; `gooseworks:job_stop` is for jobs, never for a video.",
+          "tools": [
+            "job_stop",
+            "video_batch_stop"
+          ]
+        }
+      ]
+    },
+    {
+      "folder": "what-to-make",
+      "name": "what-to-make",
+      "description": "What to make next, from which Meta ads are winning, tired or untried, as concepts to test. Use when someone asks what to make or test next, for ad ideas or a creative plan, what's working, how their ads or their website are doing, or for an analysis of their ads saved as a report.",
+      "steps": [
+        {
+          "number": 1,
+          "title": "Results",
+          "text": "Read the ads with `gooseworks:results_read` view ads, days 30, by [references/verdicts.md](references/verdicts.md). When it judges no ad yet, go to step 4. When the person asks whether tracking works, or results look odd, read its tracking view.",
+          "tools": [
+            "results_read"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "This week",
+          "text": "Read what Goose already suggests from the suggestions view of `gooseworks:results_read`. In five lines at most, say what to keep, what to change and what to stop, each with the verdict behind it and the suggestions that agree. Done when every ad you name has the action verdicts.md gives its verdict.",
+          "tools": [
+            "results_read"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Tried so far",
+          "text": "See which angles, hooks and formats have won with `gooseworks:meta_read` results by tag, and the ideas Goose proposed with `gooseworks:ideas` step read with statuses [\"proposed\"].",
+          "tools": [
+            "ideas",
+            "meta_read"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Three concepts",
+          "text": "Plan three by [references/concepts.md](references/concepts.md): two that build on the strongest evidence and one new one, labelled new. With no judged results, plan from the pack and from `gooseworks:competitors_read`. Done when each concept says who it's for, what it says, what backs it and which verdict would show it worked.",
+          "tools": [
+            "competitors_read"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Decisions",
+          "text": "Record the person's call on each proposed idea with `gooseworks:ideas` step decide. Skipped ideas stay skipped unless the person brings one back.",
+          "tools": [
+            "ideas"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Making",
+          "text": "For an idea they want made, carry on with the static-ads skill, passing its ideaId to `gooseworks:ads_quote`. For a set of ads around one goal, like a launch or a sale, carry on with the campaigns skill. To iterate on a Winning ad with new hooks, or give a Tired ad 3 new hooks, carry on with the ad-variations skill.",
+          "tools": [
+            "ads_quote"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Save the analysis",
+          "text": "When the person asks for an analysis or a report, read the summary and the ads for the period they named with `gooseworks:results_read`, write it up with the three concepts and the one to start with, and save it with `gooseworks:report_save`.",
+          "tools": [
+            "report_save",
+            "results_read"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "Site visits and sales",
+          "text": "When the person asks how their website or store is doing, where its visits come from, or which pages, channels or devices turn visits into sales, read `gooseworks:analytics_read`: the saved view when one of its splits answers it, else the live view, and follow its nextStep. Use it next to the ad results, never in their place.",
+          "tools": [
+            "analytics_read"
+          ]
+        }
+      ]
+    }
+  ]
+}
