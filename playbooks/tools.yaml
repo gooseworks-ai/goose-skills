@@ -1,0 +1,149 @@
+# Tools the revenue playbooks connect to.
+# key: the id used in each playbook's `tools` list.
+# hub: true gives the tool its own page at /playbooks/tools/<slug>. Only tools
+#      with enough playbooks to be useful get one (5+ today), so no hub page is thin.
+# public: true means the playbook needs no login (public pages or public data).
+# connect: how to give an AI assistant this data. Keep it generic and true for
+#      any assistant; never name a connector we have not checked by hand.
+
+meta:
+  name: Meta Ads
+  slug: meta-ads
+  hub: true
+  public: false
+  intro: >-
+    Meta Ads Manager holds your spend, delivery and the purchases Meta could link to an ad.
+    It does not know your stock, your margins or what your landing pages say. Most Meta
+    leaks sit in that gap, which is why these playbooks pair it with your store.
+  connect: >-
+    Use a Meta Ads connector or MCP server for your assistant if you have one, with read-only
+    access. If not, export a report from Ads Manager (ad, ad set, spend, purchases, link URL,
+    by day) as CSV and upload it.
+  reads: Spend, results, optimization events, link URLs, delivery by country and placement, account limits.
+
+google:
+  name: Google Ads
+  slug: google-ads
+  hub: true
+  public: false
+  intro: >-
+    Google Ads shows what you paid for each search and which conversion actions your
+    campaigns bid toward. The most expensive mistakes are settings, not bids: the wrong
+    conversion goal, or search terms that never sell.
+  connect: >-
+    Use a Google Ads connector or MCP server with read-only access if you have one. If not,
+    download the campaign, conversion action and search terms reports as CSV and upload them.
+  reads: Campaigns, conversion actions, search terms, spend, account billing.
+
+shopify:
+  name: Shopify
+  slug: shopify
+  hub: true
+  public: false
+  intro: >-
+    Shopify is the source of truth for orders, stock, discounts and refunds. Almost every
+    playbook here checks another tool against it, because an ad account or email tool only
+    knows its own side of the sale.
+  connect: >-
+    Use a Shopify connector or MCP server for your assistant with read-only scopes if you have
+    one. If not, export orders, products with inventory, and discounts as CSV from the Shopify
+    admin and upload them.
+  reads: Orders, line items, inventory, discount codes, refunds, fulfillment times, shipping zones.
+
+klaviyo:
+  name: Klaviyo
+  slug: klaviyo
+  hub: true
+  public: false
+  intro: >-
+    Klaviyo runs the emails that earn money while you sleep: welcome, abandoned cart, browse
+    and win-back flows. They break quietly. A filter change or a paused message can cut flow
+    revenue for weeks before anyone looks.
+  connect: >-
+    Use a Klaviyo connector or MCP server with a read-only key if you have one. If not, export
+    flow and campaign performance and sign-up form reports as CSV and upload them.
+  reads: Flows and messages, sends per message, sign-up forms, lists and segments, back-in-stock requests.
+
+ga4:
+  name: Google Analytics
+  slug: google-analytics
+  hub: true
+  public: false
+  intro: >-
+    Google Analytics shows how people move from landing page to purchase, by channel and
+    device. It is where you tell a site problem from an ad problem: if a step drops on every
+    channel at once, the site changed.
+  connect: >-
+    Use a Google Analytics connector or MCP server with viewer access if you have one. If not,
+    export the funnel, landing page and traffic source reports as CSV and upload them.
+  reads: Sessions, funnel steps, landing pages, channels, devices, site search terms.
+
+adlibrary:
+  name: Meta Ad Library
+  slug: meta-ad-library
+  hub: true
+  public: true
+  intro: >-
+    The Meta Ad Library lists every live ad for any brand, yours and your competitors'. It
+    needs no login, so these playbooks work on any store. Pair it with the pages the ads link
+    to and you can find broken promises in minutes.
+  connect: >-
+    Give your assistant web browsing and the Ad Library search URL for the brand, or paste
+    screenshots and the ads' link URLs into the chat.
+  reads: Live ads, their copy, offers and dates, start dates, and link URLs.
+
+browser:
+  name: A web browser
+  slug: no-login-checks
+  hub: true
+  public: true
+  title: No-login checks
+  intro: >-
+    Some of the most useful checks need no account access at all: open your own store on a
+    phone, run a speed test, read your competitors' offers. Anyone can run these on any store
+    today.
+  connect: >-
+    Give your assistant web browsing, or paste the pages and screenshots into the chat. Use a
+    phone-sized window where the playbook says so.
+  reads: Your pages, cart and checkout as a shopper sees them, page speed, competitor sites.
+
+tiktok:
+  name: TikTok Ads
+  slug: tiktok-ads
+  hub: false
+  public: false
+merchant:
+  name: Merchant Center
+  slug: merchant-center
+  hub: false
+  public: false
+gsc:
+  name: Search Console
+  slug: search-console
+  hub: false
+  public: false
+amazon:
+  name: Amazon Seller Central
+  slug: amazon-seller-central
+  hub: false
+  public: false
+search:
+  name: Web search
+  slug: web-search
+  hub: false
+  public: true
+dns:
+  name: Public DNS lookup
+  slug: dns-lookup
+  hub: false
+  public: true
+reviews:
+  name: Public reviews
+  slug: reviews
+  hub: false
+  public: true
+social:
+  name: Your social accounts
+  slug: social
+  hub: false
+  public: true

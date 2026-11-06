@@ -11,9 +11,10 @@
     "test": "node --test test/*.test.js scripts/__tests__/*.test.js scripts/__tests__/*.test.mjs && node scripts/run-skill-node-tests.js",
     "test:parts": "node --test parts/_tools/*.test.mjs parts/_lib/*.test.mjs parts/*/tests/*.test.mjs",
     "build:index": "node scripts/build-index.js",
+    "build:playbooks": "node scripts/build-playbooks.js",
     "validate:skills": "node scripts/validate-skills.js",
     "check:tools": "node scripts/check-tool-names.js",
-    "ci": "node scripts/validate-skills.js && node scripts/build-index.js && git diff --exit-code skills-index.json && node scripts/check-skill-links.js && node scripts/check-tool-names.js && node scripts/check-internal-ids.js && node scripts/check-client-names.js && node scripts/build-router.js --check && node scripts/check-lfs-pointers.js && npm test && python3 skills/video/write-video-ad-script/scripts/verify_handoff.py && python3 skills/video/review-ugc-render/tests/test_review_render.py && python3 skills/video/render-street-interview/scripts/selftest.py && python3 -m unittest discover -s skills/video/render-street-interview/tests -p test_prompt_budget.py && python3 skills/marketing/improve-search-visibility/tests/run-fixtures.py",
+    "ci": "node scripts/validate-skills.js && node scripts/build-index.js && git diff --exit-code skills-index.json && node scripts/check-skill-links.js && node scripts/check-tool-names.js && node scripts/check-internal-ids.js && node scripts/check-client-names.js && node scripts/build-playbooks.js --check && node scripts/build-router.js --check && node scripts/check-lfs-pointers.js && npm test && python3 skills/video/write-video-ad-script/scripts/verify_handoff.py && python3 skills/video/review-ugc-render/tests/test_review_render.py && python3 skills/video/render-street-interview/scripts/selftest.py && python3 -m unittest discover -s skills/video/render-street-interview/tests -p test_prompt_budget.py && python3 skills/marketing/improve-search-visibility/tests/run-fixtures.py",
     "check:all": "node scripts/check-all.js"
   },
   "keywords": [
