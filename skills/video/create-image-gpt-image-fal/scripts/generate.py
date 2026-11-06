@@ -32,6 +32,7 @@ from pathlib import Path
 # 401s with an agent/`cal_` token — that key isn't a FAL key.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from atlas_provider import ConfirmationRequired, generate as atlas_generate  # noqa: E402
 from media_proxy import fal_generate, download  # noqa: E402  (bundled)
 
 # Per-model config. `custom_size` says whether the model accepts arbitrary
@@ -83,6 +84,10 @@ def main() -> int:
     ap.add_argument("--output", required=True, type=Path)
     ap.add_argument("--model", default="gpt-image-1", choices=list(MODELS),
                     help="gpt-image-1 (default, fixed sizes) or gpt-image-2 (custom sizes).")
+    ap.add_argument("--provider", default="fal", choices=["fal", "atlas"],
+                    help="Generation provider. Defaults to the existing GooseWorks FAL proxy.")
+    ap.add_argument("--yes", action="store_true",
+                    help="Confirm the billable Atlas generation after live model preflight.")
     ap.add_argument("--aspect-ratio", default="9:16",
                     help="Used when --image-size is not given.")
     ap.add_argument("--image-size", default=None,
@@ -136,15 +141,30 @@ def main() -> int:
     else:
         model = cfg["t2i"]
 
-    print(f"[gpt-image-fal] submitting {model} via proxy ({w}x{h}, q={args.quality})...", flush=True)
-    # fal_generate routes through the proxy and (with the hardened media_proxy) surfaces
-    # FAL's real error instead of a KeyError.
-    image_url = fal_generate(model, payload)
+    provider_meta = {}
+    if args.provider == "atlas":
+        try:
+            image_url, provider_meta = atlas_generate(
+                prompt=args.prompt,
+                model_family=args.model,
+                size=f"{w}x{h}",
+                quality=args.quality,
+                ref_urls=args.ref_urls,
+                confirmed=args.yes,
+            )
+        except ConfirmationRequired as exc:
+            sys.exit(f"ERROR: {exc}")
+    else:
+        print(f"[gpt-image-fal] submitting {model} via proxy ({w}x{h}, q={args.quality})...", flush=True)
+        # fal_generate routes through the proxy and (with the hardened media_proxy) surfaces
+        # FAL's real error instead of a KeyError.
+        image_url = fal_generate(model, payload)
 
-    print(f"[gpt-image-fal] downloading to {args.output}...", flush=True)
+    provider_label = "atlas" if args.provider == "atlas" else "fal"
+    print(f"[gpt-image-{provider_label}] downloading to {args.output}...", flush=True)
     download(image_url, str(args.output))
     nbytes = args.output.stat().st_size if args.output.exists() else 0
-    print(f"[gpt-image-fal] wrote {nbytes} bytes", flush=True)
+    print(f"[gpt-image-{provider_label}] wrote {nbytes} bytes", flush=True)
 
     cost = cfg["cost_by_quality"][args.quality]
     meta = {
@@ -159,8 +179,9 @@ def main() -> int:
         "image_url": image_url,
         "cost_estimate_usd": cost,
     }
+    meta.update(provider_meta)
     Path(str(args.output) + ".meta.json").write_text(json.dumps(meta, indent=2))
-    print(f"[gpt-image-fal] est cost: ${cost:.2f}", flush=True)
+    print(f"[gpt-image-{provider_label}] est cost: ${meta['cost_estimate_usd']}", flush=True)
     return 0
 
 
