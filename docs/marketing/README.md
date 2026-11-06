@@ -1,8 +1,8 @@
 # GooseWorks Marketing Agent — skills rebuilt from scratch
 
 **In short**
-- The skills a marketing agent needs to do the whole job of a marketer: **14 released playbooks** (one marketer want each, done end to end; 3 more are built but held back, see [drafts/marketing/](../../drafts/marketing/README.md)), their steps, and **2 foundation skills**: `marketing-guide` (shared setup and rules) and `marketing-data-access` (live public data with no vendor keys). Customers reach the playbooks through the `gooseworks` entry skill's router (`skills/entry/gooseworks/routes.json`).
-- **Where they live:** `skills/marketing/<slug>/`, one flat folder per skill. Each is its own catalog skill (14 playbooks, 70 steps, 2 foundation skills = 86), listed in `skills-index.json` under domain `marketing-agent`. A merge to `dev` publishes them to staging; `main` to production. Built from scratch, published from 20 Oct; the old GTM library they replace was deleted on 23 Oct (`retired-skills.json` maps each old skill to its playbook).
+- The skills a marketing agent needs to do the whole job of a marketer: **15 released playbooks** (one marketer want each, done end to end; 3 more are built but held back, see [drafts/marketing/](../../drafts/marketing/README.md)), their steps, and **2 foundation skills**: `marketing-guide` (shared setup and rules) and `marketing-data-access` (live public data with no vendor keys). Customers reach the playbooks through the `gooseworks` entry skill's router (`skills/entry/gooseworks/routes.json`).
+- **Where they live:** `skills/marketing/<slug>/`, one flat folder per skill. Each is its own catalog skill (15 playbooks, 70 steps, 2 foundation skills = 87), listed in `skills-index.json` under domain `marketing-agent`. A merge to `dev` publishes them to staging; `main` to production. Built from scratch, published from 20 Oct; the old GTM library they replace was deleted on 23 Oct (`retired-skills.json` maps each old skill to its playbook).
 - Each playbook is built from its spec, then attacked by critics for **scope** (missed work) and **depth** (shallow output) until they find nothing major. Every round is logged in the private goose-lab repo (`plan/marketing-agent/critiques/<slug>.md`), with the server gaps and cross-set reviews beside it.
 - Source plans: the Marketing Agent map and the goose-skills rebuild plan, both in goose-lab.
 
@@ -24,10 +24,11 @@
 | 12 | make-content | "Write the first pass of everything." |
 | 13 | run-organic-social | "Keep my accounts alive: calendar, posts, replies." |
 | 14 | write-outreach | "I have the list — now what do I send them, and how do I answer the replies?" |
+| 15 | find-revenue-leaks | "Run every revenue check my tools allow and tell me where my store is losing money." |
 
 ## What we are not building yet
 
-**Today: 14 released playbooks**, and no new playbooks until the gaps in [BACKLOG.md](BACKLOG.md) are built and tested. Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back until the server work they need exists ([drafts/marketing/README.md](../../drafts/marketing/README.md)). Not covered yet: drafting replies to comments and DMs, and sending outreach (write-outreach writes the emails and LinkedIn messages; the marketer sends them). Social listening is a step of research-market, not its own playbook. BACKLOG.md lists each gap with who needs it and what should make us build it.
+**Today: 15 released playbooks** (find-revenue-leaks, added 6 Nov, runs the public revenue playbooks in `playbooks/`), and no new playbooks until the gaps in [BACKLOG.md](BACKLOG.md) are built and tested. Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back until the server work they need exists ([drafts/marketing/README.md](../../drafts/marketing/README.md)). Not covered yet: drafting replies to comments and DMs, and sending outreach (write-outreach writes the emails and LinkedIn messages; the marketer sends them). Social listening is a step of research-market, not its own playbook. BACKLOG.md lists each gap with who needs it and what should make us build it.
 
 ## How to test a playbook
 

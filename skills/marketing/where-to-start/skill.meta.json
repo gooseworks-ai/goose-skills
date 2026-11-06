@@ -2,7 +2,7 @@
   "slug": "where-to-start",
   "category": "playbooks",
   "tier": "playbook",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "tags": [
     "brand",
     "research"
@@ -44,7 +44,7 @@
     "workspace brand/situation.md: the founder's situation and the last recommendation from an earlier visit (written by this playbook)",
     "up to three of the brand's own public pages (homepage, pricing or store page, app-store or marketplace listing) through the host's fetch or browser",
     "campaign records (written by plan-campaign)",
-    "the playbook map: the want, inputs, outputs, credit costs and out-of-scope of the other 16 playbooks (references/playbook-map.md, from the specs and the sibling SKILL.md files)"
+    "the playbook map: the want, inputs, outputs, credit costs and out-of-scope of the other playbooks (references/playbook-map.md, from the specs and the sibling SKILL.md files)"
   ],
   "writes": [
     "brand onboarding profile: role, ad-spend band, goals, platforms, only clear matches to what the founder said (read by where-to-start and the server's own setup; learn-my-brand, unreleased)",

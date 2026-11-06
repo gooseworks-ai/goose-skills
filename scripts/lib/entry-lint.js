@@ -70,9 +70,10 @@ const ENTRY_SKILL_MAX_CHARS = 5000;
  * it to 3,000 means moving those commands into the skills that use them.
  * Raised to 7,500 for the Marketing Brain steps (read brain_map first, save brand facts with
  * brain_save), the description that loads the router when the user talks about their brand, and
- * the rulebook 1.5.3 rules block.
+ * the rulebook 1.5.3 rules block. Raised to 7,600 for the find-revenue-leaks playbook row
+ * (the router was at 7,497; one route row is about 75 characters).
  */
-const ROUTER_MAX_CHARS = 7500;
+const ROUTER_MAX_CHARS = 7600;
 /**
  * make-custom-video carries the whole custom contract (reference viewing, two owner
  * reviews, local execution and the stored rebuild recipe), and the server text

@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-25",
+  "generated": "2026-11-06",
   "retired_skills": [
     {
       "slug": "battlecard-generator",
@@ -1687,7 +1687,7 @@
       "description": "Checks every claim in a piece of copy (ads, emails, posts, pages, scripts, briefs) against the claims the brand has approved. Keeps, rewrites or cuts each line, and lists the proof that would bring a cut line back. When a line the copy needs has no approval, it asks for a short sign-off on the 3 or 4 lines that matter and records the answer. Use alone when you already have the copy and a brand set up; otherwise run the playbook for the job (e.g. make-static-ads, make-content, write-outreach).",
       "tags": "brand",
       "path": "skills/marketing/claims-gate",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "files": [
         "skills/marketing/claims-gate/SKILL.md",
         "skills/marketing/claims-gate/claim-types.md",
@@ -1699,10 +1699,11 @@
         "slug": "claims-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.6",
+        "version": "0.1.7",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
+          "find-revenue-leaks",
           "improve-search-visibility",
           "make-content",
           "make-static-ads",
@@ -2465,6 +2466,114 @@
       }
     },
     {
+      "slug": "find-revenue-leaks",
+      "name": "find-revenue-leaks",
+      "category": "playbooks",
+      "domain": "marketing-agent",
+      "description": "Runs every public revenue playbook a store's connected tools allow, in one pass, and returns a ranked list of leaks and plays with the money at stake. Use when: find where my store is losing money; run all the revenue checks; audit my store for revenue leaks; what's broken in my ads, email and checkout; check everything I've connected; run every playbook against my Shopify, Meta, Google, Klaviyo and Analytics. Read-only: every fix is a recommendation for your yes. Says which checks it can run, which it skips and what connecting would add; re-runs show what's new, fixed and still open. Not for this week's numbers and what worked — use analyze-performance; not for making the changes — use run-paid-campaigns (ads) or email-lifecycle (flows).",
+      "tags": "ads, monitoring",
+      "path": "skills/marketing/find-revenue-leaks",
+      "version": "0.1.0",
+      "files": [
+        "skills/marketing/find-revenue-leaks/SKILL.md",
+        "skills/marketing/find-revenue-leaks/references/coverage.md",
+        "skills/marketing/find-revenue-leaks/references/local-mode.md",
+        "skills/marketing/find-revenue-leaks/references/playbook-index.md",
+        "skills/marketing/find-revenue-leaks/references/ranking.md",
+        "skills/marketing/find-revenue-leaks/references/report-shape.md",
+        "skills/marketing/find-revenue-leaks/references/run-memory.md",
+        "skills/marketing/find-revenue-leaks/references/running-checks.md",
+        "skills/marketing/find-revenue-leaks/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "find-revenue-leaks",
+        "category": "playbooks",
+        "tier": "playbook",
+        "version": "0.1.0",
+        "tags": [
+          "ads",
+          "monitoring"
+        ],
+        "collections": [
+          "brand-growth"
+        ],
+        "collection_stage": "analyze",
+        "requires_skills": [
+          "claims-gate",
+          "marketing-data-access",
+          "marketing-guide",
+          "run-memory",
+          "save-learning",
+          "save-to-brain",
+          "spend-gate",
+          "write-report"
+        ],
+        "pillar": "13 — Analytics, measurement and experimentation",
+        "example_prompt": "Run every revenue check you can against my store and rank what's leaking money.",
+        "intents": [
+          "find where my store is losing money",
+          "run all the revenue playbooks against my store",
+          "audit my store for revenue leaks",
+          "what's broken in my ads, emails and checkout",
+          "check everything I've connected for wasted spend",
+          "what should I fix first to make more money",
+          "run the leak check again: what's fixed and what's still open"
+        ],
+        "reads": [
+          "the public revenue playbook index (playbooks/playbooks-index.json on the goose-skills main branch, or the local checkout; each playbook's own file as fallback): ask, steps, check, then, cadence — written by the playbooks library",
+          "the marketer's own tools, read-only: ad platforms, store, email tool, analytics, Merchant Center, Amazon — through their connectors or exports",
+          "Google Analytics through analytics_read and the brand's own TikTok/Instagram through social_account_list + social_analytics_get, when the brand connected them in GooseWorks; meta_read performance as a cross-check only (GooseWorks-made ads)",
+          "public pages through the host's browser, fetch and web search: the store as a shopper sees it, the Meta Ad Library, reviews, DNS records, coupon sites, competitors' sites",
+          "brand brain (brand_knowledge_browse / read / search where listed, else brand_read lean + knowledge_search): products, shipping countries, margins, sending domain, competitors, offers, accounts — the server's research, the app, research-competitors (competitor list)",
+          "its own last run record runs/find-revenue-leaks/<job-slug>/<date>.md — run-memory",
+          "run-paid-campaigns' decisions.md blocks and email-lifecycle's files, as outcome sources for fixes handed to them",
+          "local mode: gooseworks-local/<brand-slug>/ (brand-notes.md, its reports and run records) — the marketing-guide skill (../marketing-guide/SKILL.md) §5"
+        ],
+        "writes": [
+          "the report — local gooseworks-reports/<brand-slug>/<YYYY-MM-DD>-revenue-leaks.md (or an artifact in hosted chat) via write-report, plus reports/revenue-leaks/<YYYY-MM-DD>.md and brand document 'Revenue leak check — <Brand> — <date>' (keep-history) — read by the marketer and this job's next run",
+          "run records runs/find-revenue-leaks/<job-slug>/<date>.md + brand documents (keep-history) via run-memory — coverage, findings with keys and status vs last run, clean checks, recommendations — read by its own next run",
+          "reports/revenue-leaks/method/ (copied method for the scheduled worker) — read by the automation",
+          "optional monthly or weekly automation, created paused — automation_upsert (switched on by the marketer)",
+          "research/credits-log/<YYYY-MM>.md for any paid read via spend-gate — read by every proxy user",
+          "learnings the marketer states, via save-learning — read by every playbook",
+          "local mode: the same report and run records under gooseworks-local/<brand-slug>/; rules to brand-notes.md"
+        ],
+        "needs": {
+          "gooseworks": "optional — without it, local mode (the marketing-guide skill, ../marketing-guide/SKILL.md §5): the marketer's own connectors (read-only), exports, screenshots and the host's browser",
+          "connectors_optional": [
+            "ads-platform, store, email-tool, analytics, Merchant Center or marketplace connector (read-only)"
+          ],
+          "mcp": [
+            "gooseworks:tools_load",
+            "gooseworks:get_started",
+            "gooseworks:brand_read",
+            "gooseworks:knowledge_search",
+            "gooseworks:brand_knowledge_browse",
+            "gooseworks:brand_knowledge_read",
+            "gooseworks:brand_knowledge_search",
+            "gooseworks:analytics_read",
+            "gooseworks:meta_read",
+            "gooseworks:social_account_list",
+            "gooseworks:social_analytics_get",
+            "gooseworks:data_call_provider",
+            "gooseworks:marketing_data_describe",
+            "gooseworks:file_list",
+            "gooseworks:file_read",
+            "gooseworks:file_write",
+            "gooseworks:file_url",
+            "gooseworks:knowledge_import",
+            "gooseworks:media_upload",
+            "gooseworks:media_list",
+            "gooseworks:media_update",
+            "gooseworks:job_get",
+            "gooseworks:brand_update",
+            "gooseworks:automation_upsert",
+            "gooseworks:automation_list"
+          ]
+        }
+      }
+    },
+    {
       "slug": "footage-cutlist",
       "name": "footage-cutlist",
       "category": "capabilities",
@@ -2737,7 +2846,7 @@
       "description": "GooseWorks growth coworker and router for markets, competitors, audiences, creators, campaigns, ads, photos, graphics, video, content, email, SEO, social, leads and contacts. Use for brand facts or copy too, so offers, prices, rules, audience and bestsellers reach the brand's Marketing Brain.",
       "tags": "research, ads, lead-generation, social",
       "path": "skills/entry/gooseworks",
-      "version": "2.2.3",
+      "version": "2.2.4",
       "files": [
         "skills/entry/gooseworks/SKILL.md",
         "skills/entry/gooseworks/routes.json",
@@ -2748,7 +2857,7 @@
         "category": "playbooks",
         "domain": "gooseworks",
         "tier": "entry",
-        "version": "2.2.3",
+        "version": "2.2.4",
         "tags": [
           "research",
           "ads",
@@ -4022,7 +4131,7 @@
       "description": "How every GooseWorks marketing playbook runs: connecting, picking the brand, where files go, the shared claims, money, research and schedule rules, and the index of what each playbook saves and who reads it. Load at the start of any playbook run. Not a marketer ask: for \"what should I do first?\" use where-to-start.",
       "tags": "brand",
       "path": "skills/marketing/marketing-guide",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "files": [
         "skills/marketing/marketing-guide/SKILL.md",
         "skills/marketing/marketing-guide/research-pattern.md",
@@ -4032,7 +4141,7 @@
         "slug": "marketing-guide",
         "category": "capabilities",
         "tier": "foundation",
-        "version": "0.1.4",
+        "version": "0.1.5",
         "tags": [
           "brand"
         ],
@@ -6715,7 +6824,7 @@
       "description": "Shared step of the marketing playbooks (analyze-performance, run-paid-campaigns, research-competitors, email-lifecycle): reads the last run's record, checks whether its recommendations were done and whether they worked, and saves a short record of this run for the next one. Loaded by those playbooks; not for direct use.",
       "tags": "brand",
       "path": "skills/marketing/run-memory",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "files": [
         "skills/marketing/run-memory/SKILL.md",
         "skills/marketing/run-memory/skill.meta.json"
@@ -6724,10 +6833,11 @@
         "slug": "run-memory",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
+          "find-revenue-leaks",
           "improve-search-visibility",
           "make-content",
           "make-static-ads",
@@ -7293,7 +7403,7 @@
       "description": "Shared step of the marketing playbooks (make-static-ads, analyze-performance, email-lifecycle, write-outreach): saves a short brand rule or finding in the human's own words, one idea per rule, retires the playbook's own older rules it replaces, and reads the result back to confirm. Loaded by those playbooks; not for direct use.",
       "tags": "brand",
       "path": "skills/marketing/save-learning",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "files": [
         "skills/marketing/save-learning/SKILL.md",
         "skills/marketing/save-learning/skill.meta.json"
@@ -7302,10 +7412,11 @@
         "slug": "save-learning",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.3",
+        "version": "0.1.4",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
+          "find-revenue-leaks",
           "improve-search-visibility",
           "make-content",
           "make-static-ads",
@@ -7342,7 +7453,7 @@
       "description": "Shared step of the marketing playbooks (research-market, plan-campaign, make-content, analyze-performance): saves a finished file to the brand and makes it searchable. It either replaces older versions or keeps dated history, then checks that the file can be found. Loaded by those playbooks; not for direct use.",
       "tags": "brand",
       "path": "skills/marketing/save-to-brain",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "files": [
         "skills/marketing/save-to-brain/SKILL.md",
         "skills/marketing/save-to-brain/skill.meta.json"
@@ -7351,10 +7462,11 @@
         "slug": "save-to-brain",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
+          "find-revenue-leaks",
           "improve-search-visibility",
           "make-content",
           "make-static-ads",
@@ -7415,7 +7527,7 @@
       "description": "Shared step of the marketing playbooks (make-static-ads, research-market, run-paid-campaigns, work-with-creators): gets the human's yes before any credits are spent. Shows the price exactly as quoted, or asks for one yes to a credit ceiling for paid data reads, stays under it and logs each charge. Also covers scheduled runs. Loaded by those playbooks; not for direct use.",
       "tags": "research-tools",
       "path": "skills/marketing/spend-gate",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "files": [
         "skills/marketing/spend-gate/SKILL.md",
         "skills/marketing/spend-gate/proxy-endpoints.md",
@@ -7425,10 +7537,11 @@
         "slug": "spend-gate",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
+          "find-revenue-leaks",
           "improve-search-visibility",
           "make-content",
           "make-static-ads",
@@ -7752,7 +7865,7 @@
       "description": "First-move advice for a broad growth or marketing ask with no job named: looks at what GooseWorks already knows and at the site, asks a few short questions in one message, names the one thing in the way, and sends the marketer to the right next job. Use when the marketer says \"help me grow my brand\", \"I need to grow my business\", \"how do I get more customers / sales\", \"help me with marketing\", \"where do I start\", \"sales are flat\", \"what should I focus on this month\", or \"I'm back, what's next?\". Recommends only; never runs the work. Not for a named job like \"make me ads\" or \"grow my Instagram\" (go straight to it); not for a campaign with a launch, budget or date — use plan-campaign; not for why this week's numbers moved — use analyze-performance.",
       "tags": "brand, research",
       "path": "skills/marketing/where-to-start",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "files": [
         "skills/marketing/where-to-start/SKILL.md",
         "skills/marketing/where-to-start/references/base-rates.md",
@@ -7766,7 +7879,7 @@
         "slug": "where-to-start",
         "category": "playbooks",
         "tier": "playbook",
-        "version": "0.1.4",
+        "version": "0.1.5",
         "tags": [
           "brand",
           "research"
@@ -7808,7 +7921,7 @@
           "workspace brand/situation.md: the founder's situation and the last recommendation from an earlier visit (written by this playbook)",
           "up to three of the brand's own public pages (homepage, pricing or store page, app-store or marketplace listing) through the host's fetch or browser",
           "campaign records (written by plan-campaign)",
-          "the playbook map: the want, inputs, outputs, credit costs and out-of-scope of the other 16 playbooks (references/playbook-map.md, from the specs and the sibling SKILL.md files)"
+          "the playbook map: the want, inputs, outputs, credit costs and out-of-scope of the other playbooks (references/playbook-map.md, from the specs and the sibling SKILL.md files)"
         ],
         "writes": [
           "brand onboarding profile: role, ad-spend band, goals, platforms, only clear matches to what the founder said (read by where-to-start and the server's own setup; learn-my-brand, unreleased)",
@@ -8307,7 +8420,7 @@
       "description": "Turns findings you already have into a report a marketer can read in 30 seconds. It has a short summary with key findings and how sure each one is, the first move, decisions needed, at most six next moves, what was not checked, and dated sources. It checks length and wording before handing over, then saves the report to the brand. Use alone when you already have the findings and their sources; otherwise run the playbook for the job (e.g. research-market, research-competitors, plan-campaign).",
       "tags": "research, content",
       "path": "skills/marketing/write-report",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "files": [
         "skills/marketing/write-report/SKILL.md",
         "skills/marketing/write-report/example-top.md",
@@ -8317,10 +8430,11 @@
         "slug": "write-report",
         "category": "capabilities",
         "tier": "atom",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "used_by": [
           "analyze-performance",
           "email-lifecycle",
+          "find-revenue-leaks",
           "improve-search-visibility",
           "make-content",
           "make-static-ads",
@@ -8435,6 +8549,13 @@
           "description": "Lifecycle email, SMS and push: audits the list and deliverability, then writes the flows this kind of business needs first, loadable as-is in your own tool, plus segments, cadence and this week's broadcasts. Never sends anything. Use when: set up my welcome and abandoned-cart emails; trial onboarding or waitlist launch emails; win back lapsed customers; plan this week's emails and texts; push notifications for my app; why are my emails going to spam; plan our Black Friday email and SMS sends; a send went wrong. Not for cold outreach to prospects — use write-outreach; not the editorial newsletter issue — use make-content; not the whole cross-channel Black Friday plan — use plan-campaign.",
           "stage": "create",
           "path": "skills/marketing/email-lifecycle"
+        },
+        {
+          "slug": "find-revenue-leaks",
+          "name": "find-revenue-leaks",
+          "description": "Runs every public revenue playbook a store's connected tools allow, in one pass, and returns a ranked list of leaks and plays with the money at stake. Use when: find where my store is losing money; run all the revenue checks; audit my store for revenue leaks; what's broken in my ads, email and checkout; check everything I've connected; run every playbook against my Shopify, Meta, Google, Klaviyo and Analytics. Read-only: every fix is a recommendation for your yes. Says which checks it can run, which it skips and what connecting would add; re-runs show what's new, fixed and still open. Not for this week's numbers and what worked — use analyze-performance; not for making the changes — use run-paid-campaigns (ads) or email-lifecycle (flows).",
+          "stage": "analyze",
+          "path": "skills/marketing/find-revenue-leaks"
         },
         {
           "slug": "improve-search-visibility",

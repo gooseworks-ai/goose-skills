@@ -69,6 +69,12 @@
       ]
     },
     {
+      "job": "Revenue leak checks: where the store loses money",
+      "skills": [
+        "find-revenue-leaks"
+      ]
+    },
+    {
       "job": "Subscriber email flows and broadcast drafts; you send",
       "skills": [
         "email-lifecycle"
@@ -102,6 +108,7 @@
   "brand_growth_skills": [
     "analyze-performance",
     "email-lifecycle",
+    "find-revenue-leaks",
     "improve-search-visibility",
     "make-content",
     "make-static-ads",

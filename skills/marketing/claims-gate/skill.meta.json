@@ -2,10 +2,11 @@
   "slug": "claims-gate",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "used_by": [
     "analyze-performance",
     "email-lifecycle",
+    "find-revenue-leaks",
     "improve-search-visibility",
     "make-content",
     "make-static-ads",

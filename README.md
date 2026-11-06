@@ -6,7 +6,7 @@
 
 **Put your AI agent on the growth team.**
 
-Research customers and competitors, analyze what is working, create the next campaign, and learn from the result. Goose Skills gives Claude Code, Cursor, Codex, and other coding agents 14 marketing playbooks and the video-ad skills behind GooseWorks.
+Research customers and competitors, analyze what is working, create the next campaign, and learn from the result. Goose Skills gives Claude Code, Cursor, Codex, and other coding agents 15 marketing playbooks and the video-ad skills behind GooseWorks.
 
 Browse all skills at https://skills.gooseworks.ai
 
@@ -23,7 +23,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 
 | Folder | What it holds | Count |
 |---|---|---:|
-| `skills/marketing/` | **14 marketing playbooks** (one marketer job each, end to end), the 70 steps they load, and 2 foundation skills. Every folder is published | 86 |
+| `skills/marketing/` | **15 marketing playbooks** (one marketer job each, end to end), the 70 steps they load, and 2 foundation skills. Every folder is published | 87 |
 | `skills/video/` | **Video-ad skills**: render atoms, format renderers, mockups, voice, music and the production harness | 63 |
 | `skills/shared/` | Skills used across families: the 3 current goose-graphics skills, and 23 older skills that a video skill, a playbook or the GooseWorks app still uses. [retired-skills.json](retired-skills.json) lists each one and its user | 26 |
 | `skills/entry/` | **The entry skills** `gooseworks install` puts in every agent: the `gooseworks` router, `goose-ads`, `goose-video`, `make-custom-video`, `goose-video-local`, `goose-product-photos`. Routing lives in `skills/entry/gooseworks/routes.json`. The same folder is the Claude Code and Codex plugin (see [Entry skills and the plugin](#entry-skills-and-the-plugin)) | 6 |
@@ -95,12 +95,12 @@ This gives your coding agent access to the **current skills catalog**. After ins
 
 ## Brand Growth collection
 
-The **Brand Growth** collection is the 14 marketing playbooks, grouped by stage. It is not a separate package or command: install GooseWorks once, then ask `/gooseworks` for the outcome you need.
+The **Brand Growth** collection is the 15 marketing playbooks, grouped by stage. It is not a separate package or command: install GooseWorks once, then ask `/gooseworks` for the outcome you need.
 
 | Stage | What your agent can do | Playbooks |
 |---|---|---|
 | **Research** | Decide where to start; read the market, competitors and buyers; plan the campaign | `where-to-start`, `research-market`, `research-competitors`, `research-audience`, `plan-campaign` |
-| **Analyze** | See what worked on every channel, run the paid accounts week to week, and show up in search and AI answers | `analyze-performance`, `run-paid-campaigns`, `improve-search-visibility` |
+| **Analyze** | See what worked on every channel, find where the store is losing money, run the paid accounts week to week, and show up in search and AI answers | `analyze-performance`, `find-revenue-leaks`, `run-paid-campaigns`, `improve-search-visibility` |
 | **Create** | Make static ads, content, organic social, email flows, creator briefs and outreach | `make-static-ads`, `make-content`, `run-organic-social`, `email-lifecycle`, `work-with-creators`, `write-outreach` |
 
 Video ads and product photos go through the `goose-video` and `goose-product-photos` GooseWorks skills, which use the video skills in `skills/video/`.
