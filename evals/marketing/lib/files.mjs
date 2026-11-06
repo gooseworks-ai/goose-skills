@@ -9,7 +9,7 @@ export const REPO_ROOT = path.resolve(EVALS_DIR, '..', '..'); // evals/marketing
 export const SKILLS_DIR = path.join(REPO_ROOT, 'skills', 'marketing');
 
 /**
- * Every marketing skill the catalog publishes (skills/marketing/<slug>/, flat by slug): the 14 playbooks,
+ * Every marketing skill the catalog publishes (skills/marketing/<slug>/, flat by slug): the 15 playbooks,
  * their steps, the shared steps and the two foundation skills. drafts/marketing/ and any folder whose
  * skill.meta.json says "catalog": false are never listed.
  * Each entry: { slug, tier ('playbook' | 'atom' | 'foundation'), dir, name, description }.

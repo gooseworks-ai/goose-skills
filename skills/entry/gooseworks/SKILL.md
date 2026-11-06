@@ -6,7 +6,7 @@ description: >
   campaigns, ads, photos, graphics, video, content, email, SEO, social, leads and contacts.
   Use for brand facts or copy too, so offers, prices, rules, audience and bestsellers
   reach the brand's Marketing Brain.
-version: 2.2.3
+version: 2.2.4
 author: GooseWorks
 tags: [gooseworks, data, scraping, search, research, gtm, leads, prospecting, ads, video]
 ---
@@ -52,6 +52,7 @@ Route specialist jobs to their skills; use GooseWorks for web and social data.
 | New static image ads | `make-static-ads` |
 | Launch, scale or pause paid ads | `run-paid-campaigns` |
 | What worked; performance reports | `analyze-performance` |
+| Revenue leak checks: where the store loses money | `find-revenue-leaks` |
 | Subscriber email flows and broadcast drafts; you send | `email-lifecycle` |
 | SEO audits, metrics, keyword gaps, topic clusters, page-set plans and AI visibility | `improve-search-visibility` |
 | Influencers and UGC creators | `work-with-creators` |

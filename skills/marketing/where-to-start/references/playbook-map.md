@@ -73,6 +73,15 @@ How to use the "must bring" line: if the founder cannot bring it today, that pla
 - **Not:** applying changes, making creative, the replan itself.
 - **Costs:** Free (a scheduled weekly report uses some credits).
 
+## find-revenue-leaks — "Where is my store losing money right now?"
+- **Say it as:** "running every revenue check your tools allow: wasted ad spend, broken emails, stock, discounts, tracking and checkout, ranked by the money at stake" (never the name above, to the founder).
+- **Fits:** an online store with live ads, an email tool or steady orders; a founder who suspects money is leaking but not where; a first look before planning or scaling; a monthly check-up. The no-login checks (the store as a shopper sees it, the brand's live ads, email-domain records, competitors' offers) run on any store.
+- **Produces:** a ranked list of leaks, then growth plays, each with the estimated monthly money at stake (math and window shown), how sure, effort and the recommended fix; the clean checks; what connecting more tools would add; on re-runs, what's new, fixed and still open. Every fix is the founder's to make.
+- **Must bring:** read-only access to the tools they use (store, ad accounts, email tool, analytics) through a connector, or their exports. With none, only the no-login checks run.
+- **Reads:** the brand brain (products, shipping countries, margins, competitors, sending domain); its own last run.
+- **Not:** making the fixes (pausing ads, budgets, flows, page changes), the weekly "what worked" read (analyze-performance), deep search visibility.
+- **Costs:** Free; a paid read (more of a rival's ads than the browser shows) only within a credit ceiling the founder approves.
+
 ## email-lifecycle — "Cart and welcome emails make money while I sleep — mine do not exist."
 - **Say it as:** "setting up your automatic emails (welcome, cart, post-purchase) and this month's sends" (never the name above, to the founder).
 - **Fits:** a store or app with a list but no welcome, cart, post-purchase or win-back flows; a pre-launch waitlist that needs a launch sequence; marketplaces (flows for both sides); local businesses (booking reminders, review requests, recall); B2B trial or demo nurture.
@@ -146,7 +155,7 @@ A lens, not a route: it shows which playbooks touch each type's heaviest work (p
 
 | Company type | Heaviest work on the map | Heaviest work off the map |
 |---|---|---|
-| DTC e-commerce | make-static-ads, run-paid-campaigns, email-lifecycle, work-with-creators, analyze-performance | offers and promos, store and product-page conversion, WhatsApp; video ads and product photos go to the goose-video and goose-product-photos skills |
+| DTC e-commerce | find-revenue-leaks, make-static-ads, run-paid-campaigns, email-lifecycle, work-with-creators, analyze-performance | offers and promos, store and product-page conversion, WhatsApp; video ads and product photos go to the goose-video and goose-product-photos skills |
 | B2B SaaS / sales-led | research-market, research-audience, make-content, improve-search-visibility, run-organic-social (founder account) | sending outreach, product-led onboarding |
 | B2B non-SaaS, CPG in retail | research-audience, make-content | trade and distributors, trade shows, retail, sampling |
 | Consumer app | improve-search-visibility (app-store listing), email-lifecycle (push and in-app), run-organic-social, analyze-performance (cohorts) | onboarding and growth loops (product work); video ads go to the goose-video skill |

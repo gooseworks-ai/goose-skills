@@ -1,6 +1,6 @@
 # Human version
 
-**What this folder is.** The GooseWorks marketing agent's skills, rebuilt from scratch: 14 released playbooks, their steps ("atoms"), the shared steps and 2 foundation skills, all published to the GooseWorks catalog as separate skills. Customers reach them through the `gooseworks` entry skill's router (`skills/entry/gooseworks/routes.json`). Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back in `drafts/marketing/` until their server work exists (the owner, 20 Oct; see `drafts/marketing/README.md`). A playbook is one marketer want, done end to end ("fill my email flows", "which ad won and what do I make next").
+**What this folder is.** The GooseWorks marketing agent's skills, rebuilt from scratch: 15 released playbooks, their steps ("atoms"), the shared steps and 2 foundation skills, all published to the GooseWorks catalog as separate skills. Customers reach them through the `gooseworks` entry skill's router (`skills/entry/gooseworks/routes.json`). Three more (learn-my-brand, make-video-ads, make-product-photos) are built but held back in `drafts/marketing/` until their server work exists (the owner, 20 Oct; see `drafts/marketing/README.md`). A playbook is one marketer want, done end to end ("fill my email flows", "which ad won and what do I make next").
 
 **Where things live.** The skills are in `skills/marketing/<slug>/` (published: `scripts/build-index.js` lists every folder there in `skills-index.json`, domain `marketing-agent`, and a merge to `dev` syncs them to staging). This guide and the backlog are in `docs/marketing/`; evals in `evals/marketing/`; held-back playbooks in `drafts/marketing/`. **Critique logs, server gaps and review reports are private:** they live in goose-lab under `plan/marketing-agent/` (§3). The old GTM library was deleted on 23 Oct (`retired-skills.json`, tag `legacy-gtm-final`); we built these from scratch rather than patch it.
 
@@ -178,7 +178,7 @@ Every playbook follows these exactly. The shared atoms implement them; the revie
 The connection preamble, brand pick, workspace scope, the shared runtime rules (claims, money, research pattern, schedules) and the index of every sibling artifact path live in `skills/marketing/marketing-guide/SKILL.md` (owner: orchestrator). The runtime text points there or to an atom, never to this file. The sections below keep the decisions and why.
 
 ### Connection
-Runtime rule: `skills/marketing/marketing-guide/SKILL.md` §1. Local mode (guide §5) is declared by `skill.meta.json` `needs.gooseworks` starting "optional": plan-campaign, run-paid-campaigns, analyze-performance only.
+Runtime rule: `skills/marketing/marketing-guide/SKILL.md` §1. Local mode (guide §5) is declared by `skill.meta.json` `needs.gooseworks` starting "optional": plan-campaign, run-paid-campaigns, analyze-performance, find-revenue-leaks only.
 
 ### Workspace
 Runtime rules: `skills/marketing/marketing-guide/SKILL.md` §2 (scope, read before write, request lines) and §4 (every path, who writes it, who reads it).

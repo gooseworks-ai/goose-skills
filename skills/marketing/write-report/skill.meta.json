@@ -2,10 +2,11 @@
   "slug": "write-report",
   "category": "capabilities",
   "tier": "atom",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "used_by": [
     "analyze-performance",
     "email-lifecycle",
+    "find-revenue-leaks",
     "improve-search-visibility",
     "make-content",
     "make-static-ads",

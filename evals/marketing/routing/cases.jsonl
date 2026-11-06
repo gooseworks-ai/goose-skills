@@ -92,3 +92,6 @@
 {"id": "R92", "ask": "Where do I start with marketing?", "expected_playbook": "where-to-start", "kind": "vague", "source": "Akhil 24 Oct"}
 {"id": "R93", "ask": "Grow my Instagram", "expected_playbook": "run-organic-social", "kind": "edge", "source": "Akhil 24 Oct", "note": "a growth ask that names a channel is that job, not where-to-start"}
 {"id": "R94", "ask": "Plan a campaign to grow the brand: $3k for Black Friday", "expected_playbook": "plan-campaign", "kind": "edge", "source": "Akhil 24 Oct", "note": "growth wording, but a campaign, a budget and a date → plan-campaign"}
+{"id": "R95", "ask": "Find where my store is losing money", "expected_playbook": "find-revenue-leaks", "kind": "direct", "source": "find-revenue-leaks 6 Nov"}
+{"id": "R96", "ask": "Run all the revenue playbooks against my Shopify, Meta and Klaviyo", "expected_playbook": "find-revenue-leaks", "kind": "direct", "source": "find-revenue-leaks 6 Nov"}
+{"id": "R97", "ask": "Audit my store for wasted ad spend and broken emails", "expected_playbook": "find-revenue-leaks", "acceptable_alternatives": ["analyze-performance"], "kind": "edge", "source": "find-revenue-leaks 6 Nov", "note": "a sweep for what's broken or wasted across tools; why this week's numbers moved stays with analyze-performance"}

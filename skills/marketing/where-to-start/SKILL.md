@@ -9,7 +9,7 @@ description: >-
   what's next?". Recommends only; never runs the work. Not for a named job like "make me ads" or "grow
   my Instagram" (go straight to it); not for a campaign with a launch, budget or date — use
   plan-campaign; not for why this week's numbers moved — use analyze-performance.
-version: 0.1.4
+version: 0.1.5
 ---
 
 # where-to-start
