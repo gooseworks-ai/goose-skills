@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-10-25",
+  "generated": "2026-11-16",
   "retired_skills": [
     {
       "slug": "battlecard-generator",
@@ -2598,7 +2598,7 @@
       "description": "Creates a new graphics format spec (custom canvas dimensions + content rules) and publishes it to the Gooseworks library so any agent can render against it. Use when the existing community formats (carousel, story, infographic, slides, poster, chart, tweet, plus community additions) don't fit the user's canvas — e.g., LinkedIn banner 1584×396, story cover 1080×1920, event flyer 8.5×11in. Mirrors goose-graphics-create-style but for formats.",
       "tags": "design, content",
       "path": "skills/shared/goose-graphics-create-format",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/shared/goose-graphics-create-format/SKILL.md",
         "skills/shared/goose-graphics-create-format/skill.meta.json"
@@ -2606,7 +2606,7 @@
       "metadata": {
         "slug": "goose-graphics-create-format",
         "category": "composites",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "design",
           "content"
@@ -2631,7 +2631,7 @@
       "description": "End-to-end skill that turns a single reference image into a published Gooseworks style — analyzes the image, drafts the slim style spec, renders a hero example plus 2-3 additional formats via Playwright, writes the `gooseworks-style.json` manifest, and publishes via `npx gooseworks styles publish` so other agents can discover it. Mirrors goose-graphics-create-format but for styles.",
       "tags": "design, content",
       "path": "skills/shared/goose-graphics-create-style",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "skills/shared/goose-graphics-create-style/SKILL.md",
         "skills/shared/goose-graphics-create-style/skill.meta.json"
@@ -2639,7 +2639,7 @@
       "metadata": {
         "slug": "goose-graphics-create-style",
         "category": "composites",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "tags": [
           "design",
           "content"
