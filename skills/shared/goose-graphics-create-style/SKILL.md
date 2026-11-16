@@ -34,7 +34,7 @@ it via the regular `goose-graphics` flow.
   this skill uses its `screenshot/screenshot.js` to render examples.
   Install it by pasting this into your agent:
   ```
-  Install gooseworks: https://gooseworks.ai/install.md including the goose-graphics skill
+  Install gooseworks: https://gooseworks.ai/creative-agent/install.md including the goose-graphics skill
   ```
   Or run it yourself: `npx gooseworks@latest install --all --mcp --with goose-graphics`.
 - The screenshot tool's dependencies must be installed

@@ -53,12 +53,12 @@ The old GTM library was deleted on 23 Oct 2026. [retired-skills.json](retired-sk
 **Paste this into your coding agent** and it sets everything up:
 
 ```
-Install gooseworks: https://gooseworks.ai/install.md
+Install gooseworks: https://gooseworks.ai/creative-agent/install.md
 ```
 
 Your agent reads that page and follows it: it **asks you before installing anything**, installs the skills and the `gooseworks` MCP server with the right flag for your agent, opens a browser for Google sign-in, checks the install with `npx gooseworks@latest doctor`, and (after you restart the agent) offers to set up your company. The page only ever runs `npx gooseworks@latest …` and touches your agent's skills folder, its MCP config and `~/.gooseworks/credentials.json`, nothing else.
 
-Want one skill in particular? Add it to the line: `Install gooseworks: https://gooseworks.ai/install.md, including the goose-graphics skill.`
+Want one skill in particular? Add it to the line: `Install gooseworks: https://gooseworks.ai/creative-agent/install.md, including the goose-graphics skill.`
 
 After the install, use the skills with `/gooseworks <prompt>`.
 
@@ -67,7 +67,7 @@ After the install, use the skills with `/gooseworks <prompt>`.
 Paste the same line into Cowork while working inside a local folder on your machine:
 
 ```
-Install gooseworks: https://gooseworks.ai/install.md
+Install gooseworks: https://gooseworks.ai/creative-agent/install.md
 ```
 
 Then use the skills like this:
