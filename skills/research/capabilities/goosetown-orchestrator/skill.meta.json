@@ -1,0 +1,10 @@
+{
+  "slug": "goosetown-orchestrator",
+  "category": "capabilities",
+  "domain": "research",
+  "tags": ["research"],
+  "installation": {
+    "base_command": "npx goose-skills install goosetown-orchestrator",
+    "supports": ["claude", "cursor", "codex"]
+  }
+}
