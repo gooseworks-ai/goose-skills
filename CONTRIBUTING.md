@@ -20,6 +20,7 @@
 | A video atom or format renderer | `skills/video/<slug>/` | Starts at `version: 1.0.0`; see "Video atoms" below. |
 | A change to what every install starts with | `skills/entry/<slug>/` | The six entry skills. Raise `version` in both SKILL.md and skill.meta.json **and** the plugin `version` in `skills/entry/.claude-plugin/plugin.json` and `.codex-plugin/plugin.json`. `test/entry-skills.test.js` enforces real action names, credits only, no install lines and the size budgets. Test on staging before it reaches `main` ([DEPLOYMENT.md](DEPLOYMENT.md#test-an-entry-skill-change-on-staging-first)). |
 | A skill two families use | Ask first | `skills/shared/` holds skills used across families (goose-graphics and the older skills listed in `retired-skills.json`). |
+| Platform or infrastructure tooling | `skills/platform/<slug>/` | Operational skills: security auditing, CLI references, SaaS ops, credential gateways. Domain is `platform`. |
 
 **Every skill has a semver `version`.** Raise it on every change: patch for a fix, minor for a new option, major for a removed input or a new requirement.
 

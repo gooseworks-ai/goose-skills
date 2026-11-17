@@ -1,0 +1,19 @@
+{
+  "slug": "security-auditor",
+  "category": "composites",
+  "version": "1.0.0",
+  "domain": "platform",
+  "tags": [
+    "platform",
+    "security",
+    "monitoring"
+  ],
+  "features": [
+    "Discovers properties from live Cloudflare account and curated inventory",
+    "Audits server, web, and DNS/email layers against best practices",
+    "Approval-gated non-destructive fixes only",
+    "Prioritized findings with clear AUTO or MANUAL classification"
+  ],
+  "example_prompt": "Run a security audit across all my properties",
+  "author": "platform"
+}

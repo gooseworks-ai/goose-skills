@@ -66,9 +66,9 @@ const slugs = new Set();
 
 // Skill families: skills/<family>/<slug>/ (see build-index.js). Every folder in
 // a family is published; work that is not ready to publish lives in drafts/.
-const FAMILIES = ['marketing', 'video', 'shared', 'entry'];
+const FAMILIES = ['marketing', 'video', 'shared', 'entry', 'platform'];
 // The domain a family's skills get when their meta names none. Shared skills must name one.
-const FAMILY_DOMAIN = { marketing: 'marketing-agent', video: 'ads', shared: null, entry: 'gooseworks' };
+const FAMILY_DOMAIN = { marketing: 'marketing-agent', video: 'ads', shared: null, entry: 'gooseworks', platform: 'platform' };
 // Domains that belong to one family only.
 const OWN_DOMAIN = { 'marketing-agent': 'marketing', gooseworks: 'entry' };
 const MA_TIERS = new Set(['playbook', 'atom', 'foundation']);

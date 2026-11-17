@@ -11,7 +11,7 @@
  * <ref> itself (CI: a pull request's base tip, or the tip a push replaced).
  *
  * What it checks:
- *   - every skill in skills/{marketing,video,shared,entry}/<slug>/ whose
+ *   - every skill in skills/{marketing,video,shared,entry,platform}/<slug>/ whose
  *     published files changed (any file outside a tests/ folder: tests are
  *     not installed, see build-index.js) has a semver version in
  *     skill.meta.json that is higher than on the base. A new skill needs one.
@@ -34,7 +34,7 @@ const { execFileSync } = require('child_process');
 const lib = require('./lib/atoms');
 
 const { ROOT } = lib;
-const FAMILIES = ['marketing', 'video', 'shared', 'entry'];
+const FAMILIES = ['marketing', 'video', 'shared', 'entry', 'platform'];
 // Never installed, so a change there needs no bump (build-index.js BUILDER_DIRS).
 const BUILDER_DIRS = new Set(['tests']);
 const MANIFESTS = ['skills/entry/.claude-plugin/plugin.json', 'skills/entry/.codex-plugin/plugin.json'];
@@ -66,7 +66,7 @@ function frontmatterVersion(text) {
 function listSkills(files) {
   const bySkill = new Map();
   for (const p of files) {
-    const m = p.match(/^skills\/(marketing|video|shared|entry)\/([^/.][^/]*)\/(.+)$/);
+    const m = p.match(/^skills\/(marketing|video|shared|entry|platform)\/([^/.][^/]*)\/(.+)$/);
     if (!m) continue;
     const dir = `skills/${m[1]}/${m[2]}`;
     if (!bySkill.has(dir)) bySkill.set(dir, { slug: m[2], family: m[1], dir, files: [] });

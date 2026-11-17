@@ -1,0 +1,18 @@
+{
+  "slug": "assistedly-ops",
+  "category": "composites",
+  "version": "1.0.0",
+  "domain": "platform",
+  "tags": [
+    "platform",
+    "monitoring"
+  ],
+  "features": [
+    "Pricing and checkout funnel health verification",
+    "Ad-to-landing-page message harmony scoring",
+    "Safe server patching with destructive-change guards",
+    "Cost and ROI guardrail-gated SaaS growth optimization"
+  ],
+  "example_prompt": "Check if the Assistedly pricing and checkout funnel is healthy",
+  "author": "platform"
+}

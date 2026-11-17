@@ -15,7 +15,7 @@ const folders = (family) => fs.readdirSync(path.join(ROOT, 'skills', family), { 
 const row = (family) => readme.split('\n').find((line) => line.startsWith(`| \`skills/${family}/\``));
 
 test('each family row states its folder count', () => {
-  for (const family of ['marketing', 'video', 'shared', 'entry']) {
+  for (const family of ['marketing', 'video', 'shared', 'entry', 'platform']) {
     const line = row(family);
     assert.ok(line, `README has a row for skills/${family}/`);
     const stated = Number(line.trim().split('|').filter(Boolean).pop().trim());

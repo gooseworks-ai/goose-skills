@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Checks every published skill (all families: marketing, video, shared, entry)
+ * Checks every published skill (all families: marketing, video, shared, entry, platform)
  * as the catalog ships them.
  *
  * Each skill ships only its own folder, and an install puts skills side by side
