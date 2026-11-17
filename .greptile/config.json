@@ -1,0 +1,8 @@
+{
+  "strictness": 2,
+  "instructions": "PUBLIC open-source library of growth skills — mostly markdown SKILL.md files plus JSON metadata, validated by scripts/validate-skills.js against schemas/*.schema.json. Because the repo is public, the top priority is zero leakage: no secrets, internal hostnames/URLs, customer or employee data, or absolute filesystem paths anywhere. Skill bodies are agent-facing prose, not build code.",
+  "rules": [
+    {"id":"public-no-leakage","severity":"high","scope":["**/*"],"rule":"This repo is PUBLIC. Flag any API key, token, credential, internal hostname/URL, customer data, or employee/local absolute filesystem path. Nothing secret or internal-only may be committed."},
+    {"id":"tooling-hygiene","severity":"medium","scope":["bin/**","scripts/**","tools/**"],"rule":"JS/Python tooling must validate inputs and contain no secrets. Scrapers/connectors (for example tools/apify_guard.py) must guard external input."}
+  ]
+}
