@@ -1,0 +1,10 @@
+{
+  "slug": "quality-score-optimization",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Diagnose and improve my Quality Score across all keywords"
+}

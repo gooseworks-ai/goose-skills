@@ -1,0 +1,37 @@
+{
+  "slug": "ga-optimizer-monthly",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "1.0.0",
+  "domain": "marketing-agent",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "bid-strategy-optimization",
+    "search-term-analysis",
+    "budget-optimization",
+    "quality-score-optimization",
+    "account-structure",
+    "geo-targeting",
+    "ad-scheduling",
+    "assets-extensions",
+    "conversion-tracking",
+    "enhanced-conversions",
+    "attribution-modeling",
+    "campaign-experiments",
+    "automation-rules",
+    "policy-compliance",
+    "campaign-launch-checklist",
+    "google-ads-audit",
+    "pmax-optimization",
+    "shopping-ads",
+    "competitor-analysis",
+    "audience-targeting",
+    "remarketing-strategy",
+    "landing-page-audit",
+    "ad-copy-generation",
+    "keyword-research"
+  ],
+  "example_prompt": "Run the monthly deep Google Ads optimization cycle"
+}

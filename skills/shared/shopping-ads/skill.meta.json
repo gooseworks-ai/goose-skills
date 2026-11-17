@@ -1,0 +1,10 @@
+{
+  "slug": "shopping-ads",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Manage my Google Shopping campaigns and Merchant Center feed"
+}

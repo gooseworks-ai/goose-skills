@@ -1,0 +1,10 @@
+{
+  "slug": "google-ads-audit",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Run a comprehensive audit of my Google Ads account"
+}

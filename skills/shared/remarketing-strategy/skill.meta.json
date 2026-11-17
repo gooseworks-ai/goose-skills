@@ -1,0 +1,10 @@
+{
+  "slug": "remarketing-strategy",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Design a cross-channel remarketing strategy for my campaigns"
+}

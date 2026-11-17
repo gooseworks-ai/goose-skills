@@ -1,0 +1,10 @@
+{
+  "slug": "account-structure",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Restructure my Google Ads account to eliminate cannibalization between campaigns"
+}

@@ -1,0 +1,10 @@
+{
+  "slug": "policy-compliance",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Check my ad copy for policy compliance before it goes live"
+}

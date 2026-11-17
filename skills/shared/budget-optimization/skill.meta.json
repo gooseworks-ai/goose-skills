@@ -1,0 +1,10 @@
+{
+  "slug": "budget-optimization",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "How should I allocate my budget across campaigns for maximum return?"
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "ga-pacing-daily",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "1.0.0",
+  "domain": "marketing-agent",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [
+    "budget-optimization",
+    "search-term-analysis",
+    "bid-strategy-optimization",
+    "automation-rules"
+  ],
+  "example_prompt": "Run the daily mid-day pacing and circuit breaker check"
+}

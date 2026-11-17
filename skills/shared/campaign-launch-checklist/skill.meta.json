@@ -1,0 +1,10 @@
+{
+  "slug": "campaign-launch-checklist",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "QA my new campaign setup before I launch it"
+}

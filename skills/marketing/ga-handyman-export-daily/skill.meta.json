@@ -1,0 +1,12 @@
+{
+  "slug": "ga-handyman-export-daily",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "1.0.0",
+  "domain": "marketing-agent",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [],
+  "example_prompt": "Run the daily handyman export and regenerate landing pages"
+}
