@@ -119,8 +119,7 @@ def validate(cfg: dict):
                          f"carries the interviewer's question) or `handover_cold` (the same "
                          f"handover with no question, for an answers-only take in an episode).")
     if role in (None, "opening") and kinds[0] != "handover_first":
-        raise SystemExit(f"this is {'a standalone video' if role is None else 'the episode '
-                         'opening'} and shot 1 is `handover_cold`, so the question is never "
+        raise SystemExit(f"this is {'a standalone video' if role is None else 'the episode opening'} and shot 1 is `handover_cold`, so the question is never "
                          f"asked. A vox pop with no question is not one.")
     # ...and the other direction, which selftest.py found by building every config under every
     # grammar combination. `handover_cold` takes the question OUT of shot 1, and the base

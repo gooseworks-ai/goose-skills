@@ -1,0 +1,17 @@
+{
+  "slug": "onecli-gateway",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "platform",
+  "tags": [
+    "platform"
+  ],
+  "features": [
+    "Transparent HTTPS proxy credential injection",
+    "No manual OAuth or API key handling",
+    "Credential stubs for local tool compatibility",
+    "Batch approval headers for many similar writes"
+  ],
+  "example_prompt": "Check my recent Gmail messages through the OneCLI gateway",
+  "author": "onecli"
+}

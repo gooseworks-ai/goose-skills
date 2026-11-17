@@ -327,8 +327,7 @@ def main():
     if dest.exists():
         same = man.exists() and json.loads(man.read_text(encoding="utf-8")).get("prompt") == prompt and json.loads(man.read_text(encoding="utf-8")).get("model") == model
         sys.exit(f"{dest.name} exists and the recorded prompt is "
-                 f"{'IDENTICAL, so the same payload+seed reproduces it' if same else 'DIFFERENT. '
-                    'Bump the seed: reusing it would overwrite a take TAKES.md refers to'}.")
+                 f"{'IDENTICAL, so the same payload+seed reproduces it' if same else 'DIFFERENT. Bump the seed: reusing it would overwrite a take TAKES.md refers to'}.")
     sref = Path(A.scene_ref) if A.scene_ref else None
     if sref is not None and not sref.exists():
         sys.exit(f"no scene reference at {sref}. Extract one from the episode's first take: "

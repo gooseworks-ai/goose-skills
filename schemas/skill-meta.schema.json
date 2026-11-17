@@ -41,6 +41,7 @@
         "lead-generation",
         "marketing-agent",
         "monitoring",
+        "platform",
         "social"
       ]
     },
@@ -59,9 +60,11 @@
           "lead-generation",
           "monitoring",
           "outreach",
+          "platform",
           "research",
           "research-tools",
           "sales",
+          "security",
           "seo",
           "social"
         ]

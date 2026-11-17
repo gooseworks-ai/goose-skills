@@ -1,0 +1,17 @@
+{
+  "slug": "using-ao",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "platform",
+  "tags": [
+    "platform"
+  ],
+  "features": [
+    "Full command reference for the Orchestrator CLI",
+    "Session, project, and worker management",
+    "Browser preview, artifact, and report commands",
+    "Importing existing agent sessions"
+  ],
+  "example_prompt": "List all active Orchestrator sessions",
+  "author": "orchestrator"
+}

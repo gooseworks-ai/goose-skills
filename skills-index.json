@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-11-16",
+  "generated": "2026-11-17",
   "retired_skills": [
     {
       "slug": "battlecard-generator",
@@ -1597,6 +1597,38 @@
           "launch-meta-ad-campaign"
         ],
         "example_prompt": "How are my Meta ads doing this week, and why did you pause the gift ad?"
+      }
+    },
+    {
+      "slug": "assistedly-ops",
+      "name": "assistedly-ops",
+      "category": "composites",
+      "domain": "platform",
+      "description": "Operational skill for managing an Assistedly SaaS deployment: verify the ecommerce funnel is healthy, score ad-to-landing-page message harmony, apply server patches safely, and run the daily SaaS growth optimizer with cost and ROI guardrails. Read-only checks by default; writes and deploys only with explicit approval.",
+      "tags": "platform, monitoring",
+      "path": "skills/platform/assistedly-ops",
+      "version": "1.0.0",
+      "files": [
+        "skills/platform/assistedly-ops/SKILL.md",
+        "skills/platform/assistedly-ops/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "assistedly-ops",
+        "category": "composites",
+        "version": "1.0.0",
+        "domain": "platform",
+        "tags": [
+          "platform",
+          "monitoring"
+        ],
+        "features": [
+          "Pricing and checkout funnel health verification",
+          "Ad-to-landing-page message harmony scoring",
+          "Safe server patching with destructive-change guards",
+          "Cost and ROI guardrail-gated SaaS growth optimization"
+        ],
+        "example_prompt": "Check if the Assistedly pricing and checkout funnel is healthy",
+        "author": "platform"
       }
     },
     {
@@ -4222,6 +4254,37 @@
           "ffmpeg",
           "ffprobe"
         ]
+      }
+    },
+    {
+      "slug": "onecli-gateway",
+      "name": "onecli-gateway",
+      "category": "capabilities",
+      "domain": "platform",
+      "description": "OneCLI Gateway: transparent HTTPS proxy that injects stored credentials into outbound calls. Only use this skill when prompted by the gateway detection hook or when the user explicitly invokes /onecli-gateway. Do NOT auto-load this skill based on user intent alone — the hook handles detection.",
+      "tags": "platform",
+      "path": "skills/platform/onecli-gateway",
+      "version": "1.0.0",
+      "files": [
+        "skills/platform/onecli-gateway/SKILL.md",
+        "skills/platform/onecli-gateway/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "onecli-gateway",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "platform",
+        "tags": [
+          "platform"
+        ],
+        "features": [
+          "Transparent HTTPS proxy credential injection",
+          "No manual OAuth or API key handling",
+          "Credential stubs for local tool compatibility",
+          "Batch approval headers for many similar writes"
+        ],
+        "example_prompt": "Check my recent Gmail messages through the OneCLI gateway",
+        "author": "onecli"
       }
     },
     {
@@ -7408,6 +7471,39 @@
       }
     },
     {
+      "slug": "security-auditor",
+      "name": "security-auditor",
+      "category": "composites",
+      "domain": "platform",
+      "description": "Agentic security auditor that checks every property in a Cloudflare estate (servers, web apps, DNS and email domains) against modern security best practices, reports prioritized gaps, and applies only non-destructive fixes with approval. Destructive changes are always reported, never applied automatically.",
+      "tags": "platform, security, monitoring",
+      "path": "skills/platform/security-auditor",
+      "version": "1.0.0",
+      "files": [
+        "skills/platform/security-auditor/SKILL.md",
+        "skills/platform/security-auditor/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "security-auditor",
+        "category": "composites",
+        "version": "1.0.0",
+        "domain": "platform",
+        "tags": [
+          "platform",
+          "security",
+          "monitoring"
+        ],
+        "features": [
+          "Discovers properties from live Cloudflare account and curated inventory",
+          "Audits server, web, and DNS/email layers against best practices",
+          "Approval-gated non-destructive fixes only",
+          "Prioritized findings with clear AUTO or MANUAL classification"
+        ],
+        "example_prompt": "Run a security audit across all my properties",
+        "author": "platform"
+      }
+    },
+    {
       "slug": "spend-gate",
       "name": "spend-gate",
       "category": "capabilities",
@@ -7549,6 +7645,63 @@
           "ffmpeg",
           "ffprobe"
         ]
+      }
+    },
+    {
+      "slug": "using-ao",
+      "name": "using-ao",
+      "category": "capabilities",
+      "domain": "platform",
+      "description": "Use the Orchestrator `ao` CLI to manage workers, sessions, projects, Cues, messages, browser previews, and daemon control. Also covers importing existing agent sessions.",
+      "tags": "platform",
+      "path": "skills/platform/using-ao",
+      "version": "1.0.0",
+      "files": [
+        "skills/platform/using-ao/SKILL.md",
+        "skills/platform/using-ao/commands/account.md",
+        "skills/platform/using-ao/commands/artifact.md",
+        "skills/platform/using-ao/commands/automation.md",
+        "skills/platform/using-ao/commands/browser-remote.md",
+        "skills/platform/using-ao/commands/browser.md",
+        "skills/platform/using-ao/commands/conductor.md",
+        "skills/platform/using-ao/commands/cua.md",
+        "skills/platform/using-ao/commands/cue.md",
+        "skills/platform/using-ao/commands/doctor.md",
+        "skills/platform/using-ao/commands/import.md",
+        "skills/platform/using-ao/commands/orchestrator.md",
+        "skills/platform/using-ao/commands/pane.md",
+        "skills/platform/using-ao/commands/preview.md",
+        "skills/platform/using-ao/commands/project.md",
+        "skills/platform/using-ao/commands/remote-host.md",
+        "skills/platform/using-ao/commands/render.md",
+        "skills/platform/using-ao/commands/report.md",
+        "skills/platform/using-ao/commands/review.md",
+        "skills/platform/using-ao/commands/send.md",
+        "skills/platform/using-ao/commands/session.md",
+        "skills/platform/using-ao/commands/spawn.md",
+        "skills/platform/using-ao/commands/start.md",
+        "skills/platform/using-ao/commands/status.md",
+        "skills/platform/using-ao/commands/stop.md",
+        "skills/platform/using-ao/commands/triage.md",
+        "skills/platform/using-ao/references.md",
+        "skills/platform/using-ao/skill.meta.json"
+      ],
+      "metadata": {
+        "slug": "using-ao",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "platform",
+        "tags": [
+          "platform"
+        ],
+        "features": [
+          "Full command reference for the Orchestrator CLI",
+          "Session, project, and worker management",
+          "Browser preview, artifact, and report commands",
+          "Importing existing agent sessions"
+        ],
+        "example_prompt": "List all active Orchestrator sessions",
+        "author": "orchestrator"
       }
     },
     {

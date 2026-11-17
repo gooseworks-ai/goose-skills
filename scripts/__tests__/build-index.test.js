@@ -7,7 +7,7 @@ const { execFileSync } = require('node:child_process');
 
 const BUILD_INDEX = path.resolve(__dirname, '..', 'build-index.js');
 
-// Layout: skills/<family>/<slug>/ with family ∈ marketing | video | shared | entry.
+// Layout: skills/<family>/<slug>/ with family ∈ marketing | video | shared | entry | platform.
 function makeFixtureRoot() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'gs-build-index-'));
 }

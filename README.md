@@ -27,6 +27,7 @@ Works with [Claude Code](https://claude.ai/claude-code) &middot; [Cursor](https:
 | `skills/video/` | **Video-ad skills**: render atoms, format renderers, mockups, voice, music and the production harness | 63 |
 | `skills/shared/` | Skills used across families: the 3 current goose-graphics skills, and 23 older skills that a video skill, a playbook or the GooseWorks app still uses. [retired-skills.json](retired-skills.json) lists each one and its user | 26 |
 | `skills/entry/` | **The entry skills** `gooseworks install` puts in every agent: the `gooseworks` router, `goose-ads`, `goose-video`, `make-custom-video`, `goose-video-local`, `goose-product-photos`. Routing lives in `skills/entry/gooseworks/routes.json`. The same folder is the Claude Code and Codex plugin (see [Entry skills and the plugin](#entry-skills-and-the-plugin)) | 6 |
+| `skills/platform/` | **Platform skills**: operational tooling for infrastructure, security, and platform management — OneCLI gateway, Orchestrator CLI, security auditing, and Assistedly SaaS operations | 4 |
 
 The old GTM library was deleted on 23 Oct 2026. [retired-skills.json](retired-skills.json) maps every retired name to the playbook that replaced it (or says why none did), and the old source stays readable at tag `legacy-gtm-final`.
 
@@ -146,6 +147,7 @@ skills/
   marketing/<slug>/    marketing playbooks, their steps, foundation skills
   video/<slug>/        video-ad skills
   shared/<slug>/       skills used across families (see retired-skills.json)
+  platform/<slug>/     platform and infrastructure skills (security, CLI, ops)
   entry/<slug>/        the skills every GooseWorks install starts with; routes.json is the routing source
   entry/.claude-plugin/, entry/.codex-plugin/   the plugin manifests for those same skills
 parts/<id>/<x.y.z>/    versioned video building blocks the GooseWorks kit loads (never edited once published)

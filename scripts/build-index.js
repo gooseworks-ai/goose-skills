@@ -117,6 +117,7 @@ const FAMILIES = [
   { dir: 'skills/video', domain: 'ads' },
   { dir: 'skills/shared', domain: null },
   { dir: 'skills/entry', domain: 'gooseworks' },
+  { dir: 'skills/platform', domain: 'platform' },
 ];
 // A skill's own tests (hand tests, fixtures, unit tests), at any depth, run in this
 // repo's CI; installs never need them.
