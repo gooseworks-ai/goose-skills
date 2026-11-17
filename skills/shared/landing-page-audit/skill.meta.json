@@ -1,0 +1,10 @@
+{
+  "slug": "landing-page-audit",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Audit my landing page performance and conversion rate optimization"
+}

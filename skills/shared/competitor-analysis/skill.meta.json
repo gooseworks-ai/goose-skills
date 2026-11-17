@@ -1,0 +1,10 @@
+{
+  "slug": "competitor-analysis",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Analyze my Google Ads auction competitors and find competitive intelligence"
+}

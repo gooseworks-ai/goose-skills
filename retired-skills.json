@@ -16,12 +16,12 @@
     {
       "slug": "competitive-pricing-intel",
       "replacement": "research-competitors",
-      "reason": "Rival-craft §6 covers tiers, feature gates, buyer-scenario cost, hidden charges and Wayback history; watch-and-react diffs packaging and price changes."
+      "reason": "Rival-craft \u00a76 covers tiers, feature gates, buyer-scenario cost, hidden charges and Wayback history; watch-and-react diffs packaging and price changes."
     },
     {
       "slug": "competitor-content-tracker",
       "replacement": "research-competitors",
-      "reason": "Rival-craft §3 covers social/blog/newsletter/podcast cadence, content mix and normalized top posts; the weekly watch compares snapshots and feeds."
+      "reason": "Rival-craft \u00a73 covers social/blog/newsletter/podcast cadence, content mix and normalized top posts; the weekly watch compares snapshots and feeds."
     },
     {
       "slug": "competitor-intel",
@@ -36,7 +36,7 @@
     {
       "slug": "competitor-social-research",
       "replacement": "research-competitors",
-      "reason": "Rival-craft §3 compares platforms, cadence, content mix, series and normalized top posts; the report delivers formats, angles and brand-specific tests."
+      "reason": "Rival-craft \u00a73 compares platforms, cadence, content mix, series and normalized top posts; the report delivers formats, angles and brand-specific tests."
     },
     {
       "slug": "create-html-carousel",
@@ -1749,6 +1749,102 @@
     {
       "slug": "goose-graphics-create-style",
       "reason": "goose-graphics companion that adds a new visual style."
+    },
+    {
+      "slug": "account-structure",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "ad-copy-generation",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "ad-scheduling",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "assets-extensions",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "attribution-modeling",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "audience-targeting",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "automation-rules",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "bid-strategy-optimization",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "budget-optimization",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "campaign-experiments",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "campaign-launch-checklist",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "competitor-analysis",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "conversion-tracking",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "enhanced-conversions",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "geo-targeting",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "google-ads-audit",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "keyword-research",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "landing-page-audit",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "pmax-optimization",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "policy-compliance",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "quality-score-optimization",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "remarketing-strategy",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "search-term-analysis",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
+    },
+    {
+      "slug": "shopping-ads",
+      "reason": "Google Ads management skill used across marketing playbooks and the GA automation routines."
     }
   ]
 }

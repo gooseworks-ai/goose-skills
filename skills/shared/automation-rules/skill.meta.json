@@ -1,0 +1,10 @@
+{
+  "slug": "automation-rules",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Create automated rules and Google Ads scripts for hands-off campaign management"
+}

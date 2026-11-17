@@ -1,0 +1,10 @@
+{
+  "slug": "assets-extensions",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Audit my Google Ads sitelinks, callouts, and structured snippets"
+}

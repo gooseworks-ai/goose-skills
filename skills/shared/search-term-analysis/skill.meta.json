@@ -1,0 +1,10 @@
+{
+  "slug": "search-term-analysis",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Mine my search term reports for negative keywords and expansion opportunities"
+}

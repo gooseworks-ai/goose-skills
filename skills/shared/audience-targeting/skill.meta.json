@@ -1,0 +1,10 @@
+{
+  "slug": "audience-targeting",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Set up audience targeting across my conversion funnel stages"
+}

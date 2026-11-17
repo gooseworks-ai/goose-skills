@@ -1,0 +1,12 @@
+{
+  "slug": "ga-hitl-reminder",
+  "category": "playbooks",
+  "tier": "playbook",
+  "version": "1.0.0",
+  "domain": "marketing-agent",
+  "tags": [
+    "ads"
+  ],
+  "requires_skills": [],
+  "example_prompt": "Send the Google Ads human-in-the-loop Discord reminder"
+}

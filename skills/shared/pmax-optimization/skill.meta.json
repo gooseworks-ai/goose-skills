@@ -1,0 +1,10 @@
+{
+  "slug": "pmax-optimization",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Optimize my Performance Max campaigns"
+}

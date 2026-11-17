@@ -1,0 +1,10 @@
+{
+  "slug": "ad-scheduling",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "What daypart bid adjustments should I make based on my conversion data?"
+}

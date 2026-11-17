@@ -1,0 +1,10 @@
+{
+  "slug": "attribution-modeling",
+  "category": "capabilities",
+  "version": "1.0.0",
+  "domain": "ads",
+  "tags": [
+    "ads"
+  ],
+  "example_prompt": "Which attribution model should I use for my Google Ads conversions?"
+}

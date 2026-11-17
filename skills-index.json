@@ -1,6 +1,6 @@
 {
   "version": "1.4.0",
-  "generated": "2026-11-16",
+  "generated": "2026-11-17",
   "retired_skills": [
     {
       "slug": "battlecard-generator",
@@ -1055,6 +1055,27 @@
   ],
   "skills": [
     {
+      "slug": "account-structure",
+      "name": "account-structure",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Account Structure skill designs, audits, and migrates Google Ads campaign architecture — hierarchy, ad groups, keyword clustering, and naming — to maximize relevance and eliminate cannibalization.",
+      "tags": "ads",
+      "path": "skills/shared/account-structure",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "account-structure",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Restructure my Google Ads account to eliminate cannibalization between campaigns"
+      }
+    },
+    {
       "slug": "ad-angle-miner",
       "name": "ad-angle-miner",
       "category": "composites",
@@ -1111,6 +1132,27 @@
           "ads"
         ],
         "domain": "ads"
+      }
+    },
+    {
+      "slug": "ad-copy-generation",
+      "name": "ad-copy-generation",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Ad Copy Generation skill produces high-performance responsive search ad (RSA) copy using AI-driven generation pipelines calibrated against millions of ad performance data points.",
+      "tags": "ads",
+      "path": "skills/shared/ad-copy-generation",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "ad-copy-generation",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Generate high-performance responsive search ad copy for my campaigns"
       }
     },
     {
@@ -1219,6 +1261,27 @@
           "spend-gate",
           "write-report"
         ]
+      }
+    },
+    {
+      "slug": "ad-scheduling",
+      "name": "ad-scheduling",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Ad Scheduling skill turns daypart data into a profit map — day-by-hour heatmaps, bid adjustment recommendations, and schedule plans that respect Smart Bidding behavior.",
+      "tags": "ads",
+      "path": "skills/shared/ad-scheduling",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "ad-scheduling",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "What daypart bid adjustments should I make based on my conversion data?"
       }
     },
     {
@@ -1600,6 +1663,111 @@
       }
     },
     {
+      "slug": "assets-extensions",
+      "name": "assets-extensions",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Assets & Extensions skill manages Google Ads asset inventory — sitelinks, callouts, call, structured snippets, lead forms, images, promotions, prices, and app extensions — to lift Ad Rank, expected CTR, and conversion volume through diverse, high-quality ad assets.",
+      "tags": "ads",
+      "path": "skills/shared/assets-extensions",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "assets-extensions",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Audit my Google Ads sitelinks, callouts, and structured snippets"
+      }
+    },
+    {
+      "slug": "attribution-modeling",
+      "name": "attribution-modeling",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Attribution Modeling skill selects, configures, and analyzes attribution models so every touchpoint receives fair credit and Smart Bidding optimizes against complete conversion data.",
+      "tags": "ads",
+      "path": "skills/shared/attribution-modeling",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "attribution-modeling",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Which attribution model should I use for my Google Ads conversions?"
+      }
+    },
+    {
+      "slug": "audience-targeting",
+      "name": "audience-targeting",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Audience Targeting skill orchestrates Google Ads' full audience ecosystem to reach the right users at every stage of the conversion funnel.",
+      "tags": "ads",
+      "path": "skills/shared/audience-targeting",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "audience-targeting",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Set up audience targeting across my conversion funnel stages"
+      }
+    },
+    {
+      "slug": "automation-rules",
+      "name": "automation-rules",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Automation Rules skill designs, tests, and governs automated rules and Google Ads scripts for hands-off campaign management.",
+      "tags": "ads",
+      "path": "skills/shared/automation-rules",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "automation-rules",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Create automated rules and Google Ads scripts for hands-off campaign management"
+      }
+    },
+    {
+      "slug": "bid-strategy-optimization",
+      "name": "bid-strategy-optimization",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Bid Strategy Optimization skill selects, configures, and transitions Google Ads Smart Bidding strategies to maximize conversions and ROAS against realistic data-maturity thresholds.",
+      "tags": "ads",
+      "path": "skills/shared/bid-strategy-optimization",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "bid-strategy-optimization",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Should I switch to tCPA or tROAS, and how do I transition safely?"
+      }
+    },
+    {
       "slug": "brand-research",
       "name": "brand-research",
       "category": "composites",
@@ -1640,6 +1808,69 @@
           "scrapecreators-api",
           "transcript-intelligence"
         ]
+      }
+    },
+    {
+      "slug": "budget-optimization",
+      "name": "budget-optimization",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Budget Optimization skill applies AI-driven forecasting and portfolio theory to allocate advertising budgets across campaigns for maximum return.",
+      "tags": "ads",
+      "path": "skills/shared/budget-optimization",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "budget-optimization",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "How should I allocate my budget across campaigns for maximum return?"
+      }
+    },
+    {
+      "slug": "campaign-experiments",
+      "name": "campaign-experiments",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Campaign Experiments skill designs, runs, and reads Google Ads drafts and experiments to validate bidding, creative, and landing page changes with statistical confidence.",
+      "tags": "ads",
+      "path": "skills/shared/campaign-experiments",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "campaign-experiments",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Set up a draft and experiment to test my bidding strategy change"
+      }
+    },
+    {
+      "slug": "campaign-launch-checklist",
+      "name": "campaign-launch-checklist",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Campaign Launch Checklist skill QA's new campaign setup before, during, and after launch to prevent wasted spend and failed learning phases.",
+      "tags": "ads",
+      "path": "skills/shared/campaign-launch-checklist",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "campaign-launch-checklist",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "QA my new campaign setup before I launch it"
       }
     },
     {
@@ -1812,6 +2043,27 @@
       }
     },
     {
+      "slug": "competitor-analysis",
+      "name": "competitor-analysis",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Competitor Analysis skill transforms Google Ads auction data into actionable competitive intelligence.",
+      "tags": "ads",
+      "path": "skills/shared/competitor-analysis",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "competitor-analysis",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Analyze my Google Ads auction competitors and find competitive intelligence"
+      }
+    },
+    {
       "slug": "compose-creator-layer",
       "name": "compose-creator-layer",
       "category": "capabilities",
@@ -1838,6 +2090,27 @@
           "ffmpeg",
           "ffprobe"
         ]
+      }
+    },
+    {
+      "slug": "conversion-tracking",
+      "name": "conversion-tracking",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Conversion Tracking skill provides end-to-end management of Google Ads conversion measurement infrastructure.",
+      "tags": "ads",
+      "path": "skills/shared/conversion-tracking",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "conversion-tracking",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Set up and verify my Google Ads conversion tracking infrastructure"
       }
     },
     {
@@ -2465,6 +2738,27 @@
       }
     },
     {
+      "slug": "enhanced-conversions",
+      "name": "enhanced-conversions",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Enhanced Conversions skill modernizes conversion measurement with first-party data hashing, consent mode v2, GA4 integration, and offline conversion import so Smart Bidding optimizes against complete data.",
+      "tags": "ads",
+      "path": "skills/shared/enhanced-conversions",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "enhanced-conversions",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Modernize my conversion measurement with enhanced conversions and consent mode v2"
+      }
+    },
+    {
       "slug": "footage-cutlist",
       "name": "footage-cutlist",
       "category": "capabilities",
@@ -2500,6 +2794,220 @@
       }
     },
     {
+      "slug": "ga-ads-ad-optimization",
+      "name": "ga-ads-ad-optimization",
+      "category": "playbooks",
+      "domain": "marketing-agent",
+      "description": "google-ads-ad-optimization",
+      "tags": "ads",
+      "path": "skills/marketing/ga-ads-ad-optimization",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "ga-ads-ad-optimization",
+        "category": "playbooks",
+        "tier": "playbook",
+        "version": "1.0.0",
+        "domain": "marketing-agent",
+        "tags": [
+          "ads"
+        ],
+        "requires_skills": [],
+        "example_prompt": "Run the Google Ads ad optimization recipe"
+      }
+    },
+    {
+      "slug": "ga-handyman-export-daily",
+      "name": "ga-handyman-export-daily",
+      "category": "playbooks",
+      "domain": "marketing-agent",
+      "description": "Daily automatic export of live Google Ads state (campaign 24434794073,",
+      "tags": "ads",
+      "path": "skills/marketing/ga-handyman-export-daily",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "ga-handyman-export-daily",
+        "category": "playbooks",
+        "tier": "playbook",
+        "version": "1.0.0",
+        "domain": "marketing-agent",
+        "tags": [
+          "ads"
+        ],
+        "requires_skills": [],
+        "example_prompt": "Run the daily handyman export and regenerate landing pages"
+      }
+    },
+    {
+      "slug": "ga-hitl-reminder",
+      "name": "ga-hitl-reminder",
+      "category": "playbooks",
+      "domain": "marketing-agent",
+      "description": "Sends a Discord reminder listing the pending human-in-the-loop (HITL)",
+      "tags": "ads",
+      "path": "skills/marketing/ga-hitl-reminder",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "ga-hitl-reminder",
+        "category": "playbooks",
+        "tier": "playbook",
+        "version": "1.0.0",
+        "domain": "marketing-agent",
+        "tags": [
+          "ads"
+        ],
+        "requires_skills": [],
+        "example_prompt": "Send the Google Ads human-in-the-loop Discord reminder"
+      }
+    },
+    {
+      "slug": "ga-optimizer-daily",
+      "name": "ga-optimizer-daily",
+      "category": "playbooks",
+      "domain": "marketing-agent",
+      "description": "Scheduled Google Ads optimization cycle for account 5871596696 (HHA_MA).",
+      "tags": "ads",
+      "path": "skills/marketing/ga-optimizer-daily",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "ga-optimizer-daily",
+        "category": "playbooks",
+        "tier": "playbook",
+        "version": "1.0.0",
+        "domain": "marketing-agent",
+        "tags": [
+          "ads"
+        ],
+        "requires_skills": [
+          "bid-strategy-optimization",
+          "search-term-analysis",
+          "budget-optimization",
+          "quality-score-optimization",
+          "account-structure",
+          "geo-targeting",
+          "ad-scheduling",
+          "assets-extensions",
+          "conversion-tracking",
+          "enhanced-conversions",
+          "attribution-modeling",
+          "campaign-experiments",
+          "automation-rules",
+          "policy-compliance",
+          "campaign-launch-checklist",
+          "google-ads-audit",
+          "pmax-optimization",
+          "shopping-ads",
+          "competitor-analysis",
+          "audience-targeting",
+          "remarketing-strategy",
+          "landing-page-audit",
+          "ad-copy-generation",
+          "keyword-research"
+        ],
+        "example_prompt": "Run the scheduled daily Google Ads optimization cycle"
+      }
+    },
+    {
+      "slug": "ga-optimizer-monthly",
+      "name": "ga-optimizer-monthly",
+      "category": "playbooks",
+      "domain": "marketing-agent",
+      "description": "Scheduled monthly deep Google Ads optimization cycle for account 5871596696 (HHA_MA).",
+      "tags": "ads",
+      "path": "skills/marketing/ga-optimizer-monthly",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "ga-optimizer-monthly",
+        "category": "playbooks",
+        "tier": "playbook",
+        "version": "1.0.0",
+        "domain": "marketing-agent",
+        "tags": [
+          "ads"
+        ],
+        "requires_skills": [
+          "bid-strategy-optimization",
+          "search-term-analysis",
+          "budget-optimization",
+          "quality-score-optimization",
+          "account-structure",
+          "geo-targeting",
+          "ad-scheduling",
+          "assets-extensions",
+          "conversion-tracking",
+          "enhanced-conversions",
+          "attribution-modeling",
+          "campaign-experiments",
+          "automation-rules",
+          "policy-compliance",
+          "campaign-launch-checklist",
+          "google-ads-audit",
+          "pmax-optimization",
+          "shopping-ads",
+          "competitor-analysis",
+          "audience-targeting",
+          "remarketing-strategy",
+          "landing-page-audit",
+          "ad-copy-generation",
+          "keyword-research"
+        ],
+        "example_prompt": "Run the monthly deep Google Ads optimization cycle"
+      }
+    },
+    {
+      "slug": "ga-pacing-daily",
+      "name": "ga-pacing-daily",
+      "category": "playbooks",
+      "domain": "marketing-agent",
+      "description": "Lightweight daily 14:00 run for account 5871596696 (HHA_MA). Checks the ROI",
+      "tags": "ads",
+      "path": "skills/marketing/ga-pacing-daily",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "ga-pacing-daily",
+        "category": "playbooks",
+        "tier": "playbook",
+        "version": "1.0.0",
+        "domain": "marketing-agent",
+        "tags": [
+          "ads"
+        ],
+        "requires_skills": [
+          "budget-optimization",
+          "search-term-analysis",
+          "bid-strategy-optimization",
+          "automation-rules"
+        ],
+        "example_prompt": "Run the daily mid-day pacing and circuit breaker check"
+      }
+    },
+    {
+      "slug": "geo-targeting",
+      "name": "geo-targeting",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Geo Targeting skill converts location-level performance data into profit decisions — bid adjustments, exclusions, and expansion plans — across countries, regions, cities, postal codes, and radii.",
+      "tags": "ads",
+      "path": "skills/shared/geo-targeting",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "geo-targeting",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "What bid adjustments should I make by location based on performance data?"
+      }
+    },
+    {
       "slug": "get-brand-assets",
       "name": "get-brand-assets",
       "category": "capabilities",
@@ -2520,6 +3028,27 @@
           "brand"
         ],
         "domain": "brand"
+      }
+    },
+    {
+      "slug": "google-ads-audit",
+      "name": "google-ads-audit",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Google Ads Account Audit skill executes a comprehensive, pattern-driven analysis of any Google Ads account using a proprietary 1,000-pattern knowledge base.",
+      "tags": "ads",
+      "path": "skills/shared/google-ads-audit",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "google-ads-audit",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Run a comprehensive audit of my Google Ads account"
       }
     },
     {
@@ -3156,6 +3685,48 @@
           "outreach"
         ],
         "domain": "lead-generation"
+      }
+    },
+    {
+      "slug": "keyword-research",
+      "name": "keyword-research",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Keyword Research skill delivers a systematic approach to keyword discovery, expansion, and optimization for Google Ads campaigns.",
+      "tags": "ads",
+      "path": "skills/shared/keyword-research",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "keyword-research",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Do keyword research and expansion for my Google Ads campaigns"
+      }
+    },
+    {
+      "slug": "landing-page-audit",
+      "name": "landing-page-audit",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Landing Page Audit skill performs comprehensive evaluations of post-click experiences, combining technical performance analysis with conversion rate optimization (CRO) assessment.",
+      "tags": "ads",
+      "path": "skills/shared/landing-page-audit",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "landing-page-audit",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Audit my landing page performance and conversion rate optimization"
       }
     },
     {
@@ -4505,6 +5076,69 @@
       }
     },
     {
+      "slug": "pmax-optimization",
+      "name": "pmax-optimization",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Performance Max Optimization skill provides expert-level management of Google's most automated campaign type.",
+      "tags": "ads",
+      "path": "skills/shared/pmax-optimization",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "pmax-optimization",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Optimize my Performance Max campaigns"
+      }
+    },
+    {
+      "slug": "policy-compliance",
+      "name": "policy-compliance",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Policy Compliance skill manages Google Ads policy statuses, violation remediation, appeals, and pre-flight copy checks before ads go live.",
+      "tags": "ads",
+      "path": "skills/shared/policy-compliance",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "policy-compliance",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Check my ad copy for policy compliance before it goes live"
+      }
+    },
+    {
+      "slug": "quality-score-optimization",
+      "name": "quality-score-optimization",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Quality Score Optimization skill provides a systematic framework for diagnosing, tracking, and improving Quality Score across every keyword in a Google Ads account.",
+      "tags": "ads",
+      "path": "skills/shared/quality-score-optimization",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "quality-score-optimization",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Diagnose and improve my Quality Score across all keywords"
+      }
+    },
+    {
       "slug": "reddit-post-finder",
       "name": "reddit-post-finder",
       "category": "capabilities",
@@ -4527,6 +5161,27 @@
           "monitoring"
         ],
         "domain": "monitoring"
+      }
+    },
+    {
+      "slug": "remarketing-strategy",
+      "name": "remarketing-strategy",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Remarketing Strategy skill designs and implements cross-channel remarketing architectures that re-engage users at every stage of the conversion funnel.",
+      "tags": "ads",
+      "path": "skills/shared/remarketing-strategy",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "remarketing-strategy",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Design a cross-channel remarketing strategy for my campaigns"
       }
     },
     {
@@ -7405,6 +8060,48 @@
           "social",
           "research-tools"
         ]
+      }
+    },
+    {
+      "slug": "search-term-analysis",
+      "name": "search-term-analysis",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Search Term Analysis skill mines search term reports to eliminate wasted spend through negative keywords and uncover expansion opportunities through match type migration.",
+      "tags": "ads",
+      "path": "skills/shared/search-term-analysis",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "search-term-analysis",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Mine my search term reports for negative keywords and expansion opportunities"
+      }
+    },
+    {
+      "slug": "shopping-ads",
+      "name": "shopping-ads",
+      "category": "capabilities",
+      "domain": "ads",
+      "description": "The Shopping Ads skill delivers end-to-end management of Google Shopping campaigns and Merchant Center product feeds.",
+      "tags": "ads",
+      "path": "skills/shared/shopping-ads",
+      "version": "1.0.0",
+      "files": [],
+      "metadata": {
+        "slug": "shopping-ads",
+        "category": "capabilities",
+        "version": "1.0.0",
+        "domain": "ads",
+        "tags": [
+          "ads"
+        ],
+        "example_prompt": "Manage my Google Shopping campaigns and Merchant Center feed"
       }
     },
     {
